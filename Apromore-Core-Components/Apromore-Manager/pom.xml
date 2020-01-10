@@ -171,6 +171,26 @@
             <artifactId>commons-math3</artifactId>
         </dependency>
 
+        <!-- Put Kryo in the front to avoid asm lib version conflict with spring and EclipseLink-->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.javakaffee</groupId>
+            <artifactId>kryo-serializers</artifactId>
+            <version>0.45</version>
+        </dependency>
+
+        <!-- Put embedded OpenXES in front to avoid invoking raffaeleconforti assembly during compile and test-->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>openxes</artifactId>
+            <version>2.27</version>
+        </dependency>
+
         <!-- Clients -->
         <dependency>
             <groupId>org.apromore</groupId>
@@ -631,11 +651,7 @@
             <artifactId>bpmntk-osgi</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>openxes</artifactId>
-            <version>2.27</version>
-        </dependency>
+
 
         <dependency>
                 <groupId>io.github.andreas-solti.xeslite</groupId>
@@ -658,6 +674,20 @@
             <artifactId>org.apache.servicemix.bundles.ehcache</artifactId>
             <version>2.6.11_1</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.ehcache</groupId>-->
+            <!--<artifactId>ehcache</artifactId>-->
+            <!--<version>3.8.1</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>org.apromore</groupId>

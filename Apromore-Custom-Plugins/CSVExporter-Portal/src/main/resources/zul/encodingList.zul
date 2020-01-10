@@ -1,0 +1,45 @@
+<window id="modalDialog" visible="false" title="Choose encoding" border="normal" width="460px"
+        position="center,center" closable="true" draggable="false" droppable="false">
+
+    <style>
+        .right {
+        float: right;
+        padding: 10px;
+        }
+    </style>
+
+    <style>
+        .secondaryBtn {
+        background-color: #d9d9d9;
+        }
+    </style>
+
+    <zscript>
+        <![CDATA[
+            String[] userName = { "Tony", "Ryan", "Jumper", "Wing", "Sam" };
+            ListModelList model = new ListModelList(userName);
+        ]]></zscript>
+
+    <vlayout>
+        <listbox id="selectEncoding" mold="select">
+            <listitem label="UTF-8" value="UTF-8" selected="true"  />
+            <listitem label="Windows-1250 (Eastern European)" value="windows-1250" />
+            <listitem label="windows-1256 (Arabic)" value="windows-1256" />
+            <listitem label="Windows-1251 (Cyrillic)" value="Windows-1251" />
+            <listitem label="windows-1252 (Latin)" value="windows-1252" />
+            <listitem label="windows-1253 (Greek)" value="windows-1253" />
+            <listitem label="windows-1254 (Turkish)" value="windows-1254" />
+            <listitem label="windows-1255 (Hebrew)" value="windows-1255" />
+            <listitem label="windows-1258 (Vietnamese)" value="windows-1258" />
+            <listitem label="windows-31j (Japanese)" value="windows-31j" />
+            <listitem label="ISO-2022-CN (Chinese)" value="wISO-2022-CN" />
+        </listbox>
+
+
+
+        <div hflex="2" style="text-align: right; padding-right: 10px;">
+            <button id="downloadButton" label="Download Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" style="position:relative;padding-left:2px;" width="120px"  />
+            <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;padding-left:2px;" width="100px"  />
+        </div>
+    </vlayout>
+</window>

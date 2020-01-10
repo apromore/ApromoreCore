@@ -148,6 +148,8 @@
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
+        <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
+        <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
 
         <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
         <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
@@ -435,7 +437,7 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>assembly</artifactId>
-                <version>1.0.20190812</version>
+                <version>1.0.20191127</version>
             </dependency>
 
             <dependency>

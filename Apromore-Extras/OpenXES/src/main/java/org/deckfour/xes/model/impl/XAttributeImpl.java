@@ -38,7 +38,6 @@
  */
 package org.deckfour.xes.model.impl;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
@@ -147,7 +146,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XAttributable#hasAttributes()
+	 * @see XAttributable#hasAttributes()
 	 */
 	@Override
 	public boolean hasAttributes() {
@@ -224,7 +223,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	 * Runs the given visitor for the given parent on this attribute.
 	 * 
 	 * (non-Javadoc)
-	 * @see org.deckfour.xes.model.XAttribute#accept(org.deckfour.xes.model.XVisitor, org.deckfour.xes.model.XAttributable)
+	 * @see XAttribute#accept(XVisitor, XAttributable)
 	 */
 	public void accept(XVisitor visitor, XAttributable parent) {
 		/*

@@ -40,8 +40,8 @@ package org.deckfour.xes.model.impl;
 
 import java.util.Objects;
 
-import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.id.XID;
+import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeID;
 
@@ -91,7 +91,7 @@ public class XAttributeIDImpl extends XAttributeImpl implements XAttributeID {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeLiteral#getValue()
+	 * @see XAttributeLiteral#getValue()
 	 */
 	public XID getValue() {
 		return this.value;
@@ -100,7 +100,7 @@ public class XAttributeIDImpl extends XAttributeImpl implements XAttributeID {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeLiteral#setValue(java.lang.String)
+	 * @see XAttributeLiteral#setValue(java.lang.String)
 	 */
 	public void setValue(XID value) {
 		if (value == null) {

@@ -52,7 +52,6 @@ public class LogFilterImpl implements LogFilterService {
                     LogFilterCriterion criterion = criteria.get(i);
                     if (criterion.getLevel() == Level.TRACE) {
                         if(criterion.isToRemove(xTrace)) { //matching & action
-//                            log.remove(xTrace);
                             traceToBeRemoved.add(xTrace);
                             break;
                         }

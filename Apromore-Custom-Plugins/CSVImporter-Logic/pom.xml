@@ -55,8 +55,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.csvimporter,
-                            org.apromore.service.csvimporter.impl  <!-- Spring needs access to the implementation, sadly -->
+                            org.apromore.service.csvimporter
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -108,6 +107,11 @@
         </dependency>
 -->
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

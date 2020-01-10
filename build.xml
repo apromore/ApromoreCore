@@ -76,8 +76,6 @@
     </fileset>
 
     <!-- Virgo Related -->
-    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
-
     <target name="check-virgo">
         <condition property="virgo.installed">
             <available file="${dir-virgo}" type="dir"/>
@@ -91,7 +89,7 @@
         <delete file="${dir-deployment}/virgo.zip"/>
     </target>
 
-    <target name="configure-virgo" depends="check-virgo">
+    <target name="configure-virgo">
         <copy todir="${dir-virgo}/bin" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="dmk.sh"/>
@@ -118,6 +116,8 @@
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
+    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
+
     <target name="clean-virgo" depends="check-virgo" if="virgo.installed">
         <delete includeemptydirs="true">
             <fileset dir="${dir-virgo}">
@@ -141,17 +141,20 @@
         </delete>
     </target>
 
-    <target name="dist-virgo" depends="clean-virgo, setup-virgo, copy-virgo, deploy-virgo">
+    <target name="dist-virgo" depends="deploy-virgo">
         <zip destfile="Apromore.zip" includes="${dir-virgo}/*"/>
     </target>
 
     <target name="deploy-virgo" depends="clean-virgo, setup-virgo, copy-virgo"/>
 
-    <target name="set-permissions" depends="setup-virgo">
-        <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
+    <target name="create-repository-dirs">
+        <mkdir dir="${dir-deployment}/Editor-Repository"/>
+        <mkdir dir="${dir-deployment}/Filestore-Repository"/>
+        <mkdir dir="${dir-deployment}/Lucene-Repository"/>
+        <mkdir dir="${dir-deployment}/Filestore-Repository"/>
     </target>
 
-    <target name="clean-start-virgo" depends="set-permissions">
+    <target name="clean-start-virgo" depends="configure-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -162,7 +165,7 @@
         </exec>
     </target>
 
-    <target name="start-virgo" depends="set-permissions,copy-virgo">
+    <target name="start-virgo" depends="deploy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -173,7 +176,7 @@
         </exec>
     </target>
 
-    <target name="debug-virgo" depends="set-permissions,copy-virgo">
+    <target name="debug-virgo" depends="configure-virgo, copy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -184,7 +187,7 @@
         </exec>
     </target>
 
-    <target name="debug" depends="set-permissions">
+    <target name="debug" depends="configure-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -204,7 +207,7 @@
         </exec>
     </target>
 
-    <target name="copy-virgo" depends="clean-virgo">
+    <target name="copy-virgo" depends="clean-virgo, create-repository-dirs">
         <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
@@ -310,14 +313,14 @@
 
     <target name="create-h2">
         <delete>
-            <fileset dir="Apromore-Assembly" includes="Manager-Repository.*"/>
+            <fileset dir="${dir-deployment}" includes="Manager-Repository.*"/>
         </delete>
         <java classname="org.h2.tools.RunScript">
             <classpath>
                 <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
-            <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
+            <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
             <arg value="-script"/>
             <arg file="Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
         </java>
@@ -326,7 +329,7 @@
                 <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
-            <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
+            <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
             <arg value="-script"/>
             <arg file="Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
         </java>

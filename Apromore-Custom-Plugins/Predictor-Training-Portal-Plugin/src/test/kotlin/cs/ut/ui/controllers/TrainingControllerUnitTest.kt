@@ -63,9 +63,9 @@ class TrainingControllerUnitTest {
       val outputStream = ByteArrayOutputStream()
       TrainingController.convertXLogToCSV(log, outputStream)
       val reader = BufferedReader(StringReader(outputStream.toString()))
-      assertEquals("case_id,InfectionSuspected,org:group,DiagnosticBlood,DisfuncOrg,SIRSCritTachypnea,Hypotensie,SIRSCritHeartRate,Infusion,DiagnosticArtAstrup,concept:name,Age,DiagnosticIC,DiagnosticSputum,DiagnosticLiquor,DiagnosticOther,SIRSCriteria2OrMore,DiagnosticXthorax,SIRSCritTemperature,time:timestamp,DiagnosticUrinaryCulture,SIRSCritLeucos,Oligurie,DiagnosticLacticAcid,lifecycle:transition,Diagnose,Hypoxie,DiagnosticUrinarySediment,DiagnosticECG,Leucocytes,CRP,LacticAcid", reader.readLine())
-      assertEquals("A,true,A,true,true,true,true,true,true,true,ER Registration,85,true,false,false,false,true,true,true,2014-10-22T09:15:41,true,false,false,true,complete,A,false,true,true,,", reader.readLine())
-      assertEquals("A,,B,,,,,,,,Leucocytes,,,,,,,,,2014-10-22T09:27:00,,,,,complete,,,,,9.6,", reader.readLine())
+      assertEquals("case_id,org:group,InfectionSuspected,Age,DiagnosticUrinarySediment,SIRSCritTemperature,DiagnosticLiquor,DiagnosticIC,DiagnosticLacticAcid,DiagnosticBlood,SIRSCritHeartRate,DiagnosticArtAstrup,lifecycle:transition,DiagnosticOther,DiagnosticXthorax,Oligurie,Hypotensie,SIRSCriteria2OrMore,DiagnosticUrinaryCulture,Infusion,DiagnosticSputum,DiagnosticECG,concept:name,DisfuncOrg,Diagnose,Hypoxie,time:timestamp,SIRSCritLeucos,SIRSCritTachypnea,Leucocytes,CRP,LacticAcid", reader.readLine())
+      assertEquals("A,A,true,85,true,true,false,true,true,true,true,true,complete,false,true,false,true,true,true,true,false,true,ER Registration,true,A,false,2014-10-22T09:15:41,false,true,,", reader.readLine())
+      assertEquals("A,B,,,,,,,,,,,complete,,,,,,,,,,Leucocytes,,,,2014-10-22T09:27:00,,,9.6,", reader.readLine())
   }
 
   @Test
@@ -76,9 +76,9 @@ class TrainingControllerUnitTest {
       val outputStream = ByteArrayOutputStream()
       TrainingController.convertXLogToCSV(log, outputStream)
       val reader = BufferedReader(StringReader(outputStream.toString()))
-      assertEquals("case_id,LoanGoal,Action,RequestedAmount,Resource,activity_duration,weekday,FirstWithdrawalAmount,time:timestamp,NumberOfTerms,duration,elapsed,ApplicationType,remtime,concept:name,MonthlyCost,month,hour,EventOrigin,lifecycle:transition,CreditScore,OfferedAmount", reader.readLine())
-      assertEquals("c_617529015,Home improvement,Created,20000.0,User_1,0.0,4,0.0,2016-09-09T06:58:02,0.0,0.0,0.0,New credit,2761324.019,A_Create Application,0.0,9,16,Application,complete,missing", reader.readLine())
-      assertEquals("c_617529015,Home improvement,statechange,20000.0,User_1,0.0,4,0.0,2016-09-09T06:58:02,0.0,0.00106666666667,0.064,New credit,2761323.955,A_Submitted,0.0,9,16,Application,complete,missing", reader.readLine())
+      assertEquals("case_id,ApplicationType,Resource,MonthlyCost,LoanGoal,RequestedAmount,hour,concept:name,FirstWithdrawalAmount,elapsed,duration,remtime,Action,weekday,activity_duration,time:timestamp,lifecycle:transition,month,CreditScore,NumberOfTerms,EventOrigin,OfferedAmount", reader.readLine())
+      assertEquals("c_617529015,New credit,User_1,0.0,Home improvement,20000.0,16,A_Create Application,0.0,0.0,0.0,2761324.019,Created,4,0.0,2016-09-09T06:58:02,complete,9,missing,0.0,Application", reader.readLine())
+      assertEquals("c_617529015,New credit,User_1,0.0,Home improvement,20000.0,16,A_Submitted,0.0,0.064,0.00106666666667,2761323.955,statechange,4,0.0,2016-09-09T06:58:02,complete,9,missing,0.0,Application", reader.readLine())
       assertNull(reader.readLine())
   }
 

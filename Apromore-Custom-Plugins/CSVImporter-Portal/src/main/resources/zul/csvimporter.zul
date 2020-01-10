@@ -1,8 +1,4 @@
-
-
 <zk>
-
-
     <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh"  width="85vw"  position="center" title="CSV Importer" onClientInfo="onClientInfo(event)"  >
 
         <!--<vbox>-->
@@ -43,20 +39,21 @@
             padding: 0px;
             overflow: auto;
             zoom: 1;
-            background-image: url("/img/apromore_banner.png");
-            background-repeat: round;
             }
             .relativePos{
             position:relative;
             width: 100%;
+            padding-top:60px;
             }
 
             .banner{
             position: absolute;
-            width: calc(100% - 19px);
+            width: 100%;
+            height: 52px;
             background-image: url("/img/apromore_banner.png");
             background-repeat: round;
             padding-top: 75px;
+            z-index: -100;
             }
 
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
@@ -132,7 +129,7 @@
                         <li>29.10.19 5:20   [dd.MM.yy HH:mm]</li>
                     </ul>
 
-                    </html>
+                </html>
             </vbox>
 
         </popup>
@@ -151,7 +148,7 @@
                     <div zclass="banner" />
                     <div id="popUPBox" zclass="relativePos"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
-                    <grid id="myGrid" mold="default" hflex="min" onClientInfo="onClientInfo(event)" style="padding-top: 60px;">
+                    <grid id="myGrid" mold="default" hflex="min" vflex="min" onClientInfo="onClientInfo(event)" height="100%" width="100%" style="overflow-y:hidden">
                         <zscript>
                             void onClientInfo(ClientInfoEvent evt) {
                             int height = evt.getDesktopHeight();
@@ -167,14 +164,25 @@
             <south>
                 <div style="padding: 5px 0 5px 5px;">
                     <hlayout>
-                        <div hflex="2">
-                            <button id="setOtherAll" label="'Ignore' to 'Other'" style="position:relative;" width="150px"  />
-                            <button id="setIgnoreAll" label="'Other' to 'Ignore'" style="position:relative;" width="150px"  />
+                        <div hflex="4">
+                            <button id="setOtherAll" label="'Ignore' to 'Event Attribute'" style="position:relative;padding-left:2px;" width="150px"  />
+                            <button id="setIgnoreAll" label="'Event Attribute' to 'Ignore'" style="position:relative;padding-left:2px;" width="150px"  />
+                            <space spacing="10px" />
+                            Encoding:
+                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="100px" readonly="true">
+                                <template name="model">
+                                    <comboitem label="${each}" />
+                                </template>
+                            </combobox>
                         </div>
+
+
                         <div hflex="2" style="text-align: right; padding-right: 10px;">
-                            <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
-                            <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
+                            <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;padding-left:2px;" width="100px"  />
+                            <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;padding-left:2px;" width="100px"  />
                         </div>
+
+
                         <separator />
                     </hlayout>
                 </div>

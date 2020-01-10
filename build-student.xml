@@ -29,6 +29,8 @@
                 
         <include name="Apromore-Assembly/Custom-Plugins/custom-plugins-ce.plan"/>
 
+        <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
+
         <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
@@ -129,8 +131,8 @@
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
         <!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
     </fileset>
-    
-    <target name="start-virgo-student" depends="set-permissions,copy-virgo-student">
+
+    <target name="start-virgo-student" depends="deploy-virgo-student">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -141,7 +143,9 @@
         </exec>
     </target>
     
-       <target name="copy-virgo-student" depends="clean-virgo">
+    <target name="deploy-virgo-student" depends="clean-virgo, setup-virgo, copy-virgo-student"/>
+    
+    <target name="copy-virgo-student" depends="clean-virgo, create-repository-dirs">
             <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
             <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
             <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
@@ -242,6 +246,6 @@
 
             <!-- PQL indexing bot -->
             <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
-        </target>
+    </target>
     
 </project>

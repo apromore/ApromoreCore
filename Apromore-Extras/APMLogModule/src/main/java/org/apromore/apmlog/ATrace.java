@@ -6,13 +6,19 @@ import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 
-public class ATrace {
+public class ATrace implements Serializable {
 
     private String caseId = "";
+    public long caseIdDigit = 0;
     private int caseVariantId = 0;
     private long startTimeMilli = -1;
     private long endTimeMilli = -1;
@@ -26,49 +32,14 @@ public class ATrace {
     private long maxWaitingTime = 0;
     private double caseUtilization = 0.0;
 
+    public String startTimeString, endTimeString, durationString;
+
     private List<AActivity> activityList;
     private List<AEvent> eventList;
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap; // 2019-10-24
     private UnifiedMap<String, String> attributeMap;
     private List<String> activityNameList;
     private UnifiedSet<String> eventNameSet;
-    private BitSet validEventIndex;
-    private long originalStartTimeMilli;
-    private long originalEndTimeMilli;
-    private long originalDuration = 0;
-    private boolean originalHasActivity = false;
-    private long originalTotalProcessingTime = 0;
-    private long originalAverageProcessingTime = 0;
-    private long originalMaxProcessingTime = 0;
-    private long originalTotalWaitingTime = 0;
-    private long originalAverageWaitingTime = 0;
-    private long originalMaxWaitingTime = 0;
-    private double originalCaseUtilization = 0;
-    private List<AActivity> originalActivityList;
-    private List<AEvent> originalEventList;
-    private UnifiedMap<String, UnifiedMap<String, Integer>> originalEventAttributeValueFreqMap;
-    private UnifiedMap<String, String> originalAttributeMap;
-    private List<String> originalActivityNameList;
-    private UnifiedSet<String> originalEventNameSet;
-
-    private BitSet previousValidEventIndex;
-    private long previousStartTimeMilli;
-    private long previousEndTimeMilli;
-    private long previousDuration = 0;
-    private boolean previousHasActivity = false;
-    private long previousTotalProcessingTime = 0;
-    private long previousAverageProcessingTime = 0;
-    private long previousMaxProcessingTime = 0;
-    private long previousTotalWaitingTime = 0;
-    private long previousAverageWaitingTime = 0;
-    private long previousMaxWaitingTime = 0;
-    private double previousCaseUtilization = 0;
-    private List<AActivity> previousActivityList;
-    private List<AEvent> previousEventList;
-    private UnifiedMap<String, UnifiedMap<String, Integer>> previousEventAttributeValueFreqMap;
-    private UnifiedMap<String, String> previousAttributeMap;
-    private List<String> previousActivityNameList;
-    private UnifiedSet<String> previousEventNameSet;
 
     public ATrace(XTrace xTrace) {
 
@@ -79,12 +50,17 @@ public class ATrace {
 
         XAttributeMap xAttributeMap = xTrace.getAttributes();
         for(String key : xAttributeMap.keySet()) {
-            if(key.toLowerCase().equals("concept:name")) this.caseId = xAttributeMap.get(key).toString();
-            else {
+            if(key.toLowerCase().equals("concept:name")) {
+                this.caseId = xAttributeMap.get(key).toString();
+                if(this.caseId.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
+            } else {
                 this.attributeMap.put(key, xAttributeMap.get(key).toString());
             }
         }
-        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().get("case:variant").toString());
+        /**
+         * DO NOT TAKE THE CASE:VARIANT IN THE ORIGINAL XLOG
+         */
+//        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().get("case:variant").toString());
         // ELSE SET THE VARIANT ID from APMLog
         initStats(xTrace);
     }
@@ -99,7 +75,7 @@ public class ATrace {
         eventNameSet = new UnifiedSet<>();
 
         // initiate the bitSet with fixed size
-        validEventIndex = new BitSet(xTrace.size());
+//        validEventIndex = new BitSet(xTrace.size());
 
         if(containsActivity(xTrace)) {
             this.hasActivity = true;
@@ -112,7 +88,7 @@ public class ATrace {
                 XEvent xEvent = xTrace.get(i);
                 AEvent iAEvent = new AEvent(xEvent);
 
-                validEventIndex.set(i, true);
+//                validEventIndex.set(i, true);
 
                 long eventTime = iAEvent.getTimestampMilli();
                 if(startTimeMilli == -1 || startTimeMilli > eventTime) {
@@ -193,17 +169,18 @@ public class ATrace {
                         }
                     }
 
-                    if(!hasComplete) { //consider as instant event
-                        List<AEvent> aEventList = new ArrayList<>();
-                        aEventList.add(iAEvent);
-                        AActivity aActivity = new AActivity(aEventList);
-                        this.activityList.add(aActivity);
-                        this.activityNameList.add(aActivity.getName());
-                    }
+//                    if(!hasComplete) { //consider as instant event
+//                        List<AEvent> aEventList = new ArrayList<>();
+//                        aEventList.add(iAEvent);
+//                        AActivity aActivity = new AActivity(aEventList);
+//                        this.activityList.add(aActivity);
+//                        this.activityNameList.add(aActivity.getName());
+//                    }
                 }
 
 
-                if( !markedXEvent.contains(xEvent)) {
+
+                if( !markedXEvent.contains(xEvent) && iAEvent.getLifecycle().toLowerCase().equals("complete")) {
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
@@ -218,22 +195,25 @@ public class ATrace {
                 XEvent xEvent = xTrace.get(i);
                 AEvent iAEvent = new AEvent(xEvent);
 
-                validEventIndex.set(i, true);
 
-                long eventTime = iAEvent.getTimestampMilli();
-                if(startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
-                if(endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
+//                validEventIndex.set(i, true);
+                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
 
-                this.eventList.add(iAEvent);
-                this.eventNameSet.put(iAEvent.getName());
+                    long eventTime = iAEvent.getTimestampMilli();
+                    if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
+                    if (endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
 
-                fillEventAttributeValueFreqMap(iAEvent);
+                    this.eventList.add(iAEvent);
+                    this.eventNameSet.put(iAEvent.getName());
 
-                List<AEvent> aEventList = new ArrayList<>();
-                aEventList.add(iAEvent);
-                AActivity aActivity = new AActivity(aEventList);
-                this.activityList.add(aActivity);
-                this.activityNameList.add(aActivity.getName());
+                    fillEventAttributeValueFreqMap(iAEvent);
+
+                    List<AEvent> aEventList = new ArrayList<>();
+                    aEventList.add(iAEvent);
+                    AActivity aActivity = new AActivity(aEventList);
+                    this.activityList.add(aActivity);
+                    this.activityNameList.add(aActivity.getName());
+                }
             }
         }
 
@@ -247,227 +227,12 @@ public class ATrace {
             }
         }
 
-        originalStartTimeMilli = startTimeMilli;
-        originalEndTimeMilli = endTimeMilli;
-        originalDuration = duration;
-        originalHasActivity = hasActivity;
-        originalTotalProcessingTime = totalProcessingTime;
-        originalAverageProcessingTime = averageProcessingTime;
-        originalMaxProcessingTime = maxProcessingTime;
-        originalTotalWaitingTime = totalWaitingTime;
-        originalAverageWaitingTime = averageWaitingTime;
-        originalMaxWaitingTime = maxWaitingTime;
-        originalCaseUtilization = caseUtilization;
-        originalActivityList = activityList;
-        originalEventList = eventList;
-        originalEventAttributeValueFreqMap = eventAttributeValueFreqMap;
-        originalAttributeMap = attributeMap;
-        originalActivityNameList = activityNameList;
-        originalEventNameSet = eventNameSet;
-
+        this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
+        this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
+        this.durationString = convertMilliseconds(duration);
     }
 
-    public void reset() {
-
-        for(int i=0; i < validEventIndex.size(); i++) {
-            validEventIndex.set(i, true);
-        }
-
-        startTimeMilli = originalStartTimeMilli;
-        endTimeMilli = originalEndTimeMilli;
-        duration = originalDuration;
-        hasActivity = originalHasActivity;
-        totalProcessingTime = originalTotalProcessingTime;
-        averageProcessingTime = originalAverageProcessingTime;
-        maxProcessingTime = originalMaxProcessingTime;
-        totalWaitingTime = originalTotalWaitingTime;
-        averageWaitingTime = originalAverageWaitingTime;
-        maxWaitingTime = originalMaxWaitingTime;
-        caseUtilization = originalCaseUtilization;
-
-        this.activityList = originalActivityList;
-        this.eventList = originalEventList;
-        this.eventAttributeValueFreqMap = originalEventAttributeValueFreqMap;
-        this.attributeMap = originalAttributeMap;
-        this.activityNameList = originalActivityNameList;
-        this.eventNameSet = originalEventNameSet;
-    }
-
-    public void resetPrevious() {
-
-        if(previousValidEventIndex != null) {
-            for (int i = 0; i < validEventIndex.size(); i++) {
-                validEventIndex.set(i, previousValidEventIndex.get(i));
-            }
-
-            startTimeMilli = previousStartTimeMilli;
-            endTimeMilli = previousEndTimeMilli;
-            duration = previousDuration;
-            hasActivity = previousHasActivity;
-            totalProcessingTime = previousTotalProcessingTime;
-            averageProcessingTime = previousAverageProcessingTime;
-            maxProcessingTime = previousMaxProcessingTime;
-            totalWaitingTime = previousTotalWaitingTime;
-            averageWaitingTime = previousAverageWaitingTime;
-            maxWaitingTime = previousMaxWaitingTime;
-            caseUtilization = previousCaseUtilization;
-
-            this.activityList = previousActivityList;
-            this.eventList = previousEventList;
-            this.eventAttributeValueFreqMap = previousEventAttributeValueFreqMap;
-            this.attributeMap = previousAttributeMap;
-            this.activityNameList = previousActivityNameList;
-            this.eventNameSet = previousEventNameSet;
-        } else {
-            reset();
-        }
-    }
-
-    public void update() {
-        previousValidEventIndex = new BitSet(originalEventList.size());
-
-        for(int i=0; i<validEventIndex.size(); i++) {
-            previousValidEventIndex.set(i, validEventIndex.get(i));
-        }
-
-        previousStartTimeMilli = startTimeMilli;
-        previousEndTimeMilli = endTimeMilli;
-        previousDuration = duration;
-        previousHasActivity = hasActivity;
-        previousTotalProcessingTime = totalProcessingTime;
-        previousAverageProcessingTime = averageProcessingTime;
-        previousMaxProcessingTime = maxProcessingTime;
-        previousTotalWaitingTime = totalWaitingTime;
-        previousAverageWaitingTime = averageWaitingTime;
-        previousMaxWaitingTime = maxWaitingTime;
-        previousCaseUtilization = caseUtilization;
-        previousActivityList = activityList;
-        previousEventList = eventList;
-        previousEventAttributeValueFreqMap = eventAttributeValueFreqMap;
-        previousAttributeMap = attributeMap;
-        previousActivityNameList = activityNameList;
-        previousEventNameSet = eventNameSet;
-
-
-
-        this.eventList = new ArrayList<>();
-        for(int i=0; i < this.originalEventList.size(); i++) {
-            if(validEventIndex.get(i) == true) eventList.add(this.originalEventList.get(i));
-        }
-
-        long waitCount = 0;
-        long processCount = 0;
-
-        this.activityList = new ArrayList<>();
-        this.eventAttributeValueFreqMap = new UnifiedMap<>();
-        this.attributeMap = new UnifiedMap<>();
-        this.activityNameList = new ArrayList<>();
-        this.eventNameSet = new UnifiedSet<>();
-
-        startTimeMilli = -1;
-        endTimeMilli = -1;
-
-        UnifiedSet<AEvent> markedEvent = new UnifiedSet<>();
-
-        for(int i=0; i<this.eventList.size(); i++) {
-
-            AEvent iAEvent = this.eventList.get(i);
-
-            long eventTime = iAEvent.getTimestampMilli();
-            if(startTimeMilli == -1 || startTimeMilli > eventTime) {
-                startTimeMilli = eventTime;
-            }
-            if(endTimeMilli == -1 || endTimeMilli < eventTime) {
-                endTimeMilli = eventTime;
-            }
-
-            this.eventNameSet.put(iAEvent.getName());
-
-            fillEventAttributeValueFreqMap(iAEvent);
-
-            if(iAEvent.getLifecycle().equals("start")) {
-
-                markedEvent.put(iAEvent);
-
-                String startEventName = iAEvent.getName();
-
-                /**
-                 * Find the waiting time
-                 */
-                long iTime = iAEvent.getTimestampMilli();
-
-                if(i > 0) {
-                    for(int j=(i-1); j >=0; j--) {
-                        AEvent preAEvent = this.eventList.get(j);
-                        if(preAEvent.getLifecycle().equals("complete")) {
-                            long preTime = preAEvent.getTimestampMilli();
-                            if(iTime > preTime) {
-                                long waitingTime = iTime - preTime;
-                                this.totalWaitingTime += waitingTime;
-                                waitCount += 1;
-                                if(waitingTime > this.maxWaitingTime) {
-                                    this.maxWaitingTime = waitingTime;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                boolean hasComplete = false;
-
-                /**
-                 * Find the duration
-                 */
-                if((i+1) <= (this.eventList.size()-1)) {
-                    for(int j=(i+1); j < this.eventList.size(); j++) {
-                        AEvent jAEvent = this.eventList.get(j);
-                        if(jAEvent.getName().equals(startEventName) &&
-                                jAEvent.getLifecycle().equals("complete")) {
-
-                            long endTime = jAEvent.getTimestampMilli();
-                            if(endTime > iTime) {
-                                long processTime = endTime - iTime;
-                                this.totalProcessingTime += processTime;
-                                if(processTime > this.maxProcessingTime) this.maxProcessingTime = processTime;
-                                processCount += 1;
-
-                                List<AEvent> aEventListForAct = new ArrayList<>();
-                                aEventListForAct.add(iAEvent);
-                                aEventListForAct.add(jAEvent);
-                                AActivity aActivity = new AActivity(aEventListForAct);
-                                this.activityList.add(aActivity);
-                                markedEvent.put(jAEvent);
-                                hasComplete = true;
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                if(!hasComplete) { //consider as instant event
-                    List<AEvent> aEventListForAct = new ArrayList<>();
-                    aEventListForAct.add(iAEvent);
-                    AActivity aActivity = new AActivity(aEventListForAct);
-                    this.activityList.add(aActivity);
-                    this.activityNameList.add(aActivity.getName());
-                }
-            }
-
-
-            if( !markedEvent.contains(iAEvent)) {
-                List<AEvent> aEventListForAct = new ArrayList<>();
-                aEventListForAct.add(iAEvent);
-                AActivity aActivity = new AActivity(aEventListForAct);
-                this.activityList.add(aActivity);
-                this.activityNameList.add(aActivity.getName());
-            }
-        }
-        if(this.totalProcessingTime > 0 && processCount > 0) this.averageProcessingTime = this.totalProcessingTime / processCount;
-        if(this.totalWaitingTime > 0 && waitCount > 0) this.averageWaitingTime = this.totalWaitingTime / waitCount;
-    }
-
-    private void fillEventAttributeValueFreqMap(AEvent aEvent) { //2019-10-31
+    private void fillEventAttributeValueFreqMap(AEvent aEvent) {
         for(String key : aEvent.getAttributeMap().keySet()) {
             String iAValue = aEvent.getAttributeMap().get(key);
             if (this.eventAttributeValueFreqMap.containsKey(key)) {
@@ -540,7 +305,11 @@ public class ATrace {
     }
 
     public List<String> getActivityNameList() {
-        return this.activityNameList;
+        List<String> actNameList = new ArrayList<>();
+        for(int i=0; i < this.activityList.size(); i++) {
+            actNameList.add(this.activityList.get(i).getName());
+        }
+        return actNameList;
     }
 
     public UnifiedSet<String> getEventNameSet() {
@@ -591,7 +360,93 @@ public class ATrace {
         return caseUtilization;
     }
 
-    public BitSet getValidEventIndex() {
-        return validEventIndex;
+    public String getStartTimeString() {
+        return startTimeString;
     }
+
+    public String getEndTimeString() {
+        return endTimeString;
+    }
+
+    public String getDurationString() {
+        return durationString;
+    }
+
+    public long getCaseIdDigit() {
+        return caseIdDigit;
+    }
+
+    public ATrace(String caseId, int caseVariantId,
+                  long startTimeMilli, long endTimeMilli,
+                  boolean hasActivity, long duration,
+                  long totalProcessingTime, long averageProcessingTime, long maxProcessingTime,
+                  long totalWaitingTime, long averageWaitingTime, long maxWaitingTime,
+                  double caseUtilization,
+                  List<AActivity> activityList,
+                  List<AEvent> eventList,
+                  UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
+                  UnifiedMap<String, String> attributeMap,
+                  List<String> activityNameList,
+                  UnifiedSet<String> eventNameSet) {
+        this.caseId = caseId;
+        if(this.caseId.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
+        this.caseVariantId = caseVariantId;
+        this.startTimeMilli = startTimeMilli;
+        this.endTimeMilli = endTimeMilli;
+        this.hasActivity = hasActivity;
+        this.duration = duration;
+        this.totalProcessingTime = totalProcessingTime;
+        this.averageProcessingTime = averageProcessingTime;
+        this.maxProcessingTime = maxProcessingTime;
+        this.totalWaitingTime = totalWaitingTime;
+        this.averageWaitingTime = averageWaitingTime;
+        this.maxWaitingTime = maxWaitingTime;
+        this.caseUtilization = caseUtilization;
+        this.activityList = activityList;
+        this.eventList = eventList;
+        this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
+        this.attributeMap = attributeMap;
+        this.activityNameList = activityNameList;
+        this.eventNameSet = eventNameSet;
+
+        this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
+        this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
+        this.durationString = convertMilliseconds(duration);
+    }
+
+    public static String timestampStringOf(ZonedDateTime zdt){
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss.SSS");
+        return zdt.format(formatter);
+    }
+
+    public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
+        Instant i = Instant.ofEpochMilli(millisecond);
+        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
+        return z;
+    }
+
+    public static String convertMilliseconds(long milliseconds) {
+
+        DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
+        double seconds = milliseconds / 1000.0D;
+        double minutes = seconds / 60.0D;
+        double hours = minutes / 60.0D;
+        double days = hours / 24.0D;
+        double weeks = days / 7.0D;
+        double months = days / 31.0D;
+        double years = days / 365.0D;
+
+        if (years > 1.0D) return decimalFormat.format(years) + " yrs";
+        if (months > 1.0D) return decimalFormat.format(months) + " mths";
+        if (weeks > 1.0D) return decimalFormat.format(weeks) + " wks";
+        if (days > 1.0D) return decimalFormat.format(days) + " d";
+        if (hours > 1.0D) return decimalFormat.format(hours) + " hrs";
+        if (minutes > 1.0D) return decimalFormat.format(minutes) + " mins";
+        if (seconds > 1.0D) return decimalFormat.format(seconds) + " secs";
+        if (milliseconds > 1.0D) return decimalFormat.format(milliseconds) + " millis";
+
+        return "instant";
+    }
+
 }
