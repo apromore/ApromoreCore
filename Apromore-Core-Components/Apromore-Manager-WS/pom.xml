@@ -196,10 +196,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>manager-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>filestore-client</artifactId>
-        </dependency>
 
         <!-- Core Plugins -->
         <dependency>

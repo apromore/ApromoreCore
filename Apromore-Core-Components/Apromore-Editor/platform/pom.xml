@@ -333,6 +333,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
+            <version>2.12.0_1</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-anim</artifactId>
             <version>${batik.version}</version>

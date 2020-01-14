@@ -53,8 +53,8 @@
     <property name="dir-osgi" location="${dir}/Apromore-OSGI-Bundles/"/>
 
     <fileset id="usrRepo" dir="${dir}">
-        <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
-        <include name="Apromore-Assembly/**/repository/usr/*.war"/>
+        <include name="Apromore-Assembly/*-Assembly/target/repository/usr/*"/>
+        <include name="Apromore-Assembly/Custom-Plugins/target/repository/usr/*"/>
         <include name="git.properties"/>
 
         <!-- Free builds won't include the following encumbered components -->
