@@ -53,7 +53,7 @@
                             artifactId=Saxon-HE|yawl-lib|yawleditor-layout;inline=true
                         </Embed-Dependency>
                         <Import-Package>
-                            <!-- org.apache.xerces.parsers, -->
+                             org.apache.xerces.parsers,
                             !com.sun.rave.web.ui.*,
                             !edu.uci.ics.jung.*,
                             !javax.faces.*,
