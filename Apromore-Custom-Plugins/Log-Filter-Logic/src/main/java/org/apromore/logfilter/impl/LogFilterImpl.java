@@ -37,6 +37,7 @@ import java.util.List;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Bruce Nguyen: comments, restructure
+ * Modified by Chii Chang
  */
 public class LogFilterImpl implements LogFilterService {
     private final XFactory factory = new XFactoryNaiveImpl();
@@ -62,7 +63,6 @@ public class LogFilterImpl implements LogFilterService {
                                 LogFilterCriterion criterion1 = criteria.get(j);
                                 if (criterion1.getLevel() == Level.TRACE) break; // up-level shift
                                 if (criterion1.isToRemove(xEvent)) { //matching & action
-//                                    xTrace.remove(xEvent);
                                     eventToBeRemoved.add(xEvent);
                                     break;
                                 }
@@ -84,57 +84,7 @@ public class LogFilterImpl implements LogFilterService {
 
         return log;
     }
-//    @Override
-////    public XLog filter(XLog log, List<LogFilterCriterion> criteria) {
-//    public XLog filter(XLog theLog, List<LogFilterCriterion> criteria) {
-//    	if (criteria == null || criteria.isEmpty()) return theLog;
-////        log = cloneLog(log);
-//        XLog log = (XLog) theLog.clone();
-//        Iterator<XTrace> traceIterator = log.iterator();
-//        while (traceIterator.hasNext()) { // Object order OO
-//            XTrace trace = traceIterator.next();
-//            if(criteria != null) {
-//                for (int i = 0; i < criteria.size(); i++) { // Criterion order OC
-//
-//                    LogFilterCriterion criterion = criteria.get(i);
-//                    if (criterion.getLevel() == Level.TRACE) {
-//                        if(criterion.isToRemove(trace)) { //matching & action
-//                            traceIterator.remove();
-//                            break;
-//                        }
-//                    } else { //down-level shift
-//                        Iterator<XEvent> eventIterator = trace.iterator(); //Object order OO
-//                        while (eventIterator.hasNext()) {
-//                            XEvent event = eventIterator.next();
-//                            for (int j = i; j < criteria.size(); j++) {  // Criterion order OC
-//                                LogFilterCriterion criterion1 = criteria.get(j);
-//                                if (criterion1.getLevel() == Level.TRACE) break; // up-level shift
-//                                if (criterion1.isToRemove(event)) { //matching & action
-//                                    eventIterator.remove();
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        if(trace.size() == 0) {
-//                        	traceIterator.remove();
-//                        	break; //Bruce added
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return log;
-//    }
 
-//    private XLog cloneLog(XLog log) {
-//        XLog newLog = factory.createLog(log.getAttributes());
-//        for (XTrace trace : log) {
-//            XTrace newTrace = getXTrace(trace);
-//            newLog.add(newTrace);
-//        }
-//
-//        return newLog;
-//    }
 
     private XTrace getXTrace(XTrace trace) {
         XTrace newTrace = factory.createTrace(trace.getAttributes());

@@ -1,3 +1,22 @@
+/*
+ * Copyright © 2019 The University of Melbourne.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
 package org.apromore.logfilter.criteria.impl;
 
 import org.apromore.logfilter.criteria.model.*;
@@ -15,6 +34,9 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * @author Chii Chang
+ */
 public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion {
     public LogFilterCriterionDurationRange(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         super(action, containment, level, label, attribute, value);
@@ -92,49 +114,4 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
         return new BigDecimal(0);
     }
 
-
-    public static String convertMilliseconds(long milliseconds) {
-        DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
-        double seconds = milliseconds / 1000.0D;
-        double minutes = seconds / 60.0D;
-        double hours = minutes / 60.0D;
-        double days = hours / 24.0D;
-        double weeks = days / 7.0D;
-        double months = days / 31.0D;
-        double years = days / 365.0D;
-
-        if (years > 1.0D) {
-            return decimalFormat.format(years) + " yrs";
-        }
-
-        if (months > 1.0D) {
-            return decimalFormat.format(months) + " mths";
-        }
-
-        if (weeks > 1.0D) {
-            return decimalFormat.format(weeks) + " wks";
-        }
-
-        if (days > 1.0D) {
-            return decimalFormat.format(days) + " d";
-        }
-
-        if (hours > 1.0D) {
-            return decimalFormat.format(hours) + " hrs";
-        }
-
-        if (minutes > 1.0D) {
-            return decimalFormat.format(minutes) + " mins";
-        }
-
-        if (seconds > 1.0D) {
-            return decimalFormat.format(seconds) + " secs";
-        }
-
-        if (milliseconds > 1.0D) {
-            return decimalFormat.format(milliseconds) + " millis";
-        }
-
-        return "instant";
-    }
 }
