@@ -32,6 +32,9 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Set;
 
+/**
+ * @author Chii Chang
+ */
 public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 
     String attributeOption = "";

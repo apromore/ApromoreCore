@@ -57,6 +57,13 @@
             <artifactId>ow2-bundles-externals-opencsv</artifactId>
             <version>1.0.36</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.jdom</artifactId>
+            <version>1.1.2_1</version>
+            <type>bundle</type>
+        </dependency>
 		
         <dependency>
             <groupId>org.apromore</groupId>
