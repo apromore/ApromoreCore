@@ -222,8 +222,9 @@ public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
 
 
             if (count < valueNameSet.size()) {
-                if(hasGreaterCondition || hasLessCondition) displayString += "), ";
-                else displayString += ", ";
+                if(hasGreaterCondition || hasLessCondition) displayString += ") ";
+                if (containment == Containment.CONTAIN_ALL) displayString += " AND ";
+                else displayString += " OR ";
 
             } else {
                 if(hasGreaterCondition || hasLessCondition) displayString += ")";
