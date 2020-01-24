@@ -77,21 +77,7 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
         return false;
     }
-//    @Override
-//    public boolean matchesCriterion(XTrace trace) {
-//        if(level == Level.TRACE) {
-//            for (XEvent event : trace) {
-//                if (containment == Containment.CONTAIN_ANY) {
-//                    if (isMatching(event)) return true;
-//                } else if (containment == Containment.CONTAIN_ALL) {
-//                    if (!isMatching(event)) return false;
-//                }
-//            }
-//            if(containment == Containment.CONTAIN_ANY) return false;
-//            else return containment == Containment.CONTAIN_ALL;
-//        }
-//        return false;
-//    }
+
 
     @Override
     public boolean matchesCriterion(XEvent event) {

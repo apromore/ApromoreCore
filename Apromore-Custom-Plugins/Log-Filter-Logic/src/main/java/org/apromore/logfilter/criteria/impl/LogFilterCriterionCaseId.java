@@ -55,7 +55,7 @@ public class LogFilterCriterionCaseId extends AbstractLogFilterCriterion {
     public String toString() {
         return super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " traces such that the trace ID equals to " + value;
+                " cases such that the trace ID equals to " + value;
     }
 
     @Override

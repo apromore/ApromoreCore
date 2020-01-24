@@ -65,12 +65,12 @@ public class LogFilterCriterionEndRange extends AbstractLogFilterCriterion {
     public String toString() {
         String display = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " traces that contain end event in the timestamp range between " +
+                " cases that contain end event in the timestamp range between " +
                 new Date(start) + " and " + new Date(end);
         if(start==0) {
             display = super.getAction().toString().substring(0,1).toUpperCase() +
                     super.getAction().toString().substring(1).toLowerCase() +
-                    " traces that contain end event in the timestamp range between " +
+                    " cases that contain end event in the timestamp range between " +
                     new Date(traceStart) + " and " + new Date(end);
         }
         return display;

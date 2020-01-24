@@ -19,6 +19,7 @@
  */
 package org.apromore.logfilter.criteria.impl;
 
+import org.apromore.logfilter.criteria.impl.util.TimeUtil;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
@@ -93,7 +94,7 @@ public class LogFilterCriterionDurationMaxWaiting  extends AbstractLogFilterCrit
         }
         return super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " all traces with a max waiting time between " +
+                " all cases with a max waiting time between " +
                 minString + " to " +
                 maxString;
     }
@@ -113,65 +114,8 @@ public class LogFilterCriterionDurationMaxWaiting  extends AbstractLogFilterCrit
         if(s.equals("Seconds")) return new BigDecimal("1000");
         return new BigDecimal(0);
     }
-    public static String convertMilliseconds(long milliseconds) {
-        DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
-        double seconds = milliseconds / 1000.0D;
-        double minutes = seconds / 60.0D;
-        double hours = minutes / 60.0D;
-        double days = hours / 24.0D;
-        double weeks = days / 7.0D;
-        double months = days / 31.0D;
-        double years = days / 365.0D;
 
-        if (years > 1.0D) {
-            return decimalFormat.format(years) + " yrs";
-        }
 
-        if (months > 1.0D) {
-            return decimalFormat.format(months) + " mths";
-        }
-
-        if (weeks > 1.0D) {
-            return decimalFormat.format(weeks) + " wks";
-        }
-
-        if (days > 1.0D) {
-            return decimalFormat.format(days) + " d";
-        }
-
-        if (hours > 1.0D) {
-            return decimalFormat.format(hours) + " hrs";
-        }
-
-        if (minutes > 1.0D) {
-            return decimalFormat.format(minutes) + " mins";
-        }
-
-        if (seconds > 1.0D) {
-            return decimalFormat.format(seconds) + " secs";
-        }
-
-        if (milliseconds > 1.0D) {
-            return decimalFormat.format(milliseconds) + " millis";
-        }
-
-        return "instant";
-    }
-    public long epochMilliOf(ZonedDateTime zonedDateTime){
-        long s = zonedDateTime.toInstant().toEpochMilli();
-        return s;
-    }
-    public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
-        Instant i = Instant.ofEpochMilli(millisecond);
-        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
-        return z;
-    }
-    public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-        String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
-        Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
-        ZonedDateTime z = millisecondToZonedDateTime(calendar.getTimeInMillis());
-        return z;
-    }
 
     private long getMaxWaitingTime(XTrace xTrace) {
         long maxWaiting = 0;
@@ -186,7 +130,7 @@ public class LogFilterCriterionDurationMaxWaiting  extends AbstractLogFilterCrit
                     if(xEvent.getAttributes().containsKey("concept:name")) {
                         String jName = xEvent.getAttributes().get("concept:name").toString();
                         if(xEvent.getAttributes().containsKey("time:timestamp")) {
-                            startTime = epochMilliOf(zonedDateTimeOf(xEvent));
+                            startTime = TimeUtil.epochMilliOf(TimeUtil.zonedDateTimeOf(xEvent));
                         }
                         for(int k=(j-1); k >= 0; k--) {
                             XEvent kEvent = xTrace.get(k);
@@ -194,7 +138,7 @@ public class LogFilterCriterionDurationMaxWaiting  extends AbstractLogFilterCrit
                                 String kLife = kEvent.getAttributes().get("lifecycle:transition").toString();
                                 if(kLife.toLowerCase().equals("complete")) {
                                     if(kEvent.getAttributes().containsKey("time:timestamp")) {
-                                        lastEndTime = epochMilliOf(zonedDateTimeOf(kEvent));
+                                        lastEndTime = TimeUtil.epochMilliOf(TimeUtil.zonedDateTimeOf(kEvent));
                                         break;
                                     }
                                 }

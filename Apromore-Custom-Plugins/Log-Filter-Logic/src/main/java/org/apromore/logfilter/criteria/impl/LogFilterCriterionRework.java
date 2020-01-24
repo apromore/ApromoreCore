@@ -190,7 +190,7 @@ public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
     public String toString() {
         String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " all traces where their activities contain [";// + value.toString();
+                " all cases where their activities contain [";// + value.toString();
 
         int count = 1;
 

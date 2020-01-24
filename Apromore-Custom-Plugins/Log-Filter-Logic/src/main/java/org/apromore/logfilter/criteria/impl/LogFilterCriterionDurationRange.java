@@ -19,6 +19,7 @@
  */
 package org.apromore.logfilter.criteria.impl;
 
+import org.apromore.logfilter.criteria.impl.util.TimeUtil;
 import org.apromore.logfilter.criteria.model.*;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XAttribute;
@@ -75,8 +76,8 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
             }
         }
 
-        long s = epochMilliOf(zonedDateTimeOf(trace.get(0)));
-        long e = epochMilliOf(zonedDateTimeOf(trace.get(trace.size()-1)));
+        long s = TimeUtil.epochMilliOf(TimeUtil.zonedDateTimeOf(trace.get(0)));
+        long e = TimeUtil.epochMilliOf(TimeUtil.zonedDateTimeOf(trace.get(trace.size()-1)));
         long dur = e - s;
 
         if(dur < greaterThan) return false;
@@ -86,21 +87,6 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
     }
 
 
-
-    public long epochMilliOf(ZonedDateTime zonedDateTime){
-
-        long s = zonedDateTime.toInstant().toEpochMilli();
-        return s;
-    }
-
-    public ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-        XAttribute da =
-                xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
-        Date d = ((XAttributeTimestamp) da).getValue();
-        ZonedDateTime z =
-                ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
-        return z;
-    }
 
 
     private BigDecimal unitStringToBigDecimal(String s) {

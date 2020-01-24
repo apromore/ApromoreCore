@@ -163,7 +163,7 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
         if (attributeOption.equals("")) attributeOption = label;
         String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " all traces where their events contain the Eventually-follows relation of the \"" +
+                " all cases where their events contain the Eventually-follows relation of the \"" +
                 attributeOption + "\" equal to " + followSet.toString();
         if(!requiredAttributeString.equals("")) displayString += " and " + requiredAttributeString;
         if(!intervalString.equals("")) displayString += " and " + intervalString;
