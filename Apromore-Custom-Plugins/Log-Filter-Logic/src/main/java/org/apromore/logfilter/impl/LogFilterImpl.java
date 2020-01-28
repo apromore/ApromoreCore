@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Bruce Nguyen: comments, restructure
- * Modified by Chii Chang
+ * Modified by Chii Chang (20/01/2020)
  */
 public class LogFilterImpl implements LogFilterService {
     private final XFactory factory = new XFactoryNaiveImpl();

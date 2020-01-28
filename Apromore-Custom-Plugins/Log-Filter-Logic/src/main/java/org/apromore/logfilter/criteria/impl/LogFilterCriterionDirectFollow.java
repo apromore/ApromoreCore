@@ -33,7 +33,8 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ * Modified: Chii Chang (24/01/2020)
  */
 public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 

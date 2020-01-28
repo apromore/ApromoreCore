@@ -33,6 +33,10 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.Calendar;
 import java.util.Set;
 
+/**
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ * Modified by Chii Chang (24/01/2020)
+ */
 public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
     public LogFilterCriterionAttribute(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {

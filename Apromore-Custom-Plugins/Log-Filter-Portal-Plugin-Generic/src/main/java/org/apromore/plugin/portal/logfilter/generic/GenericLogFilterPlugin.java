@@ -7,6 +7,9 @@ import org.apromore.plugin.portal.generic.PluginOutputResult;
 import org.apromore.plugin.portal.generic.PluginResultListener;
 import org.apromore.plugin.portal.generic.exception.WrongTargetPluginException;
 
+/**
+ * @author Bruce Hoang Nguyen (30/08/2019)
+ */
 public abstract class GenericLogFilterPlugin extends DefaultGenericPlugin 
                             implements LogFilterPlugin, LogFilterResultListener {
 

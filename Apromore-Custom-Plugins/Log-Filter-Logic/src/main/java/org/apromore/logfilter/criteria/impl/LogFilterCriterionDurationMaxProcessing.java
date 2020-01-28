@@ -36,7 +36,7 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (10/10/2019)
  */
 public class LogFilterCriterionDurationMaxProcessing extends AbstractLogFilterCriterion {
     public LogFilterCriterionDurationMaxProcessing(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {

@@ -33,7 +33,8 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ * Modified: Chii Chang (24/01/2019)
  */
 public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriterion {
 
@@ -247,7 +248,7 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
 
     }
 
-    private long unitStringToLong(String s) { //2019-10-18
+    private long unitStringToLong(String s) {
         if(s.toLowerCase().equals("years")) return new Long("31536000000");
         if(s.toLowerCase().equals("months")) return new Long("2678400000");
         if(s.toLowerCase().equals("weeks")) return new Long("604800000");

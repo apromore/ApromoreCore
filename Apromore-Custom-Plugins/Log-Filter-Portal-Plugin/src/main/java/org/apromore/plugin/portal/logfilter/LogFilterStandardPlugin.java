@@ -40,7 +40,7 @@ import org.zkoss.zul.Messagebox;
  * The portal will access this plugin via the DefaultPortalPlugin interface 
  * Other plugins will access this plugin via the LogFilterInterface and 
  * LogFilterResultListener interfaces.
- * @author Bruce Nguyen
+ * @author Bruce Nguyen (29/08/2019)
  *
  */
 public class LogFilterStandardPlugin extends GenericLogFilterPlugin {

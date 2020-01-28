@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (26/08/2019)
  */
 public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion {
     public LogFilterCriterionDurationRange(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {

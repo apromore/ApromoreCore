@@ -33,6 +33,10 @@ import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 
+/**
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ * Modified: Chii Chang (31/12/2019)
+ */
 public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory {
 
 	@Override

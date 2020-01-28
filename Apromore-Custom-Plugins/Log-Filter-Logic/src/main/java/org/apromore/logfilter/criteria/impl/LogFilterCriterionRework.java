@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (31/12/2019)
  */
 public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
 

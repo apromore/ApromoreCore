@@ -28,7 +28,8 @@ import org.deckfour.xes.model.XTrace;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (16/08/2019)
+ * Modified: Chii Chang (20/01/2020)
  */
 public class LogFilterCriterionCaseVariant extends AbstractLogFilterCriterion {
     public LogFilterCriterionCaseVariant(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {

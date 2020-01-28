@@ -36,7 +36,8 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (10/10/2019)
+ * Modified: Chii Chang (24/01/2020)
  */
 public class LogFilterCriterionDurationAverageProcessing extends AbstractLogFilterCriterion {
     public LogFilterCriterionDurationAverageProcessing(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {

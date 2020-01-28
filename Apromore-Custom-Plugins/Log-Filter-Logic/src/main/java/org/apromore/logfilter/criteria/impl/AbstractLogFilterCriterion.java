@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 15/07/2018.
- * Modified by Chii Chang (chiichang1@gmail.com) on 24/01/2020
+ * Modified by Chii Chang on 24/01/2020
  */
 public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
 

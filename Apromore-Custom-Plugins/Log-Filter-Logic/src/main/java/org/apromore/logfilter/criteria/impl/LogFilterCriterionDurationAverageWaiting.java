@@ -36,7 +36,7 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (10/10/2019)
  */
 public class LogFilterCriterionDurationAverageWaiting  extends AbstractLogFilterCriterion {
 

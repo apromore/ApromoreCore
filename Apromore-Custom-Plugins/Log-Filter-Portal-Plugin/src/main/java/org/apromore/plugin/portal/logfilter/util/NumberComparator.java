@@ -27,6 +27,7 @@ import java.util.Comparator;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Modified by Chii Chang (28/01/2020)
  */
 public class NumberComparator implements Comparator<Object> {
 
@@ -39,10 +40,10 @@ public class NumberComparator implements Comparator<Object> {
     }
 
     @Override
-    public int compare(Object o1, Object o2) {
-        Double contributor1 = Double.parseDouble(((Listcell) ((Listitem) o1).getChildren().get(columnIndex)).getLabel());
-        Double contributor2 = Double.parseDouble(((Listcell) ((Listitem) o2).getChildren().get(columnIndex)).getLabel());
-        return contributor1.compareTo(contributor2) * (ascending ? 1 : -1);
+    public int compare(Object listitem_1, Object listitem_2) {
+        Double cellValue_1 = Double.parseDouble(((Listcell) ((Listitem) listitem_1).getChildren().get(columnIndex)).getLabel());
+        Double cellValue_2 = Double.parseDouble(((Listcell) ((Listitem) listitem_2).getChildren().get(columnIndex)).getLabel());
+        return cellValue_1.compareTo(cellValue_2) * (ascending ? 1 : -1);
     }
 
 }

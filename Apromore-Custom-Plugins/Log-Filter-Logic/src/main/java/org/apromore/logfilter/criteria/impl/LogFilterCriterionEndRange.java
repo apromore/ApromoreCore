@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (20/09/2019)
  */
 public class LogFilterCriterionEndRange extends AbstractLogFilterCriterion {
 
