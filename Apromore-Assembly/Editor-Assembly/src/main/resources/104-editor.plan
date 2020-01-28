@@ -15,7 +15,9 @@
     <artifact type="bundle" name="org.apromore.editor-platform-extension-petrinet"      version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-syntaxchecker" version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-xpdl"          version="[1.2, 2)"/>
+    <!--
     <artifact type="bundle" name="org.apromore.editor-platform-extension-yawl"          version="[1.2, 2)"/>
+    -->
     <artifact type="bundle" name="org.apromore.editor" version="[1.2, 2)" />
 
 </plan>

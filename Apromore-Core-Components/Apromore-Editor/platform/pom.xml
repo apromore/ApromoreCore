@@ -188,11 +188,11 @@
                             org.apromore.editor-platform-extension-petrinet;resolution:=optional,
                             org.apromore.editor-platform-extension-syntaxchecker;resolution:=optional,
                             org.apromore.editor-platform-extension-xpdl;resolution:=optional,
-                            org.apromore.editor-platform-extension-yawl;resolution:=optional,
+                            <!--org.apromore.editor-platform-extension-yawl;resolution:=optional,-->
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
                             org.apromore.manager-security;version="[1.1,1.1]",
                             org.apromore.filestore-client;version="[1.0,1.1]",
-                            org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",
+                            <!--org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",-->
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.aspects;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
@@ -336,6 +336,12 @@
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
             <version>2.12.0_1</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
+            <version>1.2_5</version>
             <type>bundle</type>
         </dependency>
         <dependency>
