@@ -8,7 +8,9 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.time.ZonedDateTime;
 
-
+/**
+ * @author Chii Chang (11/2019)
+ */
 public class AEvent {
     private String name = "";
     private long timestampMilli = 0;
