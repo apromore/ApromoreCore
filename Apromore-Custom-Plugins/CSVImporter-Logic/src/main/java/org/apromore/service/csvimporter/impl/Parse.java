@@ -102,7 +102,7 @@ public class Parse {
 			cal.setTime(d);
 			return new Timestamp(cal.getTimeInMillis());
 		} catch (Exception e) {
-            System.out.print(e.getStackTrace());
+//            System.out.print(e.getStackTrace());
             return null;
 		}
 	}

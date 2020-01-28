@@ -225,7 +225,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Popup helpP = (Popup) window.getFellow("popUpHelp");
 
             if(sample.getHeader() != null) {
-                System.out.println("Automatic formatting here! " + sample.getLines().get(0));
+//                System.out.println("Automatic formatting here! " + sample.getLines().get(0));
                 List<String> errorMessages = sample.automaticFormat();
                 for (String errorMessage: errorMessages) {
                     Messagebox.show(errorMessage);
