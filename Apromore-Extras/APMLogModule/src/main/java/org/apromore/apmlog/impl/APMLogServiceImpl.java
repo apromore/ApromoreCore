@@ -5,6 +5,9 @@ import org.apromore.apmlog.APMLogService;
 //import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 
+/**
+ * Frank Ma (16/11/2019)
+ */
 public class APMLogServiceImpl implements APMLogService {
 
     //private EventLogService eventLogService;
