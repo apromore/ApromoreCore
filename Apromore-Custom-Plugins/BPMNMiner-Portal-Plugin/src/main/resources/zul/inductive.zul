@@ -20,7 +20,7 @@
 
 <window id="win" width="550px" closable="false" position="center,top" title="Inductive Miner Settings">
     <vbox>
-        <grid>
+        <grid sclass="ap-grid">
             <columns>
                 <column width="270px" />
                 <column />

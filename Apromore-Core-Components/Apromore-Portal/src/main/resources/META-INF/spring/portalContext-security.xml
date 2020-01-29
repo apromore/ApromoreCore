@@ -33,6 +33,7 @@
     <http pattern="/css/**" security="none"/>
     <http pattern="/font/**" security="none"/>
     <http pattern="/img/**" security="none"/>
+    <http pattern="/themes/**" security="none"/>
     <http pattern="/js/**" security="none"/>
     <http pattern="/robots.txt" security="none"/>
     <http pattern="/zkau/**" security="none"/>

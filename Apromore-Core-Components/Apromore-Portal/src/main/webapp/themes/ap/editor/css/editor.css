@@ -1,0 +1,32 @@
+.x-panel-editor-north > div > .x-panel-body {
+    box-sizing: border-box;
+    height: var(
+            --ap-menu-height
+    ) !important;
+}
+
+.ap-bpmneditor .z-window-header {
+    position: absolute;
+    top: 0;
+    left: 210px;
+    padding: var(--ap-offset-doc-title) 0 0 10px;
+    font-family: var(--ap-font-base);
+    font-weight: normal;
+    font-size: 14px;
+    width: calc(100% - 260px);
+    color: white;
+    z-index: var(--ap-z-editor-window);
+}
+
+.ap-bpmneditor .z-window-header:before {
+    content: '>';
+    padding-right: 10px;
+}
+
+.x-panel-editor-center {
+    position: fixed;
+    top: calc(var(--ap-menu-height) + var(--ap-header-height)) !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

@@ -24,7 +24,7 @@
 
 <window width="500px" closable="false" position="center">
     <vbox vflex="1">
-        <grid id="saveAsGrid" >
+        <grid id="saveAsGrid" sclass="ap-grid ap-form">
             <columns sizable="true">
                 <column width="40%"></column>
                 <column width="60%"></column>
@@ -42,7 +42,7 @@
                     <label value="Branch Name*" />
                     <textbox id="branchName" width="100%" />
                 </row>
-                <row spans="3">
+                <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
                         <button label="Save" iconSclass="z-icon-check-circle" >
                         </button>

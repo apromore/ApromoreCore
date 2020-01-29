@@ -74,12 +74,13 @@ public class MiscFolderTreeRenderer implements TreeitemRenderer {
 
             if (folder.getId() == 0) {
                 hl.appendChild(new Image("/img/icon/svg/folder_home.svg"));
+                hl.setSclass("ap-ico-home h-inline-block");
             } else {
                 hl.appendChild(new Image("/img/icon/svg/folder_icons.svg"));
+                hl.setSclass("ap-ico-folder h-inline-block");
             }
 
             hl.appendChild(new Label(name.length() > 15 ? name.substring(0, 13) + "..." : name));
-            hl.setSclass("h-inline-block");
             Treecell treeCell = new Treecell();
             treeCell.appendChild(hl);
             dataRow.appendChild(treeCell);

@@ -1,0 +1,27 @@
+:root {
+    color-scheme: light dark;
+    --text-color-default:      rgba(0, 0, 0, 0.9);
+    --text-color-light:        rgba(0, 0, 0, 0.68);
+    --text-color-lighter:      rgba(0, 0, 0, 0.24);
+    --text-color-default3:     #FFFFFF;
+    --text-color-active:       #78b7d1;
+    --color-primary:           #5b889b; /* button  normal */
+    --color-primary-dark:      #466977;
+    --color-primary-light:     #78b7d1;
+    --color-primary-lighter:   #afdaed; /* list hover normal */
+    --color-accent:            #FFA516;
+    --color-accent2:           #FF4051;
+    --color-accent3:           #261429; /* Tooltip Bg */
+    --color-background1:       #F9FCFF; /* Window Bg, Panel Bg */
+    --color-background3:       #FFFFFF; /* Container Bg */
+    --color-grey-dark:         #A8A8A8;
+    --color-grey-light:        #D9D9D9; /* Btn disabled Bg */
+    --color-grey-lighter:      #F2F2F2; /* Field disabled Bg */
+    --input-background-color:  var(--color-background3);
+    --mask-background-color:   #E0E1E3;
+    --popup-background-color:  #FFFFFF;  /* var(--color-background3); */
+    --tooltip-color:           var(--text-color-default3);
+    --loading-animation-defer: '~./zul/img/misc/progress-32.gif';
+    --loading-animation-load:  '~./zul/img/misc/progress-72.gif';
+    --slider-ticks:            '~./zul/img/slider/scale-ticks.png';
+}

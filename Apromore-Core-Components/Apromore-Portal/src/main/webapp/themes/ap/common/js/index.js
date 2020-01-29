@@ -1,0 +1,3 @@
+window.Ap = window.Ap || {
+
+}

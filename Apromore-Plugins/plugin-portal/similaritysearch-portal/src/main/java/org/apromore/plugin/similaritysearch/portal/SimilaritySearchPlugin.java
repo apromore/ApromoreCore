@@ -98,7 +98,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
 
         } catch (Exception e) {
-            Messagebox.show("Unable to perform search: " + e.getMessage(), "Error", 0, Messagebox.ERROR);
+            Messagebox.show("Unable to perform search: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Unable to perform search", e);
         }
     }

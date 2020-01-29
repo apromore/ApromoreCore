@@ -1,0 +1,380 @@
+@import "viz.css";
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.ap-pd-2 {
+    padding: 0;
+}
+
+.ap-pd-2,
+.ap-pd-2 .z-window-content {
+    background-color: white;
+}
+
+
+.ap-pd-2 .mainCaption .z-caption-content {
+    position: absolute;
+    top: 0;
+    left: 260px;
+    padding: 8px 0 0 10px;
+    font-family: var(--ap-font-base);
+    font-weight: normal;
+    font-size: 14px;
+    width: calc(100% - 340px);
+    color: white;
+    z-index: var(--ap-z-header-title);
+}
+
+.ap-pd-2 .mainCaption .z-caption-content:before {
+    content: '>';
+    padding-right: 10px;
+}
+
+.ap-pd-2 .z-window-header {
+    padding: 0;
+}
+
+.ap-pd-2 .z-window-content {
+    padding: 0;
+}
+
+.ap-pd-2 .ap-pd-tools {
+    width: 100%;
+    height: 30px;
+    margin-top: 5px;
+    display: none !important;
+}
+
+.ap-pd-2 .ap-pd-tools button {
+    float: right;
+}
+
+.ap-pd-2 .ap-pd-tools button {
+    height: 26px;
+}
+
+.ap-pd-action-buttons {
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 34px;
+    height: 32px;
+    padding: 3px 0 0 8px;
+    background-color: var(--ap-c-action-bg-normal);
+}
+
+.ap-pd-options-splitter {
+
+}
+
+.ap-pd-stats-c {
+}
+
+.ap-pd-action-buttons .ap-icon {
+    display: inline-block;
+    vertical-align: middle;
+    box-shadow: none;
+}
+
+.ap-pd-action-buttons .ap-icon-dir-lr input {
+    display: none;
+}
+
+.ap-pd-action-buttons .ap-icon-dir-tb input {
+    display: none;
+}
+
+.ap-pd-main-c {
+    display: flex;
+    position:absolute;
+    right: 0;
+    left: 0;
+    top: 66px;
+    bottom: 5px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.ap-pd-main-c > div.ap-pd-options-splitter {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 10px;
+    line-height: 10px;
+    text-align: center;
+    color: var(--ap-c-text-minor);
+    box-shadow: var(--ap-box-shadow);
+    background-color: var(--ap-c-soft-blue-light-5);
+    vertical-align: top;
+    cursor: pointer;
+    justify-content: stretch;
+}
+
+.ap-pd-main-c > div.ap-pd-options-splitter:hover {
+    background-color: var(--ap-c-soft-blue-light-4);
+}
+
+div.ap-pd-options {
+    flex: 0 0 auto;
+}
+
+.ap-pd-options-c {
+    padding: 0;
+    background-color: var(--ap-c-bg-lightest);
+}
+
+.ap-pd-options-c > .z-groupbox-content {
+    padding: 10px 10px 8px 10px;
+    border: none;
+}
+
+.ap-pd-options-c .z-groupbox-header .z-caption {
+    background-color: var(--ap-c-bg-lightest);
+}
+
+.ap-pd-options-c .z-groupbox > .z-groupbox-header {
+    height: 12px;
+}
+
+.ap-pd-main-c > div#cy {
+    flex: 1 1 auto;
+}
+
+.ap-pd-sliders {
+    background-color: white;
+    border: 1px solid  var(--ap-border-color-light);
+}
+
+.ap-pd-sliders .z-row-content {
+    padding: 0 5px;
+}
+
+.ap-pd-sliders .z-row-inner:first-child .z-row-content {
+    text-align: right;
+}
+
+.ap-pd-options-c .z-groupbox > div {
+    background-color: white;
+    border-color: var(--ap-border-color-light);
+}
+
+.statsHead {
+    background-color: var(--ap-c-soft-blue-dark-4) !important;
+    border-color: white !important;
+}
+
+.ap-pd-stats-c .z-grid-header-border {
+    border: none !important;
+}
+
+.ap-pd-keys + .z-html {
+    display: none !important;
+    position: absolute;
+    right: 40px;
+    top: 27px;
+    padding: 5px 2px 5px 0;
+    font-family: var(--ap-font-base);
+    font-size: 12px;
+    line-height: 14px;
+    width: 550px;
+    border: 1px solid var(--ap-c-grey-minor);
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.9);
+    filter: none;
+}
+
+.ap-pd-keys:hover + .z-html {
+    display: block !important;
+}
+
+.ap-pd-action-buttons .z-combobox-input,
+.ap-pd-action-buttons .z-combobox-button {
+    color: var(--text-color-default);
+    background: white;
+}
+
+.ap-pd-action-buttons .sublabel {
+    margin: 0 3px 0 5px;
+}
+
+
+.ap-pd-stats-duration {
+    display: flex;
+    flex-direction: column;
+}
+
+.ap-pd-stats-duration > div {
+    flex: 1 1 auto;
+}
+
+.ap-pd-stats-duration > div > span {
+    display: inline-block;
+}
+
+.ap-pd-stats-duration > div > span:first-child {
+    width: 100px;
+    text-align: right;
+}
+
+.ap-pd-stats-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: stretch;
+    padding: 8px;
+}
+
+
+
+.ap-pd-stats-main > div {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 0 0 auto;
+    padding: 3px 0 2px 0;
+}
+
+.ap-pd-stats-main > div > * {
+    width: 70px;
+    flex: 1 1 auto;
+    display: block;
+    text-align: center;
+}
+
+.ap-pd-stats-main .ap-icon {
+    box-shadow: none;
+}
+
+.ap-pd-stats-main .ap-stat-val {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ap-stat-val.z-label {
+    color: var(--ap-c-maroon);
+}
+
+.ap-stat-action {
+    padding: 0 !important;
+}
+
+.ap-pd-stats-duration > div {
+    padding: 2px 0 3px 0;
+}
+
+.ap-pd-stats-duration > div > span .z-label {
+    padding-right: 4px;
+}
+
+.ap-stat-head {
+    margin: 6px;
+}
+
+.ap-stat-head .z-label {
+    font-size: 14px !important;
+    font-weight: 700;
+    color: var(--ap-c-grey-minor);
+}
+
+.ap-pd-stats-duration {
+    padding: 8px;
+}
+
+.ap-pd-stats-time {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+
+.ap-pd-stats-time > div {
+    flex: 0 0 auto;
+}
+
+.ap-pd-stats-time > div > * {
+    width: 100%;
+    text-align: center;
+}
+
+.ap-pd-stats-time > div.from-to {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 20px;
+    margin: 6px 0;
+}
+
+.ap-pd-stats-time > div.from-to > div {
+    flex: 0 0 auto;
+    width: 1px;
+    background-color: var(--ap-c-grey);
+}
+
+.ap-pd-stats-time .start-time,
+.ap-pd-stats-time .end-time {
+}
+
+.ap-pd-boxlet {
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 6px 0 rgba(127, 127, 127, 0.3) !important;
+    background-color: white !important;
+    padding: 6px !important;
+}
+
+.ap-pd-logstats {
+    background-color: transparent !important;
+}
+
+.ap-pd-logstats .z-window-content {
+    background-color: transparent !important;
+}
+
+.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
+    height: 24px;
+    vertical-align: middle;
+}
+
+.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
+    height: 24px;
+    vertical-align: middle;
+}
+
+.ap-pd-logstats .z-hlayout .z-vlayout .z-hlayout {
+    padding: 0;
+    text-align: center;
+}
+
+.ap-pd-logstats .z-label {
+    font-size: 12px;
+}
+
+.ap-pd-logstats .title {
+    font-weight: 700;
+    height: 16px;
+}
+
+.ap-pd-logstats .ap-icon {
+    width: 16px !important;
+    height: 16px !important;
+    background-size: auto 16px !important;
+}
+
+.ap-pd-logstats .ap-icon.dummy {
+    width: 1px !important;
+    filter: none !important;
+    background: none !important;
+}
+
+.ap-pd-logstats .ap-icon:focus,
+.ap-pd-logstats .ap-icon:hover {
+    background-color: transparent !important;
+}

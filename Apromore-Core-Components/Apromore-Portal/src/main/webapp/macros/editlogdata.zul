@@ -25,7 +25,7 @@ and CreateProcessController.java for creating log purpose.
 
 <window width="500px" closable="false" position="center">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid ap-form">
             <columns sizable="true">
                 <column width="30%"></column>
                 <column width="70%"></column>
@@ -36,11 +36,11 @@ and CreateProcessController.java for creating log purpose.
                     <textbox id="logname" width="100%"/>
                 </row>
                 <row>
-                    <label value="Make Log Public"/>
+                    <label value="Make log Public"/>
                     <checkbox id="logpublic" checked="false" tooltiptext="Tick this checkbox if you wish to make this Log available to all Users"/>
                 </row>
-                <row spans="3">
-                    <div align="center">
+                <row spans="3"  sclass="ap-window-footer-actions">
+                    <div align="right">
                         <button id="ok" label="OK" iconSclass="z-icon-check-circle" />
                         <button id="cancel" label="Cancel" iconSclass="z-icon-times-circle" />
                         <button id="cancelall" label="Cancel all" iconSclass="z-icon-times-circle" visible="false" tooltiptext="Cancel edit of all remaining log models." />

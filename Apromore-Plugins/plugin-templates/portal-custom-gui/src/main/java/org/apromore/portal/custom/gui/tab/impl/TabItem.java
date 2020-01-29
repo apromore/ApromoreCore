@@ -64,6 +64,11 @@ public class TabItem extends Listitem {
     private void buildListitem(){
         Listcell imageCell = new Listcell();
         imageCell.setImage(image);
+        if (image.contains("bpmn")) {
+            imageCell.setSclass("ap-ico-process");
+        } else {
+            imageCell.setSclass("ap-ico-log");
+        }
         appendChild(imageCell);
 
         int pos = 0;

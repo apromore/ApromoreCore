@@ -75,7 +75,7 @@ public class EditOneProcessDataController extends BaseController {
         this.preVersion = version;
 
         this.editDataWindow = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
-        this.editDataWindow.setTitle("Edit process model meta-data");
+        this.editDataWindow.setTitle("Edit process model metadata");
 
         Rows rows = (Rows) this.editDataWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getFirstChild();

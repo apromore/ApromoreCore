@@ -705,7 +705,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                 @Override
                 public void onEvent(Event event) throws Exception {
                 	ProcessDiscovererController.this.showInputDialog(
-            			"Input", 
+            			"Save filtered log",
 						"Enter a log name (no more than 60 characters)", 
 						logSummary.getName() + "_filtered", 
 						"^[a-zA-Z0-9_\\(\\)\\-\\s]{1,60}$",

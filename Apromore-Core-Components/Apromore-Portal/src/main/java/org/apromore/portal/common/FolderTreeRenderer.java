@@ -73,14 +73,16 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
         Hlayout hl = new Hlayout();
         hl.setValign("middle");
+
         if (folder.getId() == 0) {
             hl.appendChild(new Image("/img/icon/svg/folder_home.svg"));
+            hl.setSclass("ap-ico-home h-inline-block");
         } else {
             hl.appendChild(new Image("/img/icon/svg/folder_icons.svg"));
+            hl.setSclass("ap-ico-folder h-inline-block");
         }
 
         hl.appendChild(new Label(folder.getFolderName()));
-        hl.setSclass("h-inline-block");
         Treecell treeCell = new Treecell();
         treeCell.appendChild(hl);
         dataRow.appendChild(treeCell);

@@ -27,7 +27,14 @@
 <!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
-<?link rel="shortcut icon" href="img/favicon.ico" ?>
+
+<!-- must call this in the head -->
+<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="prefetch" href="themes/${labels.theme}/common/img/brand/loader.svg" ?>
+<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/headload.css" ?>
+<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/index.css" ?>
+<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/portal/css/portal.css" ?>
+<?script src="themes/${labels.theme}/common/js/index.js"?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -37,10 +44,10 @@
 
     <style src="css/cytoscape-context-menus.css"/>
 
-
     <script type="text/javascript" src="js/jquery.js"></script>
     <!--<script type="text/javascript" src="js/highstock.js"></script>-->
     <script type="text/javascript" src="js/exporting.js" defer="true"></script>
+
 
     <script src="js/pdf.v1.10.100.js"></script>
     <script src="js/jspdf.v1.4.1.debug.js"></script>
@@ -62,6 +69,24 @@
     <!--<script type="text/javascript" src="js/go.js"></script>-->
 
     <style src="chiaroscuro.css"></style>
+    <style>
+        /* must be embedded here */
+        .ap-portal .z-north-body,
+        .ap-portal .z-south-body,
+        .ap-portal .z-west-body,
+        .ap-portal .z-center-body,
+        .ap-portal .z-east-body {
+        padding: 0 !important;
+        }
+
+        .ap-wrapper-process .z-vlayout-inner,
+        .ap-wrapper-process .z-window {
+        background-color: transparent;
+        width: 100% !important;
+        height: 100% !important;
+        }
+    </style>
+    <custom-attributes theme="${labels.theme}"/>
 
     <style>
         .custom-btn {
@@ -125,18 +150,24 @@
         border-top: unset;
         }
 
-        .z-north-header, .z-south-header, .z-west-header, .z-center-header, .z-east-header {
+        /*.z-north-header, .z-south-header, .z-west-header, .z-center-header, .z-east-header {
         padding: 4px 4px 4px;
-        }
+        }*/
     </style>
 
     <style> body { padding: 0} </style>
+    <style src="astyle.css"/>
+    <style>
+        .ap-portal-menu-buttons button {
+            background: transparent;
+        }
+        .ap-portal-menu-buttons button img {
+            visibility: hidden;
+        }
+    </style>
+    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
-    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window">
-
-        <style src="astyle.css"/>
-
-        <div class="z-listheader">
+        <!--<div class="z-listheader">-->
             <!--
             <style>
                 <![CDATA[
@@ -146,45 +177,74 @@
             <image src="img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
             <label value="apromore" zclass="z-listheader" style="font-family: 'Lexend Deca'; font-size: 24pt; position: absolute; top: -0.3ex"/>
             -->
-            <h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
+            <!--<h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
                 <h:img src="img/apromore_header.png" width="115"/>
             </h:a>
             <h:a href="https://apromore.org/documentation/features" style="float: right; padding: 6px">
                 <h:img src="img/icon/svg/help-icon.svg"/>
-            </h:a>
-        </div>
+            </h:a>-->
+        <!--</div>-->
 
-        <borderlayout vflex="true">
-            <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" splittable="true">
-                <borderlayout>
-                    <north id="leftNorthPanel">
-                        <SimpleSearch id="simplesearchcomp" vflex="true" hflex="true"/>
-                    </north>
-                    <center id="leftInnerCenterPanel">
-                        <Navigation id="navigationcomp" vflex="true" hflex="true"/>
+        <borderlayout vflex="true" sclass="ap-portal-layout">
+            <north height="34px" border="0" sclass="ap-header-region" >
+                <div height="66px" hflex="1">
+                    <h:div class="ap-header">
+                        <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
+                        <h:div class="ap-header-title">Portal</h:div>
+                        <h:div class="ap-header-actions">
+                            <h:a href="https://apromore.org/documentation/features/navigating-the-apromore-portal/" target="_blank">
+                                <h:button class="ap-icon ap-icon-help"/>
+                            </h:a>
+                        </h:div>
+                    </h:div>
+                </div>
+            </north>
+            <west id="leftPanel" title="Navigation" width="400px" collapsible="true" splittable="true" sclass="ap-portal-left-section" border="0">
+                <borderlayout sclass="ap-left-layout">
+                    <!--<north id="leftNorthPanel" sclass="ap-wrapper-search" height="0px" border="0"></north>-->
+                    <center id="leftInnerCenterPanel" border="0" vflex="true" hflex="true" style="padding: 10px 3px 10px 10px;">
+                        <Navigation id="navigationcomp" vflex="true" hflex="true" border="0" />
                     </center>
-                    <south title="Process Details" size="25%" splittable="true">
-                        <DetailView id="baseDetail" vflex="true" hflex="true"/>
+                    <south title="Details" size="25%" hflex="true" splittable="true" border="0" sclass="ap-process-detail-wrapper">
+                        <DetailView id="baseDetail" vflex="true" hflex="true" border="0" style="margin-left: 5px; margin-top: 5px"/>
                     </south>
                 </borderlayout>
             </west>
-
-            <center id="mainPanel">
-                <div vflex="true">
-                    <Menu id="menucomp" style="background-color: unset" width="100%"/>
-                    <hbox id="pagingandbuttons" width="100%" style="background-color: unset; padding: 2px 0 2px 0;">
-                        <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" visible="false" />
-                        <hbox id="buttons" align="center" height="100%" vflex="min">
-                            <button class="custom-btn" id="refreshB" label="" style="background: transparent; border:none" image="img/icon/svg/refresh_icon.svg" tooltiptext="Reload data" />
+            <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
+                <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
+                    <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
+                    <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
+                        <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
+                        <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
+                            <button sclass="ap-icon ap-icon-sync" id="refreshB" tooltiptext="Reload data" />
+                            <h:span class="ap-action-sep"></h:span>
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button class="custom-btn" id="btnAddFolder" label="" image="img/icon/svg/folder_add.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Create folder"/>
-                            <button class="custom-btn" id="btnAddProcess" label="" image="img/icon/svg/add_process.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Create model"/>
-                            <button class="custom-btn" id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/delete_file.svg" tooltiptext="Delete" visible="true"/>
-                            <button class="custom-btn" id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/rename_icon.svg" tooltiptext="Rename" visible="true"/>
+                            <button sclass="ap-icon ap-icon-upload ap-t-act-upload" id="btnUpload" tooltiptext="Upload"/>
+                            <button sclass="ap-icon ap-icon-download ap-t-act-download" id="btnDownload" tooltiptext="Download"/>
+                            <h:span class="ap-action-sep"></h:span>
+                            <button sclass="ap-icon ap-icon-folder-add ap-t-act-new-folder" id="btnAddFolder" tooltiptext="Create folder"/>
+                            <button sclass="ap-icon ap-icon-bpmn-add ap-t-act-new-model" id="btnAddProcess" tooltiptext="Create model"/>
+                            <button sclass="ap-icon ap-icon-trash ap-t-act-delete" id="btnRemoveFolder" tooltiptext="Delete" visible="true"/>
+                            <button sclass="ap-icon ap-icon-rename ap-t-act-rename" id="btnRenameFolder" tooltiptext="Rename" visible="true"/>
+                            <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button class="custom-btn" id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/security_icon.svg" tooltiptext="Access rights"/>
+                            <button sclass="ap-icon ap-icon-user-lock" id="btnSecurity" tooltiptext="Access rights"/>
                         </hbox>
+                        <div hflex="1"></div>
+                        <SimpleSearch id="simplesearchcomp" border="0" width="400px"/>
                     </hbox>
+                    <html id="folders" width="0px" height="0px" visible="false" />
+                    <tabbox id="tabbox" vflex="1" hflex="1">
+                        <tabs id="tabs" vflex="1" hflex="1">
+                            <tab label="Processes"/>
+                        </tabs>
+                        <tabpanels id="tabpanels" vflex="1" hflex="1">
+                            <tabpanel vflex="1" hflex="1">
+                                <BaseListbox id="baseListboxProcesses" height="100%" width="100%" border="0"/>
+                            </tabpanel>
+                        </tabpanels>
+                    </tabbox>
+                </vlayout>
 
                     <!--
                                         <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
@@ -209,25 +269,12 @@
 
                                         <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
                     -->
-                    <html id="folders" width="100%" visible="false" height="100%"/>
 
-                    <tabbox id="tabbox" vflex="true">
-                        <tabs id="tabs" >
-                            <tab label="Processes"/>
-                        </tabs>
-                        <tabpanels id="tabpanels" >
-                            <tabpanel vflex="true">
-                                <BaseListbox id="baseListboxProcesses" vflex="true"/>
-                            </tabpanel>
-                        </tabpanels>
-                    </tabbox>
-                </div>
             </center>
         </borderlayout>
 
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
-
     <!-- Following script improves performance of listbox dropdown display time-->
     <script defer="true">
         <![CDATA[
@@ -236,6 +283,8 @@
                 pp.style.display = "block";
             };
             zul.inp.Bandbox.prototype.slideDown_ = zul.inp.Combobox.prototype.slideDown_;
+            window.__AP__ = {};
         ]]>
     </script>
+    <h:script type="text/javascript" defer="defer" src="themes/ap/common/js/jschardet.min.js"></h:script>
 </zk>

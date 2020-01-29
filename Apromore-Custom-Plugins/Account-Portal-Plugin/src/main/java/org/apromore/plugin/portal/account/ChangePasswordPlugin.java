@@ -31,7 +31,7 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ChangePasswordPlugin.class);
 
-    private String label = "Change Password";
+    private String label = "Change password";
     private String groupLabel = "Account";
 
     private SecurityService securityService;

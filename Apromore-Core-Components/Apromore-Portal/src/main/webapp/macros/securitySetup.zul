@@ -31,16 +31,16 @@
     </style>
     <hbox spacing="0" width="100%" widths="30%,70%" height="670px">
         <borderlayout vflex="true" width="100%">
-            <center title="My Workspace" flex="true">
+            <center title="My Workspace" flex="true" border="none">
                 <FolderTree id="mainTree"/>
             </center>
         </borderlayout>
         <splitter id="s2" collapse="before"/>
         <borderlayout vflex="true" width="100%">
-            <north title="Permissions" flex="true" splittable="true" height="330px">
+            <north title="Permissions" flex="true" splittable="true" height="330px" border="none">
                 <Permissions id="existingPermissions"/>
             </north>
-            <center title="Groups" flex="true">
+            <center title="Groups" flex="true" border="none">
                 <Groups id="findGroups" vflex="true"/>
             </center>
         </borderlayout>

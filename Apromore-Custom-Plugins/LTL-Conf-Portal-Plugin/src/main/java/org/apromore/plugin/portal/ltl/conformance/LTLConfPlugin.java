@@ -168,7 +168,7 @@ public class LTLConfPlugin extends DefaultPortalPlugin {
                 controller.checkConformance(model, procS.get(0), verS.get(0));
                 return;
             }else{
-                Messagebox.show("Only 1 BPMN model can be used at a time.");
+                Messagebox.show("Only 1 BPMN model can be used at a time.", "Apromore", Messagebox.OK, Messagebox.NONE);
                 return;
             }
         }catch(Exception e){

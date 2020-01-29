@@ -104,9 +104,17 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 treeItem.setOpen(false);
             }
 
-            hl.appendChild(new Image(folder.getId() == 0 ? "/img/icon/svg/folder_home.svg" : "/img/icon/svg/folder_icons.svg"));
+            if (folder.getId() == 0) {
+                hl.appendChild(new Image("/img/icon/svg/folder_home.svg"));
+                hl.setSclass("ap-ico-home h-inline-block");
+            } else {
+                hl.appendChild(new Image("/img/icon/svg/folder_icons.svg"));
+                hl.setSclass("ap-ico-folder h-inline-block");
+            }
+
             String folderName = folder.getFolderName();
-            hl.appendChild(new Label(folderName.length() > 15 ? folderName.substring(0, 13) + "..." : folderName));
+            // hl.appendChild(new Label(folderName.length() > 15 ? folderName.substring(0, 13) + "..." : folderName));
+            hl.appendChild(new Label(folderName));
             break;
 
         case Process:
@@ -114,8 +122,11 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             if(summaryType instanceof ProcessSummaryType) {
                 ProcessSummaryType process = (ProcessSummaryType) summaryType;
                 hl.appendChild(new Image("/img/icon/svg/bpmn_model.svg"));
+                hl.setSclass("ap-ico-process h-inline-block");
                 String processName = process.getName();
-                hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+                // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+                hl.appendChild(new Label(processName));
+                dataRow.setSclass("ap-tree-leave");
             }
             break;
 
@@ -124,8 +135,11 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             if(summaryType instanceof LogSummaryType) {
                 LogSummaryType log = (LogSummaryType) summaryType;
                 hl.appendChild(new Image("/img/icon/svg/log_icon.svg"));
+                hl.setSclass("ap-ico-log h-inline-block");
                 String processName = log.getName();
-                hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+                // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+                hl.appendChild(new Label(processName));
+                dataRow.setSclass("ap-tree-leave");
             }
             break;
 
@@ -133,7 +147,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             assert false: "Folder tree node with type " + ctn.getType() + " is not implemented";
         }
 
-        hl.setSclass("h-inline-block");
+        // hl.setSclass("h-inline-block");
         Treecell treeCell = new Treecell();
         treeCell.appendChild(hl);
         dataRow.appendChild(treeCell);
