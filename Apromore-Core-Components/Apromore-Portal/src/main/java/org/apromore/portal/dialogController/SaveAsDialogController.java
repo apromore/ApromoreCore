@@ -146,7 +146,7 @@ public class SaveAsDialogController extends BaseController {
                 });
 
         if (isUpdate == null) {
-        	this.saveAsW.setTitle("Save");
+        	this.saveAsW.setTitle("Save model");
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
             this.versionNumber.setText("1.0");
@@ -155,7 +155,7 @@ public class SaveAsDialogController extends BaseController {
             this.modelName.setReadonly(true);
         }
         else if (isUpdate) {
-        	this.saveAsW.setTitle("Save");
+        	this.saveAsW.setTitle("Save model");
             String branchName = null;
             BigDecimal versionNumber;
             BigDecimal currentVersion = new BigDecimal(editSession.getCurrentVersionNumber());
@@ -182,7 +182,7 @@ public class SaveAsDialogController extends BaseController {
 //            }
             this.versionNumber.setText(String.format("%1.1f", versionNumber));
         } else {
-        	this.saveAsW.setTitle("Save As");
+        	this.saveAsW.setTitle("Save model as");
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
             this.versionNumber.setText("1.0");

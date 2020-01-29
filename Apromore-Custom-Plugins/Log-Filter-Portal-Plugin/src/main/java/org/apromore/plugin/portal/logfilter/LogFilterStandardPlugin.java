@@ -118,7 +118,7 @@ public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
                 portalItem.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                 false);
         
-        Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+        Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.", "Apromore", Messagebox.OK, Messagebox.NONE);
 
         portalContext.refreshContent();
     }

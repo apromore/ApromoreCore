@@ -54,10 +54,16 @@ body {
     display: inline-block;
 }
 
+/*
 
 .ap-dashboard .highcharts-button-box {
     height: 22px !important;
 }
+
+.ap-dashboard .highcharts-button text {
+    transform: translateY(-5px);
+}
+*/
 
 /* HACK */
 .ap-dashboard-right-menu .myMenu:last-child {

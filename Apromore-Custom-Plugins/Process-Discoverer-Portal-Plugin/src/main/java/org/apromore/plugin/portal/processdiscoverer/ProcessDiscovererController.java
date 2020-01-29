@@ -1859,7 +1859,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     false);
             
             //Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
-            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + this.containingFolderName + "' folder.");
+            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + this.containingFolderName + "' folder.", "Apromore", Messagebox.OK, Messagebox.NONE);
 
             portalContext.refreshContent();
         } catch (Exception e) {
