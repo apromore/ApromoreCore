@@ -85,6 +85,27 @@ input {
     line-height: 15px;
 }
 
+/* Paging */
+
+.z-listbox-autopaging {
+    overflow: hidden auto !important;
+}
+
+.z-listbox-autopaging::-webkit-scrollbar {
+    width: 10px;
+}
+
+.z-listbox-autopaging::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.3);
+    background-color: rgb(240, 240, 240);
+    border-radius: 10px;
+}
+
+.z-listbox-autopaging::-webkit-scrollbar-thumb {
+    background-color: rgb(220, 220, 220);
+    border: 0;
+    border-radius: 10px;
+}
 
 /* Groupbox */
 

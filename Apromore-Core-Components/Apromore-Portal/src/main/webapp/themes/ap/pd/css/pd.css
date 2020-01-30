@@ -104,3 +104,7 @@
 .ap-pd-options-c .z-hbox table {
     /* width: 100% !important; */
 }
+
+.ap-pd-buttons, .ap-pd-buttons .z-grid-body {
+    width: 100% !important;
+}

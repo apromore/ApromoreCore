@@ -122,6 +122,9 @@
 }
 
 /* Forced scroll */
+.ap-forced-scroll {
+    overflow-x: hidden;
+}
 
 .ap-forced-scroll .z-listbox-body::-webkit-scrollbar {
     -webkit-appearance: none;

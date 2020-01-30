@@ -208,7 +208,7 @@ public class LogFilterEEChartUtil {
         }
         theChart.addSeries(this.caseDurationSeries);
         theChart.getTooltip().setHeaderFormat("");
-        theChart.getTooltip().setPointFormat("up to {point.id}<br/>Number of cases: {point.y}");
+        theChart.getTooltip().setPointFormat("up to {point.id}<br/>Number of Cases: {point.y}");
         theChart.setType(Charts.COLUMN);
         theChart.getExporting().setEnabled(false);
         theChart.getYAxis().getLabels().setEnabled(false);
@@ -402,7 +402,7 @@ public class LogFilterEEChartUtil {
 
         theChart.addSeries(series);
         theChart.getTooltip().setHeaderFormat("");
-        theChart.getTooltip().setPointFormat("up to {point.id}<br/>Number of cases: {point.y}");
+        theChart.getTooltip().setPointFormat("up to {point.id}<br/>Number of Cases: {point.y}");
         theChart.setType(Charts.COLUMN);
         theChart.getExporting().setEnabled(false);
         theChart.getYAxis().getLabels().setEnabled(false);
