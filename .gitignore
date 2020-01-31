@@ -5,6 +5,7 @@
 **/bindist/*
 **/dependency-reduced-pom.xml
 **/catalina.home_IS_UNDEFINED
+*/**/git.properties
 **/site.properties
 **/.gitignore
 Supplements/Virgo/dmk.bat
