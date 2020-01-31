@@ -42,7 +42,7 @@ public class ProcessDiscovererDFGP extends DirectlyFollowGraphPlus {
 	}
 	
 	@Override
-	protected void buildDirectlyFollowsGraph() {
+	public void buildDirectlyFollowsGraph() {
 		// These variables must be initialized because they will be used
 		// in the addNode() and addEdge() method calls. However, this implicit
 		// initialization should be avoided as it breaks the class encapsulation
