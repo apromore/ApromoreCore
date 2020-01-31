@@ -20,8 +20,17 @@
 
 package au.edu.qut.processmining.miners.splitminer.dfgp;
 
-import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import javax.swing.UIManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.processmining.contexts.uitopia.UIContext;
@@ -33,19 +42,15 @@ import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 
-import java.io.File;
-import java.util.*;
-
-import javax.swing.UIManager;
+import au.edu.qut.processmining.log.SimpleLog;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 
 /**
  * Created by Adriano on 24/10/2016.
- * Modified by Bruce Nguyen
- * 	- change variables and methods from private to protected for subclasses to access
  */
 public class DirectlyFollowGraphPlus {
 
-	protected static boolean completeCloning = false;
+    private static boolean completeCloning = false;
 
     protected SimpleLog log;
     protected int startcode;
@@ -61,7 +66,7 @@ public class DirectlyFollowGraphPlus {
     protected Set<DFGEdge> loopsL2;
     protected Map<Integer, HashSet<Integer>> parallelisms;
     protected Set<DFGEdge> bestEdges;
-    private Set<DFGEdge> untouchableEdges;
+    protected Set<DFGEdge> untouchableEdges;
 
     protected double percentileFrequencyThreshold;
     protected double parallelismsThreshold;
@@ -70,7 +75,8 @@ public class DirectlyFollowGraphPlus {
 //    private boolean percentileOnBest;
     protected boolean parallelismsFirst;
 
-    protected DirectlyFollowGraphPlus(){}
+
+    protected DirectlyFollowGraphPlus() {}
 
     public DirectlyFollowGraphPlus(SimpleLog log) {
         this(log, DFGPUIResult.FREQUENCY_THRESHOLD, DFGPUIResult.PARALLELISMS_THRESHOLD, DFGPUIResult.STD_FILTER, DFGPUIResult.PARALLELISMS_FIRST);
@@ -105,25 +111,6 @@ public class DirectlyFollowGraphPlus {
             this.filterThreshold = directlyFollowGraphPlus.filterThreshold;
             this.parallelismsFirst = directlyFollowGraphPlus.parallelismsFirst;
         }
-    }
-    
-    /**
-     * This method is to reset the internal data structures of DFGP
-     * It still keeps the input and parameters such as log, startcode, endcode, filterType, etc.
-     * This method is used to build the internal structure again, 
-     * E.g. change from buildDFGP() and buildSafeDFGP() or vice versa
-     */
-    public void resetDFGPStructures() {
-        if (edges != null) edges.clear();
-        if (nodes != null) nodes.clear();
-        if (outgoings != null) outgoings.clear();
-        if (incomings != null) incomings.clear();
-        if (dfgp != null) dfgp.clear();
-        if (loopsL1 != null) loopsL1.clear();
-        if (loopsL2 != null) loopsL2.clear();
-        if (parallelisms != null) parallelisms.clear();
-        if (bestEdges != null) bestEdges.clear();
-        if (untouchableEdges != null) untouchableEdges.clear();
     }
 
     public int size() { return nodes.size(); }
@@ -198,21 +185,9 @@ public class DirectlyFollowGraphPlus {
         untouchableEdges = new HashSet<>();
 
         buildDirectlyFollowsGraph();                //first method to execute
-        
-        //Debug only
-//        loopsL1 = new HashSet<>();
-//        this.writeDiagram(this.convertIntoBPMNDiagram(), "bpmnDiagram_after_buildDirectlyFollowsGraph.bpmn");
-        
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
-        
-        //Debug only
-//        this.writeDiagram(this.convertIntoBPMNDiagram(), "bpmnDiagram_after_detectLoops.bpmn");
-        
         detectParallelisms();                       //depends on detectLoops()
-        
-        //Debug only
-//        this.writeDiagram(this.convertIntoBPMNDiagram(), "bpmnDiagram_after_detectParallelisms.bpmn");
-        
+
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:
                 filterWithGuarantees();
@@ -229,14 +204,6 @@ public class DirectlyFollowGraphPlus {
 //                filterWithGuarantees();
 //                exploreAndRemove();
                 break;
-        }
-        
-        // The above steps involve removing edges which may make the diagram disconnected 
-        // at some point. The code here is a quick fix to rerun the above steps
-        // with a constraint that some edges cannot be removed (so called safe)
-        if (!isConnected()) {
-        	resetDFGPStructures();
-        	buildSafeDFGP();
         }
 
     }
@@ -269,8 +236,7 @@ public class DirectlyFollowGraphPlus {
 
     }
 
-
-    protected void buildDirectlyFollowsGraph() {
+    public void buildDirectlyFollowsGraph() {
         Map<String, Integer> traces = log.getTraces();
         Map<Integer, String> events = log.getEvents();
 
@@ -424,6 +390,8 @@ public class DirectlyFollowGraphPlus {
         HashSet<DFGEdge> removableEdges = new HashSet<>();
 
         parallelisms = new HashMap<>();
+
+        if( parallelismsThreshold == 0 ) return;
 
         for (DFGEdge e1 : edges) {
             src = e1.getSourceCode();
@@ -709,7 +677,6 @@ public class DirectlyFollowGraphPlus {
         for( DFGEdge e : removable ) removeEdge(e, false);
     }
 
-
     protected void addEdge(DFGEdge e) {
         int src = e.getSourceCode();
         int tgt = e.getTargetCode();
@@ -815,91 +782,92 @@ public class DirectlyFollowGraphPlus {
             System.out.println();
         }
     }
-    
-	//  EXPERIMENTAL
-	
-	private void bestEdgesOnMaxCapacitiesForConnectedness() {
-	      int src, tgt, cap, maxCap;
-	      DFGEdge bp, bs;
-	
-	      LinkedList<Integer> toVisit = new LinkedList<>();
-	      Set<Integer> unvisited = new HashSet<>();
-	
-	      HashMap<Integer, DFGEdge> bestPredecessorFromSource = new HashMap<>();
-	      HashMap<Integer, DFGEdge> bestSuccessorToSink = new HashMap<>();
-	
-	      Map<Integer, Integer> maxCapacitiesFromSource = new HashMap<>();
-	      Map<Integer, Integer> maxCapacitiesToSink = new HashMap<>();
-	
-	      for( int n : nodes.keySet() ) {
-	          maxCapacitiesFromSource.put(n, 0);
-	          maxCapacitiesToSink.put(n, 0);
-	      }
-	
-	      maxCapacitiesFromSource.put(startcode, Integer.MAX_VALUE);
-	      maxCapacitiesToSink.put(endcode, Integer.MAX_VALUE);
-	
-	//    forward exploration
-	      toVisit.add(startcode);
-	      unvisited.addAll(nodes.keySet());
-	      unvisited.remove(startcode);
-	
-	      while( !toVisit.isEmpty() ) {
-	          src = toVisit.removeFirst();
-	          cap = maxCapacitiesFromSource.get(src);
-	          for( DFGEdge oe : outgoings.get(src) ) {
-	              tgt = oe.getTargetCode();
-	              maxCap = (cap > oe.getFrequency() ? oe.getFrequency() : cap);
-	              if( (maxCap > maxCapacitiesFromSource.get(tgt)) ) { //|| ((maxCap == maxCapacitiesFromSource.get(tgt)) && (bestPredecessorFromSource.get(tgt).getFrequency() < oe.getFrequency())) ) {
-	                  maxCapacitiesFromSource.put(tgt, maxCap);
-	                  bestPredecessorFromSource.put(tgt, oe);
-	                  if( !toVisit.contains(tgt) ) unvisited.add(tgt);
-	              }
-	              if( unvisited.contains(tgt) ) {
-	                  toVisit.addLast(tgt);
-	                  unvisited.remove(tgt);
-	              }
-	          }
-	      }
-	
-	
-	//    backward exploration
-	      toVisit.add(endcode);
-	      unvisited.clear();
-	      unvisited.addAll(nodes.keySet());
-	      unvisited.remove(endcode);
-	
-	      while( !toVisit.isEmpty() ) {
-	          tgt = toVisit.removeFirst();
-	          cap = maxCapacitiesToSink.get(tgt);
-	          for( DFGEdge ie : incomings.get(tgt) ) {
-	              src = ie.getSourceCode();
-	              maxCap = (cap > ie.getFrequency() ? ie.getFrequency() : cap);
-	              if( (maxCap > maxCapacitiesToSink.get(src)) ) { //|| ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() < ie.getFrequency())) ) {
-	                  maxCapacitiesToSink.put(src, maxCap);
-	                  bestSuccessorToSink.put(src, ie);
-	                  if( !toVisit.contains(src) ) unvisited.add(src);
-	              }
-	              if( unvisited.contains(src) ) {
-	                  toVisit.addLast(src);
-	                  unvisited.remove(src);
-	              }
-	          }
-	      }
-	
-	      untouchableEdges = new HashSet<>();
-	      for( int n : nodes.keySet() ) {
-	          untouchableEdges.add(bestPredecessorFromSource.get(n));
-	          untouchableEdges.add(bestSuccessorToSink.get(n));
-	      }
-	      untouchableEdges.remove(null);
-	
-	//      for( int n : nodes.keySet() ) {
-	//          System.out.println("DEBUG - " + n + " : [" + maxCapacitiesFromSource.get(n) + "][" + maxCapacitiesToSink.get(n) + "]");
-	//      }
-	}
-	
-	public boolean isConnected() {
+
+//    EXPERIMENTAL
+
+// this method is exactly the same of bestEdgesOnMaxCapacities
+    private void bestEdgesOnMaxCapacitiesForConnectedness() {
+        int src, tgt, cap, maxCap;
+        DFGEdge bp, bs;
+
+        LinkedList<Integer> toVisit = new LinkedList<>();
+        Set<Integer> unvisited = new HashSet<>();
+
+        HashMap<Integer, DFGEdge> bestPredecessorFromSource = new HashMap<>();
+        HashMap<Integer, DFGEdge> bestSuccessorToSink = new HashMap<>();
+
+        Map<Integer, Integer> maxCapacitiesFromSource = new HashMap<>();
+        Map<Integer, Integer> maxCapacitiesToSink = new HashMap<>();
+
+        for( int n : nodes.keySet() ) {
+            maxCapacitiesFromSource.put(n, 0);
+            maxCapacitiesToSink.put(n, 0);
+        }
+
+        maxCapacitiesFromSource.put(startcode, Integer.MAX_VALUE);
+        maxCapacitiesToSink.put(endcode, Integer.MAX_VALUE);
+
+//      forward exploration
+        toVisit.add(startcode);
+        unvisited.addAll(nodes.keySet());
+        unvisited.remove(startcode);
+
+        while( !toVisit.isEmpty() ) {
+            src = toVisit.removeFirst();
+            cap = maxCapacitiesFromSource.get(src);
+            for( DFGEdge oe : outgoings.get(src) ) {
+                tgt = oe.getTargetCode();
+                maxCap = (cap > oe.getFrequency() ? oe.getFrequency() : cap);
+                if( (maxCap > maxCapacitiesFromSource.get(tgt)) ) { //|| ((maxCap == maxCapacitiesFromSource.get(tgt)) && (bestPredecessorFromSource.get(tgt).getFrequency() < oe.getFrequency())) ) {
+                    maxCapacitiesFromSource.put(tgt, maxCap);
+                    bestPredecessorFromSource.put(tgt, oe);
+                    if( !toVisit.contains(tgt) ) unvisited.add(tgt);
+                }
+                if( unvisited.contains(tgt) ) {
+                    toVisit.addLast(tgt);
+                    unvisited.remove(tgt);
+                }
+            }
+        }
+
+
+//      backward exploration
+        toVisit.add(endcode);
+        unvisited.clear();
+        unvisited.addAll(nodes.keySet());
+        unvisited.remove(endcode);
+
+        while( !toVisit.isEmpty() ) {
+            tgt = toVisit.removeFirst();
+            cap = maxCapacitiesToSink.get(tgt);
+            for( DFGEdge ie : incomings.get(tgt) ) {
+                src = ie.getSourceCode();
+                maxCap = (cap > ie.getFrequency() ? ie.getFrequency() : cap);
+                if( (maxCap > maxCapacitiesToSink.get(src)) ) { //|| ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() < ie.getFrequency())) ) {
+                    maxCapacitiesToSink.put(src, maxCap);
+                    bestSuccessorToSink.put(src, ie);
+                    if( !toVisit.contains(src) ) unvisited.add(src);
+                }
+                if( unvisited.contains(src) ) {
+                    toVisit.addLast(src);
+                    unvisited.remove(src);
+                }
+            }
+        }
+
+        untouchableEdges = new HashSet<>();
+        for( int n : nodes.keySet() ) {
+            untouchableEdges.add(bestPredecessorFromSource.get(n));
+            untouchableEdges.add(bestSuccessorToSink.get(n));
+        }
+        untouchableEdges.remove(null);
+
+//        for( int n : nodes.keySet() ) {
+//            System.out.println("DEBUG - " + n + " : [" + maxCapacitiesFromSource.get(n) + "][" + maxCapacitiesToSink.get(n) + "]");
+//        }
+    }
+
+    private boolean isConnected() {
         int src, tgt;
 
         LinkedList<Integer> toVisit = new LinkedList<>();
@@ -921,7 +889,7 @@ public class DirectlyFollowGraphPlus {
             }
         }
 
-		if(!unvisited.isEmpty()) return false;
+        if(!unvisited.isEmpty()) return false;
 
 //      backward exploration
         toVisit.add(endcode);
@@ -940,23 +908,24 @@ public class DirectlyFollowGraphPlus {
             }
         }
 
-		if(!unvisited.isEmpty()) return false;
-		
-		return true;
+        if(!unvisited.isEmpty()) return false;
+
+        return true;
     }
-	
+    
     // Bruce: for debug only
     private void writeDiagram(BPMNDiagram d, String filename) {
-	    try {
-	        UIContext context = new UIContext();
-	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-	        UIPluginContext uiPluginContext = context.getMainPluginContext();
-	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
-	        exportPlugin.export(uiPluginContext, d, new File(filename));
-	    }
-	    catch (Exception ex) {
-	    	ex.printStackTrace();
-	    }
+        try {
+            UIContext context = new UIContext();
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIPluginContext uiPluginContext = context.getMainPluginContext();
+            BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
+            exportPlugin.export(uiPluginContext, d, new File(filename));
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
-	
+    
+
 }
