@@ -705,7 +705,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                 @Override
                 public void onEvent(Event event) throws Exception {
                 	ProcessDiscovererController.this.showInputDialog(
-            			"Input", 
+            			"Save filtered log",
 						"Enter a log name (no more than 60 characters)", 
 						logSummary.getName() + "_filtered", 
 						"^[a-zA-Z0-9_\\(\\)\\-\\s]{1,60}$",
@@ -1859,7 +1859,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     false);
             
             //Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
-            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + this.containingFolderName + "' folder.");
+            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + this.containingFolderName + "' folder.", "Apromore", Messagebox.OK, Messagebox.NONE);
 
             portalContext.refreshContent();
         } catch (Exception e) {

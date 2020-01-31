@@ -24,6 +24,16 @@ var svgDocumentG;  // initialized in Controller.reset
 var lastSliderValue = 11;
 var speedRatio;
 
+var timelineOffset = 5
+
+var apPalette = [
+    "#84c7e3",
+    "#bb3a50",
+    "#3ac16d",
+    "#f96100",
+    "#FBA525"
+]
+
 function switchPlayPause(e) {
     controller.switchPlayPause(e);
 }
@@ -298,6 +308,9 @@ AnimationController = {
         this.startDateMillis = 0;
         this.canvas = editorCanvas; // the editor canvas
         this.timelineTick = undefined; //keep track of the timeline tick for dragging action
+
+        this.PLAY_CLS = 'ap-mc-icon-play'
+        this.PAUSE_CLS = 'ap-mc-icon-pause'
     },
 
     pauseAnimations: function() {
@@ -329,23 +342,35 @@ AnimationController = {
     },
 
     reset: function(jsonRaw) {
+        jsonServer = JSON.parse(jsonRaw);
+        var logs = jsonServer.logs;
+
         svgDocument = this.canvas.getSVGContainer();
         svgDocumentG = this.canvas.getSVGViewport();
-        this.timelineSVG = $j("div#playback_controls > svg")[0];
+        // this.timelineSVG = $j("div#playback_controls > svg")[0];
+        this.timelineSVG = $j("div.ap-animator-timeline > svg")[0];
         this.svgDocuments.clear();
         this.svgDocuments.push(svgDocument);
         this.svgDocuments.push(this.timelineSVG);
-        this.svgDocuments.push($j("div#progress_display > svg")[0]);
+        let indicators = [];
+        $j('#progress_display').empty();
+        for (var i = 0; i < logs.length; i++) {
+            let log = logs[i]
+            let container = $j(`<div id="progress-c-${i}"></div>`);
+            let svg = $j(`<svg id="progressbar-${i}" xmlns="http://www.w3.org/2000/svg" viewBox="-10 0 20 40" ></svg>`);
+            let label = $j(`<div class="label">${log.filename}</div>`);
+            svg.appendTo(container);
+            label.appendTo(container);
+            container.appendTo('#progress_display');
+            indicators.push(svg);
+            this.svgDocuments.push(svg[0]);
+        }
 
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
             svgDocument.removeChild(tokenE);
             //tokenE.outerHTML = "";
         }
-
-        jsonServer = JSON.parse(jsonRaw);
-        var logs = jsonServer.logs;
-
         // Reconstruct this.logCases to correspond to the changed jsonServer value
         this.logCases = [];
 
@@ -356,7 +381,8 @@ AnimationController = {
             this.logCases[log_index] = [];
             for (var tokenAnimation_index = 0; tokenAnimation_index < log.tokenAnimations.length; tokenAnimation_index++) {
                 var tokenAnimation = log.tokenAnimations[tokenAnimation_index];
-                this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, log.color, tokenAnimation.caseId, offsets[log_index]);
+                var color = apPalette[log_index] || log.color;
+                this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, color, tokenAnimation.caseId, offsets[log_index]);
             }
         }
 
@@ -372,33 +398,84 @@ AnimationController = {
         this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
 
         //Recreate progress indicators
-        var progressIndicatorE = this.createProgressIndicators(logs, jsonServer.timeline);
-        $j("div#progress_display > svg")[0].append(progressIndicatorE);
+        // var progressIndicatorE = this.createProgressIndicators(logs, jsonServer.timeline);
+        // $j("div#progress_display svg")[0].append(progressIndicatorE);
+
+        // IVO: Add individual logs
+
+        for(var i=0;i<logs.length;i++) {
+            let progSVG = indicators[i];
+            let progIndicator = this.createProgressIndicatorsForLog(
+                i+1, logs[i], jsonServer.timeline, 0, 0)
+            progSVG.append(progIndicator);
+        }
+
+        let props = [
+            "info-no",
+            "info-log",
+            "info-traces",
+            "info-relayed",
+            "info-reliable",
+            "info-fitness"
+        ]
+
+        function getProps(logIdx) {
+            let source = $j('#metrics_table tr:nth-child(' + (logIdx + 1) + ') td')
+            props.forEach(function(prop, idx) {
+                $j('#' + prop).text($j(source[idx]).text() || '')
+            })
+        }
+
+        $j([0]).text()
+        
+        for(var i=0;i<logs.length;i++) {
+            let pId = '#ap-la-progress-' + (i + 1);
+            $j(pId).hover(
+                (function (i) {
+                    return function () {
+                        getProps(i)
+                        let { top, left } = $j(pId).offset()
+                        let bottom = `calc(100vh - ${top - 10}px)`
+                        left += 20;
+                        $j('#ap-animator-info-tip').attr('data-log-idx', i);
+                        $j('#ap-animator-info-tip').css({ bottom, left })
+                        $j('#ap-animator-info-tip').show();
+                    }
+                })(i + 1),
+                (function (i) {
+                    return function () {
+                        $j('#ap-animator-info-tip').hide();
+                    }
+                })(i + 1)
+            )
+        }
+        // IVO
 
         //Recreate timeline to update date labels
         //$j("#timeline").remove();
-        var timelineE = this.createTimeline();
+        var timelineE = this.createTimeline(jsonServer.timeline.logs.length);
         this.timelineSVG.append(timelineE);
 
         // Add log intervals to timeline: must be after the timeline creation
         //var timelineElement = $j("#timeline")[0];
         var startTopX = 20;
         var startTopY = 18;
+        var showOtherLogsTimeSpan = false;
         for (var j=0; j<jsonServer.timeline.logs.length; j++) {
             var log = jsonServer.timeline.logs[j];
             var logInterval = document.createElementNS(svgNS,"line");
             logInterval.setAttributeNS(null,"x1",startTopX + 9 * log.startDatePos);  // magic number 10 is slotWidth / slotEngineDur
-            logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j);
+            logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j + timelineOffset);
             logInterval.setAttributeNS(null,"x2",startTopX + 9 * log.endDatePos);
-            logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
-            logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
+            logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j  + timelineOffset);
+            logInterval.setAttributeNS(null,"style","stroke: "+ (apPalette[j] || log.color) +"; stroke-width: 5");
             timelineE.insertBefore(logInterval, timelineE.lastChild);
 
             //display date label at the two ends
-            if (log.startDatePos % 10 != 0) {
+            if (showOtherLogsTimeSpan && log.startDatePos % 10 != 0) {
                 var logDateTextE = document.createElementNS(svgNS,"text");
                 logDateTextE.setAttributeNS(null,"x", startTopX + 9 * log.startDatePos - 50);
-                logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5);
+                logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5  + timelineOffset);
                 logDateTextE.setAttributeNS(null,"text-anchor", "middle");
                 logDateTextE.setAttributeNS(null,"font-size", "11");
                 logDateTextE.innerHTML = log.startDateLabel.substr(0,19);
@@ -695,23 +772,43 @@ AnimationController = {
         }
     },
 
+    isPaused: function () {
+        return $j("#pause").hasClass(this.PAUSE_CLS)
+    },
+
+    setPlayPauseBtn: function (state) {
+        const { PAUSE_CLS, PLAY_CLS } = this;
+        const btn = $j("#pause")
+
+        if (typeof state === 'undefined') {
+            state = this.isPaused() // do toggle
+        }
+        if (state) {
+            btn.removeClass(PAUSE_CLS).addClass(PLAY_CLS)
+        } else {
+            btn.removeClass(PLAY_CLS).addClass(PAUSE_CLS)
+        }
+    },
+
     pause: function() {
-        var img = document.getElementById("pause").getElementsByTagName("img")[0];
+        // var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.pauseAnimations();
-        img.alt = "Play";
-        img.src = "images/control_play.png";
+        this.setPlayPauseBtn(true);
+        // img.alt = "Play";
+        // img.src = "images/control_play.png";
     },
 
     play: function() {
-        var img = document.getElementById("pause").getElementsByTagName("img")[0];
+        // var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.unpauseAnimations();
-        img.alt = "Pause";
-        img.src = "images/control_pause.png";
+        this.setPlayPauseBtn(false);
+        // img.alt = "Pause";
+        // img.src = "images/control_pause.png";
     },
 
     switchPlayPause: function () {
-    var img = document.getElementById("pause").getElementsByTagName("img")[0];
-        if (img.alt == "Pause") {
+        // var img = document.getElementById("pause").getElementsByTagName("img")[0];
+        if (this.isPaused()) {
             this.pause();
         } else {
             this.play();
@@ -731,7 +828,7 @@ AnimationController = {
         var y = 20;
         for(var i=0;i<logs.length;i++) {
             progressE.appendChild(this.createProgressIndicatorsForLog(i+1, logs[i], timeline, x, y));
-            x += 60;
+            x += 150;
         }
         return progressE;
     },
@@ -743,12 +840,16 @@ AnimationController = {
      */
     createProgressIndicatorsForLog: function(logNo, log, timeline, x, y) {
         var pieE = document.createElementNS(svgNS,"g");
+        pieE.setAttributeNS(null,"id","ap-la-progress-" + logNo);
         pieE.setAttributeNS(null,"class","progress");
 
+        var color = apPalette[logNo - 1] || log.color
         var pathE = document.createElementNS(svgNS,"path");
         pathE.setAttributeNS(null,"d","M " + x + "," + y + " m 0, 0 a 20,20 0 1,0 0.00001,0");
-        pathE.setAttributeNS(null,"fill","#CCCCCC");
-        pathE.setAttributeNS(null,"stroke",log.color);
+        // pathE.setAttributeNS(null,"fill","#CCCCCC");
+        pathE.setAttributeNS(null,"fill",color);
+        pathE.setAttributeNS(null,"fill-opacity", 0.5);
+        pathE.setAttributeNS(null,"stroke", color);
         pathE.setAttributeNS(null,"stroke-width","5");
         pathE.setAttributeNS(null,"stroke-dasharray","0 126 126 0");
         pathE.setAttributeNS(null,"stroke-dashoffset","1");
@@ -768,19 +869,19 @@ AnimationController = {
 
         pathE.appendChild(animateE);
 
-        var textE = document.createElementNS(svgNS,"text");
-        textE.setAttributeNS(null,"x", x);
-        textE.setAttributeNS(null,"y", y - 10);
-        textE.setAttributeNS(null,"text-anchor","middle");
-        var textNode = document.createTextNode('Log#' + logNo);
-        textE.appendChild(textNode);
+        // var textE = document.createElementNS(svgNS,"text");
+        // textE.setAttributeNS(null,"x", x);
+        // textE.setAttributeNS(null,"y", y - 10);
+        // textE.setAttributeNS(null,"text-anchor","middle");
+        // var textNode = document.createTextNode(log.name);
+        // textE.appendChild(textNode);
 
-        var tooltip = document.createElementNS(svgNS,"title");
-        tooltip.appendChild(document.createTextNode(log.name));
-        textE.appendChild(tooltip);
+        // var tooltip = document.createElementNS(svgNS,"title");
+        // tooltip.appendChild(document.createTextNode(log.name));
+        // textE.appendChild(tooltip);
 
         pieE.appendChild(pathE);
-        pieE.appendChild(textE);
+        // pieE.appendChild(textE);
 
         return pieE;
     },
@@ -798,17 +899,20 @@ AnimationController = {
      *          <animationMotion>
      * Use: this.timelineSlots, this.slotEngineUnit.
      */
-    createTimeline: function() {
+    createTimeline: function(logNum) {
 
         function addTimelineBar(lineX, lineY, lineLen, lineColor, textX, textY, text1, text2, parent) {
             var lineElement = document.createElementNS(svgNS,"line");
             lineElement.setAttributeNS(null,"x1", lineX);
-            lineElement.setAttributeNS(null,"y1", lineY);
+            lineElement.setAttributeNS(null,"y1", lineY + 6);
             lineElement.setAttributeNS(null,"x2", lineX);
-            lineElement.setAttributeNS(null,"y2", lineY+lineLen);
-            lineElement.setAttributeNS(null,"stroke", lineColor);
-            if (lineColor == "red") {
-                lineElement.setAttributeNS(null,"stroke-width","1");
+            // lineElement.setAttributeNS(null,"y2", lineY+lineLen);
+            lineElement.setAttributeNS(null,"y2", lineY + 15);
+
+            if (lineColor === "red") {
+                lineElement.setAttributeNS(null,"stroke", 'black');
+                lineElement.setAttributeNS(null,"stroke-width","0.5");
+                parent.appendChild(lineElement);
             } else {
                 lineElement.setAttributeNS(null,"stroke-width",".5");
             }
@@ -816,19 +920,19 @@ AnimationController = {
 
             var textElement1 = document.createElementNS(svgNS,"text");
             textElement1.setAttributeNS(null,"x", textX);
-            textElement1.setAttributeNS(null,"y", textY);
+            textElement1.setAttributeNS(null,"y", textY - 10);
             textElement1.setAttributeNS(null,"text-anchor", "middle");
             textElement1.setAttributeNS(null,"font-size", "11");
             textElement1.innerHTML = text1;
 
             var textElement2 = document.createElementNS(svgNS,"text");
             textElement2.setAttributeNS(null,"x", textX);
-            textElement2.setAttributeNS(null,"y", textY + 10);
+            textElement2.setAttributeNS(null,"y", textY + 5);
             textElement2.setAttributeNS(null,"text-anchor", "middle");
             textElement2.setAttributeNS(null,"font-size", "11");
             textElement2.innerHTML = text2;
 
-            parent.appendChild(lineElement);
+
             parent.appendChild(textElement1);
             parent.appendChild(textElement2);
         }
@@ -876,12 +980,13 @@ AnimationController = {
         ---------------------------*/
         var indicatorE = document.createElementNS(svgNS,"rect");
         indicatorE.setAttributeNS(null,"fill","#FAF0E6");
-        indicatorE.setAttributeNS(null,"height",lineLen-10);
+        indicatorE.setAttributeNS(null,"height", 8 * logNum + 10);
         indicatorE.setAttributeNS(null,"width","12");
         indicatorE.setAttributeNS(null,"stroke","grey");
         indicatorE.setAttributeNS(null,"rx","2");
         indicatorE.setAttributeNS(null,"ry","2");
-        indicatorE.setAttributeNS(null,"x", -3); // note: the Y-axis of the tick is controlled by the animateMotion path it attaches to
+        // indicatorE.setAttributeNS(null,"x", -3); // note: the Y-axis of the tick is controlled by the animateMotion path it attaches to
+        indicatorE.setAttributeNS(null,"x", -6);
         indicatorE.setAttributeNS(null, "style", "cursor: move");
 
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");

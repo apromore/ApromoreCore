@@ -21,7 +21,12 @@
 package org.apromore.portal.dialogController;
 
 import org.apromore.model.*;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.SessionTab;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.TabListitem;
+import org.apromore.portal.common.TabQuery;
+import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
@@ -38,14 +43,19 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Filedownload;
 
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -62,6 +72,8 @@ public abstract class BaseListboxController extends BaseController {
     private final MainController mainController;
 
     private final Button refreshB;
+    private final Button btnUpload;
+    private final Button btnDownload;
     private final Button btnAddFolder;
     private final Button btnAddProcess;
     //private final Button btnGEDFolder;
@@ -69,6 +81,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button btnRemoveFolder;
     private final Button btnSecurity;
 
+    private PortalContext portalContext;
 
     public BaseListboxController(MainController mainController, String componentId, ListitemRenderer itemRenderer) {
         super();
@@ -76,11 +89,14 @@ public abstract class BaseListboxController extends BaseController {
         setVflex("100%");
 
         this.mainController = mainController;
+        this.portalContext = new PluginPortalContext(mainController);
         listBox = createListbox(componentId);
         listBox.setPaginal((Paging) mainController.getFellow("pg"));
         listBox.setItemRenderer(itemRenderer);
 
         refreshB = (Button) mainController.getFellow("refreshB");
+        btnUpload = (Button) mainController.getFellow("btnUpload");
+        btnDownload = (Button) mainController.getFellow("btnDownload");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
         btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
         //btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
@@ -111,6 +127,18 @@ public abstract class BaseListboxController extends BaseController {
             @Override
             public void onEvent(Event event) throws Exception {
                 refreshContent();
+            }
+        });
+
+        this.btnUpload.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                importFile();
+            }
+        });
+
+        this.btnDownload.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                exportFile();
             }
         });
 
@@ -176,6 +204,82 @@ public abstract class BaseListboxController extends BaseController {
 
     public void selectAll() {
         getListBox().selectAll();
+    }
+
+    protected void importFile() throws InterruptedException {
+        getMainController().eraseMessage();
+        try {
+            new ImportController(getMainController());
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    protected void exportFile() throws Exception {
+        if(this.getMainController().getSelectedElements().size() == 1) {
+            SummaryType summaryType = this.getMainController().getSelectedElements().iterator().next();
+            if (summaryType instanceof LogSummaryType) {
+                exportLog();
+            } else if (summaryType instanceof ProcessSummaryType) {
+                exportNative();
+            }
+        }
+    }
+
+    /**
+     * Export all selected process versions, each of which in a native format to be chosen by the user
+     * @throws InterruptedException
+     * @throws SuspendNotAllowedException
+     * @throws org.apromore.portal.exception.ExceptionFormats
+     */
+    protected void exportNative() throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
+        getMainController().eraseMessage();
+
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
+
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+                HashMap<SummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        TabListitem tabItem=(TabListitem)item;
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                    }
+                }
+                if(processVersion.keySet().size()>0){
+                    new ExportListNativeController(getMainController(), null, processVersion);
+                    return;
+                }
+            }
+        }
+
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = getMainController().getSelectedElementsAndVersions();
+        if (selectedProcessVersions.size() != 0) {
+            new ExportListNativeController(getMainController(), null, selectedProcessVersions);
+        } else {
+            getMainController().displayMessage("No process version selected.");
+        }
+    }
+
+    /**
+     * Export all selected process versions, each of which in a native format to be chosen by the user
+     * @throws InterruptedException
+     * @throws SuspendNotAllowedException
+     * @throws org.apromore.portal.exception.ExceptionFormats
+     */
+    protected void exportLog() throws Exception {
+        if(this.getMainController().getSelectedElements().size() == 1) {
+            SummaryType summaryType = getMainController().getSelectedElements().iterator().next();
+            if(summaryType instanceof LogSummaryType) {
+                ExportLogResultType exportResult = getMainController().getService().exportLog(summaryType.getId(), summaryType.getName());
+                try (InputStream native_is = exportResult.getNative().getInputStream()) {
+                    getMainController().showPluginMessages(exportResult.getMessage());
+                    Filedownload.save(native_is, "application/x-gzip", summaryType.getName() + ".xes.gz");
+                }
+            }
+        }
     }
 
     protected void addFolder() throws InterruptedException {

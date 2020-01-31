@@ -20,7 +20,7 @@
 
 <window width="400px" closable="false" position="center" id="inputDialog">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <!--<column width="30%"></column>-->
                 <column width="100%"></column>
@@ -35,7 +35,7 @@
                 <row>
                     <textbox id="txtValue" value="" width="100%"/>
                 </row>
-                <row spans="3">
+                <row spans="3"  sclass="ap-window-footer-actions">
                     <div align="center">
                         <button id="btnOK" label="OK" iconSclass="z-icon-check-circle"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>

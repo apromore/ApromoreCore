@@ -11,6 +11,7 @@ import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogSample;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -22,7 +23,7 @@ import org.zkoss.zul.Window;
  */
 class LogSampleImpl implements LogSample, Constants {
 
-    private static final Integer AttribWidth = 150;
+    private static final Integer AttribWidth = 180;
     private static final String parsedCorrectly = "Format parsed! ";
     private static final String couldnotParse = "Could not parse!";
     private static final String parsedClass = "text-success";
@@ -43,6 +44,7 @@ class LogSampleImpl implements LogSample, Constants {
     private List<Integer> ignoredPos;
     private HashMap<Integer, String> otherTimeStampsPos;
     private Div popUPBox;
+    private Button[] formatBtns;
 
 
     // Constructor
@@ -138,6 +140,11 @@ class LogSampleImpl implements LogSample, Constants {
     @Override
     public void setPopUPBox(Div popUPBox) { this.popUPBox = popUPBox; }
 
+    @Override
+    public Button[] getFormatBtns() { return this.formatBtns; }
+
+    @Override
+    public void setFormatBtns(Button[] formatBtns) { this.formatBtns = formatBtns; }
 
     // Public methods
 
@@ -439,8 +446,11 @@ class LogSampleImpl implements LogSample, Constants {
 
     private static void openPopUpbox(Integer colPos, String format, String message, String lblClass, LogSample sample) {
         Window myPopUp = (Window) sample.getPopUPBox().getFellow(popupID + colPos);
-        myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
+        // myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
+        myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
         Label check_lbl = (Label) myPopUp.getFellow(labelID + colPos);
+        Button[] formatBtns = (Button[]) sample.getFormatBtns();
+        formatBtns[colPos].setSclass("ap-csv-importer-format-icon");
 
         Textbox txt = (Textbox) myPopUp.getFellow(textboxID + colPos);
         txt.setValue(format);

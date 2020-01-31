@@ -43,7 +43,8 @@ import java.util.*;
 /**
  * This is the main window controller for log filter plugin
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
- * Modified by Bruce Nguyen
+ * Modified by Bruce Nguyen (20/08/2019)
+ * Modified by Chii Chang (04/09/2019)
  */
 public class LogFilterController {
 	private static final long serialVersionUID = 1L;

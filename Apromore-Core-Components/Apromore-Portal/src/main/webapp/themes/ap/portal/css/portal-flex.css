@@ -1,0 +1,57 @@
+/*.ap-portal > .z-window-content {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: stretch;*/
+/*    justify-items: flex-start;*/
+/*}*/
+
+/*.ap-portal > .z-window-content .ap-header {*/
+/*    flex: 0 0 auto;*/
+/*}*/
+
+/*.ap-portal > .z-window-content .ap-portal-layout {*/
+/*    flex: 1 0 auto;*/
+/*}*/
+
+/*.ap-portal-layout {*/
+/*    margin-top: 40px !important;*/
+/*}*/
+
+/*.ap-portal-right-section .z-center-body {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: stretch;*/
+/*    justify-items: flex-start;*/
+/*}*/
+
+/*.ap-portal-right-content,*/
+/*.ap-portal-right-section .z-tabbox {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: stretch;*/
+/*    justify-items: flex-start;*/
+/*    flex: 1 0 auto !important;*/
+/*    height: auto !important;*/
+/*}*/
+
+/*.ap-portal-right-section .z-tabbox .z-tabpanels {*/
+/*    flex: 1 0 auto !important;*/
+/*    height: auto !important;*/
+/*}*/
+
+/*.ap-portal-right-content > div {*/
+/*    flex: 0 0 auto !important;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: stretch;*/
+/*    justify-items: flex-start;*/
+/*}*/
+
+/*.ap-portal-right-content > div:last-child {*/
+/*    flex: 1 0 auto !important;*/
+/*    height: auto !important;*/
+/*}*/
+
+/*.ap-portal-right-content {*/
+/*    flex: 0 0 auto !important;*/
+/*}*/

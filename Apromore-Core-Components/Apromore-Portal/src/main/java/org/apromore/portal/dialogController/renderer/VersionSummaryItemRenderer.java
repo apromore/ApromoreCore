@@ -120,7 +120,7 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
             annotationLB.selectItem(annotationLB.getItemAtIndex(version.getAnnotations().size() - 1));
         } else {
             annotationLB.appendChild(annotationsI);
-            annotationsI.setLabel("No Annotations Found!");
+            annotationsI.setLabel("N/A");
             annotationLB.selectItem(annotationLB.getItemAtIndex(0));
         }
         return wrapIntoListCell(annotationLB);

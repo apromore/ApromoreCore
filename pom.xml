@@ -200,8 +200,6 @@
     </modules>
 
     <properties>
-        <gitPropertiesPath>../git.properties</gitPropertiesPath>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
@@ -1693,36 +1691,25 @@
                             <goal>revision</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>validate-the-git-infos</id>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                        <!-- *NOTE*: The default phase of validateRevision is verify, but in case you want to change it, you can do so by adding the phase here -->
-                        <phase>package</phase>
-                    </execution>
                 </executions>
 
                 <configuration>
-                    <!--<excludeProperties>-->
-                    <!--<excludeProperty>git.branch</excludeProperty>-->
-                    <!--<excludeProperty>git.build.*</excludeProperty>-->
-                    <!--<excludeProperty>git.closest.*</excludeProperty>-->
-                    <!--<excludeProperty>git.commit.message.*</excludeProperty>-->
-                    <!--<excludeProperty>git.commit.user.*</excludeProperty>-->
-                    <!--<excludeProperty>git.dirty</excludeProperty>-->
-                    <!--<excludeProperty>git.remote.origin.url</excludeProperty>-->
-                    <!--<excludeProperty>git.tags</excludeProperty>-->
-                    <!--</excludeProperties>-->
                     <includeOnlyProperties>
-                        <includeOnlyProperty>git.commit.id.describe</includeOnlyProperty>
-                        <includeOnlyProperty>git.commit.time</includeOnlyProperty>
+                        <!-- Referenced in portalContext.xml, for use by ConfigBean and thence AboutApromorePlugin -->
+                        <includeOnlyProperty>^git.commit.id.describe$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.time$</includeOnlyProperty>
+
+                        <!-- These properties will appear in each artifact's META-INF/git.properties but aren't required -->
+                        <includeOnlyProperty>^git.branch$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.build.version$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.closest.tag.name$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.id$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.dirty$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.remote.origin.url$</includeOnlyProperty>
                     </includeOnlyProperties>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${gitPropertiesPath}</generateGitPropertiesFilename>
-                    <gitDescribe>
-                        <dirty>-DEV</dirty>
-                    </gitDescribe>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/META-INF/git.properties</generateGitPropertiesFilename>
+                    <skipPoms>false</skipPoms>
                 </configuration>
             </plugin>
             <plugin>

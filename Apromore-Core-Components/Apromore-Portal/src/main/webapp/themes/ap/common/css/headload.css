@@ -1,0 +1,29 @@
+/* This style should be linked in <head> using */
+
+/* Make sure button colours are transparent */
+.ap-icon {
+    background-color: transparent;
+}
+
+/* Loaders */
+.z-loading-icon {
+    background-image: url('../img/brand/loader.svg') !important;
+    background-size: 60px auto !important;
+    background-position: 50% 50% !important;
+    width: 80px !important;
+    height: 80px !important;
+    clear: right;
+    position: static;
+    left: 0% !important;
+    margin: auto !important;
+}
+
+.z-loading {
+    border-radius: 8px !important;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(80, 80, 80, 0.5);
+}
+
+.z-loading-indicator {
+    background-color: transparent;
+}

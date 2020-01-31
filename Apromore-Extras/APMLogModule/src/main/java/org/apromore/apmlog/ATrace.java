@@ -14,7 +14,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Chii Chang (11/2019)
+ */
 public class ATrace implements Serializable {
 
     private String caseId = "";

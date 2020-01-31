@@ -13,7 +13,9 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.*;
 
 import static java.util.Map.Entry.comparingByValue;
-
+/**
+ * @author Chii Chang (11/2019)
+ */
 public class APMLog  {
 
     private List<ATrace> traceList;

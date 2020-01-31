@@ -214,7 +214,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
         }
         
         controller.showInputDialog(
-			"Input", 
+			"Save BPMN model",
 			"Enter a name for the BPMN model (no more than 60 characters)", 
 			defaultProcessName, 
 			"^[a-zA-Z0-9_\\(\\)\\-\\s]{1,60}$",
@@ -249,7 +249,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
 				                now,  // creation timestamp
 				                now,  // last update timestamp
 				                publicModel);
-				        Messagebox.show("A new BPMN model named '" + modelName + "' has been saved in the '" + controller.getContainingFolderName() + "' folder."); //portalContext.getCurrentFolder().getFolderName() + "' folder.");
+				        Messagebox.show("A new BPMN model named '" + modelName + "' has been saved in the '" + controller.getContainingFolderName() + "' folder.", "Apromore", Messagebox.OK, Messagebox.NONE); //portalContext.getCurrentFolder().getFolderName() + "' folder.");
 				        portalContext.refreshContent();
 					}
             	}

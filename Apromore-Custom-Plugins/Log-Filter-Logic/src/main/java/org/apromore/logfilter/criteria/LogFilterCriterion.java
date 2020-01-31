@@ -30,7 +30,7 @@ import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
- * Modified by Bruce Nguyen
+ * Modified by Bruce Nguyen (11/07/2019)
  */
 public interface LogFilterCriterion {
 

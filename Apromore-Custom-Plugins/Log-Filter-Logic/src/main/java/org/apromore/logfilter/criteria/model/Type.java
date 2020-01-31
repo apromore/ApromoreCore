@@ -3,7 +3,7 @@ package org.apromore.logfilter.criteria.model;
 /**
  * 
  * @author Bruce Nguyen
- * Modified by Chii Chang
+ * Modified by Chii Chang (30/12/2019)
  *
  */
 public enum Type {

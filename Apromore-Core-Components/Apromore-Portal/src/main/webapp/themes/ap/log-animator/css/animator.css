@@ -1,0 +1,51 @@
+.x-panel-editor-north > div > .x-panel-body {
+  box-sizing: border-box;
+  height: var(
+    --ap-menu-height
+  ) !important;
+}
+
+body > .x-panel-noborder {
+  top: calc(var(--ap-menu-height) + var(--ap-header-height)) !important;
+}
+
+body > .x-panel-editor-north,
+body > .x-panel-editor-south,
+body > .x-panel-editor-west,
+body > .x-panel-editor-east {
+  top: 0 !important;
+}
+
+.ap-log-animator {
+  background-color: transparent !important;
+}
+
+.ap-log-animator div {
+  box-sizing: border-box;
+}
+
+.ap-log-animator .z-window-header {
+  position: absolute;
+  top: 0;
+  left: 220px;
+  padding: var(--ap-offset-doc-title) 0 0 10px;
+  font-family: var(--ap-font-base);
+  font-weight: normal;
+  font-size: 14px;
+  width: calc(100% - 270px);
+  color: white;
+  z-index: var(--ap-z-editor-window);
+}
+
+.ap-log-animator .z-window-header:before {
+  content: ">";
+  padding-right: 10px;
+}
+
+@media (max-height: 820px) {
+  .bjs-container .djs-palette {
+    width: 96px;
+  }
+}
+
+

@@ -25,7 +25,7 @@
 <window position="center" title="Process model details" visible="true"
         sizable="true" width="550px">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid ap-form">
             <columns sizable="true">
                 <column width="25%"></column>
                 <column width="35%"></column>
@@ -81,7 +81,7 @@
                 <row spans="3">
                     <label value="*: mandatory fields." />
                 </row>
-                <row spans="3">
+                <row spans="3" sclass="ap-window-footer-actions">
                     <div id="div" align="center">
                         <button label="OK" iconSclass="z-icon-check-circle"></button>
                         <button label="OK for all" iconSclass="z-icon-check-circle" tooltiptext="Default values for process and version name, and given value for domain will apply for all remaining process models to import."></button>

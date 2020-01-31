@@ -55,7 +55,6 @@
     <fileset id="usrRepo" dir="${dir}">
         <include name="Apromore-Assembly/*-Assembly/target/repository/usr/*"/>
         <include name="Apromore-Assembly/Custom-Plugins/target/repository/usr/*"/>
-        <include name="git.properties"/>
 
         <!-- Free builds won't include the following encumbered components -->
         <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>

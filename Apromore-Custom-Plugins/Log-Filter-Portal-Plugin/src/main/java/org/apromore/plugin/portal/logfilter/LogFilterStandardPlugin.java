@@ -40,7 +40,7 @@ import org.zkoss.zul.Messagebox;
  * The portal will access this plugin via the DefaultPortalPlugin interface 
  * Other plugins will access this plugin via the LogFilterInterface and 
  * LogFilterResultListener interfaces.
- * @author Bruce Nguyen
+ * @author Bruce Nguyen (29/08/2019)
  *
  */
 public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
@@ -118,7 +118,7 @@ public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
                 portalItem.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                 false);
         
-        Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+        Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.", "Apromore", Messagebox.OK, Messagebox.NONE);
 
         portalContext.refreshContent();
     }
@@ -152,7 +152,7 @@ public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
         if (filteredLog != null) {
             if (this.portalContext instanceof PluginPortalContext) {
                 ((PluginPortalContext)portalContext).getMainController().showInputDialog(
-                        "Input", 
+                        "Save filtered log",
                         "Enter a log name (no more than 60 characters)", 
                         portalItem.getName() + "_filtered", 
                         "^[a-zA-Z0-9_\\-\\s]{1,60}$",

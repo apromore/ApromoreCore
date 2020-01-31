@@ -19,6 +19,7 @@
  */
 package org.apromore.logfilter.criteria.impl;
 
+import org.apromore.logfilter.criteria.impl.util.TimeUtil;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
@@ -38,7 +39,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (10/10/2019)
  */
 public class LogFilterCriterionDurationTotalProcessing extends AbstractLogFilterCriterion {
 
@@ -97,7 +98,7 @@ public class LogFilterCriterionDurationTotalProcessing extends AbstractLogFilter
         }
         return super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " all traces with a total processing time between " +
+                " all cases with a total processing time between " +
                 minString + " to " +
                 maxString;
     }
@@ -118,29 +119,15 @@ public class LogFilterCriterionDurationTotalProcessing extends AbstractLogFilter
         return new BigDecimal(0);
     }
 
-    public long epochMilliOf(ZonedDateTime zonedDateTime){
-        long s = zonedDateTime.toInstant().toEpochMilli();
-        return s;
-    }
-    public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
-        Instant i = Instant.ofEpochMilli(millisecond);
-        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
-        return z;
-    }
-    public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-        String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
-        Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
-        ZonedDateTime z = millisecondToZonedDateTime(calendar.getTimeInMillis());
-        return z;
-    }
+
 
     private long getTotalProcessingTime(XTrace xTrace) {
         long totoalProcessingTime = 0;
         for(int i=0; i<xTrace.size();i++){
             XEvent xEvent = xTrace.get(i);
 
-            ZonedDateTime iZdt = zonedDateTimeOf(xEvent);
-            long iZdtMilli = epochMilliOf(iZdt);
+            ZonedDateTime iZdt = TimeUtil.zonedDateTimeOf(xEvent);
+            long iZdtMilli = TimeUtil.epochMilliOf(iZdt);
 
             String life = xEvent.getAttributes().get(
                     "lifecycle:transition").toString().toLowerCase();
@@ -154,8 +141,8 @@ public class LogFilterCriterionDurationTotalProcessing extends AbstractLogFilter
                     String jLife = jEvent.getAttributes().get("lifecycle:transition").toString().toLowerCase();
 
                     if(jName.equals(eName) && jLife.equals("complete")) {
-                        ZonedDateTime jZDT = zonedDateTimeOf(jEvent);
-                        long etMilli = epochMilliOf(jZDT);
+                        ZonedDateTime jZDT = TimeUtil.zonedDateTimeOf(jEvent);
+                        long etMilli = TimeUtil.epochMilliOf(jZDT);
                         long dur = etMilli - iZdtMilli;
                         totoalProcessingTime += dur;
                         break;

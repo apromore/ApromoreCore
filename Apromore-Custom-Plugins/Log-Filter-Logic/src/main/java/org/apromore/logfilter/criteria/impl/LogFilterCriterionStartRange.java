@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (20/09/2019)
  */
 public class LogFilterCriterionStartRange extends AbstractLogFilterCriterion {
 
@@ -64,7 +64,7 @@ public class LogFilterCriterionStartRange extends AbstractLogFilterCriterion {
     public String toString() {
         String display = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " traces that contain start event in the timestamp range between " +
+                " cases that contain start event in the timestamp range between " +
                 new Date(start) + " and " + new Date(end);
         return display;
     }

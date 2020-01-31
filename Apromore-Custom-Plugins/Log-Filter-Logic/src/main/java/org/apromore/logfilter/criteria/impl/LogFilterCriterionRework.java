@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Chii Chang
+ * @author Chii Chang (31/12/2019)
  */
 public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
 
@@ -190,7 +190,7 @@ public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
     public String toString() {
         String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
-                " all traces where their activities contain [";// + value.toString();
+                " all cases where their activities contain [";// + value.toString();
 
         int count = 1;
 
@@ -222,8 +222,9 @@ public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
 
 
             if (count < valueNameSet.size()) {
-                if(hasGreaterCondition || hasLessCondition) displayString += "), ";
-                else displayString += ", ";
+                if(hasGreaterCondition || hasLessCondition) displayString += ") ";
+                if (containment == Containment.CONTAIN_ALL) displayString += " AND ";
+                else displayString += " OR ";
 
             } else {
                 if(hasGreaterCondition || hasLessCondition) displayString += ")";

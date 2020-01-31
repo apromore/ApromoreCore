@@ -51,7 +51,7 @@ public class EditOneLogDataController extends BaseController {
         this.log = log;
 
         this.editDataWindow = (Window) Executions.createComponents("macros/editlogdata.zul", null, null);
-        this.editDataWindow.setTitle("Edit log model meta-data");
+        this.editDataWindow.setTitle("Edit log metadata");
 
         this.logNameT = (Textbox) editDataWindow.getFellow("logname");
         this.makePublicCb = (Checkbox) editDataWindow.getFellow("logpublic");

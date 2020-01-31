@@ -33,7 +33,7 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified: Bruce Nguyen
- * Modified: Chii Chang on 2019
+ * Modified: Chii Chang (10/10/2019)
  * A filter has codes, names (display names) and types.
  * These are standard filters (i.e. standard codes)
  * The codes are the original attribute name in event logs
