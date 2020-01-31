@@ -21,7 +21,7 @@
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
 <window id="importWindow" position="center" title="Import process models or logs"
         visible="true" sizable="true" width="600px"
-        sclass="ap-csv-import-chooser"
+        sclass="ap-importer-chooser"
         closable="true"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:h="http://www.w3.org/1999/xhtml">
