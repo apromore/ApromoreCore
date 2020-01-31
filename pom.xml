@@ -175,10 +175,8 @@
         <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-Manager-WS</module>
         <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
-        <module>Apromore-Core-Components/Apromore-Editor</module>
 
         <!-- Assembles the Bundles and repositories -->
-        <module>Apromore-Assembly/Editor-Assembly</module>
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
 
