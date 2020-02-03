@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2009-2018 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+            targetNamespace="http://www.omg.org/spec/DD/20100524/DC"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:element name="Font" type="dc:Font" />
+	<xsd:element name="Point" type="dc:Point" />
+	<xsd:element name="Bounds" type="dc:Bounds" />
+	
+	<xsd:complexType name="Font">
+		<xsd:attribute name="name" type="xsd:string" />
+		<xsd:attribute name="size" type="xsd:double" />
+		<xsd:attribute name="isBold" type="xsd:boolean" />
+		<xsd:attribute name="isItalic" type="xsd:boolean" />
+		<xsd:attribute name="isUnderline" type="xsd:boolean" />
+		<xsd:attribute name="isStrikeThrough" type="xsd:boolean" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="Point">
+		<xsd:attribute name="x" type="xsd:double" use="required" />
+		<xsd:attribute name="y" type="xsd:double" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="Bounds">
+		<xsd:attribute name="x" type="xsd:double" use="required" />
+		<xsd:attribute name="y" type="xsd:double" use="required" />
+		<xsd:attribute name="width" type="xsd:double" use="required" />
+		<xsd:attribute name="height" type="xsd:double" use="required" />
+	</xsd:complexType>
+
+</xsd:schema>

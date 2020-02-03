@@ -139,6 +139,11 @@
                 <include name="**/target/json-osgi-20090211.jar"/>
                 -->
             </fileset>
+
+            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
+            <fileset dir="${dir-sups}">
+                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
+            </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset refid="usrRepo"/>

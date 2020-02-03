@@ -122,29 +122,28 @@
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
-        <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin</module>
-        <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>
-        <module>Apromore-Custom-Plugins/BIMP-Portal-Plugin</module>
-
-
-        <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
-        <module>Apromore-Custom-Plugins/BPMNMiner-Logic</module>
-        <module>Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin</module>
-
-        <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
-        <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
-        <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
-        <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
-
-        <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
-        <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Apromore-Editor/bpmn20xmlbasic</module>
+        <module>Apromore-Custom-Plugins/Apromore-Editor/diagram core</module>
+        <module>Apromore-Custom-Plugins/Apromore-Editor/pdf</module>
         <module>Apromore-Custom-Plugins/APM-Logic</module>
         <module>Apromore-Custom-Plugins/APM-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/APM-Compliance-Logic</module>
         <module>Apromore-Custom-Plugins/APM-Compliance-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/APM-Comp-Guards-Logic</module>
         <module>Apromore-Custom-Plugins/APM-Comp-Guards-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
+        <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin</module>
+        <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>
+        <module>Apromore-Custom-Plugins/BIMP-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
+        <module>Apromore-Custom-Plugins/BPMNMiner-Logic</module>
+        <module>Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
+        <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
+        <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
+        <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
+        <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
+        <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
 
         <module>Apromore-Custom-Plugins/IBPStruct-Logic</module>
         <module>Apromore-Custom-Plugins/IBPStruct-Portal-Plugin</module>
@@ -153,20 +152,16 @@
         <module>Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Logic</module>
         <module>Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin</module>
         
-        <!--
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
-        -->
 
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Logic</module>
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
         
-        <!--
         <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
         <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
-        -->
         
         <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Theme-Selection-Portal-Plugin</module>
