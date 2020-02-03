@@ -10,13 +10,22 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Map.Entry.comparingByValue;
+
 /**
  * @author Chii Chang (11/2019)
+ * Modified: Chii Chang (03/02/2020)
  */
-public class APMLog  {
+public class APMLog implements Serializable {
 
     private List<ATrace> traceList;
     private UnifiedMap<Integer, Integer> variantIdFreqMap;
@@ -31,13 +40,19 @@ public class APMLog  {
     private long caseVariantSize = 0;
     private long eventSize = 0;
 
+    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
+    private UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueSetMap;
+
     private UnifiedMap<String, ATrace> traceUnifiedMap;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(APMLog.class);
 
     public APMLog(XLog xLog) {
         traceList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         caseAttributeValueFreqMap = new UnifiedMap<>();
+        rawEventAttributeValueSetMap = new UnifiedMap<>();
+        rawCaseAttributeValueSetMap = new UnifiedMap<>();
 
         initData(xLog);
     }
@@ -79,67 +94,77 @@ public class APMLog  {
         for(int i=0; i<xLog.size(); i++) {
             ATrace aTrace = new ATrace(xLog.get(i));
 
-            traceUnifiedMap.put(aTrace.getCaseId(), aTrace);
-
-            eventSize += aTrace.getEventSize();
-
-            if(startTime == -1 || aTrace.getStartTimeMilli() < startTime) {
-                startTime = aTrace.getStartTimeMilli();
-            }
-            if(endTime == -1 || aTrace.getEndTimeMilli() > endTime) {
-                endTime = aTrace.getEndTimeMilli();
-            }
-            if(this.timeZone.equals("")) this.timeZone = aTrace.get(0).getTimeZone();
-
-            /**
-             * Event attributes
-             */
-            updateEventAttributeValueFreqMap(aTrace);
-
-            /**
-             * Case attributes
-             */
-            updateCaseAttributeValueFreqMap(aTrace);
-
-            if(this.minDuration == 0 || aTrace.getDuration() < minDuration) {
-                minDuration = aTrace.getDuration();
-            }
-            if(this.maxDuration == 0 || aTrace.getDuration() > maxDuration) {
-                maxDuration = aTrace.getDuration();
+            if (aTrace.size() < 1) {
+                System.out.println("PAUSE");
             }
 
+            if (aTrace.size() > 0) {
 
-            this.traceList.add(aTrace);
+                traceUnifiedMap.put(aTrace.getCaseId(), aTrace);
 
-            int variId = aTrace.getCaseVariantId();
-            List<String> actNameList = aTrace.getActivityNameList();
-            IntArrayList idList = getIntArrayListOf(actNameList);
-            if(variId > 0) {
-                containsVariantId = true;
-                if (variantIdFreqMap.containsKey(variId)) {
-                    int freq = variantIdFreqMap.get(variId) + 1;
-                    variantIdFreqMap.put(variId, freq);
-                } else {
-                    variantIdFreqMap.put(variId, 1);
+                eventSize += aTrace.getEventSize();
+
+                if (startTime == -1 || aTrace.getStartTimeMilli() < startTime) {
+                    startTime = aTrace.getStartTimeMilli();
                 }
-                if(!variantIdActIdListMap.containsKey(variId)) {
-                    variantIdActIdListMap.put(variId, idList);
+                if (endTime == -1 || aTrace.getEndTimeMilli() > endTime) {
+                    endTime = aTrace.getEndTimeMilli();
                 }
-            } else { // does not have variant ID
-                if(actIdListFreqMap.containsKey(idList)) {
-                    int freq = actIdListFreqMap.get(idList) + 1;
-                    actIdListFreqMap.put(idList, freq);
-                } else {
-                    actIdListFreqMap.put(idList, 1);
+                if (this.timeZone.equals("")) this.timeZone = aTrace.get(0).getTimeZone();
+
+                /**
+                 * Event attributes
+                 */
+                updateEventAttributeValueFreqMap(aTrace);
+                updateEventAttributeValueSetMap(aTrace);
+
+                /**
+                 * Case attributes
+                 */
+                updateCaseAttributeValueFreqMap(aTrace);
+                updateCaseAttributeValueSetMap(aTrace);
+
+                if (this.minDuration == 0 || aTrace.getDuration() < minDuration) {
+                    minDuration = aTrace.getDuration();
+                }
+                if (this.maxDuration == 0 || aTrace.getDuration() > maxDuration) {
+                    maxDuration = aTrace.getDuration();
                 }
 
-                if(!tempActIdListToVIdMap.containsKey(idList)) {
-                    tempActIdListToVIdMap.put(idList, tempVariId);
-                    tempVariId += 1;
+
+                this.traceList.add(aTrace);
+
+                int variId = aTrace.getCaseVariantId();
+                List<String> actNameList = aTrace.getActivityNameList();
+                IntArrayList idList = getIntArrayListOf(actNameList);
+                if (variId > 0) {
+                    containsVariantId = true;
+                    if (variantIdFreqMap.containsKey(variId)) {
+                        int freq = variantIdFreqMap.get(variId) + 1;
+                        variantIdFreqMap.put(variId, freq);
+                    } else {
+                        variantIdFreqMap.put(variId, 1);
+                    }
+                    if (!variantIdActIdListMap.containsKey(variId)) {
+                        variantIdActIdListMap.put(variId, idList);
+                    }
+                } else { // does not have variant ID
+                    if (actIdListFreqMap.containsKey(idList)) {
+                        int freq = actIdListFreqMap.get(idList) + 1;
+                        actIdListFreqMap.put(idList, freq);
+                    } else {
+                        actIdListFreqMap.put(idList, 1);
+                    }
+
+                    if (!tempActIdListToVIdMap.containsKey(idList)) {
+                        tempActIdListToVIdMap.put(idList, tempVariId);
+                        tempVariId += 1;
+                    }
+
+                    int vId = tempActIdListToVIdMap.get(idList);
+                    aTrace.setCaseVariantId(vId);
                 }
 
-                int vId = tempActIdListToVIdMap.get(idList);
-                aTrace.setCaseVariantId(vId);
             }
         }
 
@@ -174,6 +199,7 @@ public class APMLog  {
             }
         }
 
+        LOGGER.info("*** Write case variant ID to the original XLog");
         for(int i=0; i < xLog.size(); i++) {
             XTrace xTrace = xLog.get(i);
             ATrace aTrace = traceList.get(i);
@@ -181,9 +207,23 @@ public class APMLog  {
             XAttribute attribute = new XAttributeLiteralImpl("case:variant", Integer.toString(variId));
             xTrace.getAttributes().put("case:variant", attribute);
         }
+        LOGGER.info("*** Write case variant ID complete");
 
+//        originalCaseVariantSize = variantIdFreqMap.size();
         caseVariantSize = variantIdFreqMap.size();
 
+    }
+
+    private void updateEventAttributeValueSetMap(ATrace aTrace) {
+        for (String key : aTrace.getRawEventAttributeValueSetMap().keySet()) {
+            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
+                this.rawEventAttributeValueSetMap.get(key).addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+            } else {
+                UnifiedSet<String> vals = new UnifiedSet<>();
+                vals.addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+                this.rawEventAttributeValueSetMap.put(key, vals);
+            }
+        }
     }
 
     private void updateEventAttributeValueFreqMap(ATrace aTrace) {
@@ -213,6 +253,20 @@ public class APMLog  {
                     valueFreqMapOfLog.put(attrValue, attrFreqOfTrace);
                 }
                 this.eventAttributeValueFreqMap.put(key, valueFreqMapOfLog);
+            }
+        }
+//        System.out.println(eventAttributeValueFreqMap);
+    }
+
+    private void updateCaseAttributeValueSetMap(ATrace aTrace) {
+        for(String key : aTrace.getAttributeMap().keySet()) {
+            String attrValue = aTrace.getAttributeMap().get(key);
+            if (this.rawCaseAttributeValueSetMap.containsKey(key)) {
+                this.rawCaseAttributeValueSetMap.get(key).put(attrValue);
+            } else {
+                UnifiedSet<String> vals = new UnifiedSet<>();
+                vals.put(key);
+                this.rawCaseAttributeValueSetMap.put(key, vals);
             }
         }
     }
@@ -296,6 +350,14 @@ public class APMLog  {
 
     public void setEventSize(int eventSize) {
         this.eventSize = eventSize;
+    }
+
+    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
+        return rawEventAttributeValueSetMap;
+    }
+
+    public UnifiedMap<String, UnifiedSet<String>> getRawCaseAttributeValueSetMap() {
+        return rawCaseAttributeValueSetMap;
     }
 
     public int getCaseVariantSize() {
@@ -471,7 +533,7 @@ public class APMLog  {
             if(this.minDuration == -1 || aTrace.getDuration() < minDuration) minDuration = aTrace.getDuration();
             if(this.maxDuration == -1 || aTrace.getDuration() > maxDuration) maxDuration = aTrace.getDuration();
         }
-        System.out.println(maxDuration);
+//        System.out.println(maxDuration);
     }
 
     public APMLog(List<ATrace> traceList,
@@ -479,6 +541,8 @@ public class APMLog  {
                   HashBiMap<Integer, String> actIdNameMap,
                   UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
                   UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
+                  UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueFreqMap,
+                  UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueFreqMap,
                   UnifiedMap<String, ATrace> traceUnifiedMap,
                   long minDuration,
                   long maxDuration,
@@ -492,6 +556,8 @@ public class APMLog  {
         this.actIdNameMap = actIdNameMap;
         this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
         this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
+        this.rawEventAttributeValueSetMap = rawEventAttributeValueFreqMap;
+        this.rawCaseAttributeValueSetMap = rawCaseAttributeValueFreqMap;
         this.traceUnifiedMap = traceUnifiedMap;
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
@@ -500,5 +566,102 @@ public class APMLog  {
         this.endTime = endTime;
         this.caseVariantSize = caseVariantSize;
         this.eventSize = eventSize;
+    }
+
+
+    public APMLog clone() {
+
+        UnifiedMap<String, ATrace> traceUnifiedMapForClone = new UnifiedMap<>();
+
+        List<ATrace> traceListForClone = new ArrayList<>();
+
+        for (int i = 0; i < this.traceList.size(); i++) {
+            ATrace aTrace = this.traceList.get(i).clone();
+            traceUnifiedMapForClone.put(aTrace.getCaseId(), aTrace);
+            traceListForClone.add(aTrace);
+        }
+
+        UnifiedMap<Integer, Integer> variIdFreqMapForClone = new UnifiedMap<>();
+
+        for (int key : this.variantIdFreqMap.keySet()) {
+            variIdFreqMapForClone.put(key, this.variantIdFreqMap.get(key));
+        }
+
+        HashBiMap<Integer, String> actIdNameMapForClone = new HashBiMap<>();
+
+        for (int key : this.actIdNameMap.keySet()) {
+            actIdNameMapForClone.put(key, this.actIdNameMap.get(key));
+        }
+
+        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValFreqMapForClone = new UnifiedMap<>();
+
+        for (String key : this.eventAttributeValueFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMapForClone = new UnifiedMap<>();
+            UnifiedMap<String, Integer> valFreqMap = this.eventAttributeValueFreqMap.get(key);
+
+            for (String val : valFreqMap.keySet()) {
+                valFreqMapForClone.put(val, valFreqMap.get(val));
+            }
+
+            eventAttrValFreqMapForClone.put(key, valFreqMapForClone);
+        }
+
+        UnifiedMap<String, UnifiedMap<String, Integer>> caseAttrValFreqMapForClone = new UnifiedMap<>();
+
+        for (String key : this.caseAttributeValueFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMapForClone = new UnifiedMap<>();
+            UnifiedMap<String, Integer> valFreqMap = this.caseAttributeValueFreqMap.get(key);
+
+            for (String val : valFreqMap.keySet()) {
+                valFreqMapForClone.put(val, valFreqMap.get(val));
+            }
+
+            caseAttrValFreqMapForClone.put(key, valFreqMapForClone);
+        }
+
+        UnifiedMap<String, UnifiedSet<String>> rawEventAttrValForClone = new UnifiedMap<>();
+
+        for (String key : this.rawEventAttributeValueSetMap.keySet()) {
+
+            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
+            UnifiedSet<String> valSet = this.rawEventAttributeValueSetMap.get(key);
+            for (String val : valSet) {
+                valSetForClone.put(val);
+            }
+
+            rawEventAttrValForClone.put(key, valSetForClone);
+        }
+
+        UnifiedMap<String, UnifiedSet<String>> rawCaseAttrValForClone = new UnifiedMap<>();
+
+        for (String key : this.rawCaseAttributeValueSetMap.keySet()) {
+
+            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
+            UnifiedSet<String> valSet = this.rawCaseAttributeValueSetMap.get(key);
+            for (String val : valSet) {
+                valSetForClone.put(val);
+            }
+
+            rawCaseAttrValForClone.put(key, valSetForClone);
+        }
+
+
+
+
+        return new APMLog(traceListForClone,
+                            variIdFreqMapForClone,
+                            actIdNameMapForClone,
+                            eventAttrValFreqMapForClone,
+                            caseAttrValFreqMapForClone,
+                            rawEventAttrValForClone,
+                            rawCaseAttrValForClone,
+                            traceUnifiedMapForClone,
+                            this.minDuration,
+                            this.maxDuration,
+                            this.timeZone,
+                            this.startTime,
+                            this.endTime,
+                            this.caseVariantSize,
+                            this.eventSize);
     }
 }

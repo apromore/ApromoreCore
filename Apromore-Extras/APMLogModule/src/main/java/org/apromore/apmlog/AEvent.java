@@ -3,22 +3,30 @@ package org.apromore.apmlog;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.impl.XAttributeDiscreteImpl;
+import org.deckfour.xes.model.impl.XAttributeIDImpl;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.io.Serializable;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * @author Chii Chang (11/2019)
+ * Modified: Chii Chang (03/02/2020)
  */
-public class AEvent {
+public class AEvent implements Serializable {
     private String name = "";
     private long timestampMilli = 0;
-    private String lifecycle = "";
+    private String lifecycle = "complete";
     private String resource = "";
     private UnifiedMap<String, String> attributeMap;
     private UnifiedSet<String> attributeNameSet;
-    private String timeZone = "";//2019-10-20
+    private String timeZone = "";
+    private UnifiedMap<String, String> rawAttributeMap;
 
     public AEvent(String name, long timestampMilli, String lifecycle, String resource,
                   UnifiedMap<String, String> attributeMap,
@@ -36,28 +44,56 @@ public class AEvent {
     public AEvent(XEvent xEvent) {
         XAttributeMap xAttributeMap = xEvent.getAttributes();
 
+
         attributeMap = new UnifiedMap<>();
-        attributeNameSet = new UnifiedSet<>();
+        rawAttributeMap = new UnifiedMap<>();
+
+        if (xAttributeMap.keySet().contains("concept:name")) {
+            this.name = xAttributeMap.get("concept:name").toString();
+        }
+
+        if (xAttributeMap.keySet().contains("lifecycle:transition")) {
+            this.lifecycle = xAttributeMap.get("lifecycle:transition").toString();
+        }
+
+        if (xAttributeMap.keySet().contains("org:resource")) {
+            this.resource = xAttributeMap.get("org:resource").toString();
+        }
 
         for(String key : xAttributeMap.keySet()) {
-            if(key.toLowerCase().equals("concept:name")) this.name = xAttributeMap.get(key).toString();
-            else if(key.toLowerCase().equals("lifecycle:transition")) this.lifecycle = xAttributeMap.get(key).toString().toLowerCase();
-            else if(key.toLowerCase().equals("org:resource")) this.resource = xAttributeMap.get(key).toString();
-            else if(!key.toLowerCase().equals("time:timestamp")){
-                this.attributeMap.put(key, xAttributeMap.get(key).toString());
-                this.attributeNameSet.put(key);
+            if (!key.equals("concept:name") &&
+            !key.equals("lifecycle:transition") &&
+            !key.equals("org:resource") &&
+            !key.equals("time:timestamp")) {
+                if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
+                    this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()));
+                } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
+                    this.attributeMap.put(key, String.valueOf(((XAttributeDiscreteImpl) xAttributeMap.get(key)).getValue()));
+                } else if (xAttributeMap.get(key) instanceof XAttributeIDImpl) {
+                    this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()));
+                }
             }
 
+            this.rawAttributeMap.put(key, String.valueOf(xAttributeMap.get(key).toString()));
         }
         if(xEvent.getAttributes().containsKey("time:timestamp")) {
-            ZonedDateTime zdt = Util.zonedDateTimeOf(xEvent);//2019-10-20
-            this.timestampMilli = Util.epochMilliOf(zdt);//2019-10-20
-            this.timeZone = zdt.getZone().getId();//2019-10-20
+            ZonedDateTime zdt = Util.zonedDateTimeOf(xEvent);
+            this.timestampMilli = Util.epochMilliOf(zdt);
+            this.timeZone = zdt.getZone().getId();
+        }else{
+            Date d = new Date(0);
+            ZonedDateTime zdt = ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
+            this.timestampMilli = Util.epochMilliOf(zdt);
+            this.timeZone = zdt.getZone().getId();
         }
+
+        attributeNameSet = new UnifiedSet<>(attributeMap.keySet());
     }
 
 
-
+    public UnifiedMap<String, String> getRawAttributeMap() {
+        return rawAttributeMap;
+    }
 
     public void setName(String name) {
         this.name = name;
