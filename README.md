@@ -1,4 +1,5 @@
 ![apromore](http://apromore.org/wp-content/uploads/2019/11/Apromore-banner_narrow.png "apromore")
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fapromore%2FApromoreCore.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fapromore%2FApromoreCore?ref=badge_shield)
 
 # Apromore Community Edition
 
@@ -195,3 +196,7 @@ mysql -u root -p apromore < Supplements/database/PQL.MySQL-1.2.sql
   - PQL-Logic-WS/target/pql-logic-ws-1.1.war
   - PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar
 * Also, uncomment the following component in the `copy-virgo` target: `PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar`
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fapromore%2FApromoreCore.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fapromore%2FApromoreCore?ref=badge_large)
