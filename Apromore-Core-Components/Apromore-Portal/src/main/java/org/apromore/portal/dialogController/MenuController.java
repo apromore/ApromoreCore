@@ -215,6 +215,7 @@ public class MenuController extends Menubar {
                 if ("Account".equals(menu.getLabel())) {
                     try {
                         menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
+                        menu.setSclass("ap-user-menu");
                     } catch (Exception e) {
                         LOGGER.warn("Unable to set Account menu to current user name", e);
                     }

@@ -38,6 +38,7 @@
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:ca="client/attribute"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
     xmlns:x="xhtml" xmlns:zk="zk">
@@ -216,19 +217,19 @@
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
-                            <button sclass="ap-icon ap-icon-sync" id="refreshB" tooltiptext="Reload data" />
+                            <button id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.e.portal.reload.hint}" />
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button sclass="ap-icon ap-icon-upload ap-t-act-upload" id="btnUpload" tooltiptext="Upload"/>
-                            <button sclass="ap-icon ap-icon-download ap-t-act-download" id="btnDownload" tooltiptext="Download"/>
+                            <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
+                            <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
                             <h:span class="ap-action-sep"></h:span>
-                            <button sclass="ap-icon ap-icon-folder-add ap-t-act-new-folder" id="btnAddFolder" tooltiptext="Create folder"/>
-                            <button sclass="ap-icon ap-icon-bpmn-add ap-t-act-new-model" id="btnAddProcess" tooltiptext="Create model"/>
-                            <button sclass="ap-icon ap-icon-trash ap-t-act-delete" id="btnRemoveFolder" tooltiptext="Delete" visible="true"/>
-                            <button sclass="ap-icon ap-icon-rename ap-t-act-rename" id="btnRenameFolder" tooltiptext="Rename" visible="true"/>
+                            <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.e.portal.addFolder.hint}"/>
+                            <button id="btnAddProcess" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
+                            <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
+                            <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button sclass="ap-icon ap-icon-user-lock" id="btnSecurity" tooltiptext="Access rights"/>
+                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.e.portal.security.hint}"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px"/>

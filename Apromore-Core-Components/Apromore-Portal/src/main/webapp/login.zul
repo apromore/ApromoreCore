@@ -111,21 +111,21 @@
                                         <h:fieldset>
                                             <h:div class="controls">
                                                 <h:input type="text" name="j_username" data-t="username"
-                                                         placeholder="Your login or email"/>
+                                                         placeholder="${labels.e.auth.username.hint}"/>
                                             </h:div>
                                             <h:div class="controls controls-row">
-                                                <h:input type="password" name="j_password" data-t="password" placeholder="Your password"/>
+                                                <h:input type="password" name="j_password" data-t="password" placeholder="${labels.e.auth.password.hint}"/>
                                             </h:div>
                                             <h:div class="controls controls-row split">
                                                 <h:a class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
                                                     password?
                                                 </h:a>
-                                                <h:button class="signin-button button" type="submit" data-t="submit-login">Sign in</h:button>
+                                                <h:button class="signin-button button" type="submit" data-t="login">${labels.e.auth.login.text}</h:button>
                                             </h:div>
                                             <h:div class="controls controls-row register">
                                                 <h:a href="#register" class="register-button button link-button"
                                                      data-toggle="tab">
-                                                    Create a new account
+                                                    ${labels.e.auth.addAccount.text}
                                                 </h:a>
                                             </h:div>
                                         </h:fieldset>
