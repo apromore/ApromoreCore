@@ -31,7 +31,7 @@
         <relativePath>../../Apromore-Plugins/</relativePath>
     </parent>
 
-	<packaging>war</packaging>
+    <packaging>war</packaging>
     <artifactId>apromore-bpmneditor</artifactId>
     <name>Apromore BPMN Editor</name>
     <description>Some description</description>

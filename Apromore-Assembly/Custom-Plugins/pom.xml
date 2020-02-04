@@ -70,7 +70,25 @@
             <artifactId>eclipse-collections-osgi</artifactId>
             <version>1.1</version>
         </dependency>	
-		
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-bpmn2_0</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-pdf</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>jdom2-osgi</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
         <!-- Contains the RemoveNonOSGIJars Maven plugin -->
         <dependency>
             <groupId>org.apromore</groupId>

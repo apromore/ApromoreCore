@@ -155,6 +155,8 @@
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
 
+        <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin</module>
+
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Logic</module>
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin</module>
@@ -176,7 +178,7 @@
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-Manager-WS</module>
-        <!-- <module>Apromore-Core-Components/Apromore-BPMNEditor</module> -->
+        <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Manager-Assembly</module>
