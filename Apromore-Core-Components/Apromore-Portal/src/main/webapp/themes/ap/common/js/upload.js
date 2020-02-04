@@ -19,7 +19,7 @@ Ap.uploadFileSelected = function (evt) {
 
 Ap.uploadBtnClick = function () {
     const CHANGE = 'change'
-    let target = $('.ap-csv-import-chooser input[type="file"]')[0]
+    let target = $('.ap-importer-chooser input[type="file"]')[0]
 
     target.removeEventListener(CHANGE, Ap.uploadFileSelected);
     target.addEventListener(CHANGE, Ap.uploadFileSelected);

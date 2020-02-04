@@ -38,7 +38,7 @@
     <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
-    <custom-attributes theme="${labels.ap.theme}"/>
+    <custom-attributes theme="${labels.theme}"/>
 <!--    <custom-attributes theme="ap"/>-->
 
     <n:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />

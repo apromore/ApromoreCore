@@ -136,6 +136,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Slider;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.util.resource.Labels;
 
 import org.zkoss.zul.*;
 import javax.swing.*;
@@ -705,7 +706,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                 @Override
                 public void onEvent(Event event) throws Exception {
                 	ProcessDiscovererController.this.showInputDialog(
-            			"Save filtered log",
+                            Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
 						"Enter a log name (no more than 60 characters)", 
 						logSummary.getName() + "_filtered", 
 						"^[a-zA-Z0-9_\\(\\)\\-\\s]{1,60}$",

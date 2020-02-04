@@ -1,6 +1,6 @@
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
     <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
-        <custom-attributes theme="${labels.ap.theme}"/>
+        <custom-attributes theme="${labels.theme}"/>
         <style src="/themes/${theme}/csv-importer/css/index.css" />
 
         <!--<vbox>-->
