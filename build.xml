@@ -67,9 +67,6 @@
 
         <include name="Apromore-Custom-Plugins/IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
-        <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
-        <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
-        -->
 
         <include name="Apromore-Custom-Plugins/Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
