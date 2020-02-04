@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (03/02/2020)
+ * Modified: Chii Chang (04/02/2020)
  */
 public class ATrace implements Serializable {
 
@@ -45,18 +46,26 @@ public class ATrace implements Serializable {
     private List<String> activityNameList;
     private UnifiedSet<String> eventNameSet;
 
-    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
-    private UnifiedMap<String, String> rawAttributeMap;
+    private List<Integer> activityNameIndexList;
 
-    public ATrace(XTrace xTrace) {
+    private APMLog apmLog;
+
+//    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
+//    private UnifiedMap<String, String> rawAttributeMap;
+
+    public ATrace(XTrace xTrace, APMLog apmLog) {
+
+        this.apmLog = apmLog;
+
+        activityNameIndexList = new ArrayList<>();
 
         activityList = new ArrayList<>();
         eventList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         attributeMap = new UnifiedMap<>();
 
-        rawEventAttributeValueSetMap = new UnifiedMap<>();
-        rawAttributeMap = new UnifiedMap<>();
+//        rawEventAttributeValueSetMap = new UnifiedMap<>();
+//        rawAttributeMap = new UnifiedMap<>();
 
         XAttributeMap xAttributeMap = xTrace.getAttributes();
         for(String key : xAttributeMap.keySet()) {
@@ -66,7 +75,7 @@ public class ATrace implements Serializable {
             } else {
                 this.attributeMap.put(key, xAttributeMap.get(key).toString());
             }
-            this.rawAttributeMap.put(key, xAttributeMap.get(key).toString());
+//            this.rawAttributeMap.put(key, xAttributeMap.get(key).toString());
         }
         /**
          * DO NOT TAKE THE CASE:VARIANT IN THE ORIGINAL XLOG
@@ -115,7 +124,7 @@ public class ATrace implements Serializable {
                 this.eventNameSet.put(iAEvent.getName());
 
                 fillEventAttributeValueFreqMap(iAEvent);
-                fillEventAttributeValueSetMap(iAEvent);
+//                fillEventAttributeValueSetMap(iAEvent);
 
 
 
@@ -172,6 +181,10 @@ public class ATrace implements Serializable {
                                     AActivity aActivity = new AActivity(aEventList);
                                     this.activityList.add(aActivity);
                                     this.activityNameList.add(aActivity.getName());
+
+                                    this.activityNameIndexList.add(
+                                            apmLog.getActivityNameMapper().set(aActivity.getName()));
+
                                     markedXEvent.put(xTrace.get(j));
                                     hasComplete = true;
                                 }
@@ -193,6 +206,9 @@ public class ATrace implements Serializable {
                     AActivity aActivity = new AActivity(aEventList);
                     this.activityList.add(aActivity);
                     this.activityNameList.add(aActivity.getName());
+
+                    this.activityNameIndexList.add(
+                            apmLog.getActivityNameMapper().set(aActivity.getName()));
                 }
             }
             if(this.totalProcessingTime > 0 && processCount > 0) this.averageProcessingTime = this.totalProcessingTime / processCount;
@@ -213,13 +229,16 @@ public class ATrace implements Serializable {
                     this.eventNameSet.put(iAEvent.getName());
 
                     fillEventAttributeValueFreqMap(iAEvent);
-                    fillEventAttributeValueSetMap(iAEvent);
+//                    fillEventAttributeValueSetMap(iAEvent);
 
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
                     this.activityList.add(aActivity);
                     this.activityNameList.add(aActivity.getName());
+
+                    this.activityNameIndexList.add(
+                            apmLog.getActivityNameMapper().set(aActivity.getName()));
                 }
             }
         }
@@ -240,30 +259,30 @@ public class ATrace implements Serializable {
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
         this.durationString = convertMilliseconds(duration);
 
-
+//        System.out.println(this.activityNameIndexList);
     }
 
 
-    public UnifiedMap<String, String> getRawAttributeMap() {
-        return rawAttributeMap;
-    }
+//    public UnifiedMap<String, String> getRawAttributeMap() {
+//        return rawAttributeMap;
+//    }
 
-    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
-        return rawEventAttributeValueSetMap;
-    }
+//    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
+//        return rawEventAttributeValueSetMap;
+//    }
 
-    private void fillEventAttributeValueSetMap(AEvent aEvent) {
-        for (String key : aEvent.getRawAttributeMap().keySet()) {
-            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
-                this.rawEventAttributeValueSetMap.get(key).put(aEvent.getRawAttributeMap().get(key));
-            } else {
-                UnifiedSet<String> vals = new UnifiedSet<>();
-                vals.put(aEvent.getRawAttributeMap().get(key));
-                this.rawEventAttributeValueSetMap.put(key, vals);
-            }
-        }
-//        System.out.println(rawEventAttributeValueSetMap);
-    }
+//    private void fillEventAttributeValueSetMap(AEvent aEvent) {
+//        for (String key : aEvent.getRawAttributeMap().keySet()) {
+//            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
+//                this.rawEventAttributeValueSetMap.get(key).put(aEvent.getRawAttributeMap().get(key));
+//            } else {
+//                UnifiedSet<String> vals = new UnifiedSet<>();
+//                vals.put(aEvent.getRawAttributeMap().get(key));
+//                this.rawEventAttributeValueSetMap.put(key, vals);
+//            }
+//        }
+////        System.out.println(rawEventAttributeValueSetMap);
+//    }
 
     private void fillEventAttributeValueFreqMap(AEvent aEvent) {
         for(String key : aEvent.getAttributeMap().keySet()) {
@@ -424,6 +443,10 @@ public class ATrace implements Serializable {
         return caseIdDigit;
     }
 
+    public List<Integer> getActivityNameIndexList() {
+        return activityNameIndexList;
+    }
+
     public ATrace(String caseId, int caseVariantId,
                   long startTimeMilli, long endTimeMilli,
                   boolean hasActivity, long duration,
@@ -435,7 +458,8 @@ public class ATrace implements Serializable {
                   UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
                   UnifiedMap<String, String> attributeMap,
                   List<String> activityNameList,
-                  UnifiedSet<String> eventNameSet) {
+                  UnifiedSet<String> eventNameSet,
+                  List<Integer> activityNameIndexList) {
         this.caseId = caseId;
         if(this.caseId.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
         this.caseVariantId = caseVariantId;
@@ -460,6 +484,8 @@ public class ATrace implements Serializable {
         this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
         this.durationString = convertMilliseconds(duration);
+
+        this.activityNameIndexList = activityNameIndexList;
     }
 
     public static String timestampStringOf(ZonedDateTime zdt){
@@ -561,6 +587,7 @@ public class ATrace implements Serializable {
                 eventAttrValFreqMap,
                 attrMap,
                 actNameList,
-                eNameSet);
+                eNameSet,
+                this.activityNameIndexList);
     }
 }

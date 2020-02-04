@@ -17,6 +17,7 @@ import java.util.Date;
 /**
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (03/02/2020)
+ * Modified: Chii Chang (04/02/2020)
  */
 public class AEvent implements Serializable {
     private String name = "";
@@ -26,7 +27,6 @@ public class AEvent implements Serializable {
     private UnifiedMap<String, String> attributeMap;
     private UnifiedSet<String> attributeNameSet;
     private String timeZone = "";
-    private UnifiedMap<String, String> rawAttributeMap;
 
     public AEvent(String name, long timestampMilli, String lifecycle, String resource,
                   UnifiedMap<String, String> attributeMap,
@@ -46,7 +46,6 @@ public class AEvent implements Serializable {
 
 
         attributeMap = new UnifiedMap<>();
-        rawAttributeMap = new UnifiedMap<>();
 
         if (xAttributeMap.keySet().contains("concept:name")) {
             this.name = xAttributeMap.get("concept:name").toString();
@@ -62,9 +61,9 @@ public class AEvent implements Serializable {
 
         for(String key : xAttributeMap.keySet()) {
             if (!key.equals("concept:name") &&
-            !key.equals("lifecycle:transition") &&
-            !key.equals("org:resource") &&
-            !key.equals("time:timestamp")) {
+                    !key.equals("lifecycle:transition") &&
+                    !key.equals("org:resource") &&
+                    !key.equals("time:timestamp")) {
                 if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
                     this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()));
                 } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
@@ -74,7 +73,6 @@ public class AEvent implements Serializable {
                 }
             }
 
-            this.rawAttributeMap.put(key, String.valueOf(xAttributeMap.get(key).toString()));
         }
         if(xEvent.getAttributes().containsKey("time:timestamp")) {
             ZonedDateTime zdt = Util.zonedDateTimeOf(xEvent);
@@ -91,9 +89,6 @@ public class AEvent implements Serializable {
     }
 
 
-    public UnifiedMap<String, String> getRawAttributeMap() {
-        return rawAttributeMap;
-    }
 
     public void setName(String name) {
         this.name = name;
