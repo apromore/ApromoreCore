@@ -61,7 +61,6 @@
         <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
     </fileset>
 
     <fileset id="usrRepoText" dir="${dir}">
