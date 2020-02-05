@@ -53,27 +53,6 @@
         <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
 
-        <include name="Apromore-Custom-Plugins/LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
-        
-        <include name="Apromore-Custom-Plugins/APM-Logic/target/apm-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
-
-        <include name="Apromore-Custom-Plugins/APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
-
-        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
-
-        <include name="Apromore-Custom-Plugins/IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
-
-        <include name="Apromore-Custom-Plugins/Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
-
-        <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
-
         <include name="Apromore-Custom-Plugins/Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
@@ -158,8 +137,10 @@
         </copy>
 
         <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
+<!--
         <copy file="${dir}/Apromore-Custom-Plugins/BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
         <copy file="${dir}/Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
+-->
 
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
