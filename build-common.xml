@@ -56,10 +56,6 @@
         <include name="Apromore-Assembly/*-Assembly/target/repository/usr/*"/>
         <include name="Apromore-Assembly/Custom-Plugins/target/repository/usr/*"/>
 
-        <!-- Free builds won't include the following encumbered components -->
-        <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
-        <include name="Apromore-OSGI-Bundles/zkthemepack-osgi/target/zkthemepack-osgi-*.jar"/>
-        
         <!-- These plugins wll be installed in an order with Apromore-Assembly/Custom-Plugins/custom-plugins.plan -->
         <include name="Apromore-Custom-Plugins/Generic-Portal-Plugin/target/generic-portal-plugin-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
