@@ -24,6 +24,7 @@ import static java.util.Map.Entry.comparingByValue;
 /**
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (03/02/2020)
+ * Modified: Chii Chang (04/02/2020)
  */
 public class APMLog implements Serializable {
 
@@ -40,19 +41,24 @@ public class APMLog implements Serializable {
     private long caseVariantSize = 0;
     private long eventSize = 0;
 
-    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
-    private UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueSetMap;
+//    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
+//    private UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueSetMap;
 
     private UnifiedMap<String, ATrace> traceUnifiedMap;
+
+    private ActivityNameMapper activityNameMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMLog.class);
 
     public APMLog(XLog xLog) {
+
+        activityNameMapper = new ActivityNameMapper();
+
         traceList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         caseAttributeValueFreqMap = new UnifiedMap<>();
-        rawEventAttributeValueSetMap = new UnifiedMap<>();
-        rawCaseAttributeValueSetMap = new UnifiedMap<>();
+//        rawEventAttributeValueSetMap = new UnifiedMap<>();
+//        rawCaseAttributeValueSetMap = new UnifiedMap<>();
 
         initData(xLog);
     }
@@ -92,7 +98,7 @@ public class APMLog implements Serializable {
         int tempVariId = 1;
 
         for(int i=0; i<xLog.size(); i++) {
-            ATrace aTrace = new ATrace(xLog.get(i));
+            ATrace aTrace = new ATrace(xLog.get(i), this);
 
             if (aTrace.size() < 1) {
                 System.out.println("PAUSE");
@@ -116,13 +122,13 @@ public class APMLog implements Serializable {
                  * Event attributes
                  */
                 updateEventAttributeValueFreqMap(aTrace);
-                updateEventAttributeValueSetMap(aTrace);
+//                updateEventAttributeValueSetMap(aTrace);
 
                 /**
                  * Case attributes
                  */
                 updateCaseAttributeValueFreqMap(aTrace);
-                updateCaseAttributeValueSetMap(aTrace);
+//                updateCaseAttributeValueSetMap(aTrace);
 
                 if (this.minDuration == 0 || aTrace.getDuration() < minDuration) {
                     minDuration = aTrace.getDuration();
@@ -214,17 +220,21 @@ public class APMLog implements Serializable {
 
     }
 
-    private void updateEventAttributeValueSetMap(ATrace aTrace) {
-        for (String key : aTrace.getRawEventAttributeValueSetMap().keySet()) {
-            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
-                this.rawEventAttributeValueSetMap.get(key).addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
-            } else {
-                UnifiedSet<String> vals = new UnifiedSet<>();
-                vals.addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
-                this.rawEventAttributeValueSetMap.put(key, vals);
-            }
-        }
+    public ActivityNameMapper getActivityNameMapper() {
+        return activityNameMapper;
     }
+
+    //    private void updateEventAttributeValueSetMap(ATrace aTrace) {
+//        for (String key : aTrace.getRawEventAttributeValueSetMap().keySet()) {
+//            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
+//                this.rawEventAttributeValueSetMap.get(key).addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+//            } else {
+//                UnifiedSet<String> vals = new UnifiedSet<>();
+//                vals.addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+//                this.rawEventAttributeValueSetMap.put(key, vals);
+//            }
+//        }
+//    }
 
     private void updateEventAttributeValueFreqMap(ATrace aTrace) {
         for(String key : aTrace.getEventAttributeValueFreqMap().keySet()) {
@@ -258,18 +268,18 @@ public class APMLog implements Serializable {
 //        System.out.println(eventAttributeValueFreqMap);
     }
 
-    private void updateCaseAttributeValueSetMap(ATrace aTrace) {
-        for(String key : aTrace.getAttributeMap().keySet()) {
-            String attrValue = aTrace.getAttributeMap().get(key);
-            if (this.rawCaseAttributeValueSetMap.containsKey(key)) {
-                this.rawCaseAttributeValueSetMap.get(key).put(attrValue);
-            } else {
-                UnifiedSet<String> vals = new UnifiedSet<>();
-                vals.put(key);
-                this.rawCaseAttributeValueSetMap.put(key, vals);
-            }
-        }
-    }
+//    private void updateCaseAttributeValueSetMap(ATrace aTrace) {
+//        for(String key : aTrace.getAttributeMap().keySet()) {
+//            String attrValue = aTrace.getAttributeMap().get(key);
+//            if (this.rawCaseAttributeValueSetMap.containsKey(key)) {
+//                this.rawCaseAttributeValueSetMap.get(key).put(attrValue);
+//            } else {
+//                UnifiedSet<String> vals = new UnifiedSet<>();
+//                vals.put(key);
+//                this.rawCaseAttributeValueSetMap.put(key, vals);
+//            }
+//        }
+//    }
 
     private void updateCaseAttributeValueFreqMap(ATrace aTrace) {
         for(String key : aTrace.getAttributeMap().keySet()) {
@@ -352,13 +362,13 @@ public class APMLog implements Serializable {
         this.eventSize = eventSize;
     }
 
-    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
-        return rawEventAttributeValueSetMap;
-    }
-
-    public UnifiedMap<String, UnifiedSet<String>> getRawCaseAttributeValueSetMap() {
-        return rawCaseAttributeValueSetMap;
-    }
+//    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
+//        return rawEventAttributeValueSetMap;
+//    }
+//
+//    public UnifiedMap<String, UnifiedSet<String>> getRawCaseAttributeValueSetMap() {
+//        return rawCaseAttributeValueSetMap;
+//    }
 
     public int getCaseVariantSize() {
         UnifiedSet<Integer> variSet = new UnifiedSet<>();
@@ -541,8 +551,6 @@ public class APMLog implements Serializable {
                   HashBiMap<Integer, String> actIdNameMap,
                   UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
                   UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
-                  UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueFreqMap,
-                  UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueFreqMap,
                   UnifiedMap<String, ATrace> traceUnifiedMap,
                   long minDuration,
                   long maxDuration,
@@ -556,8 +564,8 @@ public class APMLog implements Serializable {
         this.actIdNameMap = actIdNameMap;
         this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
         this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
-        this.rawEventAttributeValueSetMap = rawEventAttributeValueFreqMap;
-        this.rawCaseAttributeValueSetMap = rawCaseAttributeValueFreqMap;
+//        this.rawEventAttributeValueSetMap = rawEventAttributeValueFreqMap;
+//        this.rawCaseAttributeValueSetMap = rawCaseAttributeValueFreqMap;
         this.traceUnifiedMap = traceUnifiedMap;
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
@@ -619,49 +627,47 @@ public class APMLog implements Serializable {
             caseAttrValFreqMapForClone.put(key, valFreqMapForClone);
         }
 
-        UnifiedMap<String, UnifiedSet<String>> rawEventAttrValForClone = new UnifiedMap<>();
+//        UnifiedMap<String, UnifiedSet<String>> rawEventAttrValForClone = new UnifiedMap<>();
+//
+//        for (String key : this.rawEventAttributeValueSetMap.keySet()) {
+//
+//            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
+//            UnifiedSet<String> valSet = this.rawEventAttributeValueSetMap.get(key);
+//            for (String val : valSet) {
+//                valSetForClone.put(val);
+//            }
+//
+//            rawEventAttrValForClone.put(key, valSetForClone);
+//        }
 
-        for (String key : this.rawEventAttributeValueSetMap.keySet()) {
-
-            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
-            UnifiedSet<String> valSet = this.rawEventAttributeValueSetMap.get(key);
-            for (String val : valSet) {
-                valSetForClone.put(val);
-            }
-
-            rawEventAttrValForClone.put(key, valSetForClone);
-        }
-
-        UnifiedMap<String, UnifiedSet<String>> rawCaseAttrValForClone = new UnifiedMap<>();
-
-        for (String key : this.rawCaseAttributeValueSetMap.keySet()) {
-
-            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
-            UnifiedSet<String> valSet = this.rawCaseAttributeValueSetMap.get(key);
-            for (String val : valSet) {
-                valSetForClone.put(val);
-            }
-
-            rawCaseAttrValForClone.put(key, valSetForClone);
-        }
+//        UnifiedMap<String, UnifiedSet<String>> rawCaseAttrValForClone = new UnifiedMap<>();
+//
+//        for (String key : this.rawCaseAttributeValueSetMap.keySet()) {
+//
+//            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
+//            UnifiedSet<String> valSet = this.rawCaseAttributeValueSetMap.get(key);
+//            for (String val : valSet) {
+//                valSetForClone.put(val);
+//            }
+//
+//            rawCaseAttrValForClone.put(key, valSetForClone);
+//        }
 
 
 
 
         return new APMLog(traceListForClone,
-                            variIdFreqMapForClone,
-                            actIdNameMapForClone,
-                            eventAttrValFreqMapForClone,
-                            caseAttrValFreqMapForClone,
-                            rawEventAttrValForClone,
-                            rawCaseAttrValForClone,
-                            traceUnifiedMapForClone,
-                            this.minDuration,
-                            this.maxDuration,
-                            this.timeZone,
-                            this.startTime,
-                            this.endTime,
-                            this.caseVariantSize,
-                            this.eventSize);
+                variIdFreqMapForClone,
+                actIdNameMapForClone,
+                eventAttrValFreqMapForClone,
+                caseAttrValFreqMapForClone,
+                traceUnifiedMapForClone,
+                this.minDuration,
+                this.maxDuration,
+                this.timeZone,
+                this.startTime,
+                this.endTime,
+                this.caseVariantSize,
+                this.eventSize);
     }
 }
