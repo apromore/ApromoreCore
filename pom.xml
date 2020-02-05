@@ -149,9 +149,6 @@
         <module>Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
         
-        <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
-        <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
-        
         <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Theme-Selection-Portal-Plugin</module>
 
