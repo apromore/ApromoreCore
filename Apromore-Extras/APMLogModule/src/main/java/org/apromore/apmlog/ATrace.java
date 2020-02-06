@@ -243,7 +243,7 @@ public class ATrace implements Serializable {
                 AEvent iAEvent = new AEvent(xEvent);
 
 
-                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
+//                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
 
                     long eventTime = iAEvent.getTimestampMilli();
                     if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
@@ -263,7 +263,7 @@ public class ATrace implements Serializable {
 
                     this.activityNameIndexList.add(
                             apmLog.getActivityNameMapper().set(aActivity.getName()));
-                }
+//                }
             }
         }
 
