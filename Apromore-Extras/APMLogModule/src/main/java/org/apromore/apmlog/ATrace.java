@@ -199,23 +199,23 @@ public class ATrace implements Serializable {
 
 
 //                validEventIndex.set(i, true);
-                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
+//                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
 
-                    long eventTime = iAEvent.getTimestampMilli();
-                    if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
-                    if (endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
+                long eventTime = iAEvent.getTimestampMilli();
+                if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
+                if (endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
 
-                    this.eventList.add(iAEvent);
-                    this.eventNameSet.put(iAEvent.getName());
+                this.eventList.add(iAEvent);
+                this.eventNameSet.put(iAEvent.getName());
 
-                    fillEventAttributeValueFreqMap(iAEvent);
+                fillEventAttributeValueFreqMap(iAEvent);
 
-                    List<AEvent> aEventList = new ArrayList<>();
-                    aEventList.add(iAEvent);
-                    AActivity aActivity = new AActivity(aEventList);
-                    this.activityList.add(aActivity);
-                    this.activityNameList.add(aActivity.getName());
-                }
+                List<AEvent> aEventList = new ArrayList<>();
+                aEventList.add(iAEvent);
+                AActivity aActivity = new AActivity(aEventList);
+                this.activityList.add(aActivity);
+                this.activityNameList.add(aActivity.getName());
+//                }
             }
         }
 
