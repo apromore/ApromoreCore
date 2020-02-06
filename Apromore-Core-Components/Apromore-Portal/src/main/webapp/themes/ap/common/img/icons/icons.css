@@ -318,6 +318,11 @@
     width: 26px !important;
 }
 
+.ap-icon-perspective {
+    background-image: url('perspective.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-play-circle {
     background-image: url('play-circle.svg') !important;
     width: 26px !important;
