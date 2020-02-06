@@ -133,5 +133,7 @@
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
+		
+		<include name="Apromore-Custom-Plugins/Long-Distance-Portal-Plugin/target/long-distance-portal-plugin-1.1.jar"/>
     </fileset>
 </project>
