@@ -19,12 +19,14 @@ import java.util.List;
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (03/02/2020)
  * Modified: Chii Chang (04/02/2020)
+ * Modified: Chii Chang (06/02/2020)
  */
 public class ATrace implements Serializable {
 
     private String caseId = "";
     public long caseIdDigit = 0;
     private int caseVariantId = 0;
+    private int caseVariantIdForDisplay;
     private long startTimeMilli = -1;
     private long endTimeMilli = -1;
     private long duration = 0;
@@ -106,101 +108,123 @@ public class ATrace implements Serializable {
 
             for(int i=0; i<xTrace.size(); i++) {
                 XEvent xEvent = xTrace.get(i);
+
                 AEvent iAEvent = new AEvent(xEvent);
-
-//                validEventIndex.set(i, true);
-
-                long eventTime = iAEvent.getTimestampMilli();
-                if(startTimeMilli == -1 || startTimeMilli > eventTime) {
-                    startTimeMilli = eventTime;
-                }
-                if(endTimeMilli == -1 || endTimeMilli < eventTime) {
-                    endTimeMilli = eventTime;
-                }
-
-
                 this.eventList.add(iAEvent);
-
                 this.eventNameSet.put(iAEvent.getName());
-
                 fillEventAttributeValueFreqMap(iAEvent);
-//                fillEventAttributeValueSetMap(iAEvent);
 
+                if (!markedXEvent.contains(xEvent)) {
+                    long eventTime = iAEvent.getTimestampMilli();
+                    if(startTimeMilli == -1 || startTimeMilli > eventTime) {
+                        startTimeMilli = eventTime;
+                    }
+                    if(endTimeMilli == -1 || endTimeMilli < eventTime) {
+                        endTimeMilli = eventTime;
+                    }
 
+                    if(iAEvent.getLifecycle().equals("start")) {
 
-                if(iAEvent.getLifecycle().equals("start")) {
+                        String startEventName = iAEvent.getName();
 
-                    markedXEvent.put(xEvent);
+                        /**
+                         * Find the waiting time
+                         */
+                        long iTime = iAEvent.getTimestampMilli();
 
-                    String startEventName = iAEvent.getName();
-
-                    /**
-                     * Find the waiting time
-                     */
-                    long iTime = iAEvent.getTimestampMilli();
-
-                    if(i > 0) {
-                        for(int j=(i-1); j >=0; j--) {
-                            XEvent preEvent = xTrace.get(j);
-                            AEvent preAEvent = new AEvent(preEvent);
-                            if(preAEvent.getLifecycle().equals("complete")) {
-                                long preTime = preAEvent.getTimestampMilli();
-                                if(iTime > preTime) {
-                                    long waitingTime = iTime - preTime;
-                                    this.totalWaitingTime += waitingTime;
-                                    waitCount += 1;
-                                    if(waitingTime > this.maxWaitingTime) {
-                                        this.maxWaitingTime = waitingTime;
+                        if(i > 0) {
+                            for(int j=(i-1); j >=0; j--) {
+                                XEvent preEvent = xTrace.get(j);
+                                AEvent preAEvent = new AEvent(preEvent);
+                                if(preAEvent.getLifecycle().equals("complete")) {
+                                    long preTime = preAEvent.getTimestampMilli();
+                                    if(iTime > preTime) {
+                                        long waitingTime = iTime - preTime;
+                                        this.totalWaitingTime += waitingTime;
+                                        waitCount += 1;
+                                        if(waitingTime > this.maxWaitingTime) {
+                                            this.maxWaitingTime = waitingTime;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    boolean hasComplete = false;
+                        boolean hasComplete = false;
 
-                    /**
-                     * Find the duration
-                     */
-                    if((i+1) <= (xTrace.size()-1)) {
-                        for(int j=(i+1); j < xTrace.size(); j++) {
-                            AEvent jAEvent = new AEvent(xTrace.get(j));
-                            if(jAEvent.getName().equals(startEventName) &&
-                                    jAEvent.getLifecycle().equals("complete")) {
+                        /**
+                         * Find the duration and Follow-up events
+                         */
+                        List<AEvent> followEvents = new ArrayList<>();
 
-                                long endTime = jAEvent.getTimestampMilli();
-                                if(endTime > iTime) {
-                                    long processTime = endTime - iTime;
-                                    this.totalProcessingTime += processTime;
-                                    if(processTime > this.maxProcessingTime) this.maxProcessingTime = processTime;
-                                    processCount += 1;
+                        long kTime = 0;
 
-                                    List<AEvent> aEventList = new ArrayList<>();
-                                    aEventList.add(iAEvent);
-                                    aEventList.add(jAEvent);
-                                    AActivity aActivity = new AActivity(aEventList);
-                                    this.activityList.add(aActivity);
-                                    this.activityNameList.add(aActivity.getName());
-
-                                    this.activityNameIndexList.add(
-                                            apmLog.getActivityNameMapper().set(aActivity.getName()));
-
+                        if((i+1) <= (xTrace.size()-1)) {
+                            for (int j = (i + 1); j < xTrace.size(); j++) {
+                                AEvent jAEvent = new AEvent(xTrace.get(j));
+                                if (jAEvent.getName().equals(startEventName)) {
+                                    followEvents.add(jAEvent);
                                     markedXEvent.put(xTrace.get(j));
-                                    hasComplete = true;
+                                    long jTime = jAEvent.getTimestampMilli();
+                                    if (jTime > kTime) kTime = jTime;
                                 }
-
-                                break;
+                                if (jAEvent.getLifecycle().toLowerCase().equals("complete")) break;
                             }
                         }
+
+                        markedXEvent.put(xTrace.get(i));
+
+                        if (followEvents.size() > 0) {
+                            if(kTime > iTime) {
+                                long processTime = kTime - iTime;
+                                this.totalProcessingTime += processTime;
+                                if (processTime > this.maxProcessingTime) this.maxProcessingTime = processTime;
+                                processCount += 1;
+                            }
+
+                            List<AEvent> aEventList = new ArrayList<>();
+                            aEventList.add(iAEvent);
+                            for (int k=0; k < followEvents.size(); k++) {
+                                aEventList.add(followEvents.get(k));
+                            }
+
+                            AActivity aActivity = new AActivity(aEventList);
+                            this.activityList.add(aActivity);
+                            this.activityNameList.add(aActivity.getName());
+
+                            this.activityNameIndexList.add(
+                                    apmLog.getActivityNameMapper().set(aActivity.getName()));
+
+                            hasComplete = true;
+                        } else {
+                            List<AEvent> aEventList = new ArrayList<>();
+                            aEventList.add(iAEvent);
+                            AActivity aActivity = new AActivity(aEventList);
+                            this.activityList.add(aActivity);
+                            this.activityNameList.add(aActivity.getName());
+
+                            this.activityNameIndexList.add(
+                                    apmLog.getActivityNameMapper().set(aActivity.getName()));
+                        }
+                    } else {
+                        if( !markedXEvent.contains(xEvent) ) {
+                            List<AEvent> aEventList = new ArrayList<>();
+                            aEventList.add(iAEvent);
+                            AActivity aActivity = new AActivity(aEventList);
+                            this.activityList.add(aActivity);
+                            this.activityNameList.add(aActivity.getName());
+
+                            this.activityNameIndexList.add(
+                                    apmLog.getActivityNameMapper().set(aActivity.getName()));
+                        }
                     }
-
-
                 }
 
 
 
-                if( !markedXEvent.contains(xEvent) && (iAEvent.getLifecycle().toLowerCase().equals("complete") ||
-                        iAEvent.getLifecycle().toLowerCase().equals(""))) {
+
+
+                if( !markedXEvent.contains(xEvent)  ) {
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
@@ -463,6 +487,7 @@ public class ATrace implements Serializable {
         this.caseId = caseId;
         if(this.caseId.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
         this.caseVariantId = caseVariantId;
+        this.caseVariantIdForDisplay = caseVariantId;
         this.startTimeMilli = startTimeMilli;
         this.endTimeMilli = endTimeMilli;
         this.hasActivity = hasActivity;
@@ -498,6 +523,14 @@ public class ATrace implements Serializable {
         Instant i = Instant.ofEpochMilli(millisecond);
         ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
         return z;
+    }
+
+    public void setCaseVariantIdForDisplay(int caseVariantIdForDisplay) {
+        this.caseVariantIdForDisplay = caseVariantIdForDisplay;
+    }
+
+    public int getCaseVariantIdForDisplay() {
+        return caseVariantIdForDisplay;
     }
 
     public static String convertMilliseconds(long milliseconds) {
