@@ -79,6 +79,11 @@
             <version>2.27</version>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
     </dependencies>
     <build>
 
