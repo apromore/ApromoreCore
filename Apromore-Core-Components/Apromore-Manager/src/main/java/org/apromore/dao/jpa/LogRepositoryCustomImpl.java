@@ -149,7 +149,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
                 return logNameId;
             } catch (Exception e) {
-                LOGGER.error("Error " + e.getMessage());
+                LOGGER.error("Error " + e.getMessage(), e);
             }
 
         }
