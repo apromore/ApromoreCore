@@ -1,14 +1,3 @@
-# Don't want to commit object files
-**/build/*
-**/target/*
-**/dist/*
-**/bindist/*
-**/dependency-reduced-pom.xml
-**/catalina.home_IS_UNDEFINED
-**/site.properties
-**/.gitignore
-Supplements/Virgo/dmk.bat
-
 # IntelliJ IDEA artifacts, see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
 **/.idea/*
 **/*.iws
@@ -17,6 +6,15 @@ Supplements/Virgo/dmk.bat
 # macOS Finder artifacts
 **/.DS_Store
 
+# Maven artifacts (i.e. object files)
+**/target/*
+
+# Tomcat artifacts
+Apromore-Core-Components/Apromore-Portal/catalina.home_IS_UNDEFINED
+
+# vi editor artifacts
+**/*.swp
+
 # Unpacked application server
 Apromore-Assembly/Editor-Repository
 Apromore-Assembly/Event-Logs-Repository
@@ -24,23 +22,3 @@ Apromore-Assembly/Filestore-Repository
 Apromore-Assembly/Lucene-Repository
 Apromore-Assembly/Manager-Repository*
 Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
-
-# Site-specific configuration
-**/.settings/*
-*.project
-*.classpath
-*.checkstyle
-**/.metadata/*
-**/.recommenders/*
-Apromore-Core-Components/Apromore-BPMNEditor/pom.xml~HEAD
-Apromore-Extras/apql/.project
-
-# SVN files
-.svn*
-
-**/.gitignore
-
-zkcharts-3.0.3.jar
-
-# vi editor artifacts
-**/*.swp
