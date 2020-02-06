@@ -85,6 +85,40 @@ input {
     line-height: 15px;
 }
 
+/* Switch */
+
+.z-checkbox-switch {
+    width: 38px;
+    text-align: center;
+}
+
+.z-checkbox-switch-on>.z-checkbox-mold {
+    background-color: var(--ap-c-oceanic-light-1);
+}
+
+.z-checkbox-switch>.z-checkbox-mold:focus {
+    box-shadow: none;
+    transition: unset;
+}
+
+.z-checkbox-switch>.z-checkbox-mold {
+    border: none !important;
+    margin: 3px;
+    width: 30px;
+}
+
+.z-checkbox-switch>.z-checkbox-mold:before {
+    background-color: var(--ap-c-widget);
+}
+
+.z-checkbox-switch-on>.z-checkbox-mold:before {
+    -webkit-transform: translateX(18px);
+    -moz-transform: translateX(18px);
+    -o-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
 /* Paging */
 
 .z-listbox-autopaging {
@@ -208,6 +242,10 @@ input {
 
 
 /* input */
+
+.z-intbox {
+    text-align: right;
+}
 
 .z-textbox, .z-decimalbox, .z-intbox, .z-longbox, .z-doublebox, .z-checkbox input[type="checkbox"],
 .z-radio input[type="radio"], .z-combobox-button,
@@ -380,7 +418,7 @@ input[type="radio"]:checked:before {
 
 .z-window-overlapped .z-window-header,
 .z-window-modal .z-window-header {
-    padding: 9px 7px 0 10px;
+    padding: 10px 7px 0 10px;
     font-family: var(--ap-font-brand);
     font-size: 14px;
     color: black;
@@ -943,4 +981,17 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 
 .z-icon-calendar:before {
     content: "\f073"
+}
+
+.z-icon-window-maximize:before {
+    content: "\f2d0"
+}
+
+.z-icon-window-minimize:before {
+    content: "\f2d1"
+}
+
+
+.z-icon-exchange:before {
+    content: "\f0ec"
 }

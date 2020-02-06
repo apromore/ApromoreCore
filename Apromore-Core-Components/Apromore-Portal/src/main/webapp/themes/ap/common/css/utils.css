@@ -95,14 +95,21 @@
 }
 
 .ap-window-footer-actions {
-    margin-top: 4px;
     background: linear-gradient(var(--ap-c-bg-medium) 0%, var(--ap-c-bg-lighter) 10%) !important;
+
 }
 
 .ap-window-footer-actions .z-row-content {
     padding: 8px;
     margin: 0 !important;
 }
+
+div.ap-window-footer-actions {
+    padding: 8px;
+    margin: 0 !important;
+    text-align: right;
+}
+
 
 .ap-window-footer-actions .z-row-content > div {
     text-align: right !important;
@@ -354,4 +361,27 @@
 .mac .alt-kbd::after {
    content: "⌥";
     width: 1.2em !important;
+}
+
+
+/* Switch */
+.ap-switch > span {
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.ap-switch > span.start {
+    width: 80px;
+    text-align: right;
+}
+
+.ap-switch .z-checkbox-content {
+    display: none;
+}
+
+.ap-switch .ap-switch-label {
+    font-weight: 700;
+    color: var(--ap-c-text-minor);
+    margin-right: 5px;
 }
