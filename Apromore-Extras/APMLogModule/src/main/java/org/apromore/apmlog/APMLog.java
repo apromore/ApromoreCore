@@ -205,15 +205,15 @@ public class APMLog implements Serializable {
             }
         }
 
-        LOGGER.info("*** Write case variant ID to the original XLog");
-        for(int i=0; i < xLog.size(); i++) {
-            XTrace xTrace = xLog.get(i);
-            ATrace aTrace = traceList.get(i);
-            int variId = aTrace.getCaseVariantId();
-            XAttribute attribute = new XAttributeLiteralImpl("case:variant", Integer.toString(variId));
-            xTrace.getAttributes().put("case:variant", attribute);
-        }
-        LOGGER.info("*** Write case variant ID complete");
+//        LOGGER.info("*** Write case variant ID to the original XLog");
+//        for(int i=0; i < xLog.size(); i++) {
+//            XTrace xTrace = xLog.get(i);
+//            ATrace aTrace = traceList.get(i);
+//            int variId = aTrace.getCaseVariantId();
+//            XAttribute attribute = new XAttributeLiteralImpl("case:variant", Integer.toString(variId));
+//            xTrace.getAttributes().put("case:variant", attribute);
+//        }
+//        LOGGER.info("*** Write case variant ID complete");
 
 //        originalCaseVariantSize = variantIdFreqMap.size();
         caseVariantSize = variantIdFreqMap.size();
