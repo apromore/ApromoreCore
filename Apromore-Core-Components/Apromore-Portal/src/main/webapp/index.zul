@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<?page title="Apromore - Advanced Process Analytics Platform" contentType="text/html;charset=UTF-8" ?>
+<?page title="Apromore - Portal" contentType="text/html;charset=UTF-8" ?>
 
 <?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
