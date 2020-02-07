@@ -52,7 +52,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         // Obtain the sample of lines
         List<List<String>> lines = new ArrayList<>();
         for (String[] s = reader.readNext(); s != null && lines.size() < sampleSize; s = reader.readNext()) {
-            lines.add(Arrays.asList(s));
+            if(s!=null && s.length > 2){
+                lines.add(Arrays.asList(s));
+            }
         }
 
         // Construct the sample (no mutation expected after this point, although this isn't enforced by the code))
@@ -96,8 +98,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                     finishCount++;
                     continue;
                 }
-                lineCount++;
+
                 if (line != null && line.length > 2) {
+                    lineCount++;
                     try {
                         otherTimestamps = new HashMap<>();
                         others = new HashMap<>();
