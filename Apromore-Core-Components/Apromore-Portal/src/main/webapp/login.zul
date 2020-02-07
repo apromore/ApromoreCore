@@ -233,6 +233,9 @@
                                     Privacy Policy
                                 </a>
                             </h:li>
+                            <h:li>
+                                ${labels.e.common.contact.text}
+                            </h:li>
                         </h:ul>
                     </h:div>
                     <h:div class="slant-separator">
