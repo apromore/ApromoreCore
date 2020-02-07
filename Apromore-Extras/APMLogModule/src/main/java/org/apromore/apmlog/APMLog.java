@@ -581,7 +581,8 @@ public class APMLog implements Serializable {
                   long startTime,
                   long endTime,
                   long caseVariantSize,
-                  long eventSize) {
+                  long eventSize,
+                  ActivityNameMapper activityNameMapper) {
         this.traceList = traceList;
         this.variantIdFreqMap = variantIdFreqMap;
         this.actIdNameMap = actIdNameMap;
@@ -597,6 +598,7 @@ public class APMLog implements Serializable {
         this.endTime = endTime;
         this.caseVariantSize = caseVariantSize;
         this.eventSize = eventSize;
+        this.activityNameMapper = activityNameMapper;
     }
 
 
@@ -691,6 +693,7 @@ public class APMLog implements Serializable {
                 this.startTime,
                 this.endTime,
                 this.caseVariantSize,
-                this.eventSize);
+                this.eventSize,
+                this.activityNameMapper);
     }
 }
