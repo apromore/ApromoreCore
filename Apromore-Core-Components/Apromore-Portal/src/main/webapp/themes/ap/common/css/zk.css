@@ -216,7 +216,9 @@ input {
 }
 
 .z-textbox:hover, .z-decimalbox:hover, .z-intbox:hover, .z-longbox:hover, .z-doublebox:hover, .z-checkbox input[type="checkbox"]:hover,
-.z-radio input[type="radio"]:hover, .z-combobox-input:hover, .z-combobox-input:hover + .z-combobox-button {
+.z-radio input[type="radio"]:hover, .z-combobox-input:hover, .z-combobox-input:hover + .z-combobox-button,
+.z-combobox:hover .z-combobox-input,
+.z-combobox:hover .z-combobox-button {
     border-color: var(--ap-input-outline-hover);
 }
 
@@ -943,4 +945,8 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 
 .z-icon-calendar:before {
     content: "\f073"
+}
+
+.z-icon-at:before {
+    content: "\f1fa"
 }
