@@ -33,6 +33,7 @@ public class APMLog implements Serializable {
     private HashBiMap<Integer, String> actIdNameMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
+    private UnifiedMap<String, Integer> activityMaxOccurMap = new UnifiedMap<>();
     private long minDuration = 0;
     private long maxDuration = 0;
     private String timeZone = "";
@@ -41,8 +42,6 @@ public class APMLog implements Serializable {
     private long caseVariantSize = 0;
     private long eventSize = 0;
 
-//    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
-//    private UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueSetMap;
 
     private UnifiedMap<String, ATrace> traceUnifiedMap;
 
@@ -57,8 +56,6 @@ public class APMLog implements Serializable {
         traceList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         caseAttributeValueFreqMap = new UnifiedMap<>();
-//        rawEventAttributeValueSetMap = new UnifiedMap<>();
-//        rawCaseAttributeValueSetMap = new UnifiedMap<>();
 
         initData(xLog);
     }
@@ -122,13 +119,11 @@ public class APMLog implements Serializable {
                  * Event attributes
                  */
                 updateEventAttributeValueFreqMap(aTrace);
-//                updateEventAttributeValueSetMap(aTrace);
 
                 /**
                  * Case attributes
                  */
                 updateCaseAttributeValueFreqMap(aTrace);
-//                updateCaseAttributeValueSetMap(aTrace);
 
                 if (this.minDuration == 0 || aTrace.getDuration() < minDuration) {
                     minDuration = aTrace.getDuration();
@@ -171,11 +166,10 @@ public class APMLog implements Serializable {
                     aTrace.setCaseVariantId(vId);
                 }
 
+                computeActivityOccurMaxMap(aTrace);
+
             }
         }
-
-
-
 
         UnifiedMap<Integer, Integer> initVIdToFinalVIdMap = new UnifiedMap<>();
 
@@ -186,7 +180,6 @@ public class APMLog implements Serializable {
             int idNum = 1;
             for(int i=(list.size()-1); i>=0; i--) {
                 variantIdFreqMap.put(idNum, list.get(i).getValue());
-//                originalVariantIdFreqMap.put(idNum, list.get(i).getValue());//2019-11-10
                 if(!variantIdActIdListMap.containsKey(idNum)) {
                     variantIdActIdListMap.put(idNum, list.get(i).getKey());
                     int initVId = tempActIdListToVIdMap.get(list.get(i).getKey());
@@ -218,6 +211,36 @@ public class APMLog implements Serializable {
 //        originalCaseVariantSize = variantIdFreqMap.size();
         caseVariantSize = variantIdFreqMap.size();
 
+    }
+
+    private void computeActivityOccurMaxMap(ATrace aTrace) {
+        UnifiedMap<String, Integer> actOccurFreq = new UnifiedMap<>();
+
+        List<AActivity> aActivityList = aTrace.getActivityList();
+
+        for (int i = 0; i < aActivityList.size(); i++) {
+            AActivity aActivity = aActivityList.get(i);
+            String conceptName = aActivity.getName();
+            if (actOccurFreq.containsKey(conceptName)) {
+                int freq = actOccurFreq.get(conceptName) + 1;
+                actOccurFreq.put(conceptName, freq);
+            } else actOccurFreq.put(conceptName, 1);
+        }
+
+        for (String actName : actOccurFreq.keySet()) {
+            int actFreq = actOccurFreq.get(actName);
+            if (!activityMaxOccurMap.containsKey(actName)) {
+                activityMaxOccurMap.put(actName, actOccurFreq.get(actName));
+            } else {
+                int freqInRecord = activityMaxOccurMap.get(actName);
+                if (actFreq > freqInRecord) freqInRecord = actFreq;
+                activityMaxOccurMap.put(actName, freqInRecord);
+            }
+        }
+    }
+
+    public UnifiedMap<String, Integer> getActivityMaxOccurMap() {
+        return activityMaxOccurMap;
     }
 
     public ActivityNameMapper getActivityNameMapper() {
