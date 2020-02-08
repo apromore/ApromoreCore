@@ -27,6 +27,8 @@
 
 <?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/common/css/index.css' ?>
 <?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/login/css/login.css'  ?>
+<?script type="text/javascript" src="themes/${labels.theme}/common/js/index.js"?>
+<?script type="text/javascript" src="themes/${labels.theme}/login/js/login.js"?>
 
 <?script type="text/javascript" src="js/jquery.js"?>
 <?script type="text/javascript" src="js/bootstrap.js"?>
@@ -234,7 +236,7 @@
                                 </a>
                             </h:li>
                             <h:li>
-                                ${labels.e.common.contact.text}
+                                    ${labels.e.common.contact.text}
                             </h:li>
                         </h:ul>
                     </h:div>
