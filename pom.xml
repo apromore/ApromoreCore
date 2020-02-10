@@ -122,9 +122,7 @@
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Apromore-Editor/bpmn20xmlbasic</module>
-        <module>Apromore-Custom-Plugins/Apromore-Editor/diagram core</module>
-        <module>Apromore-Custom-Plugins/Apromore-Editor/pdf</module>
+        <module>Apromore-Custom-Plugins/Apromore-Editor</module>
         <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
         <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin</module>
         <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>

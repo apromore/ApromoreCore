@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore</artifactId>
+    <version>1.1</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <name>Apromore Editor Extensions</name>
+  <description>Libraries extracted from the Signavio Core Components codebase</description>
+  <artifactId>editor-platform-extension-parent</artifactId>
+  <version>1.2</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>bpmn20xmlbasic</module>
+    <module>diagram core</module>
+    <module>pdf</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>2.0.0</version>
+          <configuration>
+            <licenseResolver>${project.baseUri}/src/license</licenseResolver>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <licenseName>signavio_core_components</licenseName>
+          <organizationName>Philipp Berger, Martin Czuchra, Gero Decker,
+Ole Eckermann, Lutz Gericke,
+Alexander Hold, Alexander Koglin, Oliver Kopp, Stefan Krumnow,
+Matthias Kunze, Philipp Maschke, Falko Menge, Christoph Neijenhuis,
+Hagen Overdick, Zhen Peng, Nicolas Peters, Kerstin Pfitzner, Daniel Polak,
+Steffen Ryll, Kai Schlichting, Jan-Felix Schwarz, Daniel Taschik,
+Willi Tscheschner, Björn Wagner, Sven Wagner-Boysen, Matthias Weidlich</organizationName>
+          <projectName>Signavio Core Components</projectName>
+          <inceptionYear>2006</inceptionYear>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+          <excludes>
+            <exclude>**/package-info.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
