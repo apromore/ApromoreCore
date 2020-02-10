@@ -1,22 +1,12 @@
 package org.apromore.service.csvimporter.impl;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogSample;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * A sample of a CSV log.
@@ -45,7 +35,7 @@ class LogSampleImpl implements LogSample, Constants {
     private HashMap<Integer, String> otherTimeStampsPos;
     private Div popUPBox;
     private Button[] formatBtns;
-
+    private List<Integer> caseAttributesPos;
 
     // Constructor
 
@@ -96,6 +86,7 @@ class LogSampleImpl implements LogSample, Constants {
         this.lists = new ArrayList<>();
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
+        this.caseAttributesPos = new ArrayList<>();
 
         setOtherTimestamps();
         toLists(this);
@@ -145,6 +136,11 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public void setFormatBtns(Button[] formatBtns) { this.formatBtns = formatBtns; }
+
+
+    @Override
+    public List<Integer> getCaseAttributesPos() { return caseAttributesPos; }
+
 
     // Public methods
 
@@ -266,7 +262,7 @@ class LogSampleImpl implements LogSample, Constants {
 
         for (int i = 0; i < this.getLines().get(0).size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
-            if (lb.getSelectedIndex() == 7) {
+            if (lb.getSelectedIndex() == 8) {
                 removeColPos(i, this);
                 closePopUp(i, this);
                 lb.setSelectedIndex(otherIndex);
@@ -278,14 +274,14 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public void setIgnoreAll(Window window) {
-        int otherIndex = 7;
+        int ignoreIndex = 8;
 
         for (int i = 0; i < this.getLines().get(0).size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
             if (lb.getSelectedIndex() == 6) {
                 removeColPos(i, this);
                 closePopUp(i, this);
-                lb.setSelectedIndex(otherIndex);
+                lb.setSelectedIndex(ignoreIndex);
                 this.getHeads().put("ignore", i);
                 this.getIgnoredPos().add(i);
             }
@@ -335,6 +331,7 @@ class LogSampleImpl implements LogSample, Constants {
 
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
         String other = "Event Attribute";
+        String caseAttribute = "Case Attribute";
         String ignore = "ignore";
 
         menuItems.put(caseid, "Case ID");
@@ -344,6 +341,7 @@ class LogSampleImpl implements LogSample, Constants {
         menuItems.put(tsValue, "Other timestamp");
         menuItems.put(resource, "Resource");
         menuItems.put(other, "Event Attribute");
+        menuItems.put(caseAttribute, "Case Attribute");
         menuItems.put(ignore, "Ignore column");
 
         // get index of "other" item and select it.
@@ -404,6 +402,8 @@ class LogSampleImpl implements LogSample, Constants {
                     sample.getIgnoredPos().add(colPos);
                 } else if (selected.equals(tsValue)) {
                     sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos);
+                } else if(selected.equals(caseAttribute)){
+                    sample.getCaseAttributesPos().add(colPos);
                 }
             });
 

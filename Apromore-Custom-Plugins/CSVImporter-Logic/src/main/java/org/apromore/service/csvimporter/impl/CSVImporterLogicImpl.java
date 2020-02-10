@@ -86,15 +86,16 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             List<LogEventModel> logData = new ArrayList<>();
             HashMap<String, Timestamp> otherTimestamps;
             HashMap<String, String> others;
+            HashMap<String, String> caseAttributes;
             Timestamp startTimestamp = null;
             String resourceCol = null;
             String errorMessage = null;
 
-            for (Iterator<String[]> it = reader.iterator(); finishCount < 50 && isValidLineCount(lineCount); ) {
+            for (Iterator<String[]> it = reader.iterator(); finishCount < 50 && isValidLineCount(lineCount);) {
                 String[] line = it.next();
                 boolean rowGTG = true;
                 if(line == null) {
-                    // if line is empty, more to next iteration, until 50 lines are empty
+                    // if line is empty, move to next iteration, until 50 lines are empty
                     finishCount++;
                     continue;
                 }
@@ -104,16 +105,20 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                     try {
                         otherTimestamps = new HashMap<>();
                         others = new HashMap<>();
+                        caseAttributes = new HashMap<>();
 
                         for (int p = 0; p <= line.length - 1; p++) {
                             if (sample.getOtherTimeStampsPos().get(p) != null) {
                                 otherTimestamps.put(header[p], Parse.parseTimestamp(line[p], sample.getOtherTimeStampsPos().get(p)));
-                            } else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) &&
+                            } else if(!sample.getCaseAttributesPos().isEmpty() && sample.getCaseAttributesPos().contains(p)){
+                                caseAttributes.put(header[p], line[p]);
+                            }
+                            else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) &&
                                     p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) &&
-                                    p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() ||
-                                    !sample.getIgnoredPos().contains(p))) {
-                                others.put(header[p], line[p]);
+                                    p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() || !sample.getIgnoredPos().contains(p)) &&
+                                    (sample.getCaseAttributesPos().isEmpty() || !sample.getCaseAttributesPos().contains(p))) {
 
+                                others.put(header[p], line[p]);
                                 if (header.length != line.length) {
                                     invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match" +
                                             " number of headers. " + "Number of headers: " + header.length + "," +
@@ -121,7 +126,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                                     errorCount++;
                                     rowGTG = false;
                                     break;
-
                                 }
 
                             }
@@ -135,7 +139,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                                     startTimestamp = tStamp;
                                     invalidRows.add("Row: " + (lineCount) + ", Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
                                 } else {
-                                    invalidRows.add("Row: " + (lineCount) + ", Error: Start time stamp field is invalid. ");
+                                    invalidRows.add("Row: " + (lineCount) + ", Error: Start time stamp field is invalid.");
                                     errorCount++;
                                 }
                             }
@@ -173,7 +177,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                             }
                         }
                         if (rowGTG) {
-                            logData.add(new LogEventModelImpl(line[sample.getHeads().get(caseid)], line[sample.getHeads().get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
+                            logData.add(new LogEventModelImpl(line[sample.getHeads().get(caseid)], line[sample.getHeads().get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others, caseAttributes));
                         }
                     } catch (Exception e) {
                         errorMessage = ExceptionUtils.getStackTrace(e);
