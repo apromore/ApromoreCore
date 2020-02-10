@@ -89,6 +89,12 @@
             <version>2.0.6</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json-osgi</artifactId>
+            <version>20090211</version>
+        </dependency>
+
         <!-- Contains the RemoveNonOSGIJars Maven plugin -->
         <dependency>
             <groupId>org.apromore</groupId>
