@@ -28,10 +28,10 @@
             <menuitem id="createFolder" label="Create folder" disabled="true" image="/themes/ap/common/img/icons/folder-add.svg"/>
 
             <menuitem id="createProcess2" label="Create model" disabled="true" image="/themes/ap/common/img/icons/bpmn-add.svg"/>
-            <menuitem id="createProcess" visible="true" label="Create model in Signavio" disabled="true" image="/themes/ap/common/img/icons/bpmn-add.svg" />
+            <menuitem id="createProcess" visible="true" label="Create model (legacy editor)" disabled="true" image="/themes/ap/common/img/icons/bpmn-add.svg" />
 
             <menuitem id="processEdit2" label="Edit model" disabled="true" image="/themes/ap/common/img/icons/model-edit.svg"/>
-            <menuitem id="processEdit" visible="true" label="Edit model in Signavio" disabled="true" image="/themes/ap/common/img/icons/model-edit.svg"/>
+            <menuitem id="processEdit" visible="true" label="Edit model (legacy editor)" disabled="true" image="/themes/ap/common/img/icons/model-edit.svg"/>
 
             <menuitem id="dataEdit" label="Edit metadata" disabled="true" image="/themes/ap/common/img/icons/meta-edit.svg"/>
             <menuitem id="processDelete" label="Delete" disabled="true" image="/themes/ap/common/img/icons/trash.svg"/>
