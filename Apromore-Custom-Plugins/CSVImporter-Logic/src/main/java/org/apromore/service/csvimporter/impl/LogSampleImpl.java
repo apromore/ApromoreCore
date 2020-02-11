@@ -446,8 +446,7 @@ class LogSampleImpl implements LogSample, Constants {
 
     private static void openPopUpbox(Integer colPos, String format, String message, String lblClass, LogSample sample) {
         Window myPopUp = (Window) sample.getPopUPBox().getFellow(popupID + colPos);
-        // myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
-        myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
+        myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
         Label check_lbl = (Label) myPopUp.getFellow(labelID + colPos);
         Button[] formatBtns = (Button[]) sample.getFormatBtns();
         formatBtns[colPos].setSclass("ap-csv-importer-format-icon");
