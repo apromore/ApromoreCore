@@ -346,6 +346,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             textbox.setWidth("98%");
             textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
             textbox.setPopup(helpP);
+            textbox.setClientAttribute("spellcheck", "false");
             textbox.setPopupAttributes(helpP, "after_start","","","toggle");
 
             textbox.addEventListener("onChanging", (InputEvent event) -> {
