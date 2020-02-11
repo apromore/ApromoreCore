@@ -1,6 +1,0 @@
-a.s00000049__s00000898.pnml vs a.s00000049__s00000898_log: 0 statements, Average total time: 42ms
-a.s00000049__s00000898.pnml vs a.s00000049__s00000898_log_noise05: 2 statements, Average total time: 26ms
-a.s00000049__s00000898.pnml vs a.s00000049__s00000898_log_noise10: 2 statements, Average total time: 24ms
-a.s00000049__s00000898.pnml vs a.s00000049__s00000898_log_noise15: 7 statements, Average total time: 27ms
-a.s00000049__s00000898.pnml vs a.s00000049__s00000898_log_noise20: 9 statements, Average total time: 27ms
-

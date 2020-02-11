@@ -92,16 +92,22 @@
                 <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+<!--
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+-->
                 <include name="**/target/jbpt-petri-osgi-0.2.433.jar"/>
                 <include name="**/target/prom6-osgi-6.0.jar"/>
+<!--
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>
                 <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+-->
                 <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
+<!--
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
+-->
                 <include name="**/target/lpsolve-osgi-1.1.jar"/>
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
                 <include name="**/target/json-osgi-20090211.jar"/>
