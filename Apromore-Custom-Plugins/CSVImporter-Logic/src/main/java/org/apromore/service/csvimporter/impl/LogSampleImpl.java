@@ -8,6 +8,7 @@ import org.zkoss.zul.*;
 import java.sql.Timestamp;
 import java.util.*;
 
+
 /**
  * A sample of a CSV log.
  */
@@ -36,6 +37,7 @@ class LogSampleImpl implements LogSample, Constants {
     private Div popUPBox;
     private Button[] formatBtns;
     private List<Integer> caseAttributesPos;
+
 
     // Constructor
 
@@ -137,10 +139,8 @@ class LogSampleImpl implements LogSample, Constants {
     @Override
     public void setFormatBtns(Button[] formatBtns) { this.formatBtns = formatBtns; }
 
-
     @Override
     public List<Integer> getCaseAttributesPos() { return caseAttributesPos; }
-
 
     // Public methods
 

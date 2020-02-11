@@ -33,6 +33,10 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.Calendar;
 import java.util.Set;
 
+/**
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ * Modified by Chii Chang (24/01/2020)
+ */
 public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
     public LogFilterCriterionAttribute(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
@@ -77,21 +81,7 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
         return false;
     }
-//    @Override
-//    public boolean matchesCriterion(XTrace trace) {
-//        if(level == Level.TRACE) {
-//            for (XEvent event : trace) {
-//                if (containment == Containment.CONTAIN_ANY) {
-//                    if (isMatching(event)) return true;
-//                } else if (containment == Containment.CONTAIN_ALL) {
-//                    if (!isMatching(event)) return false;
-//                }
-//            }
-//            if(containment == Containment.CONTAIN_ANY) return false;
-//            else return containment == Containment.CONTAIN_ALL;
-//        }
-//        return false;
-//    }
+
 
     @Override
     public boolean matchesCriterion(XEvent event) {

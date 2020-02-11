@@ -157,6 +157,12 @@
             <artifactId>build-tools</artifactId>
             <version>1.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.cglib</groupId>
+            <artifactId>com.springsource.net.sf.cglib</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

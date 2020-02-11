@@ -28,6 +28,9 @@ import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 
+/**
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ */
 public interface LogFilterCriterionFactory {
 
     public LogFilterCriterion getLogFilterCriterion(Action action, Containment containment, Level level, String label, String attribute, Set<String> value);

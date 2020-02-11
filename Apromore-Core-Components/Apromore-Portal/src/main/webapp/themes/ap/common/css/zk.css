@@ -1,0 +1,954 @@
+@font-face {
+    font-family: 'FontAwesome';
+    src:
+        url('../fonts/fa/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
+        url('../fonts/fa/fontawesome-webfont.woff2?v=4.7.0') format('woff2'),
+        url('../fonts/fa/fontawesome-webfont.woff?v=4.7.0') format('woff'),
+        url('../fonts/fa/fontawesome-webfont.ttf?v=4.7.0') format('truetype'),
+        url('../fonts/fa/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face{
+    font-family: 'ZK85Icons';
+    src:         url('../fonts/zk85/ZK85Icons.eot?v=4.7.0');
+    src:         url('../fonts/zk85/ZK85Icons.eot?#iefix&v=4.7.0')    format('embedded-opentype'),
+    url('../fonts/zk85/ZK85Icons.woff?v=4.7.0')          format('woff'),
+    url('../fonts/zk85/ZK85Icons.ttf?v=4.7.0')           format('truetype'),
+    url('../fonts/zk85/ZK85Icons.svg?v=4.7.0#ZK85Icons') format('svg');
+    font-weight: normal;
+    font-style:  normal
+}
+
+/* ZK overrides
+ We put them here (not as a separate import) for faster loading
+ TO DO: These should be moved to Chiaruscuro Theme
+ */
+
+/* Typography */
+.z-a,
+.z-bandbox-input,
+.z-button,
+.z-caption,
+.z-caption-content,
+.z-center-header,
+.z-checkbox-content,
+.z-combobox-input,
+.z-combobutton-content,
+.z-datebox-input,
+.z-decimalbox,
+.z-doublebox,
+.z-doublespinner-input .z-listheader-content,
+.z-east-header,
+.z-groupbox-content,
+.z-intbox,
+.z-label,
+.z-listbox-body .z-listbox-emptybody td,
+.z-listcell-content,
+.z-listfooter-content,
+.z-listgroup-content,
+.z-listgroupfoot-content,
+.z-listheader-content,
+.z-loading,
+.z-longbox,
+.z-menu-text,
+.z-menuitem-text,
+.z-menupopup .z-menu-text,
+.z-messagebox .z-label,
+.z-messagebox,
+.z-north-header,
+.z-radio-content,
+.z-select,
+.z-south-header,
+.z-spinner-input,
+.z-tab-text,
+.z-textbox,
+.z-timebox-input,
+.z-west-header,
+.z-column-content,
+.z-row-content,
+.z-group-content,
+.z-groupfoot-content,
+.z-footer-content,
+.z-combobox-popup,
+.z-bandbox-popup,
+.z-datebox-popup,
+.z-timebox-popup,
+input {
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.z-label {
+    line-height: 15px;
+}
+
+/* Paging */
+
+.z-listbox-autopaging {
+    overflow: hidden auto !important;
+}
+
+.z-listbox-autopaging::-webkit-scrollbar {
+    width: 10px;
+}
+
+.z-listbox-autopaging::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.3);
+    background-color: rgb(240, 240, 240);
+    border-radius: 10px;
+}
+
+.z-listbox-autopaging::-webkit-scrollbar-thumb {
+    background-color: rgb(220, 220, 220);
+    border: 0;
+    border-radius: 10px;
+}
+
+/* Groupbox */
+
+.z-groupbox {
+    padding-top: 12px;
+}
+
+.z-groupbox-content {
+    padding: 6px;
+}
+
+/* Buttons */
+
+.z-toolbar-content > * {
+    margin: 0 0 0 6px !important;
+}
+
+.z-messagebox-buttons {
+    overflow: visible;
+}
+
+.z-combobutton:hover .z-combobutton-content {
+    border-color: transparent;
+}
+
+.z-combobutton:focus .z-combobutton-content {
+    border-color: transparent;
+}
+
+.z-combobutton:active .z-combobutton-content {
+    border-color: transparent;
+}
+
+.z-button,
+.z-combobutton .z-combobutton-content {
+    color: var(--ap-c-button-text);
+    background-color: var(--ap-c-button);
+    margin-right: 6px;
+    box-shadow: none;
+}
+
+.z-combobox {
+    margin-right: 6px;
+}
+
+.z-button:last-child,
+ .z-combobutton:last-child .z-combobutton-content {
+     margin-right: 0;
+ }
+
+.z-button:first-child,
+.z-combobutton:first-child .z-combobutton-content {
+    margin-left: 0;
+}
+
+.z-button:hover,
+.z-combobutton:hover .z-combobutton-content {
+    color: var(--ap-c-button-text);
+    background-color: var(--ap-c-button-hover);
+}
+
+.z-button:active,
+.z-combobutton:active .z-combobutton-content {
+    color: var(--ap-c-button-text);
+    background-color: var(--ap-c-button-active);
+}
+
+.z-button:focus {
+    border-color: transparent;
+    color: var(--ap-c-button-text);
+    box-shadow: 0 0 4px var(--ap-c-orange);
+    background-color: var(--ap-c-button-active);
+}
+
+.z-combobutton-button {
+    border-left: 1px solid var(--ap-c-button-sep);
+}
+
+.z-window-content > .z-button {
+    margin: 7px 0px !important;
+}
+
+.z-window-content > .z-button:first-child,
+.z-window-content > .z-button:last-child {
+    margin-left: 7px !important;
+}
+
+/* Radio */
+
+.z-checkbox input[type="checkbox"],
+.z-radio input[type="radio"] {
+   margin: 0 4px 2px 0;
+}
+
+.z-checkbox .z-checkbox-content,
+.z-radio .z-radio-content {
+    margin: 0 6px 0 0;
+}
+
+
+
+/* input */
+
+.z-textbox, .z-decimalbox, .z-intbox, .z-longbox, .z-doublebox, .z-checkbox input[type="checkbox"],
+.z-radio input[type="radio"], .z-combobox-button,
+.z-combobox-input {
+    border: 1px solid var(--ap-input-outline-normal);
+}
+
+.z-textbox:hover, .z-decimalbox:hover, .z-intbox:hover, .z-longbox:hover, .z-doublebox:hover,
+.z-checkbox input[type="checkbox"]:hover,
+.z-radio input[type="radio"]:hover,
+.z-combobox-input:hover,
+.z-combobox-input:hover + .z-combobox-button,
+.z-combobox:hover .z-combobox-input {
+    border-color: var(--ap-input-outline-hover);
+}
+
+.z-textbox:focus, .z-decimalbox:focus, .z-intbox:focus, .z-longbox:focus, .z-doublebox:focus, .z-checkbox input[type="checkbox"]:focus,
+.z-radio input[type="radio"]:focus, .z-combobox-input:focus, .z-combobox-input:focus + .z-combobox-button {
+    border-color: var(--ap-input-outline-focus);
+}
+
+.z-combobox-button {
+    border-left: none !important;
+}
+
+.z-combobox-input {
+    border-right: none !important;
+}
+
+/* Checkbox */
+input[type="checkbox"]:checked {
+    background-color: var(--ap-c-widget);
+    color: #fff;
+}
+
+input[type="checkbox"] {
+    border: 1px solid var(--ap-c-grey-minor);
+    margin: 0 4px 2px 4px;
+    font-size: 14px;
+    width: 16px;
+    height: 16px;
+    line-height: 14px;
+
+}
+
+.z-listheader-checkable,
+.z-listitem-checkable {
+    width: 16px;
+    height: 16px;
+}
+
+.z-listheader-checkable.z-listheader-checked .z-listheader-icon {
+    line-height: 14px;
+}
+
+.z-listitem-selected > .z-listcell > .z-listcell-content > .z-listitem-checkable .z-listitem-icon,
+.z-listitem-checkable.z-listitem-checked .z-listitem-icon {
+    line-height: 14px;
+}
+
+.z-listheader-checkable .z-listheader-icon,
+.z-listitem-checkable .z-listitem-icon {
+    font-size: 14px;
+    line-height: 14px;
+    cursor: pointer;
+}
+
+/* Radio */
+input[type="radio"]:checked:before {
+    background-color: var(--ap-c-widget);
+}
+
+/* Tab */
+.z-tabpanel {
+    border-top: 1px solid var(--ap-c-line-grid);
+}
+
+.z-tabbox-left .z-tabpanel {
+    border-left: 1px solid var(--ap-c-line-grid);
+}
+
+.z-tab-selected {
+    border-bottom-color: var(--ap-c-tab-bar-selected);
+}
+
+.z-tab-text {
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 24px !important;
+    color: var(--ap-c-tab-text-normal);
+}
+
+.z-tab-selected .z-tab-text {
+    color: var(--ap-c-tab-text-selected);
+}
+
+.z-tab-selected .ap-icon {
+    filter: var(--ap-c-tab-text-selected-filter);
+}
+
+.z-tab-selected .ap-icon {
+    filter: var(--ap-c-tab-text-selected-filter);
+}
+
+.z-tab:hover .z.tab-text {
+    color: var(--ap-c-tab-text-hover);
+}
+
+.z-tab:hover {
+    background-color: transparent;
+}
+
+.z-tab-selected .z-tab-text:hover {
+    color: var(--ap-c-tab-text-hover);
+}
+
+.z-tab-text:hover {
+    color: var(--ap-c-tab-text-hover);
+}
+
+.z-tab:hover .ap-icon {
+    background-color: transparent;
+    filter: var(--ap-c-tab-text-hover-filter);
+}
+
+.z-tabbox-left .z-tabs .z-tab,
+.z-tabbox-right .z-tabs .z-tab {
+    padding: 3px 8px;
+}
+
+/* Windows */
+
+.z-window {
+    background-color: var(--ap-c-bg-lighter);
+}
+
+.z-window-shadow {
+    box-shadow: var(--ap-box-shadow-window);
+}
+
+.z-window .z-caption {
+    font-size: var(--ap-font-size-base);
+}
+
+.z-window-content {
+    padding: 0;
+}
+
+.z-window-modal,
+.z-window-overlapped,
+.z-messagebox-window {
+    padding: 0;
+    background-color: white;
+    border-radius: 4px;
+}
+
+.z-messagebox-window {
+    /*
+    background-image: linear-gradient(
+      130deg,
+      #fba522 0%,
+      #f5e2e5 38%,
+      #c7e6f2 100%
+    );*/
+    background-image: linear-gradient(
+            130deg,
+            var(--ap-c-maroon) 0%,
+            var(--ap-c-grey-light-2) 38%,
+            var(--ap-c-oceanic-dark-1) 100%
+    );
+    background-position: top left;
+}
+
+.z-window-overlapped .z-window-header,
+.z-window-modal .z-window-header {
+    padding: 9px 7px 0 10px;
+    font-family: var(--ap-font-brand);
+    font-size: 14px;
+    color: black;
+    line-height: 16px;
+    height: var(--ap-header-height);
+    /*
+      background-color: #a44000;
+      background-image: linear-gradient(30deg, #a44000 0%, #f96100 20%, #c7e6f2 60%);
+    */
+    background-image: linear-gradient(
+            30deg,
+            #fcb88c 0%,
+            #fee8c8 20%,
+            #edf7fb 60%
+    );
+    /* border-bottom: 1px solid var(--ap-c-grey-light-5) !important; */
+}
+
+.z-messagebox-window .z-window-header {
+    padding: 9px 7px 0 10px;
+    font-family: var(--ap-font-brand);
+    font-size: 14px;
+    color: white;
+    line-height: 16px;
+    height: var(--ap-header-height);
+    /* border-bottom: 1px solid var(--ap-c-grey-light-5) !important; */
+}
+
+.z-window-modal .z-window-content {
+    /* padding: 7px 10px 7px 7px; */
+    padding: 0;
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.z-messagebox-window .z-window-content {
+    padding: 10px !important;
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Window icons */
+
+/*
+.z-messagebox-question {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/question-btn.png)
+}
+
+.z-messagebox-exclamation {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/warning-btn.png)
+}
+
+.z-messagebox-information {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/info-btn.png)
+}
+
+.z-messagebox-error {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/stop-btn.png)
+}*/
+
+.z-window-header .ap-icon {
+    display: inline-block;
+}
+
+.z-window-header .z-caption-content {
+    font-family: var(--ap-font-brand);
+    vertical-align: top;
+}
+
+.z-window-header .z-toolbarbutton {
+    vertical-align: top;
+}
+
+.z-window-header .z-toolbarbutton-content {
+    padding: 0;
+}
+
+.z-window-modal .z-window-header .ap-icon,
+.z-window-overlapped .z-window-header .ap-icon {
+    position: relative;
+    top: -5px;
+    filter: var(--ap-filter-ico-grey-minor);
+    background-size: auto 18px !important;
+
+}
+
+.z-window-header .ap-icon:hover {
+    background-color: transparent;
+    filter: var(--ap-filter-ico-normal-dark);
+}
+
+.z-window-header .z-toolbarbutton:hover .z-toolbarbutton-content {
+    background-color: transparent;
+}
+
+/* Window action icons */
+
+.z-window-icon {
+    font-size: 14px;
+    margin: 0 0 0 7px;
+    padding: 0;
+}
+
+/* Paging */
+
+.z-paging-info {
+    padding: 4px 0;
+}
+
+.z-paging-button {
+    color: var(--ap-c-text-normal) !important;
+    background-color: transparent !important;
+}
+
+.z-paging-button:focus {
+    box-shadow: none !important;
+}
+
+.z-paging-button:hover {
+    color: var(--ap-c-text-strong) !important;
+    background-color: var(--ap-c-bg-lighter) !important;
+}
+
+.z-paging-button [class^="z-icon-"], .z-paging-text, .z-paging-input {
+    font-size: 14px !important;
+    line-height: 16px !important;
+    vertical-align: middle;
+}
+
+/* Grid and listbox */
+
+.z-listbox-header-border {
+    border-bottom: 1px solid white !important;
+}
+
+.z-listheader {
+    background-color: var(--ap-c-grid-head-bg);
+    border: none;
+    border-left: 1px solid white;
+}
+
+.z-listheader:first-child {
+    border-left: none;
+}
+
+.z-listheader-content {
+    text-align: center;
+}
+
+.z-listbox-header {
+    background-color: var(--ap-c-grid-head-bg) !important;
+}
+
+.z-listbox-header-border {
+    border-bottom-color: var(--ap-c-grid-head-bg);
+}
+
+.z-listheader-content,
+.z-listcell-content,
+.z-listgroup-content,
+.z-listgroupfoot-content,
+.z-listfooter-content {
+    padding: 4px 5px 4px 5px;
+    line-height: 20px;
+    min-height: 32px;
+}
+
+.z-listitem.z-listitem-selected > .z-listcell {
+    background-color: var(--ap-c-grid-row-bg-selected) !important;
+    border-top: 0;
+    border-bottom: 1px solid var(--ap-c-line-sep-selected);
+}
+
+.z-listitem:hover > .z-listcell {
+    background: var(--ap-c-grid-row-bg-selected) !important;
+}
+
+.z-listitem .z-listcell {
+    border-top: 0;
+    border-bottom: 1px solid var(--ap-c-line-sep);
+    background-color: transparent;
+}
+
+.z-listheader-sort .z-listheader-sorticon {
+    position: relative;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    vertical-align: middle;
+    line-height: 18px;
+}
+
+.z-grid-header,
+.z-auxheader,
+.z-column {
+    background-color: var(--ap-c-soft-blue-dark-4) !important;
+}
+
+.z-listheader-content,
+.z-listcell-content,
+.z-listgroup-content,
+.z-listgroupfoot-content,
+.z-listfooter-content {
+    min-height: 28px;
+}
+
+.z-listitem-checkable {
+    vertical-align: middle;
+}
+
+.z-treerow > .z-treecell {
+    background-color: transparent;
+}
+
+.z-treerow-selected > .z-treecell {
+    background-color: var(--ap-c-grid-row-bg-selected) !important;
+}
+
+.z-treerow:hover > .z-treecell {
+    background-color: var(--ap-c-grid-row-bg-selected) !important;
+}
+
+.z-columns-bar, .z-listhead-bar {
+    background: transparent;
+    border: none;
+}
+
+.z-auxhead-bar {
+    border: none;
+}
+
+.z-column, .z-auxheader {
+    border-left: 0 none;
+    border-right: 1px solid white;
+}
+
+/* Fixes for CSV importer list */
+.myGroupBox .z-window-content {
+    padding: 0 !important;
+}
+
+.myGroupBox .z-label {
+    font-size: 12px !important;
+}
+
+/* ZK Icons */
+
+button > [class^="z-icon-"],
+button > [class*=" z-icon-"] {
+    font-family: FontAwesome, ZK85Icons;
+    font-size: 14px;
+    line-height: 1;
+    margin: 2px 2px 2px 0;
+}
+
+/* Slider overrides */
+.z-slider-area,
+.z-slider-button {
+    background-color: var(--ap-c-widget);
+}
+
+.z-slider-center {
+    background-color: var(--ap-c-grey-light-5);
+}
+
+tr.z-row-disabled td.z-row-inner .z-slider-area {
+    background-color: var(--ap-c-grey-light-3);
+}
+
+/* Menu */
+.z-menu,
+.z-menu-content {
+    height: 24px;
+    border: none;
+}
+
+.z-menubar-horizontal ul {
+    padding-top: 2px;
+}
+
+.z-menubar-horizontal li {
+    margin: 2px;
+}
+
+.z-menu-content,
+.z-menuitem-content {
+    background-color: var(--ap-c-grey-light-3);
+}
+
+.z-menu-content {
+    background-color: transparent;
+}
+
+.z-menu-selected .z-menu-content {
+    background-color: var(--ap-c-menu-bg-selected);
+}
+
+.z-menu-hover .z-menu-content {
+    background-color: var(--ap-c-menu-bg-hover);
+}
+
+.z-menu-selected .z-menu-text {
+    color: var(--ap-c-menu-text-selected);
+}
+
+.z-menu-content:hover, .z-menuitem-content:hover {
+    background-color: var(--ap-c-menu-bg-hover);
+}
+
+.z-menu-content:focus, .z-menuitem-content:focus {
+    background-color: var(--ap-c-menu-bg-hover);
+}
+
+.z-menu-content:active, .z-menuitem-content:active {
+    background-color: var(--ap-c-menu-bg-hover);
+}
+
+/* Layout */
+.z-north-body, .z-south-body, .z-west-body, .z-center-body, .z-east-body {
+    padding: 0;
+    background-color: white;
+}
+
+.z-north-header, .z-south-header, .z-west-header, .z-east-header {
+    height: 32px;
+    padding: 7px 4px 2px 8px;
+}
+
+.z-north-title, .z-south-title, .z-west-title, .z-east-title {
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    line-height: 16px;
+    padding: 3px;
+}
+
+.z-west-icon.z-icon-caret-left {
+    left: -4px;
+    color: var(--ap-c-grey-minor);
+}
+
+.z-west-icon.z-icon-ellipsis-v {
+    left: -2px;
+    color: var(--ap-c-grey-minor);
+    visibility: visible;
+}
+
+.z-south-icon.z-icon-caret-down {
+    top: -2px;
+    color: var(--ap-c-grey-minor);
+}
+
+.z-south-icon.z-icon-ellipsis-h {
+    top: -2px;
+    color: var(--ap-c-grey-minor);
+    visibility: visible;
+}
+
+/* Messagebox icons */
+.z-messagebox-question {
+    background-image: url(../img/msgbox/question.svg);
+}
+
+.z-messagebox-exclamation {
+    background-image: url(../img/msgbox/warning.svg);
+}
+
+.z-messagebox-information {
+    background-image: url(../img/msgbox/info.svg);
+}
+
+.z-messagebox-error {
+    background-image: url(../img/msgbox/stop.svg);
+}
+
+.z-groupbox .z-caption {
+    background-color: white !important;
+}
+
+.z-window-content {
+    padding: 0;
+}
+
+
+/* Missing z-icons from sample template */
+[class^="z-icon-"], [class*=" z-icon-"] {
+    display: inline-block;
+    font-family: ZK85Icons, FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    font-size: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: auto;
+}
+
+/* Caret */
+.z-icon-caret-down:before {
+    content: "\f0d7"
+}
+
+.z-icon-caret-up:before {
+    content: "\f0d8"
+}
+
+.z-icon-caret-left:before {
+    content: "\f0d9"
+}
+
+.z-icon-caret-right:before {
+    content: "\f0da"
+}
+
+/* Angle */
+
+.z-icon-angle-double-left:before {
+    content: "\f100"
+}
+
+.z-icon-angle-double-right:before {
+    content: "\f101"
+}
+
+.z-icon-angle-double-up:before {
+    content: "\f102"
+}
+
+.z-icon-angle-double-down:before {
+    content: "\f103"
+}
+
+.z-icon-angle-left:before {
+    content: "\f104"
+}
+
+.z-icon-angle-right:before {
+    content: "\f105"
+}
+
+.z-icon-angle-up:before {
+    content: "\f106"
+}
+
+.z-icon-angle-down:before {
+    content: "\f107"
+}
+
+/* Ellipsis */
+.z-icon-ellipsis-h:before {
+    content: "\f141"
+}
+
+.z-icon-ellipsis-v:before {
+    content: "\f142"
+}
+
+/* Primary */
+
+.z-icon-check:before {
+    content: "\f00c"
+}
+
+.z-icon-remove:before, .z-icon-close:before, .z-icon-times:before {
+    content: "\f00d"
+}
+
+
+.z-icon-chevron-left:before {
+    content: "\f053"
+}
+
+.z-icon-chevron-right:before {
+    content: "\f054"
+}
+
+.z-icon-plus-circle:before {
+    content: "\f055"
+}
+
+.z-icon-minus-circle:before {
+    content: "\f056"
+}
+
+.z-icon-times-circle:before {
+    content: "\f057"
+}
+
+.z-icon-check-circle:before {
+    content: "\f058"
+}
+
+.z-icon-question-circle:before {
+    content: "\f059"
+}
+
+.z-icon-info-circle:before {
+    content: "\f05a"
+}
+
+.z-icon-times-circle-o:before {
+    content: "\f05c"
+}
+
+.z-icon-check-circle-o:before {
+    content: "\f05d"
+}
+
+.z-icon-rotate-left:before, .z-icon-undo:before {
+    content: "\f0e2"
+}
+
+.z-icon-rotate-right:before, .z-icon-repeat:before {
+    content: "\f01e"
+}
+
+.z-icon-refresh:before {
+    content: "\f021"
+}
+
+.z-icon-table:before {
+    content: "\f0ce"
+}
+
+.z-icon-expand:before {
+    content: "\f065"
+}
+
+.z-icon-remove:before,
+.z-icon-close:before,
+.z-icon-times:before {
+    content: "\f00d"
+}
+
+.z-icon-compress:before {
+    content: "\f066"
+}
+
+.z-icon-gears:before, .z-icon-cogs:before {
+    content: "\f085"
+}
+
+.z-icon-search:before {
+    content: "\f002"
+}
+
+.z-icon-filter:before {
+    content: "\f0b0"
+}
+
+/* Symbols */
+
+.z-icon-wrench:before {
+    content: "\f0ad"
+}
+
+.z-icon-keyboard-o:before {
+    content: "\f11c"
+}
+
+.z-icon-calendar:before {
+    content: "\f073"
+}
+
+.z-icon-at:before {
+    content: "\f1fa"
+}

@@ -3,6 +3,9 @@ package org.apromore.apmlog;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Chii Chang (11/2019)
+ */
 public class AActivity  {
     private String name;
     private List<AEvent> eventList;

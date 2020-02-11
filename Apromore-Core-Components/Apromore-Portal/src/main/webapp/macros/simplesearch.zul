@@ -19,14 +19,30 @@
   -->
 
 <!-- Controller is SimpleSearchController -->
-<window id="simplesearchwindow">
-    <style>
-        .z-button {
-        box-shadow: unset;
-        }
-    </style>
-    <hbox id="previoussearcheshbox" pack="stretch" width="100%" height="24px">
-        <combobox id="previoussearchescombobox" autodrop="true" mold="rounded" buttonVisible="true" hflex="10" tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."/>
-        <button id="previoussearchesbutton" hflex="1" style="background: transparent; padding: 0; border:none" image="img/icon/svg/search_22.svg"/>
-    </hbox>
+<window id="simplesearchwindow"
+        sclass="ap-container-search"
+        style="margin: 5px 10px 0 0;"
+        hflex="1">
+  <style>
+    .z-button {
+    box-shadow: unset;
+    }
+  </style>
+  <hbox id="previoussearcheshbox"
+        pack="stretch"
+        hflex="1">
+    <combobox
+        id="previoussearchescombobox"
+        autodrop="true"
+        mold="rounded"
+        buttonVisible="true"
+        hflex="1"
+        tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
+        placeholder="Search"/>
+    <button id="previoussearchesbutton"
+            width="34px"
+            sclass="ap-icon ap-icon-search"
+            style="background: transparent; padding: 0; border:none; margin-left: 7px;margin-right: 7px;"
+            image="img/icon/svg/search_22.svg"/>
+  </hbox>
 </window>

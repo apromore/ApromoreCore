@@ -91,12 +91,6 @@
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>Eclipse Collections OSGI</Bundle-Name>
-                        <Import-Bundle>
-                            com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
-                        </Import-Bundle>
-                        <Import-Package>
-
-                        </Import-Package>
                         <Export-Package>
                             org.eclipse.collections.*,
                         </Export-Package>

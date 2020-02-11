@@ -33,6 +33,10 @@ import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 
+/**
+ * @author Bruce Hoang Nguyen (11/07/2019)
+ * Modified: Chii Chang (31/12/2019)
+ */
 public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory {
 
 	@Override
@@ -68,9 +72,14 @@ public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory 
                 return new LogFilterCriterionDurationMaxWaiting(action, containment, level, label, attribute, value);
             case CASE_UTILIZATION:
                 return new LogFilterCriterionCaseUtilization(action, containment, level, label, attribute, value);
-
+            case REWORK_REPETITION:
+                return new LogFilterCriterionRework(action, containment, level, label, attribute, value);
             default:
-                return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
+                if (label.equals("rework:repetition")) {
+                    return new LogFilterCriterionRework(action, containment, level, label, attribute, value);
+                } else {
+                    return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
+                }
         }
     }
     

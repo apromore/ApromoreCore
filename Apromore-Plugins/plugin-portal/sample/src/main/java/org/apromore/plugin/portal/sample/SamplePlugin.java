@@ -70,7 +70,7 @@ public class SamplePlugin extends PluginCustomGui {
             // Show the windows on top of everything
             window.doModal();
         } catch (IOException e) {
-            Messagebox.show("Could not load component: " + e.getMessage(), "Error", 0, Messagebox.ERROR);
+            Messagebox.show("Could not load component: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Could not load component", e);
         }
     }

@@ -7,6 +7,9 @@ import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.plugin.portal.generic.PluginOutputResult;
 import org.deckfour.xes.model.XLog;
 
+/**
+ * @author Bruce Hoang Nguyen (30/08/2019)
+ */
 public class LogFilterOutputResult extends PluginOutputResult {
     private XLog log;
     private List<LogFilterCriterion> filterCriteria;

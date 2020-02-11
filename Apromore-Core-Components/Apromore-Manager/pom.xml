@@ -83,8 +83,7 @@
                             org.springframework.security.web;version="[3.1.0,4.0)",
                             org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.apromore.manager-security;version="[1.1,1.1]",
-                            org.apromore.manager-ws-model;version="[1.1,1.1]",
-                            org.apromore.filestore-client;version="[1.0,1.1]"
+                            org.apromore.manager-ws-model;version="[1.1,1.1]"
                         </Import-Bundle>
                         <Import-Package>
                             org.deckfour.xes.*;version="2.27",
@@ -199,10 +198,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>filestore-client</artifactId>
         </dependency>
 
         <!-- Core Plugins -->
@@ -487,7 +482,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
-            <scope>test</scope>
+            <!--<scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -700,6 +695,12 @@
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.joda-time</artifactId>
             <version>2.3_1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>com.springsource.org.apache.tools.ant</artifactId>
+            <version>1.8.3</version>
         </dependency>
 
 

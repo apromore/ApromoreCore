@@ -18,9 +18,10 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<?link rel="shortcut icon" href="/img/favicon.ico" ?>
+<?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
 <window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:z="http://www.zkoss.org/2005/zul"
+        sclass="ap-bpmneditor"
         use="org.apromore.portal.dialogController.BPMNEditorController">
 
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->
@@ -37,7 +38,22 @@
     <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
+    <custom-attributes theme="${labels.theme}"/>
+<!--    <custom-attributes theme="ap"/>-->
 
+    <n:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />
+    <n:link rel="stylesheet" type="text/css" href='/themes/${theme}/editor/css/index.css'  />
+
+    <n:div class="ap-header">
+        <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
+        <n:div class="ap-header-title">BPMN Editor</n:div>
+        <n:div class="ap-header-actions">
+            <n:a href="https://apromore.org/documentation/features" target="_blank">
+              <n:button class="ap-icon ap-icon-help"/>
+            </n:a>
+        </n:div>
+    </n:div>
+    
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
             <![CDATA[
@@ -108,6 +124,8 @@
 					  //console.log($$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
 					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
 					//}, 1000);
+
+					document.title = 'Apromore - BPMN Editor';
                 ]]>
             </n:script>
         </n:span>

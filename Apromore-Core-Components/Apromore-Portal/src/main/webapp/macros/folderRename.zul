@@ -25,7 +25,7 @@ and CreateProcessController.java for creating process purpose.
 
 <window width="400px" closable="false" position="center" id="winFolderRename">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <column width="30%"></column>
                 <column width="70%"></column>
@@ -35,7 +35,7 @@ and CreateProcessController.java for creating process purpose.
                     <label value="Folder name" width="100%"/>
                     <textbox id="txtName" width="100%"/>
                 </row>
-                <row spans="3">
+                <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
                         <button id="btnSave" label="Save" iconSclass="z-icon-check-circle"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>

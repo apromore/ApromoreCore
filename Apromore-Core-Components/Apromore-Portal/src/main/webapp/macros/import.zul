@@ -20,9 +20,16 @@
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
 <window id="importWindow" position="center" title="Import process models or logs"
-        visible="true" sizable="true" width="550px">
+        visible="true" sizable="true" width="600px"
+        sclass="ap-importer-chooser"
+        closable="true"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        xmlns:h="http://www.w3.org/1999/xhtml">
+    <caption>
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/import-logs-from-csv-files/" target="_blank" />
+    </caption>
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid ap-form">
             <columns sizable="true">
                 <column width="25%"></column>
                 <column width="15%"></column>
@@ -31,18 +38,18 @@
             <rows>
                 <row>
                     <label value="File to upload"/>
-                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1,multiple=false,native"/>
+                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1,multiple=false,native" w:onClick="Ap.uploadBtnClick()"/>
                     <label id="fileNameLabel" value="File Name - Please consider uploading logs in gz format" width="100%"/>
                 </row>
                 <row spans="1,2">
                     <label value="Supported extensions"/>
-                    <label id="supportedExt" value=""/>
+                    <label id="supportedExt" value="" />
                 </row>
                 <row spans="1,2">
-                    <label value="Make File Public"/>
+                    <label value="Make file Public"/>
                     <checkbox id="public" />
                 </row>
-                <row spans="3">
+                <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
                         <button id="okButtonImport" label="OK" width="85px" iconSclass="z-icon-check-circle" disabled="true" />
                         <button id="cancelButtonImport" label="Cancel" width="85px" iconSclass="z-icon-times-circle" >
@@ -52,4 +59,5 @@
             </rows>
         </grid>
     </vbox>
+    <h:script type="text/javascript" src="themes/ap/common/js/upload.js" defer="defer"></h:script>
 </window>

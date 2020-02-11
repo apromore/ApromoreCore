@@ -19,7 +19,7 @@
   -->
 
 <panel height="100%" id="pnlFolderTree">
-    <panelchildren>
+    <panelchildren style="padding: 0;">
         <style>
             .h-inline-block {
                 display: inline-block;
@@ -29,7 +29,7 @@
             overflow: unset;
             }
         </style>
-        <tree id="folderTree" vflex="true" width="100%" style="border-width: 0px;">
+        <tree id="folderTree" vflex="true" width="100%" style="border-width: 0px;" sclass="ap-folder-tree">
             <treecols sizable="true">
                 <treecol label="" />
             </treecols>

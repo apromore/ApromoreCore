@@ -1,9 +1,0 @@
-#!/bin/sh
-
-java -classpath \
-	platform\ extensions/diagram\ core/target/editor-platform-extension-diagram-1.2.jar:\
-platform\ extensions/bpmn20xmlbasic/target/editor-platform-extension-bpmn2_0-1.2.jar:\
-platform\ extensions/bpmn20xmlbasic/lib/jaxb-impl.jar:\
-platform\ extensions/bpmn20xmlbasic/lib/org.json.jar:\
-platform\ extensions/bpmn20xmlbasic/lib/log4j-1.2.15.jar \
-	 -enableassertions de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter $1

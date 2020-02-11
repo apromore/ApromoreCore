@@ -19,230 +19,99 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<project name="Apromore - Eclipse Virgo Deployment" default="deploy-virgo">
+<project>
+    <description>Core distribution</description>
 
-    <description>
-        Supports deployment of Apromore to Eclipse Virgo.
-    </description>
-
-    <!-- Folders used to build and deploy dependencies for Apromore. -->
     <property name="dir" location="${basedir}"/>
-    <property name="dir-sups" location="${basedir}/Supplements"/>
-    <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
-    <property name="dir-extras" location="${basedir}/Apromore-Extras"/>
-    <property name="dir-extras-build-tools" location="${dir-extras}/Build-Tools"/>
-    <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
+    <property name="startup.args" value="-clean"/>  <!-- e.g. pass -Dstartup.args="-clean -debug 8888" to start server in debug mode -->
+    <import file="build-common.xml" as="common"/>
+    
+    <filter token="portal.showSignavio" value="true"/>
+    <filter token="version.edition" value="Apromore Core Edition"/>
 
-    <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
-    <property name="virgo-url" value="https://github.com/apromore/ApromoreDev/blob/master/software/virgo-tomcat-server-3.6.4.RELEASE.zip?raw=true"/>
-    <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
-    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.4.RELEASE"/>
-
-    <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
-    <property name="dir-plugins" location="${basedir}/Apromore-Plugins/"/>
-    <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/"/>
-    <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
-    <property name="dir-editor-plugins" location="${basedir}/Apromore-Plugins/plugin-editor/"/>
-    <property name="dir-logic-plugins" location="${basedir}/Apromore-Plugins/plugin-logic/"/>
-    <property name="dir-portal-plugins" location="${basedir}/Apromore-Plugins/plugin-portal/"/>
-    <property name="dir-portal-templates" location="${basedir}/Apromore-Plugins/plugin-templates/"/>
-    <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
-    <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
-
-    <import file="build-community.xml" as="community"/>
-    <import file="Apromore-Enterprise-Plugins/build-demo.xml" as="demo" optional="true"/>
-    <import file="Apromore-Enterprise-Plugins/build-enterprise.xml" as="enterprise" optional="true"/>
-    <import file="build-student.xml" as="student"/>
-
-    <fileset id="usrRepo" dir=".">
-        <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
-        <include name="Apromore-Assembly/**/repository/usr/*.war"/>
-        <include name="git.properties"/>
-
-        <!-- Free builds won't include the following encumbered components -->
-        <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
-        <include name="Apromore-OSGI-Bundles/zkthemepack-osgi/target/zkthemepack-osgi-*.jar"/>
+    <fileset id="pickupRepo" dir="${dir}">
+        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
+        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         
-        <!-- These plugins wll be installed in an order with Apromore-Assembly/Custom-Plugins/custom-plugins.plan -->
-        <include name="Apromore-Custom-Plugins/Generic-Portal-Plugin/target/generic-portal-plugin-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
+        <include name="Apromore-Assembly/Custom-Plugins/custom-plugins-ce.plan"/>
+
+        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+
+        <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+
+        <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
+
+        <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+
+        <!-- XES implementation selector -->
+        <include name="Apromore-Custom-Plugins/XES-Selection-Portal-Plugin/target/xes-selection-portal-plugin-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
     </fileset>
-
-    <fileset id="usrRepoText" dir=".">
-        <include name="site.properties"/>
-    </fileset>
-
-    <!-- Virgo Related -->
-    <target name="check-virgo">
-        <condition property="virgo.installed">
-            <available file="${dir-virgo}" type="dir"/>
-        </condition>
-    </target>
-
-    <target name="download-virgo" depends="check-virgo" unless="virgo.installed">
-        <mkdir dir="${dir-deployment}"/>
-        <get src="${virgo-url}" dest="${dir-deployment}/virgo.zip"/>
-        <unzip src="${dir-deployment}/virgo.zip" dest="${dir-deployment}"/>
-        <delete file="${dir-deployment}/virgo.zip"/>
-    </target>
-
-    <target name="configure-virgo">
-        <copy todir="${dir-virgo}/bin" overwrite="true">
-            <fileset dir="Supplements/Virgo">
-                <filename name="dmk.sh"/>
-            </fileset>
-        </copy>
-        <copy todir="${dir-virgo}/bin" overwrite="true">
-            <fileset dir="Supplements/Virgo">
-                <filename name="dmk.bat"/>
-            </fileset>
-        </copy>
-        <copy todir="${dir-virgo}/repository/ext" overwrite="true">
-            <fileset dir="Supplements/Virgo">
-                <filename name="org.eclipse.virgo.web.properties"/>
-            </fileset>
-        </copy>
-        <copy todir="${dir-virgo}/configuration" overwrite="true">
-            <fileset dir="Supplements/Virgo">
-                <include name="tomcat-server.xml"/>
-                <include name="java6-server.profile"/>
-                <include name="serviceability.xml"/>
-            </fileset>
-        </copy>
-        <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
-        <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
-    </target>
-
-    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
-
-    <target name="clean-virgo" depends="check-virgo" if="virgo.installed">
-        <delete includeemptydirs="true">
-            <fileset dir="${dir-virgo}">
-                <include name="repository/usr/*.jar"/>
-            </fileset>
-        </delete>
-        <delete includeemptydirs="true">
-            <fileset dir="${dir-virgo}">
-                <include name="logs/*"/>
-            </fileset>
-        </delete>
-        <delete includeemptydirs="true">
-            <fileset dir="${dir-virgo}">
-                <include name="pickup/*.jar"/>
-                <include name="pickup/*.war"/>
-                <include name="pickup/*.par"/>
-                <include name="pickup/*.plan"/>
-                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
-                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="dist-virgo" depends="deploy-virgo">
-        <zip destfile="Apromore.zip" includes="${dir-virgo}/*"/>
-    </target>
-
-    <target name="deploy-virgo" depends="clean-virgo, setup-virgo, copy-virgo"/>
-
-    <target name="create-repository-dirs">
-        <mkdir dir="${dir-deployment}/Editor-Repository"/>
-        <mkdir dir="${dir-deployment}/Filestore-Repository"/>
-        <mkdir dir="${dir-deployment}/Lucene-Repository"/>
-        <mkdir dir="${dir-deployment}/Filestore-Repository"/>
-    </target>
-
-    <target name="clean-start-virgo" depends="configure-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean"/>
-        </exec>
-    </target>
 
     <target name="start-virgo" depends="deploy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
-            <arg line="-clean"/>
+            <arg line="${startup.args}"/>
         </exec>
         <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean"/>
+            <arg line="${startup.args}"/>
         </exec>
     </target>
 
-    <target name="debug-virgo" depends="configure-virgo, copy-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean -debug 8888"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean -debug"/>
-        </exec>
+    <target name="dist-virgo" depends="deploy-virgo">
+        <zip destfile="${dir}/Apromore.zip" includes="${dir-virgo}/*"/>
     </target>
 
-    <target name="debug" depends="configure-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean -debug"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean -debug"/>
-        </exec>
-    </target>
-
-    <target name="stop-virgo" depends="setup-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="shutdown.bat"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./shutdown.sh" osfamily="unix">
-        </exec>
-    </target>
+    <target name="deploy-virgo" depends="clean-virgo, setup-virgo, copy-virgo"/>
 
     <target name="copy-virgo" depends="clean-virgo, create-repository-dirs">
-        <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
-        <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
-        <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
-        <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
-        <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
-        <copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
-        <copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
                 <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
+                <include name="**/target/bpstruct-osgi-1.2.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
-                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
-                <include name="**/target/apm-verification-osgi-1.1.jar"/>
-<!--                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
-                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
-                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
-                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+                <include name="**/target/jbpt-petri-osgi-0.2.433.jar"/>
+                <include name="**/target/prom6-osgi-6.0.jar"/>
                 <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
-                <!--<include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>-->
                 <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
-                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
-                <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
-                <include name="**/target/json-osgi-20090211.jar"/>
-                -->
+                <include name="**/target/lpsolve-osgi-1.1.jar"/>
             </fileset>
 
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
-            <fileset dir="Supplements/">
+            <fileset dir="${dir-sups}">
                 <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset refid="usrRepo"/>
+
+            <!-- specific usr libraries for core -->
+            <fileset id="usrRepo-core" dir="${basedir}">
+                <include name="target/classes/META-INF/git.properties"/>
+            </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
             <fileset refid="usrRepoText"/>
@@ -250,21 +119,6 @@
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="pickupRepo"/>
         </copy>
-
-        <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
-        <copy file="Apromore-Custom-Plugins/BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
-        <copy file="Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
-
-        <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
-        <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
-
-        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
-        <copy file="Apromore-Custom-Plugins/PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
-        -->
 
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
@@ -277,11 +131,6 @@
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
-            <!--<fileset dir="${dir-portal-templates}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="**/core/**/*.jar"/>-->
-            <!--</fileset>-->
             <fileset dir="${dir-logic-plugins}">
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
@@ -293,202 +142,6 @@
                 <exclude name="**/core/**/*.jar"/>
                 <exclude name="sample/target/*.jar"/>
             </fileset>
-            <!--
-            <fileset dir="${dir-editor-plugins}">
-                <include name="**/target/*.war"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
-            -->
-            <!--<fileset dir="${dir-deploy}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="**/core/**/*.jar"/>-->
-            <!--</fileset>-->
         </copy>
-
-        <!-- PQL indexing bot -->
-        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
-    </target>
-
-    <target name="create-h2">
-        <delete>
-            <fileset dir="${dir-deployment}" includes="Manager-Repository.*"/>
-        </delete>
-        <java classname="org.h2.tools.RunScript">
-            <classpath>
-                <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
-            </classpath>
-            <arg value="-url"/>
-            <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
-            <arg value="-script"/>
-            <arg file="Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
-        </java>
-        <java classname="org.h2.tools.RunScript">
-            <classpath>
-                <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
-            </classpath>
-            <arg value="-url"/>
-            <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
-            <arg value="-script"/>
-            <arg file="Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
-        </java>
-    </target>
-
-    <target name="cpf-importer-uptodate">
-        <uptodate property="cpf-importer.uptodate" targetfile="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar">
-            <srcfiles dir="Supplements/cpfImporter/src/main"/>
-        </uptodate>
-    </target>
-
-    <target name="cpf-importer" depends="cpf-importer-uptodate" unless="cpf-importer.uptodate">
-        <exec dir="Supplements/cpfImporter" executable="mvn">
-            <arg value="package"/>
-        </exec>
-    </target>
-
-    <target name="install-sample-data" depends="cpf-importer">
-        <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
-            <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
-
-            <!-- Configurable BPMN samples -->
-            <arg value="-from"/>    <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
-            <arg value="-to"/>      <arg value="airport"/>
-            <arg value="International departure.bpmn"/>
-            <arg value="1 Terminal entry.bpmn"/>
-            <arg value="1x Manage LAGs in belongings.bpmn"/>
-            <arg value="2 Check-in.bpmn"/>
-            <arg value="2x Finalise Check-in.bpmn"/>
-            <arg value="2x Get restricted items checked.bpmn"/>
-            <arg value="2x Get tourist refund items checked.bpmn"/>
-            <arg value="2x Perform baggage check in.bpmn"/>
-            <arg value="2x Perform preliminary check in.bpmn"/>
-            <arg value="2x Request change of name.bpmn"/>
-            <arg value="3 Security.bpmn"/>
-            <arg value="3x Undergo Secondary screening.bpmn"/>
-            <arg value="3x Undergo preparation.bpmn"/>
-            <arg value="3x Undergo security checks.bpmn"/>
-            <arg value="4 Customs and Immigration.bpmn"/>
-            <arg value="4x Evaluate Validity.bpmn"/>
-            <arg value="4x Undergo customs and immigration checks.bpmn"/>
-            <arg value="5 Boarding.bpmn"/>
-            <arg value="5x Proceed through boarding checks.bpmn"/>
-            <arg value="6 Travel document acquisition.bpmn"/>
-            <arg value="7 LAGs.bpmn"/>
-            <arg value="91 Discretionary experience 1.bpmn"/>
-            <arg value="92 Discretionary experience 2.bpmn"/>
-            <arg value="93 Discretionary experience 3.bpmn"/>
-            <arg value="94 Discretionary experience 4.bpmn"/>
-
-            <!-- PQL samples -->
-            <!--<arg value="-from"/> <arg value="Supplements/samples/pql"/>-->
-            <!--<arg value="-to"/>   <arg value="pql"/>-->
-            <!--<arg value="1.pnml"/>-->
-            <!--<arg value="2.pnml"/>-->
-            <!--<arg value="3.pnml"/>-->
-            <!--<arg value="4.pnml"/>-->
-            <!--<arg value="5.pnml"/>-->
-            <!--<arg value="6.pnml"/>-->
-            <!--<arg value="7.pnml"/>-->
-            <!--<arg value="8.pnml"/>-->
-            <!--<arg value="9.pnml"/>-->
-            <!--<arg value="10.pnml"/>-->
-
-            <!-- Log animation samples -->
-            <arg value="-from"/> <arg value="Supplements/samples/repairExample"/>
-            <arg value="-to"/>   <arg value="repair"/>
-            <arg value="repairExample.bpmn"/>
-            <arg value="RepairExample20140901103825.mxml"/>
-            <arg value="repairExample_complete_lifecycle_only.xes"/>
-        </java>
-        <copy todir="Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
-            <!-- Configurable BPMN samples -->
-            <fileset dir="Apromore-Extras/bpmncmap/src/test/resources">
-                <include name="*.cmap"/>
-                <include name="*.qml"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="install-comparison-data" depends="cpf-importer">
-        <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
-            <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
-
-            <!-- Model to model -->
-            <arg value="-from"/>    <arg value="Supplements/samples/model-to-model"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Model"/>
-            <arg value="Model1.bpmn"/>
-            <arg value="Model2.bpmn"/>
-
-            <!-- Model to log -->
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CAUSCONC-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-1"/>
-            <arg value="bp3.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CAUSCONC-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-2"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog4.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-1"/>
-            <arg value="bp5.bpmn"/>
-            <arg value="bpLog4.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-2"/>
-            <arg value="bp3.bpmn"/>
-            <arg value="bpLog5.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-3"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-3"/>
-            <arg value="bp5.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-4"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-4"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog5.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-1"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog12.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-2"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog2.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-3"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-3"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog3B.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-4"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-4"/>
-            <arg value="bp4.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKRELOC-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKRELOC-1"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog10.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSKIP-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-1"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog11.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSKIP-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-2"/>
-            <arg value="bp6.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSUB"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSUB"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog9.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNMREPETITION"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/UNMREPETITION"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog8.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNOBSACYCLICINTER"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSACYCLICINTER"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog2.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNOBSCYCLICINTER"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSCYCLICINTER"/>
-            <arg value="bp.bpmn"/>
-            <arg value="bpLog.xes"/>
-        </java>
     </target>
 </project>

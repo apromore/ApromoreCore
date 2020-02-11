@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright © 2009-2018 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<project name="Apromore - Eclipse Virgo Deployment" default="deploy-virgo">
+
+    <description>
+        Supports deployment of Apromore to Eclipse Virgo.
+    </description>
+
+    <!-- This file isn't intended to be directly invoked; it's expected to be imported by other projects.
+         The importing project must set the ${dir} property to be the directory of the ApromoreCore checkout. -->
+
+    <!-- Folders used to build and deploy dependencies for Apromore. -->
+    <!-- <property name="dir" location="${basedir}"/> -->
+    <property name="dir-sups" location="${dir}/Supplements"/>
+    <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
+    <property name="dir-extras" location="${dir}/Apromore-Extras"/>
+    <property name="dir-extras-build-tools" location="${dir-extras}/Build-Tools"/>
+    <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
+
+    <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
+    <property name="virgo-url" value="https://github.com/apromore/ApromoreDev/blob/master/software/virgo-tomcat-server-3.6.4.RELEASE.zip?raw=true"/>
+    <property name="dir-deployment" location="${dir}/Apromore-Assembly"/>
+    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.4.RELEASE"/>
+
+    <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
+    <property name="dir-plugins" location="${dir}/Apromore-Plugins/"/>
+    <property name="dir-annotation" location="${dir}/Apromore-Plugins/plugin-annotation/"/>
+    <property name="dir-canoniser" location="${dir}/Apromore-Plugins/plugin-canoniser/"/>
+    <property name="dir-editor-plugins" location="${dir}/Apromore-Plugins/plugin-editor/"/>
+    <property name="dir-logic-plugins" location="${dir}/Apromore-Plugins/plugin-logic/"/>
+    <property name="dir-portal-plugins" location="${dir}/Apromore-Plugins/plugin-portal/"/>
+    <property name="dir-portal-templates" location="${dir}/Apromore-Plugins/plugin-templates/"/>
+    <property name="dir-deploy" location="${dir}/Apromore-Plugins/plugin-deployment/"/>
+    <property name="dir-osgi" location="${dir}/Apromore-OSGI-Bundles/"/>
+
+    <fileset id="usrRepo" dir="${dir}">
+        <include name="Apromore-Assembly/*-Assembly/target/repository/usr/*"/>
+        <include name="Apromore-Assembly/Custom-Plugins/target/repository/usr/*"/>
+
+        <!-- These plugins wll be installed in an order with Apromore-Assembly/Custom-Plugins/custom-plugins.plan -->
+        <include name="Apromore-Custom-Plugins/Generic-Portal-Plugin/target/generic-portal-plugin-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
+    </fileset>
+
+    <fileset id="usrRepoText" dir="${dir}">
+        <include name="site.properties"/>
+    </fileset>
+
+    <!-- Virgo Related -->
+    <target name="check-virgo">
+        <condition property="virgo.installed">
+            <available file="${dir-virgo}" type="dir"/>
+        </condition>
+    </target>
+
+    <target name="download-virgo" depends="check-virgo" unless="virgo.installed">
+        <mkdir dir="${dir-deployment}"/>
+        <get src="${virgo-url}" dest="${dir-deployment}/virgo.zip"/>
+        <unzip src="${dir-deployment}/virgo.zip" dest="${dir-deployment}"/>
+        <delete file="${dir-deployment}/virgo.zip"/>
+    </target>
+
+    <target name="configure-virgo">
+        <copy todir="${dir-virgo}/bin" overwrite="true">
+            <fileset dir="${dir-sups}/Virgo">
+                <filename name="dmk.sh"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/bin" overwrite="true">
+            <fileset dir="${dir-sups}/Virgo">
+                <filename name="dmk.bat"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/repository/ext" overwrite="true">
+            <fileset dir="${dir-sups}/Virgo">
+                <filename name="org.eclipse.virgo.web.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/configuration" overwrite="true">
+            <fileset dir="${dir-sups}/Virgo">
+                <include name="tomcat-server.xml"/>
+                <include name="java6-server.profile"/>
+                <include name="serviceability.xml"/>
+            </fileset>
+        </copy>
+        <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
+        <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
+    </target>
+
+    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
+
+    <target name="clean-virgo" depends="check-virgo" if="virgo.installed">
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="repository/usr/*.jar"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="logs/*"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="pickup/*.jar"/>
+                <include name="pickup/*.war"/>
+                <include name="pickup/*.par"/>
+                <include name="pickup/*.plan"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
+                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="create-repository-dirs">
+        <mkdir dir="${dir-deployment}/Editor-Repository"/>
+        <mkdir dir="${dir-deployment}/Filestore-Repository"/>
+        <mkdir dir="${dir-deployment}/Lucene-Repository"/>
+        <mkdir dir="${dir-deployment}/Filestore-Repository"/>
+    </target>
+
+    <target name="stop-virgo" depends="setup-virgo">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="shutdown.bat"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./shutdown.sh" osfamily="unix">
+        </exec>
+    </target>
+
+    <target name="create-h2">
+        <delete>
+            <fileset dir="${dir-deployment}" includes="Manager-Repository.*"/>
+        </delete>
+        <java classname="org.h2.tools.RunScript">
+            <classpath>
+                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+            </classpath>
+            <arg value="-url"/>
+            <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
+            <arg value="-script"/>
+            <arg file="${dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
+        </java>
+        <java classname="org.h2.tools.RunScript">
+            <classpath>
+                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+            </classpath>
+            <arg value="-url"/>
+            <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
+            <arg value="-script"/>
+            <arg file="${dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
+        </java>
+    </target>
+
+    <target name="cpf-importer-uptodate">
+        <uptodate property="cpf-importer.uptodate" targetfile="${dir-sups}/cpfImporter/target/cpfImporter-1.1.one-jar.jar">
+            <srcfiles dir="${dir-sups}/cpfImporter/src/main"/>
+        </uptodate>
+    </target>
+
+    <target name="cpf-importer" depends="cpf-importer-uptodate" unless="cpf-importer.uptodate">
+        <exec dir="${dir-sups}/cpfImporter" executable="mvn">
+            <arg value="package"/>
+        </exec>
+    </target>
+
+    <target name="install-sample-data" depends="cpf-importer">
+        <java jar="${dir-sups}/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
+            <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
+
+            <!-- Configurable BPMN samples -->
+            <arg value="-from"/>    <arg value="${dir-extras}/bpmncmap/src/test/resources"/>
+            <arg value="-to"/>      <arg value="airport"/>
+            <arg value="International departure.bpmn"/>
+            <arg value="1 Terminal entry.bpmn"/>
+            <arg value="1x Manage LAGs in belongings.bpmn"/>
+            <arg value="2 Check-in.bpmn"/>
+            <arg value="2x Finalise Check-in.bpmn"/>
+            <arg value="2x Get restricted items checked.bpmn"/>
+            <arg value="2x Get tourist refund items checked.bpmn"/>
+            <arg value="2x Perform baggage check in.bpmn"/>
+            <arg value="2x Perform preliminary check in.bpmn"/>
+            <arg value="2x Request change of name.bpmn"/>
+            <arg value="3 Security.bpmn"/>
+            <arg value="3x Undergo Secondary screening.bpmn"/>
+            <arg value="3x Undergo preparation.bpmn"/>
+            <arg value="3x Undergo security checks.bpmn"/>
+            <arg value="4 Customs and Immigration.bpmn"/>
+            <arg value="4x Evaluate Validity.bpmn"/>
+            <arg value="4x Undergo customs and immigration checks.bpmn"/>
+            <arg value="5 Boarding.bpmn"/>
+            <arg value="5x Proceed through boarding checks.bpmn"/>
+            <arg value="6 Travel document acquisition.bpmn"/>
+            <arg value="7 LAGs.bpmn"/>
+            <arg value="91 Discretionary experience 1.bpmn"/>
+            <arg value="92 Discretionary experience 2.bpmn"/>
+            <arg value="93 Discretionary experience 3.bpmn"/>
+            <arg value="94 Discretionary experience 4.bpmn"/>
+
+            <!-- PQL samples -->
+            <!--<arg value="-from"/> <arg value="${dir-sups}/samples/pql"/>-->
+            <!--<arg value="-to"/>   <arg value="pql"/>-->
+            <!--<arg value="1.pnml"/>-->
+            <!--<arg value="2.pnml"/>-->
+            <!--<arg value="3.pnml"/>-->
+            <!--<arg value="4.pnml"/>-->
+            <!--<arg value="5.pnml"/>-->
+            <!--<arg value="6.pnml"/>-->
+            <!--<arg value="7.pnml"/>-->
+            <!--<arg value="8.pnml"/>-->
+            <!--<arg value="9.pnml"/>-->
+            <!--<arg value="10.pnml"/>-->
+
+            <!-- Log animation samples -->
+            <arg value="-from"/> <arg value="${dir-sups}/samples/repairExample"/>
+            <arg value="-to"/>   <arg value="repair"/>
+            <arg value="repairExample.bpmn"/>
+            <arg value="RepairExample20140901103825.mxml"/>
+            <arg value="repairExample_complete_lifecycle_only.xes"/>
+        </java>
+        <copy todir="${dir-deployment}/Filestore-Repository" overwrite="yes" verbose="true">
+            <!-- Configurable BPMN samples -->
+            <fileset dir="${dir-extras}/bpmncmap/src/test/resources">
+                <include name="*.cmap"/>
+                <include name="*.qml"/>
+            </fileset>
+        </copy>
+    </target>
+</project>

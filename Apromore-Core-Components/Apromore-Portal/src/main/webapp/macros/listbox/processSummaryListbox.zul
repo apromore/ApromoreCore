@@ -18,16 +18,16 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<listbox id="processSummariesListbox" hflex="true" vflex="true" span="true" autopaging="true" mold="default" multiple="true" checkmark="false">
-    <listhead sizable="false">
-        <listheader                           width="32px" visible="true" />
+<listbox id="processSummariesListbox" width="100%" vflex="1" span="true" autopaging="true" mold="default" multiple="true" checkmark="false" sclass="ap-listbox-process ap-forced-scroll">
+    <listhead hflex="1" sizable="true">
+        <listheader                           width="40px" visible="true" />
         <listheader label="Score"             hflex="1"    visible="true" id="columnScore"/>
-        <listheader label="Name"              hflex="5"/>                   <!-- name -->
-        <listheader label="Id"                hflex="1"    align="center"/> <!-- id -->
-        <listheader label="Format"            hflex="1"/>                 <!-- originalNativeType -->
+        <listheader label="Name"              hflex="7"/>                   <!-- name -->
+        <listheader label="ID"                hflex="1"    align="center"/> <!-- id -->
+        <listheader label="Format"            width="80px" align="center" />                 <!-- originalNativeType -->
         <listheader label="Domain"            hflex="1"/>                   <!-- domain -->
-        <listheader label="Ranking"           width="90px" align="center"/> <!-- ranking -->
-        <listheader label="Latest version"    hflex="min"  align="center"/> <!-- lastVersion -->
+        <listheader label="Rating"            width="90px" align="center"/> <!-- ranking -->
+        <listheader label="Latest version"    width="100px"  align="center"/> <!-- lastVersion -->
         <listheader label="Owner"             hflex="1"/>                   <!-- owner -->
     </listhead>
 </listbox>

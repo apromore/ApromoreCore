@@ -13,7 +13,7 @@ public class FileUITest extends AbstractPortalUITest {
   final String IMPORT_DIALOG_XPATH             = "/html/body/div[div[text()='Import process models or logs']]";
   final String EXPORT_DIALOG_XPATH             = "/html/body/div[div[text()='Export process model']]";
   final String EDIT_MODEL_DIALOG_XPATH         = "/html/body/div[div[starts-with(text(),'Edit process ')]]";
-  final String EDIT_METADATA_DIALOG_XPATH      = "/html/body/div[div[text()='Edit process model meta-data']]";
+  final String EDIT_METADATA_DIALOG_XPATH      = "/html/body/div[div[text()='Edit process model metadata']]";
 
   // Create Model
 

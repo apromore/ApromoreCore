@@ -68,7 +68,7 @@ public class YAWLDeploymentPortalPlugin extends DefaultPortalPlugin {
             try {
                 new DeployProcessModelController(portalContext, processSummaryVersions.entrySet().iterator().next());
             } catch (InterruptedException | IOException e) {
-                Messagebox.show("Unable to deploy process model: " + e.getMessage(), "Error", 0, Messagebox.ERROR);
+                Messagebox.show("Unable to deploy process model: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 LOGGER.error("Unable to deploy process model", e);
             }
         } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 The University of Melbourne.
+ * Copyright © 2019, 2020 The University of Melbourne.
  *
  * This file is part of "Apromore".
  *
@@ -32,6 +32,7 @@ import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 15/07/2018.
+ * Modified by Chii Chang on 24/01/2020
  */
 public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
 
@@ -148,7 +149,7 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
         if(level == Level.EVENT) {
             string += "all events where attribute " + attribute + " is equal to " + values;
         }else {
-            string += "all traces ";
+            string += "all cases ";
 
             if(this.label.equals("case:attribute")) {
                 string += "where attribute " + this.attribute + " is equal to " + values;

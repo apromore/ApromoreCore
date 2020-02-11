@@ -70,4 +70,12 @@ public final class Constants {
     public static final String INITIAL_VERSION = "1.0";
     public static final String dateFormat = "yyyy/MM/dd hh:mm a";
 
+    public static final String ICOCLS_PREFIX = "ap-ico-";
+    public static final String FOLDER_ICOCLS = ICOCLS_PREFIX + "folder";;
+    public static final String PROCESS_ICOCLS = ICOCLS_PREFIX + "process";
+    public static final String LOG_ICOCLS = ICOCLS_PREFIX + "log";
+
+    public static final String STAR_FULL_CLS = "ap-star-full";
+    public static final String STAR_HALF_CLS = "ap-star-half";
+    public static final String STAR_NONE_CLS = "ap-star-none";
 }

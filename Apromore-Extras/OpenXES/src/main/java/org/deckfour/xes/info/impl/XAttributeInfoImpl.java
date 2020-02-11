@@ -5,7 +5,7 @@
  * log data management.
  * 
  * Copyright (c) 2008 Christian W. Guenther (christian@deckfour.org)
- * 
+ * Copyright (c) 2019 The University of Melbourne (info@apromore.org)
  * 
  * LICENSE:
  * 

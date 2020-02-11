@@ -15,11 +15,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Chii Chang (11/2019)
+ * Modified: Chii Chang (03/02/2020)
+ * Modified: Chii Chang (04/02/2020)
+ * Modified: Chii Chang (06/02/2020)
+ */
 public class ATrace implements Serializable {
 
     private String caseId = "";
     public long caseIdDigit = 0;
     private int caseVariantId = 0;
+    private int caseVariantIdForDisplay;
     private long startTimeMilli = -1;
     private long endTimeMilli = -1;
     private long duration = 0;
@@ -36,17 +43,31 @@ public class ATrace implements Serializable {
 
     private List<AActivity> activityList;
     private List<AEvent> eventList;
-    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap; // 2019-10-24
+    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, String> attributeMap;
     private List<String> activityNameList;
     private UnifiedSet<String> eventNameSet;
 
-    public ATrace(XTrace xTrace) {
+    private List<Integer> activityNameIndexList;
+
+    private APMLog apmLog;
+
+//    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
+//    private UnifiedMap<String, String> rawAttributeMap;
+
+    public ATrace(XTrace xTrace, APMLog apmLog) {
+
+        this.apmLog = apmLog;
+
+        activityNameIndexList = new ArrayList<>();
 
         activityList = new ArrayList<>();
         eventList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         attributeMap = new UnifiedMap<>();
+
+//        rawEventAttributeValueSetMap = new UnifiedMap<>();
+//        rawAttributeMap = new UnifiedMap<>();
 
         XAttributeMap xAttributeMap = xTrace.getAttributes();
         for(String key : xAttributeMap.keySet()) {
@@ -56,6 +77,7 @@ public class ATrace implements Serializable {
             } else {
                 this.attributeMap.put(key, xAttributeMap.get(key).toString());
             }
+//            this.rawAttributeMap.put(key, xAttributeMap.get(key).toString());
         }
         /**
          * DO NOT TAKE THE CASE:VARIANT IN THE ORIGINAL XLOG
@@ -86,106 +108,131 @@ public class ATrace implements Serializable {
 
             for(int i=0; i<xTrace.size(); i++) {
                 XEvent xEvent = xTrace.get(i);
+
                 AEvent iAEvent = new AEvent(xEvent);
-
-//                validEventIndex.set(i, true);
-
-                long eventTime = iAEvent.getTimestampMilli();
-                if(startTimeMilli == -1 || startTimeMilli > eventTime) {
-                    startTimeMilli = eventTime;
-                }
-                if(endTimeMilli == -1 || endTimeMilli < eventTime) {
-                    endTimeMilli = eventTime;
-                }
-
-
                 this.eventList.add(iAEvent);
-
                 this.eventNameSet.put(iAEvent.getName());
-
                 fillEventAttributeValueFreqMap(iAEvent);
 
+                if (!markedXEvent.contains(xEvent)) {
+                    long eventTime = iAEvent.getTimestampMilli();
+                    if(startTimeMilli == -1 || startTimeMilli > eventTime) {
+                        startTimeMilli = eventTime;
+                    }
+                    if(endTimeMilli == -1 || endTimeMilli < eventTime) {
+                        endTimeMilli = eventTime;
+                    }
 
+                    if(iAEvent.getLifecycle().equals("start")) {
 
-                if(iAEvent.getLifecycle().equals("start")) {
+                        String startEventName = iAEvent.getName();
 
-                    markedXEvent.put(xEvent);
+                        /**
+                         * Find the waiting time
+                         */
+                        long iTime = iAEvent.getTimestampMilli();
 
-                    String startEventName = iAEvent.getName();
-
-                    /**
-                     * Find the waiting time
-                     */
-                    long iTime = iAEvent.getTimestampMilli();
-
-                    if(i > 0) {
-                        for(int j=(i-1); j >=0; j--) {
-                            XEvent preEvent = xTrace.get(j);
-                            AEvent preAEvent = new AEvent(preEvent);
-                            if(preAEvent.getLifecycle().equals("complete")) {
-                                long preTime = preAEvent.getTimestampMilli();
-                                if(iTime > preTime) {
-                                    long waitingTime = iTime - preTime;
-                                    this.totalWaitingTime += waitingTime;
-                                    waitCount += 1;
-                                    if(waitingTime > this.maxWaitingTime) {
-                                        this.maxWaitingTime = waitingTime;
+                        if(i > 0) {
+                            for(int j=(i-1); j >=0; j--) {
+                                XEvent preEvent = xTrace.get(j);
+                                AEvent preAEvent = new AEvent(preEvent);
+                                if(preAEvent.getLifecycle().equals("complete")) {
+                                    long preTime = preAEvent.getTimestampMilli();
+                                    if(iTime > preTime) {
+                                        long waitingTime = iTime - preTime;
+                                        this.totalWaitingTime += waitingTime;
+                                        waitCount += 1;
+                                        if(waitingTime > this.maxWaitingTime) {
+                                            this.maxWaitingTime = waitingTime;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    boolean hasComplete = false;
+                        boolean hasComplete = false;
 
-                    /**
-                     * Find the duration
-                     */
-                    if((i+1) <= (xTrace.size()-1)) {
-                        for(int j=(i+1); j < xTrace.size(); j++) {
-                            AEvent jAEvent = new AEvent(xTrace.get(j));
-                            if(jAEvent.getName().equals(startEventName) &&
-                                    jAEvent.getLifecycle().equals("complete")) {
+                        /**
+                         * Find the duration and Follow-up events
+                         */
+                        List<AEvent> followEvents = new ArrayList<>();
 
-                                long endTime = jAEvent.getTimestampMilli();
-                                if(endTime > iTime) {
-                                    long processTime = endTime - iTime;
-                                    this.totalProcessingTime += processTime;
-                                    if(processTime > this.maxProcessingTime) this.maxProcessingTime = processTime;
-                                    processCount += 1;
+                        long kTime = 0;
 
-                                    List<AEvent> aEventList = new ArrayList<>();
-                                    aEventList.add(iAEvent);
-                                    aEventList.add(jAEvent);
-                                    AActivity aActivity = new AActivity(aEventList);
-                                    this.activityList.add(aActivity);
-                                    this.activityNameList.add(aActivity.getName());
+                        if((i+1) <= (xTrace.size()-1)) {
+                            for (int j = (i + 1); j < xTrace.size(); j++) {
+                                AEvent jAEvent = new AEvent(xTrace.get(j));
+                                if (jAEvent.getName().equals(startEventName)) {
+                                    followEvents.add(jAEvent);
                                     markedXEvent.put(xTrace.get(j));
-                                    hasComplete = true;
+                                    long jTime = jAEvent.getTimestampMilli();
+                                    if (jTime > kTime) kTime = jTime;
                                 }
-
-                                break;
+                                if (jAEvent.getLifecycle().toLowerCase().equals("complete")) break;
                             }
                         }
-                    }
 
-//                    if(!hasComplete) { //consider as instant event
-//                        List<AEvent> aEventList = new ArrayList<>();
-//                        aEventList.add(iAEvent);
-//                        AActivity aActivity = new AActivity(aEventList);
-//                        this.activityList.add(aActivity);
-//                        this.activityNameList.add(aActivity.getName());
-//                    }
+                        markedXEvent.put(xTrace.get(i));
+
+                        if (followEvents.size() > 0) {
+                            if(kTime > iTime) {
+                                long processTime = kTime - iTime;
+                                this.totalProcessingTime += processTime;
+                                if (processTime > this.maxProcessingTime) this.maxProcessingTime = processTime;
+                                processCount += 1;
+                            }
+
+                            List<AEvent> aEventList = new ArrayList<>();
+                            aEventList.add(iAEvent);
+                            for (int k=0; k < followEvents.size(); k++) {
+                                aEventList.add(followEvents.get(k));
+                            }
+
+                            AActivity aActivity = new AActivity(aEventList);
+                            this.activityList.add(aActivity);
+                            this.activityNameList.add(aActivity.getName());
+
+                            this.activityNameIndexList.add(
+                                    apmLog.getActivityNameMapper().set(aActivity.getName()));
+
+                            hasComplete = true;
+                        } else {
+                            List<AEvent> aEventList = new ArrayList<>();
+                            aEventList.add(iAEvent);
+                            AActivity aActivity = new AActivity(aEventList);
+                            this.activityList.add(aActivity);
+                            this.activityNameList.add(aActivity.getName());
+
+                            this.activityNameIndexList.add(
+                                    apmLog.getActivityNameMapper().set(aActivity.getName()));
+                        }
+                    } else {
+                        if( !markedXEvent.contains(xEvent) ) {
+                            List<AEvent> aEventList = new ArrayList<>();
+                            aEventList.add(iAEvent);
+                            AActivity aActivity = new AActivity(aEventList);
+                            this.activityList.add(aActivity);
+                            this.activityNameList.add(aActivity.getName());
+
+                            this.activityNameIndexList.add(
+                                    apmLog.getActivityNameMapper().set(aActivity.getName()));
+                        }
+                    }
                 }
 
 
 
-                if( !markedXEvent.contains(xEvent) && iAEvent.getLifecycle().toLowerCase().equals("complete")) {
+
+
+                if( !markedXEvent.contains(xEvent)  ) {
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
                     this.activityList.add(aActivity);
                     this.activityNameList.add(aActivity.getName());
+
+                    this.activityNameIndexList.add(
+                            apmLog.getActivityNameMapper().set(aActivity.getName()));
                 }
             }
             if(this.totalProcessingTime > 0 && processCount > 0) this.averageProcessingTime = this.totalProcessingTime / processCount;
@@ -196,8 +243,7 @@ public class ATrace implements Serializable {
                 AEvent iAEvent = new AEvent(xEvent);
 
 
-//                validEventIndex.set(i, true);
-                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
+//                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
 
                     long eventTime = iAEvent.getTimestampMilli();
                     if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
@@ -207,13 +253,17 @@ public class ATrace implements Serializable {
                     this.eventNameSet.put(iAEvent.getName());
 
                     fillEventAttributeValueFreqMap(iAEvent);
+//                    fillEventAttributeValueSetMap(iAEvent);
 
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
                     this.activityList.add(aActivity);
                     this.activityNameList.add(aActivity.getName());
-                }
+
+                    this.activityNameIndexList.add(
+                            apmLog.getActivityNameMapper().set(aActivity.getName()));
+//                }
             }
         }
 
@@ -225,12 +275,38 @@ public class ATrace implements Serializable {
             }else{
                 this.caseUtilization = 1.0;
             }
+
+
         }
 
         this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
         this.durationString = convertMilliseconds(duration);
+
+//        System.out.println(this.activityNameIndexList);
     }
+
+
+//    public UnifiedMap<String, String> getRawAttributeMap() {
+//        return rawAttributeMap;
+//    }
+
+//    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
+//        return rawEventAttributeValueSetMap;
+//    }
+
+//    private void fillEventAttributeValueSetMap(AEvent aEvent) {
+//        for (String key : aEvent.getRawAttributeMap().keySet()) {
+//            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
+//                this.rawEventAttributeValueSetMap.get(key).put(aEvent.getRawAttributeMap().get(key));
+//            } else {
+//                UnifiedSet<String> vals = new UnifiedSet<>();
+//                vals.put(aEvent.getRawAttributeMap().get(key));
+//                this.rawEventAttributeValueSetMap.put(key, vals);
+//            }
+//        }
+////        System.out.println(rawEventAttributeValueSetMap);
+//    }
 
     private void fillEventAttributeValueFreqMap(AEvent aEvent) {
         for(String key : aEvent.getAttributeMap().keySet()) {
@@ -258,13 +334,23 @@ public class ATrace implements Serializable {
     }
 
     private boolean containsActivity(XTrace xTrace) {
-        for(int i=0; i<xTrace.size(); i++) {
-            AEvent iEvent = new AEvent(xTrace.get(i));
-            if(iEvent.getLifecycle().equals("start")) {
-                this.hasActivity = true;
-                return true;
+        for (int i=0; i < xTrace.size(); i++) {
+            XEvent xEvent = xTrace.get(i);
+            if (xEvent.getAttributes().containsKey("lifecycle:transition")) {
+                String lifecycle = xEvent.getAttributes().get("lifecycle:transition").toString();
+                if (lifecycle.toLowerCase().equals("start")) {
+                    this.hasActivity = true;
+                    return true;
+                }
             }
         }
+//        for(int i=0; i<xTrace.size(); i++) {
+//            AEvent iEvent = new AEvent(xTrace.get(i));
+//            if(iEvent.getLifecycle().equals("start")) {
+//                this.hasActivity = true;
+//                return true;
+//            }
+//        }
         return false;
     }
 
@@ -329,7 +415,12 @@ public class ATrace implements Serializable {
     }
 
     public AEvent get(int index) {
-        return this.eventList.get(index);
+        try {
+            return this.eventList.get(index);
+        } catch (Exception e) {
+            System.out.println("Index " + index + " does not exist.\n" + e.toString() );
+        }
+        return null;
     }
 
     public long getTotalProcessingTime() {
@@ -376,6 +467,10 @@ public class ATrace implements Serializable {
         return caseIdDigit;
     }
 
+    public List<Integer> getActivityNameIndexList() {
+        return activityNameIndexList;
+    }
+
     public ATrace(String caseId, int caseVariantId,
                   long startTimeMilli, long endTimeMilli,
                   boolean hasActivity, long duration,
@@ -387,10 +482,12 @@ public class ATrace implements Serializable {
                   UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
                   UnifiedMap<String, String> attributeMap,
                   List<String> activityNameList,
-                  UnifiedSet<String> eventNameSet) {
+                  UnifiedSet<String> eventNameSet,
+                  List<Integer> activityNameIndexList) {
         this.caseId = caseId;
         if(this.caseId.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
         this.caseVariantId = caseVariantId;
+        this.caseVariantIdForDisplay = caseVariantId;
         this.startTimeMilli = startTimeMilli;
         this.endTimeMilli = endTimeMilli;
         this.hasActivity = hasActivity;
@@ -412,6 +509,8 @@ public class ATrace implements Serializable {
         this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
         this.durationString = convertMilliseconds(duration);
+
+        this.activityNameIndexList = activityNameIndexList;
     }
 
     public static String timestampStringOf(ZonedDateTime zdt){
@@ -424,6 +523,14 @@ public class ATrace implements Serializable {
         Instant i = Instant.ofEpochMilli(millisecond);
         ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
         return z;
+    }
+
+    public void setCaseVariantIdForDisplay(int caseVariantIdForDisplay) {
+        this.caseVariantIdForDisplay = caseVariantIdForDisplay;
+    }
+
+    public int getCaseVariantIdForDisplay() {
+        return caseVariantIdForDisplay;
     }
 
     public static String convertMilliseconds(long milliseconds) {
@@ -449,4 +556,71 @@ public class ATrace implements Serializable {
         return "instant";
     }
 
+    public ATrace clone() {
+
+        List<AEvent> aEventList = new ArrayList<>();
+
+        List<AActivity> aActivityList = new ArrayList<>();
+
+        for (int i=0; i < this.activityList.size(); i++) {
+            AActivity aActivity = this.activityList.get(i).clone();
+            aActivityList.add(aActivity);
+            List<AEvent> actEventList = aActivity.getEventList();
+            for (int j=0; j < actEventList.size(); j++) {
+                aEventList.add(actEventList.get(j));
+            }
+        }
+
+        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValFreqMap = new UnifiedMap<>();
+
+        for (String key : this.eventAttributeValueFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMap = new UnifiedMap<>();
+
+            UnifiedMap<String, Integer> eValFreqMap = this.eventAttributeValueFreqMap.get(key);
+            for (String val : eValFreqMap.keySet()) {
+                valFreqMap.put(val, eValFreqMap.get(val));
+            }
+
+            eventAttrValFreqMap.put(key, valFreqMap);
+        }
+
+        UnifiedMap<String, String> attrMap = new UnifiedMap<>();
+
+        for (String key : this.attributeMap.keySet()) {
+            attrMap.put(key, this.attributeMap.get(key));
+        }
+
+        List<String> actNameList = new ArrayList<>();
+
+        for (int i=0; i < this.activityNameList.size(); i++) {
+            actNameList.add(this.activityNameList.get(i));
+        }
+
+        UnifiedSet<String> eNameSet = new UnifiedSet<>();
+
+        for (String s : this.eventNameSet) {
+            eNameSet.put(s);
+        }
+
+
+        return new ATrace(this.caseId, this.caseVariantId,
+                this.startTimeMilli,
+                this.endTimeMilli,
+                this.hasActivity,
+                this.duration,
+                this.totalProcessingTime,
+                this.averageProcessingTime,
+                this.maxProcessingTime,
+                this.totalWaitingTime,
+                this.averageWaitingTime,
+                this.maxWaitingTime,
+                this.caseUtilization,
+                aActivityList,
+                aEventList,
+                eventAttrValFreqMap,
+                attrMap,
+                actNameList,
+                eNameSet,
+                this.activityNameIndexList);
+    }
 }
