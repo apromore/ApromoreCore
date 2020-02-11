@@ -86,41 +86,14 @@
         <module>Apromore-OSGI-Bundles/prom6-osgi</module>
 
         <!-- OSGI -->
-        <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
-<!--
-        <module>Apromore-OSGI-Bundles/antlr4-runtime-osgi</module>
--->
         <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
-<!--
         <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
-        <module>Apromore-OSGI-Bundles/ltl-conf-check-osgi</module>
-        <module>Apromore-OSGI-Bundles/apm-verification-osgi</module>
--->
+        <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
         <module>Apromore-OSGI-Bundles/json-osgi</module>
-        <module>Apromore-OSGI-Bundles/jbpt-petri-osgi</module>
-        <!--<module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>-->
-<!--
-        <module>Apromore-OSGI-Bundles/postgresql-osgi</module>
--->
-        <!--<module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>-->
-<!--
-        <module>Apromore-OSGI-Bundles/prom-pnml-osgi</module>
-        <module>Apromore-OSGI-Bundles/pn-automata-conv-osgi</module>
-        <module>Apromore-OSGI-Bundles/ltl-to-automaton-osgi</module>
--->
-        <module>Apromore-OSGI-Bundles/declare-visualizer-osgi</module>
         <module>Apromore-OSGI-Bundles/raffaeleconforti-osgi</module>
-<!--
-        <module>Apromore-OSGI-Bundles/eventstr-confchecking-osgi</module>
--->
-
-
-        <!-- ZK Osgi -->
-        <module>Apromore-OSGI-Bundles/zk-osgi</module>
-
-        <!-- Similarity Search -->
         <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
+        <module>Apromore-OSGI-Bundles/zk-osgi</module>
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
