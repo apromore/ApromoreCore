@@ -21,11 +21,11 @@
 @font-face {
     font-family: 'FontAwesome';
     src:
-        url('../fonts/fa/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
-        url('../fonts/fa/fontawesome-webfont.woff2?v=4.7.0') format('woff2'),
-        url('../fonts/fa/fontawesome-webfont.woff?v=4.7.0') format('woff'),
-        url('../fonts/fa/fontawesome-webfont.ttf?v=4.7.0') format('truetype'),
-        url('../fonts/fa/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+            url('../fonts/fa/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
+            url('../fonts/fa/fontawesome-webfont.woff2?v=4.7.0') format('woff2'),
+            url('../fonts/fa/fontawesome-webfont.woff?v=4.7.0') format('woff'),
+            url('../fonts/fa/fontawesome-webfont.ttf?v=4.7.0') format('truetype'),
+            url('../fonts/fa/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -212,9 +212,9 @@ input {
 }
 
 .z-button:last-child,
- .z-combobutton:last-child .z-combobutton-content {
-     margin-right: 0;
- }
+.z-combobutton:last-child .z-combobutton-content {
+    margin-right: 0;
+}
 
 .z-button:first-child,
 .z-combobutton:first-child .z-combobutton-content {
@@ -257,7 +257,7 @@ input {
 
 .z-checkbox input[type="checkbox"],
 .z-radio input[type="radio"] {
-   margin: 0 4px 2px 0;
+    margin: 0 4px 2px 0;
 }
 
 .z-checkbox .z-checkbox-content,
@@ -458,12 +458,7 @@ input[type="radio"]:checked:before {
       background-color: #a44000;
       background-image: linear-gradient(30deg, #a44000 0%, #f96100 20%, #c7e6f2 60%);
     */
-    background-image: linear-gradient(
-            30deg,
-            #fcb88c 0%,
-            #fee8c8 20%,
-            #edf7fb 60%
-    );
+    background-image: var(--ap-grad-window-header);
     /* border-bottom: 1px solid var(--ap-c-grey-light-5) !important; */
 }
 
@@ -727,6 +722,11 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     border: none;
 }
 
+.z-menubar .z-menu-content,
+.z-menubar .z-menu-icon {
+    color: var(--ap-c-menu-text-normal);
+}
+
 .z-menubar-horizontal ul {
     padding-top: 2px;
 }
@@ -745,26 +745,30 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 }
 
 .z-menu-selected .z-menu-content {
-    background-color: var(--ap-c-menu-bg-selected);
+    background-color: var(--ap-c-menu-bg-selected) !important;
+}
+
+.z-menu-selected .z-menu-text {
+    color: var(--ap-c-menu-text-selected) !important;
 }
 
 .z-menu-hover .z-menu-content {
     background-color: var(--ap-c-menu-bg-hover);
 }
 
-.z-menu-selected .z-menu-text {
-    color: var(--ap-c-menu-text-selected);
-}
 
 .z-menu-content:hover, .z-menuitem-content:hover {
+    color: var(--ap-c-menu-text-hover);
     background-color: var(--ap-c-menu-bg-hover);
 }
 
 .z-menu-content:focus, .z-menuitem-content:focus {
+    color: var(--ap-c-menu-text-hover);
     background-color: var(--ap-c-menu-bg-hover);
 }
 
 .z-menu-content:active, .z-menuitem-content:active {
+    color: var(--ap-c-menu-text-hover);
     background-color: var(--ap-c-menu-bg-hover);
 }
 

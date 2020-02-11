@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
+<?link rel="shortcut icon" href="/themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:z="http://www.zkoss.org/2005/zul"
         sclass="ap-bpmneditor"
@@ -42,7 +42,7 @@
 <!--    <custom-attributes theme="ap"/>-->
 
     <n:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />
-    <n:link rel="stylesheet" type="text/css" href='/themes/${theme}/editor/css/index.css'  />
+    <n:link rel="stylesheet" type="text/css" href='/themes/ap/editor/css/index.css'  />
 
     <n:div class="ap-header">
         <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>

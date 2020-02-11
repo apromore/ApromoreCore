@@ -18,6 +18,6 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
+@import "/themes/ap/editor/css/oryx.css";
+@import "/themes/ap/editor/css/icons.css";
 @import "./animator.css";
-@import "../../editor/css/oryx.css";
-@import "../../editor/css/icons.css";

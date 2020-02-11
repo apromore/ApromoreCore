@@ -32,10 +32,10 @@
 <!-- must call this in the head -->
 <?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <?link rel="prefetch" href="themes/${labels.theme}/common/img/brand/loader.svg" ?>
-<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/headload.css" ?>
+<?link rel="stylesheet" type="text/css" href="themes/ap/common/css/headload.css" ?>
 <?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/index.css" ?>
-<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/portal/css/portal.css" ?>
-<?script src="themes/${labels.theme}/common/js/index.js"?>
+<?link rel="stylesheet" type="text/css" href="themes/ap/portal/css/portal.css" ?>
+<?script src="themes/ap/common/js/index.js"?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -189,7 +189,7 @@
 
         <borderlayout vflex="true" sclass="ap-portal-layout">
             <north height="34px" border="0" sclass="ap-header-region" >
-                <div height="66px" hflex="1">
+                <div height="34px" hflex="1">
                     <h:div class="ap-header">
                         <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
                         <h:div class="ap-header-title">Portal</h:div>
