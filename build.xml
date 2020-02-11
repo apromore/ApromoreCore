@@ -39,10 +39,6 @@
 
         <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
 
-        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
-        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
-        <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
-
         <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
         <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
@@ -57,8 +53,6 @@
 
         <!-- XES implementation selector -->
         <include name="Apromore-Custom-Plugins/XES-Selection-Portal-Plugin/target/xes-selection-portal-plugin-1.0.jar"/>
-
-        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
     </fileset>
 
     <target name="start-virgo" depends="deploy-virgo">
