@@ -87,6 +87,7 @@
 
         <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
+        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
         <module>Apromore-OSGI-Bundles/json-osgi</module>
