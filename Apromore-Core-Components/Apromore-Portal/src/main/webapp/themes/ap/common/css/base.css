@@ -7,6 +7,9 @@
     --ap-filter-ico-orange: invert(82%) sepia(12%) saturate(7033%) hue-rotate(338deg) brightness(98%) contrast(101%);
     --ap-filter-ico-sunset: invert(50%) sepia(96%) saturate(3596%) hue-rotate(1deg) brightness(98%) contrast(101%);
     --ap-filter-ico-maroon: invert(27%) sepia(95%) saturate(1140%) hue-rotate(319deg) brightness(88%) contrast(87%);
+    --ap-filter-ico-green: invert(57%) sepia(82%) saturate(362%) hue-rotate(90deg) brightness(94%) contrast(89%);
+    --ap-filter-grey-light-5: invert(100%) sepia(0%) saturate(3124%) hue-rotate(194deg) brightness(119%) contrast(80%);
+
     /* ---ap-c-grey */
     --ap-filter-ico-normal-dark: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);
     --ap-filter-ico-grey-minor: invert(63%) sepia(31%) saturate(0%) hue-rotate(228deg) brightness(101%) contrast(104%);;
@@ -15,20 +18,28 @@
     --ap-filter-ico-black: none; /* keep black */
     --ap-filter-ico-white: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); /* white */
     --ap-filter-ico-static: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);; /* ---ap-c-grey */
+    --ap-filter-neutral-light: invert(94%) sepia(11%) saturate(12%) hue-rotate(132deg) brightness(86%) contrast(100%);
+
+    --ap-filter-ico-check: var(--ap-filter-ico-green);
 
     /* High-level structure colours */
     --ap-c-line-sep: #f3f3f3;
+    --ap-c-line-sep-strong: #e3e3e3;
     --ap-c-line-sep-selected: var(--ap-c-grey-light-5);
     --ap-c-grey-minor: var(--ap-c-grey-light-3);
     --ap-c-line-grid: var(--ap-c-grey-light-5);
 
     --ap-c-text-strong: black;
+    --ap-c-text-light: var(--ap-c-grey-light-4);
     --ap-c-text-normal: var(--ap-c-grey-light-1);
     --ap-c-text-minor: var(--ap-c-grey-light-2);
+    --ap-c-text-accent: var(--ap-c-sunset);
+    --ap-c-text-heading: var(--ap-c-oceanic-dark-3);
 
     --ap-c-widget: var(--ap-c-oceanic-dark-1);
     --ap-c-widget-hover: var(--ap-c-oceanic-dark-2);
     --ap-c-widget-active: var(--ap-c-oceanic-light-2);
+    --ap-c-widget-selected: var(--ap-c-maroon);
 
     --ap-c-bg-medium: #f0f0f0;
     --ap-c-bg-lighter: #f7f7f7;
@@ -110,6 +121,34 @@
     --ap-z-header-title: 1030;
     --ap-z-editor-window: 900;
     --ap-z-editor-toolbar: 910;
+}
+
+/* State */
+.ap-state-on {
+    color: var(--ap-c-maroon) !important;
+}
+
+.ap-state-off {
+    color: var(--ap-c-text-normal) !important;
+}
+
+.ap-state-off:hover {
+    color: var(--ap-c-text-accent) !important;
+}
+
+.ap-state-on.ap-icon,
+.ap-state-on .ap-icon
+{
+    filter: var(--ap-filter-ico-maroon) !important;
+}
+
+.ap-state-off.ap-icon,
+.ap-state-off .ap-icon {
+    filter: var(--ap-filter-ico-normal-dark) !important;
+}
+
+[class^="ap-state-"] {
+    cursor: pointer;
 }
 
 /* Filter classes */

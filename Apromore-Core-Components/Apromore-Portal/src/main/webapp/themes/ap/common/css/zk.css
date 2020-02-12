@@ -187,6 +187,10 @@ input {
     margin-right: 6px;
 }
 
+.z-comboitem {
+    border-radius: 0px;
+}
+
 .z-button:last-child,
  .z-combobutton:last-child .z-combobutton-content {
      margin-right: 0;
