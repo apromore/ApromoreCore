@@ -1,11 +1,9 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.util.Util;
-import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -25,9 +23,10 @@ import static java.util.Map.Entry.comparingByValue;
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (03/02/2020)
  * Modified: Chii Chang (04/02/2020)
- * Modified: Chii Chang (07/02/2020)
+ * Modified: Chii Chang (12/02/2020)
  */
 public class APMLog implements Serializable {
+
 
     private List<ATrace> traceList;
     private UnifiedMap<Integer, Integer> variantIdFreqMap;
@@ -43,10 +42,10 @@ public class APMLog implements Serializable {
     private long caseVariantSize = 0;
     private long eventSize = 0;
 
-
     private UnifiedMap<String, ATrace> traceUnifiedMap;
 
     private ActivityNameMapper activityNameMapper;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMLog.class);
 
@@ -57,6 +56,7 @@ public class APMLog implements Serializable {
         traceList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         caseAttributeValueFreqMap = new UnifiedMap<>();
+        activityMaxOccurMap = new UnifiedMap<>();
 
         initData(xLog);
     }
@@ -77,7 +77,11 @@ public class APMLog implements Serializable {
         UnifiedMap<IntArrayList, Integer> tempActIdListToVIdMap = new UnifiedMap<>();
 
         int actIdCount = 0;
+        LOGGER.info(">>> Create actIdNameMap");
         for(XTrace xTrace : xLog) {
+
+
+
             for(int i=0; i < xTrace.size(); i++) {
                 XEvent xEvent = xTrace.get(i);
                 String conceptName = "";
@@ -88,19 +92,22 @@ public class APMLog implements Serializable {
                     actIdNameMap.put(actIdCount, conceptName);
                     actIdCount += 1;
                 }
+
+
             }
+
+
+
         }
+        LOGGER.info(">>> Create actIdNameMap DONE");
 
         boolean containsVariantId = false;
 
         int tempVariId = 1;
 
+        LOGGER.info(">>> Create ATrace list");
         for(int i=0; i<xLog.size(); i++) {
             ATrace aTrace = new ATrace(xLog.get(i), this);
-
-            if (aTrace.size() < 1) {
-                System.out.println("PAUSE");
-            }
 
             if (aTrace.size() > 0) {
 
@@ -120,6 +127,7 @@ public class APMLog implements Serializable {
                  * Event attributes
                  */
                 updateEventAttributeValueFreqMap(aTrace);
+
 
                 /**
                  * Case attributes
@@ -168,11 +176,15 @@ public class APMLog implements Serializable {
                 }
 
                 computeActivityOccurMaxMap(aTrace);
-
             }
         }
+        LOGGER.info(">>> Create ATrace list DONE");
+
+
 
         UnifiedMap<Integer, Integer> initVIdToFinalVIdMap = new UnifiedMap<>();
+
+        LOGGER.info(">>> Create Case Variant Frequency map");
 
         if(variantIdFreqMap.size() < 1 && actIdListFreqMap.size() > 0) {
             List<Map.Entry<IntArrayList, Integer>> list =
@@ -181,6 +193,7 @@ public class APMLog implements Serializable {
             int idNum = 1;
             for(int i=(list.size()-1); i>=0; i--) {
                 variantIdFreqMap.put(idNum, list.get(i).getValue());
+//                originalVariantIdFreqMap.put(idNum, list.get(i).getValue());//2019-11-10
                 if(!variantIdActIdListMap.containsKey(idNum)) {
                     variantIdActIdListMap.put(idNum, list.get(i).getKey());
                     int initVId = tempActIdListToVIdMap.get(list.get(i).getKey());
@@ -190,13 +203,17 @@ public class APMLog implements Serializable {
             }
         }
 
+        LOGGER.info(">>> Create Case Variant Frequency map DONE");
+
         if(!containsVariantId) {
+            LOGGER.info(">>> Assign Case Variant to Traces");
             for(int i=0; i < this.traceList.size(); i++) {
                 ATrace aTrace = this.traceList.get(i);
                 int iVId = aTrace.getCaseVariantId();
                 int finalVId = initVIdToFinalVIdMap.get(iVId);
                 aTrace.setCaseVariantId(finalVId);
             }
+            LOGGER.info(">>> Assign Case Variant to Traces DONE");
         }
 
 //        LOGGER.info("*** Write case variant ID to the original XLog");
@@ -213,6 +230,26 @@ public class APMLog implements Serializable {
         caseVariantSize = variantIdFreqMap.size();
 
     }
+
+    public UnifiedMap<String, Integer> getActivityMaxOccurMap() {
+        return activityMaxOccurMap;
+    }
+
+    public ActivityNameMapper getActivityNameMapper() {
+        return activityNameMapper;
+    }
+
+    //    private void updateEventAttributeValueSetMap(ATrace aTrace) {
+//        for (String key : aTrace.getRawEventAttributeValueSetMap().keySet()) {
+//            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
+//                this.rawEventAttributeValueSetMap.get(key).addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+//            } else {
+//                UnifiedSet<String> vals = new UnifiedSet<>();
+//                vals.addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+//                this.rawEventAttributeValueSetMap.put(key, vals);
+//            }
+//        }
+//    }
 
     private void computeActivityOccurMaxMap(ATrace aTrace) {
         UnifiedMap<String, Integer> actOccurFreq = new UnifiedMap<>();
@@ -239,26 +276,6 @@ public class APMLog implements Serializable {
             }
         }
     }
-
-    public UnifiedMap<String, Integer> getActivityMaxOccurMap() {
-        return activityMaxOccurMap;
-    }
-
-    public ActivityNameMapper getActivityNameMapper() {
-        return activityNameMapper;
-    }
-
-    //    private void updateEventAttributeValueSetMap(ATrace aTrace) {
-//        for (String key : aTrace.getRawEventAttributeValueSetMap().keySet()) {
-//            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
-//                this.rawEventAttributeValueSetMap.get(key).addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
-//            } else {
-//                UnifiedSet<String> vals = new UnifiedSet<>();
-//                vals.addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
-//                this.rawEventAttributeValueSetMap.put(key, vals);
-//            }
-//        }
-//    }
 
     private void updateEventAttributeValueFreqMap(ATrace aTrace) {
         for(String key : aTrace.getEventAttributeValueFreqMap().keySet()) {
@@ -583,7 +600,8 @@ public class APMLog implements Serializable {
                   long endTime,
                   long caseVariantSize,
                   long eventSize,
-                  ActivityNameMapper activityNameMapper) {
+                  ActivityNameMapper activityNameMapper,
+                  UnifiedMap<String, Integer> activityMaxOccurMap) {
         this.traceList = traceList;
         this.variantIdFreqMap = variantIdFreqMap;
         this.actIdNameMap = actIdNameMap;
@@ -600,6 +618,7 @@ public class APMLog implements Serializable {
         this.caseVariantSize = caseVariantSize;
         this.eventSize = eventSize;
         this.activityNameMapper = activityNameMapper;
+        this.activityMaxOccurMap = activityMaxOccurMap;
     }
 
 
@@ -653,34 +672,11 @@ public class APMLog implements Serializable {
             caseAttrValFreqMapForClone.put(key, valFreqMapForClone);
         }
 
-//        UnifiedMap<String, UnifiedSet<String>> rawEventAttrValForClone = new UnifiedMap<>();
-//
-//        for (String key : this.rawEventAttributeValueSetMap.keySet()) {
-//
-//            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
-//            UnifiedSet<String> valSet = this.rawEventAttributeValueSetMap.get(key);
-//            for (String val : valSet) {
-//                valSetForClone.put(val);
-//            }
-//
-//            rawEventAttrValForClone.put(key, valSetForClone);
-//        }
+        UnifiedMap<String, Integer> activityMaxOccurMapForClone = new UnifiedMap<>();
 
-//        UnifiedMap<String, UnifiedSet<String>> rawCaseAttrValForClone = new UnifiedMap<>();
-//
-//        for (String key : this.rawCaseAttributeValueSetMap.keySet()) {
-//
-//            UnifiedSet<String> valSetForClone = new UnifiedSet<>();
-//            UnifiedSet<String> valSet = this.rawCaseAttributeValueSetMap.get(key);
-//            for (String val : valSet) {
-//                valSetForClone.put(val);
-//            }
-//
-//            rawCaseAttrValForClone.put(key, valSetForClone);
-//        }
-
-
-
+        for (String key : this.activityMaxOccurMap.keySet()) {
+            activityMaxOccurMapForClone.put(key, this.activityMaxOccurMap.get(key));
+        }
 
         return new APMLog(traceListForClone,
                 variIdFreqMapForClone,
@@ -695,6 +691,7 @@ public class APMLog implements Serializable {
                 this.endTime,
                 this.caseVariantSize,
                 this.eventSize,
-                this.activityNameMapper);
+                this.activityNameMapper,
+                activityMaxOccurMapForClone);
     }
 }
