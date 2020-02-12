@@ -61,7 +61,7 @@ public interface LogSample {
      */
     List<String> automaticFormat();
 
-    void openPopUp();
+    void openPopUp(boolean show);
     void setIgnoreAll(Window window);
     void setOtherAll(Window window);
     void setOtherTimestamps();
