@@ -678,7 +678,7 @@ public class APMLog implements Serializable {
             activityMaxOccurMapForClone.put(key, this.activityMaxOccurMap.get(key));
         }
 
-        return new APMLog(traceListForClone,
+        APMLog apmLogClone = new APMLog(traceListForClone,
                 variIdFreqMapForClone,
                 actIdNameMapForClone,
                 eventAttrValFreqMapForClone,
@@ -693,5 +693,7 @@ public class APMLog implements Serializable {
                 this.eventSize,
                 this.activityNameMapper,
                 activityMaxOccurMapForClone);
+
+        return apmLogClone;
     }
 }

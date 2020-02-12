@@ -20,6 +20,7 @@ import java.util.List;
  * Modified: Chii Chang (03/02/2020)
  * Modified: Chii Chang (04/02/2020)
  * Modified: Chii Chang (06/02/2020)
+ * Modified: Chii Chang (12/02/2020)
  */
 public class ATrace implements Serializable {
 
@@ -560,15 +561,18 @@ public class ATrace implements Serializable {
 
         List<AEvent> aEventList = new ArrayList<>();
 
+        List<AEvent> originalEventList = this.getEventList();
+
+        for (int i=0; i < originalEventList.size(); i++) {
+            AEvent eventClone = originalEventList.get(i).clone();
+            aEventList.add(eventClone);
+        }
+
         List<AActivity> aActivityList = new ArrayList<>();
 
         for (int i=0; i < this.activityList.size(); i++) {
             AActivity aActivity = this.activityList.get(i).clone();
             aActivityList.add(aActivity);
-            List<AEvent> actEventList = aActivity.getEventList();
-            for (int j=0; j < actEventList.size(); j++) {
-                aEventList.add(actEventList.get(j));
-            }
         }
 
         UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValFreqMap = new UnifiedMap<>();
