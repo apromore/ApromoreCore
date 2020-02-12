@@ -8,6 +8,7 @@ import org.zkoss.zul.*;
 import java.sql.Timestamp;
 import java.util.*;
 
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * A sample of a CSV log.
@@ -244,15 +245,15 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void openPopUp() {
+    public void openPopUp(boolean show) {
         Integer timeStampPos = this.getHeads().get(timestamp);
-        if (timeStampPos != -1) openPopUpbox(this.getHeads().get(timestamp), this.getTimestampFormat(), parsedCorrectly, parsedClass, this);
+        if (timeStampPos != -1) openPopUpbox(this.getHeads().get(timestamp), this.getTimestampFormat(), parsedCorrectly, parsedClass, this, show);
 
         Integer startTimeStampPos = this.getHeads().get(tsStart);
-        if (startTimeStampPos != -1) openPopUpbox(this.getHeads().get(tsStart), this.getStartTsFormat(), parsedCorrectly, parsedClass, this);
+        if (startTimeStampPos != -1) openPopUpbox(this.getHeads().get(tsStart), this.getStartTsFormat(), parsedCorrectly, parsedClass, this, show);
 
         for (Map.Entry<Integer, String> entry : this.getOtherTimeStampsPos().entrySet()) {
-            openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass, this);
+            openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass, this, show);
         }
     }
 
@@ -306,7 +307,7 @@ class LogSampleImpl implements LogSample, Constants {
     public void tryParsing(String format, int colPos) {
 
         if (format == null || parse.parseTimestamp(this.getLines().get(0).get(colPos), format) == null) {
-            openPopUpbox(colPos, format, couldnotParse, failedClass, this);
+            openPopUpbox(colPos, format, couldnotParse, failedClass, this, true);
             return;
         }
 
@@ -321,7 +322,7 @@ class LogSampleImpl implements LogSample, Constants {
         } else if (new String(selected).equals(tsValue)) {
             this.getOtherTimeStampsPos().put(colPos, format);
         }
-        openPopUpbox(colPos, format, parsedCorrectly, parsedClass, this);
+        openPopUpbox(colPos, format, parsedCorrectly, parsedClass, this, true);
     }
 
 
@@ -444,10 +445,8 @@ class LogSampleImpl implements LogSample, Constants {
         }
     }
 
-    private static void openPopUpbox(Integer colPos, String format, String message, String lblClass, LogSample sample) {
+    private static void openPopUpbox(Integer colPos, String format, String message, String lblClass, LogSample sample, boolean show) {
         Window myPopUp = (Window) sample.getPopUPBox().getFellow(popupID + colPos);
-        // myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
-        myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
         Label check_lbl = (Label) myPopUp.getFellow(labelID + colPos);
         Button[] formatBtns = (Button[]) sample.getFormatBtns();
         formatBtns[colPos].setSclass("ap-csv-importer-format-icon");
@@ -462,6 +461,10 @@ class LogSampleImpl implements LogSample, Constants {
             check_lbl.setValue(message);
         }
         check_lbl.setClass(lblClass);
+        if (show) {
+            myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
+            Clients.evalJavaScript("adjustPos(" + colPos + ")");
+        }
     }
 
     private static void closePopUp(int colPos, LogSample sample) {

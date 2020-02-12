@@ -1,5 +1,5 @@
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
-    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
+    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px;max-width: 95vw;min-height: 600px; max-height: 95vh;" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
         <custom-attributes theme="${labels.theme}"/>
         <style src="/themes/${theme}/csv-importer/css/index.css" />
 
@@ -106,11 +106,25 @@
         </style>
         <script type="text/javascript"><![CDATA[
 
-          function openPop(i) {
-            let all = $('.relativePos > div')
-            $(all[i]).show()
-            $(all[i]).css('visibility', 'visible')
-          }
+              function openPop(i) {
+                let all = $('.relativePos > div')
+                $(all[i]).show()
+                $(all[i]).css('visibility', 'visible')
+              }
+
+            function adjustPos(i) {
+                try {
+                    let targets = $('.p-1');
+                    let sources = $('.z-auxheader');
+
+                    let srcPos = $(sources[i + 1]).offset()
+                    // console.log(srcPos, $(targets[i]));
+                    $(targets[i]).offset(srcPos);
+                } catch(e) {
+                    // pass
+                }
+
+            }
 
           ]]>
         </script>
@@ -222,40 +236,22 @@
 
         <script defer="true" type="text/javascript"><![CDATA[
 
-          function setupFormat () {
-            console.log("setupformat")
-              let all = $('.relativePos > div')
-              for (i = 0; i < all.length; i++) {
-                let hasWindow = all[i].querySelector('input:not([value=""])')
-                if (hasWindow) {
-                  console.log("test", i)
-                  let closeButton = all[i].querySelector('button')
-                  closeButton.addEventListener(
-                    'click',
-                    (function(i) {
-                      return function () {
-                        $(all[i]).hide()
-                        $(all[i]).css('visibility', 'hidden')
-                      }
-                    })(i)
-                  )
-                  let target = $('.ap-csv-importer-grid-wrapper .z-grid-header .z-auxhead th:nth-child('+ (i + 2) + ')')
-                  let btn = $('<button class="ap-csv-importer-format-icon"><i class="z-icon-wrench"></i></button>')
-                    .click(
-                      (function(i) {
-                        return function () {
-                          console.log(i, all[i])
-                          $(all[i]).show()
-                          $(all[i]).css('visibility', 'visible')
-                        }
-                      })(i)
-                    )
-                  target.append(btn)
+            $(function() {
+              setTimeout(function() {
+                let targets = $('.p-1')
+                let sources = $('.z-auxheader');
+                for (i = 1; i < sources.length; i++) {
+                    try {
+                        let srcPos = $(sources[i]).offset()
+                        // console.log(srcPos, $(targets[i - 1]));
+                        $(targets[i - 1]).offset(srcPos);
+                    } catch (e) {
+                        // pass
+                    }
                 }
-              }
-          }
+              }, 1000);
+            });
 
-          // setupFormat();
           ]]>
         </script>
 
