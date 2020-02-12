@@ -140,6 +140,15 @@ class LogModelImpl implements LogModel {
 
                 xTrace = xFactory.createTrace();
                 concept.assignName(xTrace, caseID);
+
+                XAttribute attribute;
+                Map<String, String> myCaseAttributes = trace.getCaseAttributes();
+                for (Map.Entry<String, String> entry : myCaseAttributes.entrySet()) {
+                    if (entry.getValue() != null && entry.getValue().trim().length() != 0) {
+                        attribute = new XAttributeLiteralImpl(entry.getKey(), entry.getValue());
+                        xTrace.getAttributes().put(entry.getKey(), attribute);
+                    }
+                }
                 xLog.add(xTrace);
                 newTraceID = caseID;
             }

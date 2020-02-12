@@ -39,4 +39,5 @@ public interface LogEventModel {
     Map<String, Timestamp> getOtherTimestamps();
 
     Map<String, String> getOthers();
+    Map<String, String> getCaseAttributes();
 }
