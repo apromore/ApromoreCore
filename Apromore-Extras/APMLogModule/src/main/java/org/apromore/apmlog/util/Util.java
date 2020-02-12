@@ -55,13 +55,7 @@ public class Util {
     }
 
 
-    public static String durationShortStringOf(long duration) {
-        return convertMilliseconds(duration);
-    }
-
-    private static final DecimalFormat df2 = new DecimalFormat("###############.##");
-
-    public static String convertMilliseconds(long millis) {
+    public static String durationShortStringOf(long millis) {
         double secs = millis / second;
         double mins = millis / minute;
         double hrs = millis / hour;
@@ -81,5 +75,6 @@ public class Util {
         return "instant";
     }
 
+    private static final DecimalFormat df2 = new DecimalFormat("###############.##");
 
 }
