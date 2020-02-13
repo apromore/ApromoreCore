@@ -106,6 +106,7 @@
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
+        <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
