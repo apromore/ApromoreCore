@@ -46,6 +46,8 @@ public class APMLog implements Serializable {
 
     private ActivityNameMapper activityNameMapper;
 
+    private DefaultChartDataCollection defaultChartDataCollection;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMLog.class);
 
@@ -229,6 +231,11 @@ public class APMLog implements Serializable {
 //        originalCaseVariantSize = variantIdFreqMap.size();
         caseVariantSize = variantIdFreqMap.size();
 
+        defaultChartDataCollection = new DefaultChartDataCollection(this);
+    }
+
+    public DefaultChartDataCollection getDefaultChartDataCollection() {
+        return defaultChartDataCollection;
     }
 
     public UnifiedMap<String, Integer> getActivityMaxOccurMap() {
