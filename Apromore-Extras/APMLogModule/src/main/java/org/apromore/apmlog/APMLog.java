@@ -626,6 +626,7 @@ public class APMLog implements Serializable {
         this.eventSize = eventSize;
         this.activityNameMapper = activityNameMapper;
         this.activityMaxOccurMap = activityMaxOccurMap;
+        defaultChartDataCollection = new DefaultChartDataCollection(this);
     }
 
 
