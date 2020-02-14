@@ -26,7 +26,7 @@
     <property name="startup.args" value="-clean"/>  <!-- e.g. pass -Dstartup.args="-clean -debug 8888" to start server in debug mode -->
     <import file="build-common.xml" as="common"/>
     
-    <filter token="portal.showSignavio" value="true"/>
+    <filter token="portal.showSignavio" value="false"/>
     <filter token="version.edition" value="Apromore Core Edition"/>
 
     <fileset id="pickupRepo" dir="${dir}">
@@ -38,6 +38,8 @@
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
 
         <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
 
         <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
