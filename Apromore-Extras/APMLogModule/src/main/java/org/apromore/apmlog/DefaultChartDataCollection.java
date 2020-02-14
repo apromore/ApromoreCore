@@ -9,19 +9,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * This class provides the data that can be used in various chart-based data visualisation
+ * such as Highcharts, Chart.js etc.
+ *
  * @author Chii Chang (created: 14/02/2020)
  */
 public class DefaultChartDataCollection {
-//    private Series caseOTSeries;
-//    private Series eventOTSeries;
-//    private Series caseDurationSeries;
-//    private Series totalProcessingTimeSeries;
-//    private Series averageProcessingTimeSeries;
-//    private Series maxProcessingTimeSeries;
-//    private Series totalWaitingTimeSeries;
-//    private Series averageWaitingTimeSeries;
-//    private Series maxWaitingTimeSeries;
-//    private Series caseUtilizationSeries;
 
     private UnifiedMap<Long, Integer> caseOTSeriesData;
     private UnifiedMap<Long, Integer> eventOTSeriesData;
