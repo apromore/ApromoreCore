@@ -230,21 +230,26 @@ public class ATrace implements Serializable {
             for(int i=0; i<xTrace.size(); i++) {
                 XEvent xEvent = xTrace.get(i);
                 AEvent iAEvent = new AEvent(xEvent);
-                long eventTime = iAEvent.getTimestampMilli();
-                if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
-                if (endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
+                if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
 
-                this.eventList.add(iAEvent);
-                this.eventNameSet.put(iAEvent.getName());
+                    long eventTime = iAEvent.getTimestampMilli();
+                    if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
+                    if (endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
 
-                fillEventAttributeValueFreqMap(iAEvent);
-                List<AEvent> aEventList = new ArrayList<>();
-                aEventList.add(iAEvent);
-                AActivity aActivity = new AActivity(aEventList);
-                this.activityList.add(aActivity);
-                this.activityNameList.add(aActivity.getName());
+                    this.eventList.add(iAEvent);
+                    this.eventNameSet.put(iAEvent.getName());
 
-                this.activityNameIndexList.add(apmLog.getActivityNameMapper().set(aActivity.getName()));
+                    fillEventAttributeValueFreqMap(iAEvent);
+
+                    List<AEvent> aEventList = new ArrayList<>();
+                    aEventList.add(iAEvent);
+                    AActivity aActivity = new AActivity(aEventList);
+                    this.activityList.add(aActivity);
+                    this.activityNameList.add(aActivity.getName());
+
+                    this.activityNameIndexList.add(
+                            apmLog.getActivityNameMapper().set(aActivity.getName()));
+                }
             }
         }
 
