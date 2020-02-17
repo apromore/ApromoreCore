@@ -59,7 +59,8 @@
     <!-- The remote authentication details -->
     <authentication-manager id="authenticationManager">
         <!-- <authentication-provider ref="jaasAuthenticationProvider"/> -->
-        <authentication-provider ref="remoteAuthenticationProvider"/>
+        <authentication-provider ref="usernamePasswordAuthenticationProvider"/>
+        <!-- <authentication-provider ref="remoteAuthenticationProvider"/> -->
         <authentication-provider ref="rememberMeAuthenticationProvider"/>
     </authentication-manager>
 

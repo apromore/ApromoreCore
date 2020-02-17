@@ -133,7 +133,6 @@
         <!-- Web application bundles -->
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
-        <module>Apromore-Core-Components/Apromore-Manager-WS</module>
         <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->

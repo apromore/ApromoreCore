@@ -53,22 +53,26 @@
             <artifactId>apromore-manager</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager-ws</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
+-->
         <!--
             Extra Dependencies on just the 'classes' of Manager-WS to pull in transitive dependencies.
             The JAR itself needs to be excluded manually.
         -->
+<!--
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager-ws</artifactId>
             <version>${project.version}</version>
             <classifier>classes</classifier>
         </dependency>
+-->
 
         <!-- Schema's, these are independant of the Manager, but needed by our plan -->
         <dependency>

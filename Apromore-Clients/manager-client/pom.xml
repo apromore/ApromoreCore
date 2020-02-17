@@ -57,6 +57,13 @@
             <version>2.27</version>
         </dependency>
 
+        <!-- Required for the OSGi implementation, but completely defeats the purpose of the SOAP implementation! -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>1.1</version>
+        </dependency>
+
         <!-- Apromore WS Models -->
         <dependency>
             <groupId>org.apromore</groupId>
