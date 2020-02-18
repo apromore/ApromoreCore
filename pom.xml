@@ -106,7 +106,6 @@
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
-        <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
@@ -133,7 +132,6 @@
         <!-- Web application bundles -->
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
-        <module>Apromore-Core-Components/Apromore-Manager-WS</module>
         <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->

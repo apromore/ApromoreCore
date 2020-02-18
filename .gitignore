@@ -10,6 +10,7 @@
 **/target/*
 
 # Tomcat artifacts
+Apromore-Clients/manager-client/catalina.home_IS_UNDEFINED
 Apromore-Core-Components/Apromore-Portal/catalina.home_IS_UNDEFINED
 
 # vi editor artifacts

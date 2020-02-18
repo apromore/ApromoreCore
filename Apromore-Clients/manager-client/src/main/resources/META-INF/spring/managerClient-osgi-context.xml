@@ -30,4 +30,19 @@
 
     <osgi:service id="osgiManagerClient" ref="managerClient" interface="org.apromore.manager.client.ManagerService"/>
 
+    <!-- Dependencies for ManagerServiceImpl -->
+    <osgi:reference id="deploymentService" interface="org.apromore.service.DeploymentService"/>
+    <osgi:reference id="pluginServiceImpl" interface="org.apromore.service.PluginService"/>
+    <osgi:reference id="fragmentServiceImpl" interface="org.apromore.service.FragmentService"/>
+    <osgi:reference id="canoniserServiceImpl" interface="org.apromore.service.CanoniserService"/>
+    <osgi:reference id="processServiceImpl" interface="org.apromore.service.ProcessService"/>
+    <osgi:reference id="clusterServiceImpl" interface="org.apromore.service.ClusterService"/>
+    <osgi:reference id="formatServiceImpl" interface="org.apromore.service.FormatService"/>
+    <osgi:reference id="domainServiceImpl" interface="org.apromore.service.DomainService"/>
+    <osgi:reference id="userServiceImpl" interface="org.apromore.service.UserService"/>
+    <osgi:reference id="securityServiceImpl" interface="org.apromore.service.SecurityService"/>
+    <osgi:reference id="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService"/>
+    <osgi:reference id="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
+    <osgi:reference id="logServiceImpl" interface="org.apromore.service.EventLogService"/>
+
 </beans:beans>
