@@ -1,5 +1,0 @@
-These scripts have only been tested on OS X 10.8, but will probably work in any other unix-like environment.
-
-dissect-aml.sh breaks an AML file into a directory of AML fragments
-upload-aml-to-apromore.sh uploads a directory of AML fragments into Apromore
-upload-aml-to-signavio.sh uploads an AML fragment directly to Signavio (the /editor web app in Apromore) as the model Test

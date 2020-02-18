@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xalan="http://xml.apache.org/xslt" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.apromore.org/bpmn/7588952e-de3f-4383-9b69-0fbe5ef4ec58#" exporter="http://apromore.org" exporterVersion="0.4" expressionLanguage="http://www.w3.org/1999/XPath" name="Basic" targetNamespace="http://www.apromore.org/bpmn/7588952e-de3f-4383-9b69-0fbe5ef4ec58#" typeLanguage="http://www.w3.org/2001/XMLSchema">
-  <bpmn:process id="c6">
-    <bpmn:sequenceFlow id="c4" sourceRef="c1" targetRef="c2"/>
-    <bpmn:sequenceFlow id="c5" sourceRef="c2" targetRef="c3"/>
-    <bpmn:startEvent id="c1" name="E1"/>
-    <bpmn:task id="c2" name="F"/>
-    <bpmn:endEvent id="c3" name="E2"/>
-  </bpmn:process>
-</bpmn:definitions>

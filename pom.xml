@@ -142,8 +142,8 @@
         <module>Apromore-Assembly/Custom-Plugins</module>
 
         <!-- Command line tools -->
-        <module>Apromore-Extras/bpmncmap</module>
-        <module>Supplements/cpfImporter</module>
+        <!--<module>Apromore-Extras/bpmncmap</module>-->
+        <!--<module>Supplements/cpfImporter</module>-->
         <!--<module>Supplements/bpmn2cpf</module>-->
         <!--<module>Supplements/cpf2bpmn</module>-->
         <!--<module>Supplements/cpf2epml</module>-->
