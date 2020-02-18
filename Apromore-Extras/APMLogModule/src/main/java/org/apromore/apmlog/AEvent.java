@@ -60,10 +60,10 @@ public class AEvent implements Serializable {
         }
 
         for(String key : xAttributeMap.keySet()) {
-            if (!key.equals("concept:name") &&
-                    !key.equals("lifecycle:transition") &&
-                    !key.equals("org:resource") &&
-                    !key.equals("time:timestamp")) {
+//            if (!key.equals("concept:name") &&
+//                    !key.equals("lifecycle:transition") &&
+//                    !key.equals("org:resource") &&
+//                    !key.equals("time:timestamp")) {
                 if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
                     this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()));
                 } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
@@ -71,7 +71,7 @@ public class AEvent implements Serializable {
                 } else if (xAttributeMap.get(key) instanceof XAttributeIDImpl) {
                     this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()));
                 }
-            }
+//            }
 
         }
         if(xEvent.getAttributes().containsKey("time:timestamp")) {
