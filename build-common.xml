@@ -154,7 +154,7 @@
         </delete>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.3.171.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
@@ -163,7 +163,7 @@
         </java>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.3.171.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
