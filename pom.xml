@@ -66,18 +66,10 @@
         <module>Apromore-Extras/Chiaroscuro-Theme</module>
         <module>Apromore-Extras/Test-Tools</module>
 
-        <!-- Schema's -->
+        <!-- Schemas -->
         <module>Apromore-Schema/anf-schema</module>
-        <module>Apromore-Schema/aris-schema</module>
         <module>Apromore-Schema/bpmn-schema</module>
-        <module>Apromore-Schema/cmap-schema</module>
         <module>Apromore-Schema/cpf-schema</module>
-        <module>Apromore-Schema/dcl-schema</module>
-        <module>Apromore-Schema/epml-schema</module>
-        <module>Apromore-Schema/pnml-schema</module>
-        <module>Apromore-Schema/rlf-schema</module>
-        <module>Apromore-Schema/xpdl-schema</module>
-        <module>Apromore-Schema/yawl-schema</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
@@ -720,33 +712,6 @@
                 <artifactId>annotation-bpmn</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-xpdl</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-epml</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-yawl</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-pnml</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-
-            <!-- Deployment -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>deployment-yawl</artifactId>
-                <version>${apromore.plugin.version}</version>
-            </dependency>
 
             <!-- Schema -->
             <dependency>
@@ -754,49 +719,16 @@
                 <artifactId>anf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>aris-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmn-schema</artifactId>
                 <version>${apromore.schema.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>cmap-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>cpf-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>epml-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>pnml-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>rlf-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>xpdl-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>yawl-schema</artifactId>
                 <version>${apromore.schema.version}</version>
             </dependency>
 

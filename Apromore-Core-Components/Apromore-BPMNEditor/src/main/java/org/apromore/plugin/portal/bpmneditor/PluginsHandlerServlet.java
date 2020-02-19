@@ -29,7 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.json.JSONObject;
@@ -39,7 +40,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 public class PluginsHandlerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(PluginsHandlerServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PluginsHandlerServlet.class);
 	
 	@Autowired
 	private ApplicationContext appContext;

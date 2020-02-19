@@ -90,6 +90,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>raffaeleconforti-osgi</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json-osgi</artifactId>
             <version>20090211</version>

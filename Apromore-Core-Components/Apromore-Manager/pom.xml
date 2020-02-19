@@ -242,19 +242,6 @@
             <artifactId>cpf-schema</artifactId>
         </dependency>
 
-        <!-- 
-            Deprecated dependencies, REMOVE AS SOON AS POSSIBLE
-            Manager should not know about process formats 
-        -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>xpdl-schema</artifactId>
-        </dependency>
-
         <!-- Blueprint OSGi -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -560,93 +547,6 @@
             <artifactId>deployment-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>aris-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>epml-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>pnml-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>rlf-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>yawl-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-aris</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-bpmn</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-epml</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-pnml</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-xpdl</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-yawl</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-bpmn</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-xpdl</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-epml</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-yawl</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-pnml</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmntk-osgi</artifactId>
-        </dependency>
-
-
 
         <dependency>
                 <groupId>io.github.andreas-solti.xeslite</groupId>

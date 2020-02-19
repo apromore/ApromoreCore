@@ -9,8 +9,6 @@
     <!-- Load the Schemas for all the Canonisers and Web Application. -->
     <artifact type="bundle" name="org.apromore.anf-schema" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.cpf-schema" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.epml-schema" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.xpdl-schema" version="[1.1.0, 2)"/>
 
     <artifact type="bundle" name="org.apromore.manager-ws-model" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-client" version="[1.1.0, 2)"/>

@@ -87,22 +87,11 @@
         <module>plugin-core/plugin-graph</module>
         
         <!-- Canoniser Plugins -->
-        <module>plugin-canoniser/aris</module>
         <module>plugin-canoniser/bpmn</module>
-        <module>plugin-canoniser/epml</module>
-        <module>plugin-canoniser/pnml</module>
-        <module>plugin-canoniser/xpdl</module>
-        <module>plugin-canoniser/yawl</module>
 
         <!-- Annotation Post Processor Plugins -->
         <module>plugin-annotation/bpmn</module>
-        <module>plugin-annotation/xpdl</module>
-        <module>plugin-annotation/epml</module>
-        <module>plugin-annotation/yawl</module>
-        <module>plugin-annotation/pnml</module>
 
-        <!-- Deployment Plugins -->
-        <module>plugin-deployment/deployment-yawl</module>
 
         <!-- Logic Plugins -->
         <module>plugin-logic/similaritysearch-logic</module>

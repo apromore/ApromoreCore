@@ -36,15 +36,6 @@ import org.apache.commons.io.IOUtils;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.wfmc._2009.xpdl2.Author;
-import org.wfmc._2009.xpdl2.Created;
-import org.wfmc._2009.xpdl2.Documentation;
-import org.wfmc._2009.xpdl2.ModificationDate;
-import org.wfmc._2009.xpdl2.ObjectFactory;
-import org.wfmc._2009.xpdl2.PackageHeader;
-import org.wfmc._2009.xpdl2.PackageType;
-import org.wfmc._2009.xpdl2.RedefinableHeader;
-import org.wfmc._2009.xpdl2.Version;
 
 /**
  * Helps with debugging and seeing the data travel between services.
@@ -157,103 +148,6 @@ public class StreamUtil {
         res = new ByteArrayInputStream(xml.toByteArray());
         return res;
     }
-
-
-    /**
-     * Modify pkg (npf of type xpdl) with parameters values if not null.
-     * @param pkg          the package to change to
-     * @param processName  the process name
-     * @param version      the process version
-     * @param username     the user doing the change
-     * @param creationDate the date created
-     * @param lastUpdate   the updated date
-     */
-    public static void copyParam2XPDL(final PackageType pkg, final String processName, final String version, final String username, final String creationDate, final String lastUpdate) {
-        if (pkg.getRedefinableHeader() == null) {
-            RedefinableHeader header = new RedefinableHeader();
-            pkg.setRedefinableHeader(header);
-            Version v = new Version();
-            header.setVersion(v);
-            Author a = new Author();
-            header.setAuthor(a);
-        } else {
-            if (pkg.getRedefinableHeader().getVersion() == null) {
-                Version v = new Version();
-                pkg.getRedefinableHeader().setVersion(v);
-            }
-            if (pkg.getRedefinableHeader().getAuthor() == null) {
-                Author a = new Author();
-                pkg.getRedefinableHeader().setAuthor(a);
-            }
-        }
-        if (pkg.getPackageHeader() == null) {
-            PackageHeader pkgHeader = new PackageHeader();
-            pkg.setPackageHeader(pkgHeader);
-            Created created = new Created();
-            pkgHeader.setCreated(created);
-            ModificationDate modifDate = new ModificationDate();
-            pkgHeader.setModificationDate(modifDate);
-            Documentation doc = new Documentation();
-            pkgHeader.setDocumentation(doc);
-        } else {
-            if (pkg.getPackageHeader().getCreated() == null) {
-                Created created = new Created();
-                pkg.getPackageHeader().setCreated(created);
-            }
-            if (pkg.getPackageHeader().getModificationDate() == null) {
-                ModificationDate modifDate = new ModificationDate();
-                pkg.getPackageHeader().setModificationDate(modifDate);
-            }
-            if (pkg.getPackageHeader().getDocumentation() == null) {
-                Documentation doc = new Documentation();
-                pkg.getPackageHeader().setDocumentation(doc);
-            }
-        }
-        if (processName != null) {
-            pkg.setName(processName);
-        }
-        if (version != null) {
-            pkg.getRedefinableHeader().getVersion().setValue(version);
-        }
-        if (username != null) {
-            pkg.getRedefinableHeader().getAuthor().setValue(username);
-        }
-        if (creationDate != null) {
-            pkg.getPackageHeader().getCreated().setValue(creationDate);
-        }
-        if (lastUpdate != null) {
-            pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
-        }
-    }
-
-
-    /**
-     * UNMarshall XML into an object structure.
-     * @param xpdl the XPDL
-     */
-    @SuppressWarnings("unchecked")
-    public static PackageType unmarshallXPDL(final InputStream xpdl) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
-        Unmarshaller u = jc.createUnmarshaller();
-        JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(xpdl);
-        return rootElement.getValue();
-    }
-
-    /**
-     * Marshall a object structure back into XML.
-     * @param xpdl the XPDL
-     * @return the output stream of the XPDL object as xml.
-     */
-    public static String marshallXPDL(final PackageType xpdl) throws JAXBException {
-        ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
-        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        JAXBElement<PackageType> rootxpdl = new org.wfmc._2009.xpdl2.ObjectFactory().createPackage(xpdl);
-        m.marshal(rootxpdl, native_xml);
-        return native_xml.toString();
-    }
-
 
     /**
     * Converts an input stream to a string.

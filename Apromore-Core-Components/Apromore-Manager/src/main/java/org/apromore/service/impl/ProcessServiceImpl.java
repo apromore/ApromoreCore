@@ -93,7 +93,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Element;
-import org.wfmc._2009.xpdl2.PackageType;
 
 import javax.activation.DataHandler;
 //import javax.annotation.Resource;
@@ -985,13 +984,6 @@ public class ProcessServiceImpl implements ProcessService {
         if (natve != null) {
             String natType = natve.getNativeType().getNatType();
             InputStream inStr = new ByteArrayInputStream(natve.getContent().getBytes());
-
-            //TODO why is this done here? apromore should not know about native format outside of canonisers
-            if (natType.compareTo("XPDL 2.2") == 0) {
-                PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
-                StreamUtil.copyParam2XPDL(pakType, processName, version.toString(), username, null, null);
-                natve.setContent(StreamUtil.marshallXPDL(pakType));
-            }
         }
     }
 

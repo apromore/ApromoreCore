@@ -22,7 +22,6 @@ package org.apromore.util;
 
 import org.apromore.TestData;
 import org.junit.Test;
-import org.wfmc._2009.xpdl2.PackageType;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -151,104 +150,4 @@ public class StreamUtilUnitTest {
         assertThat(result, containsString(created));
         assertThat(result, containsString(updated));
     }
-
-//    @Ignore
-//    @Test
-//    public void testCopyParam2NPFXPDL() throws Exception {
-//        //TODO FM, i think that is not needed anymore
-//
-//        String nativeType = "XPDL 2.1";
-//        String name = "bob43";
-//        double version = 99.9;
-//        String username = "Osama";
-//        String created = "12/12/2012";
-//        String updated = "12/12/2012";
-//
-//        InputStream stream = new ByteArrayInputStream(TestData.XPDL2.getBytes());
-//        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType, name, version, username, created, updated);
-//        String result = StreamUtil.convertStreamToString(stream2);
-//
-//        assertThat(result, containsString(name));
-//        assertThat(result, containsString(username));
-//        assertThat(result, containsString(created));
-//        assertThat(result, containsString(updated));
-//    }
-
-//    @Test
-//    public void testCopyParam2NPFEPML() throws Exception {
-//        String nativeType = "EPML 2.0";
-//        String name = "bob43";
-//        double version = 99.9;
-//        String username = "Osama";
-//        String created = "12/12/2012";
-//        String updated = "12/12/2012";
-//
-//        InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
-//        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType, name, version, username, created, updated);
-//
-//        assertThat(stream2, equalTo(stream));
-//    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testCopyParam2XPDLNullHeader() throws Exception {
-        InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
-
-        // Get the package so I can change some data for the tests
-        JAXBContext jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
-        Unmarshaller u = jc.createUnmarshaller();
-        JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(stream);
-        PackageType pkg = rootElement.getValue();
-
-        pkg.setRedefinableHeader(null);
-        pkg.setPackageHeader(null);
-
-        StreamUtil.copyParam2XPDL(pkg, null, null, null, null, null);
-
-        assertThat(pkg.getRedefinableHeader(), notNullValue());
-        assertThat(pkg.getPackageHeader(), notNullValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testCopyParam2XPDLNullHeaderVersionAuthor() throws Exception {
-        InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
-
-        // Get the package so I can change some data for the tests
-        JAXBContext jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
-        Unmarshaller u = jc.createUnmarshaller();
-        JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(stream);
-        PackageType pkg = rootElement.getValue();
-
-        pkg.getRedefinableHeader().setAuthor(null);
-        pkg.getRedefinableHeader().setVersion(null);
-        pkg.getPackageHeader().setCreated(null);
-        pkg.getPackageHeader().setModificationDate(null);
-        pkg.getPackageHeader().setDocumentation(null);
-
-        StreamUtil.copyParam2XPDL(pkg, null, null, null, null, null);
-
-        assertThat(pkg.getRedefinableHeader().getAuthor(), notNullValue());
-        assertThat(pkg.getRedefinableHeader().getVersion(), notNullValue());
-        assertThat(pkg.getPackageHeader().getCreated(), notNullValue());
-        assertThat(pkg.getPackageHeader().getModificationDate(), notNullValue());
-        assertThat(pkg.getPackageHeader().getDocumentation(), notNullValue());
-    }
-
-//    @Ignore
-//    @Test
-//    public void testCopyParam2NPFPMNL() throws Exception {
-//        String nativeType = "PMNL 2.0";
-//        String name = "bob43";
-//        double version = 99.9;
-//        String username = "Osama";
-//        String created = "12/12/2012";
-//        String updated = "12/12/2012";
-//
-//        InputStream stream = new ByteArrayInputStream("test".getBytes());
-//        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType,  name, version, username, created, updated);
-//
-//        //TODO why should it be NULL?
-//        assertThat(stream2, equalTo(null));
-//    }
 }

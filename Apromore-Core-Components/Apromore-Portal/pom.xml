@@ -319,24 +319,6 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- Schemas -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>cmap-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>epml-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>xpdl-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
-        </dependency>
-
         <!-- APIs -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -355,12 +337,6 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>editor-plugin-api</artifactId>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>eventstr-confchecking-osgi</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
 
         <!-- Logging -->
         <dependency>

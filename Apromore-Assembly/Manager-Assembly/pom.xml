@@ -82,42 +82,12 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>aris-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>bpmn-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>epml-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>pnml-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>rlf-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>xpdl-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>yawl-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
 
