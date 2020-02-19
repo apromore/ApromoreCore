@@ -1,5 +1,6 @@
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
@@ -22,6 +23,7 @@ import java.util.List;
  * Modified: Chii Chang (06/02/2020)
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (17/02/2020)
+ * Modified: Chii Chang (19/02/2020)
  */
 public class ATrace implements Serializable {
 
@@ -98,8 +100,17 @@ public class ATrace implements Serializable {
         activityNameList = new ArrayList<>();
         eventNameSet = new UnifiedSet<>();
 
-        // initiate the bitSet with fixed size
-//        validEventIndex = new BitSet(xTrace.size());
+        /* ------------- find start time and end time of trace -------------- */
+        for(int i=0; i<xTrace.size(); i++) {
+            XEvent xEvent = xTrace.get(i);
+            long eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
+            if(startTimeMilli == -1 || startTimeMilli > eventTime) {
+                startTimeMilli = eventTime;
+            }
+            if(endTimeMilli == -1 || endTimeMilli < eventTime) {
+                endTimeMilli = eventTime;
+            }
+        }
 
         if(containsActivity(xTrace)) {
             this.hasActivity = true;
@@ -117,13 +128,6 @@ public class ATrace implements Serializable {
                 fillEventAttributeValueFreqMap(iAEvent);
 
                 if (!markedXEvent.contains(xEvent) && iAEvent.getLifecycle().toLowerCase().equals("start")) {
-                    long eventTime = iAEvent.getTimestampMilli();
-                    if(startTimeMilli == -1 || startTimeMilli > eventTime) {
-                        startTimeMilli = eventTime;
-                    }
-                    if(endTimeMilli == -1 || endTimeMilli < eventTime) {
-                        endTimeMilli = eventTime;
-                    }
 
                     if(iAEvent.getLifecycle().equals("start")) {
 
@@ -248,9 +252,6 @@ public class ATrace implements Serializable {
 
 
                 if(iAEvent.getLifecycle().toLowerCase().equals("complete")) {
-                    long eventTime = iAEvent.getTimestampMilli();
-                    if (startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
-                    if (endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
 
                     this.eventList.add(iAEvent);
                     this.eventNameSet.put(iAEvent.getName());
@@ -285,32 +286,11 @@ public class ATrace implements Serializable {
 
         this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
-        this.durationString = convertMilliseconds(duration);
+        this.durationString = Util.durationShortStringOf(duration);
 
-//        System.out.println(this.activityNameIndexList);
     }
 
 
-//    public UnifiedMap<String, String> getRawAttributeMap() {
-//        return rawAttributeMap;
-//    }
-
-//    public UnifiedMap<String, UnifiedSet<String>> getRawEventAttributeValueSetMap() {
-//        return rawEventAttributeValueSetMap;
-//    }
-
-//    private void fillEventAttributeValueSetMap(AEvent aEvent) {
-//        for (String key : aEvent.getRawAttributeMap().keySet()) {
-//            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
-//                this.rawEventAttributeValueSetMap.get(key).put(aEvent.getRawAttributeMap().get(key));
-//            } else {
-//                UnifiedSet<String> vals = new UnifiedSet<>();
-//                vals.put(aEvent.getRawAttributeMap().get(key));
-//                this.rawEventAttributeValueSetMap.put(key, vals);
-//            }
-//        }
-////        System.out.println(rawEventAttributeValueSetMap);
-//    }
 
     private void fillEventAttributeValueFreqMap(AEvent aEvent) {
         for(String key : aEvent.getAttributeMap().keySet()) {
@@ -348,13 +328,7 @@ public class ATrace implements Serializable {
                 }
             }
         }
-//        for(int i=0; i<xTrace.size(); i++) {
-//            AEvent iEvent = new AEvent(xTrace.get(i));
-//            if(iEvent.getLifecycle().equals("start")) {
-//                this.hasActivity = true;
-//                return true;
-//            }
-//        }
+
         return false;
     }
 
@@ -512,7 +486,7 @@ public class ATrace implements Serializable {
 
         this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
-        this.durationString = convertMilliseconds(duration);
+        this.durationString = Util.durationShortStringOf(duration);
 
         this.activityNameIndexList = activityNameIndexList;
     }
@@ -535,29 +509,6 @@ public class ATrace implements Serializable {
 
     public int getCaseVariantIdForDisplay() {
         return caseVariantIdForDisplay;
-    }
-
-    public static String convertMilliseconds(long milliseconds) {
-
-        DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
-        double seconds = milliseconds / 1000.0D;
-        double minutes = seconds / 60.0D;
-        double hours = minutes / 60.0D;
-        double days = hours / 24.0D;
-        double weeks = days / 7.0D;
-        double months = days / 31.0D;
-        double years = days / 365.0D;
-
-        if (years > 1.0D) return decimalFormat.format(years) + " yrs";
-        if (months > 1.0D) return decimalFormat.format(months) + " mths";
-        if (weeks > 1.0D) return decimalFormat.format(weeks) + " wks";
-        if (days > 1.0D) return decimalFormat.format(days) + " d";
-        if (hours > 1.0D) return decimalFormat.format(hours) + " hrs";
-        if (minutes > 1.0D) return decimalFormat.format(minutes) + " mins";
-        if (seconds > 1.0D) return decimalFormat.format(seconds) + " secs";
-        if (milliseconds > 1.0D) return decimalFormat.format(milliseconds) + " millis";
-
-        return "instant";
     }
 
     public ATrace clone() {
