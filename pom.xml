@@ -677,32 +677,7 @@
             <!-- Canonisers -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-aris</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-bpmn</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-epml</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-pnml</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-xpdl</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-yawl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
             </dependency>
 
