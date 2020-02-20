@@ -171,6 +171,7 @@
         <portal-client.version>1.1</portal-client.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
+        <httpcomponents.version>4.2.1</httpcomponents.version>
         <prodrift.version>1.1.0</prodrift.version>
         <pax.runner.version>1.7.6</pax.runner.version>
 
