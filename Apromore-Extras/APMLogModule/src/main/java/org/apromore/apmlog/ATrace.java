@@ -174,7 +174,8 @@ public class ATrace implements Serializable {
             this.activityNameList.add(activity.getName());
             this.activityNameIndexList.add(apmLog.getActivityNameMapper().set(activity.getName()));
 
-            processCount += activity.getDuration();
+            processCount += 1;
+            this.totalProcessingTime += activity.getDuration();
 
             if (i > 0) {
                 AActivity pActivity = activityList.get(i-1);
