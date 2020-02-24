@@ -41,10 +41,6 @@
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
         <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
         <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
-
-        <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
-
-        <httpcomponents.version>4.2.1</httpcomponents.version>
     </properties>
 
     <scm>
@@ -173,10 +169,12 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

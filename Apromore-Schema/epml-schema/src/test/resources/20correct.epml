@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<epml:epml xmlns:epml="http://www.epml.de">
-  <coordinates xOrigin="leftToRight" yOrigin="topToBottom" />
-  <directory>
-    <epc epcId="1" name="EPC"/>
-  </directory>
-</epml:epml>
