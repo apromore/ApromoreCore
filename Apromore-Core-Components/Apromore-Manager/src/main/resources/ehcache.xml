@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         maxBytesLocalHeap="5G">
 
     <!-- Disk cache path -->
     <diskStore path="java.io.tmpdir/ehcache"/>
@@ -28,22 +29,22 @@
                             has reached the maxInMemory limit.
 
         -->
-    <defaultCache
-            maxEntriesLocalHeap="10000"
-            timeToIdleSeconds="120"
-            timeToLiveSeconds="120"
-            maxEntriesLocalDisk="10000000"
-            diskExpiryThreadIntervalSeconds="120"
-            memoryStoreEvictionPolicy="LRU"/>
+    <!--<defaultCache-->
+            <!--maxEntriesLocalHeap="10000"-->
+            <!--timeToIdleSeconds="120"-->
+            <!--timeToLiveSeconds="120"-->
+            <!--maxEntriesLocalDisk="10000000"-->
+            <!--diskExpiryThreadIntervalSeconds="120"-->
+            <!--memoryStoreEvictionPolicy="LRU"/>-->
 
     <!-- Testing Cache -->
-    <cache name="test"
-           maxEntriesLocalHeap="0"
-           timeToIdleSeconds="120"
-           timeToLiveSeconds="120"
-           maxEntriesLocalDisk="10000000"
-           diskExpiryThreadIntervalSeconds="120"
-           memoryStoreEvictionPolicy="LRU"/>
+    <!--<cache name="test"-->
+           <!--maxEntriesLocalHeap="0"-->
+           <!--timeToIdleSeconds="120"-->
+           <!--timeToLiveSeconds="120"-->
+           <!--maxEntriesLocalDisk="10000000"-->
+           <!--diskExpiryThreadIntervalSeconds="120"-->
+           <!--memoryStoreEvictionPolicy="LRU"/>-->
 
     <!-- XES LOG Cache
 
@@ -82,7 +83,6 @@
 
     -->
     <cache name="xlog"
-           maxEntriesLocalHeap="0"
            timeToIdleSeconds="0"
            timeToLiveSeconds="17280000"
            diskSpoolBufferSizeMB="30"

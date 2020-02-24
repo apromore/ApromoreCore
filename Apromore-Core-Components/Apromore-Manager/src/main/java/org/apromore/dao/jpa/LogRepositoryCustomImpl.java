@@ -47,6 +47,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -138,6 +141,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 final String name = logNameId + "_" + logName + ".xes.gz";
                 exportToFile("../Event-Logs-Repository/", name, log);
 
+                LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+
                 // Store corresponding object into cache
                 cacheRepo.put(logNameId, log);
                 cacheRepo.put(logNameId + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(log));
@@ -145,7 +150,13 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                         "using Key [" + logNameId + "]. ");
                 LOGGER.info("Put APMLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
                         "using Key [" + logNameId + "APMLog]. ");
-//                LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
+                System.gc();
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                }
+
+                LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
                 LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
                 return logNameId;
             } catch (Exception e) {
@@ -168,6 +179,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 cacheRepo.evict(key);
                 cacheRepo.evict(key + APMLOG_CACHE_KEY_SUFFIX);
                 LOGGER.info("Delete XLog [ KEY: " + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+                LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
 
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -205,6 +217,9 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     // *******  profiling code start here ********
                     elapsedNanos = System.nanoTime() - startTime;
                     LOGGER.info("Retrieved XES log " + name + " [" + xlog.hashCode() + "]. Elapsed time: " + elapsedNanos / 1000000 + " ms");
+                    LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                    LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
+                            "MB ");
                     startTime = System.nanoTime();
                     // *******  profiling code end here ********
 
@@ -213,9 +228,17 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     cacheRepo.put(key, xlog);
                     cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(xlog));
                     elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Put object [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 +
-                            " ms.");
-//                    LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
+                    LOGGER.info("Put objects [KEY:" + key + ", " + key + APMLOG_CACHE_KEY_SUFFIX + "] into Cache. " + "Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+
+                    System.gc();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                    }
+
+                    LOGGER.info("Memory Used: "  + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                    LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
+                            "MB ");
                     LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
 //                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
 //                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
@@ -229,10 +252,19 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             } else {
                 // If cache hit
                 LOGGER.info("Got object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+                LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
                 return element;
             }
         }
         return null;
+    }
+
+
+
+
+    protected MemoryUsage getMemoryUsage() {
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        return memoryMXBean.getHeapMemoryUsage();
     }
 
     /**
