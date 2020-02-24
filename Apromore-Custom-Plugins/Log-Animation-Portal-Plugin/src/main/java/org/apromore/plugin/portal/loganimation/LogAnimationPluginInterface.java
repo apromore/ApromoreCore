@@ -10,6 +10,6 @@ public interface LogAnimationPluginInterface {
 
 //    void execute(PortalContext portalContext, ProcessSummaryType processSummaryType, VersionSummaryType versionSummaryType, LogSummaryType logSummaryType);
 //    void execute(PortalContext portalContext, String JSONData, String layout, LogSummaryType logSummaryType);
-    void execute(PortalContext portalContext, String JSONData, String layout, XLog eventlog, boolean maintain_gateways);
+    void execute(PortalContext portalContext, String JSONData, String layout, XLog eventlog, boolean maintain_gateways, String logName);
 
 }

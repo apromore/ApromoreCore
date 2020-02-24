@@ -180,12 +180,12 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
      * the displayed BPMN only because it is created for the original BPMN. That's why 
      * AnimationUpdater is used to create an updated animation data from the created animation data
      */
-    public void execute(PortalContext portalContext, String bpmn, String layout, XLog eventlog, boolean maintain_gateways) {
+    public void execute(PortalContext portalContext, String bpmn, String layout, XLog eventlog, boolean maintain_gateways, String logName) {
         try {
             List<LogAnimationService.Log> logs = new ArrayList<>();
             Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
             LogAnimationService.Log log = new LogAnimationService.Log();
-            log.fileName = "Dummy";
+            log.fileName = logName;
             log.xlog     = eventlog;
             log.color    = colors.hasNext() ? colors.next() : "red";
             logs.add(log);
