@@ -442,14 +442,14 @@ padding-top: 16px;
 }
 
 
-/* ------------------ south criteria ------------ */
+/* ------------------ south criteria ------------
 .southCriteriaStyle .z-icon-angle-double-down {
     display:none;
 }
 
 .mainLayoutStyle .z-icon-angle-double-up {
     display:none;
-}
+}*/
 
 .southCriteriaStyle .z-south-body {
     background-color: white;

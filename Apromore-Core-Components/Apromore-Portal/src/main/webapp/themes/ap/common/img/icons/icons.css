@@ -11,12 +11,26 @@
     background-color: transparent;
     border-radius: 3px !important;
     padding: 0 !important;
-    margin: 0 2px 0 0 !important;
+    margin: 0 0 0 0 !important;
     cursor: pointer;
     filter: var(--ap-filter-ico-normal-dark);
 }
 
-/* Do not set filter as important due to light/dark */
+.ap-icon-static {
+    cursor: unset !important;
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-normal-dark) !important;
+    border: none !important;
+}
+
+.ap-icon-static:hover {
+    cursor: unset !important;
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-normal-dark) !important;
+    border: none !important;
+}
+
+    /* Do not set filter as important due to light/dark */
 
 .ap-icon img {
     display: none;
@@ -88,6 +102,16 @@
     width: 26px !important;
 }
 
+.ap-icon-caret-down {
+    background-image: url('caret-down.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-caret-up {
+    background-image: url('caret-up.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-chart-bar {
     background-image: url('chart-bar.svg') !important;
     width: 26px !important;
@@ -95,6 +119,21 @@
 
 .ap-icon-chart-fill {
     background-image: url('chart-fill.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-check-circle {
+    background-image: url('check-circle.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-chevron-down {
+    background-image: url('chevron-down.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-chevron-up {
+    background-image: url('chevron-up.svg') !important;
     width: 26px !important;
 }
 
@@ -186,6 +225,16 @@
 .ap-icon-fast-backward {
     background-image: url('fast-backward.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-eye-close {
+    background-image: url('eye-close.svg') !important;
+    width: 27.7578125px !important;
+}
+
+.ap-icon-eye-open {
+    background-image: url('eye-open.svg') !important;
+    width: 27.7578125px !important;
 }
 
 .ap-icon-fast-forward {
@@ -318,6 +367,11 @@
     width: 26px !important;
 }
 
+.ap-icon-perspective {
+    background-image: url('perspective.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-play-circle {
     background-image: url('play-circle.svg') !important;
     width: 26px !important;
@@ -425,6 +479,11 @@
 
 .ap-icon-table-list {
     background-image: url('table-list.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-tally {
+    background-image: url('tally.svg') !important;
     width: 26px !important;
 }
 

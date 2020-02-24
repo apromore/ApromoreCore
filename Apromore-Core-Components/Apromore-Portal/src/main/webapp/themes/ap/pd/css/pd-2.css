@@ -15,7 +15,6 @@ body {
     background-color: white;
 }
 
-
 .ap-pd-2 .mainCaption .z-caption-content {
     position: absolute;
     top: 0;
@@ -24,7 +23,7 @@ body {
     font-family: var(--ap-font-base);
     font-weight: normal;
     font-size: 14px;
-    width: calc(100% - 340px);
+    width: calc(100% - 300px);
     color: white;
     z-index: var(--ap-z-header-title);
 }
@@ -43,18 +42,35 @@ body {
 }
 
 .ap-pd-2 .ap-pd-tools {
-    width: 100%;
+    position: absolute;
+    width: 300px;
     height: 30px;
-    margin-top: 5px;
-    display: none !important;
+    right: 5px;
+    top: 3px;
+    text-align: right;
 }
 
 .ap-pd-2 .ap-pd-tools button {
-    float: right;
-}
-
-.ap-pd-2 .ap-pd-tools button {
+    display: inline-block;
     height: 26px;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    position: static !important;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border: none;
+}
+
+.ap-pd-2 .ap-pd-tools .ap-icon {
+    display: inline-block;
+    filter: var(--ap-filter-ico-normal-light);
+}
+
+.ap-pd-2 .ap-pd-tools .ap-icon:hover {
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-white) !important;
 }
 
 .ap-pd-action-buttons {
@@ -64,15 +80,8 @@ body {
     left: 0;
     top: 34px;
     height: 32px;
-    padding: 3px 0 0 8px;
+    padding: 3px 8px 0 8px;
     background-color: var(--ap-c-action-bg-normal);
-}
-
-.ap-pd-options-splitter {
-
-}
-
-.ap-pd-stats-c {
 }
 
 .ap-pd-action-buttons .ap-icon {
@@ -95,13 +104,13 @@ body {
     right: 0;
     left: 0;
     top: 66px;
-    bottom: 5px;
+    bottom: 0;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
 }
 
-.ap-pd-main-c > div.ap-pd-options-splitter {
+div.ap-pd-drawer-splitter {
     flex: 0 0 auto;
     width: 100%;
     height: 10px;
@@ -115,14 +124,11 @@ body {
     justify-content: stretch;
 }
 
-.ap-pd-main-c > div.ap-pd-options-splitter:hover {
+div.ap-pd-drawer-splitter:hover {
     background-color: var(--ap-c-soft-blue-light-4);
 }
 
-div.ap-pd-options {
-    flex: 0 0 auto;
-}
-
+/*
 .ap-pd-options-c {
     padding: 0;
     background-color: var(--ap-c-bg-lightest);
@@ -141,35 +147,47 @@ div.ap-pd-options {
     height: 12px;
 }
 
-.ap-pd-main-c > div#cy {
-    flex: 1 1 auto;
-}
-
-.ap-pd-sliders {
-    background-color: white;
-    border: 1px solid  var(--ap-border-color-light);
-}
-
-.ap-pd-sliders .z-row-content {
-    padding: 0 5px;
-}
-
-.ap-pd-sliders .z-row-inner:first-child .z-row-content {
-    text-align: right;
-}
-
 .ap-pd-options-c .z-groupbox > div {
     background-color: white;
     border-color: var(--ap-border-color-light);
+}*/
+
+.ap-pd-main-c > div#cy {
+    flex: 1 1 auto;
+    padding: 10px;
+}
+
+.ap-pd-graph-settings {
+    background-color: white;
+}
+
+.ap-pd-graph-settings .z-grid-body {
+    overflow: hidden !important;
+}
+
+.ap-pd-graph-settings .ap-pd-chart-bi-legend {
+    margin-bottom: 4px;
+}
+
+.ap-pd-graph-settings .z-slider-horizontal {
+    height: 26px;
+}
+
+.ap-pd-graph-settings .z-row-content {
+    padding: 0 5px;
+}
+
+.ap-pd-graph-settings .z-row-inner:first-child {
+    border-right: 1px solid var(--ap-c-line-sep) !important;
+}
+
+.ap-pd-graph-settings .z-row-inner:nth-child(2) .z-row-content {
+    text-align: right;
 }
 
 .statsHead {
     background-color: var(--ap-c-soft-blue-dark-4) !important;
     border-color: white !important;
-}
-
-.ap-pd-stats-c .z-grid-header-border {
-    border: none !important;
 }
 
 .ap-pd-keys + .z-html {
@@ -200,26 +218,255 @@ div.ap-pd-options {
 
 .ap-pd-action-buttons .sublabel {
     margin: 0 3px 0 5px;
+    width: 70px;
 }
 
-
-.ap-pd-stats-duration {
-    display: flex;
-    flex-direction: column;
+.ap-pd-view-settings {
+    margin: auto;
 }
 
-.ap-pd-stats-duration > div {
-    flex: 1 1 auto;
-}
+.ap-pd-view-settings .ap-pd-toggle-secondary {
 
-.ap-pd-stats-duration > div > span {
+}
+.ap-pd-view-settings .ap-icon {
     display: inline-block;
 }
 
-.ap-pd-stats-duration > div > span:first-child {
-    width: 100px;
+.ap-pd-view-settings .sublabel {
+    display: inline-block;
+    box-sizing: border-box;
+    padding-right: 5px;
+    text-align: right;
+    line-height: 14px;
+    width: auto !important;
+}
+
+.ap-pd-view-settings .ap-switch > span.start,
+.ap-pd-view-settings .ap-switch > span.end {
+    display: inline-block;
+    box-sizing: border-box;
+    line-height: 14px;
+    width: auto !important;
+}
+
+.ap-pd-view-settings .ap-switch > span.start {
+    padding: 0 2px 2px 5px;
     text-align: right;
 }
+
+.ap-pd-view-settings .ap-switch > span.end {
+    padding: 0 0 2px 2px;
+    text-align: left;
+
+}
+
+.ap-pd-view-settings .sublabel .ap-icon {
+    display: inline-block;
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-normal-dark);
+    background-size: auto 20px !important;
+    width: 24px;
+}
+
+.ap-pd-view-settings > div {
+    text-align: left;
+}
+
+/*.ap-pd-view-settings .z-combobox {
+    width: 50%;
+    min-width: 120px;
+}*/
+
+/*
+.ap-pd-view-settings .sublabel:hover .stat-rank {
+    background-color: var(--ap-c-text-accent);
+}
+
+.ap-pd-view-settings .sublabel:hover .ap-icon {
+    filter: var(--ap-c-tab-text-hover-filter);
+}*/
+
+.ap-pd-view-settings .ap-icon:hover {
+    filter: var(--ap-c-tab-text-hover-filter) !important;
+}
+
+.ap-pd-view-settings .ap-state-off.ap-icon:hover {
+    filter: var(--ap-filter-ico-normal-dark) !important;
+}
+
+.ap-pd-view-settings .ap-state-off .ap-icon:hover {
+    filter: var(--ap-c-tab-text-hover-filter) !important;
+}
+
+.ap-state-on .stat-rank {
+    background-color: var(--ap-c-tab-text-selected) !important;
+}
+
+
+.ap-pd-graph-settings input[type='checkbox'] {
+    display: none;
+}
+
+.ap-pd-timestats .ap-icon {
+    filter: var(--ap-filter-ico-normal-dark);
+    background-size: auto 18px !important;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* overwrite */
+.ap-pd-timestats .ap-icon.ap-icon-clock {
+    background-size: auto 18px !important;
+}
+
+.ap-pd-graph-settings .ap-icon {
+    display: inline-block;
+    filter: var(--ap-filter-ico-normal-dark);
+    vertical-align: middle;
+}
+
+.ap-pd-graph-settings .ap-icon:hover {
+    filter: var(--ap-c-tab-text-hover-filter);
+    background-color: transparent !important;
+}
+
+.ap-pd-graph-settings .ap-state-off:hover .ap-icon {
+    filter: var(--ap-c-tab-text-hover-filter) !important;
+}
+
+.ap-pd-graph-settings .ap-disabled .ap-icon,
+.ap-pd-graph-settings .ap-disabled:hover .ap-icon{
+    filter: var(--ap-filter-neutral-light) !important;
+    cursor: auto !important;
+}
+
+.ap-pd-graph-settings .ap-disabled,
+.ap-pd-graph-settings .ap-disabled label,
+.ap-pd-graph-settings .ap-disabled:hover {
+    color: var(--ap-c-text-light) !important;
+    cursor: auto !important;
+}
+
+.ap-pd-graph-settings .ap-pd-metric label {
+    line-height: 16px !important;
+}
+
+.ap-pd-graph-settings .ap-pd-metric > * {
+    vertical-align: middle;
+}
+
+.ap-pd-graph-settings .z-row-content {
+    text-align: left;
+    padding: 0 5px 0 0;
+}
+
+.ap-pd-graph-settings .ap-grid .z-grid-body td:first-child .z-row-content {
+    padding-right: 0;
+    padding-top: 3px;
+}
+
+/*
+.ap-pd-graph-settings .ap-grid .z-grid-body tr:first-child .title {
+    padding-left: 5px;
+}*/
+
+.ap-pd-graph-settings .ap-pd-parallel-label {
+    padding-left: 5px;
+}
+
+.ap-pd-view-settings .ap-pd-view-option > *,
+.ap-pd-view-settings .sublabel > *{
+    vertical-align: middle;
+}
+
+.ap-pd-view-settings .stat-rank {
+    font-size: 12px;
+    line-height: 15px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: var(--ap-c-grey-light-2);
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+}
+
+
+.ap-pd-view-option.ap-state-on .ap-icon-check-circle {
+    display: inline-block;
+    filter: var(--ap-filter-ico-check) !important;
+    cursor: unset !important;
+}
+
+
+.ap-pd-view-option.ap-state-off .ap-icon-check-circle {
+    display: none;
+}
+
+.ap-pd-view-option.ap-state-on .ap-icon-eye-open,
+.ap-pd-view-option.ap-state-on .ap-icon-eye-close {
+    display: none;
+}
+
+.ap-pd-view-option.ap-state-off .ap-icon-eye-open,
+.ap-pd-view-option.ap-state-off .ap-icon-eye-close {
+    display: inline-block;
+    filter: var(--ap-filter-ico-grey-minor) !important;
+}
+
+.ap-pd-view-option.ap-state-off .ap-icon-eye-open:hover,
+.ap-pd-view-option.ap-state-off .ap-icon-eye-close:hover {
+    filter: var(--ap-filter-ico-black) !important;
+    background-color: transparent !important;
+}
+
+
+.section {
+    font-family: var(--ap-font-brand);
+    color: var(--ap-c-text-heading);
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    text-align: center !important;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ap-pd-logstats-header .title {
+    display: inline-block;
+    padding: 0;
+}
+
+.ap-pd-logstats-header {
+    /*width: 85px;*/
+}
+
+.ap-pd-logstats-header > span {
+    flex: 0 1 content;
+}
+
+.ap-pd-logstats-header > button {
+    flex: 0 0 auto;
+}
+
+.ap-pd-logstats .z-label{
+    font-size: 14px;
+}
+
+ > .z-hlayout-inner {
+    width: 90px;
+}
+.ap-pd-logstats .z-hlayout .z-vlayout .z-hlayout {
+    padding: 0;
+    text-align: center;
+}
+
 
 .ap-pd-stats-main {
     display: flex;
@@ -228,8 +475,6 @@ div.ap-pd-options {
     align-items: stretch;
     padding: 8px;
 }
-
-
 
 .ap-pd-stats-main > div {
     display: flex;
@@ -263,16 +508,10 @@ div.ap-pd-options {
     padding: 0 !important;
 }
 
-.ap-pd-stats-duration > div {
-    padding: 2px 0 3px 0;
-}
 
-.ap-pd-stats-duration > div > span .z-label {
-    padding-right: 4px;
-}
 
 .ap-stat-head {
-    margin: 6px;
+    margin-bottom: 6px;
 }
 
 .ap-stat-head .z-label {
@@ -280,92 +519,299 @@ div.ap-pd-options {
     font-weight: 700;
     color: var(--ap-c-grey-minor);
 }
+/*
 
-.ap-pd-stats-duration {
-    padding: 8px;
-}
+.ap-pd-logstats div,
+.ap-pd-timestats div {
+    border: 1px solid blue;
+    box-sizing: border-box;
 
-.ap-pd-stats-time {
-    padding: 8px;
+}*/
+
+.ap-pd-timerange,
+.ap-pd-duration {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+}
+
+.ap-pd-timestats-header,
+.ap-pd-logstats-header {
+    display: flex;
+    height: 40px;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-
 }
 
-.ap-pd-stats-time > div {
-    flex: 0 0 auto;
-}
 
-.ap-pd-stats-time > div > * {
-    width: 100%;
+/* Duration */
+
+.ap-pd-duration {
     text-align: center;
 }
 
-.ap-pd-stats-time > div.from-to {
+.ap-pd-duration > div,
+.ap-pd-timerange > div {
     flex: 1 1 auto;
+    padding: 2px 0 3px 0;
+    text-align: center;
+}
+
+.ap-pd-duration > div {
+    text-align: left;
+}
+
+.ap-pd-duration > div > span {
+    display: inline-block;
+}
+
+.ap-pd-2 .ap-panel-sep > div {
+    top: 0;
+    bottom: 3px;
+}
+
+.ap-pd-duration > div > span:first-child {
+    min-width: 60px;
+    width: 40%;
+    text-align: right;
+    padding-right: 8px;
+}
+
+.ap-pd-duration > div > span .z-label {
+    padding-right: 4px;
+}
+
+
+/* Time range */
+
+.ap-pd-timerange div.from-to-x {
+    padding: 2px 0 8px 0;
+    text-align: left;
+}
+
+.ap-pd-timerange div.from-to {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    height: 20px;
     margin: 6px 0;
+    justify-content: center;
 }
 
-.ap-pd-stats-time > div.from-to > div {
+.ap-pd-timerange div.from-to > div {
     flex: 0 0 auto;
     width: 1px;
-    background-color: var(--ap-c-grey);
+    background-color: var(--ap-c-grey-minor);
 }
 
-.ap-pd-stats-time .start-time,
-.ap-pd-stats-time .end-time {
+.ap-pd-timerange .start-time,
+.ap-pd-timerange .end-time {
 }
 
-.ap-pd-boxlet {
-    border: none !important;
-    border-radius: 4px !important;
-    box-shadow: 0 0 6px 0 rgba(127, 127, 127, 0.3) !important;
-    background-color: white !important;
-    padding: 6px !important;
+.ap-pd-2 .ap-switch span {
+    font-size: 14px !important;
+    line-height: 14px !important;
 }
 
-.ap-pd-logstats {
-    background-color: transparent !important;
+.ap-pd-graph-settings .ap-switch > span.start {
+    width: auto;
 }
 
-.ap-pd-logstats .z-window-content {
-    background-color: transparent !important;
+.ap-pd-graph-settings-switches {
+    display: flex;
+    justify-content: space-between;
 }
 
-.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
-    height: 24px;
-    vertical-align: middle;
+.ap-pd-2,
+.ap-pd-2 span {
+    line-height: 14px !important;
 }
 
-.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
-    height: 24px;
-    vertical-align: middle;
+/* Icon hack */
+.ap-pd-logstats-header .ap-icon.ap-icon-perspective,
+.ap-pd-timestats .ap-icon.ap-icon-clock {
+    background-size: auto 20px !important;
 }
 
-.ap-pd-logstats .z-hlayout .z-vlayout .z-hlayout {
-    padding: 0;
+.ap-pd-timestats .ap-icon.ap-icon-duration-range {
+    background-size: auto 21px !important;
+}
+
+:root {
+    --ap-pd-top-boxlet: 76px; /* 34px + 32px + 10px */
+    /*-
+    -ap-pd-width-view-settings: 200px;
+    --ap-pd-width-sliders: 550px;
+    */
+    --ap-pd-width-viz-settings: 750px;
+    --ap-pd-width-view-settings: 220px;
+    /*
+    --ap-pd-width-log-stats: 350px;
+    --ap-pd-width-time-stats: 270px; */
+    --ap-pd-width-log-stats: 660px;
+    --ap-pd-size-gutter: 10px;
+}
+
+
+.ap-pd-drawer {
+    padding: 10px 8px 10px 12px;
+    background-color: white;
+    box-shadow: var(--ap-box-shadow);
+}
+
+.ap-pd-drawer-box {
     text-align: center;
 }
 
-.ap-pd-logstats .z-label {
+/*
+.ap-pd-drawer > .z-hlayout > .z-hlayout-inner {
+    border-right: 1px solid var(--ap-c-grey-light-4);
+    margin-right: 8px;
+}
+
+.ap-pd-drawer > .z-hlayout > .z-hlayout-inner:last-child {
+    border-right: none;
+    margin-right: 0;
+}*/
+
+/*
+[data-t='ap-pd-aux']  {
+    position: absolute;
+    z-index: 1800 !important;
+    left: 0;
+    right: 0;
+    top: 0;
+}*/
+
+#cy > div {
+    height: 100% !important;
+}
+
+[data-t='ap-pd-aux'] {
+    flex: 0 0 auto;
+}
+
+.ap-pd-floatlet  {
+    z-index: 1800 !important;
+    height: 188px;
+}
+
+.ap-pd-floatlet .z-div,
+.ap-pd-floatlet .z-label,
+.ap-pd-floatlet .z-radio-content {
     font-size: 12px;
 }
 
-.ap-pd-logstats .title {
-    font-weight: 700;
-    height: 16px;
+.ap-pd-floatlet .title,
+.ap-pd-floatlet .title .z-label {
+    font-weight: 700 !important;
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: var(--ap-c-grey-light-2);
 }
 
-.ap-pd-logstats .ap-icon {
-    width: 16px !important;
-    height: 16px !important;
-    background-size: auto 16px !important;
+.ap-pd-floatlet-minimized {
+    z-index: 1800 !important;
+    display: none;
+    box-shadow: 0 0 6px 0 rgba(127, 127, 127, 0.3) !important;
+    padding: 3px 5px 4px 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 12px;
+    background-image: linear-gradient(
+            30deg,
+            var(--ap-c-orange-light-5) 0%,
+            var(--ap-c-soft-blue-light-5) 100%
+    );
+}
+
+
+.ap-pd-floatlet .z-window-header {
+    padding: 5px 5px 4px 8px;
+    font-size: 13px;
+    height: 24px;
+    color: var(--ap-c-sunset-dark-2);
+}
+
+.ap-pd-floatlet .z-window-header i,
+.ap-pd-floatlet-minimized i {
+    cursor: pointer;
+    color: var(--ap-c-grey-minor);
+}
+
+.ap-pd-floatlet .z-window-content,
+.ap-pd-floatlet-content {
+    padding: 10px;
+    font-size: 12px;
+}
+
+.ap-pd-floatlet-content .z-label,
+.ap-pd-floatlet-content .z-radio-content {
+    font-size: 12px;
+}
+
+.ap-pd-floatlet, .ap-pd-floatlet-minimized {
+    top: var(--ap-pd-top-boxlet);
+    box-sizing: border-box;
+}
+
+.ap-pd-floatlet-minimized {
+    top: var(--ap-pd-top-boxlet) !important;
+    position: fixed;
+}
+
+
+
+
+
+[data-t='ap-pd-viz-settings'],
+[data-t='ap-pd-viz-settings-minimized']{
+    left: var(--ap-pd-size-gutter);
+    width: var(--ap-pd-width-viz-settings);
+}
+
+/*
+[data-t='ap-pd-log-stats'],
+[data-t='ap-pd-log-stats-minimized'] {
+    right: var(--ap-pd-size-gutter);
+    width: var(--ap-pd-width-log-stats);
+}
+
+[data-t='ap-pd-log-stats'] .z-window-content {
+    padding-left: 0px;
+}*/
+
+
+
+.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
+    vertical-align: bottom;
+}
+
+.ap-pd-logstats-header .ap-icon {
+    background-size: auto 18px !important;
+}
+
+.ap-pd-logstats-header.ap-link {
+    cursor: pointer;
+}
+
+.ap-pd-logstats-header span {
+    max-width: 90px;
+    width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ap-pd-logstats-header.ap-link:hover span {
+    color: var(--ap-c-text-accent);
+}
+
+/*.ap-pd-logstats-header.ap-link .ap-icon {
+    filter: var(--ap-c-tab-text-hover-filter);
+}*/
+
+.ap-pd-logstats-header.ap-link:hover .ap-icon {
+    filter: var(--ap-c-tab-text-hover-filter);
 }
 
 .ap-pd-logstats .ap-icon.dummy {
@@ -377,4 +823,149 @@ div.ap-pd-options {
 .ap-pd-logstats .ap-icon:focus,
 .ap-pd-logstats .ap-icon:hover {
     background-color: transparent !important;
+}
+
+
+/*
+
+.ap-pd-boxlet {
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 6px 0 rgba(127, 127, 127, 0.3) !important;
+    background-color: white !important;
+    padding: 0 !important;
+}
+
+.ap-pd-boxlet .title,
+.ap-pd-boxlet .title .z-label {
+    font-weight: 700 !important;
+    margin-bottom: 5px;
+}
+
+.ap-pd-boxlet-minimized {
+    display: none;
+    box-shadow: 0 0 6px 0 rgba(127, 127, 127, 0.3) !important;
+    padding: 3px 5px 4px 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 12px;
+    background-image: linear-gradient(
+            30deg,
+            var(--ap-c-orange-light-5) 0%,
+            var(--ap-c-soft-blue-light-5) 100%
+    );
+}
+
+
+.ap-pd-boxlet-header {
+    padding: 3px 5px 4px 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 12px;
+    background-image: linear-gradient(
+            30deg,
+            var(--ap-c-orange-light-5) 0%,
+            var(--ap-c-soft-blue-light-5) 100%
+    );
+    color: var(--ap-c-sunset-dark-2);
+}
+
+.ap-pd-boxlet-header i,
+.ap-pd-boxlet-minimized i {
+    cursor: pointer;
+    color: var(--ap-c-grey-minor);
+}
+
+.ap-pd-boxlet-content {
+    padding: 10px;
+    font-size: 12px;
+}
+
+.ap-pd-boxlet-content .z-label,
+.ap-pd-boxlet-content .z-radio-content {
+    font-size: 12px;
+}
+
+.ap-pd-boxlet, .ap-pd-boxlet-minimized {
+    position: fixed;
+    top: var(--ap-pd-top-boxlet);
+    box-sizing: border-box;
+}
+
+
+[data-t='ap-pd-view-settings'],
+[data-t='ap-pd-view-settings-minimized']{
+    left: var(--ap-pd-size-gutter);
+    width: var(--ap-pd-width-view-settings);
+}
+
+
+[data-t='ap-pd-graph-settings'],
+[data-t='ap-pd-graph-settings-minimized']{
+    left: calc(2 * var(--ap-pd-size-gutter) + var(--ap-pd-width-view-settings));
+    width: var(--ap-pd-width-sliders);
+}
+
+[data-t='ap-pd-log-stats'],
+[data-t='ap-pd-log-stats-minimized']{
+    right: calc(2 * var(--ap-pd-size-gutter) + var(--ap-pd-width-time-stats));
+    right: var(--ap-pd-size-gutter);
+    width: var(--ap-pd-width-log-stats);
+}
+
+
+[data-t='ap-pd-time-stats'],
+[data-t='ap-pd-time-stats-minimized']{
+    right: var(--ap-pd-size-gutter);
+    width: var(--ap-pd-width-time-stats);
+}
+
+.ap-pd-graph-settings .ap-pd-boxlet-content {
+    padding-top: 3px;
+}
+
+
+*/
+
+.ap-pd-chart-bi-legend {
+    background: linear-gradient(90deg, var(--ap-c-green-light-5), var(--ap-c-maroon-light-5));
+    border-radius: 2px;
+    padding: 3px 5px 4px 5px;
+}
+
+.ap-pd-chart-bi-legend.reversed {
+    background: linear-gradient(90deg, var(--ap-c-maroon-light-5), var(--ap-c-green-light-5));
+}
+
+.ap-pd-chart-bi-legend .z-label {
+    font-size: 12px !important;
+}
+
+.ap-pd-graph-settings .z-row:first-child .z-row-content > .z-label {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.ap-pd-swap-ordering:active,
+.ap-pd-swap-ordering:focus,
+.ap-pd-swap-ordering {
+    display: inline-block;
+    padding: 4px;
+    margin-bottom: 7px;
+    cursor: pointer;
+    color: var(--ap-c-grey-minor);
+    background-color: transparent !important;
+    box-shadow: none;
+}
+
+.ap-pd-swap-ordering i {
+    font-size: 18px !important;
+    line-height: 18px;
+}
+
+.ap-pd-swap-ordering:hover {
+    color: var(--ap-c-widget);
+    background-color: transparent !important;
+    box-shadow: none;
 }
