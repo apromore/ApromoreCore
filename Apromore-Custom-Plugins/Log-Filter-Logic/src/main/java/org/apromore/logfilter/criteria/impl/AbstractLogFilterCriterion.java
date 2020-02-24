@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019, 2020 The University of Melbourne.
+ * Copyright © 2019-2020 The University of Melbourne.
  *
  * This file is part of "Apromore".
  *
