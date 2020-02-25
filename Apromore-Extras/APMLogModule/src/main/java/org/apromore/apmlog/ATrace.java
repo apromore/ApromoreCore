@@ -196,6 +196,7 @@ public class ATrace implements Serializable {
 
             processCount += 1;
             this.totalProcessingTime += activity.getDuration();
+            if (activity.getDuration() > this.maxProcessingTime) this.maxProcessingTime = activity.getDuration();
 
             if (i > 0) {
                 AActivity pActivity = activityList.get(i-1);
