@@ -150,6 +150,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                         "using Key [" + logNameId + "]. ");
                 LOGGER.info("Put APMLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
                         "using Key [" + logNameId + "APMLog]. ");
+
                 System.gc();
                 try {
                     Thread.sleep(500);
@@ -157,6 +158,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 }
 
                 LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
+                        "MB ");
                 LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
                 return logNameId;
             } catch (Exception e) {
@@ -226,9 +229,14 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     // Log POJO has one constraint that span 2 columns (@UniqueConstraint(columnNames = {"name",
                     // "folderId"}))
                     cacheRepo.put(key, xlog);
+                    elapsedNanos = System.nanoTime() - startTime;
+                    LOGGER.info("Cache XLog [KEY:" + key + "]. " + "Elapsed time: " + elapsedNanos / 1000000 +
+                            " ms.");
+
+                    startTime = System.nanoTime();
                     cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(xlog));
                     elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Put objects [KEY:" + key + ", " + key + APMLOG_CACHE_KEY_SUFFIX + "] into Cache. " + "Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+                    LOGGER.info("Construct and cache APMLog [KEY:" + key + APMLOG_CACHE_KEY_SUFFIX + "]. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
 
                     System.gc();
                     try {
@@ -292,7 +300,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
                     cacheRepo.put(key, apmLog);
                     elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Put object [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 +
+                    LOGGER.info("Put APMLog [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 +
                             " ms.");
 //                    LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
                     LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
