@@ -78,6 +78,17 @@
     vertical-align: middle;
 }
 
+.ap-panel-sep > div {
+    box-sizing: border-box;
+    border-right: 1px solid var(--ap-c-line-sep-strong);
+    position: absolute;
+    left: 50%;
+    width: 1px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
 .z-window-modal .ap-form {
     margin: 4px 0 0 0 !important;
 }
@@ -95,14 +106,21 @@
 }
 
 .ap-window-footer-actions {
-    margin-top: 4px;
     background: linear-gradient(var(--ap-c-bg-medium) 0%, var(--ap-c-bg-lighter) 10%) !important;
+
 }
 
 .ap-window-footer-actions .z-row-content {
     padding: 8px;
     margin: 0 !important;
 }
+
+div.ap-window-footer-actions {
+    padding: 8px;
+    margin: 0 !important;
+    text-align: right;
+}
+
 
 .ap-window-footer-actions .z-row-content > div {
     text-align: right !important;
@@ -325,7 +343,7 @@
 
 .ap-key-help > div > div:first-child {
     width: 200px;
-    flex: 0 0 auto;
+    font-size: 12px;
 }
 
 .ap-key-help > div > div:nth-child(2) {
@@ -354,4 +372,69 @@
 .mac .alt-kbd::after {
    content: "⌥";
     width: 1.2em !important;
+}
+
+
+/* Switch */
+.ap-switch > span {
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.ap-switch > span.start {
+    width: 80px;
+    text-align: right;
+}
+
+.ap-switch .z-checkbox-content {
+    display: none;
+}
+
+.ap-switch .ap-switch-label {
+    font-weight: 700;
+    color: var(--ap-c-text-minor);
+    margin-right: 5px;
+}
+
+/* Line with arrow */
+
+.ap-line-arrow {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.ap-arrow-down {
+    border: solid grey;
+    border-width: 0 1px 1px 0;
+    display: inline-block;
+    margin-left: -4px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+}
+
+.ap-line {
+    box-sizing: border-box;
+    width: 1px;
+    border-left: 1px dotted grey;
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    height: calc(100% - 3px);
+}
+
+/* Combo hack */
+.ap-combobox-separator {
+    display: none;
+}
+
+.ap-combobox-separator + li {
+    border-top: 1px solid var(--ap-c-line-sep);
 }
