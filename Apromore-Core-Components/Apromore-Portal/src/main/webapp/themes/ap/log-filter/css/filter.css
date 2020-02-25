@@ -59,6 +59,14 @@
     fill: var(--ap-c-widget);
 }
 
+/* slider hack */
+
+.ap-lfee-criteria > .z-south-header {
+    border-color: transparent !important;
+    visibility: hidden !important;
+    color: white;
+}
+
 .ap-lfee-retain-remove {
     width: 200px;
 }
