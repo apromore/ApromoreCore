@@ -59,7 +59,7 @@
         }
     </style>
     <div class="z-west-header" sclass="ap-nav-header" style="display: -webkit-flex; display: flex">
-        <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>
+        <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="My workspace"/>
         <toolbarbutton sclass="ap-icon ap-icon-folder-expand" id="expand" image="/img/icon/svg/folder_exp.svg" tooltiptext="Expand all directories"/>
         <toolbarbutton sclass="ap-icon ap-icon-folder-collapse" id="contract" image="/img/icon/svg/folder_clo.svg" tooltiptext="Minimize all directories"/>
     </div>
