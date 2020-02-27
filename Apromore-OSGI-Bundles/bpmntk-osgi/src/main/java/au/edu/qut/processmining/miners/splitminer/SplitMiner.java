@@ -20,6 +20,31 @@
 
 package au.edu.qut.processmining.miners.splitminer;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.UIManager;
+
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.model.XLog;
+import org.processmining.contexts.uitopia.UIContext;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
+import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
+import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
+import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
+
 import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.bpmn.structuring.StructuringService;
@@ -30,7 +55,6 @@ import au.edu.qut.processmining.miners.splitminer.oracle.Oracle;
 import au.edu.qut.processmining.miners.splitminer.oracle.OracleItem;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
-
 import au.edu.unimelb.processmining.optimization.SimpleDirectlyFollowGraph;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
@@ -39,24 +63,6 @@ import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
-
-import org.deckfour.xes.classification.XEventClassifier;
-import org.deckfour.xes.model.XLog;
-import org.processmining.contexts.uitopia.UIContext;
-import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.AttributeMap;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
-import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
-import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.*;
-import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
-import javax.swing.UIManager;
-
-import java.io.File;
-import java.util.*;
-
-import javax.swing.UIManager;
 
 /**
  * Created by Adriano on 24/10/2016.
@@ -173,27 +179,22 @@ public class SplitMiner {
     public BPMNDiagram discoverFromDFGP(DirectlyFollowGraphPlus idfgp) throws Exception {
         this.log = idfgp.getSimpleLog();
         dfgp = idfgp;
-        transformDFGPintoBPMN();
-        if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         try {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         } catch(Exception e) {
-//        	System.out.println("ERROR - something went wrong translating DFG to BPMN, trying a second time");
-//            e.printStackTrace();
-//            try{
-//            	dfgp.resetDFGPStructures();
-//                dfgp.buildSafeDFGP(); //recreate a safe data structure for the graph in case errors happen (the graph could be disconnected)  
-//                transformDFGPintoBPMN();
-//                if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
-//            } catch ( Exception ee ) {
-//                System.out.println("ERROR - nothing to do, returning the bare DFGP");
-//                return dfgp.convertIntoBPMNDiagram();
-//            }
-        	System.out.println("ERROR - something went wrong in translating DFG to BPMN");
-        	e.printStackTrace();        	
-            throw e;
-        	
+        	System.out.println("ERROR - something went wrong translating DFG to BPMN, trying a second time");
+            e.printStackTrace();
+            try{
+            	dfgp.resetDFGPStructures();
+                dfgp.buildSafeDFGP(); //recreate a safe data structure for the graph in case errors happen (the graph could be disconnected)  
+                transformDFGPintoBPMN();
+                if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+            } catch ( Exception ee ) {
+                System.out.println("ERROR - something went wrong in translating DFG to BPMN");
+                e.printStackTrace();            
+                throw e;
+            }
         }
         return bpmnDiagram;
     }
@@ -229,6 +230,9 @@ public class SplitMiner {
 //        we retrieve the starting BPMN diagram from the DFGP,
 //        it is a DFGP with start and end events, but no gateways
         bpmnDiagram = dfgp.convertIntoBPMNDiagram();
+
+        // Bruce: debug only
+        // writeDiagram(bpmnDiagram, "BPMNDiagram_SplitMiner_Convert_To_BPMN.bpmn");
         
         candidateJoins = new HashMap<>();
 
@@ -322,6 +326,9 @@ public class SplitMiner {
         rigidsEntries = new HashSet<>();
 //        System.out.println("SplitMiner - generating SESE joins ...");
         
+        // Bruce: debug only
+        writeDiagram(bpmnDiagram, "BPMNDiagram_BeforeCalling_gnerateSESEjoins.bpmn");
+        
         while( generateSESEjoins() );
 
 //        this second method adds the remaining joins, which were no entry neither exits of any RPST node
@@ -408,8 +415,7 @@ public class SplitMiner {
             Gateway gate;
 
             String entry, exit, gatify, matchingGate, srcVertex;
-
-
+            
 //            we build the graph from the BPMN Diagram, the graph is necessary to generate the RPST
 //            we build the graph from the BPMN Diagram, the graph is necessary to generate the RPST
 

@@ -120,6 +120,22 @@ public class DirectlyFollowGraphPlus {
     public int getEndcode() { return endcode; }
     public Set<Integer> getLoopsL1() { return loopsL1; }
     public Map<Integer, HashSet<Integer>> getParallelisms() { return parallelisms; }
+    
+    // Just reset the internal structures
+    // Do not reset the input log and parameters
+    public void resetDFGPStructures() {
+        if (edges != null) edges.clear();
+        if (nodes != null) nodes.clear();
+        if (outgoings != null) outgoings.clear();
+        if (incomings != null) incomings.clear();
+        if (dfgp != null) dfgp.clear();
+        if (loopsL1 != null) loopsL1.clear();
+        if (loopsL2 != null) loopsL2.clear();
+        if (parallelisms != null) parallelisms.clear();
+        if (bestEdges != null) bestEdges.clear();
+        if (untouchableEdges != null) untouchableEdges.clear();
+
+    }
 
     public BPMNDiagram getDFG() {
         buildDirectlyFollowsGraph();
@@ -162,7 +178,7 @@ public class DirectlyFollowGraphPlus {
             if( event == startcode || event == endcode )
                 node = diagram.addEvent(label, (event == startcode ? Event.EventType.START : Event.EventType.END), Event.EventTrigger.NONE, (event == startcode ? Event.EventUse.CATCH : Event.EventUse.THROW), true, null);
             else
-                node = diagram.addActivity(label, loopsL1.contains(event), false, false, false, false);
+                node = diagram.addActivity(label, loopsL1!=null && loopsL1.contains(event), false, false, false, false);
 
             mapping.put(event, node);
         }
@@ -185,8 +201,19 @@ public class DirectlyFollowGraphPlus {
         untouchableEdges = new HashSet<>();
 
         buildDirectlyFollowsGraph();                //first method to execute
+        
+        // Bruce: debug only
+        writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_buildDirectlyFollowsGraph.bpmn");
+        
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
+        
+        // Bruce: debug only
+        writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_detectLoops.bpmn");
+        
         detectParallelisms();                       //depends on detectLoops()
+        
+        // Bruce: debug only
+        writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_detectParallelisms.bpmn");
 
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:
