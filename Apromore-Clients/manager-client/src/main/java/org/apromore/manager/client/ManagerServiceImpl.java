@@ -24,6 +24,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -746,10 +748,8 @@ public class ManagerServiceImpl implements ManagerService {
 
         ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
 
-        Date processCreated = (creationDate == null) ? null : DatatypeFactory.newInstance()
-                                                                             .newXMLGregorianCalendar(creationDate)
-                                                                             .toGregorianCalendar()
-                                                                             .getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+        Date processCreated = (creationDate == null) ? null : dateFormat.parse(creationDate);
 
         c.createInitialNativeFormat(nativeXml, processName, versionName, owner, processCreated, new PluginRequestImpl());
         InputStream nativeXmlInputStream = new ByteArrayInputStream(nativeXml.toByteArray());
