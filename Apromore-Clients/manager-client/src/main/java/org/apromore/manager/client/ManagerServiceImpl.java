@@ -832,7 +832,7 @@ public class ManagerServiceImpl implements ManagerService {
         assert canonisedProcess != null;
 
         procSrv.updateProcess(processId, processName, originalBranchName, newBranchName,
-                new Version(preVersion), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, canonisedProcess);
+                new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, canonisedProcess);
 
     }
 
