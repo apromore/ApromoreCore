@@ -98,10 +98,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                     // if line is empty, move to next iteration, until 50 lines are empty
                     finishCount++;
                     continue;
+                } else {
+                    lineCount++;
                 }
 
                 if (line != null && line.length > 2) {
-                    lineCount++;
                     try {
                         otherTimestamps = new HashMap<>();
                         others = new HashMap<>();
