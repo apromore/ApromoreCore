@@ -38,9 +38,13 @@ body {
     background-color: transparent !important;
 }
 
+.ap-dashboard .ap-main-menu {
+    padding-left: 10px;
+}
+
 .ap-dashboard .ap-slide-menu {
     border: none;
-    padding: 3px 0 0 10px;
+    padding: 3px 0 0 0;
     height: var(--ap-menu-height);
 }
 
@@ -64,6 +68,24 @@ body {
     transform: translateY(-5px);
 }
 */
+
+.statsSummaryHead .z-west-header {
+    height: 32px !important;
+    padding-top: 0 !important;
+}
+
+.divSummaryHead .z-menubar {
+
+}
+
+.ap-dash-log-selector .z-menubar {
+    padding: 0 4px !important;
+}
+
+.ap-dash-log-selector .z-menu, .ap-dash-log-selector .z-menu-content {
+    height: auto !important;
+}
+
 
 /* HACK */
 .ap-dashboard-right-menu .myMenu:last-child {
@@ -95,13 +117,16 @@ body {
     line-height: 26px;
     height: 29px;
     border-bottom-width: 2px;
+    padding: 0 4px;
     color: var(--ap-c-tab-text-normal);
-    border-bottom: 2px solid var(--ap-c-tab-bar-normal);
+    /* border-bottom: 2px solid var(--ap-c-tab-bar-normal); */
+    border-bottom: 2px solid transparent;
 }
 
 .ap-dashboard .ap-radio-c input[checked="checked"] + .z-radio-content {
     color: var(--ap-c-tab-text-selected);
-    border-bottom: 2px solid var(--ap-c-tab-bar-selected);
+    /* border-bottom: 2px solid var(--ap-c-tab-bar-selected); */
+    border-bottom: 2px solid transparent;
 }
 
 .ap-dashboard .ap-radio-c input[checked="checked"] + .z-radio-content .ap-icon {
@@ -117,7 +142,7 @@ body {
     background-color: transparent !important;
 }
 
-.ap-slide-menu-c .slider {
+.ap-slide-menu .slider {
     display: none;
 }
 
@@ -132,15 +157,6 @@ body {
     width: 0px;
 }
 
-/*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content,*/
-/*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content .ap-icon-binocular {*/
-/*    color:#09E;*/
-/*}*/
-
-.mySouth-collapsed i {
-    display: none;
-}
-
 .ap-dashboard .ap-slide-menu .bar {
     border-radius: 0;
 }
@@ -152,6 +168,16 @@ body {
 .ap-dashboard .ap-slide-menu .ap-radio-c > span {
     display: inline-block;
 }
+
+/*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content,*/
+/*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content .ap-icon-binocular {*/
+/*    color:#09E;*/
+/*}*/
+
+.mySouth-collapsed i {
+    display: none;
+}
+
 
 .ap-dashboard i.ap-icon {
     display: inline-block;

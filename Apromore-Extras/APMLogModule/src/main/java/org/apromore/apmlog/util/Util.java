@@ -73,6 +73,12 @@ public class Util {
         return zdt.format(formatter);
     }
 
+    public static String timestampStringOf(ZonedDateTime zdt, String format){
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(format);
+        return zdt.format(formatter);
+    }
 
     public static String durationShortStringOf(long millis) {
         double secs = millis / second;
