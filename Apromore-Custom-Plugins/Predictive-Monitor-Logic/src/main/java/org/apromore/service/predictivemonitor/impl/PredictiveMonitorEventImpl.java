@@ -1,7 +1,8 @@
 /*
  * This file is part of "Apromore".
  *
- * Copyright (C) 2019 - 2020 The University of Melbourne.
+ * Copyright (C) 2017 Queensland University of Technology.
+ * Copyright (C) 2018 - 2020 The University of Melbourne.
  *
  * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
