@@ -1,7 +1,8 @@
 <!--
   ~ This file is part of "Apromore".
   ~
-  ~ Copyright (C) 2019 - 2020 The University of Melbourne.
+  ~ Copyright (C) 2015 - 2017 Queensland University of Technology.
+  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -53,7 +54,6 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.xlog.singletonlog,
                             org.deckfour.spex.*;version="1.0",
                             org.deckfour.xes.*;version="2.27",
                             org.xeslite.*;version="0.0.1"
