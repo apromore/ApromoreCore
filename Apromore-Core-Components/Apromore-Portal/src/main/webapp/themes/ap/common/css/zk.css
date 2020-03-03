@@ -832,3 +832,7 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 .z-window-content {
     padding: 0;
 }
+
+.z-combobox-readonly>input {
+    background: transparent;
+}
