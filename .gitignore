@@ -23,3 +23,5 @@ Apromore-Assembly/Filestore-Repository
 Apromore-Assembly/Lucene-Repository
 Apromore-Assembly/Manager-Repository*
 Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
+
+Apromore-Core-Components/Apromore-Portal/src/main/webapp/themes/bic/*

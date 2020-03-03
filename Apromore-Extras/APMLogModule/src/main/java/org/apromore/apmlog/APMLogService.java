@@ -25,5 +25,9 @@ import org.deckfour.xes.model.XLog;
  */
 public interface APMLogService {
 
+    /**
+     * @param xLog
+     * @return
+     */
     public APMLog findAPMLogForXLog(XLog xLog);
 }

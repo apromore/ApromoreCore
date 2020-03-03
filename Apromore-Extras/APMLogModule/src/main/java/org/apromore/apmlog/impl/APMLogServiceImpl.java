@@ -35,6 +35,7 @@ public class APMLogServiceImpl implements APMLogService {
     //    this.eventLogService = newEventLogService;
     //}
 
+    @Override
     public APMLog findAPMLogForXLog(XLog xLog) {
         return new APMLog(xLog);
     }
