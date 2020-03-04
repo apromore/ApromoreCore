@@ -19,7 +19,7 @@
   -->
 
 <!--<?link rel="shortcut icon" href="favicon.ico" ?>-->
-<?link rel="shortcut icon" href="../themes/ap/common/img/brand/favicon.ico" ?>
+<?link rel="shortcut icon" href="../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <z:window id="win"
           xmlns="http://www.zkoss.org/2005/zk/native"
           xmlns:n="http://www.zkoss.org/2005/zk/native"
@@ -49,10 +49,9 @@
     <link rel="stylesheet" href="/loganimation/jquery-ui-slider-pips.css" type="text/css"/>
     <link rel="stylesheet" href="/loganimation/styles.css" type="text/css"/>
 
-        <n:link rel="stylesheet" type="text/css" href='/themes/ap/common/css/index.css' />
-        <n:link rel="stylesheet" type="text/css" href='/themes/ap/log-animator/css/index.css'  />
+        <n:link rel="stylesheet" type="text/css" href='/themes/${labels.theme}/common/css/index.css' />
         <!-- local -->
-        <n:link rel="stylesheet" type="text/css" href='themes/ap/css/index.css'  />
+        <n:link rel="stylesheet" type="text/css" href='css/ap/index.css'  />
 
         <n:div class="ap-header">
             <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>

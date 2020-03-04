@@ -24,9 +24,9 @@
     background-image: none !important;
     background-color: var(--ap-c-action-bg-normal) !important;
     height: var(--ap-menu-height) !important;
-    padding: 4px 0 0 10px;
+    padding: 3px 0 0 10px;
     border: 0;
-    box-shadow: var(--ap-box-shadow);
+    /*box-shadow: var(--ap-box-shadow);*/
     z-index: var(--ap-z-editor-toolbar);
 }
 
@@ -45,7 +45,7 @@
     border-radius: 3px !important;
     padding: 0 !important;
     cursor: pointer;
-    filter: invert(33%) sepia(0%) saturate(0%) hue-rotate(226deg) brightness(91%) contrast(93%);
+    filter: var(--ap-filter-ico-normal-dark);
 }
 
 .x-panel-editor-north .x-toolbar .x-btn-left,

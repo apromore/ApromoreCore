@@ -61,6 +61,10 @@
     border: none;
 }
 
+.ap-header-region {
+    overflow: visible;
+}
+
 .ap-window-modal-actions {
     margin-top: 7px;
     text-align: right;

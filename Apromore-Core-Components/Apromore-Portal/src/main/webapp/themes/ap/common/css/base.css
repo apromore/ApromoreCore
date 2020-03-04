@@ -42,6 +42,12 @@
 
     --ap-filter-ico-check: var(--ap-filter-ico-green);
 
+    --ap-c-asset-title: white;
+    --ap-grad-window-header: linear-gradient( 30deg, #fcb88c 0%, #fee8c8 20%, #edf7fb 60% );
+
+    --ap-grad-chart-bi-legend: linear-gradient(90deg, var(--ap-c-green-light-5), var(--ap-c-maroon-light-5));
+    --ap-grad-chart-bi-legend-reverse: linear-gradient(90deg, var(--ap-c-maroon-light-5), var(--ap-c-green-light-5));
+
     /* High-level structure colours */
     --ap-c-line-sep: #f3f3f3;
     --ap-c-line-sep-strong: #e3e3e3;
@@ -54,6 +60,7 @@
     --ap-c-text-normal: var(--ap-c-grey-light-1);
     --ap-c-text-minor: var(--ap-c-grey-light-2);
     --ap-c-text-accent: var(--ap-c-sunset);
+    --ap-c-text-strong: var(--ap-c-maroon);
     --ap-c-text-heading: var(--ap-c-oceanic-dark-3);
 
     --ap-c-widget: var(--ap-c-oceanic-dark-1);
@@ -100,6 +107,10 @@
     --ap-c-grid-row-bg-normal: transparent;
     --ap-c-grid-row-bg-selected: var(--ap-c-oceanic-light-3);
     --ap-c-grid-row-bg-hover: var(--ap-c-oceanic-light-5);
+
+    /* Greater than, less than */
+    --ap-c-operator-normal: var(--ap-c-grey-light-4);
+    --ap-c-operator-hover: var(--ap-c-grey-light-3);
 
     /* Typography */
     --ap-font-base: 'Source Sans Pro', sans-serif;
