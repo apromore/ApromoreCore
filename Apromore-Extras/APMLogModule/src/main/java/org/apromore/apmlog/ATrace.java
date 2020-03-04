@@ -174,7 +174,6 @@ public class ATrace implements Serializable {
                             !lifecycle.equals("assign") &&
                             !lifecycle.equals("reassign")) {
                         /* When the event occurs without 'start', it is considered as a complete with no followup */
-                        this.eventList.add(iAEvent);
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
                                 actEndTime, actDur);
                         this.activityList.add(aActivity);
