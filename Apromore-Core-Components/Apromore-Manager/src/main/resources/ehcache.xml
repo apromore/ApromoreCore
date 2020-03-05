@@ -21,8 +21,7 @@
 
 <!-- Modify maxBytesLocalHeap/maxElementsInMemory according to available resource on the server-->
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
-         maxEntriesLocalHeap="100">
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
 
     <!-- Disk cache path -->
     <diskStore path="java.io.tmpdir/ehcache"/>
@@ -30,7 +29,7 @@
     <!--Since XES Log file could be huge, the default limit of 1,000 object references could be reached while
     attempting to calculate the size of the object graph and severe performance degradation could occur. So manually
      control how deep the SizeOf engine can go when sizing on-heap elements. -->
-    <sizeOfPolicy maxDepth="100" maxDepthExceededBehavior="abort"/>
+    <!--<sizeOfPolicy maxDepth="100" maxDepthExceededBehavior="abort"/>-->
 
     <!--Predefined caches.  Add your cache configuration settings here.
         If you do not have a configuration for your cache a WARNING will be issued when the

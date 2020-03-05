@@ -152,11 +152,11 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 LOGGER.info("Put APMLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
                         "using Key [" + logNameId + "APMLog]. ");
 
-                System.gc();
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                }
+//                System.gc();
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                }
 
                 LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
                 LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
@@ -239,11 +239,11 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     elapsedNanos = System.nanoTime() - startTime;
                     LOGGER.info("Construct and cache APMLog [KEY:" + key + APMLOG_CACHE_KEY_SUFFIX + "]. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
 
-                    System.gc();
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                    }
+//                    System.gc();
+//                    try {
+//                        Thread.sleep(500);
+//                    } catch (InterruptedException e) {
+//                    }
 
                     LOGGER.info("Memory Used: "  + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
                     LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
