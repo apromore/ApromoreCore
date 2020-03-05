@@ -27,9 +27,9 @@
 <?link rel="stylesheet" type="text/css" href="css/font-awesome.css" ?>
 
 <?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/common/css/index.css' ?>
-<?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/login/css/login.css'  ?>
-<?script type="text/javascript" src="themes/${labels.theme}/common/js/index.js"?>
-<?script type="text/javascript" src="themes/${labels.theme}/login/js/login.js"?>
+<?link rel="stylesheet" type="text/css" href='themes/ap/login/css/login.css'  ?>
+<?script type="text/javascript" src="themes/ap/common/js/index.js"?>
+<?script type="text/javascript" src="themes/ap/login/js/login.js"?>
 
 <?script type="text/javascript" src="js/jquery.js"?>
 <?script type="text/javascript" src="js/bootstrap.js"?>
