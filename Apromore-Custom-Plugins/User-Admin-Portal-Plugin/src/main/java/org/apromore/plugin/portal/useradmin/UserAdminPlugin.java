@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.apromore.model.PermissionType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.UserService;
+import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     private String label = "Users";
     private String groupLabel = "Settings";
 
-    @Inject private UserService userService;
+    @Inject private SecurityService securityService;
 
     // PortalPlugin overrides
 
@@ -56,7 +56,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            new UserAdminController(portalContext, userService);
+            new UserAdminController(portalContext, securityService);
 
         } catch(Exception e) {
             LOGGER.error("Unable to create user administration dialog", e);

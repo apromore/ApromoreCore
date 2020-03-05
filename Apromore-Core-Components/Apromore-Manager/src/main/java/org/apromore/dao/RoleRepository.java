@@ -21,8 +21,11 @@
 
 package org.apromore.dao;
 
+import java.util.Set;
 import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,4 +45,10 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
      */
     Role findByName(String name);
 
+    /**
+     * @param user  arbitary, but non-null
+     * @return the roles granted to the specified <var>user</var>
+     */
+    @Query("SELECT r FROM User u JOIN u.roles r WHERE u = ?1")
+    Set<Role> findByUser(User user);
 }

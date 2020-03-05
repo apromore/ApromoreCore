@@ -132,8 +132,52 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public Group createGroup(String name) {
+        Group group = new Group();
+        group.setName(name);
+        group.setType(Group.Type.GROUP);
+
+        return groupRepo.saveAndFlush(group);
+    }
+
+    @Override
+    public Group updateGroup(Group group) {
+        return groupRepo.saveAndFlush(group);
+    }
+
+    @Override
+    public void deleteGroup(Group group) {
+        groupRepo.delete(group);
+    }
+
+    @Override
+    public List<Group> findElectiveGroups() {
+        return groupRepo.findElectiveGroups();
+    }
+
+    @Override
     public List<Group> searchGroups(String searchString) {
         return groupRepo.findByNameLike(searchString);
+    }
+
+    @Override
+    public Group findGroupByRowGuid(String rowGuid) {
+        return groupRepo.findByRowGuid(rowGuid);
+    }
+
+    @Override
+    public Set<Group> findGroupsByUser(User user) {
+        return groupRepo.findByUser(user);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        return roleRepo.findAll();
+    }
+
+    @Override
+    public Set<Role> findRolesByUser(User user) {
+        return roleRepo.findByUser(user);
     }
 
     /**
@@ -230,6 +274,11 @@ public class SecurityServiceImpl implements SecurityService {
 
         LOGGER.info("Created user " + user.getUsername());
         return user;
+    }
+
+    @Override
+    public User updateUser(User user) {
+        return userRepo.save(user);
     }
 
     /**

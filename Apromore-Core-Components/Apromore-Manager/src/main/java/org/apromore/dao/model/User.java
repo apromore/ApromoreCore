@@ -273,7 +273,10 @@ public class User implements Serializable {
      * Getter for the role collection.
      * @return Returns the roles.
      */
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany
+    @JoinTable(name="user_role",
+        joinColumns        = @JoinColumn(name = "userId", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
     public Set<Role> getRoles() {
         return this.roles;
     }

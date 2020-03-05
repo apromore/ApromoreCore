@@ -184,4 +184,22 @@ public class Role implements Serializable {
     public void setPermissions(final Set<Permission> newPermissions) {
         this.permissions = newPermissions;
     }
+
+
+    // Object methods
+
+    @Override
+    public boolean equals(java.lang.Object other) {
+        if (!Role.class.equals(other.getClass())) {
+            return false;
+        }
+
+        Role otherRole = (Role) other;
+        return otherRole.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
 }
