@@ -18,28 +18,64 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window width="95%" position="center" title="Users">
+<window width="70%" position="center" title="Users">
     <vbox>
-        <listbox id="usersListbox">
-            <listhead>
-                <listheader label="Username" hflex="1"/>
-                <listheader label="First name" hflex="1"/>
-                <listheader label="Last name" hflex="1"/>
-                <listheader label="Date created" hflex="1"/>
-                <listheader label="Last activity date" hflex="1"/>
-            </listhead>
-            <template name="model">
-                <listitem>
-                    <listcell label="${each.username}"/>
-                    <listcell label="${each.firstName}"/>
-                    <listcell label="${each.lastName}"/>
-                    <listcell label="${each.dateCreated}"/>
-                    <listcell label="${each.lastActivityDate}"/>
-                </listitem>
-            </template>
-        </listbox>
+        <grid>
+            <columns>
+                <column hflex="1"/>
+                <column hflex="3"/>
+                <column label="Groups" hflex="2"/>
+                <column label="Roles" hflex="2"/>
+            </columns>
+            <rows>
+                <row>
+                    <label value="User"/>
+                    <combobox id="usersCombobox">
+                        <template name="model">
+                            <comboitem label="${each.username}"/>
+                        </template>
+                    </combobox>
+                    <cell rowspan="3" valign="top">
+                        <listbox id="groupsListbox" checkmark="true">
+                            <template name="model">
+                                <listitem>
+                                    <listcell>
+                                        <textbox id="${each.rowGuid}" value="${each.name}" submitByEnter="true"/>
+                                    </listcell>
+                                </listitem>
+                            </template>
+                        </listbox>
+                    </cell>
+                    <cell rowspan="4" valign="top">
+                        <listbox id="rolesListbox" checkmark="true">
+                            <template name="model">
+                                <listitem>
+                                    <listcell label="${each.name}"/>
+                                </listitem>
+                            </template>
+                        </listbox>
+                    </cell>
+                </row>
+                <row>
+                    <label value="Name"/>
+                    <hbox>
+                        <textbox id="firstNameTextbox" placeholder="First"/>
+                        <textbox id="lastNameTextbox" placeholder="Last"/>
+                    </hbox>
+                </row>
+                <row>
+                    <label value="Date created"/>
+                    <datebox id="dateCreatedDatebox"/>
+                </row>
+                <row>
+                    <label value="Last activity"/>
+                    <datebox id="lastActivityDatebox"/>
+                    <button id="newGroupButton" label="New group"/>
+                </row>
+            </rows>
+        </grid>
         <div align="center">
-            <button id="okButton" label="OK" image="img/ok.png"></button>
+            <button id="okButton" label="OK" image="img/ok.png"/>
         </div>
     </vbox>
 </window>

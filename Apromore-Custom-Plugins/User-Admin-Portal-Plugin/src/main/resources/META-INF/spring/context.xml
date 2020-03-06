@@ -27,7 +27,7 @@
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
         http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-    <reference id="userService" interface="org.apromore.service.UserService"/>
+    <reference id="securityService" interface="org.apromore.service.SecurityService"/>
 
     <!-- Create beans for each class annotated with @Component within the package -->
     <context:component-scan base-package="org.apromore.plugin.portal.useradmin" />

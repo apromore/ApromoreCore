@@ -43,6 +43,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (03/02/2020)
  * Modified: Chii Chang (04/02/2020)
  * Modified: Chii Chang (12/02/2020)
+ * Modified: Chii Chang (06/03/2020) - public APMLog(List<ATrace> inputTraceList)
  */
 public class APMLog implements Serializable {
 
@@ -248,6 +249,172 @@ public class APMLog implements Serializable {
 //        LOGGER.info("*** Write case variant ID complete");
 
 //        originalCaseVariantSize = variantIdFreqMap.size();
+        caseVariantSize = variantIdFreqMap.size();
+
+        defaultChartDataCollection = new DefaultChartDataCollection(this);
+    }
+
+    /**
+     * Allow one to create APMLog by inserting an ATrace list
+     *
+     * @param inputTraceList
+     */
+    public APMLog(List<ATrace> inputTraceList) {
+
+        activityNameMapper = new ActivityNameMapper();
+
+        traceList = new ArrayList<>();
+        eventAttributeValueFreqMap = new UnifiedMap<>();
+        caseAttributeValueFreqMap = new UnifiedMap<>();
+        activityMaxOccurMap = new UnifiedMap<>();
+
+
+        traceUnifiedMap = new UnifiedMap<>();
+
+        UnifiedMap<IntArrayList, Integer> actIdListFreqMap = new UnifiedMap<>();
+        actIdNameMap = new HashBiMap<>();
+        variantIdFreqMap = new UnifiedMap<>();
+
+        UnifiedMap<Integer, IntArrayList> variantIdActIdListMap = new UnifiedMap<>();
+
+        // initial vId, final vId
+
+        UnifiedMap<IntArrayList, Integer> tempActIdListToVIdMap = new UnifiedMap<>();
+
+        int actIdCount = 0;
+        LOGGER.info(">>> Create actIdNameMap");
+
+        for (int h = 0; h < inputTraceList.size(); h++) {
+            ATrace aTrace = inputTraceList.get(h);
+
+            for(int i=0; i < aTrace.size(); i++) {
+                AEvent aEvent = aTrace.get(i);
+                String actName = aEvent.getName();
+
+                if(!actIdNameMap.containsValue(actName)) {
+                    actIdNameMap.put(actIdCount, actName);
+                    actIdCount += 1;
+                }
+            }
+        }
+
+        LOGGER.info(">>> Create actIdNameMap DONE");
+
+        boolean containsVariantId = false;
+
+        int tempVariId = 1;
+
+        LOGGER.info(">>> Create ATrace list");
+        for(int i=0; i<inputTraceList.size(); i++) {
+            ATrace aTrace = inputTraceList.get(i);
+
+            if (aTrace.size() > 0) {
+
+                traceUnifiedMap.put(aTrace.getCaseId(), aTrace);
+
+                eventSize += aTrace.getEventSize();
+
+                if (startTime == -1 || aTrace.getStartTimeMilli() < startTime) {
+                    startTime = aTrace.getStartTimeMilli();
+                }
+                if (endTime == -1 || aTrace.getEndTimeMilli() > endTime) {
+                    endTime = aTrace.getEndTimeMilli();
+                }
+                if (this.timeZone.equals("")) this.timeZone = aTrace.get(0).getTimeZone();
+
+                /**
+                 * Event attributes
+                 */
+                updateEventAttributeValueFreqMap(aTrace);
+
+
+                /**
+                 * Case attributes
+                 */
+                updateCaseAttributeValueFreqMap(aTrace);
+
+                if (this.minDuration == 0 || aTrace.getDuration() < minDuration) {
+                    minDuration = aTrace.getDuration();
+                }
+                if (this.maxDuration == 0 || aTrace.getDuration() > maxDuration) {
+                    maxDuration = aTrace.getDuration();
+                }
+
+
+                this.traceList.add(aTrace);
+
+                int variId = aTrace.getCaseVariantId();
+                List<String> actNameList = aTrace.getActivityNameList();
+                IntArrayList idList = getIntArrayListOf(actNameList);
+                if (variId > 0) {
+                    containsVariantId = true;
+                    if (variantIdFreqMap.containsKey(variId)) {
+                        int freq = variantIdFreqMap.get(variId) + 1;
+                        variantIdFreqMap.put(variId, freq);
+                    } else {
+                        variantIdFreqMap.put(variId, 1);
+                    }
+                    if (!variantIdActIdListMap.containsKey(variId)) {
+                        variantIdActIdListMap.put(variId, idList);
+                    }
+                } else { // does not have variant ID
+                    if (actIdListFreqMap.containsKey(idList)) {
+                        int freq = actIdListFreqMap.get(idList) + 1;
+                        actIdListFreqMap.put(idList, freq);
+                    } else {
+                        actIdListFreqMap.put(idList, 1);
+                    }
+
+                    if (!tempActIdListToVIdMap.containsKey(idList)) {
+                        tempActIdListToVIdMap.put(idList, tempVariId);
+                        tempVariId += 1;
+                    }
+
+                    int vId = tempActIdListToVIdMap.get(idList);
+                    aTrace.setCaseVariantId(vId);
+                }
+
+                computeActivityOccurMaxMap(aTrace);
+            }
+        }
+        LOGGER.info(">>> Create ATrace list DONE");
+
+
+
+        UnifiedMap<Integer, Integer> initVIdToFinalVIdMap = new UnifiedMap<>();
+
+        LOGGER.info(">>> Create Case Variant Frequency map");
+
+        if(variantIdFreqMap.size() < 1 && actIdListFreqMap.size() > 0) {
+            List<Map.Entry<IntArrayList, Integer>> list =
+                    new ArrayList<>(actIdListFreqMap.entrySet());
+            list.sort(comparingByValue());
+            int idNum = 1;
+            for(int i=(list.size()-1); i>=0; i--) {
+                variantIdFreqMap.put(idNum, list.get(i).getValue());
+//                originalVariantIdFreqMap.put(idNum, list.getById(i).getValue());//2019-11-10
+                if(!variantIdActIdListMap.containsKey(idNum)) {
+                    variantIdActIdListMap.put(idNum, list.get(i).getKey());
+                    int initVId = tempActIdListToVIdMap.get(list.get(i).getKey());
+                    initVIdToFinalVIdMap.put(initVId, idNum);
+                }
+                idNum += 1;
+            }
+        }
+
+        LOGGER.info(">>> Create Case Variant Frequency map DONE");
+
+        if(!containsVariantId) {
+            LOGGER.info(">>> Assign Case Variant to Traces");
+            for(int i=0; i < this.traceList.size(); i++) {
+                ATrace aTrace = this.traceList.get(i);
+                int iVId = aTrace.getCaseVariantId();
+                int finalVId = initVIdToFinalVIdMap.get(iVId);
+                aTrace.setCaseVariantId(finalVId);
+            }
+            LOGGER.info(">>> Assign Case Variant to Traces DONE");
+        }
+
         caseVariantSize = variantIdFreqMap.size();
 
         defaultChartDataCollection = new DefaultChartDataCollection(this);

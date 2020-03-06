@@ -22,8 +22,9 @@
 package org.apromore.dao;
 
 import java.util.List;
-
+import java.util.Set;
 import org.apromore.dao.model.Group;
+import org.apromore.dao.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,19 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
      * @return groups with similar names to <var>searchString</var>
      */
     List<Group> findByNameLike(String searchString);
+
+    /**
+     * @param user  arbitrary, but non-null
+     * @return all groups containing the specified <var>user</var>
+     */
+    @Query("SELECT g FROM User u JOIN u.groups g WHERE u = ?1")
+    Set<Group> findByUser(User user);
+
+    /**
+     * @return all elective groups
+     */
+    @Query("SELECT g FROM Group g WHERE (g.type = org.apromore.dao.model.Group.Type.GROUP)")
+    List<Group> findElectiveGroups();
 
     /**
      * Find the public group.

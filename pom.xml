@@ -63,8 +63,10 @@
     </distributionManagement>
 
     <modules>
+        <module>Apromore-Extras/APMLogModule</module>
         <module>Apromore-Extras/Build-Tools</module>
         <module>Apromore-Extras/Chiaroscuro-Theme</module>
+        <module>Apromore-Extras/OpenXES</module>
         <module>Apromore-Extras/Test-Tools</module>
 
         <!-- Schemas -->
@@ -91,12 +93,6 @@
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         
-        <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
-        
-        <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
-        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
-        <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
-
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
@@ -104,48 +100,35 @@
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
-        
+        <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
-
+        <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
+        <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
+        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Logic</module>
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin</module>
-        <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
-        
-        <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Theme-Selection-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/User-Admin-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
 
         <!-- Clients that we can distribute -->
-        <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/manager-security</module>
+        <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/portal-client</module>
 
         <!-- Web application bundles -->
-        <module>Apromore-Core-Components/Apromore-Portal</module>
-        <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
+        <module>Apromore-Core-Components/Apromore-Manager</module>
+        <module>Apromore-Core-Components/Apromore-Portal</module>
 
         <!-- Assembles the Bundles and repositories -->
+        <module>Apromore-Assembly/Custom-Plugins</module>
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
-
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
-        <module>Apromore-Assembly/Custom-Plugins</module>
-
-        <!-- Command line tools -->
-        <!--<module>Apromore-Extras/bpmncmap</module>-->
-        <!--<module>Supplements/cpfImporter</module>-->
-        <!--<module>Supplements/bpmn2cpf</module>-->
-        <!--<module>Supplements/cpf2bpmn</module>-->
-        <!--<module>Supplements/cpf2epml</module>-->
-        <!--<module>Supplements/cpf2pnml</module>-->
-        <!--<module>Supplements/epml2cpf</module>-->
-        <!--<module>Supplements/pnml2cpf</module>-->
-
-        <module>Apromore-Extras/OpenXES</module>
-        <module>Apromore-Extras/APMLogModule</module>
     </modules>
 
     <properties>

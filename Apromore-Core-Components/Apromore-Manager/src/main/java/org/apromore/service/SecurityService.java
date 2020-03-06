@@ -21,12 +21,13 @@
 
 package org.apromore.service;
 
+import java.util.List;
+import java.util.Set;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Permission;
+import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
-
-import java.util.List;
 
 /**
  * Interface for the User Service. Defines all the methods that will do the majority of the work for
@@ -57,12 +58,61 @@ public interface SecurityService {
     List<User> searchUsers(String searchString);
 
     /**
+     * @param name
+     * @return a new group with the specified <var>name</var> of type
+     *     {@link Group.type.GROUP} and initially no {@link User}s
+     */
+    Group createGroup(String name);
+
+    /**
+     * @param group an existing group, with modifications
+     * @return the updated group
+     */
+    Group updateGroup(Group group);
+
+    /**
+     * @param group an existing group
+     */
+    void deleteGroup(Group group);
+
+    /**
+     * "Elective" groups don't include the personal singleton groups that
+     * exist for every user, or the public group that every user belongs to.
+     *
+     * @return all elective groups in alphabetical order by name
+     */
+    List<Group> findElectiveGroups();
+
+    /**
      * Searches for a group by (approximate) name.
      *
      * @param searchString the name of the group we are searching for
      * @return the candidate groups that were found
      */
     List<Group> searchGroups(String searchString);
+
+    /**
+     * @param rowGuid  group row guid
+     * @return the corresponding group
+     */
+    Group findGroupByRowGuid(String rowGuid);
+
+    /**
+     * @param user  arbitrary but non-null
+     * @return the groups containing the specified <var>user</var>
+     */
+    Set<Group> findGroupsByUser(User user);
+
+    /**
+     * @return every role in the system in alphabetical order by name
+     */
+    List<Role> getAllRoles();
+
+    /**
+     * @param user  arbitrary but non-null
+     * @return the roles granted to the specified <var>user</var>
+     */
+    Set<Role> findRolesByUser(User user);
 
     /**
      * Get a particular User by their email.
@@ -87,10 +137,16 @@ public interface SecurityService {
     List<Permission> getUserPermissions(String guid);
 
     /**
-     * Gets all user permissions.
-     * @return a List of permissions for the specific user.
+     * @param user  a populated user, except for the id
+     * @return the created user with id assigned
      */
     User createUser(User user);
+
+    /**
+     * @param user  an existing user, with modifications
+     * @return the updated user
+     */
+    User updateUser(User user);
 
     /**
      * Checks whether user has specific permission.
