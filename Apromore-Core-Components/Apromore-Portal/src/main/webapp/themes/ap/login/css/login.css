@@ -213,37 +213,6 @@ body > * {
     }
 }
 
-.ap-left-panel {
-    /* background-color: var(--ap-c-maroon); */
-    /* background-image: linear-gradient(-30deg, #9DD2E9 0%, #C24C00 30%,  var(--ap-c-maroon) 40%); */
-    /* background-size: cover; */
-
-    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-c-oceanic) 0%, var(--ap-c-sunset-dark-2) 50%, var(--ap-c-maroon) 80%);
-    background-image: linear-gradient(-30deg, var(--ap-c-oceanic), var(--ap-c-sunset-dark-2), var(--ap-c-maroon));
-
-    background-size: 200% 200%;
-
-    -webkit-animation: bgcycle 10s ease infinite;
-    -moz-animation: bgcycle 10s ease infinite;
-    -o-animation: bgcycle 10s ease infinite;
-    animation: bgcycle 10s ease infinite;
-}
-
-#wrapper.palette-1 .ap-left-panel {
-    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-c-oceanic) 0%, var(--ap-c-sunset-dark-2) 50%, var(--ap-c-maroon) 80%);
-    background-image: linear-gradient(-30deg, var(--ap-c-oceanic), var(--ap-c-sunset-dark-2), var(--ap-c-maroon));
-}
-
-#wrapper.palette-2 .ap-left-panel {
-    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-c-maroon) 0%, var(--ap-c-sunset-dark-2) 50%, var(--ap-c-oceanic) 100%);
-    background-image: linear-gradient(-30deg, var(--ap-c-maroon), var(--ap-c-sunset-dark-2), var(--ap-c-oceanic));
-}
-
-#wrapper.palette-3 .ap-left-panel {
-    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-c-oceanic) 0%, var(--ap-c-maroon) 40%, var(--ap-c-sunset-dark-2) 80%);
-    background-image: linear-gradient(-30deg, var(--ap-c-oceanic), var(--ap-c-maroon), var(--ap-c-sunset-dark-2));
-}
-
 .ap-left-panel .z-html {
     display: block;
 }

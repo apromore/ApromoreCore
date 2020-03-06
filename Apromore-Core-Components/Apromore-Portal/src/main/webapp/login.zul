@@ -224,7 +224,7 @@
                     </h:div>
 
                     <h:div class="left-footer">
-                        <h:img class="emblem" src="/themes/${theme}/common/img/brand/apromore-emblem-white.svg"/>
+                        <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
                         <h:ul class="ap-h-links">
                             <h:li>
                                 <a href="https://apromore.org/terms-and-conditions/">
@@ -249,7 +249,7 @@
             <h:div class="ap-right-panel">
                 <h:div class="ap-logo ap-centered">
                     <h:a href="https://apromore.org">
-                        <h:img src="/themes/${theme}/common/img/brand/apromore-logo-colour-with-tag.svg"/>
+                        <h:img src="/themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
                     </h:a>
                 </h:div>
             </h:div>

@@ -30,7 +30,7 @@
             <tabpanel hflex="1">
                 <vlayout sclass="ap-about-details">
                         <div sclass="ap-about-logo">
-                            <image src="themes/ap/common/img/brand/apromore-logo-white.svg" width="50%" style="position: relative; top: 3px"/>
+                            <image src="themes/${labels.theme}/common/img/brand/logo-white.svg" width="50%" style="position: relative; top: 3px"/>
                         </div>
                             <div sclass="ap-edition">${arg.edition}</div>
                             <div sclass="ap-copyright">Copyright 2019-20, The University of Melbourne. All rights reserved.</div>
