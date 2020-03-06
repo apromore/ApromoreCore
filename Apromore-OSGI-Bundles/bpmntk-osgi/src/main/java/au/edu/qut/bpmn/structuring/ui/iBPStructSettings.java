@@ -52,30 +52,4 @@ public class iBPStructSettings extends ProMPropertiesPanel {
         return result;
     }
 
-    private class BPSItemListener implements ChangeListener, ActionListener {
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if( e.getSource() instanceof JComboBox ) {
-                switch( ((JComboBox)e.getSource()).getSelectedIndex() ) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        break;
-                }
-            }
-        }
-    }
-
 }
