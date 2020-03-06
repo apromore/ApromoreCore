@@ -17,6 +17,7 @@
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
+
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.util.Util;
@@ -28,6 +29,7 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -43,6 +45,7 @@ import java.util.List;
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (17/02/2020)
  * Modified: Chii Chang (20/02/2020)
+ * Modified: Chii Chang (06/03/2020)
  */
 public class ATrace implements Serializable {
 
@@ -50,8 +53,8 @@ public class ATrace implements Serializable {
     public long caseIdDigit = 0;
     private int caseVariantId = 0;
     private int caseVariantIdForDisplay;
-    private long startTimeMilli = -1;
-    private long endTimeMilli = -1;
+    private long startTimeMilli = 0;
+    private long endTimeMilli = 0;
     private long duration = 0;
     private boolean hasActivity = false;
     private long totalProcessingTime = 0;
@@ -98,16 +101,158 @@ public class ATrace implements Serializable {
         /**
          * DO NOT TAKE THE CASE:VARIANT IN THE ORIGINAL XLOG
          */
-//        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().get("case:variant").toString());
+//        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().getById("case:variant").toString());
         // ELSE SET THE VARIANT ID from APMLog
         initStats(xTrace);
     }
 
+    /**
+     * Allow one to create ATrace by AEvents
+     * @param caseIdString
+     * @param inputEventList
+     * @param caseAttributes
+     * @param apmLog
+     */
+    public ATrace(String caseIdString, List<AEvent> inputEventList,
+                  UnifiedMap<String, String> caseAttributes, APMLog apmLog) {
+
+        activityNameIndexList = new ArrayList<>();
+
+        activityList = new ArrayList<>();
+        this.eventList = new ArrayList<>();
+
+        eventAttributeValueFreqMap = new UnifiedMap<>();
+        attributeMap = new UnifiedMap<>();
+
+        if (!caseIdString.equals("")) {
+            this.caseId = caseIdString;
+            if (caseIdString.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
+        }
+
+        this.attributeMap = caseAttributes;
+
+        activityNameList = new ArrayList<>();
+        eventNameSet = new UnifiedSet<>();
+
+        /* ------------- find start time and end time of trace -------------- */
+        for (int i = 0; i < inputEventList.size(); i++) {
+
+            AEvent aEvent = inputEventList.get(i);
+            long eventTime = aEvent.getTimestampMilli();
+
+            if (startTimeMilli == 0 || eventTime < startTimeMilli) {
+                startTimeMilli = eventTime;
+            }
+            if (endTimeMilli == 0 || eventTime > endTimeMilli) {
+                endTimeMilli = eventTime;
+            }
+        }
+
+        /* ----------------------- set activities ----------------------------- */
+
+        IntArrayList markedIndex = new IntArrayList();
+
+        for(int i=0; i<inputEventList.size(); i++) {
+
+
+            AEvent iAEvent = inputEventList.get(i);
+
+            fillEventAttributeValueFreqMap(iAEvent);
+
+            if (!markedIndex.contains(i)) {
+                markedIndex.add(i);
+                String lifecycle = iAEvent.getLifecycle();
+                List<AEvent> actEvents = new ArrayList<>();
+                actEvents.add(iAEvent);
+                long actStartTime = iAEvent.getTimestampMilli();
+                long actEndTime = iAEvent.getTimestampMilli();
+                long actDur = 0;
+
+                if (this.startTimeMilli == 0 || actStartTime < this.startTimeMilli) this.startTimeMilli = actStartTime;
+                if (this.endTimeMilli == 0 || actEndTime > this.endTimeMilli) this.endTimeMilli = actEndTime;
+
+                if (lifecycle.equals("start")) {
+                    this.hasActivity = true;
+                    IntArrayList followup = getFollowUpIndexList(inputEventList, i, iAEvent.getName());
+
+                    if (followup == null) {
+                        AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, iAEvent.getTimestampMilli(),
+                                iAEvent.getTimestampMilli(), 0);
+                        this.activityList.add(aActivity);
+                    } else {
+                        for (int j = 0; j < followup.size(); j++) {
+                            int index = followup.get(j);
+                            markedIndex.add(index);
+                            AEvent fAEvent = inputEventList.get(index);
+                            actEvents.add(fAEvent);
+                            this.eventList.add(fAEvent);
+                        }
+                        actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
+                        actDur = actEndTime - actStartTime;
+                    }
+                    AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
+                            actEndTime, actDur);
+                    this.activityList.add(aActivity);
+                } else {
+                    if (!lifecycle.equals("schedule") &&
+                            !lifecycle.equals("assign") &&
+                            !lifecycle.equals("reassign")) {
+                        /* When the event occurs without 'start', it is considered as a complete with no followup */
+                        this.eventList.add(iAEvent);
+                        AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
+                                actEndTime, actDur);
+                        this.activityList.add(aActivity);
+                    }
+                }
+            }
+        }
+
+        /*---------------- Fill the other attributes ----------------*/
+        long waitCount = 0;
+        long processCount = 0;
+        for (int i = 0; i < activityList.size(); i++) {
+            AActivity activity = activityList.get(i);
+
+            this.eventNameSet.put(activity.getName());
+            this.activityNameList.add(activity.getName());
+            this.activityNameIndexList.add(apmLog.getActivityNameMapper().set(activity.getName()));
+
+            processCount += 1;
+            this.totalProcessingTime += activity.getDuration();
+            if (activity.getDuration()>maxProcessingTime) maxProcessingTime = activity.getDuration();
+
+            if (i > 0) {
+                AActivity pActivity = activityList.get(i-1);
+                waitCount += 1;
+                long waitTime = activity.getStartTimeMilli() - pActivity.getEndTimeMilli();
+                this.totalWaitingTime += waitTime;
+                if(waitTime > this.maxWaitingTime) {
+                    this.maxWaitingTime = waitTime;
+                }
+            }
+        }
+        if(this.totalProcessingTime > 0 && processCount > 0) this.averageProcessingTime = this.totalProcessingTime / processCount;
+        if(this.totalWaitingTime > 0 && waitCount > 0) this.averageWaitingTime = this.totalWaitingTime / waitCount;
+
+        if(endTimeMilli > startTimeMilli) {
+            this.duration = endTimeMilli - startTimeMilli;
+            if(this.hasActivity) {
+                this.caseUtilization = (double) this.totalProcessingTime / this.duration;
+                if (this.caseUtilization > 1.0) this.caseUtilization = 1.0;
+            }else{
+                this.caseUtilization = 1.0;
+            }
+        } else {
+            this.caseUtilization = 1.0;
+        }
+
+        this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
+        this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
+        this.durationString = Util.durationShortStringOf(duration);
+    }
 
 
     private void initStats(XTrace xTrace) {
-
-
 
         activityNameList = new ArrayList<>();
         eventNameSet = new UnifiedSet<>();
@@ -116,13 +261,15 @@ public class ATrace implements Serializable {
         for(int i=0; i<xTrace.size(); i++) {
             XEvent xEvent = xTrace.get(i);
             long eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
-            if(startTimeMilli == -1 || startTimeMilli > eventTime) {
+            if(startTimeMilli == 0 || eventTime < startTimeMilli) {
                 startTimeMilli = eventTime;
             }
-            if(endTimeMilli == -1 || endTimeMilli < eventTime) {
+            if(endTimeMilli == 0 || eventTime > endTimeMilli) {
                 endTimeMilli = eventTime;
             }
         }
+
+
 
         /* ----------------------- set activities ----------------------------- */
 
@@ -174,6 +321,7 @@ public class ATrace implements Serializable {
                             !lifecycle.equals("assign") &&
                             !lifecycle.equals("reassign")) {
                         /* When the event occurs without 'start', it is considered as a complete with no followup */
+
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
                                 actEndTime, actDur);
                         this.activityList.add(aActivity);
@@ -251,9 +399,38 @@ public class ATrace implements Serializable {
         } else return null;
     }
 
+    /**
+     * List<AEvent> version of getFollowUpIndexList()
+     * @param eventList A list of AEvent
+     * @param fromIndex start index of the searching
+     * @param conceptName the activity name of the event
+     * @return
+     */
+    private IntArrayList getFollowUpIndexList(List<AEvent> eventList, int fromIndex, String conceptName) {
+        IntArrayList followUpIndex = new IntArrayList();
+        if ( (fromIndex + 1) < eventList.size()) {
+            for (int i = (fromIndex + 1); i < eventList.size(); i++) {
+                AEvent aEvent = eventList.get(i);
+                String lifecycle = aEvent.getLifecycle();
+
+                if (aEvent.getName().equals(conceptName) && !lifecycle.equals("")) {
+                    if (!lifecycle.equals("start")) {
+                        followUpIndex.add(i);
+                        if (lifecycle.equals("complete") ||
+                                lifecycle.equals("manualskip") ||
+                                lifecycle.equals("autoskip")) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return followUpIndex;
+        } else return null;
+    }
+
     private void fillEventAttributeValueFreqMap(AEvent aEvent) {
         for(String key : aEvent.getAttributeMap().keySet()) {
-            String iAValue = aEvent.getAttributeMap().get(key);
+            String iAValue = aEvent.getAttributeMap().get(key).intern();
             if (this.eventAttributeValueFreqMap.containsKey(key)) {
                 UnifiedMap<String, Integer> valueFreqMap = this.eventAttributeValueFreqMap.get(key);
                 if(valueFreqMap.containsKey(iAValue)) {
@@ -420,7 +597,7 @@ public class ATrace implements Serializable {
                   List<String> activityNameList,
                   UnifiedSet<String> eventNameSet,
                   List<Integer> activityNameIndexList) {
-        this.caseId = caseId;
+        this.caseId = caseId.intern();
         if(this.caseId.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
         this.caseVariantId = caseVariantId;
         this.caseVariantIdForDisplay = caseVariantId;
@@ -497,25 +674,25 @@ public class ATrace implements Serializable {
                 valFreqMap.put(val, eValFreqMap.get(val));
             }
 
-            eventAttrValFreqMap.put(key, valFreqMap);
+            eventAttrValFreqMap.put(key.intern(), valFreqMap);
         }
 
         UnifiedMap<String, String> attrMap = new UnifiedMap<>();
 
         for (String key : this.attributeMap.keySet()) {
-            attrMap.put(key, this.attributeMap.get(key));
+            attrMap.put(key.intern(), this.attributeMap.get(key));
         }
 
         List<String> actNameList = new ArrayList<>();
 
         for (int i=0; i < this.activityNameList.size(); i++) {
-            actNameList.add(this.activityNameList.get(i));
+            actNameList.add(this.activityNameList.get(i).intern());
         }
 
         UnifiedSet<String> eNameSet = new UnifiedSet<>();
 
         for (String s : this.eventNameSet) {
-            eNameSet.put(s);
+            eNameSet.put(s.intern());
         }
 
 
