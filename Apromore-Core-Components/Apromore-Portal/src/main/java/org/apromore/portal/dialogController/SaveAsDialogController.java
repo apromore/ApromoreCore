@@ -238,14 +238,14 @@ public class SaveAsDialogController extends BaseController {
                 	// the branch name is by default "MAIN", see org.apromore.common.Constants.TRUNK_NAME
                     getService().importProcess(userName, containingFolderId, nativeType, processName, versionNo, is, domain, null, created, null,
                             makePublic, pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
-                    Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder", "Apromore", Messagebox.OK, Messagebox.NONE);
+                    Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder", null, Messagebox.OK, Messagebox.NONE);
                 } else {
                 	//Note: the versionName parameter is never used in updateProcess(), so any value should be fine. 
                 	//Update the 2nd time with same name and version number for the state (1) is allowed 
                 	//because the pre-created empty model has no root fragments. 
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, processName,
                             editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, versionName, is);
-                    Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder", "Apromore", Messagebox.OK, Messagebox.NONE);
+                    Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder", null, Messagebox.OK, Messagebox.NONE);
                     
                     // 18.08: update current version number to ensure it will be always auto-increment
                     // It seems that original version number and current version number are set 
@@ -260,7 +260,7 @@ public class SaveAsDialogController extends BaseController {
             }
         } catch (Exception e) {
             //Messagebox.show("Unable to Save Model : Error: \n" + e.getMessage());
-        	Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+        	Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.", null, Messagebox.OK, Messagebox.ERROR);
         }
     }
 
