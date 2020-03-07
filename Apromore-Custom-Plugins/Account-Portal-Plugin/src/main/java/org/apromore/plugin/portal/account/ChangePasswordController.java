@@ -53,12 +53,12 @@ public class ChangePasswordController {
                 public void onEvent(Event event) throws Exception {
 
                     if (!Objects.equals(newPassword.getValue(), confirmPassword.getValue())) {
-                        Messagebox.show("New password does not match.", "Apromore", Messagebox.OK, Messagebox.NONE);
+                        Messagebox.show("New password does not match.", null, Messagebox.OK, Messagebox.NONE);
                         return;
                     }
 
                     if (newPassword.getValue() == null || newPassword.getValue().length() < 6) {
-                        Messagebox.show("New password must be at least 6 characters long.", "Apromore", Messagebox.OK, Messagebox.NONE);
+                        Messagebox.show("New password must be at least 6 characters long.", null, Messagebox.OK, Messagebox.NONE);
                         return;
                     }
 
@@ -67,7 +67,7 @@ public class ChangePasswordController {
                     if (success) {
                         window.detach();
                     } else {
-                        Messagebox.show("Password was NOT changed.", "Apromore", Messagebox.OK, Messagebox.NONE);
+                        Messagebox.show("Password was NOT changed.", null, Messagebox.OK, Messagebox.NONE);
                     }
                 }
             });

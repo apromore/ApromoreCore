@@ -49,6 +49,11 @@
     <value>/WEB-INF/ui.properties</value>
   </library-property>
 
+  <system-config>
+    <label-location>/WEB-INF/ui.properties</label-location>
+    <label-location>/WEB-INF/brand.properties</label-location>
+  </system-config>
+
   <library-property>
     <name>org.zkoss.theme.atlantic.useGoogleFont.disabled</name>
     <value>true</value>
