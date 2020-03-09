@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -278,6 +279,13 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public User updateUser(User user) {
+
+        // A user can always access their personal group and the public group
+        Set<Group> groups = new HashSet<>();
+        groups.addAll(groupRepo.findCompulsoryGroups(user));
+        groups.addAll(user.getGroups());
+        user.setGroups(groups);
+
         return userRepo.save(user);
     }
 
