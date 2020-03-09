@@ -17,39 +17,20 @@
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
-
-<!DOCTYPE html>
-<html lang="en" >
-
-<head>
-  <meta charset="UTF-8">
-  <title>Apromore error page</title>
-  
-  
-  
-      <link rel="stylesheet" href="css/errorStyle.css">
-
-  
-</head>
-
-<body>
-
-  <div class="text-wrapper">
-    <div class="title" data-content="404">
-        Oops,
+<?page title="${labels.brand.name} - Page not found" contentType="text/html;charset=UTF-8"?>
+<?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/common/css/index.css" ?>
+<?link rel="stylesheet" type="text/css" href="/themes/ap/common/css/errors.css" ?>
+<zk>
+  <div xmlns="http://www.w3.org/1999/xhtml" class="ap-centered-hv">
+    <div class="ap-error-box">
+      <div><img src="/themes/${labels.theme}/common/img/brand/logo-colour.svg"/></div>
+      <div class="ap-error-message">
+        The resource you have just tried to access might have been removed, had its name changed or is temporarily unavailable.
+      </div>
+      <div>
+        <a href="/login.zul" >Return to Home</a>
+      </div>
     </div>
+  </div>
+</zk>
 
-    <div class="subtitle">
-        the page you are looking for might have been removed, had its name changed or is temporarily unavailable.
-    </div>
-
-    <div class="buttons">
-        <a class="button" href="/">Go to homepage</a>
-    </div>
-</div>
-  
-  
-
-</body>
-
-</html>
