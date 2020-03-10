@@ -71,6 +71,10 @@ public class User implements Serializable {
     private String username;
     private String firstName;
     private String lastName;
+    private String organization;
+    private String role;
+    private String country;
+    private String phone;
     private Date dateCreated;
     private Date lastActivityDate;
     private Group group;
@@ -181,6 +185,30 @@ public class User implements Serializable {
         this.lastName = newLastName;
     }
 
+    @Column(name = "organization")
+    public String getOrganization() {
+        return organization;
+    }
+    public void setOrganization(final String newOrganization) { this.organization = newOrganization; }
+
+    @Column(name = "role")
+    public String getRole() {
+        return role;
+    }
+    public void setRole(final String newRole) { this.role = newRole; }
+
+    @Column(name = "country")
+    public String getCountry() {
+        return country;
+    }
+    public void setCountry(final String newCountry) { this.country = newCountry; }
+
+    @Column(name = "phone")
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(final String newPhone) { this.phone = newPhone; }
+    
     /**
      * Get the date created for the Object.
      * @return Returns the date created.
