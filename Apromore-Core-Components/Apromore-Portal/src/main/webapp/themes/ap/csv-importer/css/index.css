@@ -144,4 +144,122 @@
     font-family: 'Source Sans Pro', FontAwesome, sans-serif !important;
 }
 
+.ap-csv-importer-grid .z-grid-body table {
+    border-collapse: collapse;
+}
+
+.ap-csv-importer-grid tr.z-row td.z-row-inner {
+    border-right: 1px solid var(--ap-c-line-grid);
+    border-bottom: 1px solid var(--ap-c-line-grid);
+}
+
+.ap-csv-importer-grid tr.z-row td.z-row-inner:last-child {
+    border-right: none;
+}
+
+.ap-csv-importer-grid .z-row-content {
+    padding: 2px 0;
+}
+
+/* Fixes for CSV importer list */
+.myGroupBox .z-window-content {
+    padding: 0 !important;
+}
+
+.myGroupBox .z-label {
+    font-size: 14px !important;
+    line-height: 16px !important;
+}
+
+/* Old CSS */
+
+.greenLabel {
+    padding-left: 1px;
+    color: green;
+    font-size: 12px;
+    margin-left: 0px;
+}
+
+.redLabel {
+    padding-left: 1px;
+    color: red;
+    font-size: 12px;
+    margin-left: 0px;
+}
+
+.z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
+
+    overflow: hidden;
+    width: max-content;
+}
+
+.myGroupBox {
+    display: block;
+    height: inherit;
+    border: 0px solid #cfcfcf;
+    border-top: 0;
+    padding: 0px;
+    overflow: auto;
+    zoom: 1;
+}
+.relativePos{
+    position:relative;
+    width: 100%;
+    padding-top:60px;
+}
+
+.banner{
+    position: absolute;
+    width: 100%;
+    height: 52px;
+    background-image: url("/img/apromore_banner.png");
+    background-repeat: round;
+    padding-top: 75px;
+    z-index: -100;
+}
+
+tr.z-row td.z-row-inner, tr.z-row .z-cell {
+    padding-left: 10px;
+}
+
+.z-window-content {
+    border: 1px solid #cfcfcf;
+    margin: 0;
+    padding: 0px 0px 0px 4px;
+    overflow: hidden;
+    zoom: 1;
+}
+
+.z-paging {
+    position: absolute;
+    bottom: 2px;
+    width: 98%;
+}
+
+.z-paging-info {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
+
+.z-window-content {
+    border: unset;
+}
+
+
+.z-grid-body {
+    overflow-x: hidden !important;
+}
+
+
+.z-grid-header table th {
+    text-align: -webkit-center;
+}
+
+.z-select {
+    font-size: 14px;
+    background: transparent;
+    filter: invert(1);
+    border: 1px solid;
+}
 

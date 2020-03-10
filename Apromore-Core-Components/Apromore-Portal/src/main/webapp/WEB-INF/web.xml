@@ -96,7 +96,7 @@
     <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>portalPluginResource</servlet-name>
+      <servlet-name>portalPluginResource</servlet-name>
     <servlet-class>org.apromore.portal.servlet.PortalPluginResourceServlet</servlet-class>
   </servlet>
 

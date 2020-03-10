@@ -22,133 +22,7 @@
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
     <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px;max-width: 95vw;min-height: 600px; max-height: 95vh;" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
         <style src="/themes/ap/csv-importer/css/index.css" />
-
-        <!--<vbox>-->
-        <style>
-            .greenLabel {
-            padding-left: 1px;
-            font-family: sans-serif;
-            color: green;
-            font-size: 11px;
-            font-weight: normal;
-            margin-left: 0px;
-            }
-
-            .redLabel {
-            padding-left: 1px;
-            font-family: sans-serif;
-            color: red;
-            font-size: 11px;
-            font-weight: normal;
-            margin-left: 0px;
-            }
-
-            .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
-            font-family: Arial,Sans-serif;
-            font-size: 12px;
-            color: #636363;
-            padding: 0px 0px;
-            line-height: 12px;
-            overflow: hidden;
-            width: max-content;
-            }
-
-            .myGroupBox {
-            display: block;
-            height: inherit;
-            border: 0px solid #cfcfcf;
-            border-top: 0;
-            padding: 0px;
-            overflow: auto;
-            zoom: 1;
-            }
-            .relativePos{
-            position:relative;
-            width: 100%;
-            padding-top:60px;
-            }
-
-            .banner{
-            position: absolute;
-            width: 100%;
-            height: 52px;
-            background-image: url("/img/apromore_banner.png");
-            background-repeat: round;
-            padding-top: 75px;
-            z-index: -100;
-            }
-
-            tr.z-row td.z-row-inner, tr.z-row .z-cell {
-            padding-left: 10px;
-            }
-
-            .z-window-content {
-            border: 1px solid #cfcfcf;
-            margin: 0;
-            padding: 0px 0px 0px 4px;
-            overflow: hidden;
-            zoom: 1;
-            }
-
-            .z-paging {
-            position: absolute;
-            bottom: 2px;
-            width: 98%;
-            }
-
-            .z-paging-info {
-            position: absolute;
-            right: 10px;
-            top: 0px;
-            }
-
-            .z-window-content {
-            border: unset;
-            }
-
-
-            .z-grid-body {
-            overflow-x: hidden !important;
-            }
-
-
-            .z-grid-header table th {
-            text-align: -webkit-center;
-            }
-
-            .z-select {
-            font-size: 14px;
-            background: transparent;
-            filter: invert(1);
-            border: 1px solid;
-            }
-
-        </style>
-        <script type="text/javascript"><![CDATA[
-
-              function openPop(i) {
-                let all = $('.relativePos > div')
-                $(all[i]).show()
-                $(all[i]).css('visibility', 'visible')
-              }
-
-            function adjustPos(i) {
-                try {
-                    let targets = $('.p-1');
-                    let sources = $('.z-auxheader');
-
-                    let srcPos = $(sources[i + 1]).offset()
-                    // console.log(srcPos, $(targets[i]));
-                    $(targets[i]).offset(srcPos);
-                } catch(e) {
-                    // pass
-                }
-
-            }
-
-          ]]>
-        </script>
-
+        <script type="text/javascript" src="/themes/ap/csv-importer/js/index.js"></script>
         <popup id="popUpHelp" style="padding:0px;">
             <vbox>
                 <html>
@@ -196,7 +70,7 @@
                     <!--<div id="attrBox" visible="false"></div>-->
                     <div sclass="ap-csv-importer-grid-wrapper">
                         <grid id="myGrid" mold="default" hflex="min" vflex="min"
-                              onClientInfo="onClientInfo(event)" height="100%" width="100%" sclass="ap-grid"
+                              onClientInfo="onClientInfo(event)" width="100%" sclass="ap-grid ap-csv-importer-grid"
                             >
                             <zscript>
                                 void onClientInfo(ClientInfoEvent evt) {
@@ -253,28 +127,6 @@
                 </div>
             </south>
         </borderlayout>
-
-        <script defer="true" type="text/javascript"><![CDATA[
-
-            $(function() {
-              setTimeout(function() {
-                let targets = $('.p-1')
-                let sources = $('.z-auxheader');
-                for (i = 1; i < sources.length; i++) {
-                    try {
-                        let srcPos = $(sources[i]).offset()
-                        // console.log(srcPos, $(targets[i - 1]));
-                        $(targets[i - 1]).offset(srcPos);
-                    } catch (e) {
-                        // pass
-                    }
-                }
-              }, 1000);
-            });
-
-          ]]>
-        </script>
-
-
+        <script defer="true" type="text/javascript" src="/themes/ap/csv-importer/js/deferred.js"></script>
     </window>
 </zk>
