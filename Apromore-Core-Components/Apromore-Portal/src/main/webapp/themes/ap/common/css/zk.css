@@ -682,15 +682,6 @@ input[type="radio"]:checked:before {
     border-right: 1px solid white;
 }
 
-/* Fixes for CSV importer list */
-.myGroupBox .z-window-content {
-    padding: 0 !important;
-}
-
-.myGroupBox .z-label {
-    font-size: 12px !important;
-}
-
 /* ZK Icons */
 
 button > [class^="z-icon-"],
