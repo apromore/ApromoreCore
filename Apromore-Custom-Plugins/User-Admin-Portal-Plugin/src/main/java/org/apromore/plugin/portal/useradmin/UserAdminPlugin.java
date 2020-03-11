@@ -36,7 +36,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserAdminPlugin.class);
 
-    private String label = "Users";
+    private String label = "Manage user permissions";
     private String groupLabel = "Settings";
 
     @Inject private SecurityService securityService;
@@ -67,9 +67,9 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     @Override
     public Availability getAvailability(PortalContext portalContext) {
 
-        // Require that the caller has the "Manage users" permission
+        // Require that the caller has the "Edit users" permission
         for (PermissionType permission: portalContext.getCurrentUser().getPermissions()) {
-            if ("Manage users".equals(permission.getName())) {
+            if (Permissions.VIEW_USERS.getRowGuid().equals(permission.getId())) {
                 return Availability.AVAILABLE;
             }
         }

@@ -65,11 +65,11 @@
                 </row>
                 <row>
                     <label value="Date created"/>
-                    <datebox id="dateCreatedDatebox"/>
+                    <datebox id="dateCreatedDatebox" readonly="true"/>
                 </row>
                 <row>
                     <label value="Last activity"/>
-                    <datebox id="lastActivityDatebox"/>
+                    <datebox id="lastActivityDatebox" readonly="true"/>
                     <button id="newGroupButton" label="New group"/>
                 </row>
             </rows>

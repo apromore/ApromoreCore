@@ -53,7 +53,8 @@
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
 
-        <!-- XES implementation selector -->
+        <!-- Settings menu items -->
+        <include name="Apromore-Custom-Plugins/User-Admin-Portal-Plugin/target/user-admin-portal-plugin-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/XES-Selection-Portal-Plugin/target/xes-selection-portal-plugin-1.0.jar"/>
     </fileset>
 
