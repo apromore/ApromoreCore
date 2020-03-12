@@ -134,7 +134,7 @@ body > * {
 .slant-separator {
     /* background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><g id="ID"><polygon fill="white" points="100 0 100 100 0 100 100 0"/></g></svg>'); */
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.56 171.98" preserveAspectRatio="none"><g><path fill="white"  d="M31.56,0H22.21a284.87,284.87,0,0,1,4.68,51.44A282.09,282.09,0,0,1,0,172H31.56Z"/></g></svg>');
-    background-size: cover;
+    background-size: 100% 100%;
     position: absolute;
     width: 70px;
     right: -1px;
