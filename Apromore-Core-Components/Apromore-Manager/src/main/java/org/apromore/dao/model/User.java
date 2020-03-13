@@ -236,7 +236,7 @@ public class User implements Serializable {
     /**
      * @return all the access control groups of which this user is a member
      */
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_group",
         joinColumns        = @JoinColumn(name = "userId",  referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "groupId", referencedColumnName = "id"))
@@ -273,7 +273,7 @@ public class User implements Serializable {
      * Getter for the role collection.
      * @return Returns the roles.
      */
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="user_role",
         joinColumns        = @JoinColumn(name = "userId", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))

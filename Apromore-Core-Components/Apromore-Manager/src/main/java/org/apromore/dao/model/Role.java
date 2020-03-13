@@ -21,6 +21,7 @@
 
 package org.apromore.dao.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -147,7 +148,7 @@ public class Role implements Serializable {
      * Getter for the users collection.
      * @return Returns the users.
      */
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",
             joinColumns = { @JoinColumn(name = "roleId") },
             inverseJoinColumns = { @JoinColumn(name = "userId") }

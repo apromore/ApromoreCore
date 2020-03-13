@@ -230,6 +230,11 @@ public class SecurityServiceImpl implements SecurityService {
     public User createUser(User user) {
         LOGGER.info("Creating user " + user.getUsername());
 
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup == null) {
+            throw new RuntimeException("Could not create user because public group not present in database");
+        }
+
         // Every user needs a personal access control group
         Group group = new Group();
         group.setName(user.getUsername());
@@ -239,39 +244,32 @@ public class SecurityServiceImpl implements SecurityService {
 
         // Create the actual user record
         user.setDateCreated(Calendar.getInstance().getTime());
-        user.setLastActivityDate(Calendar.getInstance().getTime());
+        user.setLastActivityDate(null);  // null indicates "never connected"
         user.setRowGuid(UUID.randomUUID().toString());
         user.setGroup(group);
 
-
+        // A new user is in the USER role
         Role existingRole = roleRepo.findByName(ROLE_USER);
-        if (existingRole != null) {
-            Set<Role> roles = user.getRoles();
-            roles.add(existingRole);
-            user.setRoles(roles);
-
-            Set<User> rolesUsers = existingRole.getUsers();
-            rolesUsers.add(user);
-            existingRole.setUsers(rolesUsers);
+        if (existingRole == null) {
+            throw new RuntimeException("Could not create user because ROLE_USER not present in database");
         }
+        Set<Role> roles = new HashSet<>();
+        roles.add(existingRole);
+        user.setRoles(roles);
 
-        user = userRepo.save(user);
+        // All users are in the compulsory groups: their personal singleton group, and the public group
+        Set<Group> userGroups = new HashSet<>();
+        userGroups.add(group);
+        userGroups.add(publicGroup);
+        user.setGroups(userGroups);
+        LOGGER.info("  Added to groups " + userGroups);
 
+        user = userRepo.saveAndFlush(user);  // Only at this point does the system assign a primary key to the new user
+
+        // Membership has a link back to the associated user, so it can be created afterwards
         user.setMembership(user.getMembership());
         user.getMembership().setUser(user);
         membershipRepo.save(user.getMembership());
-
-        // A new user can access their personal group and the public group
-        Set<Group> userGroups = user.getGroups();
-        userGroups.add(group);
-        Group publicGroup = groupRepo.findPublicGroup();
-        if (publicGroup != null) {
-            userGroups.add(publicGroup);
-        } else {
-            LOGGER.warning("Public group was not present in the repository.");
-        }
-        user.setGroups(userGroups);
-        LOGGER.info("  Added to groups " + userGroups);
 
         LOGGER.info("Created user " + user.getUsername());
         return user;
