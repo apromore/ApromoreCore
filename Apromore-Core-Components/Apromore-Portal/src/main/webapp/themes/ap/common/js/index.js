@@ -3,5 +3,6 @@ window.Ap = window.Ap || {
     lf: {},
     portal: {},
     login: {},
-    dash: {}
+    dash: {},
+    la: {}
 }
