@@ -38,9 +38,9 @@ public interface LogSample {
 
     // Constants (TODO: remove these, as they are UI-related)
 
-    final String popupID = "pop_";
-    final String textboxID = "txt_";
-    final String labelID = "lbl_";
+    String popupID = "pop_";
+    String textboxID = "txt_";
+    String labelID = "lbl_";
 
 
     // Accessors
@@ -88,4 +88,6 @@ public interface LogSample {
     void setOtherAll(Window window);
     void setOtherTimestamps();
     void tryParsing(String format, int colPos);
+    void setCaseAttributesPos();
+
 }

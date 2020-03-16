@@ -29,6 +29,7 @@ import org.zkoss.zul.*;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.zkoss.zk.ui.util.Clients;
 
@@ -114,6 +115,7 @@ class LogSampleImpl implements LogSample, Constants {
         this.caseAttributesPos = new ArrayList<>();
 
         setOtherTimestamps();
+        setCaseAttributesPos();
         toLists(this);
     }
 
@@ -326,6 +328,32 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
+    public void setCaseAttributesPos(){
+        List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
+        for(int index = 0; index< header.size(); index++){
+            if(index != heads.get(caseid) && index != heads.get(activity) && index != heads.get(timestamp) && index != heads.get(tsStart) && index != heads.get(resource) && !otherTimeStampsPos.containsKey(index)){
+                caseAttributesPos.add(index);
+            }
+        }
+
+        for (List<String> myLine:this.lines) {
+            if(myCaseAttributes.size() == 0|| myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(heads.get(caseid))))){
+                myCaseAttributes = new ArrayList<>();
+                for(int pos=0; pos < caseAttributesPos.size(); pos++){
+                    myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(heads.get(caseid)), caseAttributesPos.get(pos), myLine.get(caseAttributesPos.get(pos))));
+                }
+            }else{
+                for(int pos=0; pos < caseAttributesPos.size(); pos++){
+                    int finalPos = caseAttributesPos.get(pos);
+                    if(!myCaseAttributes.stream().filter(p -> p.getPosition() == finalPos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(finalPos)) && caseAttributesPos.contains(finalPos)){
+                        caseAttributesPos.remove(new Integer(finalPos));
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public void tryParsing(String format, int colPos) {
 
         if (format == null || parse.parseTimestamp(this.getLines().get(0).get(colPos), format) == null) {
@@ -363,8 +391,8 @@ class LogSampleImpl implements LogSample, Constants {
         menuItems.put(tsStart, "Start timestamp");
         menuItems.put(tsValue, "Other timestamp");
         menuItems.put(resource, "Resource");
-        menuItems.put(other, "Event Attribute");
         menuItems.put(caseAttribute, "Case Attribute");
+        menuItems.put(other, "Event Attribute");
         menuItems.put(ignore, "Ignore column");
 
         // get index of "other" item and select it.
@@ -389,6 +417,7 @@ class LogSampleImpl implements LogSample, Constants {
                                 (dl.getKey().equals(tsStart) && (cl == sample.getHeads().get(tsStart))) ||
                                 (dl.getKey().equals(resource) && (cl == sample.getHeads().get(resource))) ||
                                 (dl.getKey().equals(tsValue) && (sample.getOtherTimeStampsPos().get(cl) != null)) ||
+                                (dl.getKey().equals(caseAttribute) && (sample.getCaseAttributesPos().contains(cl))) ||
                                 (dl.getKey().equals(other)))
                         ) {
                     item.setSelected(true);
