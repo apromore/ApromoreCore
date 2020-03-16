@@ -329,15 +329,16 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public void setCaseAttributesPos(){
-        List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
+        if(heads.get(caseid) == -1) return;
+
         for(int index = 0; index< header.size(); index++){
             if(index != heads.get(caseid) && index != heads.get(activity) && index != heads.get(timestamp) && index != heads.get(tsStart) && index != heads.get(resource) && !otherTimeStampsPos.containsKey(index)){
                 caseAttributesPos.add(index);
             }
         }
-
+        List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
         for (List<String> myLine:this.lines) {
-            if(myCaseAttributes.size() == 0|| myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(heads.get(caseid))))){
+            if(myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(heads.get(caseid))))){
                 myCaseAttributes = new ArrayList<>();
                 for(int pos=0; pos < caseAttributesPos.size(); pos++){
                     myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(heads.get(caseid)), caseAttributesPos.get(pos), myLine.get(caseAttributesPos.get(pos))));
