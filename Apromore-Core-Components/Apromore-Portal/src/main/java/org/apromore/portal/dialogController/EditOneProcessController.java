@@ -2,7 +2,6 @@
  * This file is part of "Apromore".
  *
  * Copyright (C) 2011 - 2017 Queensland University of Technology.
- * Copyright (C) 2014 Pasquale Napoli.
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  *
  * "Apromore" is free software; you can redistribute it and/or modify
