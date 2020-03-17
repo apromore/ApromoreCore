@@ -50,7 +50,6 @@
                         <Bundle-Name>Log OSGI</Bundle-Name>
                         <Import-Package>
                             !sun.nio.ch,
-                            org.deckfour.xes.*;version="2.27",
                             *
                         </Import-Package>
                         <Export-Package>
