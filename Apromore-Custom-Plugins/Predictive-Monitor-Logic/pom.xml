@@ -98,7 +98,16 @@
                 </executions>
                 <configuration>
                     <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
-                    <commandlineArgs>-classpath %classpath; -loglevel OFF -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <argument>%classpath;</argument>
+                        <argument>-loglevel</argument>
+                        <argument>OFF</argument>
+                        <argument>-persistenceinfo</argument>
+                        <argument>${basedir}/src/main/resources</argument>
+                        <argument>${basedir}/target/classes</argument>
+                        <argument>${basedir}/target/classes</argument>
+                    </arguments>
                     <classpathScope>compile</classpathScope>
                 </configuration>
             </plugin>
