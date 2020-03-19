@@ -47,7 +47,7 @@ import java.util.List;
  * Modified: Chii Chang (20/02/2020)
  * Modified: Chii Chang (06/03/2020)
  */
-public class ATrace implements Serializable {
+public class ATrace implements Serializable, LaTrace {
 
     private String caseId = "";
     public long caseIdDigit = 0;
