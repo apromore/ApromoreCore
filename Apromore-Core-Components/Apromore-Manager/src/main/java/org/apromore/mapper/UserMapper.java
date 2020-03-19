@@ -66,6 +66,10 @@ public class UserMapper {
      * @return the Webservice UserType
      */
     public static UserType convertUserTypes(User user) {
+        if (user == null) {
+            return null;
+        }
+
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         
         UserType userType = new UserType();
