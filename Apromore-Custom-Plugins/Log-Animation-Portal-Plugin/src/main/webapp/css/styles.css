@@ -12,18 +12,18 @@
 }
 
 /*
-#slider2 .ui-slider-tip:before,
-#slider2 .ui-slider-tip:after {
+#speed-control .ui-slider-tip:before,
+#speed-control .ui-slider-tip:after {
     display: none; }
 
-#slider2 .ui-slider-handle.ui-state-active .ui-slider-tip,
-#slider2 .ui-slider-handle.ui-state-focus .ui-slider-tip,
-#slider2 .ui-slider-handle.ui-state-hover .ui-slider-tip,
-#slider2 .ui-slider-handle:focus .ui-slider-tip,
-#slider2 .ui-slider-handle:hover .ui-slider-tip {
+#speed-control .ui-slider-handle.ui-state-active .ui-slider-tip,
+#speed-control .ui-slider-handle.ui-state-focus .ui-slider-tip,
+#speed-control .ui-slider-handle.ui-state-hover .ui-slider-tip,
+#speed-control .ui-slider-handle:focus .ui-slider-tip,
+#speed-control .ui-slider-handle:hover .ui-slider-tip {
     top: -1px; }
 
-#slider2 .ui-slider-handle.ui-state-focus {
+#speed-control .ui-slider-handle.ui-state-focus {
     z-index: 100; }
 */
 
@@ -33,19 +33,19 @@
     font-family: var(--ap-font-base);
 }
 
-#slider2.ui-slider-float .ui-slider-tip,
-#slider2.ui-slider-float .ui-slider-tip-label {
+#speed-control.ui-slider-float .ui-slider-tip,
+#speed-control.ui-slider-float .ui-slider-tip-label {
     visibility: visible !important;
 }
 
-#slider2.ui-slider {
+#speed-control.ui-slider {
     border-radius: 8px;
     background-color: var(--ap-c-grey-light-5);
     border: none;
     height: 6px;
 }
 
-#slider2 .ui-slider-tip {
+#speed-control .ui-slider-tip {
     box-sizing: border-box;
     border-radius: 44px;
     height: 22px;
@@ -70,7 +70,7 @@
     /* opacity: 1 !important; */
 }
 
-#slider2 .ui-slider-handle {
+#speed-control .ui-slider-handle {
     box-sizing: border-box;
     border-radius: 44px;
     height: 22px;
@@ -83,13 +83,13 @@
 }
 
 /* give the tooltip a css triangle arrow */
-#slider2.ui-slider-float .ui-slider-tip:before,
-#slider2.ui-slider-float .ui-slider-tip:after {
+#speed-control.ui-slider-float .ui-slider-tip:before,
+#speed-control.ui-slider-float .ui-slider-tip:after {
     display: none !important;
 }
 
-#slider2.ui-slider-float .ui-slider-tip,
-#slider2.ui-slider-float .ui-slider-tip-label {
+#speed-control.ui-slider-float .ui-slider-tip,
+#speed-control.ui-slider-float .ui-slider-tip-label {
     visibility: visible;
     opacity: 1;
 }

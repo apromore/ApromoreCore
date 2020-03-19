@@ -20,11 +20,12 @@
 
 <!--<?link rel="shortcut icon" href="favicon.ico" ?>-->
 <?link rel="shortcut icon" href="../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?script src="../themes/ap/common/js/index.js"?>
 <z:window id="win"
           xmlns="http://www.zkoss.org/2005/zk/native"
           xmlns:n="http://www.zkoss.org/2005/zk/native"
           xmlns:z="http://www.zkoss.org/2005/zul"
-          sclass="ap-log-animator"
+          sclass="ap-la"
           use="org.apromore.plugin.portal.loganimation.LogAnimationController">
 
     <style media="screen" type="text/css">
@@ -43,11 +44,11 @@
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
     <!-- STYLESHEET FOR LOG ANIMATION -->
-    <link rel="stylesheet" href="/loganimation/jquery-ui.css" type="text/css" />
-    <!-- <link rel="stylesheet" href="/loganimation/jquery-ui.theme.css" type="text/css"/> -->
+    <link rel="stylesheet" href="/loganimation/js/jquery-ui.css" type="text/css" />
+    <!-- <link rel="stylesheet" href="/loganimation/js/jquery-ui.theme.css" type="text/css"/> -->
 
-    <link rel="stylesheet" href="/loganimation/jquery-ui-slider-pips.css" type="text/css"/>
-    <link rel="stylesheet" href="/loganimation/styles.css" type="text/css"/>
+    <link rel="stylesheet" href="/loganimation/js/jquery-ui-slider-pips.css" type="text/css"/>
+    <link rel="stylesheet" href="/loganimation/css/styles.css" type="text/css"/>
 
         <n:link rel="stylesheet" type="text/css" href='/themes/${labels.theme}/common/css/index.css' />
         <!-- local -->
@@ -87,116 +88,34 @@
         <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
-        <script src="/loganimation/jquery-1.10.2.min.js" type="text/javascript"/>
-        <script src="/loganimation/jquery-ui.min.js" type="text/javascript"/>
-        <script src="/loganimation/jquery-ui-slider-pips.js" type="text/javascript"/>
-        <script src="/loganimation/animation.js" type="text/javascript"/>
+        <n:script src="/loganimation/js/jquery-1.10.2.min.js" type="text/javascript"/>
+        <n:script src="/loganimation/js/jquery-ui.min.js" type="text/javascript"/>
+        <n:script src="/loganimation/js/jquery-ui-slider-pips.js" type="text/javascript"/>
+        <n:script src="/loganimation/js/svgjs/svg.min.js" type="text/javascript"/>
+        <n:script src="/themes/ap/common/js/lodash/lodash.min.js" type="text/javascript"/>
+        <n:script src="/themes/ap/common/js/moment/moment.min.js" type="text/javascript"/>
 
-        <!-- Include all Editor plug-ins -->
+        <n:script src="/loganimation/js/ap/utils.js" type="text/javascript"/>
+        <n:script src="/loganimation/js/ap/animation.js" type="text/javascript"/>
+        <n:script src="/loganimation/js/ap/trace.js" type="text/javascript"/>
 
+        <!-- Include all editor plug-ins -->
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
 
-        <style>
-
-        </style>
         <n:span id="oryxstartupcode">
-            <n:script>
+            <n:script src="/loganimation/js/ap/startup.js" type="text/javascript"/>
+            <n:script defer="true">
                 <![CDATA[
-					//$.noConflict();
-                    var editorWrapper = new ORYX.Editor ({
-							xml: '${arg.bpmnXML}',
-                            model : {
-                                id : 'editorcanvas',
-                                stencilset : {
-                                    url : '${arg.url}',
-                                    namespace : '${arg.url}'
-                                },
-                            },
-                            fullscreen : true // false
-                        });
-
-	                ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
-	                	 //console.log(xml);
-	                	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
-	                 };
-
-	                ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
-	                	    //console.log(xml);
-                       console.log('test');
-	                     zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
-	                 };
-
-					function initialize(controller) {
-
-						// Disable control buttons as the data loading may take time
-						$j("#start").get(0).disabled = true;
-						$j("#pause").get(0).disabled = true;
-						$j("#forward").get(0).disabled = true;
-						$j("#backward").get(0).disabled = true;
-						$j("#nextTrace").get(0).disabled = true;
-						$j("#previousTrace").get(0).disabled = true;
-						$j("#end").get(0).disabled = true;
-						$j("#slider2").get(0).disabled = true;
-
-						// Load data into the animation controller
-						if (!window.animationData) {  // animationData will be null is invoked from the portal menu
-							window.animationData = '${arg.animationData}';
-						}
-						controller.reset(window.animationData);
-
-						// Enable control buttons
-						$j("#start").get(0).disabled = false;
-						$j("#pause").get(0).disabled = false;
-						$j("#forward").get(0).disabled = false;
-						$j("#backward").get(0).disabled = false;
-						$j("#nextTrace").get(0).disabled = false;
-						$j("#previousTrace").get(0).disabled = false;
-						$j("#end").get(0).disabled = false;
-						$j("#slider2").get(0).disabled = false;
-					}
-
-					var controller = new AnimationController(editorWrapper.getCanvas());
-
-					// Use time out to wait for the editor to finish loading
-					// Otherwise, jquery selectors return undefined when selecting SVG elements from DOM
-					window.setTimeout(function() {
-						initialize(controller);
-					}, 1000);
-
-
-					//////////////////////////////Load animation workspace after document has been fully loaded
-					$j(window).load(function(){
-						var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
-						var $jslider2 = $j( "#slider2" ).slider({
-							orientation: "horizontal",
-							step: 1,
-							min: 1,
-							max: 20,
-							value: 10
-						})
-
-						$jslider2.slider("float",{
-
-    	          handle: true,
-    	          pips: true,
-    	          labels: true,
-    	          prefix: "",
-    	          suffix: ""
-    	      });
-						// $jslider2.slider('pips',{first: false, last: false, rest: false}).slider("float");
-
-						var lastSliderValue = $jslider2.slider("value");
-
-						$j("#slider2").on( "slidechange", function(event,ui) {
-							speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
-							controller.changeSpeed(speedRatio);
-							lastSliderValue = ui.value;
-						});
-					});
-
-            document.title = 'Apromore - Log Animator';
+                window.animationData = '${arg.animationData}';
+                Ap.la.session.init('${arg.bpmnXML}', '${arg.url}', '${arg.url}', '${arg.animationData}');
+                zk.afterMount(function() {
+                  // Wait for SVG element ready, so jQuery can refer to it
+                  window.setTimeout(function() {
+                    Ap.la.session.initController();
+                  }, 1000);
+                })
 	            ]]>
             </n:script>
         </n:span>
@@ -212,34 +131,34 @@
         <n:div id="playback_controls">
             <!-- SVG for the timeline -->
 
-            <div sclass="ap-animator-left-container">
-                <div sclass="ap-animator-controls">
-                    <div sclass="ap-animator-timer">
+            <div sclass="ap-la-left-container">
+                <div sclass="ap-la-controls">
+                    <div sclass="ap-la-timer">
                         <span id="date">&#xA0;</span>
                         <span id="time">&#x2D;-:&#x2D;-:&#x2D;-</span>
                         <span id="subtitle">&#xA0;</span>
                     </div>
 
                     <div id="buttons_and_rate">
-                        <button id='start' onclick="start(event);" title="Start" sclass="ap-mc-icon ap-mc-icon-begin">
+                        <button id='start' onclick="Ap.la.session.start(event);" title="Start" sclass="ap-mc-icon ap-mc-icon-begin">
                             <img></img>
                         </button>
-                        <button id='previousTrace' onclick="previousTrace();" disabled="disabled" title="Previous Segment" sclass="ap-mc-icon ap-mc-icon-step-backward">
+                        <button id='previousTrace' onclick="Ap.la.session.previousTrace();" disabled="disabled" title="Previous Segment" sclass="ap-mc-icon ap-mc-icon-step-backward">
                             <img></img>
                         </button>
-                        <button id='backward' onclick="fastBackward();" disabled="disabled" title="Backward" sclass="ap-mc-icon ap-mc-icon-fast-backward">
+                        <button id='backward' onclick="Ap.la.session.fastBackward();" disabled="disabled" title="Backward" sclass="ap-mc-icon ap-mc-icon-fast-backward">
                             <img></img>
                         </button>
-                        <button id="pause" onclick="switchPlayPause();" disabled="disabled" title="Play" sclass="ap-mc-icon ap-mc-icon-play">
+                        <button id="pause" onclick="Ap.la.session.playPause();" disabled="disabled" title="Play" sclass="ap-mc-icon ap-mc-icon-play">
                             <img></img>
                         </button>
-                        <button id='forward' onclick="fastForward();" disabled="disabled" title="Forward" sclass="ap-mc-icon ap-mc-icon-fast-forward">
+                        <button id='forward' onclick="Ap.la.session.fastForward();" disabled="disabled" title="Forward" sclass="ap-mc-icon ap-mc-icon-fast-forward">
                             <img></img>
                         </button>
-                        <button id='nextTrace' onclick="nextTrace();" disabled="disabled" title="Next Segment" sclass="ap-mc-icon ap-mc-icon-step-forward">
+                        <button id='nextTrace' onclick="Ap.la.session.nextTrace();" disabled="disabled" title="Next Segment" sclass="ap-mc-icon ap-mc-icon-step-forward">
                             <img></img>
                         </button>
-                        <button id='end' onclick="end(event);" disabled="disabled" title="End" sclass="ap-mc-icon ap-mc-icon-end">
+                        <button id='end' onclick="Ap.la.session.end(event);" disabled="disabled" title="End" sclass="ap-mc-icon ap-mc-icon-end">
                             <img></img>
                         </button>
                     </div>
@@ -247,14 +166,14 @@
                     <!-- Use jQuery-ui-Slider-Pips at github.com/simeydotme/jQuery-ui-Slider-Pips -->
                     <!-- Use absolute position to place this control on top of the editor -->
                     <!-- <div id="speed_controls" style="position: absolute; background: #EEE; border: 1px solid black; left: 200px; top: 360px; width: 800px; height: 70px; overflow: hidden"> -->
-                    <div id="speed_controls">
+                    <div id="speed-control-wrapper">
                         <!-- <center style="font: 1em monospace">Replay Speed</center> -->
-                        <div id="slider2" disabled="disabled" style="margin: auto;">
+                        <div id="speed-control" disabled="disabled" style="margin: auto;">
                             <n:div class="speed-control-tip">Speed control</n:div>
                         </div>
                     </div>
                     <div sclass="ap-la-show-case-id">
-                        <input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show Case IDs</input>
+                        <input id="toggleCaseLabelVisibility" type="checkbox" onchange="Ap.la.session.toggleCaseLabelVisibility()">Show Case IDs</input>
                     </div>
 
                 </div>
@@ -283,9 +202,9 @@
                     </table>
                 </div>
             </div>
-            <div sclass="ap-animator-right-container">
+            <div sclass="ap-la-right-container">
                 <!-- Animation progress -->
-                <div id="progress_display">
+                <div id="ap-la-progress">
                     <!-- Running Clock -->
                     <!--                    <table>-->
                     <!--                        <tr><td id="date">&#xA0;</td></tr>-->
@@ -295,13 +214,13 @@
                     <!-- SVG for the circular progress bars -->
                     <!--<n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg"></n:svg>-->
                 </div>
-                <div sclass="ap-animator-timeline">
+                <div sclass="ap-la-timeline">
                     <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 1140 80"></n:svg>
                 </div>
             </div>
         </n:div>
     </n:div>
-    <n:div id="ap-animator-info-tip">
+    <n:div id="ap-la-info-tip">
         <n:table>
             <n:tr>
                 <n:td>No</n:td>
@@ -317,7 +236,7 @@
             </n:tr>
             <n:tr>
                 <n:td>Replayed</n:td>
-                <n:td id="info-relayed"></n:td>
+                <n:td id="info-replayed"></n:td>
             </n:tr>
             <n:tr>
                 <td>Reliable</td>

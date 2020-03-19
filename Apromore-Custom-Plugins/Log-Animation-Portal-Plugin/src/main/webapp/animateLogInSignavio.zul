@@ -42,11 +42,11 @@
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
     <!-- STYLESHEET FOR LOG ANIMATION -->
-    <link rel="stylesheet" href="/loganimation/jquery-ui.css" type="text/css" />
-    <!-- <link rel="stylesheet" href="/loganimation/jquery-ui.theme.css" type="text/css"/> -->
+    <link rel="stylesheet" href="/loganimation/js/jquery-ui.css" type="text/css" />
+    <!-- <link rel="stylesheet" href="/loganimation/js/jquery-ui.theme.css" type="text/css"/> -->
 
-    <link rel="stylesheet" href="/loganimation/jquery-ui-slider-pips.css" type="text/css"/>
-    <link rel="stylesheet" href="/loganimation/styles.css" type="text/css"/>
+    <link rel="stylesheet" href="/loganimation/js/jquery-ui-slider-pips.css" type="text/css"/>
+    <link rel="stylesheet" href="/loganimation/css/styles.css" type="text/css"/>
 
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
@@ -72,16 +72,17 @@
         <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
-        <script src="/loganimation/jquery-1.10.2.min.js" type="text/javascript"/>
-        <script src="/loganimation/jquery-ui.min.js" type="text/javascript"/>
-        <script src="/loganimation/jquery-ui-slider-pips.js" type="text/javascript"/>
-        <script src="/loganimation/animation.js" type="text/javascript"/>
+        <script src="/loganimation/js/jquery-1.10.2.min.js" type="text/javascript"/>
+        <script src="/loganimation/js/jquery-ui.min.js" type="text/javascript"/>
+        <script src="/loganimation/js/jquery-ui-slider-pips.js" type="text/javascript"/>
 
         <!-- Include all Editor plug-ins -->
 
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
+      <script src="/loganimation/js/ap/util.js" type="text/javascript"/>
+      <script src="/loganimation/js/ap/animation.js" type="text/javascript"/>
 
 
         <n:span id="oryxstartupcode">
