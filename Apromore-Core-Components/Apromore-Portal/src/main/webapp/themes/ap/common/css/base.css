@@ -161,10 +161,8 @@
 
 .ap-state-off {
     color: var(--ap-c-text-normal) !important;
-}
-
-.ap-state-off:hover {
-    color: var(--ap-c-text-accent) !important;
+    /* TO DO: Reconcile this */
+    color: var(--text-color-default) !important;
 }
 
 .ap-state-on.ap-icon,
