@@ -735,11 +735,19 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     background-color: transparent;
 }
 
+.z-menu-selected .z-menu-icon {
+    top: 4px;
+}
+
 .z-menu-selected .z-menu-content {
     background-color: var(--ap-c-menu-bg-selected) !important;
 }
 
 .z-menu-selected .z-menu-text {
+    color: var(--ap-c-menu-text-selected) !important;
+}
+
+.z-menu-selected .z-menu-icon {
     color: var(--ap-c-menu-text-selected) !important;
 }
 
