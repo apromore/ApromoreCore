@@ -194,7 +194,7 @@ then
         #            -Xmx14g \
         #            -Xmn1g"
 
-		cd $KERNEL_HOME; echo exec "$JAVA_EXECUTABLE" \
+		cd $KERNEL_HOME; exec "$JAVA_EXECUTABLE" \
 			$JAVA_OPTS \
 			$DEBUG_OPTS \
 			$JMX_OPTS \

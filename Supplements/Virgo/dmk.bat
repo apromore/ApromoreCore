@@ -167,7 +167,7 @@ rem ------------------------------
       set TMP_DIR="%KERNEL_HOME%\work\tmp"
       if not exist "%TMP_DIR%" mkdir "%TMP_DIR%"
 
-	set JAVA_OPTS=%JAVA_OPTS% -server -Xms20g -Xmx20g
+    rem	set JAVA_OPTS=%JAVA_OPTS% -server -Xms20g -Xmx20g
     rem Run the server
   
       rem Marshall parameters
