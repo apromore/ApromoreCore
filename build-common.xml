@@ -28,6 +28,8 @@
     <!-- This file isn't intended to be directly invoked; it's expected to be imported by other projects.
          The importing project must set the ${dir} property to be the directory of the ApromoreCore checkout. -->
 
+    <property name="startup.java.opts" value="-server -Xmx14g -Xmn1g"/>
+
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <!-- <property name="dir" location="${basedir}"/> -->
     <property name="dir-sups" location="${dir}/Supplements"/>
