@@ -317,7 +317,15 @@
         <javadocs.skip>true</javadocs.skip>
         <pmd.skip>true</pmd.skip>
         <minimizeJar>false</minimizeJar>
+
+        <flyway.version>6.0.0</flyway.version>
+        <flyway.user>apromore</flyway.user>
+        <flyway.password>MAcri</flyway.password>
+        <flyway.url>jdbc:mysql://localhost:3306/apromore</flyway.url>
+        <flyway.schemas>apromore</flyway.schemas>
+
     </properties>
+
 
     <dependencyManagement>
         <dependencies>
@@ -1371,6 +1379,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -1420,12 +1433,20 @@
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
+        <repository>
+            <id>flyway-repo</id>
+            <url>https://repo.flywaydb.org/repo</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>com.springsource.repository.bundles.release</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>flyway-repo</id>
+            <url>https://repo.flywaydb.org/repo</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -1523,6 +1544,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${maven.war.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>${flyway.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1882,6 +1908,11 @@
                     </archive>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
             </plugin>
         </plugins>
     </build>

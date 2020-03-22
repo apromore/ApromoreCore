@@ -261,6 +261,12 @@ body > * {
     width: 100%;
 }
 
+.ap-form .controls > div {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
 .ap-form input,
 .ap-form textarea,
 .ap-form select {

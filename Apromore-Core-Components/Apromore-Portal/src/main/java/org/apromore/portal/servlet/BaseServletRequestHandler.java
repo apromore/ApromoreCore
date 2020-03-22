@@ -44,6 +44,11 @@ public abstract class BaseServletRequestHandler implements HttpRequestHandler {
 
     protected static final String FIRSTNAME = "firstname";
     protected static final String SURNAME = "surname";
+    protected static final String ORGANIZATION = "organization";
+    protected static final String ROLE = "role";
+    protected static final String COUNTRY = "country";
+    protected static final String PHONE = "phone";
+
     protected static final String EMAIL = "email";
     protected static final String USERNAME = "username";
     protected static final String PASSWORD = "password";
