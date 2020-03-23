@@ -61,16 +61,23 @@ public class LogFilterCriterionStartRange extends AbstractLogFilterCriterion {
     }
 
     @Override
-    public String toString() {
-        String display = super.getAction().toString().substring(0,1).toUpperCase() +
-                super.getAction().toString().substring(1).toLowerCase() +
-                " cases that contain start event in the timestamp range between " +
-                new Date(start) + " and " + new Date(end);
-        return display;
+    public String getAttribute() {
+        return "time:startrange";
     }
 
     @Override
-    public String getAttribute() {
-        return "time:startrange";
+    public String toString() {
+        long from = 0, to = 0;
+        for (String s : value) {
+            if (s.contains(">")) from = Long.valueOf(s.substring(1));
+            if (s.contains("<")) to = Long.valueOf(s.substring(1));
+        }
+        String fromString = new Date(from).toString();
+        String toString = new Date(to).toString();
+        String display = super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
+                " cases that contain start event in the timestamp range between " +
+                fromString + " and " + toString;
+        return display;
     }
 }

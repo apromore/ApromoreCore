@@ -25,6 +25,7 @@ import org.deckfour.xes.model.XEvent;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 /**
@@ -48,5 +49,8 @@ public class TimeUtil {
         return z;
     }
 
-
+    public static String convertTimestamp(long milliseconds) {
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(Instant.ofEpochMilli(milliseconds), ZoneId.systemDefault());
+        return zdt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss.SSS"));
+    }
 }

@@ -22,6 +22,7 @@ package org.apromore.logfilter.criteria.impl;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.impl.util.TimeUtil;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
@@ -146,26 +147,48 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
         }
         values += "]";
 
-        if(level == Level.EVENT) {
-            string += "all events where attribute " + attribute + " is equal to " + values;
-        }else {
-            string += "all cases ";
-
-            if(this.label.equals("case:attribute")) {
-                string += "where attribute " + this.attribute + " is equal to " + values;
+        if (attribute.equals("time:timestamp")) {
+            if (level == Level.EVENT) {
+                string += "all events where timestamp is " + getTimestampValueStrings(value);
             } else {
-                if (attribute.equals("case:variant")) {
-                    string += "where case variant is equal to " + values;
+                string += "all cases where timestamp is " + getTimestampValueStrings(value);
+            }
+        } else {
+            if(level == Level.EVENT) {
+                string += "all events where attribute " + attribute + " is equal to " + values;
+            }else {
+                string += "all cases ";
+
+                if(this.label.equals("case:attribute")) {
+                    string += "where attribute " + this.attribute + " is equal to " + values;
                 } else {
-                    if (containment == Containment.CONTAIN_ANY) {
-                        string += "containing an event where attribute " + attribute + " is equal to " + values;
+                    if (attribute.equals("case:variant")) {
+                        string += "where case variant is equal to " + values;
                     } else {
-                        string += "where all events have attribute " + attribute + " equal to " + values + " for all events";
+                        if (containment == Containment.CONTAIN_ANY) {
+                            string += "containing an event where attribute " + attribute + " is equal to " + values;
+                        } else {
+                            string += "where all events have attribute " + attribute + " equal to " + values + " for all events";
+                        }
                     }
                 }
             }
         }
 
+
         return string;
+    }
+
+    private String getTimestampValueStrings(Set<String> values) {
+        long from = 0, to = 0;
+        for (String s : values) {
+            if (s.contains(">")) from = Long.valueOf(s.substring(1));
+
+            if (s.contains("<")) to = Long.valueOf(s.substring(1));
+        }
+        String fromString = TimeUtil.convertTimestamp(from);
+        String toString = TimeUtil.convertTimestamp(to);
+
+        return "from " + fromString + " to " + toString;
     }
 }
