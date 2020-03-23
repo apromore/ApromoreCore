@@ -532,6 +532,10 @@
         <xs:attribute name="id" type="xs:string"/>
         <xs:attribute name="firstName" type="xs:string"/>
         <xs:attribute name="lastName" type="xs:string"/>
+        <xs:attribute name="organization" type="xs:string"/>
+        <xs:attribute name="role" type="xs:string"/>
+        <xs:attribute name="country" type="xs:string"/>
+        <xs:attribute name="phone" type="xs:string"/>
         <xs:attribute name="lastActivityDate" type="xs:string"/>
         <xs:attribute name="username" type="xs:string"/>
     </xs:complexType>

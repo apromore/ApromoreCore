@@ -66,12 +66,20 @@ public class UserMapper {
      * @return the Webservice UserType
      */
     public static UserType convertUserTypes(User user) {
+        if (user == null) {
+            return null;
+        }
+
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         
         UserType userType = new UserType();
         userType.setId(user.getRowGuid());
         userType.setLastName(user.getLastName());
         userType.setFirstName(user.getFirstName());
+        userType.setOrganization(user.getOrganization());
+        userType.setRole(user.getRole());
+        userType.setCountry(user.getCountry());
+        userType.setPhone(user.getPhone());
         userType.setUsername(user.getUsername());
         if (user.getLastActivityDate() != null) {
             userType.setLastActivityDate(formatter.format(user.getLastActivityDate()));
@@ -140,6 +148,10 @@ public class UserMapper {
         user.setLastName(userType.getLastName());
         user.setFirstName(userType.getFirstName());
         user.setUsername(userType.getUsername());
+        user.setOrganization(userType.getOrganization());
+        user.setRole(userType.getRole());
+        user.setCountry(userType.getCountry());
+        user.setPhone(userType.getPhone());
         user.setRowGuid(userType.getId());
         if (date != null){
             user.setLastActivityDate(date);

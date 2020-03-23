@@ -60,11 +60,13 @@
 
     <target name="start-virgo" depends="deploy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <env key="JAVA_OPTS" value="${startup.java.opts}"/>
             <arg value="/c"/>
             <arg value="startup.bat"/>
             <arg line="${startup.args}"/>
         </exec>
         <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <env key="JAVA_OPTS" value="${startup.java.opts}"/>
             <arg line="${startup.args}"/>
         </exec>
     </target>

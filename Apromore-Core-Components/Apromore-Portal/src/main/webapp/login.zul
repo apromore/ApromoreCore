@@ -19,7 +19,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 <?page title="Apromore" contentType="text/html;charset=UTF-8"?>
-
+<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>
 <!--<?link rel="stylesheet" type="text/css" href="css/login.css" ?>-->
 <?link rel="stylesheet" type="text/css" href="css/bootstrap.css" ?>
@@ -29,230 +29,241 @@
 <?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/common/css/index.css' ?>
 <?link rel="stylesheet" type="text/css" href='themes/ap/login/css/login.css'  ?>
 <?script type="text/javascript" src="themes/ap/common/js/index.js"?>
-<?script type="text/javascript" src="themes/ap/login/js/login.js"?>
 
 <?script type="text/javascript" src="js/jquery.js"?>
 <?script type="text/javascript" src="js/bootstrap.js"?>
 
-<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="stylesheet" type="text/css" href='libs/intl-tel-input/css/intlTelInput.min.css'  ?>
+<?link rel="stylesheet" type="text/css" href='libs/country-select-js/css/countrySelect.min.css'  ?>
+<?script type="text/javascript" src="libs/intl-tel-input/js/intlTelInput.min.js" ?>
+<?script type="text/javascript" src="libs/country-select-js/js/countrySelect.min.js" ?>
+<?script type="text/javascript" src="themes/ap/login/js/login.js" ?>
 
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
-    <custom-attributes theme="${labels.theme}"/>
-
-    <window id="login-main" border="none" sclass="ap-login ap-font-base">
+      <window id="login-main" border="none" sclass="ap-login ap-font-base">
         <h:script type="text/javascript">
-            if (zk.ie || zk.ie7 || zk.ie8) {
+          if (zk.ie || zk.ie7 || zk.ie8) {
             alert("Sorry, we don't support Internet Explorer! some features might not work correctly.");
-            }
+          }
         </h:script>
         <h:div id="wrapper" class="ap-wrapper">
 
-            <h:div class="ap-left-panel">
-                <html>
-                    <h:div if="${param['error'] == '1'}">
-                        <![CDATA[
-                                  <div class="alert alert-error">
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                    <i class="icon-remove-circle"></i> Login or password was incorrect. Please try again.
-                                  </div>
-                            ]]>
+          <h:div class="ap-left-panel">
+            <html>
+              <div if="${param['error'] == '1'}" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="alert alert-error">
+                  <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  Login or password was incorrect. Please try again.
+                </div>
+              </div>
+              <div if="${param['error'] == '2'}" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="alert alert-error">
+                  <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  The resource you just requested is no longer available.
+                  This may be caused by connection or infrastructure issue.
+                </div>
+              </div>
+              <div if="${param['error'] == '3'}" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="alert alert-error">
+                  <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  Apromore is unable to process your request. Please try again.
+                </div>
+              </div>
+              <div if="${param['error'] == '4'}" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="alert alert-error">
+                  <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  Username or e-mail address is already in use. Please try a different username or e-mail address.
+                </div>
+              </div>
+              <div if="${param['success'] == '1'}" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="alert alert-success">
+                  <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  User registration is accepted. Please login.
+                </div>
+              </div>
+              <div if="${param['success'] == '2'}" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="alert alert-success">
+                  <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  Password is reset. Please check your email account for a new password.
+                </div>
+              </div>
+            </html>
+            <html>
+              <h:div class="main">
+                <h:div class="tab-content overflow form-dark">
+                  <h:div class="tab-pane fade in active" id="login">
+                    <h:div class="ap-form">
+                      <h:h4 class="ap-form-heading">
+                        Login to Apromore
+                      </h:h4>
+                      <h:form method="post" action="j_spring_security_check" name="login_form" data-t="form-login">
+                        <h:fieldset>
+                          <h:div class="controls">
+                            <h:input type="text" name="j_username" data-t="username"
+                                     placeholder="${labels.e.auth.username.hint}"/>
+                          </h:div>
+                          <h:div class="controls controls-row">
+                            <h:input type="password" name="j_password" data-t="password"
+                                     placeholder="${labels.e.auth.password.hint}"/>
+                          </h:div>
+                          <h:div class="controls controls-row split">
+                            <h:a class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
+                              password?
+                            </h:a>
+                            <h:button class="signin-button button" type="submit" data-t="login">
+                              ${labels.e.auth.login.text}
+                            </h:button>
+                          </h:div>
+                          <h:div class="controls controls-row register">
+                            <h:a href="#register" class="register-button button link-button"
+                                 data-toggle="tab">
+                              ${labels.e.auth.addAccount.text}
+                            </h:a>
+                          </h:div>
+                        </h:fieldset>
+                      </h:form>
                     </h:div>
-                    <h:div if="${param['error'] == '2'}">
-                        <![CDATA[
-                                  <div class="alert alert-error">
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                      <i class="icon-remove-circle"></i> The page or component you request is no longer available.
-                                       This is normally caused by timeout, opening too many Web pages, or rebooting
-                                       the server.
-                              </div>
-                            ]]>
-                    </h:div>
-                    <h:div if="${param['error'] == '3'}">
-                        <![CDATA[
-                                    <div class="alert alert-error">
-                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                        <i class="icon-remove-circle"></i> Apromore Failed to process your request. Please try again.
-                                    </div>
-
-                            ]]>
-                    </h:div>
-                    <h:div if="${param['error'] == '4'}">
-                        <![CDATA[
-                                    <div class="alert alert-error">
-                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                        <i class="icon-remove-circle"></i> Username or e-mail address already in use. Please try a different username or Username or e-mail address.
-                                    </div>
-
-                            ]]>
-                    </h:div>
-                    <h:div if="${param['success'] == '1'}">
-                        <![CDATA[
-                                    <div class="alert alert-success">
-                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                        <i class="icon-remove-circle"></i> User Registration Accepted. Please Login.
-                            </div>
-                            ]]>
-                    </h:div>
-                    <h:div if="${param['success'] == '2'}">
-                        <![CDATA[
-                                    <div class="alert alert-success">
-                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                        <i class="icon-remove-circle"></i> Password Reset. Please check your email account for a new password.
-                                    </div>
-                            ]]>
-                    </h:div>
-                </html>
-                <html>
-                    <h:div class="main">
-                        <h:div class="tab-content overflow form-dark">
-                            <h:div class="tab-pane fade in active" id="login">
-                                <h:div class="ap-form">
-                                    <h:h4 class="ap-form-heading">
-                                        Login to Apromore
-                                    </h:h4>
-                                    <h:form method="post" action="j_spring_security_check" name="login_form" data-t="form-login">
-                                        <h:fieldset>
-                                            <h:div class="controls">
-                                                <h:input type="text" name="j_username" data-t="username"
-                                                         placeholder="${labels.e.auth.username.hint}"/>
-                                            </h:div>
-                                            <h:div class="controls controls-row">
-                                                <h:input type="password" name="j_password" data-t="password" placeholder="${labels.e.auth.password.hint}"/>
-                                            </h:div>
-                                            <h:div class="controls controls-row split">
-                                                <h:a class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
-                                                    password?
-                                                </h:a>
-                                                <h:button class="signin-button button" type="submit" data-t="login">${labels.e.auth.login.text}</h:button>
-                                            </h:div>
-                                            <h:div class="controls controls-row register">
-                                                <h:a href="#register" class="register-button button link-button"
-                                                     data-toggle="tab">
-                                                    ${labels.e.auth.addAccount.text}
-                                                </h:a>
-                                            </h:div>
-                                        </h:fieldset>
-                                    </h:form>
-                                </h:div>
-                            </h:div>
-                            <h:div class="tab-pane fade" id="forgot">
-                                <h:div class="ap-form">
-                                    <h:h4 class="ap-form-heading">
-                                        Forgot your password?
-                                    </h:h4>
-                                    <h:form method="post" action="register/resetPassword" name="reset_form">
-                                        <h:fieldset>
-                                            <h:div class="controls">
-                                                <h:input type="text" name="username"
-                                                         placeholder="Your email address"/>
-                                            </h:div>
-                                            <h:div class="controls">
-                                                <h:button class="button reset-button" type="submit">
-                                                    Reset password
-                                                </h:button>
-                                            </h:div>
-                                            <h:div class="controls ap-back-wrapper">
-                                                <h:a href="#login" data-toggle="tab">
-                                                    <div class="ap-back"
-                                                         title="Back to login page"/>
-                                                    <h:span><!-- back to login page--></h:span>
-                                                </h:a>
-                                            </h:div>
-                                        </h:fieldset>
-                                    </h:form>
-                                </h:div>
-                            </h:div>
-                            <h:div class="tab-pane fade" id="register">
-                                <h:div class="ap-form">
-                                    <h:h4 class="ap-form-heading">
-                                        New User Registration
-                                    </h:h4>
-                                    <h:form method="post" action="register/newUserRegister" name="newuser_form">
-                                        <h:fieldset>
-                                            <h:legend>
-                                                <h:span>Account information</h:span>
-                                            </h:legend>
-                                            <h:div class="controls">
-                                                <h:input type="text" name="firstname"
-                                                         placeholder="First name*"/>
-                                            </h:div>
-                                            <h:div class="controls">
-                                                <h:input type="text" name="surname"
-                                                         placeholder="Last name*"/>
-                                            </h:div>
-                                            <h:div class="controls">
-                                                <h:input type="text" name="username"
-                                                         placeholder="Username*"/>
-                                            </h:div>
-                                            <h:div class="controls">
-                                                <h:input type="text" name="email"
-                                                         placeholder="Email address*"/>
-                                            </h:div>
-                                        </h:fieldset>
-                                        <h:fieldset>
-                                            <h:legend>
-                                                <h:span>Password</h:span>
-                                            </h:legend>
-                                            <h:div class="controls">
-                                                <h:input type="password" name="password"
-                                                         placeholder="Password*"/>
-                                            </h:div>
-                                            <h:div class="controls">
-                                                <h:input type="password" name="confirmPassword"
-                                                         placeholder="Confirm password*"/>
-                                            </h:div>
-                                        </h:fieldset>
-                                        <h:fieldset>
-                                            <h:div class="input-group controls">
-                                                <h:button class="button register-submit-button" type="submit">
-                                                    Register
-                                                </h:button>
-                                            </h:div>
-                                            <h:div class="input-group controls ap-back-wrapper">
-                                                <h:a href="#login" data-toggle="tab">
-                                                    <div class="ap-back"
-                                                         title="back to login page"/>
-                                                    <h:span><!-- back to login page--></h:span>
-                                                </h:a>
-                                            </h:div>
-                                        </h:fieldset>
-                                    </h:form>
-                                </h:div>
-                            </h:div>
-                        </h:div>
-
-                    </h:div>
-
-                    <h:div class="left-footer">
-                        <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
-                        <h:ul class="ap-h-links">
-                            <h:li>
-                                <a href="https://apromore.org/terms-and-conditions/">
-                                    Terms and Conditions
-                                </a>
-                            </h:li>
-                            <h:li>
-                                <a href="https://apromore.org/privacy-policy/">
-                                    Privacy Policy
-                                </a>
-                            </h:li>
-                            <h:li>
-                                    ${labels.e.common.contact.text}
-                            </h:li>
-                        </h:ul>
-                    </h:div>
-                    <h:div class="slant-separator">
-                    </h:div>
-                </html>
-            </h:div>
-
-            <h:div class="ap-right-panel">
-                <h:div class="ap-logo ap-centered">
-                    <h:a href="https://apromore.org">
-                        <h:img src="/themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
-                    </h:a>
+                  </h:div>
+                  <h:div class="tab-pane fade" id="forgot">
+                    <h:div class="ap-form">
+                      <h:h4 class="ap-form-heading">
+                        Forgot your password?
+                      </h:h4>
+                      <h:form method="post" action="register/resetPassword" name="reset_form">
+                        <h:fieldset>
+                          <h:div class="controls">
+                            <h:input type="text" name="username"
+                                     placeholder="Your email address"/>
+                          </h:div>
+                          <h:div class="controls">
+                            <h:button class="button reset-button" type="submit">
+                              Reset password
+                            </h:button>
+                          </h:div>
+                          <h:div class="controls ap-back-wrapper">
+                            <h:a href="#login" data-toggle="tab">
+                              <div class="ap-back"
+                                   title="Back to login page"/>
+                              <h:span><!-- back to login page--></h:span>
+                        </h:a>
+                      </h:div>
+                    </h:fieldset>
+                  </h:form>
                 </h:div>
+              </h:div>
+              <h:div class="tab-pane fade" id="register">
+                <h:div class="ap-form">
+                  <h:h4 class="ap-form-heading">
+                    New User Registration
+                  </h:h4>
+                  <h:form method="post" action="register/newUserRegister" name="newuser_form" onSubmit="Ap.login.onSubmit()">
+                    <h:fieldset>
+                      <h:legend>
+                        <h:span>Account information</h:span>
+                      </h:legend>
+                      <h:div class="controls">
+                        <h:input type="text" name="firstname"
+                                 placeholder="First name*"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="text" name="surname"
+                                 placeholder="Last name*"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="text" name="organization"
+                                 placeholder="Organization"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="text" name="role"
+                                 placeholder="Role"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="text" id="ap-new-user-country" name="country"
+                                 placeholder="Country"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="tel" id="ap-new-user-phone" name="phone"
+                                 placeholder="Phone"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="text" name="username"
+                                 placeholder="Username*"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="text" name="email"
+                                 placeholder="Email address*"/>
+                      </h:div>
+                    </h:fieldset>
+                    <h:fieldset>
+                      <h:legend>
+                        <h:span>Password</h:span>
+                      </h:legend>
+                      <h:div class="controls">
+                        <h:input type="password" name="password"
+                                 placeholder="Password*"/>
+                      </h:div>
+                      <h:div class="controls">
+                        <h:input type="password" name="confirmPassword"
+                                 placeholder="Confirm password*"/>
+                      </h:div>
+                    </h:fieldset>
+                    <h:fieldset>
+                      <h:div class="input-group controls">
+                        <h:button class="button register-submit-button" type="submit">
+                          Register
+                        </h:button>
+                      </h:div>
+                      <h:div class="input-group controls ap-back-wrapper">
+                        <h:a href="#login" data-toggle="tab">
+                          <div class="ap-back"
+                               title="back to login page"/>
+                          <h:span><!-- back to login page--></h:span>
+                        </h:a>
+                      </h:div>
+                    </h:fieldset>
+                  </h:form>
+                </h:div>
+              </h:div>
             </h:div>
+
+          </h:div>
+
+          <h:div class="left-footer">
+            <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
+            <h:ul class="ap-h-links">
+              <h:li>
+                <a href="https://apromore.org/terms-and-conditions/">
+                  Terms and Conditions
+                </a>
+              </h:li>
+              <h:li>
+                <a href="https://apromore.org/privacy-policy/">
+                  Privacy Policy
+                </a>
+              </h:li>
+              <h:li>
+                ${labels.e.common.contact.text}
+              </h:li>
+            </h:ul>
+          </h:div>
+          <h:div class="slant-separator">
+          </h:div>
+        </html>
+      </h:div>
+
+      <h:div class="ap-right-panel">
+        <h:div class="ap-logo ap-centered">
+          <h:a href="https://apromore.org">
+            <h:img src="/themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
+          </h:a>
         </h:div>
-    </window>
+      </h:div>
+    </h:div>
+  </window>
 </zk>
