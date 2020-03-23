@@ -24,6 +24,8 @@ import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.sorted.mutable.TreeSortedMap;
 
 import java.util.Set;
 
@@ -52,4 +54,75 @@ public class LogFilterCriterionCaseVariant extends AbstractLogFilterCriterion {
     public boolean matchesCriterion(XEvent event) {
         return false;
     }
+
+    @Override
+    public String toString() {
+        String desc = "";
+        switch (super.getAction()) {
+            case RETAIN: desc += " Retain "; break;
+            default: desc += "Remove "; break;
+        }
+
+        desc += "all cases where case variant is in ";
+        desc += getValueString(super.getValue());
+
+        return desc;
+    }
+
+
+    private boolean isContinuous(IntArrayList caseVariantIdList) {
+        caseVariantIdList.sortThis();
+        boolean continuous = true;
+        for (int i = 0; i < caseVariantIdList.size(); i++) {
+            if (i < (caseVariantIdList.size() - 1)) {
+                if (caseVariantIdList.get(i + 1) != caseVariantIdList.get(i) + 1) {
+                    continuous = false;
+                    break;
+                }
+            }
+        }
+        return continuous;
+    }
+
+    private TreeSortedMap<Integer, Integer> getLinkMap(IntArrayList variantIds) {
+        TreeSortedMap<Integer, Integer> linkMap = new TreeSortedMap<>();
+        int current = variantIds.get(0);
+        linkMap.put(current, current);
+
+        for(int i=1; i < variantIds.size(); i++) {
+            if(variantIds.get(i) - 1 == variantIds.get(i-1)) {
+                linkMap.put(current, variantIds.get(i));
+            } else {
+                linkMap.put(variantIds.get(i), variantIds.get(i));
+                current = variantIds.get(i);
+            }
+        }
+        return linkMap;
+    }
+
+    public String getValueString(Set<String> values) {
+
+        String updatedDesc = "";
+
+        IntArrayList vIds = new IntArrayList();
+        for (String s : values) {
+            vIds.add(Integer.valueOf(s));
+        }
+
+        boolean continuous = isContinuous(vIds);
+
+        if (continuous) {
+            updatedDesc += vIds.get(0) + " to " + vIds.get(vIds.size()-1);
+
+        } else {
+            TreeSortedMap<Integer, Integer> linkMap = getLinkMap(vIds);
+            for(Integer key : linkMap.keySet()) {
+                if(linkMap.get(key) > key)  updatedDesc += "[" + key + " to " + linkMap.get(key) + "]";
+                else updatedDesc += "[" + key + "]";
+            }
+        }
+
+        return updatedDesc;
+    }
+
 }

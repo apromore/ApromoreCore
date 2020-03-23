@@ -29,6 +29,7 @@ import java.util.Calendar;
 
 /**
  * @author Chii Chang (created: 2019)
+ * Modified: Chii Chang (23/03/2020)
  */
 public class TimeUtil {
     public static long epochMilliOf(ZonedDateTime zonedDateTime){
@@ -46,4 +47,6 @@ public class TimeUtil {
         ZonedDateTime z = millisecondToZonedDateTime(calendar.getTimeInMillis());
         return z;
     }
+
+
 }

@@ -19,12 +19,17 @@
  */
 package org.apromore.logfilter.criteria.impl;
 
+import org.apromore.logfilter.criteria.impl.util.Util;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.sorted.mutable.TreeSortedMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -53,14 +58,93 @@ public class LogFilterCriterionCaseId extends AbstractLogFilterCriterion {
     }
 
     @Override
-    public String toString() {
-        return super.getAction().toString().substring(0,1).toUpperCase() +
-                super.getAction().toString().substring(1).toLowerCase() +
-                " cases such that the trace ID equals to " + value;
+    public String getAttribute() {
+        return "case:id";
     }
 
     @Override
-    public String getAttribute() {
-        return "case:id";
+    public String toString() {
+
+        boolean numeric = true;
+        for (String s : value) {
+            if (!Util.isNumeric(s)) {
+                numeric = false;
+                break;
+            }
+        }
+
+        if (!numeric) {
+            return super.getAction().toString().substring(0,1).toUpperCase() +
+                    super.getAction().toString().substring(1).toLowerCase() +
+                    " cases such that the trace ID equals to " + value;
+        } else {
+            String desc = "";
+            switch (super.getAction()) {
+                case RETAIN: desc += " Retain "; break;
+                default: desc += "Remove "; break;
+            }
+
+            desc += "all cases where case ID is in ";
+            desc += getValueString(super.getValue());
+
+            return desc;
+        }
+    }
+
+    private String getValueString(Set<String> values) {
+
+        String updatedDesc = "";
+
+        List<Long> vIds = new ArrayList<>();
+        for (String s : values) {
+            vIds.add(Long.valueOf(s));
+        }
+        Collections.sort(vIds);
+
+        boolean continuous = isContinuous(vIds);
+
+        if (continuous) {
+            updatedDesc += vIds.get(0) + " to " + vIds.get(vIds.size()-1);
+
+        } else {
+            TreeSortedMap<Long, Long> linkMap = getLinkMap(vIds);
+            for(long key : linkMap.keySet()) {
+                if(linkMap.get(key) > key)  updatedDesc += "[" + key + " to " + linkMap.get(key) + "]";
+                else updatedDesc += "[" + key + "]";
+            }
+        }
+
+        return updatedDesc;
+    }
+
+
+    private boolean isContinuous(List<Long>  caseVariantIdList) {
+
+        boolean continuous = true;
+        for (int i = 0; i < caseVariantIdList.size(); i++) {
+            if (i < (caseVariantIdList.size() - 1)) {
+                if (caseVariantIdList.get(i + 1) != caseVariantIdList.get(i) + 1) {
+                    continuous = false;
+                    break;
+                }
+            }
+        }
+        return continuous;
+    }
+
+    private TreeSortedMap<Long, Long> getLinkMap(List<Long> variantIds) {
+        TreeSortedMap<Long, Long> linkMap = new TreeSortedMap<>();
+        long current = variantIds.get(0);
+        linkMap.put(current, current);
+
+        for(int i=1; i < variantIds.size(); i++) {
+            if(variantIds.get(i) - 1 == variantIds.get(i-1)) {
+                linkMap.put(current, variantIds.get(i));
+            } else {
+                linkMap.put(variantIds.get(i), variantIds.get(i));
+                current = variantIds.get(i);
+            }
+        }
+        return linkMap;
     }
 }
