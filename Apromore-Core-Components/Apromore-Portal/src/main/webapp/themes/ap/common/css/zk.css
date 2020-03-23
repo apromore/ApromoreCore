@@ -211,6 +211,10 @@ input {
     border-radius: 0px;
 }
 
+.z-combobox-icon {
+    line-height: 18px;
+}
+
 .z-button:last-child,
 .z-combobutton:last-child .z-combobutton-content {
     margin-right: 0;
@@ -702,9 +706,11 @@ button > [class*=" z-icon-"] {
     background-color: var(--ap-c-grey-light-5);
 }
 
+tr.z-row-disabled td.z-row-inner .z-slider-button,
 tr.z-row-disabled td.z-row-inner .z-slider-area {
     background-color: var(--ap-c-grey-light-3);
 }
+
 
 /* Menu */
 .z-menu,
@@ -735,7 +741,7 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     background-color: transparent;
 }
 
-.z-menu-selected .z-menu-icon {
+.z-menu-icon {
     top: 4px;
 }
 
