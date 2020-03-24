@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2012 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2012 Felix Mannhardt.
-  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -41,7 +39,7 @@
 
         <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
 
-        <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+        <!-- <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/> -->
 
         <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
@@ -53,20 +51,17 @@
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
 
-        <!-- Settings menu items -->
-        <include name="Apromore-Custom-Plugins/User-Admin-Portal-Plugin/target/user-admin-portal-plugin-1.0.jar"/>
+        <!-- XES implementation selector -->
         <include name="Apromore-Custom-Plugins/XES-Selection-Portal-Plugin/target/xes-selection-portal-plugin-1.0.jar"/>
     </fileset>
 
     <target name="start-virgo" depends="deploy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <env key="JAVA_OPTS" value="${startup.java.opts}"/>
             <arg value="/c"/>
             <arg value="startup.bat"/>
             <arg line="${startup.args}"/>
         </exec>
         <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <env key="JAVA_OPTS" value="${startup.java.opts}"/>
             <arg line="${startup.args}"/>
         </exec>
     </target>
@@ -93,9 +88,9 @@
                 <include name="**/target/bpstruct-osgi-1.2.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/jbpt-petri-osgi-0.2.433.jar"/>
-                <include name="**/target/prom6-osgi-6.0.jar"/>
+                <include name="**/target/prom6-osgi-1.0.jar"/>
                 <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
-                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
+                <!-- <include name="**/target/raffaeleconforti-osgi-1.1.jar"/> -->
                 <include name="**/target/lpsolve-osgi-1.1.jar"/>
             </fileset>
 

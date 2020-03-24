@@ -1,9 +1,7 @@
 /*
- * This file is part of "Apromore".
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
- * Copyright (C) 2016, 2017 Adriano Augusto.
- * Copyright (C) 2017 Queensland University of Technology.
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * This file is part of "Apromore".
  *
  * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,11 +27,10 @@ import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 import de.hpi.bpt.hypergraph.abs.Vertex;
-import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 
 /**
  * Created by Adriano on 28/02/2016.

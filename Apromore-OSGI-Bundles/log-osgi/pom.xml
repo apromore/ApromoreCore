@@ -1,8 +1,7 @@
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2015 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -50,9 +49,11 @@
                         <Bundle-Name>Log OSGI</Bundle-Name>
                         <Import-Package>
                             !sun.nio.ch,
+                            org.deckfour.xes.*;version="2.27",
                             *
                         </Import-Package>
                         <Export-Package>
+                            org.apromore.xlog.singletonlog,
                             org.deckfour.spex.*;version="1.0",
                             org.deckfour.xes.*;version="2.27",
                             org.xeslite.*;version="0.0.1"

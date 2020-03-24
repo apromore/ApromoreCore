@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2011 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2012, 2013 Felix Mannhardt.
-  ~ Copyright (C) 2015, 2016 Adriano Augusto.
-  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -153,16 +150,7 @@
                 </executions>
                 <configuration>
                     <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
-                    <arguments>
-                        <argument>-classpath</argument>
-                        <argument>%classpath;</argument>
-                        <argument>-loglevel</argument>
-                        <argument>OFF</argument>
-                        <argument>-persistenceinfo</argument>
-                        <argument>${basedir}/src/main/resources</argument>
-                        <argument>${basedir}/target/classes</argument>
-                        <argument>${basedir}/target/classes</argument>
-                    </arguments>
+                    <commandlineArgs>-classpath %classpath; -loglevel OFF -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
                     <classpathScope>compile</classpathScope>
                 </configuration>
             </plugin>

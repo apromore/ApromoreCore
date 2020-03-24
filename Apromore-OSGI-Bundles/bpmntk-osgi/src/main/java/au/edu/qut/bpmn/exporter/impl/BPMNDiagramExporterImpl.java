@@ -1,9 +1,7 @@
 /*
- * This file is part of "Apromore".
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
- * Copyright (C) 2016 Adriano Augusto.
- * Copyright (C) 2017 Queensland University of Technology.
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * This file is part of "Apromore".
  *
  * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,10 +21,9 @@
 package au.edu.qut.bpmn.exporter.impl;
 
 import au.edu.qut.bpmn.exporter.BPMNDiagramExporter;
-import org.processmining.contexts.uitopia.UIContext;
-import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.plugins.bpmn.BpmnDefinitions;
+
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -42,8 +39,8 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
     public String exportBPMNDiagram(BPMNDiagram diagram) throws Exception {
         String result;
 
-        UIContext context = new UIContext();
-        UIPluginContext uiPluginContext = context.getMainPluginContext();
+        //UIContext context = new UIContext();
+        //UIPluginContext uiPluginContext = context.getMainPluginContext();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -55,7 +52,7 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
                 }
             }
         });
-        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
         StringBuilder sb = new StringBuilder();

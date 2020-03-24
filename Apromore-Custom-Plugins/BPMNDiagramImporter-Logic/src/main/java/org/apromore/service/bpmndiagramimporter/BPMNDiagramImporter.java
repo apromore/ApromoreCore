@@ -21,10 +21,7 @@
 
 package org.apromore.service.bpmndiagramimporter;
 
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.UnmarshalException;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 /**
  * Created by Adriano on 29/10/2015.

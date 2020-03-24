@@ -1,9 +1,0 @@
-{
-	"dynamic_cat_cols":	["org:group","InfectionSuspected","DiagnosticUrinarySediment","SIRSCritTemperature","DiagnosticLiquor","DiagnosticIC","DiagnosticLacticAcid","DiagnosticBlood","SIRSCritHeartRate","DiagnosticArtAstrup","lifecycle:transition","DiagnosticOther","DiagnosticXthorax","Oligurie","Hypotensie","SIRSCriteria2OrMore","DiagnosticUrinaryCulture","Infusion","DiagnosticSputum","DiagnosticECG","DisfuncOrg","Diagnose","Hypoxie","SIRSCritLeucos","SIRSCritTachypnea"],
-	"static_cat_cols":	[],
-	"timestamp_col":		"time:timestamp",
-	"activity_col":			"concept:name",
-	"static_num_cols":	[],
-	"dynamic_num_cols":	["Age","Leucocytes","CRP","LacticAcid"],
-	"case_id_col":			"case_id"
-}

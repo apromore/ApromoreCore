@@ -189,10 +189,10 @@ then
 		# Ensure that the tmp directory exists
 		mkdir -p $TMP_DIR
 
-        #JAVA_OPTS="$JAVA_OPTS \
-        #            -server \
-        #            -Xmx14g \
-        #            -Xmn1g"
+        JAVA_OPTS="$JAVA_OPTS \
+                    -server \
+                    -Xmx14g \
+                    -Xmn1g"
 
 		cd $KERNEL_HOME; exec "$JAVA_EXECUTABLE" \
 			$JAVA_OPTS \

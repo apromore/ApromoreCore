@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2016 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2019 - 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -34,7 +33,7 @@
 
     <artifactId>bpmndiagramimporter-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>BPMN diagram parser service (prom6)</name>
+    <name>BPMN diagram parser service </name>
 
     <build>
         <plugins>
@@ -50,15 +49,11 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
-                        <Import-Bundle>
-                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
-                        </Import-Bundle>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
-                            org.processmining.contexts.*;version="[1.0,2.0)",
-                            org.processmining.framework.*;version="[1.0,2.0)",
-                            org.processmining.models.*;version="[1.0,2.0)",
-                            org.processmining.plugins.*;version="[1.0,2.0)",
+                            org.apromore.processmining.models.*,
+                            org.apromore.processmining.plugins.*,
+                            org.osgi.framework;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <Export-Package>
@@ -77,20 +72,14 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>raffaeleconforti-osgi</artifactId>
-        </dependency>
-        <!--
+            <artifactId>prom-models-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>        
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>bpmnminer-osgi</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.icu</groupId>
-                    <artifactId>icu4j</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>prom-bpmn-osgi</artifactId>
+            <version>1.0</version>
         </dependency>
-        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -99,6 +88,19 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
         </dependency>
+        <!-- 
+		<dependency>
+		    <groupId>org.springframework.osgi</groupId>
+		    <artifactId>spring-osgi-core</artifactId>
+		    <version>1.2.1</version>
+		</dependency>
+		-->    
+		<dependency>
+		    <groupId>org.osgi</groupId>
+		    <artifactId>org.osgi.framework</artifactId>
+		    <version>1.9.0</version>
+		    <scope>provided</scope>
+		</dependency>		    
     </dependencies>
 </project>
 

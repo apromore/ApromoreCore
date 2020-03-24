@@ -1,8 +1,7 @@
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2011 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -63,36 +62,41 @@
     </distributionManagement>
 
     <modules>
-        <module>Apromore-Extras/APMLogModule</module>
-        <module>Apromore-Extras/Build-Tools</module>
-        <module>Apromore-Extras/Chiaroscuro-Theme</module>
-        <module>Apromore-Extras/OpenXES</module>
-        <module>Apromore-Extras/Test-Tools</module>
-
-        <!-- Schemas -->
-        <module>Apromore-Schema/anf-schema</module>
-        <module>Apromore-Schema/bpmn-schema</module>
-        <module>Apromore-Schema/cpf-schema</module>
-
-        <!-- PROM -->
+        <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
         <module>Apromore-OSGI-Bundles/log-osgi</module>
-        <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
-        <module>Apromore-OSGI-Bundles/prom6-osgi</module>
-
-        <!-- OSGI -->
+        <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>        
+        <module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
         <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
         <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
         <module>Apromore-OSGI-Bundles/json-osgi</module>
-        <module>Apromore-OSGI-Bundles/raffaeleconforti-osgi</module>
         <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
-
-        <!-- Plugins -->
+        <module>Apromore-OSGI-Bundles/jgraph-osgi</module>
+        <module>Apromore-OSGI-Bundles/prom-models-osgi</module>
+        <module>Apromore-OSGI-Bundles/prom-widgets-osgi</module>
+        <module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>
+        
+        <!-- Schemas -->
+        <module>Apromore-Schema/anf-schema</module>
+        <module>Apromore-Schema/bpmn-schema</module>
+        <module>Apromore-Schema/cpf-schema</module>        
+        
+        <!-- Core Components -->
+        <module>Apromore-Core-Components/Apromore-Portal</module>
+        <module>Apromore-Core-Components/Apromore-Manager</module>
+        <module>Apromore-Core-Components/Apromore-BPMNEditor</module>        
+        
+        <!-- Custom Plugins -->
         <module>Apromore-Plugins</module>
         
+        <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
+        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
+        <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
+
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
@@ -100,35 +104,42 @@
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
-        <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
+        
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
-        <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
-        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
-        <module>Apromore-Custom-Plugins/Predictive-Monitor-Logic</module>
-        <module>Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Theme-Selection-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/User-Admin-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
+        
+        <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
         <!-- Clients that we can distribute -->
+        <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/manager-security</module>
-        <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/portal-client</module>
+        
+        <!-- Extras -->
+        <module>Apromore-Extras/OpenXES</module>
+        <module>Apromore-Extras/APMLogModule</module>        
+        
+        <!-- Tools -->
+        <module>Apromore-Extras/Build-Tools</module>
+        <module>Apromore-Extras/Chiaroscuro-Theme</module>
+        <module>Apromore-Extras/Test-Tools</module>
 
-        <!-- Web application bundles -->
-        <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
-        <module>Apromore-Core-Components/Apromore-Manager</module>
-        <module>Apromore-Core-Components/Apromore-Portal</module>
-
-        <!-- Assembles the Bundles and repositories -->
-        <module>Apromore-Assembly/Custom-Plugins</module>
+        <!-- Assembly -->
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
-        <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
+        <module>Apromore-Assembly/Custom-Plugins-Assembly</module>
+
+        <!-- Command line tools -->
+        <!--<module>Apromore-Extras/bpmncmap</module>-->
+        <!--<module>Supplements/cpfImporter</module>-->
+        <!--<module>Supplements/bpmn2cpf</module>-->
+        <!--<module>Supplements/cpf2bpmn</module>-->
+        <!--<module>Supplements/cpf2epml</module>-->
+        <!--<module>Supplements/cpf2pnml</module>-->
+        <!--<module>Supplements/epml2cpf</module>-->
+        <!--<module>Supplements/pnml2cpf</module>-->
+
     </modules>
 
     <properties>
@@ -317,24 +328,17 @@
         <javadocs.skip>true</javadocs.skip>
         <pmd.skip>true</pmd.skip>
         <minimizeJar>false</minimizeJar>
-
+        
         <flyway.version>6.0.0</flyway.version>
         <flyway.user>apromore</flyway.user>
         <flyway.password>MAcri</flyway.password>
         <flyway.url>jdbc:mysql://localhost:3306/apromore</flyway.url>
         <flyway.schemas>apromore</flyway.schemas>
-
+        
     </properties>
-
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.raffaeleconforti</groupId>
-                <artifactId>assembly</artifactId>
-                <version>1.0.20200211</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.thoughtworks.xstream</groupId>
                 <artifactId>xstream</artifactId>
@@ -369,7 +373,7 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>zk-osgi</artifactId>
                 <version>${zk.version}</version>
-            </dependency>
+            </dependency>           
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpstruct-osgi</artifactId>
@@ -379,7 +383,7 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmntk-osgi</artifactId>
                 <version>2.1</version>
-            </dependency>
+            </dependency>             
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>log-osgi</artifactId>
@@ -388,7 +392,7 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>prom6-osgi</artifactId>
-                <version>6.0</version>
+                <version>1.0</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.servlet</groupId>
@@ -396,22 +400,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>raffaeleconforti-osgi</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.apromore</groupId>-->
-                <!--<artifactId>bpmnminer-osgi</artifactId>-->
-                <!--<version>1.1</version>-->
-            <!--</dependency>-->
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>prodrift-osgi</artifactId>
-                <version>2.5</version>
-            </dependency>
-
 
             <!-- Editor -->
             <dependency>
@@ -1383,7 +1371,7 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
                 <version>${flyway.version}</version>
-            </dependency>
+            </dependency>            
         </dependencies>
     </dependencyManagement>
 
@@ -1436,7 +1424,7 @@
         <repository>
             <id>flyway-repo</id>
             <url>https://repo.flywaydb.org/repo</url>
-        </repository>
+        </repository>        
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -1447,7 +1435,7 @@
         <pluginRepository>
             <id>flyway-repo</id>
             <url>https://repo.flywaydb.org/repo</url>
-        </pluginRepository>
+        </pluginRepository>        
     </pluginRepositories>
 
     <build>
@@ -1549,7 +1537,7 @@
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
                     <version>${flyway.version}</version>
-                </plugin>
+                </plugin>                
             </plugins>
         </pluginManagement>
 
@@ -1913,7 +1901,7 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
-            </plugin>
+            </plugin>            
         </plugins>
     </build>
 

@@ -20,24 +20,30 @@
 
 package org.apromore.service.csvimporter.impl;
 
-import com.google.common.io.ByteStreams;
-import com.opencsv.*;
-import com.opencsv.enums.CSVReaderNullFieldIndicator;;
-import java.io.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
-import org.apromore.service.csvimporter.*;
+
+import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.InvalidCSVException;
+import org.apromore.service.csvimporter.LogModel;
+import org.apromore.service.csvimporter.LogSample;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import com.google.common.io.ByteStreams;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.RFC4180ParserBuilder;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 
 /** Test suite for {@link CSVImporterLogicImpl}. */
 public class CSVImporterLogicImplUnitTest {

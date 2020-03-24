@@ -1,9 +1,0 @@
-{
-	"dynamic_cat_cols":	["Resource","org:resource","last","activity_name","label","elapsed","proctime","event_nr","lifecycle:transition","AMOUNT_REQ"],
-	"static_cat_cols":	["creator"],
-	"timestamp_col":		"time:timestamp",
-	"activity_col":			"concept:name",
-	"static_num_cols":	[],
-	"dynamic_num_cols":	[],
-	"case_id_col":			"case_id"
-}

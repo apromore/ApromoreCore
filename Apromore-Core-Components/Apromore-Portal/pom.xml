@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2011 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -203,40 +202,6 @@
             <version>1.1.0</version>
         </dependency>
 
-        <!-- BPMNMiner -->
-        <!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.icu</groupId>
-                    <artifactId>icu4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        -->
-
-        <!-- ProDrift -->
-        <!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prodrift-osgi</artifactId>
-        </dependency>
-        -->
-
-        <!-- Client -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>filestore-client</artifactId>
-        </dependency>
--->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-ws-model</artifactId>
@@ -282,42 +247,6 @@
         <dependency>
             <groupId>org.jboss.javassist</groupId>
             <artifactId>com.springsource.javassist</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>2.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>ut.ee</groupId>
-            <artifactId>jbpt</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>hub.top</groupId>
-            <artifactId>uma</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>hub.top.petrinet</groupId>
-            <artifactId>pnapi-java</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>ut.ee</groupId>
-            <artifactId>umaBPDiff</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ut.ee</groupId>
-            <artifactId>pnapi</artifactId>
-            <version>1.0</version>
-        </dependency>-->
-        <dependency>
-            <groupId>ut.ee</groupId>
-            <artifactId>jackson</artifactId>
-            <version>1.0</version>
         </dependency>
 
         <!-- APIs -->

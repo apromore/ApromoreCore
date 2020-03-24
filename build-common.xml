@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ This file is part of "Apromore".
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
-  ~ Copyright (C) 2020 The University of Melbourne.
+  ~ This file is part of "Apromore".
   ~
   ~ "Apromore" is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -27,8 +27,6 @@
 
     <!-- This file isn't intended to be directly invoked; it's expected to be imported by other projects.
          The importing project must set the ${dir} property to be the directory of the ApromoreCore checkout. -->
-
-    <property name="startup.java.opts" value="-server -Xmx14g -Xmn1g"/>
 
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <!-- <property name="dir" location="${basedir}"/> -->
@@ -100,7 +98,6 @@
         </copy>
         <copy todir="${dir-virgo}/configuration" overwrite="true">
             <fileset dir="${dir-sups}/Virgo">
-                <include name="ehcache.xml"/>
                 <include name="tomcat-server.xml"/>
                 <include name="java6-server.profile"/>
                 <include name="serviceability.xml"/>

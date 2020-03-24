@@ -1,9 +1,7 @@
 /*
- * This file is part of "Apromore".
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
- * Copyright (C) 2016 Adriano Augusto.
- * Copyright (C) 2017 Queensland University of Technology.
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * This file is part of "Apromore".
  *
  * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +20,7 @@
 
 package au.edu.qut.bpmn.exporter;
 
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 /**
  * Created by Adriano on 29/10/2015.

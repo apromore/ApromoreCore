@@ -22,28 +22,101 @@
 
 package org.apromore.service.bpmndiagramimporter.impl;
 
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
-import org.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
-import org.processmining.models.graphbased.directed.DirectedGraphEdge;
-import org.processmining.models.graphbased.directed.DirectedGraphNode;
-import org.processmining.models.graphbased.directed.bpmn.*;
-import org.processmining.models.graphbased.directed.bpmn.elements.*;
-
-import com.processconfiguration.*;
-import org.omg.spec.bpmn._20100524.model.*;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import javax.xml.bind.*;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
+
 import java.io.File;
 import java.io.StringReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
-import org.processmining.plugins.bpmn.BpmnAssociation;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
+import org.apromore.processmining.models.graphbased.directed.DirectedGraphEdge;
+import org.apromore.processmining.models.graphbased.directed.DirectedGraphNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Association;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.CallActivity;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataAssociation;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataObject;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Flow;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.MessageFlow;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SwimlaneType;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.TextAnnotation;
+import org.apromore.processmining.plugins.bpmn.BpmnAssociation;
+import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
+import org.omg.spec.bpmn._20100524.model.TAdHocSubProcess;
+import org.omg.spec.bpmn._20100524.model.TAssociation;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
+import org.omg.spec.bpmn._20100524.model.TCallActivity;
+import org.omg.spec.bpmn._20100524.model.TCallableElement;
+import org.omg.spec.bpmn._20100524.model.TCancelEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TCatchEvent;
+import org.omg.spec.bpmn._20100524.model.TCollaboration;
+import org.omg.spec.bpmn._20100524.model.TCompensateEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TComplexGateway;
+import org.omg.spec.bpmn._20100524.model.TConditionalEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TDataAssociation;
+import org.omg.spec.bpmn._20100524.model.TDataObject;
+import org.omg.spec.bpmn._20100524.model.TDefinitions;
+import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TErrorEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TEscalationEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TEvent;
+import org.omg.spec.bpmn._20100524.model.TEventBasedGateway;
+import org.omg.spec.bpmn._20100524.model.TEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TGateway;
+import org.omg.spec.bpmn._20100524.model.TImplicitThrowEvent;
+import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TIntermediateCatchEvent;
+import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
+import org.omg.spec.bpmn._20100524.model.TLane;
+import org.omg.spec.bpmn._20100524.model.TLaneSet;
+import org.omg.spec.bpmn._20100524.model.TLinkEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TMessageEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TMessageFlow;
+import org.omg.spec.bpmn._20100524.model.TMultiInstanceLoopCharacteristics;
+import org.omg.spec.bpmn._20100524.model.TParallelGateway;
+import org.omg.spec.bpmn._20100524.model.TParticipant;
+import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.omg.spec.bpmn._20100524.model.TSignalEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TStartEvent;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
+import org.omg.spec.bpmn._20100524.model.TTask;
+import org.omg.spec.bpmn._20100524.model.TTerminateEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TTextAnnotation;
+import org.omg.spec.bpmn._20100524.model.TThrowEvent;
+import org.omg.spec.bpmn._20100524.model.TTimerEventDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.processconfiguration.Configurable;
+import com.processconfiguration.ConfigurationAnnotationAssociation;
+import com.processconfiguration.ConfigurationAnnotationShape;
+import com.processconfiguration.Variants;
 
 /**
  * Created by Adriano on 29/10/2015.
@@ -70,6 +143,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
     public BPMNDiagramImporterImpl() {}
 
+    @Override
     public BPMNDiagram importBPMNDiagram(String xmlProcess) throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
