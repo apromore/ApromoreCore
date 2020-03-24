@@ -21,10 +21,6 @@
 
 package de.hpi.bpmn2_0.replay;
 
-import de.hpi.bpmn2_0.backtracking2.Node;
-import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,11 +32,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
+
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+
+import de.hpi.bpmn2_0.backtracking2.Node;
+import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 
 /*
 * Note that this trace can be incomplete: not having end node
@@ -117,6 +119,10 @@ public class ReplayTrace {
     
     public XTrace2 getOriginalTrace() {
         return this.logTrace;
+    }
+    
+    public Replayer getReplayer() {
+        return replayer;
     }
     
     public TraceNode getStart() {

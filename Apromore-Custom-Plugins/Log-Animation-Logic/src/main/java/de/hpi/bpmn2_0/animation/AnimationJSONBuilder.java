@@ -21,14 +21,6 @@
 
 package de.hpi.bpmn2_0.animation;
 
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.replay.AnimatedSequenceFlow;
-import de.hpi.bpmn2_0.replay.AnimationLog;
-import de.hpi.bpmn2_0.replay.ReplayParams;
-import de.hpi.bpmn2_0.replay.ReplayTrace;
-import de.hpi.bpmn2_0.replay.Replayer;
-import de.hpi.bpmn2_0.replay.TimeUtilities;
-import de.hpi.bpmn2_0.replay.TraceNode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,12 +31,21 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.Seconds;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import de.hpi.bpmn2_0.replay.AnimatedSequenceFlow;
+import de.hpi.bpmn2_0.replay.AnimationLog;
+import de.hpi.bpmn2_0.replay.ReplayParams;
+import de.hpi.bpmn2_0.replay.ReplayTrace;
+import de.hpi.bpmn2_0.replay.TimeUtilities;
+import de.hpi.bpmn2_0.replay.TraceNode;
 
 /*
 * Animation timing is shown via the timeline bar which embeds two timing aspects:
@@ -64,14 +65,12 @@ import org.json.JSONObject;
 public class AnimationJSONBuilder {
     private ArrayList<AnimationLog> animations = null;
     private Interval totalRealInterval = null; //total time interval of all logs
-    private Replayer replayer;
     private ReplayParams params;
     private static final Logger LOGGER = Logger.getLogger(AnimationJSONBuilder.class.getCanonicalName());
     
-    public AnimationJSONBuilder(ArrayList<AnimationLog> animations, Replayer replayer, ReplayParams params) {
+    public AnimationJSONBuilder(ArrayList<AnimationLog> animations, ReplayParams params) {
         this.animations = animations;
         this.params = params;
-        this.replayer = replayer;
         
         Set<DateTime> dateSet = new HashSet<>();
         for (AnimationLog animationLog : animations) {
@@ -454,7 +453,6 @@ public class AnimationJSONBuilder {
     }
     
     public void clear() {
-        replayer = null;
         params = null;
         for (AnimationLog animLog : animations) {
             animLog.clear();
