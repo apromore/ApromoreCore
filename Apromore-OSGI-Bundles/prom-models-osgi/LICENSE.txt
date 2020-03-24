@@ -1,0 +1,2 @@
+This module is licensed under ProM Framework License with exception for Apromore.
+More details can be found at: http://www.promtools.org/doku.php?id=license

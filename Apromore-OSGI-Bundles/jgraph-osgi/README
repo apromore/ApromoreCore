@@ -1,0 +1,225 @@
+JGraph - The JFC/Swing Graph Component 2001-2009(c)JGraph Ltd
+
+A component to display, edit and layout graphs (networks) with Java
+
+TABLE OF CONTENTS
+*****************
+
+1. Disclaimer
+2. Installation
+   2.1 Requirements
+3. What is it?
+   3.1 Features
+   3.2 Layouts
+4. Implementation
+5. Getting Help
+   5.1 Documentation
+   5.2 Support
+6. Obtaining JGraph
+7 Compiling
+8. Misc
+   8.1 Tips and tricks
+   8.2 Showcase
+9. License
+10. Contact Email
+
+
+
+1. Disclaimer
+-------------
+Please read the license under which your version of JGraph is licensed for any
+warranty limitation.
+
+
+2. Installation
+---------------
+
+2.1 Requirements
+----------------
+o  JGraph requires a Java 1.4 or later compatible virtual 
+   machine for your operating system.
+o  (Optional) Apache Ant
+   
+The most recent version of Java can be obtained from http://java.sun.com/j2se/
+To compile JGraph using the supplied build.xml, you require Ant. To obtain Ant 
+go to http://ant.apache.org/ and select Binary Distributions of the left hand 
+side navigation. Select the nearest mirror then download the compressed file 
+appropriate for your platform
+(.zip for Windows and .tar.gz for UNIX). Then decompress the file into your
+selected directory path for the Ant binaries.
+
+
+3. What is it?
+--------------
+
+The intention of this project is to provide a freely available and fully Swing 
+compliant implementation of a graph component. You can display objects and 
+relations (networks) in any Swing UI, interact with them, automatically 
+position them and analysis their graph structure.
+
+3.1 Features
+------------
+o Edge Editing: Add/Remove/Edit Points; Connect, Disconnect; Labels
+o Moving/Sizing: Transaction-Based, with Live-Preview
+o Selection: Single-Cell and Marquee Selection.
+o Zoom: Arbitrary  Zoom; Uses JavaTM 2D
+o Layering: View-Dependent Inter- and Intracell Layering
+o Grouping: Children Selectable; Uses Tree-Interface
+o Grid:Customizable Size, Color, Appearance
+o In-Place Editing: Direct Text Editing for all Cells
+o View Attributes: Cells have Separate Attributes for each attached View
+o Ports: Multiple Connection Points for each Cell
+o Handles: Flexible Interface for Cell-Modifications
+o Drag and Drop: Between JGraphs, JVMs and other applications/OS
+o Clipboard: Supports Multiple Transfer Formats
+o Command History: Multi-View; for all available Operations
+o Look-and-Feel: All Swing Pluggable Look-and-Feels
+o Routing: Customizable Routing with default algorithms
+o Visibility: Hide edges, vertices and groups
+o Attribute-Split: Per attribute control of view-only attributes
+o Clustering: Folding/Unfolding of groups into vertices
+o Ant-based: Ant-based build environment
+o Precision: Double precision coordinates
+o Labels: Draws labels along edges
+
+3.2 Layouts
+-----------
+
+JGraph also contains the next generation of layout engine designed
+for optimal performance with the modern JGraph core. The layouts 
+enable you to use circular, tree, force-directed and hierachical layouts 
+with ease in your JGraph application.
+
+
+4. Implementation
+-----------------
+JGraph integrates nicely into the Swing component class hierarchy, because it
+is based on the Swing MVC pattern. The API and implementation complies with 
+the JavaTM Code Conventions. All classes in JGraph have their equivalents in 
+Swing, and all features are fully Swing compatible.
+
+
+
+5. Getting Help
+---------------
+The FAQ is at http://www.jgraph.com/faq.html
+
+5.1 Documentation
+-----------------
+The API specification is included in this distribution and also available at 
+http://api.jgraph.com/. For additional information, updates, binaries and 
+source code see the Home Page of JGraph at http://www.jgraph.com/
+A complete and up to date User Manual is available at
+http://www.jgraph.com/pub/jgraphmanual.pdf. The User Manual should be the next
+document you read after this one.
+
+5.2 Support
+-----------
+Support is available through the Support section of the JGraph
+web site at http://www.jgraph.com/support.html. On this page the process
+of finding help is explained. Please note that no free support is provided
+via email.
+
+A number of examples are available in the examples package of the JGraph 
+download.
+
+
+6. Obtaining JGraph
+-------------------
+The sources of JGraph are placed under the BSD license and are available as 
+zip files via the download link at http://www.jgraph.com/downloads.html.
+
+
+7. Compiling
+------------
+The project has the following directory structure:
+
+src/      Source root
+examples/ Examples root
+build/    Build environment
+dist-*/   Distributables
+
+The compilation of JGraph requires Ant and the build.xml file. The same build
+file is used for all distributions. However, the binary and source distribution
+are only compatible with certain versions of Java.
+
+o On Unix, type the following depending on the location of Java and Ant:
+     export JAVA_HOME=/usr/java/j2sdk1.4.1_12
+     export ANT_HOME=/usr/ant/ant-1.6.2
+     export PATH=$PATH:$JAVA_HOME/bin:$ANT_HOME/bin/
+
+o On Windows, type the following depending on the location of Java and Ant:
+     set JAVA_HOME=c:\j2sdk1.4.1_12
+     set ANT_HOME=c:\ant-1.6.2
+     set PATH=%PATH%;%JAVA_HOME%\bin;%ANT_HOME%\bin
+
+The build.xml file offers the following targets:
+
+- all (*)      --> Clean up and produce all distributions
+- apidoc       --> Generate the API specification (javadoc)
+- build        --> Run all tasks to completely populate the build directory
+- clean        --> Delete all generated files and directories
+- compile      --> Prepare (migrate) and compile the source tree
+  - prepare    --> Copy source code to build directory
+- dist         --> Produce fresh distributions
+- distclean    --> Clean up the distribution files only
+- doc          --> Generate all documentation
+- init         --> Initialize the build; create directories, call tstamp
+- jar          --> Build all Java archives (JARs)
+- make-example --> Compile the example tree
+- example      --> Run the main example UI
+
+(*) all is the default target.
+
+Target names may be appended to the above Java commands. For example,
+to compile and run the example UI type the following:
+
+ant example
+
+One example does rely on the l2fprod common library to build. The version 
+tested can be obtained at http://www.jgraph.com/pub/l2fprod-common-all.jar.
+
+8. Misc
+-------
+
+8.1 Tips and Tricks
+-------------------
+To create multiline labels you can use HTML. Here is an example:
+<html>first line<br>second line</html>
+The following key bindings are supported by default: 
+o Alt-Drag: Force marquee selection
+o Shift-Select: Extend selection
+o Control-Select: Toggle selection
+o Control-Drag: Clones selection
+o Shift-Drag: Constrained drag
+To add and remove bends (edge points) you can press the right mouse button 
+while holding down the Shift key. To use the quadratic and bezier line style 
+the edge must have 1 and 2 intermediate points respectively.
+
+8.2 Showcase
+------------
+Please send screenshots to info (at) jgraph (dot) com if you would like to
+see your application on the JGraph web site.
+
+8.3 Other JGraph packages
+-------------------------
+mxGraph is a digramming library that provides all of the graph features you 
+expect natively in a web browser. Try it out at http://www.mxgraph.com
+
+
+9. License
+----------
+For legal and licensing issues, please read the LICENSE file.
+
+10. Contact Email
+-----------------
+Sales                          sales (at) jgraph (dot) com
+
+For more information please visit
+http://www.jgraph.com/
+
+
+What's Next?
+------------
+
+Download and read the JGraph User Manual from http://www.jgraph.com/pub/jgraphmanual.pdf.

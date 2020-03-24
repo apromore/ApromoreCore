@@ -1,0 +1,68 @@
+<!--
+  ~ Copyright © 2009-2018 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>jgraph-osgi</artifactId>
+    <name>JGraph 5 OSGi bundle</name>
+    <version>1.0</version>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>   
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.jgraph,
+                            org.apromore.jgraph.event,
+                            org.apromore.jgraph.graph,
+                            org.apromore.jgraph.plaf,
+                            org.apromore.jgraph.plaf.basic,
+                            org.apromore.jgraph.util,
+                            org.apromore.jgraph.util2,
+                            org.apromore.jgraph.layout,
+                            org.apromore.jgraph.layout.hierarchical,
+                            org.apromore.jgraph.layout.hierarchical.model,
+                            org.apromore.jgraph.navigation,
+                            org.apromore.jgraph.algebra,
+                            org.apromore.jgraph.algebra.cost
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
