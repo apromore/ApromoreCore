@@ -188,6 +188,7 @@
         </copy>
         <copy todir="${core-dir-virgo}/configuration" overwrite="true">
             <fileset dir="${core-dir-sups}/Virgo">
+                <include name="ehcache.xml"/>
                 <include name="tomcat-server.xml"/>
                 <include name="java6-server.profile"/>
                 <include name="serviceability.xml"/>
