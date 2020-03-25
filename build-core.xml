@@ -23,6 +23,8 @@
 
     <description>Apromore Core Distribution</description>
 
+    <property name="startup.java.opts" value="-server -Xmx14g -Xmn1g"/>
+
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <property name="core-dir" location="${basedir}/ApromoreCore"/>
     <property name="core-dir-sups" location="${core-dir}/Supplements"/>
