@@ -1,6 +1,7 @@
 /*
  * This file is part of "Apromore".
  *
+ * Copyright (C) 2013 - 2016 Reina Uba.
  * Copyright (C) 2016 - 2017 Queensland University of Technology.
  * Copyright (C) 2018, 2020 The University of Melbourne.
  *
