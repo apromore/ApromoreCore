@@ -108,7 +108,7 @@ public class LabelEditDistance {
         double mappedWeightFunc = 0;
 
         if(costFunc.length > 0) {
-            int[][] result = HungarianAlgorithm.computeAssignments(costFuncCopy);
+            int[][] result = new HungarianAlgorithm(costFuncCopy).execute();
 
             for (int i = 0; i < result.length; i++) {
                 mappedWeightFunc += (-1) * costFunc[result[i][0]][result[i][1]];

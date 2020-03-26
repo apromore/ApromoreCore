@@ -165,7 +165,7 @@ public class AssingmentProblem {
                     }
                 }
 
-                int[][] result = HungarianAlgorithm.computeAssignments(costsCopy);
+                int[][] result = new HungarianAlgorithm(costsCopy).execute();
 
                 for (int i = 0; i < result.length; i++) {
                     double pairCost = (-1) * costs[result[i][0]][result[i][1]];
@@ -229,8 +229,7 @@ public class AssingmentProblem {
                         costsCopy[i][j] = costs[i][j];
                     }
                 }
-
-                int[][] result = HungarianAlgorithm.computeAssignments(costsCopy);
+                int[][] result = new HungarianAlgorithm(costsCopy).execute();
 
                 for (int i = 0; i < result.length; i++) {
                     double pairCost = (-1) * costs[result[i][0]][result[i][1]];
@@ -361,8 +360,7 @@ public class AssingmentProblem {
                 costsCopy[i][j] = costs[i][j];
             }
         }
-
-        int[][] result = HungarianAlgorithm.computeAssignments(costsCopy);
+        int[][] result = new HungarianAlgorithm(costsCopy).execute();
 
         for (int i = 0; i < result.length; i++) {
             double pairCost = (-1) * costs[result[i][0]][result[i][1]];
@@ -472,8 +470,7 @@ public class AssingmentProblem {
                 costsCopy[i][j] = costs[i][j];
             }
         }
-
-        int[][] result = HungarianAlgorithm.computeAssignments(costsCopy);
+        int[][] result = new HungarianAlgorithm(costsCopy).execute();
 
         for (int i = 0; i < result.length; i++) {
             solutionMappings.add(new StringPair(g1Labels.get(result[i][0]),
