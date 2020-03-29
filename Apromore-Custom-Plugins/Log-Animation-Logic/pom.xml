@@ -41,7 +41,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <unpackBundle>false</unpackBundle>
@@ -53,7 +52,6 @@
                             <!-- Dynamically loaded by JAXB in order to parse BPMN -->
                             com.sun.xml.bind.v2,
                             de.hpi.bpmn2_0.model,
-
                             org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>

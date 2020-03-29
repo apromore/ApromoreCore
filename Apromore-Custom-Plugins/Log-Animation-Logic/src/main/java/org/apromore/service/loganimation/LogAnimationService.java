@@ -40,4 +40,5 @@ public interface LogAnimationService {
     * @throws Exception  if the representation couldn't be generated
     */
    public String createAnimation(String bpmn, List<Log> logs) throws Exception;
+   public String createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) throws Exception;
 }

@@ -43,6 +43,9 @@ import de.hpi.bpmn2_0.backtracking2.Node;
 import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import de.hpi.bpmn2_0.model.gateway.ExclusiveGateway;
+import de.hpi.bpmn2_0.model.gateway.Gateway;
+import de.hpi.bpmn2_0.model.gateway.GatewayDirection;
 
 /*
 * Note that this trace can be incomplete: not having end node
@@ -253,6 +256,18 @@ public class ReplayTrace {
         return this.timeOrderedReplayedNodes;
     }
     
+    public void removeNode(TraceNode node) {
+        this.markingsMap.remove(node.getModelNode());
+        this.timeOrderedReplayedNodes.remove(node);
+    }
+    
+    public void removeSequenceFlow(SequenceFlow flow) {
+        flow.getSourceRef().getIncoming().remove(flow);
+        flow.getTargetRef().getOutgoing().remove(flow);
+        flow.setSourceRef(null);
+        flow.setTargetRef(null);        
+        this.sequenceFlows.remove(flow);
+    }
     
     public ArrayList<SequenceFlow> getSequenceFlows() {
         if (this.sequenceFlows.isEmpty()) {
@@ -269,6 +284,49 @@ public class ReplayTrace {
     public Map<FlowNode,TraceNode> getMarkingsMap() {
         return markingsMap;
     }
+    
+    // Assume all gateways are XOR and they are block structure (XOR-split has 1 incoming arc, XOR-join has 1 outgoing arcs)
+    // This method removes all XOR gateways and connects the incoming and outgoing arcs 
+    // of the removed gateways to the corresponding incoming/outgoing adjacent node.
+    // Conversion rules: (a1,a2 are arcs)
+    //  - A--a1-->XORSplit--a2-->B becomes A--a2-->B, a1 is removed, XORSplit is removed
+    //  - A--a1-->XORJoin--a2-->B becomes A--a1-->B, a2 is removed, XORJoin is removed
+    public void convertToNonGateways() {
+        Set<TraceNode> toBeRemoved = new HashSet<>();
+        for (TraceNode traceNode: getNodes()) {
+            FlowNode modelNode = traceNode.getModelNode();
+            //XOR Split
+            if (modelNode instanceof ExclusiveGateway) {
+                // XOR split: connect the single outgoing arc to the source node
+                if (((Gateway)modelNode).getGatewayDirection() == GatewayDirection.DIVERGING) {
+                    SequenceFlow arcToXOR = traceNode.getIncomingSequenceFlows().get(0);
+                    TraceNode nodeToXOR = (TraceNode)arcToXOR.getSourceRef();
+                    SequenceFlow arcFromXOR = traceNode.getOutgoingSequenceFlows().get(0);
+                    
+                    nodeToXOR.getOutgoing().add(arcFromXOR);
+                    nodeToXOR.getOutgoing().remove(arcToXOR);
+                    arcFromXOR.setSourceRef(nodeToXOR);
+                    removeSequenceFlow(arcToXOR);
+                }
+                // XOR join: connect the single inocoming arc to the target node
+                else {
+                    SequenceFlow arcFromXOR = traceNode.getOutgoingSequenceFlows().get(0);
+                    TraceNode nodeFromXOR = (TraceNode)arcFromXOR.getTargetRef();
+                    SequenceFlow arcToXOR = traceNode.getIncomingSequenceFlows().get(0);
+                    
+                    nodeFromXOR.getIncoming().add(arcToXOR);
+                    nodeFromXOR.getIncoming().remove(arcFromXOR);
+                    arcToXOR.setTargetRef(nodeFromXOR);
+                    removeSequenceFlow(arcFromXOR);
+                }
+                
+                toBeRemoved.add(traceNode);
+            }
+        }
+        
+        toBeRemoved.forEach(node -> removeNode(node));
+    }
+    
     
     public Node getBacktrackingNode() {
         return this.backtrackingNode;
