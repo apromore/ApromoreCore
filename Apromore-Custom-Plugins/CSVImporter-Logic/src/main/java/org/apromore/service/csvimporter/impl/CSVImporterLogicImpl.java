@@ -1,23 +1,21 @@
-/*-
- * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
- * %%
- * This program is free software: you can redistribute it and/or modify
+/*
+ * This file is part of "Apromore".
+ *
+ * Copyright (C) 2019 - 2020 The University of Melbourne.
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
+ * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
 package org.apromore.service.csvimporter.impl;
@@ -249,14 +247,24 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     private StringBuilder checkFields(Map<String, Integer> posMap) {
         String[] fieldsToCheck = {caseid, activity, timestamp};
         StringBuilder importMessage = new StringBuilder();
-
+        String messingField;
+        String mess;
         for (int f = 0; f <= fieldsToCheck.length - 1; f++) {
             if (posMap.get(fieldsToCheck[f]) == -1) {
-                String mess = "No field " + fieldMap.get(fieldsToCheck[f]) + " is defined";
-                importMessage = (importMessage.length() == 0 ? importMessage.append(mess) : importMessage.append(", ").append(mess));
+                switch(fieldsToCheck[f]) {
+                    case caseid:
+                        messingField = "Case ID!";
+                        break;
+                    case activity:
+                        messingField = "Activity!";
+                        break;
+                    default:
+                        messingField = "End Timestamp!";
+                }
+                mess = "No column has been selected as " + messingField;
+                importMessage = (importMessage.length() == 0 ? importMessage.append(mess) : importMessage.append(System.lineSeparator()).append(mess));
             }
         }
-
         return importMessage;
     }
 
