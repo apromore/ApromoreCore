@@ -250,6 +250,7 @@ public final class DateParser {
         if (b > 12 || preferMonthFirst) {
             dt.month = a;
             dt.day = b;
+            preferMonthFirst = true;
         } else {
             dt.day = a;
             dt.month = b;
