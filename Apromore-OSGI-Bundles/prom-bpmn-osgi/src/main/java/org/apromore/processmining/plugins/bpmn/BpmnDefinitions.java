@@ -77,8 +77,17 @@ public class BpmnDefinitions extends BpmnElement {
 			collaborations = new HashSet<BpmnCollaboration>();
 			diagrams = new HashSet<BpmnDiagram>();
 
-			buildFromDiagram(diagram);
+			buildFromDiagram(diagram, null);
 		}
+		
+        public BpmnDefinitionsBuilder(BPMNDiagram diagram, ProMJGraph layoutInfo) {
+            resources = new HashSet<BpmnResource>();
+            processes = new HashSet<BpmnProcess>();
+            collaborations = new HashSet<BpmnCollaboration>();
+            diagrams = new HashSet<BpmnDiagram>();
+
+            buildFromDiagram(diagram, layoutInfo);
+        }		
 
 		/**
 		 * Build BpmnDefinitions from BPMNDiagram (BPMN picture)
@@ -86,7 +95,7 @@ public class BpmnDefinitions extends BpmnElement {
 		 * @param context if null, then graphics info is not added
 		 * @param diagram
 		 */
-		private void buildFromDiagram(BPMNDiagram diagram) {
+		private void buildFromDiagram(BPMNDiagram diagram, ProMJGraph layoutInfo) {
 			BpmnCollaboration bpmnCollaboration = new BpmnCollaboration("collaboration");
 			bpmnCollaboration.setId("col_" + bpmnCollaboration.hashCode());
 
@@ -156,7 +165,12 @@ public class BpmnDefinitions extends BpmnElement {
 				plane.setBpmnElement(intBpmnProcess.id);
 			}
 			bpmnDiagram.addPlane(plane);
-			fillGraphicsInfo(diagram, bpmnDiagram, plane);
+			if (layoutInfo == null) {
+			    fillGraphicsInfo(diagram, bpmnDiagram, plane);
+			}
+			else {
+			    fillGraphicsInfo(diagram, bpmnDiagram, plane, layoutInfo);
+			}
 //			if(context != null) {
 //				fillGraphicsInfo(context, diagram, bpmnDiagram, plane);
 //			}
@@ -177,26 +191,31 @@ public class BpmnDefinitions extends BpmnElement {
 
 			// Construct graph info
 			//ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(context, diagram);
-			ProMJGraph graph = ProMJGraphVisualizer.instance().visualizeGraph(diagram);
-			ProMGraphModel graphModel = graph.getModel();
-
-			for (Object o : graphModel.getRoots()) {
-				if (o instanceof ProMGraphCell) {
-					ProMGraphCell graphCell = (ProMGraphCell) o;
-					addCellGraphicsInfo(graphCell, plane);
-				}
-				if (o instanceof ProMGraphPort) {
-					ProMGraphPort graphPort = (ProMGraphPort) o;
-					if(graphPort.getBoundingNode() != null) {
-						addCellGraphicsInfo(graphPort, plane);
-					}
-				}
-				if (o instanceof ProMGraphEdge) {
-					ProMGraphEdge graphEdge = (ProMGraphEdge) o;
-					addEdgeGraphInfo(graphEdge, plane);
-				}
-			}
+			ProMJGraph layoutInfo = ProMJGraphVisualizer.instance().visualizeGraph(diagram);
+			fillGraphicsInfo(diagram, bpmnDiagram, plane, layoutInfo);
 		}
+		
+		// Bruce added 30 Mar 2020
+		private synchronized static void fillGraphicsInfo(BPMNDiagram diagram,
+                BpmnDiagram bpmnDiagram, BpmnDiPlane plane, ProMJGraph layoutInfo) {
+            ProMGraphModel graphModel = layoutInfo.getModel();
+            for (Object o : graphModel.getRoots()) {
+                if (o instanceof ProMGraphCell) {
+                    ProMGraphCell graphCell = (ProMGraphCell) o;
+                    addCellGraphicsInfo(graphCell, plane);
+                }
+                if (o instanceof ProMGraphPort) {
+                    ProMGraphPort graphPort = (ProMGraphPort) o;
+                    if(graphPort.getBoundingNode() != null) {
+                        addCellGraphicsInfo(graphPort, plane);
+                    }
+                }
+                if (o instanceof ProMGraphEdge) {
+                    ProMGraphEdge graphEdge = (ProMGraphEdge) o;
+                    addEdgeGraphInfo(graphEdge, plane);
+                }
+            }
+        }
 		
 		/**
 		 * Retrieve graphics info from graphCell
@@ -301,7 +320,8 @@ public class BpmnDefinitions extends BpmnElement {
 		}
 	}
 	
-	protected boolean importElements(XmlPullParser xpp, Bpmn bpmn) {
+	@Override
+    protected boolean importElements(XmlPullParser xpp, Bpmn bpmn) {
 		if (super.importElements(xpp, bpmn)) {
 			/*
 			 * Start tag corresponds to a known child element of an XPDL node.
@@ -340,7 +360,8 @@ public class BpmnDefinitions extends BpmnElement {
 		return false;
 	}
 	
-	public String exportElements() {
+	@Override
+    public String exportElements() {
 		/*
 		 * Export node child elements.
 		 */
