@@ -46,7 +46,7 @@
                     <label value="Supported extensions"/>
                     <label id="supportedExt" value="" />
                 </row>
-                <row spans="1,2">
+                <row spans="1,2" visible="${labels.publish.enable}">
                     <label value="Make file Public"/>
                     <checkbox id="public" />
                 </row>

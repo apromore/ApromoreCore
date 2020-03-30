@@ -35,7 +35,7 @@ and CreateProcessController.java for creating log purpose.
                     <label value="Log name" width="100%"/>
                     <textbox id="logname" width="100%"/>
                 </row>
-                <row>
+                <row visible="${labels.publish.enable}">
                     <label value="Make log Public"/>
                     <checkbox id="logpublic" checked="false" tooltiptext="Tick this checkbox if you wish to make this Log available to all Users"/>
                 </row>
