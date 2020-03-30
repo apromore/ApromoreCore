@@ -50,7 +50,7 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CSVExporterPlugin.class);
 
     private String label = "Export log as CSV";
-    private String groupLabel = "Settings";
+    private String groupLabel = "File";
 
     @Inject EventLogService eventLogService;
     @Inject private CSVExporterLogic csvExporterLogic;

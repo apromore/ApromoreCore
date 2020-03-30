@@ -97,6 +97,8 @@
         <include name="Apromore-Custom-Plugins/CSVExporter-Logic/target/csvexporter-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/CSVExporter-Portal/target/csvexporter-portal-plugin-1.0.jar"/>        
 
+        <include name="Apromore-Custom-Plugins/File-Portal-Plugin/target/file-portal-plugin-1.0.jar"/>
+
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
     </fileset>

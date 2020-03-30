@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Set;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -345,16 +346,16 @@ public abstract class BaseListboxController extends BaseController {
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
-                getMainController().getMenu().editData();
+                Messagebox.show("Select one folder.", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
-        } catch (DialogException | ParseException | ExceptionAllUsers | ExceptionDomains e) {
+        } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
     protected void removeFolder() throws Exception {
         // See if the user has mixed folders and process models. we handle everything differently.
-        ArrayList<FolderType> folders = getMainController().getMenu().getSelectedFolders();
+        ArrayList<FolderType> folders = getSelectedFolders();
         Map<SummaryType, List<VersionSummaryType>> elements =  getMainController().getSelectedElementsAndVersions();
 
         if (doesSelectionContainFoldersAndElements(folders, elements)) {
@@ -368,6 +369,19 @@ public abstract class BaseListboxController extends BaseController {
                 LOGGER.error("Nothing selected to delete?");
             }
         }
+    }
+
+    private ArrayList<FolderType> getSelectedFolders() {
+        ArrayList<FolderType> folderList = new ArrayList<>();
+        if (this instanceof ProcessListboxController) {
+            Set<Object> selectedItem = (Set<Object>) getListModel().getSelection();
+            for (Object obj : selectedItem) {
+                if (obj instanceof FolderType) {
+                    folderList.add((FolderType) obj);
+                }
+            }
+        }
+        return folderList;
     }
 
     /* Show the message tailored to deleting one or more folders. */
@@ -436,7 +450,16 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {
-        mainController.getMenu().deleteSelectedElements();
+        //mainController.getMenu().deleteSelectedElements();
+
+        this.mainController.eraseMessage();
+        Map<SummaryType, List<VersionSummaryType>> elements = mainController.getSelectedElementsAndVersions();
+        if (elements.size() != 0) {
+            this.mainController.deleteElements(elements);
+            mainController.clearProcessVersions();
+        } else {
+            this.mainController.displayMessage("No process version selected.");
+        }
     }
 
     /* Removes all the selected folders and the containing folders and processes. */

@@ -23,27 +23,4 @@
 
 <!-- Controller is  MenuController-->
 <menubar id="operationMenu" width="100%" vflex="1">
-    <menu id="process" label="File">
-        <menupopup>
-            <menuitem id="fileImport" label="Upload" disabled="true" image="/themes/ap/common/img/icons/upload.svg"/>
-            <menuitem id="fileExport" label="Download" disabled="true" image="/themes/ap/common/img/icons/download.svg"/>
-
-            <menuitem id="createFolder" label="Create folder" disabled="true" image="/themes/ap/common/img/icons/folder-add.svg"/>
-
-            <menuitem id="createProcess2" label="Create model" disabled="true" image="/themes/ap/common/img/icons/bpmn-add.svg"/>
-            <menuitem id="createProcess" visible="true" label="Create model (legacy editor)" disabled="true" image="/themes/ap/common/img/icons/bpmn-add.svg" />
-
-            <menuitem id="processEdit2" label="Edit model" disabled="true" image="/themes/ap/common/img/icons/model-edit.svg"/>
-            <menuitem id="processEdit" visible="true" label="Edit model (legacy editor)" disabled="true" image="/themes/ap/common/img/icons/model-edit.svg"/>
-
-            <menuitem id="dataEdit" label="Edit metadata" disabled="true" image="/themes/ap/common/img/icons/meta-edit.svg"/>
-            <menuitem id="processDelete" label="Delete" disabled="true" image="/themes/ap/common/img/icons/trash.svg"/>
-            <!--
-            <menuseparator/>
-            <menuitem id="processCopy" label="Copy" disabled="true" image="/img/copy.png"/>
-            <menuitem id="processPaste" label="Paste" disabled="true" image="/img/paste.png"/>
-            <menuitem id="processMove" label="Move" disabled="true" image="/img/move.png"/>
-            -->
-        </menupopup>
-    </menu>
 </menubar>

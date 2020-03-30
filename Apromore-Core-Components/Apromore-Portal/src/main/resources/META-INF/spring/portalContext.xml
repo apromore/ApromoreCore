@@ -59,6 +59,10 @@
         <constructor-arg type="String" value="${portal.menuorder}"/>
     </bean>
 
+    <bean id="portalFileMenuitemOrder" class="org.apromore.portal.util.ExplicitComparator">
+        <constructor-arg type="String" value="${portal.menuitemorder.File}"/>
+    </bean>
+
     <bean id="portalShowSignavio" class="java.lang.Boolean">
         <constructor-arg type="String" value="${portal.showSignavio}"/>
     </bean>

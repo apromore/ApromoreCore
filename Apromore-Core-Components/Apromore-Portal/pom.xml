@@ -138,6 +138,7 @@
                             org.apromore.portal,
                             org.apromore.portal.common,
                             org.apromore.portal.context,
+                            org.apromore.portal.dialogController.workspaceOptions,
                             org.apromore.portal.dialogController,
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.exception,
