@@ -24,10 +24,12 @@ package org.apromore.service.csvimporter.impl;
 
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogSample;
+import org.apromore.service.csvimporter.dateparser.DateParserUtils;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.*;
 
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,16 +94,25 @@ class LogSampleImpl implements LogSample, Constants {
                 } else if ((heads.get(activity) == -1) && getPos(activityValues, header.get(i))) {
                     heads.put(activity, i);
                 } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, header.get(i).toLowerCase())) {
-                    String format = parse.determineDateFormat(sampleLine.get(i));
-                    if (format != null) {
+//                    String format = parse.determineDateFormat(sampleLine.get(i));
+//                    if (format != null) {
+//                        heads.put(timestamp, i);
+//                        timestampFormat = format;
+//                    }
+
+                    if(isParsable(i)){
                         heads.put(timestamp, i);
-                        timestampFormat = format;
                     }
+
                 } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, header.get(i))) {
-                    String format = parse.determineDateFormat(sampleLine.get(i));
-                    if (format != null) {
+//                    String format = parse.determineDateFormat(sampleLine.get(i));
+//                    if (format != null) {
+//                        heads.put(tsStart, i);
+//                        startTsFormat = format;
+//                    }
+
+                    if(isParsable(i)){
                         heads.put(tsStart, i);
-                        startTsFormat = format;
                     }
                 } else if ((heads.get(resource) == -1) && getPos(resourceValues, header.get(i))) {
                     heads.put(resource, i);
@@ -119,6 +130,15 @@ class LogSampleImpl implements LogSample, Constants {
         toLists(this);
     }
 
+
+    private boolean isParsable(int pos){
+        for (List<String> myLine: this.lines) {
+            if(Parse.parseTimestamp2(myLine.get(pos)) == null){
+                return false;
+            }
+        }
+        return true;
+    }
 
     // Accessors
 
@@ -190,71 +210,71 @@ class LogSampleImpl implements LogSample, Constants {
                     if(newLine.size() != getHeader().size()) {
                         continue;
                     }
-                    if (getPos(timestampValues, getHeader().get(j).toLowerCase())) {
-                        // if its timestamp field
+//                    if (getPos(timestampValues, getHeader().get(j).toLowerCase())) {
+//                        // if its timestamp field
+//
+//
+//                        //TODO this needs to use determineFormatForArray method from Parse.java
+//                        String format = parse.determineDateFormat((newLine.get(j))); // dd.MM.yyyy //MM.dd.yyyy
+//                        Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
+//                        if (validTS != null) {
+//                            try {
+//                                if (currentFormat != null) {
+//                                    // determine which one is right which one is wrong
+//                                    // hint: use sets to store all the possible formats, then parse them again.
+//
+//                                    if (currentFormat != format) {
+//                                        Timestamp validTS2 = Parse.parseTimestamp(this.lines.get(i - IncValue).get(j), currentFormat);
+//
+//                                        if (validTS.getYear() > 0) {
+//                                            currentFormat = format;
+//                                            break outerloop;
+//                                        } else {
+//                                            continue;
+//                                        }
+//                                    }
+//                                } else {
+//                                    currentFormat = format;
+//                                }
+//                            } catch (Exception e) {
+//                                // automatic parse might be inaccurate.
+//                                errorMessages.add("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
+//                                break;
+//                            }
+//
+//                        }
+//
+//                    }
 
-
-                        //TODO this needs to use determineFormatForArray method from Parse.java
-                        String format = parse.determineDateFormat((newLine.get(j))); // dd.MM.yyyy //MM.dd.yyyy
-                        Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
-                        if (validTS != null) {
-                            try {
-                                if (currentFormat != null) {
-                                    // determine which one is right which one is wrong
-                                    // hint: use sets to store all the possible formats, then parse them again.
-
-                                    if (currentFormat != format) {
-                                        Timestamp validTS2 = Parse.parseTimestamp(this.lines.get(i - IncValue).get(j), currentFormat);
-
-                                        if (validTS.getYear() > 0) {
-                                            currentFormat = format;
-                                            break outerloop;
-                                        } else {
-                                            continue;
-                                        }
-                                    }
-                                } else {
-                                    currentFormat = format;
-                                }
-                            } catch (Exception e) {
-                                // automatic parse might be inaccurate.
-                                errorMessages.add("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
-                                break;
-                            }
-
-                        }
-
-                    }
-
-                    if (getPos(StartTsValues, getHeader().get(j))) {
-                        // if its timestamp field
-                        String format = parse.determineDateFormat((newLine.get(j)));
-                        Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
-
-
-                        if (validTS != null) {
-                            try {
-                                if (startFormat != null) {
-
-                                    // determine which one is right which one is wrong
-                                    // hint: use sets to store all the possible formats, then parse them again.
-                                    if (startFormat != format) {
-                                        validTS = Parse.parseTimestamp(this.lines.get(i - 1).get(j), format);
-                                        if (validTS != null) {
-                                            startFormat = format;
-                                            break outerloop;
-                                        }
-                                    }
-                                } else {
-                                    startFormat = format;
-                                }
-                            } catch (Exception e) {
-                                // automatic parse might be inaccurate.
-                                errorMessages.add("Automatic parse of start timestamp might be inaccurate. Please validate start timestamp field.");
-                                break;
-                            }
-                        }
-                    }
+//                    if (getPos(StartTsValues, getHeader().get(j))) {
+//                        // if its timestamp field
+//                        String format = parse.determineDateFormat((newLine.get(j)));
+//                        Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
+//
+//
+//                        if (validTS != null) {
+//                            try {
+//                                if (startFormat != null) {
+//
+//                                    // determine which one is right which one is wrong
+//                                    // hint: use sets to store all the possible formats, then parse them again.
+//                                    if (startFormat != format) {
+//                                        validTS = Parse.parseTimestamp(this.lines.get(i - 1).get(j), format);
+//                                        if (validTS != null) {
+//                                            startFormat = format;
+//                                            break outerloop;
+//                                        }
+//                                    }
+//                                } else {
+//                                    startFormat = format;
+//                                }
+//                            } catch (Exception e) {
+//                                // automatic parse might be inaccurate.
+//                                errorMessages.add("Automatic parse of start timestamp might be inaccurate. Please validate start timestamp field.");
+//                                break;
+//                            }
+//                        }
+//                    }
                 }
             }
             setTimestampFormat(currentFormat);
@@ -319,10 +339,9 @@ class LogSampleImpl implements LogSample, Constants {
         Integer timeStampPos = this.getHeads().get(timestamp);
         Integer StartTimeStampPos = this.getHeads().get(tsStart);
 
-        for (int i = 0; i < this.getLines().get(0).size(); i++) {
-            String detectedFormat = parse.determineDateFormat(this.getLines().get(0).get(i));
-            if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
-                this.getOtherTimeStampsPos().put(i, detectedFormat);
+        for (int i = 0; i < this.header.size(); i++) {
+            if((i != timeStampPos) && (i != StartTimeStampPos) && isParsable(i)){
+                this.getOtherTimeStampsPos().put(i, null);
             }
         }
     }
@@ -357,7 +376,7 @@ class LogSampleImpl implements LogSample, Constants {
     @Override
     public void tryParsing(String format, int colPos) {
 
-        if (format == null || parse.parseTimestamp(this.getLines().get(0).get(colPos), format) == null) {
+        if ((format == null && !isParsable(colPos)) || Parse.parseTimestamp(this.getLines().get(0).get(colPos), format) == null) {
             openPopUpbox(colPos, format, couldnotParse, failedClass, this, true);
             return;
         }
@@ -446,7 +465,7 @@ class LogSampleImpl implements LogSample, Constants {
                     }
 
                     if (selected.equals(timestamp) || selected.equals(tsStart)) {
-                        sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos);
+                        sample.tryParsing(null, colPos);
                     } else {
                         sample.getHeads().put(selected, colPos);
                     }
@@ -454,7 +473,7 @@ class LogSampleImpl implements LogSample, Constants {
                 } else if (selected.equals(ignore)) {
                     sample.getIgnoredPos().add(colPos);
                 } else if (selected.equals(tsValue)) {
-                    sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos);
+                    sample.tryParsing(null, colPos);
                 } else if(selected.equals(caseAttribute)){
                     sample.getCaseAttributesPos().add(colPos);
                 }

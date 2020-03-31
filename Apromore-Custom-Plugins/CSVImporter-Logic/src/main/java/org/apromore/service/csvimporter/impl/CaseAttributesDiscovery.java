@@ -1,17 +1,10 @@
 package org.apromore.service.csvimporter.impl;
 
-import java.util.List;
-
 public class CaseAttributesDiscovery {
 
     private String caseId;
     private int position;
     private String value;
-
-
-
-    public CaseAttributesDiscovery() {
-    }
 
     public CaseAttributesDiscovery(String caseId,int position, String value) {
         this.caseId = caseId;
