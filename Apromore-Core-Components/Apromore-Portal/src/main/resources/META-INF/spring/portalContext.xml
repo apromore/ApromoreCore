@@ -48,6 +48,7 @@
         <constructor-arg type="String" value="${git.commit.id.describe}"/>
         <constructor-arg type="String" value="${version.edition}"/>
         <constructor-arg type="String" value="${git.commit.time}"/>
+        <constructor-arg type="boolean" value="${security.publish.enable}"/>
     </bean>
 
     <bean id="editor.js" class="java.lang.String">
