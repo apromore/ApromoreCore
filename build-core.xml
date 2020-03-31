@@ -91,7 +91,7 @@
 
         <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
-        <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
+        <include name="${csvImporterLogicPlugin}"/>
         <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
         
         <include name="Apromore-Custom-Plugins/CSVExporter-Logic/target/csvexporter-logic-1.0.jar"/>
@@ -129,6 +129,7 @@
     </fileset>
     
     <fileset id="fileset-repo-text" dir="${core-dir}">
+        <include name="apromore-core.plan"/>
         <include name="site.properties"/>
     </fileset>
     
@@ -148,10 +149,6 @@
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
             <fileset dir="${core-dir-sups}">
                 <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
-            </fileset>
-            
-            <fileset dir="${core-dir}">
-                <include name="apromore-core.plan" />        
             </fileset>
         </copy>
         
