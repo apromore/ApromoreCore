@@ -30,12 +30,6 @@ package de.hpi.bpmn2_0.model.misc;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  * 
- * 
- * 
- * Ext JS (http://extjs.com/) is used under the terms of the Open Source LGPL 3.0
- * license.
- * The license and the source files can be found in our SVN repository at:
- * http://oryx-editor.googlecode.com/.
  * #L%
  */
 
