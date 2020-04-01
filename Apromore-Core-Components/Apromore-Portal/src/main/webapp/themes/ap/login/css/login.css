@@ -151,13 +151,21 @@ body > * {
     position: absolute;
     left: 0;
     right: 80px;
-    top: 60px;
-    bottom: 80px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
     overflow: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     justify-items: center;
+}
+
+.ap-register-agree {
+    margin-bottom: 7px;
+    font-size: 12px;
+    color: white;
+    text-align: right;
 }
 
 @media(max-width: 767px) {
@@ -259,6 +267,7 @@ body > * {
 
 .ap-form .controls {
     width: 100%;
+    overflow: visible;
 }
 
 .ap-form .controls > div {
@@ -267,7 +276,9 @@ body > * {
     margin-bottom: 10px;
 }
 
-.ap-form input,
+.ap-form input[type=text],
+.ap-form input[type=tel],
+.ap-form input[type=password],
 .ap-form textarea,
 .ap-form select {
     width: 100%;
@@ -282,6 +293,17 @@ body > * {
     outline: none;
     border-radius: 4px;
     font-size: 14px;
+}
+
+.ap-register-reuse-email {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 5px;
+    color: white;
+}
+
+.ap-register-reuse-email input {
+    font-family: ZK85Icons,FontAwesome !important;
 }
 
 .ap-form input:focus,
