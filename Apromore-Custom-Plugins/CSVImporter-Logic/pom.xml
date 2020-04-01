@@ -26,6 +26,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Embed-Dependency>
+                            artifactId=retree
+                        </Embed-Dependency>
+
                         <Import-Package>
 
                             org.deckfour.xes.*;version="2.27",
