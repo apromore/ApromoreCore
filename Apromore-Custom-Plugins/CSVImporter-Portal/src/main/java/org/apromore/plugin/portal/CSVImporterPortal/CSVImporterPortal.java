@@ -71,6 +71,13 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     private Window window;
     private LogSample sample = null;
 
+    public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
+        this.csvImporterLogic = newCSVImporterLogic;
+    }
+
+    public void setEventLogService(EventLogService newEventLogService) {
+        this.eventLogService = newEventLogService;
+    }
 
     // FileImporterPlugin implementation
     @Override
@@ -95,7 +102,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         try {
             this.window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
         } catch (IOException e) {
-            LOGGER.warn("Unable to execute sample method", e);
+            LOGGER.error("Unable to execute sample method", e);
             Messagebox.show("Unable to import file : " + e, "Error", Messagebox.OK, Messagebox.ERROR);
             return;
         }
@@ -111,7 +118,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     /**
      * Gets the Content.
-     * <p>
      * Read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
@@ -121,7 +127,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     }
 
     private LogSample getCSVSample() {
-        String charset = getFileEncoding(window);
+        String charset = getFileEncoding();
         try (CSVReader csvReader = newCSVReader(media, charset)) {
             return csvImporterLogic.sampleCSV(csvReader, logSampleSize);
         } catch (InvalidCSVException | IOException e) {
@@ -133,7 +139,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
     }
 
-    private String getFileEncoding(Window window) {
+    private String getFileEncoding() {
         Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
         return setEncoding.getValue().contains(" ")
                 ? setEncoding.getValue().substring(0, setEncoding.getValue().indexOf(' '))
@@ -141,7 +147,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     }
 
     private static CSVReader newCSVReader(Media media, String charset) throws InvalidCSVException, IOException {
-
         // Guess at ethe separator character
         Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
         BufferedReader brReader = new BufferedReader(reader);
@@ -162,7 +167,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     }
 
     private static char getMaxOccurringChar(String str) {
-
         if (str == null || str.isEmpty()) {
             throw new IllegalArgumentException("input word must have non-empty value.");
         }
@@ -394,7 +398,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     // TODO: Needs careful review
     private void convertToXes() {
-        String charset = getFileEncoding(window);
+        String charset = getFileEncoding();
 
         try (CSVReader reader = newCSVReader(media, charset)) {
             LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample, maxErrorFraction);
