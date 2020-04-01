@@ -30,7 +30,7 @@ import org.zkoss.zul.RowRenderer;
 /**
  * The Class GridRendererController.
  */
-public class GridRendererController implements RowRenderer<String[]> {
+class GridRendererController implements RowRenderer<String[]> {
 
 	private Integer AttribWidth;
 	/*
@@ -43,11 +43,8 @@ public class GridRendererController implements RowRenderer<String[]> {
 			lbl.setValue(data[i]);
 			lbl.setWidth(this.AttribWidth + "px");
 			lbl.setMultiline(false);
-//			lbl.setMaxlength(25);
 			lbl.setTooltiptext(data[i]);
 			row.appendChild(lbl);
-
-//			row.setStyle("height: 10px;");
 		}
 	}
 
