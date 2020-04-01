@@ -26,14 +26,12 @@ import java.io.*;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
 import java.util.*;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogEventModel;
 import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
-import org.apromore.service.csvimporter.dateparser.DateParserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +110,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                         for (int p = 0; p <= line.length - 1; p++) {
                             if (sample.getOtherTimeStampsPos().get(p) != null) {
-                                otherTimestamps.put(header[p], Parse.parseTimestamp(line[p], sample.getOtherTimeStampsPos().get(p)));
+                                otherTimestamps.put(header[p], Parse.parseWithFormat(line[p], sample.getOtherTimeStampsPos().get(p)));
                             } else if(!sample.getCaseAttributesPos().isEmpty() && sample.getCaseAttributesPos().contains(p)){
                                 caseAttributes.put(header[p], line[p]);
                             }
@@ -133,15 +131,15 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                             }
                         }
-                        Timestamp tStamp = Parse.parseTimestamp2(line[sample.getHeads().get(timestamp)]);
+                        Timestamp tStamp = Parse.parseWithoutFormat(line[sample.getHeads().get(timestamp)]);
                         if(tStamp == null && sample.getTimestampFormat() != null){
-                            tStamp = Parse.parseTimestamp(line[sample.getHeads().get(timestamp)], sample.getTimestampFormat());
+                            tStamp = Parse.parseWithFormat(line[sample.getHeads().get(timestamp)], sample.getTimestampFormat());
                         }
 
                         if (sample.getHeads().get(tsStart) != -1) {
-                            startTimestamp = Parse.parseTimestamp2(line[sample.getHeads().get(tsStart)]);
+                            startTimestamp = Parse.parseWithoutFormat(line[sample.getHeads().get(tsStart)]);
                             if(startTimestamp == null && sample.getStartTsFormat() != null){
-                                startTimestamp = Parse.parseTimestamp(line[sample.getHeads().get(tsStart)], sample.getStartTsFormat());
+                                startTimestamp = Parse.parseWithFormat(line[sample.getHeads().get(tsStart)], sample.getStartTsFormat());
                             }
 
                             if (startTimestamp == null) {

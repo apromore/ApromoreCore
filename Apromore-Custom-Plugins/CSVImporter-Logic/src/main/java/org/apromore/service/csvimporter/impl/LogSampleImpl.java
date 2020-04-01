@@ -24,12 +24,9 @@ package org.apromore.service.csvimporter.impl;
 
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogSample;
-import org.apromore.service.csvimporter.dateparser.DateParserUtils;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.*;
 
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -133,7 +130,7 @@ class LogSampleImpl implements LogSample, Constants {
 
     private boolean isParsable(int pos){
         for (List<String> myLine: this.lines) {
-            if(Parse.parseTimestamp2(myLine.get(pos)) == null){
+            if(Parse.parseWithoutFormat(myLine.get(pos)) == null){
                 return false;
             }
         }
@@ -376,7 +373,7 @@ class LogSampleImpl implements LogSample, Constants {
     @Override
     public void tryParsing(String format, int colPos) {
 
-        if ((format == null && !isParsable(colPos)) || Parse.parseTimestamp(this.getLines().get(0).get(colPos), format) == null) {
+        if ((format == null && !isParsable(colPos)) || Parse.parseWithFormat(this.getLines().get(0).get(colPos), format) == null) {
             openPopUpbox(colPos, format, couldnotParse, failedClass, this, true);
             return;
         }
