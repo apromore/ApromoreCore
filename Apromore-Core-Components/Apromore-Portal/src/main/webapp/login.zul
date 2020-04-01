@@ -20,7 +20,7 @@
   -->
 <?page title="Apromore" contentType="text/html;charset=UTF-8"?>
 <?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
-<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>
+<!--<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>-->
 <!--<?link rel="stylesheet" type="text/css" href="css/login.css" ?>-->
 <?link rel="stylesheet" type="text/css" href="css/bootstrap.css" ?>
 <?link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" ?>
@@ -188,22 +188,24 @@
                                  placeholder="Country"/>
                       </h:div>
                       <h:div class="controls">
-                        <h:input type="tel" id="ap-new-user-phone" name="phone"
+                        <h:input type="tel" id="ap-new-user-phone" name="phone" value="+61"
                                  placeholder="Phone"/>
                       </h:div>
                       <h:div class="controls">
-                        <h:input type="text" name="username"
-                                 placeholder="Username*"/>
-                      </h:div>
-                      <h:div class="controls">
-                        <h:input type="text" name="email"
-                                 placeholder="Email address*"/>
+                        <h:input type="text" name="email" id="ap-new-email" placeholder="Email address*"/>
                       </h:div>
                     </h:fieldset>
                     <h:fieldset>
                       <h:legend>
-                        <h:span>Password</h:span>
+                        <h:span>Username and Password</h:span>
                       </h:legend>
+                      <h:div class="controls" style="position: relative;">
+                        <h:input type="text" name="username" id="ap-new-username"
+                                 placeholder="Username*"/>
+                        <h:div class="ap-register-reuse-email">
+                          <h:input type="checkbox" id="ap-reuse-email" /><span>use email</span>
+                        </h:div>
+                      </h:div>
                       <h:div class="controls">
                         <h:input type="password" name="password"
                                  placeholder="Password*"/>
@@ -213,6 +215,9 @@
                                  placeholder="Confirm password*"/>
                       </h:div>
                     </h:fieldset>
+                    <h:div class="ap-register-agree">
+                      By clicking Register, you agree<h:br /> to our Terms &amp; Conditions and our Privacy Policy
+                    </h:div>
                     <h:fieldset>
                       <h:div class="input-group controls">
                         <h:button class="button register-submit-button" type="submit">
