@@ -48,6 +48,7 @@
         <constructor-arg type="String" value="${git.commit.id.describe}"/>
         <constructor-arg type="String" value="${version.edition}"/>
         <constructor-arg type="String" value="${git.commit.time}"/>
+        <constructor-arg type="boolean" value="${security.publish.enable}"/>
     </bean>
 
     <bean id="editor.js" class="java.lang.String">
@@ -61,10 +62,6 @@
 
     <bean id="portalFileMenuitemOrder" class="org.apromore.portal.util.ExplicitComparator">
         <constructor-arg type="String" value="${portal.menuitemorder.File}"/>
-    </bean>
-
-    <bean id="portalShowSignavio" class="java.lang.Boolean">
-        <constructor-arg type="String" value="${portal.showSignavio}"/>
     </bean>
 
     <import resource="portal-osgi-context.xml" />

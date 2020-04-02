@@ -48,6 +48,8 @@ import org.zkoss.zul.Window;
  */
 public class SecurityFindGroupsController extends BaseController {
 
+    private final String PUBLIC_GROUP_NAME = "public";
+
     private MainController mainController;
     private Button btnSave;
     private Textbox txtSearch;
@@ -141,6 +143,9 @@ public class SecurityFindGroupsController extends BaseController {
                     lstGroups.setVisible(groups.size() > 0);
                     lstGroups.getItems().clear();
                     for (GroupType group : groups) {
+                        if (group.getName().equals(PUBLIC_GROUP_NAME) && !config.getEnablePublish()) {
+                            continue;
+                        }
                         if (true /*!(group.getId().equals(UserSessionManager.getCurrentUser().getId()))*/) {
                             Listitem newItem = new Listitem();
                             Listcell cellEmpty = new Listcell();

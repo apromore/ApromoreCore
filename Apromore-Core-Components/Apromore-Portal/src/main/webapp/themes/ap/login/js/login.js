@@ -25,8 +25,6 @@
   };
 
   let preferredCountries = ['au', 'ee', 'it', 'de', 'gb', 'us', 'ca'];
-  let phone;
-  let phoneInput;
 
   Ap.login.onSubmit = function() {
     // let number = phoneInput.getNumber();
@@ -35,35 +33,54 @@
   };
 
   Ap.login.enhanceControls = function() {
-    phone = document.querySelector('#ap-new-user-phone');
+    let phoneInput;
+    let phone = document.querySelector('#ap-new-user-phone');
+    let country = $('#ap-new-user-country');
+    let email = $('#ap-new-email')
+    let reuseEmail = $('#ap-reuse-email');
+    let username = $('#ap-new-username');
+
     phoneInput = window.intlTelInput(phone, {
       // allowDropdown: false,
       // autoHideDialCode: false,
       // autoPlaceholder: "off",
       dropdownContainer: document.body,
       formatOnDisplay: true,
-      // geoIpLookup: function(callback) {
-      //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-      //     var countryCode = (resp && resp.country) ? resp.country : "";
-      //     callback(countryCode);
-      //   });
-      // },
+      // geoIpLookup: function(callback) { callback(countryCode); },
       // hiddenInput: "full_number",
       initialCountry: "",
       // localizedCountries: { 'de': 'Deutschland' },
       nationalMode: true,
-      // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
       // placeholderNumberType: "MOBILE",
       // separateDialCode: true,
       preferredCountries,
       utilsScript: 'libs/intl-tel-input/js/utils.js',
     });
     window.phoneInput = phoneInput;
-    $('#ap-new-user-country').countrySelect({
+
+    country.countrySelect({
       defaultCountry: '',
-      // responsiveDropdown: true,
       preferredCountries,
+      // responsiveDropdown: true,
     });
+
+    country.on('change', function() {
+      let selected = country.countrySelect("getSelectedCountryData");
+      if (selected && selected.iso2) {
+        phoneInput.setCountry(selected.iso2);
+      }
+    })
+
+    email.keyup(function() {
+      if (reuseEmail.prop('checked')) {
+        username.val(email.val())
+      }
+    })
+    reuseEmail.on('change', function() {
+      if (reuseEmail.prop('checked')) {
+        username.val(email.val())
+      }
+    })
   };
 
   zk.afterMount(function() {
