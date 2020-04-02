@@ -71,11 +71,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     private PortalContext portalContext;
     private boolean isLogPublic;
     private Window window;
-    private LogSample sample = null;
+    private LogSample sample;
 
-    private static Integer attribWidth = 180;
-    private static Integer indexColumnWidth = 50;
-
+    private Integer attribWidth = 180;
+    private Integer indexColumnWidth = 50;
 
 
     // FileImporterPlugin implementation
@@ -90,6 +89,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         this.media = media;
         this.portalContext = portalContext;
         this.isLogPublic = isLogPublic;
+        this.window = null;
 
         if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
             Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
@@ -107,20 +107,18 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
         setEncoding.setModel(new ListModelList<>(fileEncoding));
         setEncoding.addEventListener("onSelect", event -> {
-            this.sample = getCSVSample();
-            if (sample !=null) renderGridContent();
+                    this.sample = getCSVSample();
+                    if (sample != null) renderGridContent();
                 }
         );
 
-        displayCSVContent();
-        window.doModal();
-    }
-
-
-    private void displayCSVContent() {
         this.sample = getCSVSample();
-        if (sample !=null) setUpUI();
+        if (sample != null) {
+            setUpUI();
+            window.doModal();
+        }
     }
+
 
     private LogSample getCSVSample() {
         String charset = getFileEncoding();
@@ -164,7 +162,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private static char getMaxOccurringChar(String str) {
         if (str == null || str.isEmpty()) {
-            throw new IllegalArgumentException("input word must have non-empty value.");
+            throw new IllegalArgumentException("Log is invalid, header must has non-empty value!");
         }
         char maxchar = ' ';
         int maxcnt = 0;
@@ -552,4 +550,14 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         portalContext.refreshContent();
     }
 
+//    private void handleCSVImporterLogicExceptions() {
+//        StringBuilder errormessage = new StringBuilder();
+//        for (String m : csvImporterLogic.getLogError().getErrorMessages()) {
+//            errormessage.append(m);
+//            errormessage.append(System.lineSeparator());
+//        }
+//        if (errormessage.length() != 0) {
+//            Messagebox.show(errormessage.toString(), "Error", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
 }

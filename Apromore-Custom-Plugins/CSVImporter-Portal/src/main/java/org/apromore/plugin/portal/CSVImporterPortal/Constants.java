@@ -22,11 +22,11 @@ interface Constants {
 
 
     // UI ids
-
     String setEncodingId = "setEncoding";
     String myGridId = "myGrid";
     String popUPBoxId = "popUPBox";
     String setOtherAllBtnId = "setOtherAll";
     String setIgnoreAllBtnId = "setIgnoreAll";
     String toXESBtnId = "toXESButton";
+    String cancelBtnId = "cancelButton";
 }
