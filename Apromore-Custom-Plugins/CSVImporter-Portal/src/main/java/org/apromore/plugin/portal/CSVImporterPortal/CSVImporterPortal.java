@@ -388,7 +388,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             convertToXes();
         });
 
-        Button cancelButton = (Button) window.getFellow("cancelButton");
+        Button cancelButton = (Button) window.getFellow(cancelBtnId);
         cancelButton.addEventListener("onClick", event -> {
             window.invalidate();
             window.detach();
