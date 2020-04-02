@@ -38,8 +38,6 @@ import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.*;
@@ -55,21 +53,11 @@ import org.deckfour.xes.model.XLog;
 
 @Component("csvImporterPortalPlugin")
 public class CSVImporterPortal implements FileImporterPlugin, Constants {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
 
     @Inject
     private CSVImporterLogic csvImporterLogic;
     @Inject
     private EventLogService eventLogService;
-
-    private static Integer AttribWidth = 180;
-    private static Integer IndexColumnWidth = 50;
-
-    private Media media;
-    private PortalContext portalContext;
-    private boolean isLogPublic;
-    private Window window;
-    private LogSample sample = null;
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
@@ -78,6 +66,17 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     public void setEventLogService(EventLogService newEventLogService) {
         this.eventLogService = newEventLogService;
     }
+
+    private Media media;
+    private PortalContext portalContext;
+    private boolean isLogPublic;
+    private Window window;
+    private LogSample sample = null;
+
+    private static Integer attribWidth = 180;
+    private static Integer indexColumnWidth = 50;
+
+
 
     // FileImporterPlugin implementation
     @Override
@@ -92,8 +91,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         this.portalContext = portalContext;
         this.isLogPublic = isLogPublic;
 
-        LOGGER.info("Importing file: " + media.getName());
-
         if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
             Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
             return;
@@ -102,7 +99,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         try {
             this.window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
         } catch (IOException e) {
-            LOGGER.error("Unable to execute sample method", e);
             Messagebox.show("Unable to import file : " + e, "Error", Messagebox.OK, Messagebox.ERROR);
             return;
         }
@@ -110,17 +106,17 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         // Initialize the character encoding drop-down menu
         Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
         setEncoding.setModel(new ListModelList<>(fileEncoding));
-        setEncoding.addEventListener("onSelect", event -> displayCSVContent());
+        setEncoding.addEventListener("onSelect", event -> {
+            this.sample = getCSVSample();
+            if (sample !=null) renderGridContent();
+                }
+        );
 
         displayCSVContent();
         window.doModal();
     }
 
-    /**
-     * Gets the Content.
-     * Read CSV content and create list model to be set as grid model.
-     */
-    @SuppressWarnings("null")
+
     private void displayCSVContent() {
         this.sample = getCSVSample();
         if (sample !=null) setUpUI();
@@ -128,7 +124,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private LogSample getCSVSample() {
         String charset = getFileEncoding();
-        try (CSVReader csvReader = newCSVReader(media, charset)) {
+        try (CSVReader csvReader = newCSVReader(charset)) {
             return csvImporterLogic.sampleCSV(csvReader, logSampleSize);
         } catch (InvalidCSVException | IOException e) {
             e.printStackTrace();
@@ -146,7 +142,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 : setEncoding.getValue();
     }
 
-    private static CSVReader newCSVReader(Media media, String charset) throws InvalidCSVException, IOException {
+    private CSVReader newCSVReader(String charset) throws InvalidCSVException, IOException {
         // Guess at ethe separator character
         Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
         BufferedReader brReader = new BufferedReader(reader);
@@ -200,45 +196,21 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             sample.setOtherTimestamps();
         }
 
-        window.setTitle("CSV Importer - " + media.getName());
-
         // Set up window size
         if (sample.getHeader().size() > 8) {
             window.setMaximizable(true);
             window.setMaximized(true);
         } else {
             window.setMaximizable(false);
-            int size = IndexColumnWidth + sample.getHeader().size() * AttribWidth + 35;
+            int size = indexColumnWidth + sample.getHeader().size() * attribWidth + 35;
             window.setWidth(size + "px");
         }
+        window.setTitle("CSV Importer - " + media.getName());
 
         setUpCSVGrid();
+        renderGridContent();
         createPopUpTextBox();
-
-        // TODO: REVIEW sample.openPopUp
-        sample.openPopUp(false);
-
-        // Set up buttons
-        Button setOtherAll = (Button) window.getFellow(setOtherAllBtnId);
-        setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-        setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window));
-
-        Button setIgnoreAll = (Button) window.getFellow(setIgnoreAllBtnId);
-        setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-        setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window));
-
-        Button toXESButton = (Button) window.getFellow(toXESBtnId);
-        toXESButton.setDisabled(false);
-        toXESButton.addEventListener("onClick", event -> {
-            convertToXes();
-        });
-
-        Button cancelButton = (Button) window.getFellow("cancelButton");
-        cancelButton.addEventListener("onClick", event -> {
-            window.invalidate();
-            window.detach();
-        });
-
+        setUpButtons();
     }
 
     private void setUpCSVGrid() {
@@ -262,7 +234,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
 
         Column indexCol = new Column();
-        indexCol.setWidth(IndexColumnWidth + "px");
+        indexCol.setWidth(indexColumnWidth + "px");
         indexCol.setValue("");
         indexCol.setLabel("");
         indexCol.setAlign("center");
@@ -277,8 +249,8 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             newColumn.setLabel(sample.getHeader().get(i));
             String label = (String) sample.getHeader().get(i);
             int labelLen = (label.length() * 14) + 20;
-            if (labelLen < AttribWidth) {
-                labelLen = AttribWidth;
+            if (labelLen < attribWidth) {
+                labelLen = attribWidth;
             }
             newColumn.setWidth(labelLen + "px");
             newColumn.setAlign("center");
@@ -317,8 +289,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
         // TODO: REVIEW sample.setFormatBtns
         sample.setFormatBtns(formatBtns);
+    }
 
-
+    private void renderGridContent(){
+        Grid myGrid = (Grid) window.getFellow(myGridId);
         // set grid model; display the first logSampleSize rows
         ListModelList<String[]> indexedResult = new ListModelList<>();
         for (int i = 0; i < sample.getLines().size(); i++) {
@@ -337,7 +311,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
         //set grid row renderer
         GridRendererController rowRenderer = new GridRendererController();
-        rowRenderer.setAttribWidth(AttribWidth);
+        rowRenderer.setAttribWidth(attribWidth);
         myGrid.setRowRenderer(rowRenderer);
     }
 
@@ -352,7 +326,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         for (int i = 0; i < colNum; i++) {
             Window item = new Window();
             item.setId(LogSample.popupID + i);
-            item.setWidth((AttribWidth) + "px");
+            item.setWidth((attribWidth) + "px");
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
@@ -394,13 +368,38 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
         popUPBox.clone();
         sample.setPopUPBox(popUPBox);
+        // TODO: REVIEW sample.openPopUp
+        sample.openPopUp(false);
+    }
+
+    private void setUpButtons(){
+        // Set up buttons
+        Button setOtherAll = (Button) window.getFellow(setOtherAllBtnId);
+        setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
+        setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window));
+
+        Button setIgnoreAll = (Button) window.getFellow(setIgnoreAllBtnId);
+        setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
+        setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window));
+
+        Button toXESButton = (Button) window.getFellow(toXESBtnId);
+        toXESButton.setDisabled(false);
+        toXESButton.addEventListener("onClick", event -> {
+            convertToXes();
+        });
+
+        Button cancelButton = (Button) window.getFellow("cancelButton");
+        cancelButton.addEventListener("onClick", event -> {
+            window.invalidate();
+            window.detach();
+        });
     }
 
     // TODO: Needs careful review
     private void convertToXes() {
         String charset = getFileEncoding();
 
-        try (CSVReader reader = newCSVReader(media, charset)) {
+        try (CSVReader reader = newCSVReader(charset)) {
             LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample, maxErrorFraction);
 
             if (xesModel.getErrorCount() > 0) {
@@ -524,9 +523,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 );
             }
         } catch (IOException e) {
-            LOGGER.error("Failed to read");
+            Messagebox.show("Failed to read file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
+            e.printStackTrace();
         } catch (Exception e) {
-            LOGGER.error("Failed to save");
+            Messagebox.show("Failed to save file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
             e.printStackTrace();
         }
     }
