@@ -408,8 +408,8 @@ class LogSampleImpl implements LogSample, Constants {
         menuItems.put(tsStart, "Start timestamp");
         menuItems.put(tsValue, "Other timestamp");
         menuItems.put(resource, "Resource");
-        menuItems.put(caseAttribute, "Case Attribute");
         menuItems.put(other, "Event Attribute");
+        menuItems.put(caseAttribute, "Case Attribute");
         menuItems.put(ignore, "Ignore column");
 
         // get index of "other" item and select it.
