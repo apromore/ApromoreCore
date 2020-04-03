@@ -93,6 +93,13 @@
                   Password is reset. Please check your email account for a new password.
                 </div>
               </div>
+              <div xmlns="http://www.w3.org/1999/xhtml" class="ap-force-comply" style="display: none;">
+                <div class="alert alert-warning">
+                  <button type="button" class="close" onClick="Ap.login.checkComply(true);">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  You need to agree with the Terms &amp;amp; Conditions and the Privacy Policy
+                </div>
+              </div>
             </html>
             <html>
               <h:div class="main">
@@ -162,7 +169,7 @@
                   <h:h4 class="ap-form-heading">
                     New User Registration
                   </h:h4>
-                  <h:form method="post" action="register/newUserRegister" name="newuser_form" onSubmit="Ap.login.onSubmit()">
+                  <h:form method="post" action="register/newUserRegister" name="newuser_form" onSubmit="return Ap.login.onSubmit(event)">
                     <h:fieldset>
                       <h:legend>
                         <h:span>Account information</h:span>
@@ -215,16 +222,27 @@
                                  placeholder="Confirm password*"/>
                       </h:div>
                     </h:fieldset>
-                    <h:div class="ap-register-agree">
-                      By clicking Register, you agree<h:br /> to our Terms &amp; Conditions and our Privacy Policy
-                    </h:div>
+                    <h:fieldset class="ap-comply">
+                      <h:div>
+                      <h:input type="checkbox" id="ap-agree" checked="checked"/>
+                      <span>
+                        Yes, I agree with the
+                        <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a> and the
+                        <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+                      </span>
+                      </h:div>
+                      <h:div>
+                      <h:input type="checkbox" id="ap-subscribe" name="subscription"/>
+                      <span>Keep me up-to-date with news and offers</span>
+                      </h:div>
+                    </h:fieldset>
                     <h:fieldset>
-                      <h:div class="input-group controls">
+                      <h:div class="input-group">
                         <h:button class="button register-submit-button" type="submit">
                           Register
                         </h:button>
                       </h:div>
-                      <h:div class="input-group controls ap-back-wrapper">
+                      <h:div class="input-group ap-back-wrapper">
                         <h:a href="#login" data-toggle="tab">
                           <div class="ap-back"
                                title="back to login page"/>

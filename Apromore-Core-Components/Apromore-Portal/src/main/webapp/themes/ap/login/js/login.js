@@ -26,11 +26,109 @@
 
   let preferredCountries = ['au', 'ee', 'it', 'de', 'gb', 'us', 'ca'];
 
-  Ap.login.onSubmit = function() {
+  Ap.login.onSubmit = function(e) {
     // let number = phoneInput.getNumber();
     // phone.setValue(number);
-    return true;
+    let agree = $('#ap-agree');
+    let pass = false
+
+    checkComply();
+    if (agree.prop('checked')) {
+      try {
+        pass = validateInput();
+      } catch(e) {
+        pass = false;
+      }
+    } else {
+      $('.ap-force-comply').show();
+      pass = false;
+    }
+    if (!pass) {
+      e.preventDefault()
+      return false
+    }
+    return true
   };
+
+  let prefix = '#register'
+  let controls = ['firstname', 'surename', 'email', 'username', 'password', 'confirmPassword'];
+
+  function getControl(name) {
+    return $(`${prefix} input[name=${name}]`);
+  }
+
+  function markControl(control, valid) {
+    if (valid) {
+      control.removeClass('ap-invalid-input');
+      control.prev('.ap-invalid-input-hint').hide();
+    } else {
+      control.addClass('ap-invalid-input');
+      control.prev('.ap-invalid-input-hint').show();
+    }
+  }
+
+  function addBlankValidators () {
+    // test for blanks
+    controls.forEach((name) => {
+      control = getControl(name);
+      let hint = $('<div class="ap-invalid-input-hint"><i class="z-icon-times"></i></div>')
+      hint.insertBefore(control);
+      hint.hide();
+      control.on('change', function (e) {
+        let control = $(e.target)
+        let val = control.val()
+        markControl(control, /([^\s])/.test(val));
+      })
+    })
+  }
+
+
+
+  function checkComply (forceHide) {
+    let agree = $('#ap-agree');
+    let force = $('.ap-force-comply')
+    if (agree.prop('checked') || forceHide) {
+      force.hide();
+      force.css('visibility', 'hidden');
+    } else {
+      force.show();
+      force.css('visibility', 'visible');
+    }
+  }
+
+  function validateInput () {
+    let control, val;
+    let pass = true;
+
+    // test for blanks
+    controls.forEach((name) => {
+      control = getControl(name);
+      val = control.val();
+      if (!/([^\s])/.test(val)) {
+        markControl(control, false);
+        pass = false
+      }
+    })
+    // test for email
+    control = getControl('email');
+    val = control.val();
+    let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    if (!re.test(val))  {
+      markControl(control, false);
+      pass = false
+    }
+    // test for password match
+    control = getControl('password');
+    let control2 = getControl('confirmPassword');
+    if (control.val() !== control2.val())  {
+      markControl(control, false);
+      markControl(control2, false);
+      pass = false
+    }
+    return pass;
+  }
+
+  Ap.login.checkComply = checkComply;
 
   Ap.login.enhanceControls = function() {
     let phoneInput;
@@ -39,6 +137,13 @@
     let email = $('#ap-new-email')
     let reuseEmail = $('#ap-reuse-email');
     let username = $('#ap-new-username');
+    let agree = $('#ap-agree');
+
+    agree.change((e) => {
+      checkComply();
+    })
+
+    addBlankValidators();
 
     phoneInput = window.intlTelInput(phone, {
       // allowDropdown: false,
