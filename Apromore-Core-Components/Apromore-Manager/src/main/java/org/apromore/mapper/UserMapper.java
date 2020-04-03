@@ -80,6 +80,7 @@ public class UserMapper {
         userType.setRole(user.getRole());
         userType.setCountry(user.getCountry());
         userType.setPhone(user.getPhone());
+        userType.setSubscription(user.getSubscription());
         userType.setUsername(user.getUsername());
         if (user.getLastActivityDate() != null) {
             userType.setLastActivityDate(formatter.format(user.getLastActivityDate()));
@@ -152,6 +153,7 @@ public class UserMapper {
         user.setRole(userType.getRole());
         user.setCountry(userType.getCountry());
         user.setPhone(userType.getPhone());
+        user.setSubscription(userType.getSubscription());
         user.setRowGuid(userType.getId());
         if (date != null){
             user.setLastActivityDate(date);
