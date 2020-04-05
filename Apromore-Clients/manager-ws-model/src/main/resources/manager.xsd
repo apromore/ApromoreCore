@@ -538,6 +538,7 @@
         <xs:attribute name="role" type="xs:string"/>
         <xs:attribute name="country" type="xs:string"/>
         <xs:attribute name="phone" type="xs:string"/>
+        <xs:attribute name="subscription" type="xs:string"/>
         <xs:attribute name="lastActivityDate" type="xs:string"/>
         <xs:attribute name="username" type="xs:string"/>
     </xs:complexType>

@@ -75,6 +75,7 @@ public class User implements Serializable {
     private String role;
     private String country;
     private String phone;
+    private String subscription;
     private Date dateCreated;
     private Date lastActivityDate;
     private Group group;
@@ -208,7 +209,13 @@ public class User implements Serializable {
         return phone;
     }
     public void setPhone(final String newPhone) { this.phone = newPhone; }
-    
+
+    @Column(name = "subscription")
+    public String getSubscription() {
+        return subscription;
+    }
+    public void setSubscription(final String newSubscription) { this.subscription = newSubscription; }
+
     /**
      * Get the date created for the Object.
      * @return Returns the date created.

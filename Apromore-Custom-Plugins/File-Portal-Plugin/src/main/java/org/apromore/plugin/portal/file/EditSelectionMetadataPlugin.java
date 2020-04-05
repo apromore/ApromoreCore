@@ -9,8 +9,7 @@ import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.dialogController.EditListLogDataController;
-import org.apromore.portal.dialogController.EditListProcessDataController;
+import org.apromore.plugin.portal.file.impl.EditListMetadataController;
 import org.apromore.portal.dialogController.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,21 +49,10 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
             Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
 
             if (selectedElements.size() != 0) {
-                boolean all_processes = true;
-                boolean all_logs = true;
-                for(SummaryType summaryType : selectedElements.keySet()) {
-                    if(summaryType instanceof LogSummaryType) all_processes = false;
-                    if(summaryType instanceof ProcessSummaryType) all_logs = false;
-                }
-                if (all_logs) {
-                    new EditListLogDataController(mainC, selectedElements);
-                } else if(all_processes) {
-                    new EditListProcessDataController(mainC, selectedElements);
-                } else {
-                    mainC.displayMessage("Select only processes or logs.");
-                }
+                new EditListMetadataController(mainC, selectedElements);
+
             } else {
-                mainC.displayMessage("No process version selected.");
+                mainC.displayMessage("No process versions or event logs selected.");
             }
         } catch (Exception e) {
             LOGGER.error("Unable to edit selection metadata", e);

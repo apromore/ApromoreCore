@@ -22,10 +22,17 @@
 
 package org.apromore.portal.dialogController;
 
+// Java 2 Standard Edition packages
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 // Third party packages
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Window;
 
@@ -62,6 +69,28 @@ public class BaseController extends Window {
             setManagerService(managerService);
         }
         return managerService;
+    }
+
+    /**
+     * Turn a ZUL document into a ZK {@link Component}.
+     *
+     * This method requires that the ZUL document is a resource in the classpath of the
+     * calling class.  It's suitable for use by portal plugins.
+     * Beware that this doesn't work with ZUL in the portal's src/main/webapp directory.
+     *
+     * @param zulPath  path to a ZUL document within the calling bundle's classpath
+     * @return a ZK {@link Component} constructed from the ZUL document at <var>zulPath</var>
+     * @throws IllegalArgumentException if no resource can be read from <var>zulPath</var>
+     */
+    protected <T extends Component> T createComponent(String zulPath) {
+        try {
+            InputStream in = getClass().getClassLoader().getResourceAsStream(zulPath);
+
+            return (T) Executions.createComponentsDirectly(new InputStreamReader(in), "zul", null, null);
+
+        } catch (IOException e) {
+            throw new IllegalArgumentException(zulPath + " not found", e);
+        }
     }
 
     protected String getURL(final String nativeType) {

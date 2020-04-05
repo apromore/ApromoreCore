@@ -99,6 +99,7 @@ public class NewUserRegistrationHttpServletRequestHandler extends BaseServletReq
         user.setRole(request.getParameter(ROLE));
         user.setCountry(request.getParameter(COUNTRY));
         user.setPhone(request.getParameter(PHONE));
+        user.setSubscription(request.getParameter(SUBSCRIPTION));
         user.setUsername(request.getParameter(USERNAME));
 
         MembershipType membership = new MembershipType();
