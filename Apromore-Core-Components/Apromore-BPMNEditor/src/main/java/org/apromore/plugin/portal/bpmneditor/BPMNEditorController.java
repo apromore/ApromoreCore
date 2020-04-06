@@ -47,7 +47,7 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.service.ProcessService;
 import org.json.JSONException;
@@ -85,7 +85,7 @@ public class BPMNEditorController extends BaseController {
             throw new AssertionError("No id parameter in URL");
         }
 
-        SignavioSession session = userSessionManager.getEditSession(id);
+        ApromoreSession session = userSessionManager.getEditSession(id);
         if (session == null) {
             throw new AssertionError("No edit session associated with id " + id);
         }

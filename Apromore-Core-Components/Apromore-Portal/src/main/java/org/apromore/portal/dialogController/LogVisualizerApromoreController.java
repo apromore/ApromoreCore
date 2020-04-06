@@ -39,11 +39,11 @@ import org.zkoss.zk.ui.event.Event;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class LogVisualizerSignavioController extends BaseController {
+public class LogVisualizerApromoreController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerSignavioController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerApromoreController.class.getCanonicalName());
 
-    public LogVisualizerSignavioController() {
+    public LogVisualizerApromoreController() {
         super();
 
         String id = Executions.getCurrent().getParameter("id");

@@ -44,7 +44,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
 import org.deckfour.xes.model.XLog;
@@ -119,7 +119,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
         MainController mainC = (MainController)portalContext.getMainController();
         EditSessionType editSession1 = createEditSession(username, process, vst, process.getOriginalNativeType(), null /*annotation*/);
         Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
-        SignavioSession session = new SignavioSession(editSession1, null, mainC, process, vst, null, null, requestParameterTypes);
+        ApromoreSession session = new ApromoreSession(editSession1, null, mainC, process, vst, null, null, requestParameterTypes);
         session.put("logAnimationService", logAnimationService);
         session.put("logs", logs);
 
@@ -203,7 +203,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
     
             EditSessionType editSession = createEditSession(username, processSummaryType, versionSummaryType, "BPMN 2.0", null);
             Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
-            SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
+            ApromoreSession session = new ApromoreSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
     
             session.put("bpmnXML", bpmnWithGateways);
             if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar
@@ -245,7 +245,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
     
             EditSessionType editSession = createEditSession(username, processSummaryType, versionSummaryType, "BPMN 2.0", null);
             Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
-            SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
+            ApromoreSession session = new ApromoreSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
     
             session.put("bpmnXML", bpmnNoGateways);
             if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar

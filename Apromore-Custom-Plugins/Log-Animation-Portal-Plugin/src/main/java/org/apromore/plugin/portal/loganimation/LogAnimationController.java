@@ -49,7 +49,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.SaveAsDialogController;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.loganimation.LogAnimationService;
@@ -76,7 +76,7 @@ public class LogAnimationController extends BaseController {
             throw new AssertionError("No id parameter in URL");
         }
 
-        SignavioSession session = UserSessionManager.getEditSession(id);
+        ApromoreSession session = UserSessionManager.getEditSession(id);
         if (session == null) {
             throw new AssertionError("No edit session associated with id " + id);
         }
