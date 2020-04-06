@@ -127,11 +127,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
             e.printStackTrace();
-            window.detach();
             return null;
         }
         catch (IOException e) {
-            Messagebox.show("Failed to read the log. Try different encoding.", "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Failed to read the log!", "Error", Messagebox.OK, Messagebox.ERROR);
             e.printStackTrace();
             window.detach();
             return null;
@@ -153,7 +152,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         char separator = getMaxOccurringChar(firstLine);
 
         if (separator == Character.UNASSIGNED || !(new String(supportedSeparators).contains(String.valueOf(separator)))) {
-            throw new InvalidCSVException("Log is invalid, separator is not supported.");
+            throw new InvalidCSVException("Failed to read the log! Either separator is not supported or encoding is invalid");
         }
 
         // Create the CSV reader
@@ -167,7 +166,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private static char getMaxOccurringChar(String str) {
         if (str == null || str.isEmpty()) {
-            throw new IllegalArgumentException("Log is invalid, header must have non-empty value!");
+            throw new IllegalArgumentException("Failed to read the log! header must have non-empty value!");
         }
         char maxchar = ' ';
         int maxcnt = 0;
