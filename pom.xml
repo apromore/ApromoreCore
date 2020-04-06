@@ -1423,10 +1423,10 @@
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
-        <repository>
-            <id>flyway-repo</id>
-            <url>https://repo.flywaydb.org/repo</url>
-        </repository>        
+        <!--<repository>-->
+            <!--<id>flyway-repo</id>-->
+            <!--<url>https://repo.flywaydb.org/repo</url>-->
+        <!--</repository>-->
     </repositories>
     <pluginRepositories>
         <pluginRepository>
