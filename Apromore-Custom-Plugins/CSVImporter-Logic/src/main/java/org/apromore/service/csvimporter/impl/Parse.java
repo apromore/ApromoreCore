@@ -25,16 +25,13 @@ package org.apromore.service.csvimporter.impl;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
 
 import org.apromore.service.csvimporter.dateparser.DateParserUtils;
 
 
 public class Parse {
 
-    static final private Logger LOGGER = Logger.getAnonymousLogger();
-
-    public static Timestamp parseWithFormat(String theDate, String theFormat) {
+    public Timestamp parseWithFormat(String theDate, String theFormat) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(theFormat);
             formatter.setLenient(false);
@@ -47,7 +44,7 @@ public class Parse {
 		}
 	}
 
-	public static Timestamp parseWithoutFormat(String theDate) {
+	public Timestamp parseWithoutFormat(String theDate) {
 		try{
 			return new Timestamp(DateParserUtils.parseCalendar(theDate).getTimeInMillis());
 		}catch (Exception e){

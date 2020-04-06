@@ -2,7 +2,7 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 
 interface Constants {
 
-    char[] supportedSeparators = {',','|',';','\t'};
+
     double maxErrorFraction = 0.2;  // Accept up to 20% error rate
     String[] allowedExtensions = {"csv", "xls", "xlsx"};
     String[] fileEncoding = {"UTF-8",
@@ -29,4 +29,20 @@ interface Constants {
     String setIgnoreAllBtnId = "setIgnoreAll";
     String toXESBtnId = "toXESButton";
     String cancelBtnId = "cancelButton";
+    String popUpHelpId = "popUpHelp";
+
+    String popupID = "pop_";
+    String textboxID = "txt_";
+    String labelID = "lbl_";
+
+    Integer AttribWidth = 180;
+
+
+    String parsedCorrectly = "Timestamp parsed correctly!";
+    String couldnotParse = "Could not parse!";
+
+    // CSS Classes
+    String parsedClass = "text-success";
+    String failedClass = "text-danger";
+
 }

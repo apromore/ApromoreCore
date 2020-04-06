@@ -22,12 +22,12 @@ package org.apromore.service.csvimporter.impl;
 
 public interface Constants {
 
-    String caseid    = "caseid";
-    String activity  = "activity";
-    String timestamp = "timestamp";
-    String tsStart   = "startTimestamp";
-    String tsValue   = "otherTimestamp";
-    String resource  = "resource";
+    String caseIdLabel = "caseId";
+    String activityLabel = "activity";
+    String timestampLabel = "timestamp";
+    String startTimestampLabel = "startTimestamp";
+    String otherTimestampLabel = "otherTimestamp";
+    String resourceLabel = "resource";
 
     String[] caseIdValues    = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
     String[] activityValues  = {"activity", "activity id", "activity-id", "operation", "event"};

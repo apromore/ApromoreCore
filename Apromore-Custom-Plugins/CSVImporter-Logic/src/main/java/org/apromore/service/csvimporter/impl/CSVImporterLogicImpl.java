@@ -43,24 +43,19 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
 
         // Obtain the header
-        List<String> header = new ArrayList<>();
-        Collections.addAll(header, reader.readNext());
-        if (header.isEmpty()) {
-            throw new InvalidCSVException("Could not parse file!");
-        }
+        List<String> header = Arrays.asList(reader.readNext());
 
         // Obtain the sample of lines
         List<List<String>> lines = new ArrayList<>();
-        for (String[] s = reader.readNext(); s != null && lines.size() < sampleSize; s = reader.readNext()) {
-            if(s!=null && s.length > 2){
-                lines.add(Arrays.asList(s));
-            }
+        String[] myLine = null;
+        while ((myLine = reader.readNext()) != null && myLine.length == header.size() && lines.size() <= sampleSize) {
+            lines.add(Arrays.asList(myLine));
         }
 
         // Construct the sample (no mutation expected after this point, although this isn't enforced by the code))
         return new LogSampleImpl(header, lines);
     }
-
+    private final Parse parse = new Parse();
     @Override
     public LogModel prepareXesModel(CSVReader reader, LogSample sample, double errorAcceptance) throws InvalidCSVException, IOException {
         int errorCount = 0;
@@ -75,7 +70,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             String[] header = reader.readNext();
 
             // If any of the mandatory fields are missing show alert message to the user and return
-            StringBuilder headNOTDefined = checkFields(sample.getHeads());
+            StringBuilder headNOTDefined = checkFields(sample.getMainAttributes());
             if (headNOTDefined.length() != 0) {
                 throw new InvalidCSVException(headNOTDefined.toString());
             }
@@ -110,13 +105,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                         for (int p = 0; p <= line.length - 1; p++) {
                             if (sample.getOtherTimeStampsPos().get(p) != null) {
-                                otherTimestamps.put(header[p], Parse.parseWithFormat(line[p], sample.getOtherTimeStampsPos().get(p)));
+                                otherTimestamps.put(header[p], parse.parseWithFormat(line[p], sample.getOtherTimeStampsPos().get(p)));
                             } else if(!sample.getCaseAttributesPos().isEmpty() && sample.getCaseAttributesPos().contains(p)){
                                 caseAttributes.put(header[p], line[p]);
                             }
-                            else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) &&
-                                    p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) &&
-                                    p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() || !sample.getIgnoredPos().contains(p)) &&
+                            else if (p != sample.getMainAttributes().get(caseIdLabel) && p != sample.getMainAttributes().get(activityLabel) &&
+                                    p != sample.getMainAttributes().get(timestampLabel) && p != sample.getMainAttributes().get(startTimestampLabel) &&
+                                    p != sample.getMainAttributes().get(resourceLabel) && (sample.getIgnoredPos().isEmpty() || !sample.getIgnoredPos().contains(p)) &&
                                     (sample.getCaseAttributesPos().isEmpty() || !sample.getCaseAttributesPos().contains(p))) {
 
                                 others.put(header[p], line[p]);
@@ -131,15 +126,15 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                             }
                         }
-                        Timestamp tStamp = Parse.parseWithoutFormat(line[sample.getHeads().get(timestamp)]);
+                        Timestamp tStamp = parse.parseWithoutFormat(line[sample.getMainAttributes().get(timestampLabel)]);
                         if(tStamp == null && sample.getTimestampFormat() != null){
-                            tStamp = Parse.parseWithFormat(line[sample.getHeads().get(timestamp)], sample.getTimestampFormat());
+                            tStamp = parse.parseWithFormat(line[sample.getMainAttributes().get(timestampLabel)], sample.getTimestampFormat());
                         }
 
-                        if (sample.getHeads().get(tsStart) != -1) {
-                            startTimestamp = Parse.parseWithoutFormat(line[sample.getHeads().get(tsStart)]);
+                        if (sample.getMainAttributes().get(startTimestampLabel) != -1) {
+                            startTimestamp = parse.parseWithoutFormat(line[sample.getMainAttributes().get(startTimestampLabel)]);
                             if(startTimestamp == null && sample.getStartTsFormat() != null){
-                                startTimestamp = Parse.parseWithFormat(line[sample.getHeads().get(tsStart)], sample.getStartTsFormat());
+                                startTimestamp = parse.parseWithFormat(line[sample.getMainAttributes().get(startTimestampLabel)], sample.getStartTsFormat());
                             }
 
                             if (startTimestamp == null) {
@@ -154,8 +149,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                         }
 
                         // Notify if resource field is empty
-                        if (sample.getHeads().get(resource) != -1) {
-                            resourceCol = line[sample.getHeads().get(resource)];
+                        if (sample.getMainAttributes().get(resourceLabel) != -1) {
+                            resourceCol = line[sample.getMainAttributes().get(resourceLabel)];
                         }
                         // check if end stimestamp field is null
                         if (tStamp == null) {
@@ -185,7 +180,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                             }
                         }
                         if (rowGTG) {
-                            logData.add(new LogEventModelImpl(line[sample.getHeads().get(caseid)], line[sample.getHeads().get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others, caseAttributes));
+                            logData.add(new LogEventModelImpl(line[sample.getMainAttributes().get(caseIdLabel)], line[sample.getMainAttributes().get(activityLabel)], tStamp, startTimestamp, otherTimestamps, resourceCol, others, caseAttributes));
                         }
                     } catch (Exception e) {
                         errorMessage = ExceptionUtils.getStackTrace(e);
@@ -252,17 +247,17 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
      * @return the string builder
      */
     private StringBuilder checkFields(Map<String, Integer> posMap) {
-        String[] fieldsToCheck = {caseid, activity, timestamp};
+        String[] fieldsToCheck = {caseIdLabel, activityLabel, timestampLabel};
         StringBuilder importMessage = new StringBuilder();
         String messingField;
         String mess;
         for (int f = 0; f <= fieldsToCheck.length - 1; f++) {
             if (posMap.get(fieldsToCheck[f]) == -1) {
                 switch(fieldsToCheck[f]) {
-                    case caseid:
+                    case caseIdLabel:
                         messingField = "Case ID!";
                         break;
-                    case activity:
+                    case activityLabel:
                         messingField = "Activity!";
                         break;
                     default:
