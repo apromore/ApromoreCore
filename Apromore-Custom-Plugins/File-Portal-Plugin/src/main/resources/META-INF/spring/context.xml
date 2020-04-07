@@ -33,6 +33,11 @@
     <osgi:reference id="securityService" interface="org.apromore.service.SecurityService"/>
 -->
 
+    <!-- Other OSGi services this component consumes -->
+    <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+    <osgi:reference id="csvExporterLogic" interface="org.apromore.service.csvexporter.CSVExporterLogic"/>
+
+
     <!-- Expose the components as OSGi services -->
 
     <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
@@ -40,7 +45,10 @@
     </osgi:service>
   
     <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
-        <beans:bean class="org.apromore.plugin.portal.file.DownloadSelectionPlugin"/>
+        <beans:bean class="org.apromore.plugin.portal.file.DownloadSelectionPlugin">
+            <beans:property name="csvExporterLogic" ref="csvExporterLogic"/>
+            <beans:property name="eventLogService" ref="eventLogService"/>
+        </beans:bean>
     </osgi:service>
   
     <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
