@@ -1,0 +1,65 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 The University of Tartu.
+  ~ Copyright (C) 2020 The University of Melbourne.
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window
+    id="modalDialog" visible="false" title="Download Process Log" border="normal"
+    position="center,center" closable="true" draggable="false" droppable="false"
+    width="500px">
+    <vbox height="100%" spacing="0">
+        <grid sclass="ap-grid ap-form" height="100%">
+            <columns sizable="true">
+                <column width="30%"></column>
+                <column width="70%"></column>
+            </columns>
+            <rows>
+                <row>
+                    <label value="Format"/>
+                    <radiogroup id="format">
+                        <radio label="CSV" selected="true"/>
+                        <radio label="XES" />
+                    </radiogroup>
+                </row>
+                <row id="rowEncoding">
+                    <label value="Encoding"/>
+                    <listbox id="selectEncoding" mold="select">
+                        <listitem label="UTF-8" value="UTF-8" selected="true" />
+                        <listitem label="Windows-1250 (Eastern European)" value="windows-1250" />
+                        <listitem label="Windows-1251 (Cyrillic)" value="Windows-1251" />
+                        <listitem label="windows-1252 (Latin)" value="windows-1252" />
+                        <listitem label="Windows-1253 (Greek)" value="windows-1253" />
+                        <listitem label="Windows-1254 (Turkish)" value="windows-1254" />
+                        <listitem label="Windows-1255 (Hebrew)" value="windows-1255" />
+                        <listitem label="windows-1256 (Arabic)" value="windows-1256" />
+                        <listitem label="Windows-1258 (Vietnamese)" value="windows-1258" />
+                        <listitem label="Windows-31j (Japanese)" value="windows-31j" />
+                        <listitem label="ISO-2022-CN (Chinese)" value="wISO-2022-CN" />
+                    </listbox>
+                </row>
+                <row spans="2" sclass="ap-window-footer-actions">
+                    <div align="right">
+                        <button id="downloadButton" label="Download" iconSclass="z-icon-check-circle fa-lg z-icon-fw" />
+                        <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle" />
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>

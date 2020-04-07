@@ -23,8 +23,10 @@ package org.apromore.portal.context;
 
 import org.apromore.plugin.portal.PortalPlugin;
 import org.zkoss.spring.SpringUtil;
-
+import java.util.Locale;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Looking up portal plug-ins
@@ -35,6 +37,20 @@ public class PortalPluginResolver {
         Object portalPlugins = SpringUtil.getBean("portalPlugins");
         if (portalPlugins != null) {
             return (List<PortalPlugin>) portalPlugins;
+        } else {
+            throw new RuntimeException("Could not get list of portal plug-ins!");
+        }
+    }
+
+    public static Map<String, PortalPlugin> getPortalPluginMap() {
+        Map<String, PortalPlugin> portalPluginMap = new HashMap<String, PortalPlugin>();
+
+        Object portalPlugins = SpringUtil.getBean("portalPlugins");
+        if (portalPlugins != null) {
+            for (PortalPlugin plugin :  (List<PortalPlugin>) portalPlugins) {
+                portalPluginMap.put(plugin.getLabel(Locale.getDefault()), plugin);
+            }
+            return portalPluginMap;
         } else {
             throw new RuntimeException("Could not get list of portal plug-ins!");
         }
