@@ -105,7 +105,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                         for (int p = 0; p <= line.length - 1; p++) {
                             if (sample.getOtherTimeStampsPos().get(p) != null) {
-                                otherTimestamps.put(header[p], parse.parseWithFormat(line[p], sample.getOtherTimeStampsPos().get(p)));
+                                otherTimestamps.put(header[p], parse.tryParsingWithFormat(line[p], sample.getOtherTimeStampsPos().get(p)));
                             } else if(!sample.getCaseAttributesPos().isEmpty() && sample.getCaseAttributesPos().contains(p)){
                                 caseAttributes.put(header[p], line[p]);
                             }
@@ -126,15 +126,15 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                             }
                         }
-                        Timestamp tStamp = parse.parseWithoutFormat(line[sample.getMainAttributes().get(timestampLabel)]);
+                        Timestamp tStamp = parse.tryParsing(line[sample.getMainAttributes().get(timestampLabel)]);
                         if(tStamp == null && sample.getTimestampFormat() != null){
-                            tStamp = parse.parseWithFormat(line[sample.getMainAttributes().get(timestampLabel)], sample.getTimestampFormat());
+                            tStamp = parse.tryParsingWithFormat(line[sample.getMainAttributes().get(timestampLabel)], sample.getTimestampFormat());
                         }
 
                         if (sample.getMainAttributes().get(startTimestampLabel) != -1) {
-                            startTimestamp = parse.parseWithoutFormat(line[sample.getMainAttributes().get(startTimestampLabel)]);
+                            startTimestamp = parse.tryParsing(line[sample.getMainAttributes().get(startTimestampLabel)]);
                             if(startTimestamp == null && sample.getStartTsFormat() != null){
-                                startTimestamp = parse.parseWithFormat(line[sample.getMainAttributes().get(startTimestampLabel)], sample.getStartTsFormat());
+                                startTimestamp = parse.tryParsingWithFormat(line[sample.getMainAttributes().get(startTimestampLabel)], sample.getStartTsFormat());
                             }
 
                             if (startTimestamp == null) {

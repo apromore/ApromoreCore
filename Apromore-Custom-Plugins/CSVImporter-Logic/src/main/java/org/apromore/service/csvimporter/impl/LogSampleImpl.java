@@ -36,12 +36,8 @@ class LogSampleImpl implements LogSample, Constants {
 
     private final Parse parse = new Parse();
 
-
-    // Instance variables
-
     private List<String> header;
     private List<List<String>> lines;
-
     private Map<String, Integer> mainAttributes;
     private String timestampFormat;
     private String startTsFormat;
@@ -82,6 +78,8 @@ class LogSampleImpl implements LogSample, Constants {
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
         this.caseAttributesPos = new ArrayList<>();
+        this.timestampFormat = null;
+        this.startTsFormat = null;
 
         setOtherTimestamps();
         setCaseAttributesPos();
@@ -97,9 +95,9 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public boolean isParsable(int pos){
-        for (List<String> myLine: this.lines) {
-            if(parse.parseWithoutFormat(myLine.get(pos)) == null){
+    public boolean isParsable(int pos) {
+        for (List<String> myLine : lines) {
+            if (parse.tryParsing(myLine.get(pos)) == null) {
                 return false;
             }
         }
@@ -108,101 +106,53 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public boolean isParsableWithFormat(int pos, String format) {
-
-        if (format == null || format.isEmpty() || parse.parseWithFormat(this.getLines().get(0).get(pos), format) == null) {
-       //     openPopUpbox(pos, format, couldnotParse, failedClass, this, true);
-            return false;
+        for (List<String> myLine : lines) {
+            if (format == null || format.length() != myLine.get(pos).length() || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
+                return false;
+            }
         }
-
         return true;
-//        Listbox box = this.getLists().get(pos);
-//        String selected = box.getSelectedItem().getValue();
-//        if (new String(selected).equals(timestamp)) {
-//            this.getMainAttributes().put(selected, pos);
-//            this.setTimestampFormat(format);
-//        } else if (new String(selected).equals(tsStart)) {
-//            this.getMainAttributes().put(selected, pos);
-//            this.setStartTsFormat(format);
-//        } else if (new String(selected).equals(tsValue)) {
-//            this.getOtherTimeStampsPos().put(pos, format);
-//        }
-//        openPopUpbox(pos, format, parsedCorrectly, parsedClass, this, true);
     }
 
 
-    @Override
-    public void setOtherTimestamps() {
+    private void setOtherTimestamps() {
         otherTimeStampsPos.clear();
         Integer timeStampPos = mainAttributes.get(timestampLabel);
         Integer StartTimeStampPos = mainAttributes.get(startTimestampLabel);
 
         for (int pos = 0; pos < header.size(); pos++) {
-            if((pos != timeStampPos) && (pos != StartTimeStampPos) && isParsable(pos)){
+            if ((pos != timeStampPos) && (pos != StartTimeStampPos) && isParsable(pos)) {
                 otherTimeStampsPos.put(pos, null);
             }
         }
     }
 
 
-
-    private void setCaseAttributesPos(){
-        if(mainAttributes.get(caseIdLabel) == -1) return;
+    private void setCaseAttributesPos() {
+        if (mainAttributes.get(caseIdLabel) == -1) return;
 
         // set all attributes that are not main attributes or timestamps as case attributes
-        for(int pos = 0; pos< header.size(); pos++){
-            if(pos != mainAttributes.get(caseIdLabel) && pos != mainAttributes.get(activityLabel) && pos != mainAttributes.get(timestampLabel) && pos != mainAttributes.get(startTimestampLabel) && pos != mainAttributes.get(resourceLabel) && !otherTimeStampsPos.containsKey(pos)){
+        for (int pos = 0; pos < header.size(); pos++) {
+            if (pos != mainAttributes.get(caseIdLabel) && pos != mainAttributes.get(activityLabel) && pos != mainAttributes.get(timestampLabel) && pos != mainAttributes.get(startTimestampLabel) && pos != mainAttributes.get(resourceLabel) && !otherTimeStampsPos.containsKey(pos)) {
                 caseAttributesPos.add(pos);
             }
         }
 
         // remove ones who fail to satisfy case attribute condition - Being consistent within a case.
         List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
-        for (List<String> myLine: lines) {
-            if(myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(mainAttributes.get(caseIdLabel))))){ // new case id
+        for (List<String> myLine : lines) {
+            if (myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(mainAttributes.get(caseIdLabel))))) { // new case id
                 myCaseAttributes = new ArrayList<>();
                 for (Integer pos : caseAttributesPos) {
                     myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(mainAttributes.get(caseIdLabel)), pos, myLine.get(pos)));
                 }
-            }else{
-                for(int pos=0; pos < caseAttributesPos.size(); pos++){
+            } else {
+                for (int pos = 0; pos < caseAttributesPos.size(); pos++) {
                     int finalPos = caseAttributesPos.get(pos);
-                    if(!myCaseAttributes.stream().filter(p -> p.getPosition() == finalPos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(finalPos)) && caseAttributesPos.contains(finalPos)){
+                    if (!myCaseAttributes.stream().filter(p -> p.getPosition() == finalPos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(finalPos)) && caseAttributesPos.contains(finalPos)) {
                         caseAttributesPos.remove(new Integer(finalPos));
                     }
                 }
-            }
-        }
-    }
-
-
-    @Override
-    public void setOtherAll(Window window) {
-        int otherIndex = 6;
-
-        for (int i = 0; i < this.getLines().get(0).size(); i++) {
-            Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
-            if (lb.getSelectedIndex() == 8) {
-             //   removeColPos(i, this);
-              //  closePopUp(i, this);
-                lb.setSelectedIndex(otherIndex);
-                this.getMainAttributes().put("Event Attribute", i);
-            }
-        }
-
-    }
-
-    @Override
-    public void setIgnoreAll(Window window) {
-        int ignoreIndex = 8;
-
-        for (int i = 0; i < this.getLines().get(0).size(); i++) {
-            Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
-            if (lb.getSelectedIndex() == 6) {
-              //  removeColPos(i, this);
-               // closePopUp(i, this);
-                lb.setSelectedIndex(ignoreIndex);
-                this.getMainAttributes().put("ignore", i);
-                this.getIgnoredPos().add(i);
             }
         }
     }
@@ -239,34 +189,53 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public List<String> getHeader() { return header; }
+    public List<String> getHeader() {
+        return header;
+    }
 
     @Override
-    public List<List<String>> getLines() { return lines; }
+    public List<List<String>> getLines() {
+        return lines;
+    }
 
     @Override
-    public Map<String, Integer> getMainAttributes() { return mainAttributes; }
+    public Map<String, Integer> getMainAttributes() {
+        return mainAttributes;
+    }
 
     @Override
-    public String getTimestampFormat() { return timestampFormat; }
+    public List<Integer> getCaseAttributesPos() {
+        return caseAttributesPos;
+    }
 
     @Override
-    public void setTimestampFormat(String s) { timestampFormat = s; }
+    public List<Integer> getIgnoredPos() {
+        return ignoredPos;
+    }
 
     @Override
-    public String getStartTsFormat() { return startTsFormat; }
+    public HashMap<Integer, String> getOtherTimeStampsPos() {
+        return otherTimeStampsPos;
+    }
 
     @Override
-    public void setStartTsFormat(String s) { startTsFormat = s; }
+    public String getTimestampFormat() {
+        return timestampFormat;
+    }
 
     @Override
-    public List<Integer> getIgnoredPos() { return ignoredPos; }
+    public void setTimestampFormat(String s) {
+        timestampFormat = s;
+    }
 
     @Override
-    public HashMap<Integer, String> getOtherTimeStampsPos() { return otherTimeStampsPos; }
+    public String getStartTsFormat() {
+        return startTsFormat;
+    }
 
     @Override
-    public List<Integer> getCaseAttributesPos() { return caseAttributesPos; }
-
+    public void setStartTsFormat(String s) {
+        startTsFormat = s;
+    }
 
 }

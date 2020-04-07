@@ -25,8 +25,8 @@ interface Constants {
     String setEncodingId = "setEncoding";
     String myGridId = "myGrid";
     String popUPBoxId = "popUPBox";
-    String setOtherAllBtnId = "setOtherAll";
-    String setIgnoreAllBtnId = "setIgnoreAll";
+    String ignoreToEventBtnId = "setOtherAll";
+    String eventToIgnoreBtnId = "setIgnoreAll";
     String toXESBtnId = "toXESButton";
     String cancelBtnId = "cancelButton";
     String popUpHelpId = "popUpHelp";
@@ -35,14 +35,10 @@ interface Constants {
     String textboxID = "txt_";
     String labelID = "lbl_";
 
-    Integer AttribWidth = 180;
+    Integer columnWidth = 180;
+    Integer indexColumnWidth = 50;
 
-
-    String parsedCorrectly = "Timestamp parsed correctly!";
-    String couldnotParse = "Could not parse!";
-
-    // CSS Classes
-    String parsedClass = "text-success";
-    String failedClass = "text-danger";
-
+    String eventAttributeLabel = "eventAttribute";
+    String caseAttributeLabel = "caseAttribute";
+    String ignoreLabel = "ignoreAttribute";
 }

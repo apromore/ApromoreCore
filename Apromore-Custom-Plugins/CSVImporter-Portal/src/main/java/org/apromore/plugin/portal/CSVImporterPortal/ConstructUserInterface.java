@@ -5,7 +5,6 @@ import org.apromore.service.csvimporter.LogSample;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
@@ -21,11 +20,9 @@ public class ConstructUserInterface implements Constants {
     private Window window;
     private Media media;
 
-    private Integer attribWidth = 180;
-    private Integer indexColumnWidth = 50;
-
     private Div popUpBox;
     Button[] formatBtns;
+    List<Listbox> dropDownLists;
 
     public ConstructUserInterface(LogSample sample, Media media, Window window) {
         this.sample = sample;
@@ -33,13 +30,6 @@ public class ConstructUserInterface implements Constants {
         this.media = media;
     }
 
-    public Window getWindow() {
-        return window;
-    }
-
-    public void setSample(LogSample sample) {
-        this.sample = sample;
-    }
 
     void setUpUI(){
         // Set up window size
@@ -48,15 +38,16 @@ public class ConstructUserInterface implements Constants {
             window.setMaximized(true);
         } else {
             window.setMaximizable(false);
-            int size = indexColumnWidth + sample.getHeader().size() * attribWidth + 35;
+            int size = indexColumnWidth + sample.getHeader().size() * columnWidth + 35;
             window.setWidth(size + "px");
         }
         window.setTitle("CSV Importer - " + media.getName());
 
 
-        popUpBox = createPopUpTextBox();
+        setDropDownLists();
         setUpCSVGrid();
         renderGridContent();
+        setPopUpTextBox();
         setUpButtons();
     }
 
@@ -72,7 +63,7 @@ public class ConstructUserInterface implements Constants {
         Auxhead optionHead = new Auxhead();
         Auxheader index = new Auxheader();
         optionHead.appendChild(index);
-        for (Listbox list : createDropDownLists()) {
+        for (Listbox list : dropDownLists) {
             Auxheader listHeader = new Auxheader();
             listHeader.appendChild(list);
             optionHead.appendChild(listHeader);
@@ -89,16 +80,16 @@ public class ConstructUserInterface implements Constants {
         myGrid.getColumns().appendChild(indexCol);
 
 
-        // set header
+        // set columns
         Button[] formatBtns = new Button[sample.getHeader().size()];
-        for (int i = 0; i < sample.getHeader().size(); i++) {
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
             Column newColumn = new Column();
-            String label = sample.getHeader().get(i);
+            String label = sample.getHeader().get(pos);
             newColumn.setValue(label);
             newColumn.setLabel(label);
             int labelLen = (label.length() * 14) + 20;
-            if (labelLen < attribWidth) {
-                labelLen = attribWidth;
+            if (labelLen < columnWidth) {
+                labelLen = columnWidth;
             }
             newColumn.setWidth(labelLen + "px");
             newColumn.setAlign("center");
@@ -106,191 +97,65 @@ public class ConstructUserInterface implements Constants {
             Button formatBtn = new Button();
             hideFormatBtn(formatBtn);
             formatBtn.setIconSclass("z-icon-wrench");
-            final int fi = i;
+            final int fi = pos;
             formatBtn.addEventListener("onClick", event -> {
-                Window w = (Window) popUpBox.getFellow("pop_" + fi);
-                w.setStyle(w.getStyle().replace("hidden", "visible"));
+                openPopUpBox(fi);
+
 //                MouseEvent me = (MouseEvent) event;
 //                int x = me.getPageX();
 //                int y = me.getPageY();
 //                w.setLeft((x - 180) + "px");
 //                w.setTop((y + 120) + "px");
-//                Clients.evalJavaScript("adjustPos(" + fi + ")");
             });
+            formatBtns[pos] = formatBtn;
 
-            formatBtns[i] = formatBtn;
             newColumn.appendChild(formatBtn);
             myGrid.getColumns().appendChild(newColumn);
             myGrid.getColumns().setSizable(true);
         }
 
-        int timeStampPos = sample.getMainAttributes().get(sample.getTimestampLabel());
-        if (timeStampPos != -1) {
-            showFormatBtn(formatBtns[timeStampPos]);
-        }
-        int startTimeStampPos = sample.getMainAttributes().get(sample.getStartTimestampLabel());
-        if (startTimeStampPos != -1) {
-            showFormatBtn(formatBtns[startTimeStampPos]);
-        }
-
-        for (Map.Entry<Integer, String> entry : sample.getOtherTimeStampsPos().entrySet()) {
-            showFormatBtn(formatBtns[entry.getKey()]);
-        }
-
         this.formatBtns = formatBtns;
     }
-
-
-    private void showFormatBtn(Button myButton){
-        myButton.setSclass("ap-csv-importer-format-icon");
-    }
-
-    private void hideFormatBtn(Button myButton){
-        myButton.setSclass("ap-csv-importer-format-icon ap-hidden");
-    }
-
 
     void renderGridContent(){
         Grid myGrid = (Grid) window.getFellow(myGridId);
         // set grid model; display the first logSampleSize rows
         ListModelList<String[]> indexedResult = new ListModelList<>();
-        for (int i = 0; i < sample.getLines().size(); i++) {
+
+        int index = 1;
+        for (List<String> myLine: sample.getLines()) {
             List<String> withIndex = new ArrayList<>();
-            withIndex.add(String.valueOf(i + 1));
-            withIndex.addAll(sample.getLines().get(i));
+            withIndex.add(String.valueOf(index));
+            index++;
+            withIndex.addAll(myLine);
             String[] s = withIndex.toArray(new String[0]);
             indexedResult.add(s);
         }
-        if (sample.getLines().size() == logSampleSize) {
-            String[] continued = {"...", ""};
-            indexedResult.add(continued);
-        }
+        indexedResult.add(new String[]{"", "...", "..."});
+        indexedResult.add(new String[]{"", "...", "..."});
         myGrid.setModel(indexedResult);
 
         //set grid row renderer
         GridRendererController rowRenderer = new GridRendererController();
-        rowRenderer.setAttribWidth(attribWidth);
+        rowRenderer.setAttribWidth(columnWidth);
         myGrid.setRowRenderer(rowRenderer);
     }
 
-
-    private List<Listbox> createDropDownLists() {
-
-        List<Listbox> menuDropDownLists = new ArrayList<>();
-        LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
-        String eventAttribute = "Event Attribute";
-        String caseAttribute = "Case Attribute";
-        String ignore = "ignore";
-
-        menuItems.put(sample.getCaseIdLabel(), "Case ID");
-        menuItems.put(sample.getActivityLabel(), "Activity");
-        menuItems.put(sample.getTimestampLabel(), "End timestamp");
-        menuItems.put(sample.getStartTimestampLabel(), "Start timestamp");
-        menuItems.put(sample.getOtherTimestampLabel(), "Other timestamp");
-        menuItems.put(sample.getResourceLabel(), "Resource");
-        menuItems.put(eventAttribute, "Event Attribute");
-        menuItems.put(caseAttribute, "Case Attribute");
-        menuItems.put(ignore, "Ignore Attribute");
-
-        // get index of "eventAttribute" item and select it.
-        int eventAttributeIndex = new ArrayList<String>(menuItems.keySet()).indexOf(eventAttribute);
-
-        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
-            Listbox box = new Listbox();
-            box.setMold("select"); // set listBox to select mode
-            box.setId(String.valueOf(pos)); // set id of list as column position.
-            box.setWidth(AttribWidth - 20 + "px");
-
-            for (Map.Entry<String, String> myItem : menuItems.entrySet()) {
-                Listitem item = new Listitem();
-                item.setValue(myItem.getKey());
-                item.setLabel(myItem.getValue());
-
-                if ((box.getSelectedItem() == null) && (
-                        (myItem.getKey().equals(sample.getCaseIdLabel()) && (pos == sample.getMainAttributes().get(sample.getCaseIdLabel()))) ||
-                                (myItem.getKey().equals(sample.getActivityLabel()) && (pos == sample.getMainAttributes().get(sample.getActivityLabel()))) ||
-                                (myItem.getKey().equals(sample.getTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getTimestampLabel()))) ||
-                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getStartTimestampLabel()))) ||
-                                (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getMainAttributes().get(sample.getResourceLabel()))) ||
-                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (sample.getOtherTimeStampsPos().get(pos) != null)) ||
-                                (myItem.getKey().equals(caseAttribute) && (sample.getCaseAttributesPos().contains(pos))) ||
-                                (myItem.getKey().equals(eventAttribute)))
-                ) {
-                    item.setSelected(true);
-                }
-
-                box.appendChild(item);
-            }
-
-
-            box.addEventListener("onSelect", (Event event) -> {
-                // get selected index, and check if it is caseid, activity or time stamp
-                String selected = box.getSelectedItem().getValue();
-                int colPos = Integer.parseInt(box.getId());
-                removeColPos(colPos);
-                closePopUpBox(colPos);
-
-                if (selected.equals(sample.getCaseIdLabel()) || selected.equals(sample.getActivityLabel()) || selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel()) || new String(selected).equals(sample.getResourceLabel())) {
-
-                    int oldColPos = sample.getMainAttributes().get(selected);
-                    if (oldColPos != -1) {
-                        Listbox oldBox = menuDropDownLists.get(oldColPos);
-                        oldBox.setSelectedIndex(eventAttributeIndex);
-                        removeColPos(oldColPos);
-                        closePopUpBox(oldColPos);
-                    }
-
-                    if (selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel())) {
-                        boolean parsed = sample.isParsable(colPos);
-                        if(parsed){
-                            sample.getMainAttributes().put(selected, colPos);
-                            if (selected.equals(sample.getTimestampLabel())) {
-                                sample.setTimestampFormat(null);
-                            } else {
-                                sample.setStartTsFormat(null);
-                            }
-                        }
-                        openPopUpBox(colPos, parsed);
-                    } else {
-                        sample.getMainAttributes().put(selected, colPos);
-                    }
-
-                } else if (selected.equals(ignore)) {
-                    sample.getIgnoredPos().add(colPos);
-                } else if (selected.equals(sample.getOtherTimestampLabel())) {
-                    boolean parsed = sample.isParsable(colPos);
-                    if(parsed){
-                        sample.getOtherTimeStampsPos().put(colPos, null);
-                    }
-                    openPopUpBox(colPos, parsed);
-                } else if(selected.equals(caseAttribute)){
-                    sample.getCaseAttributesPos().add(colPos);
-                }
-            });
-
-            menuDropDownLists.add(box);
-        }
-
-        return menuDropDownLists;
-    }
-
-    private Div createPopUpTextBox() {
+    private void setPopUpTextBox() {
         Div popUPBox = (Div) window.getFellow(popUPBoxId);
         if (popUPBox != null) {
             popUPBox.getChildren().clear();
         }
         Popup helpP = (Popup) window.getFellow(popUpHelpId);
-        int colNum = sample.getHeader().size();
 
-        for (int pos = 0; pos < colNum; pos++) {
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
             Window item = new Window();
             item.setId(popupID + pos);
-            item.setWidth((attribWidth) + "px");
+            item.setWidth((columnWidth) + "px");
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-
-            item.setStyle("margin-left:" + (pos==0? 15: (pos*AttribWidth) + 15)  + "px; position: absolute; z-index: 10; visibility: hidden;");
+            item.setStyle("position: fixed; z-index: 10; visibility: hidden;");
 
             Button sp = new Button();
             sp.setStyle("margin-right:3px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
@@ -298,8 +163,18 @@ public class ConstructUserInterface implements Constants {
 
             A hidelink = new A();
             hidelink.appendChild(sp);
-            sp.addEventListener("onClick", (Event event) -> item.setStyle(item.getStyle().
-                    replace("visible", "hidden")));
+            sp.addEventListener("onClick", (Event event) -> item.setStyle(item.getStyle().replace("visible", "hidden")));
+
+            Label check_lbl = new Label();
+            check_lbl.setId(labelID + pos);
+            String redLabelCSS = "redLabel";
+            String greenLabelCSS = "redLabel";
+            String parsedMessage = "Could not parse timestamp!";
+            String couldNotParse = "Parsed correctly!";
+
+            check_lbl.setZclass(redLabelCSS);
+            check_lbl.setValue(couldNotParse);
+
 
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + pos);
@@ -313,13 +188,25 @@ public class ConstructUserInterface implements Constants {
                 if (StringUtils.isBlank(event.getValue()) || event.getValue().length() < 6) {
                     textbox.setPlaceholder("Specify timestamp format");
                 }
-                if (!event.getValue().isEmpty()) {
-                    sample.isParsableWithFormat(Integer.parseInt(textbox.getId().replace(textboxID, "")), event.getValue());
+                else {
+                    int colPos = Integer.parseInt(textbox.getId().replace(textboxID, ""));
+                    String format = event.getValue();
+
+                    if(sample.isParsableWithFormat(colPos, format)){
+
+                        check_lbl.setZclass(greenLabelCSS);
+                        check_lbl.setValue(parsedMessage);
+
+                        Listbox box = dropDownLists.get(colPos);
+                        String timestampLabel = box.getSelectedItem().getValue();
+                        updateTimestampPos(colPos, timestampLabel, format);
+                   }else{
+                        check_lbl.setZclass(redLabelCSS);
+                        check_lbl.setValue(couldNotParse);
+                   }
                 }
             });
 
-            Label check_lbl = new Label();
-            check_lbl.setId(labelID + pos);
             item.appendChild(check_lbl);
             item.appendChild(hidelink);
             item.appendChild(textbox);
@@ -327,29 +214,123 @@ public class ConstructUserInterface implements Constants {
             popUPBox.appendChild(item);
         }
         popUPBox.clone();
-        return popUPBox;
+
+        this.popUpBox = popUPBox;
     }
 
+    private void setDropDownLists() {
 
-    private void openPopUpBox(Integer pos, boolean parsed) {
-        showFormatBtn(formatBtns[pos]);
+        List<Listbox> menuDropDownLists = new ArrayList<>();
+        LinkedHashMap<String, String> menuItems = new LinkedHashMap<>();
+
+        menuItems.put(sample.getCaseIdLabel(), "Case ID");
+        menuItems.put(sample.getActivityLabel(), "Activity");
+        menuItems.put(sample.getTimestampLabel(), "End timestamp");
+        menuItems.put(sample.getStartTimestampLabel(), "Start timestamp");
+        menuItems.put(sample.getOtherTimestampLabel(), "Other timestamp");
+        menuItems.put(sample.getResourceLabel(), "Resource");
+        menuItems.put(eventAttributeLabel, "Event Attribute");
+        menuItems.put(caseAttributeLabel, "Case Attribute");
+        menuItems.put(ignoreLabel, "Ignore Attribute");
+
+        // get index of "eventAttribute" item and select it.
+        int eventAttributeIndex = new ArrayList<String>(menuItems.keySet()).indexOf(eventAttributeLabel);
+
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
+            Listbox box = new Listbox();
+            box.setMold("select"); // set listBox to select mode
+            box.setId(String.valueOf(pos)); // set id of list as column position.
+            box.setWidth(columnWidth - 20 + "px");
+
+            for (Map.Entry<String, String> myItem : menuItems.entrySet()) {
+                Listitem item = new Listitem();
+                item.setValue(myItem.getKey());
+                item.setLabel(myItem.getValue());
+                item.setId(myItem.getKey());
+
+                if ((box.getSelectedItem() == null) && (
+                        (myItem.getKey().equals(sample.getCaseIdLabel()) && (pos == sample.getMainAttributes().get(sample.getCaseIdLabel()))) ||
+                                (myItem.getKey().equals(sample.getActivityLabel()) && (pos == sample.getMainAttributes().get(sample.getActivityLabel()))) ||
+                                (myItem.getKey().equals(sample.getTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getTimestampLabel()))) ||
+                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getStartTimestampLabel()))) ||
+                                (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getMainAttributes().get(sample.getResourceLabel()))) ||
+                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (sample.getOtherTimeStampsPos().get(pos) != null)) ||
+                                (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
+                                (myItem.getKey().equals(eventAttributeLabel)))
+                ) {
+                    item.setSelected(true);
+                }
+
+                box.appendChild(item);
+            }
+
+
+            box.addEventListener("onSelect", (Event event) -> {
+                // get selected index, and check if it is one of main attributes
+                String selected = box.getSelectedItem().getValue();
+                int colPos = Integer.parseInt(box.getId());
+                resetColPos(colPos);
+                closePopUpBox(colPos);
+                hideFormatBtn(formatBtns[colPos]);
+
+                if (selected.equals(sample.getCaseIdLabel()) || selected.equals(sample.getActivityLabel()) || selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel()) || new String(selected).equals(sample.getResourceLabel())) {
+
+                    int oldColPos = sample.getMainAttributes().get(selected);
+                    if (oldColPos != -1) {
+                        Listbox oldBox = menuDropDownLists.get(oldColPos);
+                        oldBox.setSelectedIndex(eventAttributeIndex);
+                        resetColPos(oldColPos);
+                        closePopUpBox(oldColPos);
+                        hideFormatBtn(formatBtns[oldColPos]);
+                    }
+
+                    if (selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel())) {
+                        if(sample.isParsable(colPos)){
+                            updateTimestampPos(colPos, selected, null);
+                        }else{
+                            showFormatBtn(formatBtns[colPos]);
+                            openPopUpBox(colPos);
+                        }
+                    } else {
+                        sample.getMainAttributes().put(selected, colPos);
+                    }
+
+                } else if (selected.equals(ignoreLabel)) {
+                    sample.getIgnoredPos().add(colPos);
+                } else if (selected.equals(sample.getOtherTimestampLabel())) {
+                    if(sample.isParsable(colPos)){
+                        sample.getOtherTimeStampsPos().put(colPos, null);
+                    }else{
+                        showFormatBtn(formatBtns[colPos]);
+                        openPopUpBox(colPos);
+                    }
+                } else if(selected.equals(caseAttributeLabel)){
+                    sample.getCaseAttributesPos().add(colPos);
+                }
+            });
+
+            menuDropDownLists.add(box);
+        }
+
+        this.dropDownLists = menuDropDownLists;
+    }
+
+    private void updateTimestampPos(int pos, String timestampLabel, String format){
+        if (timestampLabel.equals(sample.getTimestampLabel())) {
+            sample.getMainAttributes().put(timestampLabel, pos);
+            sample.setTimestampFormat(format);
+        } else if (timestampLabel.equals(sample.getStartTimestampLabel())) {
+            sample.getMainAttributes().put(timestampLabel, pos);
+            sample.setStartTsFormat(format);
+        } else if (timestampLabel.equals(sample.getOtherTimestampLabel())) {
+            sample.getOtherTimeStampsPos().put(pos, format);
+        }
+    }
+
+    private void openPopUpBox(int pos) {
         Window myPopUp = (Window) popUpBox.getFellow(popupID + pos);
         myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
-
-        Label check_lbl = (Label) myPopUp.getFellow(labelID + pos);
-
-        if (parsed) {
-            check_lbl.setZclass("greenLabel");
-            check_lbl.setValue("Timestamp parsed correctly!");
-
-             Textbox txt = (Textbox) myPopUp.getFellow(textboxID + pos);
-             if(txt.getText() == null || txt.getText().isEmpty()){
-                 txt.setSclass("ap-hidden");
-             }
-        } else {
-            check_lbl.setZclass("redLabel");
-            check_lbl.setValue("Could not parse timestamp!");
-        }
+        Clients.evalJavaScript("adjustPos(" + pos + ")");
     }
 
     private void closePopUpBox(int pos) {
@@ -357,31 +338,28 @@ public class ConstructUserInterface implements Constants {
         myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
     }
 
-    private void removeColPos(int pos) {
-        if (sample.getOtherTimeStampsPos().get(pos) != null) {
-            sample.getOtherTimeStampsPos().remove(pos);
-        } else if (sample.getIgnoredPos().contains(pos)) {
-            sample.getIgnoredPos().remove(Integer.valueOf(pos));
-        } else {
-            for (Map.Entry<String, Integer> entry : sample.getMainAttributes().entrySet()) {
-                if (entry.getValue() == pos) {
-                    sample.getMainAttributes().put(entry.getKey(), -1);
-                    break;
-                }
-            }
-        }
+    private void showFormatBtn(Button myButton){
+        myButton.setSclass("ap-csv-importer-format-icon");
+    }
+
+    private void hideFormatBtn(Button myButton){
+        myButton.setSclass("ap-csv-importer-format-icon ap-hidden");
     }
 
 
     private void setUpButtons(){
-        // Set up buttons
-        Button setOtherAll = (Button) window.getFellow(setOtherAllBtnId);
-        setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-        setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window));
 
-        Button setIgnoreAll = (Button) window.getFellow(setIgnoreAllBtnId);
-        setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-        setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window));
+        Button setOtherAll = (Button) window.getFellow(ignoreToEventBtnId);
+        setOtherAll.setTooltiptext("Change all Ignored Attributes to Event Attributes");
+        setOtherAll.addEventListener("onClick", event ->
+                ignoreToEvent()
+        );
+
+        Button setIgnoreAll = (Button) window.getFellow(eventToIgnoreBtnId);
+        setIgnoreAll.setTooltiptext("Ignore all Event Attributes");
+        setIgnoreAll.addEventListener("onClick", event ->
+                eventToIgnore()
+        );
 
         Button toXESButton = (Button) window.getFellow(toXESBtnId);
         toXESButton.setDisabled(false);
@@ -397,6 +375,59 @@ public class ConstructUserInterface implements Constants {
     }
 
 
+    public void ignoreToEvent() {
+        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
+        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
+        int ignoreAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(ignoreLabel));
+
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
+            lb = (Listbox) window.getFellow(String.valueOf(pos));
+
+            if (lb.getSelectedIndex() == ignoreAttributeIndex) {
+                sample.getIgnoredPos().remove(Integer.valueOf(pos));
+                lb.setSelectedIndex(eventAttributeIndex);
+            }
+        }
+    }
+
+    public void eventToIgnore() {
+        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
+        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
+        int ignoreAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(ignoreLabel));
+
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
+            lb = (Listbox) window.getFellow(String.valueOf(pos));
+            if (lb.getSelectedIndex() == eventAttributeIndex) {
+                sample.getIgnoredPos().add(pos);
+                lb.setSelectedIndex(ignoreAttributeIndex);
+            }
+        }
+    }
+
+
+    private void resetColPos(int pos) {
+        if (sample.getOtherTimeStampsPos().get(pos) != null) {
+            sample.getOtherTimeStampsPos().remove(pos);
+        } else if (sample.getIgnoredPos().contains(pos)) {
+            sample.getIgnoredPos().remove(Integer.valueOf(pos));
+        } else {
+            for (Map.Entry<String, Integer> entry : sample.getMainAttributes().entrySet()) {
+                if (entry.getValue() == pos) {
+                    sample.getMainAttributes().put(entry.getKey(), -1);
+                    break;
+                }
+            }
+        }
+    }
+
+
+    public Window getWindow() {
+        return window;
+    }
+
+    public void setSample(LogSample sample) {
+        this.sample = sample;
+    }
 
 
 

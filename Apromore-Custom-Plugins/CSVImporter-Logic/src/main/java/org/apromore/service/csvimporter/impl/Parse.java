@@ -22,34 +22,36 @@
 
 package org.apromore.service.csvimporter.impl;
 
+import org.apromore.service.csvimporter.dateparser.DateParserUtils;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import org.apromore.service.csvimporter.dateparser.DateParserUtils;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class Parse {
 
-    public Timestamp parseWithFormat(String theDate, String theFormat) {
+    public Timestamp tryParsingWithFormat(String theDate, String theFormat) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(theFormat);
             formatter.setLenient(false);
-		    Calendar cal = Calendar.getInstance();
-		    Date d = formatter.parse(theDate);
-			cal.setTime(d);
-			return new Timestamp(cal.getTimeInMillis());
-		} catch (Exception e) {
-            return null;
-		}
-	}
+            Calendar cal = Calendar.getInstance();
+            Date d = formatter.parse(theDate);
+            cal.setTime(d);
+            return new Timestamp(cal.getTimeInMillis());
 
-	public Timestamp parseWithoutFormat(String theDate) {
-		try{
-			return new Timestamp(DateParserUtils.parseCalendar(theDate).getTimeInMillis());
-		}catch (Exception e){
-			return null;
-		}
-	}
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Timestamp tryParsing(String theDate) {
+        try {
+            return new Timestamp(DateParserUtils.parseCalendar(theDate).getTimeInMillis());
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }
