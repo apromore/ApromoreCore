@@ -162,9 +162,13 @@ body > * {
 }
 
 .ap-comply {
-    margin-bottom: 7px;
+    margin-bottom: 10px !important;
     font-size: 12px;
     color: white;
+}
+
+.ap-comply a {
+    text-decoration: underline !important;
 }
 
 .ap-comply div {
@@ -321,6 +325,10 @@ body > * {
     left: calc(100% + 10px);
     top: 5px;
     color: white;
+}
+
+.ap-login #register {
+    overflow: hidden;
 }
 
 .ap-login #register input[type=checkbox] {

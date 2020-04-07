@@ -224,9 +224,9 @@
                     </h:fieldset>
                     <h:fieldset class="ap-comply">
                       <h:div>
-                      <h:input type="checkbox" id="ap-agree" checked="checked"/>
+                      <h:input type="checkbox" id="ap-agree" />
                       <span>
-                        Yes, I agree with the
+                        I agree with the
                         <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a> and the
                         <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
                       </span>
