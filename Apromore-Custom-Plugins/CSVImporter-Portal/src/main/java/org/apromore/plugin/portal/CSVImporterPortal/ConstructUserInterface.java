@@ -119,7 +119,6 @@ public class ConstructUserInterface implements Constants {
 
     void renderGridContent(){
         Grid myGrid = (Grid) window.getFellow(myGridId);
-        // set grid model; display the first logSampleSize rows
         ListModelList<String[]> indexedResult = new ListModelList<>();
 
         int index = 1;
@@ -169,12 +168,11 @@ public class ConstructUserInterface implements Constants {
             check_lbl.setId(labelID + pos);
             String redLabelCSS = "redLabel";
             String greenLabelCSS = "redLabel";
-            String parsedMessage = "Could not parse timestamp!";
-            String couldNotParse = "Parsed correctly!";
+            String couldNotParse = "Could not parse timestamp!";
+            String parsedMessage = "Parsed correctly!";
 
             check_lbl.setZclass(redLabelCSS);
             check_lbl.setValue(couldNotParse);
-
 
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + pos);
