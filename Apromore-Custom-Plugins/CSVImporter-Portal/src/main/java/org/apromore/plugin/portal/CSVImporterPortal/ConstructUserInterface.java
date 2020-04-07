@@ -130,8 +130,9 @@ public class ConstructUserInterface implements Constants {
             String[] s = withIndex.toArray(new String[0]);
             indexedResult.add(s);
         }
-        indexedResult.add(new String[]{"", "...", "..."});
-        indexedResult.add(new String[]{"", "...", "..."});
+        if(logSampleSize <= sample.getLines().size()){
+            indexedResult.add(new String[]{"..", "...", "...."});
+        }
         myGrid.setModel(indexedResult);
 
         //set grid row renderer
@@ -167,7 +168,7 @@ public class ConstructUserInterface implements Constants {
             Label check_lbl = new Label();
             check_lbl.setId(labelID + pos);
             String redLabelCSS = "redLabel";
-            String greenLabelCSS = "redLabel";
+            String greenLabelCSS = "greenLabel";
             String couldNotParse = "Could not parse timestamp!";
             String parsedMessage = "Parsed correctly!";
 
@@ -252,7 +253,7 @@ public class ConstructUserInterface implements Constants {
                                 (myItem.getKey().equals(sample.getTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getTimestampLabel()))) ||
                                 (myItem.getKey().equals(sample.getStartTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getStartTimestampLabel()))) ||
                                 (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getMainAttributes().get(sample.getResourceLabel()))) ||
-                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (sample.getOtherTimeStampsPos().get(pos) != null)) ||
+                                (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimeStampsPos().get(pos) != null)) ||
                                 (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
                                 (myItem.getKey().equals(eventAttributeLabel)))
                 ) {
@@ -347,15 +348,15 @@ public class ConstructUserInterface implements Constants {
 
     private void setUpButtons(){
 
-        Button setOtherAll = (Button) window.getFellow(ignoreToEventBtnId);
-        setOtherAll.setTooltiptext("Change all Ignored Attributes to Event Attributes");
-        setOtherAll.addEventListener("onClick", event ->
+        Button toEventAttributes = (Button) window.getFellow(ignoreToEventBtnId);
+        toEventAttributes.setTooltiptext("Change all Ignored Attributes to Event Attributes");
+        toEventAttributes.addEventListener("onClick", event ->
                 ignoreToEvent()
         );
 
-        Button setIgnoreAll = (Button) window.getFellow(eventToIgnoreBtnId);
-        setIgnoreAll.setTooltiptext("Ignore all Event Attributes");
-        setIgnoreAll.addEventListener("onClick", event ->
+        Button ignoreEventAttributes = (Button) window.getFellow(eventToIgnoreBtnId);
+        ignoreEventAttributes.setTooltiptext("Ignore all Event Attributes");
+        ignoreEventAttributes.addEventListener("onClick", event ->
                 eventToIgnore()
         );
 
