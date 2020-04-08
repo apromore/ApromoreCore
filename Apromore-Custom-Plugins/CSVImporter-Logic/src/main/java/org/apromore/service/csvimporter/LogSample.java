@@ -40,7 +40,7 @@ public interface LogSample {
     List<String> getHeader();
     List<List<String>> getLines();
 
-    Map<String, Integer> getMainAttributes();
+    Map<String, Integer> getUniqueAttributes();
     List<Integer> getIgnoredPos();
     List<Integer> getCaseAttributesPos();
     List<Integer> getEventAttributesPos();

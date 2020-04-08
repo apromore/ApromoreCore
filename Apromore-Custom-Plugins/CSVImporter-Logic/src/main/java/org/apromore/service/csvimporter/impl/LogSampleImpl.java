@@ -34,7 +34,7 @@ class LogSampleImpl implements LogSample, Constants {
 
     private List<String> header;
     private List<List<String>> lines;
-    private Map<String, Integer> mainAttributes;
+    private Map<String, Integer> uniqueAttributes;
     private String timestampFormat;
     private String startTsFormat;
     private List<Integer> ignoredPos;
@@ -52,32 +52,32 @@ class LogSampleImpl implements LogSample, Constants {
         this.startTsFormat = null;
         otherTimestamps = new HashMap<>();
 
-        setMainAttributes();
-        setOtherTimestampsPos();
+        setUniqueAttributes();
+        setOtherTimestamps();
         setCaseAndEventAttributesPos();
     }
 
 
-    private void setMainAttributes(){
-        mainAttributes = new HashMap<>();
-        mainAttributes.put(caseIdLabel, -1);
-        mainAttributes.put(activityLabel, -1);
-        mainAttributes.put(timestampLabel, -1);
-        mainAttributes.put(startTimestampLabel, -1);
-        mainAttributes.put(resourceLabel, -1);
+    private void setUniqueAttributes(){
+        uniqueAttributes = new HashMap<>();
+        uniqueAttributes.put(caseIdLabel, -1);
+        uniqueAttributes.put(activityLabel, -1);
+        uniqueAttributes.put(timestampLabel, -1);
+        uniqueAttributes.put(startTimestampLabel, -1);
+        uniqueAttributes.put(resourceLabel, -1);
 
         // Populate mainAttributes, timestampFormat, startTsFormat
         for (int pos = 0; pos < header.size(); pos++) {
-            if ((mainAttributes.get(caseIdLabel) == -1) && getMainAttributePosition(caseIdValues, header.get(pos))) {
-                mainAttributes.put(caseIdLabel, pos);
-            } else if ((mainAttributes.get(activityLabel) == -1) && getMainAttributePosition(activityValues, header.get(pos))) {
-                mainAttributes.put(activityLabel, pos);
-            } else if ((mainAttributes.get(timestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos).toLowerCase()) && isParsable(pos)) {
-                mainAttributes.put(timestampLabel, pos);
-            } else if ((mainAttributes.get(startTimestampLabel) == -1) && getMainAttributePosition(StartTsValues, header.get(pos)) && isParsable(pos)) {
-                mainAttributes.put(startTimestampLabel, pos);
-            } else if ((mainAttributes.get(resourceLabel) == -1) && getMainAttributePosition(resourceValues, header.get(pos))) {
-                mainAttributes.put(resourceLabel, pos);
+            if ((uniqueAttributes.get(caseIdLabel) == -1) && getMainAttributePosition(caseIdValues, header.get(pos))) {
+                uniqueAttributes.put(caseIdLabel, pos);
+            } else if ((uniqueAttributes.get(activityLabel) == -1) && getMainAttributePosition(activityValues, header.get(pos))) {
+                uniqueAttributes.put(activityLabel, pos);
+            } else if ((uniqueAttributes.get(timestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos).toLowerCase()) && isParsable(pos)) {
+                uniqueAttributes.put(timestampLabel, pos);
+            } else if ((uniqueAttributes.get(startTimestampLabel) == -1) && getMainAttributePosition(StartTsValues, header.get(pos)) && isParsable(pos)) {
+                uniqueAttributes.put(startTimestampLabel, pos);
+            } else if ((uniqueAttributes.get(resourceLabel) == -1) && getMainAttributePosition(resourceValues, header.get(pos))) {
+                uniqueAttributes.put(resourceLabel, pos);
             }
         }
     }
@@ -111,9 +111,9 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
 
-    private void setOtherTimestampsPos() {
-        int timeStampPos = mainAttributes.get(timestampLabel);
-        int StartTimeStampPos = mainAttributes.get(startTimestampLabel);
+    private void setOtherTimestamps() {
+        int timeStampPos = uniqueAttributes.get(timestampLabel);
+        int StartTimeStampPos = uniqueAttributes.get(startTimestampLabel);
 
         for (int pos = 0; pos < header.size(); pos++) {
             if ((pos != timeStampPos) && (pos != StartTimeStampPos) && isParsable(pos)) {
@@ -124,11 +124,11 @@ class LogSampleImpl implements LogSample, Constants {
 
 
     private void setCaseAndEventAttributesPos() {
-        if (mainAttributes.get(caseIdLabel) == -1) return;
+        if (uniqueAttributes.get(caseIdLabel) == -1) return;
 
         // set all attributes that are not main attributes or timestamps as case attributes
         for (int pos = 0; pos < header.size(); pos++) {
-            if (!mainAttributes.containsValue(pos) && !otherTimestamps.containsKey(pos)) {
+            if (!uniqueAttributes.containsValue(pos) && !otherTimestamps.containsKey(pos)) {
                 caseAttributesPos.add(pos);
             }
         }
@@ -136,10 +136,10 @@ class LogSampleImpl implements LogSample, Constants {
         // set ones who are not consistent within a case as event attributes instead of case attributes
         List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
         for (List<String> myLine : lines) {
-            if (myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(mainAttributes.get(caseIdLabel))))) { // new case id
+            if (myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(uniqueAttributes.get(caseIdLabel))))) { // new case id
                 myCaseAttributes = new ArrayList<>();
                 for (int pos : caseAttributesPos) {
-                    myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(mainAttributes.get(caseIdLabel)), pos, myLine.get(pos)));
+                    myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(uniqueAttributes.get(caseIdLabel)), pos, myLine.get(pos)));
                 }
             } else {
                 for (int pos = 0; pos < caseAttributesPos.size(); pos++) {
@@ -196,8 +196,8 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public Map<String, Integer> getMainAttributes() {
-        return mainAttributes;
+    public Map<String, Integer> getUniqueAttributes() {
+        return uniqueAttributes;
     }
 
     @Override

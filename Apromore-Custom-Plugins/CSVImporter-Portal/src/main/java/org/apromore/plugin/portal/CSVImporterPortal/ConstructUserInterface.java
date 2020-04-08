@@ -248,11 +248,11 @@ public class ConstructUserInterface implements Constants {
                 item.setId(myItem.getKey());
 
                 if ((box.getSelectedItem() == null) && (
-                        (myItem.getKey().equals(sample.getCaseIdLabel()) && (pos == sample.getMainAttributes().get(sample.getCaseIdLabel()))) ||
-                                (myItem.getKey().equals(sample.getActivityLabel()) && (pos == sample.getMainAttributes().get(sample.getActivityLabel()))) ||
-                                (myItem.getKey().equals(sample.getTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getTimestampLabel()))) ||
-                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getStartTimestampLabel()))) ||
-                                (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getMainAttributes().get(sample.getResourceLabel()))) ||
+                        (myItem.getKey().equals(sample.getCaseIdLabel()) && (pos == sample.getUniqueAttributes().get(sample.getCaseIdLabel()))) ||
+                                (myItem.getKey().equals(sample.getActivityLabel()) && (pos == sample.getUniqueAttributes().get(sample.getActivityLabel()))) ||
+                                (myItem.getKey().equals(sample.getTimestampLabel()) && (pos == sample.getUniqueAttributes().get(sample.getTimestampLabel()))) ||
+                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (pos == sample.getUniqueAttributes().get(sample.getStartTimestampLabel()))) ||
+                                (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getUniqueAttributes().get(sample.getResourceLabel()))) ||
                                 (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimestamps().get(pos) != null)) ||
                                 (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
                                 (myItem.getKey().equals(eventAttributeLabel) && (sample.getEventAttributesPos().contains(pos))))
@@ -274,7 +274,7 @@ public class ConstructUserInterface implements Constants {
 
                 if (selected.equals(sample.getCaseIdLabel()) || selected.equals(sample.getActivityLabel()) || selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel()) || new String(selected).equals(sample.getResourceLabel())) {
 
-                    int oldColPos = sample.getMainAttributes().get(selected);
+                    int oldColPos = sample.getUniqueAttributes().get(selected);
                     if (oldColPos != -1) {
                         Listbox oldBox = menuDropDownLists.get(oldColPos);
                         oldBox.setSelectedIndex(eventAttributeIndex);
@@ -291,7 +291,7 @@ public class ConstructUserInterface implements Constants {
                             openPopUpBox(colPos);
                         }
                     } else {
-                        sample.getMainAttributes().put(selected, colPos);
+                        sample.getUniqueAttributes().put(selected, colPos);
                     }
 
                 } else if (selected.equals(ignoreLabel)) {
@@ -316,10 +316,10 @@ public class ConstructUserInterface implements Constants {
 
     private void updateTimestampPos(int pos, String timestampLabel, String format){
         if (timestampLabel.equals(sample.getTimestampLabel())) {
-            sample.getMainAttributes().put(timestampLabel, pos);
+            sample.getUniqueAttributes().put(timestampLabel, pos);
             sample.setTimestampFormat(format);
         } else if (timestampLabel.equals(sample.getStartTimestampLabel())) {
-            sample.getMainAttributes().put(timestampLabel, pos);
+            sample.getUniqueAttributes().put(timestampLabel, pos);
             sample.setStartTsFormat(format);
         } else if (timestampLabel.equals(sample.getOtherTimestampLabel())) {
             sample.getOtherTimestamps().put(pos, format);
@@ -351,9 +351,9 @@ public class ConstructUserInterface implements Constants {
         } else if (sample.getIgnoredPos().contains(pos)) {
             sample.getIgnoredPos().remove(Integer.valueOf(pos));
         } else {
-            for (Map.Entry<String, Integer> entry : sample.getMainAttributes().entrySet()) {
+            for (Map.Entry<String, Integer> entry : sample.getUniqueAttributes().entrySet()) {
                 if (entry.getValue() == pos) {
-                    sample.getMainAttributes().put(entry.getKey(), -1);
+                    sample.getUniqueAttributes().put(entry.getKey(), -1);
                     break;
                 }
             }
