@@ -61,7 +61,7 @@ public class DefaultChartDataCollection {
     private long latestTime = 0; //for case overtime
     private long minDuration = 0;
     private long maxDuration = 0;
-    private final int MAX_UNIT = 100;
+    private final int MAX_UNIT = 300;
     DecimalFormat decimalFormat = new DecimalFormat("###############.##");
 
     public DefaultChartDataCollection(APMLog apmLog) {
