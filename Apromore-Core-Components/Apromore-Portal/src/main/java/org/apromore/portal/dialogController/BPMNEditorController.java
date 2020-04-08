@@ -50,7 +50,7 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.ProcessService;
@@ -58,18 +58,18 @@ import org.json.JSONException;
 
 /**
  * This class was created to manage the BPMN model being edited in the bpmn.io editor
- * It is based on SignavioController originally created for the same purpose with the Signavio editor
+ * It is based on ApromoreController originally created for the same purpose with the Signavio editor
  * Basically it keeps track of the current process model (ProcessSummaryType) and version (VersionSummaryType)
  * being edited in the bpmn.io editor. 
  * This class can be called from opening an existing model in the portal or from a New Model Creation Dialog
- * It receives input data via the user session stored in the SignavioSession object.
+ * It receives input data via the user session stored in the ApromoreSession object.
  * It calls to other plugins via the toolbar buttons and it will pass the BPMN XML text to those plugins
  * It also passes the EditSessionType to other plugins and receives output back via the updated EditSessionType object 
  * The process model in the editor has three possible states:
  * 	1. It is a new model being edited. In this case, it is opened from an empty model which has been pre-created in the database
  *  2. It is a model being edited from opening an existing model
  *  3. It is being saved to a totally new model from an existing model
- * @todo: SignavioSession should be renamed to be generic (not specific to Signavio)
+ * @todo: ApromoreSession should be renamed to be generic (not specific to Signavio)
  * @todo: the editor requires that a process model already created in the system even if it is a new model. It  
  * is counter-intutitive that an empty model is created in the system first and then user starts editing the model
  * In case the user leaves immediately after the editor has been opened, an empty model will exist in the system
@@ -108,7 +108,7 @@ public class BPMNEditorController extends BaseController {
             throw new AssertionError("No id parameter in URL");
         }
 
-        SignavioSession session = userSessionManager.getEditSession(id);
+        ApromoreSession session = userSessionManager.getEditSession(id);
         if (session == null) {
             throw new AssertionError("No edit session associated with id " + id);
         }

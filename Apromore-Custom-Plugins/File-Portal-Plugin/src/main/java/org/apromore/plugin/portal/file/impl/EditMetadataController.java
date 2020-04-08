@@ -19,15 +19,17 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.dialogController;
+package org.apromore.plugin.portal.file.impl;
 
 import java.util.List;
 
+import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
@@ -45,12 +47,14 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class EditOneProcessDataController extends BaseController {
+import org.apromore.portal.dialogController.*;
 
-    private Window editDataWindow;
+public class EditMetadataController extends BaseController {
+
+    private Window window;
 
     private MainController mainController;
-    private EditListProcessDataController editDataListProcessesC;
+    private EditListMetadataController editDataListProcessesC;
     private Radio r0;
     private Radio r1;
     private Radio r2;
@@ -58,16 +62,69 @@ public class EditOneProcessDataController extends BaseController {
     private Radio r4;
     private Radio r5;
     private Radio r6; // uncheck all
+    private LogSummaryType log;
     private ProcessSummaryType process;
     private VersionSummaryType preVersion;
-    private Textbox processNameT;
+    private Textbox nameT;
     private Textbox versionNumberT;
     private Checkbox makePublicCb;
     private Radiogroup rankingRG;
     private SelectDynamicListController ownerCB;
     private SelectDynamicListController domainCB;
 
-    public EditOneProcessDataController(MainController mainC, EditListProcessDataController editListProcessDataController,
+    public EditMetadataController(MainController mainC, EditListMetadataController editListLogDataController,
+            LogSummaryType log)
+            throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
+        this.mainController = mainC;
+        this.editDataListProcessesC = editListLogDataController;
+        this.log = log;
+
+        this.window = createComponent("zul/editlogdata.zul");
+        this.window.setTitle("Edit log metadata");
+ 
+        this.nameT = (Textbox) window.getFellow("nameTextbox");
+        this.makePublicCb = (Checkbox) window.getFellow("makePublicCheckbox");
+        resetLog();
+
+        Button okB = (Button) window.getFellow("okButton");
+        okB.addEventListener("onClick",
+                new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        editDataLog();
+                    }
+                });
+        this.window.addEventListener("onOK",
+                new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        editDataLog();
+                    }
+                });
+        Button cancelB = (Button) window.getFellow("cancelButton");
+        cancelB.addEventListener("onClick",
+                new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        cancel();
+                    }
+                });
+        Button cancelAllB = (Button) window.getFellow("cancelAllButton");
+        cancelAllB.addEventListener("onClick",
+                new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        cancelAll();
+                    }
+                });
+        cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size() > 0);
+        Button resetB = (Button) window.getFellow("resetButton");
+        resetB.addEventListener("onClick",
+                new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        resetLog();
+                    }
+                });
+        this.window.doModal();
+    }
+
+    public EditMetadataController(MainController mainC, EditListMetadataController editListProcessDataController,
             ProcessSummaryType process, VersionSummaryType version)
             throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainController = mainC;
@@ -75,12 +132,12 @@ public class EditOneProcessDataController extends BaseController {
         this.process = process;
         this.preVersion = version;
 
-        this.editDataWindow = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
-        this.editDataWindow.setTitle("Edit process model metadata");
+        this.window = createComponent("zul/editprocessdata.zul");
+        this.window.setTitle("Edit process model metadata");
 
-        Rows rows = (Rows) this.editDataWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
+        Rows rows = (Rows) this.window.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getFirstChild();
-        this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
+        this.nameT = (Textbox) processNameR.getFirstChild().getNextSibling();
         Row versionNumberR = (Row) processNameR.getNextSibling();
         this.versionNumberT = (Textbox) versionNumberR.getFirstChild().getNextSibling();
 
@@ -128,7 +185,7 @@ public class EditOneProcessDataController extends BaseController {
         //publicR.setVisible(false);
         cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size() > 0);
         this.r6.setChecked(true);
-        reset();
+        resetProcess();
 
         okB.addEventListener("onClick",
                 new EventListener<Event>() {
@@ -136,7 +193,7 @@ public class EditOneProcessDataController extends BaseController {
                         editDataProcess();
                     }
                 });
-        this.editDataWindow.addEventListener("onOK",
+        this.window.addEventListener("onOK",
                 new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         editDataProcess();
@@ -157,15 +214,29 @@ public class EditOneProcessDataController extends BaseController {
         resetB.addEventListener("onClick",
                 new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        reset();
+                        resetProcess();
                     }
                 });
-        this.editDataWindow.doModal();
+        this.window.doModal();
+    }
+
+    protected void editDataLog() throws Exception {
+        Integer logId = this.log.getId();
+        String logName = this.nameT.getValue();
+        boolean isPublic = this.makePublicCb.isChecked();
+        if (this.nameT.getValue().compareTo("") == 0) {
+            Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
+        } else {
+            getService().editLogData(logId, logName, "", isPublic);
+            this.editDataListProcessesC.getEditedList().add(this);
+            this.editDataListProcessesC.deleteFromToBeEdited(this);
+            closePopup();
+        }
     }
 
     protected void editDataProcess() throws Exception {
         Integer processId = this.process.getId();
-        String processName = this.processNameT.getValue();
+        String processName = this.nameT.getValue();
         String domain = this.domainCB.getValue();
         String username = this.ownerCB.getValue();
         String preVersion = this.preVersion.getVersionNumber();
@@ -175,7 +246,7 @@ public class EditOneProcessDataController extends BaseController {
         if (this.rankingRG.getSelectedItem() != null && "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel()) != 0) {
             ranking = this.rankingRG.getSelectedItem().getLabel();
         }
-        if (this.processNameT.getValue().compareTo("") == 0 || this.versionNumberT.getValue().compareTo("") == 0) {
+        if (this.nameT.getValue().compareTo("") == 0 || this.versionNumberT.getValue().compareTo("") == 0) {
             Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
         } else {
             getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking, isPublic);
@@ -192,15 +263,15 @@ public class EditOneProcessDataController extends BaseController {
 
     private void closePopup() {
         mainController.clearProcessVersions();
-        this.editDataWindow.detach();
+        this.window.detach();
     }
 
     protected void cancelAll() throws Exception {
         this.editDataListProcessesC.cancelAll();
     }
 
-    protected void reset() {
-        this.processNameT.setValue(this.process.getName());
+    protected void resetProcess() {
+        this.nameT.setValue(this.process.getName());
         this.versionNumberT.setValue(this.preVersion.getVersionNumber());
         this.domainCB.setValue(this.process.getDomain());
         this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
@@ -225,8 +296,14 @@ public class EditOneProcessDataController extends BaseController {
         }
     }
 
-    public Window getEditDataOneProcessWindow() {
-        return editDataWindow;
+    private void resetLog() {
+        nameT.setValue(log.getName());
+        EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
+        makePublicCb.setChecked(eventLogService.isPublicLog(log.getId()));
+    }
+
+    public Window getWindow() {
+        return window;
     }
 
 }

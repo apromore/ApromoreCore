@@ -37,7 +37,7 @@ import org.deckfour.xes.model.XLog;
  *
  * @author Cameron James
  */
-public class SignavioSession extends HashMap {
+public class ApromoreSession extends HashMap {
 
     private EditSessionType editSession, editSession2;
     private MainController mainC;
@@ -49,7 +49,7 @@ public class SignavioSession extends HashMap {
     /**
      * Public Default Constructor.
      */
-    public SignavioSession() { }
+    public ApromoreSession() { }
 
     /**
      * Constructor that builds the object.
@@ -62,7 +62,7 @@ public class SignavioSession extends HashMap {
      * @param version2 the version of that second process model, <code>null</code> if no second model
      * @param params the canoniser params.
      */
-    public SignavioSession(EditSessionType editSession, EditSessionType editSession2, MainController mainC, ProcessSummaryType process, VersionSummaryType version, ProcessSummaryType process2, VersionSummaryType version2,
+    public ApromoreSession(EditSessionType editSession, EditSessionType editSession2, MainController mainC, ProcessSummaryType process, VersionSummaryType version, ProcessSummaryType process2, VersionSummaryType version2,
             Set<RequestParameterType<?>> params) {
         this.editSession = editSession;
         this.editSession2 = editSession2;

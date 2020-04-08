@@ -88,9 +88,6 @@
         <!-- Canoniser Plugins -->
         <module>plugin-canoniser/bpmn</module>
 
-        <!-- Annotation Post Processor Plugins -->
-        <module>plugin-annotation/bpmn</module>
-
 
         <!-- Logic Plugins -->
         <module>plugin-logic/similaritysearch-logic</module>

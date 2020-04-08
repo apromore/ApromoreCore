@@ -1,6 +1,7 @@
 /*
  * This file is part of "Apromore".
  *
+ * Copyright (C) 2011 - 2017 Queensland University of Technology.
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  *
  * "Apromore" is free software; you can redistribute it and/or modify
@@ -18,49 +19,62 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.dialogController;
-
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
+package org.apromore.plugin.portal.file.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EditListLogDataController extends BaseController {
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
+
+import org.apromore.portal.dialogController.*;
+
+public class EditListMetadataController extends BaseController {
 
     private MainController mainC;
-    private List<EditOneLogDataController> toEditList;
-    private List<EditOneLogDataController> editedList;
+    private List<EditMetadataController> toEditList;
+    private List<EditMetadataController> editedList;
 
 
-    public EditListLogDataController(MainController mainC, Map<SummaryType, List<VersionSummaryType>> selectedLogVersions)
+    public EditListMetadataController(MainController mainC, Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions)
             throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
         this.toEditList = new ArrayList<>();
         this.editedList = new ArrayList<>();
 
         // process versions are edited one by one
-        Set<SummaryType> keys = selectedLogVersions.keySet();
+        Set<SummaryType> keys = selectedProcessVersions.keySet();
         for (SummaryType key : keys) {
             if(key instanceof LogSummaryType) {
                 LogSummaryType log = (LogSummaryType) key;
-                EditOneLogDataController editDataOneProcess = new EditOneLogDataController(this.mainC, this, log);
-                this.toEditList.add(editDataOneProcess);
+                EditMetadataController editMetadataController = new EditMetadataController(this.mainC, this, log);
+                this.toEditList.add(editMetadataController);
+
+            } else if (key instanceof ProcessSummaryType) {
+                ProcessSummaryType process = (ProcessSummaryType) key;
+                for (Integer i = 0; i < selectedProcessVersions.get(process).size(); i++) {
+                    VersionSummaryType version = selectedProcessVersions.get(process).get(i);
+                    EditMetadataController editMetadataController = new EditMetadataController(this.mainC, this, process, version);
+                    this.toEditList.add(editMetadataController);
+                }
             }
         }
     }
 
+    
+
     /**
      * Return list of controllers associated with process versions already edited
-     * @return List<EditOneProcessDataController>
+     * @return List<EditMetadataController>
      */
-    public List<EditOneLogDataController> getEditedList() {
+    public List<EditMetadataController> getEditedList() {
         if (editedList == null) {
             editedList = new ArrayList<>();
         }
@@ -69,9 +83,9 @@ public class EditListLogDataController extends BaseController {
 
     /**
      * Return list of controllers associated with process versions still to be edited
-     * @return List<EditOneProcessDataController>
+     * @return List<EditMetadataController>
      */
-    public List<EditOneLogDataController> getToEditList() {
+    public List<EditMetadataController> getToEditList() {
         if (toEditList == null) {
             toEditList = new ArrayList<>();
         }
@@ -79,13 +93,13 @@ public class EditListLogDataController extends BaseController {
     }
 
     /**
-     * Remove editOneProcess from list of controllers associated with process
+     * Remove editMetadataController from list of controllers associated with process
      * versions still to be edited.
-     * @param editOneLog remove a model from the list to be edited.
+     * @param editMetadataController remove a model from the list to be edited.
      * @throws Exception if something goes wrong
      */
-    public void deleteFromToBeEdited(EditOneLogDataController editOneLog) throws Exception {
-        this.toEditList.remove(editOneLog);
+    public void deleteFromToBeEdited(EditMetadataController editMetadataController) throws Exception {
+        this.toEditList.remove(editMetadataController);
         if (this.toEditList.size() == 0) {
             reportEditData();
         }
@@ -120,9 +134,9 @@ public class EditListLogDataController extends BaseController {
      * @throws Exception
      */
     public void cancelAll() throws Exception {
-        for (EditOneLogDataController aToEditList : this.toEditList) {
-            if (aToEditList.getEditDataOneProcessWindow() != null) {
-                aToEditList.getEditDataOneProcessWindow().detach();
+        for (EditMetadataController toEdit : this.toEditList) {
+            if (toEdit.getWindow() != null) {
+                toEdit.getWindow().detach();
             }
         }
         this.toEditList.clear();

@@ -20,7 +20,7 @@
   -->
 <?page title="Apromore" contentType="text/html;charset=UTF-8"?>
 <?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
-<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>
+<!--<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>-->
 <!--<?link rel="stylesheet" type="text/css" href="css/login.css" ?>-->
 <?link rel="stylesheet" type="text/css" href="css/bootstrap.css" ?>
 <?link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" ?>
@@ -93,6 +93,13 @@
                   Password is reset. Please check your email account for a new password.
                 </div>
               </div>
+              <div xmlns="http://www.w3.org/1999/xhtml" class="ap-force-comply" style="display: none;">
+                <div class="alert alert-warning">
+                  <button type="button" class="close" onClick="Ap.login.checkComply(true);">&#xd7;</button>
+                  <i class="icon-remove-circle"></i>
+                  You need to agree with the Terms &amp;amp; Conditions and the Privacy Policy
+                </div>
+              </div>
             </html>
             <html>
               <h:div class="main">
@@ -162,7 +169,7 @@
                   <h:h4 class="ap-form-heading">
                     New User Registration
                   </h:h4>
-                  <h:form method="post" action="register/newUserRegister" name="newuser_form" onSubmit="Ap.login.onSubmit()">
+                  <h:form method="post" action="register/newUserRegister" name="newuser_form" onSubmit="return Ap.login.onSubmit(event)">
                     <h:fieldset>
                       <h:legend>
                         <h:span>Account information</h:span>
@@ -188,22 +195,24 @@
                                  placeholder="Country"/>
                       </h:div>
                       <h:div class="controls">
-                        <h:input type="tel" id="ap-new-user-phone" name="phone"
+                        <h:input type="tel" id="ap-new-user-phone" name="phone" value="+61"
                                  placeholder="Phone"/>
                       </h:div>
                       <h:div class="controls">
-                        <h:input type="text" name="username"
-                                 placeholder="Username*"/>
-                      </h:div>
-                      <h:div class="controls">
-                        <h:input type="text" name="email"
-                                 placeholder="Email address*"/>
+                        <h:input type="text" name="email" id="ap-new-email" placeholder="Email address*"/>
                       </h:div>
                     </h:fieldset>
                     <h:fieldset>
                       <h:legend>
-                        <h:span>Password</h:span>
+                        <h:span>Username and Password</h:span>
                       </h:legend>
+                      <h:div class="controls" style="position: relative;">
+                        <h:input type="text" name="username" id="ap-new-username"
+                                 placeholder="Username*"/>
+                        <h:div class="ap-register-reuse-email">
+                          <h:input type="checkbox" id="ap-reuse-email" /><span>use email</span>
+                        </h:div>
+                      </h:div>
                       <h:div class="controls">
                         <h:input type="password" name="password"
                                  placeholder="Password*"/>
@@ -213,13 +222,27 @@
                                  placeholder="Confirm password*"/>
                       </h:div>
                     </h:fieldset>
+                    <h:fieldset class="ap-comply">
+                      <h:div>
+                      <h:input type="checkbox" id="ap-agree" />
+                      <span>
+                        I agree with the
+                        <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a> and the
+                        <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+                      </span>
+                      </h:div>
+                      <h:div>
+                      <h:input type="checkbox" id="ap-subscribe" name="subscription"/>
+                      <span>Keep me up-to-date with news and offers</span>
+                      </h:div>
+                    </h:fieldset>
                     <h:fieldset>
-                      <h:div class="input-group controls">
+                      <h:div class="input-group">
                         <h:button class="button register-submit-button" type="submit">
                           Register
                         </h:button>
                       </h:div>
-                      <h:div class="input-group controls ap-back-wrapper">
+                      <h:div class="input-group ap-back-wrapper">
                         <h:a href="#login" data-toggle="tab">
                           <div class="ap-back"
                                title="back to login page"/>

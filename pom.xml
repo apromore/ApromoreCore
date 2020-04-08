@@ -664,13 +664,6 @@
                 <version>${apromore.canoniser.plugin.version}</version>
             </dependency>
 
-            <!-- Annotations PreProcessors -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-bpmn</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-
             <!-- Schema -->
             <dependency>
                 <groupId>org.apromore</groupId>
@@ -1423,10 +1416,10 @@
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
-        <repository>
-            <id>flyway-repo</id>
-            <url>https://repo.flywaydb.org/repo</url>
-        </repository>        
+        <!--<repository>-->
+            <!--<id>flyway-repo</id>-->
+            <!--<url>https://repo.flywaydb.org/repo</url>-->
+        <!--</repository>-->
     </repositories>
     <pluginRepositories>
         <pluginRepository>

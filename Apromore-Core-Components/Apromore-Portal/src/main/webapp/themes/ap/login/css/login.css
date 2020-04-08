@@ -151,13 +151,28 @@ body > * {
     position: absolute;
     left: 0;
     right: 80px;
-    top: 60px;
-    bottom: 80px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
     overflow: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     justify-items: center;
+}
+
+.ap-comply {
+    margin-bottom: 10px !important;
+    font-size: 12px;
+    color: white;
+}
+
+.ap-comply a {
+    text-decoration: underline !important;
+}
+
+.ap-comply div {
+    padding: 3px 0;
 }
 
 @media(max-width: 767px) {
@@ -245,7 +260,7 @@ body > * {
 }
 
 .ap-form {
-    width: 300px;
+    width: 360px;
     margin: auto;
 }
 
@@ -254,24 +269,44 @@ body > * {
     font-weight: 300;
     font-size: 22px;
     color: #ffffff;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 15px;
 }
 
 .ap-form .controls {
     width: 100%;
+    overflow: visible;
+    position: relative;
 }
 
 .ap-form .controls > div {
     width: 100%;
-    height: 30px;
-    margin-bottom: 10px;
+    height: 28px;
+    margin-bottom: 8px;
 }
 
-.ap-form input,
+.ap-form .ap-invalid-input {
+    border-color: orangered !important;
+    box-shadow: 0 0 7px yellow !important;
+    overflow: visible;
+}
+
+.ap-form .ap-invalid-input-hint {
+    color: #ff8501;
+    position: absolute;
+    left: -20px;
+    top: 6px;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.ap-form input[type=text],
+.ap-form input[type=tel],
+.ap-form input[type=password],
 .ap-form textarea,
 .ap-form select {
     width: 100%;
-    height: 30px;
+    height: 28px;
     padding: 0 10px;
     box-sizing: border-box;
     border: 1px solid transparent;
@@ -282,6 +317,22 @@ body > * {
     outline: none;
     border-radius: 4px;
     font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.ap-register-reuse-email {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 5px;
+    color: white;
+}
+
+.ap-login #register {
+    overflow: hidden;
+}
+
+.ap-login #register input[type=checkbox] {
+    font-family: ZK85Icons,FontAwesome !important;
 }
 
 .ap-form input:focus,
@@ -384,6 +435,7 @@ ul.ap-h-links {
 .ap-login .ap-back-wrapper {
     margin-top: 0;
     color: white;
+    width: 40px;
 }
 
 .ap-login .ap-back {

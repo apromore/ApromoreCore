@@ -72,10 +72,10 @@ and CreateProcessController.java for creating process purpose.
                     </row>
                     <row spans="3" sclass="ap-window-footer-actions">
                         <div align="right">
-                            <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
-                            <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
-                            <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
-                            <button label="Reset" iconSclass="z-icon-undo"  width="85px" tooltiptext="Restore initial values." />
+                            <button id="okButton" label="OK" iconSclass="z-icon-check-circle" width="85px" />
+                            <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
+                            <button id="cancelAllButton" label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
+                            <button id="resetButton" label="Reset" iconSclass="z-icon-undo"  width="85px" tooltiptext="Restore initial values." />
                         </div>
                     </row>
                 </rows>
