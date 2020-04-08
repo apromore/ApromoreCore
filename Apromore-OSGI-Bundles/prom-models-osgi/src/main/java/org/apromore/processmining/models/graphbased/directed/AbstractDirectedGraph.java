@@ -10,6 +10,11 @@ import java.util.Map;
 import org.apromore.processmining.models.cast.Cast;
 import org.apromore.processmining.models.graphbased.AbstractGraph;
 
+/**
+ * 
+ * @Modified Bruce Nguyen
+ *      - 7 April 2020: Add Collection<E> getEdge(DirectedGraphNode source, DirectedGraphNode target);
+ */
 public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E extends DirectedGraphEdge<? extends N, ? extends N>>
 		extends AbstractGraph implements DirectedGraph<N, E> {
 
@@ -20,7 +25,8 @@ public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E exten
 		super();
 	}
 
-	public AbstractDirectedGraph<?, ?> getGraph() {
+	@Override
+    public AbstractDirectedGraph<?, ?> getGraph() {
 		return this;
 	}
 
@@ -37,7 +43,8 @@ public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E exten
 	protected abstract Map<? extends DirectedGraphElement, ? extends DirectedGraphElement> cloneFrom(
 			DirectedGraph<N, E> graph);
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public abstract void removeEdge(DirectedGraphEdge edge);
 
 	protected void removeSurroundingEdges(N node) {
@@ -58,7 +65,8 @@ public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E exten
 
 	}
 
-	public Collection<E> getInEdges(DirectedGraphNode node) {
+	@Override
+    public Collection<E> getInEdges(DirectedGraphNode node) {
 		Collection<E> col = inEdgeMap.get(node);
 		if (col == null) {
 			return Collections.emptyList();
@@ -67,13 +75,25 @@ public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E exten
 		}
 	}
 
-	public Collection<E> getOutEdges(DirectedGraphNode node) {
+	@Override
+    public Collection<E> getOutEdges(DirectedGraphNode node) {
 		Collection<E> col = outEdgeMap.get(node);
 		if (col == null) {
 			return Collections.emptyList();
 		} else {
 			return new ArrayList<E>(col);
 		}
+	}
+	
+	@Override
+    public Collection<E> getEdges(DirectedGraphNode source, DirectedGraphNode target) {
+	    if (!inEdgeMap.containsKey(target) || !outEdgeMap.containsKey(source)) {
+            throw new IllegalArgumentException("Cannot get an arc between " + source.toString() + " and "
+                    + target.toString() + ", since one of these nodes is not in the graph.");
+	    }
+	    Collection<E> arcs = new ArrayList<>(inEdgeMap.get(target));
+	    arcs.retainAll(outEdgeMap.get(source));
+	    return arcs;
 	}
 
 	@Override
@@ -101,7 +121,8 @@ public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E exten
 		super.graphElementAdded(element);
 	}
 
-	public void graphElementRemoved(Object element) {
+	@Override
+    public void graphElementRemoved(Object element) {
 		if (element instanceof DirectedGraphNode) {
 			DirectedGraphNode node = (DirectedGraphNode) element;
 			synchronized (inEdgeMap) {
@@ -125,11 +146,13 @@ public abstract class AbstractDirectedGraph<N extends DirectedGraphNode, E exten
 		super.graphElementRemoved(element);
 	}
 
-	public void graphElementChanged(Object element) {
+	@Override
+    public void graphElementChanged(Object element) {
 		super.graphElementChanged(element);
 	}
 
-	public int compareTo(DirectedGraph<N, E> o) {
+	@Override
+    public int compareTo(DirectedGraph<N, E> o) {
 		if (!(o instanceof AbstractDirectedGraph<?, ?>)) {
 			return getLabel().compareTo(o.getLabel());
 		}

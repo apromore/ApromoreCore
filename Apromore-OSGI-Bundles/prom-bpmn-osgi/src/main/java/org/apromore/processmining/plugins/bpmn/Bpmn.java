@@ -1,53 +1,53 @@
 package org.apromore.processmining.plugins.bpmn;
 
-import org.deckfour.xes.extension.XExtension;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XOrganizationalExtension;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.model.impl.XAttributeMapImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @modifier Bruce Nguyen
+ *  - 6 April 2020: Remove XLog: it is used for logging purpose but this is not the right use of XLog.
+ *
+ */
 public class Bpmn extends BpmnDefinitions {
 
-	private XLog log;
-	private XTrace trace;
-	private XFactory factory;
-	private XExtension conceptExtension;
-	private XExtension organizationalExtension;
+	//private XLog log;
+	//private XTrace trace;
+	//private XFactory factory;
+	//private XExtension conceptExtension;
+	//private XExtension organizationalExtension;
 
 	boolean hasErrors;
 	boolean hasInfos;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Bpmn.class);
 
 	public Bpmn() {
 		super("definitions");
 
-		initializeLog();
+		//initializeLog();
 	}
 
 	/**
 	 * Creates and initializes a log to throw to the framework when importing
 	 * the XPDL file fails.
 	 */
-	private void initializeLog() {
-		factory = XFactoryRegistry.instance().currentDefault();
-		conceptExtension = XConceptExtension.instance();
-		organizationalExtension = XOrganizationalExtension.instance();
-		log = factory.createLog();
-		log.getExtensions().add(conceptExtension);
-		log.getExtensions().add(organizationalExtension);
+//	private void initializeLog() {
+//		factory = XFactoryRegistry.instance().currentDefault();
+//		conceptExtension = XConceptExtension.instance();
+//		organizationalExtension = XOrganizationalExtension.instance();
+//		log = factory.createLog();
+//		log.getExtensions().add(conceptExtension);
+//		log.getExtensions().add(organizationalExtension);
+//
+//		log("<preamble>");
+//
+//		hasErrors = false;
+//	}
 
-		log("<preamble>");
-
-		hasErrors = false;
-	}
-
-	public XLog getLog() {
-		return log;
-	}
+//	public XLog getLog() {
+//		return log;
+//	}
 
 	/**
 	 * Adds a log event to the current trace in the log.
@@ -60,18 +60,25 @@ public class Bpmn extends BpmnDefinitions {
 	 *            Error message.
 	 */
 	public void log(String context, int lineNumber, String message) {
-		XAttributeMap attributeMap = new XAttributeMapImpl();
-		attributeMap.put(XConceptExtension.KEY_NAME, factory.createAttributeLiteral(XConceptExtension.KEY_NAME,
-				message, conceptExtension));
-		attributeMap.put(XConceptExtension.KEY_INSTANCE, factory.createAttributeLiteral(XConceptExtension.KEY_INSTANCE,
-				context, conceptExtension));
-		attributeMap.put(XOrganizationalExtension.KEY_RESOURCE, factory.createAttributeLiteral(
-				XOrganizationalExtension.KEY_RESOURCE, "Line " + lineNumber, organizationalExtension));
-		XEvent event = factory.createEvent(attributeMap);
-		trace.add(event);
+		LOGGER.error("BPMN Import error. Tag: " + context + 
+		                ". Line number: " + lineNumber + 
+		                ". Error: " + message);
 		hasErrors = true;
-		System.out.println(message);
 	}
+	
+//    public void log(String context, int lineNumber, String message) {
+//        XAttributeMap attributeMap = new XAttributeMapImpl();
+//        attributeMap.put(XConceptExtension.KEY_NAME, factory.createAttributeLiteral(XConceptExtension.KEY_NAME,
+//                message, conceptExtension));
+//        attributeMap.put(XConceptExtension.KEY_INSTANCE, factory.createAttributeLiteral(XConceptExtension.KEY_INSTANCE,
+//                context, conceptExtension));
+//        attributeMap.put(XOrganizationalExtension.KEY_RESOURCE, factory.createAttributeLiteral(
+//                XOrganizationalExtension.KEY_RESOURCE, "Line " + lineNumber, organizationalExtension));
+//        XEvent event = factory.createEvent(attributeMap);
+//        trace.add(event);
+//        hasErrors = true;
+//        System.out.println(message);
+//    }	
 
 	/**
 	 * Adds a log event to the current trace in the log.
@@ -84,17 +91,24 @@ public class Bpmn extends BpmnDefinitions {
 	 *            Error message.
 	 */
 	public void logInfo(String context, int lineNumber, String message) {
-		XAttributeMap attributeMap = new XAttributeMapImpl();
-		attributeMap.put(XConceptExtension.KEY_NAME, factory.createAttributeLiteral(XConceptExtension.KEY_NAME,
-				message, conceptExtension));
-		attributeMap.put(XConceptExtension.KEY_INSTANCE, factory.createAttributeLiteral(XConceptExtension.KEY_INSTANCE,
-				context, conceptExtension));
-		attributeMap.put(XOrganizationalExtension.KEY_RESOURCE, factory.createAttributeLiteral(
-				XOrganizationalExtension.KEY_RESOURCE, "Line " + lineNumber, organizationalExtension));
-		XEvent event = factory.createEvent(attributeMap);
-		trace.add(event);
+	    LOGGER.info("BPMN Import info. Tag: " + context + 
+                ". Line number: " + lineNumber + 
+                ". Error: " + message);
 		hasInfos = true;
 	}
+	
+//    public void logInfo(String context, int lineNumber, String message) {
+//        XAttributeMap attributeMap = new XAttributeMapImpl();
+//        attributeMap.put(XConceptExtension.KEY_NAME, factory.createAttributeLiteral(XConceptExtension.KEY_NAME,
+//                message, conceptExtension));
+//        attributeMap.put(XConceptExtension.KEY_INSTANCE, factory.createAttributeLiteral(XConceptExtension.KEY_INSTANCE,
+//                context, conceptExtension));
+//        attributeMap.put(XOrganizationalExtension.KEY_RESOURCE, factory.createAttributeLiteral(
+//                XOrganizationalExtension.KEY_RESOURCE, "Line " + lineNumber, organizationalExtension));
+//        XEvent event = factory.createEvent(attributeMap);
+//        trace.add(event);
+//        hasInfos = true;
+//    }	
 
 	/**
 	 * Adds a new trace with the given name to the log. This trace is now
@@ -103,12 +117,12 @@ public class Bpmn extends BpmnDefinitions {
 	 * @param name
 	 *            The give name.
 	 */
-	public void log(String name) {
-		trace = factory.createTrace();
-		log.add(trace);
-		trace.getAttributes().put(XConceptExtension.KEY_NAME,
-				factory.createAttributeLiteral(XConceptExtension.KEY_NAME, name, conceptExtension));
-	}
+//	public void log(String name) {
+//		trace = factory.createTrace();
+//		log.add(trace);
+//		trace.getAttributes().put(XConceptExtension.KEY_NAME,
+//				factory.createAttributeLiteral(XConceptExtension.KEY_NAME, name, conceptExtension));
+//	}
 
 	public boolean hasErrors() {
 		return hasErrors;

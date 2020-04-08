@@ -11,22 +11,24 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.CallA
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataAssociation;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataObject;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event.EventTrigger;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event.EventType;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event.EventUse;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Flow;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.MessageFlow;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SwimlaneType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.TextAnnotation;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event.EventTrigger;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event.EventType;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event.EventUse;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.apromore.processmining.plugins.bpmn.BpmnAssociation.AssociationDirection;
+import org.eclipse.collections.api.map.MutableMap;
 
 public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> {
 
-	String getLabel();
+	@Override
+    String getLabel();
 
 	//Activities
 	Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
@@ -194,4 +196,9 @@ public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends 
 	Collection<Swimlane> getPools();
 	
 	Collection<Swimlane> getLanes(ContainingDirectedGraphNode parent);
+	
+	boolean checkSimpleEquality(BPMNDiagram other);
+	
+	boolean checkSimpleEqualityWithMapping(BPMNDiagram other, MutableMap<BPMNNode, BPMNNode> nodeMapping, 
+	        MutableMap<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeMapping);
 }

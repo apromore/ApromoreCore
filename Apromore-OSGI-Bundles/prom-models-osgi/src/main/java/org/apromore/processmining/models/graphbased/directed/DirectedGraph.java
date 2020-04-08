@@ -2,7 +2,11 @@ package org.apromore.processmining.models.graphbased.directed;
 
 import java.util.Collection;
 import java.util.Set;
-
+/**
+ * 
+ * @Modified Bruce Nguyen
+ *      - 7 April 2020: Add Collection<E> getEdges(DirectedGraphNode source, DirectedGraphNode target);
+ */
 public interface DirectedGraph<N extends DirectedGraphNode, E extends DirectedGraphEdge<? extends N, ? extends N>>
 		extends DirectedGraphElement, Comparable<DirectedGraph<N, E>> {
 
@@ -13,6 +17,8 @@ public interface DirectedGraph<N extends DirectedGraphNode, E extends DirectedGr
 	Collection<E> getInEdges(DirectedGraphNode node);
 
 	Collection<E> getOutEdges(DirectedGraphNode node);
+	
+	Collection<E> getEdges(DirectedGraphNode source, DirectedGraphNode target);
 
 	/**
 	 * Removes the given edge from the graph.

@@ -76,12 +76,6 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-            <version>1.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>jgraph-osgi</artifactId>
             <version>1.0</version>
         </dependency>
@@ -108,7 +102,27 @@
             <groupId>org.xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.4c</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
         </dependency>         
+        
+        <!--  Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>        
     </dependencies>
 
 </project>
