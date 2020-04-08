@@ -30,8 +30,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.UIManager;
-
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -327,7 +325,7 @@ public class SplitMiner {
 //        System.out.println("SplitMiner - generating SESE joins ...");
         
         // Bruce: debug only
-        writeDiagram(bpmnDiagram, "BPMNDiagram_BeforeCalling_gnerateSESEjoins.bpmn");
+        //writeDiagram(bpmnDiagram, "BPMNDiagram_BeforeCalling_gnerateSESEjoins.bpmn");
         
         while( generateSESEjoins() );
 
