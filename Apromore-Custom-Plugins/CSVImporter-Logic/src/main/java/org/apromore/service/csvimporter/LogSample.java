@@ -44,7 +44,7 @@ public interface LogSample {
     List<Integer> getIgnoredPos();
     List<Integer> getCaseAttributesPos();
     List<Integer> getEventAttributesPos();
-    Map<Integer, String> getOtherTimeStampsPos();
+    Map<Integer, String> getOtherTimestamps();
 
     String getTimestampFormat();
     void setTimestampFormat(String s);

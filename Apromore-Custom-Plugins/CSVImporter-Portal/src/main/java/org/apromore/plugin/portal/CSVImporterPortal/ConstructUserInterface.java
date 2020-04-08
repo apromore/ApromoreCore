@@ -253,7 +253,7 @@ public class ConstructUserInterface implements Constants {
                                 (myItem.getKey().equals(sample.getTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getTimestampLabel()))) ||
                                 (myItem.getKey().equals(sample.getStartTimestampLabel()) && (pos == sample.getMainAttributes().get(sample.getStartTimestampLabel()))) ||
                                 (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getMainAttributes().get(sample.getResourceLabel()))) ||
-                                (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimeStampsPos().get(pos) != null)) ||
+                                (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimestamps().get(pos) != null)) ||
                                 (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
                                 (myItem.getKey().equals(eventAttributeLabel) && (sample.getEventAttributesPos().contains(pos))))
                 ) {
@@ -298,7 +298,7 @@ public class ConstructUserInterface implements Constants {
                     sample.getIgnoredPos().add(colPos);
                 } else if (selected.equals(sample.getOtherTimestampLabel())) {
                     if(sample.isParsable(colPos)){
-                        sample.getOtherTimeStampsPos().put(colPos, null);
+                        sample.getOtherTimestamps().put(colPos, null);
                     }else{
                         showFormatBtn(formatBtns[colPos]);
                         openPopUpBox(colPos);
@@ -322,7 +322,7 @@ public class ConstructUserInterface implements Constants {
             sample.getMainAttributes().put(timestampLabel, pos);
             sample.setStartTsFormat(format);
         } else if (timestampLabel.equals(sample.getOtherTimestampLabel())) {
-            sample.getOtherTimeStampsPos().put(pos, format);
+            sample.getOtherTimestamps().put(pos, format);
         }
     }
 
@@ -346,8 +346,8 @@ public class ConstructUserInterface implements Constants {
     }
 
     private void resetColPos(int pos) {
-        if (sample.getOtherTimeStampsPos().get(pos) != null) {
-            sample.getOtherTimeStampsPos().remove(pos);
+        if (sample.getOtherTimestamps().get(pos) != null) {
+            sample.getOtherTimestamps().remove(pos);
         } else if (sample.getIgnoredPos().contains(pos)) {
             sample.getIgnoredPos().remove(Integer.valueOf(pos));
         } else {
