@@ -346,9 +346,11 @@ public class ConstructUserInterface implements Constants {
     }
 
     private void resetColPos(int pos) {
-        if (sample.getIgnoredPos().contains(pos)) {
+        if (sample.getOtherTimeStampsPos().get(pos) != null) {
+            sample.getOtherTimeStampsPos().remove(pos);
+        } else if (sample.getIgnoredPos().contains(pos)) {
             sample.getIgnoredPos().remove(Integer.valueOf(pos));
-        } else if(!sample.getOtherTimestamps().removeIf(p -> p.getPosition() == pos)) {
+        } else {
             for (Map.Entry<String, Integer> entry : sample.getMainAttributes().entrySet()) {
                 if (entry.getValue() == pos) {
                     sample.getMainAttributes().put(entry.getKey(), -1);
