@@ -45,13 +45,13 @@ public class ConstructUserInterface implements Constants {
 
 
         setDropDownLists();
-        setUpCSVGrid();
+        setCSVGrid();
         renderGridContent();
         setPopUpTextBox();
-        setUpButtons();
+        setButtons();
     }
 
-    private void setUpCSVGrid() {
+    private void setCSVGrid() {
         Grid myGrid = (Grid) window.getFellow(myGridId);
 
         myGrid.getChildren().clear();
@@ -228,8 +228,8 @@ public class ConstructUserInterface implements Constants {
         menuItems.put(sample.getStartTimestampLabel(), "Start timestamp");
         menuItems.put(sample.getOtherTimestampLabel(), "Other timestamp");
         menuItems.put(sample.getResourceLabel(), "Resource");
-        menuItems.put(eventAttributeLabel, "Event Attribute");
         menuItems.put(caseAttributeLabel, "Case Attribute");
+        menuItems.put(eventAttributeLabel, "Event Attribute");
         menuItems.put(ignoreLabel, "Ignore Attribute");
 
         // get index of "eventAttribute" item and select it.
@@ -255,7 +255,7 @@ public class ConstructUserInterface implements Constants {
                                 (myItem.getKey().equals(sample.getResourceLabel()) && (pos == sample.getMainAttributes().get(sample.getResourceLabel()))) ||
                                 (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimeStampsPos().get(pos) != null)) ||
                                 (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
-                                (myItem.getKey().equals(eventAttributeLabel)))
+                                (myItem.getKey().equals(eventAttributeLabel) && (sample.getEventAttributesPos().contains(pos))))
                 ) {
                     item.setSelected(true);
                 }
@@ -345,8 +345,20 @@ public class ConstructUserInterface implements Constants {
         myButton.setSclass("ap-csv-importer-format-icon ap-hidden");
     }
 
+    private void resetColPos(int pos) {
+        if (sample.getIgnoredPos().contains(pos)) {
+            sample.getIgnoredPos().remove(Integer.valueOf(pos));
+        } else if(!sample.getOtherTimestamps().removeIf(p -> p.getPosition() == pos)) {
+            for (Map.Entry<String, Integer> entry : sample.getMainAttributes().entrySet()) {
+                if (entry.getValue() == pos) {
+                    sample.getMainAttributes().put(entry.getKey(), -1);
+                    break;
+                }
+            }
+        }
+    }
 
-    private void setUpButtons(){
+    private void setButtons(){
 
         Button toEventAttributes = (Button) window.getFellow(ignoreToEventBtnId);
         toEventAttributes.setTooltiptext("Change all Ignored Attributes to Event Attributes");
@@ -373,7 +385,6 @@ public class ConstructUserInterface implements Constants {
         });
     }
 
-
     public void ignoreToEvent() {
         Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
         int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
@@ -384,6 +395,7 @@ public class ConstructUserInterface implements Constants {
 
             if (lb.getSelectedIndex() == ignoreAttributeIndex) {
                 sample.getIgnoredPos().remove(Integer.valueOf(pos));
+                sample.getEventAttributesPos().add(pos);
                 lb.setSelectedIndex(eventAttributeIndex);
             }
         }
@@ -397,24 +409,9 @@ public class ConstructUserInterface implements Constants {
         for (int pos = 0; pos < sample.getHeader().size(); pos++) {
             lb = (Listbox) window.getFellow(String.valueOf(pos));
             if (lb.getSelectedIndex() == eventAttributeIndex) {
+                sample.getEventAttributesPos().remove(Integer.valueOf(pos));
                 sample.getIgnoredPos().add(pos);
                 lb.setSelectedIndex(ignoreAttributeIndex);
-            }
-        }
-    }
-
-
-    private void resetColPos(int pos) {
-        if (sample.getOtherTimeStampsPos().get(pos) != null) {
-            sample.getOtherTimeStampsPos().remove(pos);
-        } else if (sample.getIgnoredPos().contains(pos)) {
-            sample.getIgnoredPos().remove(Integer.valueOf(pos));
-        } else {
-            for (Map.Entry<String, Integer> entry : sample.getMainAttributes().entrySet()) {
-                if (entry.getValue() == pos) {
-                    sample.getMainAttributes().put(entry.getKey(), -1);
-                    break;
-                }
             }
         }
     }

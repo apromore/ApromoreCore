@@ -22,8 +22,6 @@
 
 package org.apromore.service.csvimporter;
 
-import org.zkoss.zul.Window;
-
 import java.util.List;
 import java.util.Map;
 
@@ -41,18 +39,15 @@ public interface LogSample {
 
     List<String> getHeader();
     List<List<String>> getLines();
+
     Map<String, Integer> getMainAttributes();
+    List<Integer> getIgnoredPos();
+    List<Integer> getCaseAttributesPos();
+    List<Integer> getEventAttributesPos();
+    Map<Integer, String> getOtherTimeStampsPos();
+
     String getTimestampFormat();
     void setTimestampFormat(String s);
     String getStartTsFormat();
     void setStartTsFormat(String s);
-    List<Integer> getIgnoredPos();
-    Map<Integer, String> getOtherTimeStampsPos();
-    List<Integer> getCaseAttributesPos();
-    void setIgnoreAll(Window window);
-    void setOtherAll(Window window);
-    void setOtherTimestamps();
-
-
-
 }

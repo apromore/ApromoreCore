@@ -215,7 +215,7 @@ class LogModelImpl implements LogModel {
                 xEvent.getAttributes().put(entry.getKey(), attribute);
             }
         }
-        Map<String, String> others = theTrace.getOthers();
+        Map<String, String> others = theTrace.getEventAttributes();
         for (Map.Entry<String, String> entry : others.entrySet()) {
             if (entry.getValue() != null && entry.getValue().trim().length() != 0) {
                 attribute = new XAttributeLiteralImpl(entry.getKey(), entry.getValue());

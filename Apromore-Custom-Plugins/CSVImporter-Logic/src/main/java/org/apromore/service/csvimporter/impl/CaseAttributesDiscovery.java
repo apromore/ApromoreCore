@@ -1,5 +1,8 @@
 package org.apromore.service.csvimporter.impl;
 
+import lombok.Data;
+
+@Data
 public class CaseAttributesDiscovery {
 
     private String caseId;
@@ -12,27 +15,4 @@ public class CaseAttributesDiscovery {
         this.value = value;
     }
 
-    public String getCaseId() {
-        return caseId;
-    }
-
-    public void setCaseId(String caseId) {
-        this.caseId = caseId;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }
