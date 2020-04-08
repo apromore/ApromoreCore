@@ -24,7 +24,7 @@ public interface Constants {
 
     String caseIdLabel = "caseId";
     String activityLabel = "activity";
-    String timestampLabel = "timestamp";
+    String endTimestampLabel = "endTimestamp";
     String startTimestampLabel = "startTimestamp";
     String otherTimestampLabel = "otherTimestamp";
     String resourceLabel = "resource";

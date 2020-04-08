@@ -222,14 +222,14 @@ class LogModelImpl implements LogModel {
                 xEvent.getAttributes().put(entry.getKey(), attribute);
             }
         }
-        if (theTrace.getTimestamp() != null) {
+        if (theTrace.getEndTimestamp() != null) {
             if (!isEndTimestamp) {
                 lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.START);
                 timestamp.assignTimestamp(xEvent, theTrace.getStartTimestamp());
 
             } else {
                 lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
-                timestamp.assignTimestamp(xEvent, theTrace.getTimestamp());
+                timestamp.assignTimestamp(xEvent, theTrace.getEndTimestamp());
             }
         }
 

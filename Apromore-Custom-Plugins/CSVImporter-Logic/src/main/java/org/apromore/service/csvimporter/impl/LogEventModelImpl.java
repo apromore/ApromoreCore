@@ -33,7 +33,7 @@ class LogEventModelImpl implements LogEventModel {
 
     private String caseID;
     private String concept;
-    private Timestamp timestamp;
+    private Timestamp endTimestamp;
     private Timestamp startTimestamp;
     private String resource;
     private Map<String, Timestamp> otherTimestamps;
@@ -43,10 +43,10 @@ class LogEventModelImpl implements LogEventModel {
 
     // Constructor
 
-    LogEventModelImpl(String caseID, String concept, Timestamp timestamp, Timestamp startTimestamp, Map<String, Timestamp> otherTimestamps, String resource, Map<String, String> eventAttributes, Map<String, String> caseAttributes) {
+    LogEventModelImpl(String caseID, String concept, Timestamp endTimestamp, Timestamp startTimestamp, Map<String, Timestamp> otherTimestamps, String resource, Map<String, String> eventAttributes, Map<String, String> caseAttributes) {
         this.caseID = caseID;
         this.concept = concept;
-        this.timestamp = timestamp;
+        this.endTimestamp = endTimestamp;
         this.startTimestamp = startTimestamp;
         this.otherTimestamps = otherTimestamps;
         this.resource = resource;
@@ -68,8 +68,8 @@ class LogEventModelImpl implements LogEventModel {
     }
 
     @Override
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Timestamp getEndTimestamp() {
+        return endTimestamp;
     }
 
     @Override
