@@ -35,8 +35,8 @@ class LogSampleImpl implements LogSample, Constants {
     private List<String> header;
     private List<List<String>> lines;
     private Map<String, Integer> uniqueAttributes;
-    private String timestampFormat;
-    private String startTsFormat;
+    private String endTimestampFormat;
+    private String startTimestampFormat;
     private List<Integer> ignoredPos;
     private HashMap<Integer, String> otherTimestamps;
     private List<Integer> caseAttributesPos;
@@ -48,8 +48,8 @@ class LogSampleImpl implements LogSample, Constants {
         this.ignoredPos = new ArrayList<>();
         this.caseAttributesPos = new ArrayList<>();
         this.eventAttributesPos = new ArrayList<>();
-        this.timestampFormat = null;
-        this.startTsFormat = null;
+        this.endTimestampFormat = null;
+        this.startTimestampFormat = null;
         otherTimestamps = new HashMap<>();
 
         setUniqueAttributes();
@@ -62,7 +62,7 @@ class LogSampleImpl implements LogSample, Constants {
         uniqueAttributes = new HashMap<>();
         uniqueAttributes.put(caseIdLabel, -1);
         uniqueAttributes.put(activityLabel, -1);
-        uniqueAttributes.put(timestampLabel, -1);
+        uniqueAttributes.put(endTimestampLabel, -1);
         uniqueAttributes.put(startTimestampLabel, -1);
         uniqueAttributes.put(resourceLabel, -1);
 
@@ -72,8 +72,8 @@ class LogSampleImpl implements LogSample, Constants {
                 uniqueAttributes.put(caseIdLabel, pos);
             } else if ((uniqueAttributes.get(activityLabel) == -1) && getMainAttributePosition(activityValues, header.get(pos))) {
                 uniqueAttributes.put(activityLabel, pos);
-            } else if ((uniqueAttributes.get(timestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos).toLowerCase()) && isParsable(pos)) {
-                uniqueAttributes.put(timestampLabel, pos);
+            } else if ((uniqueAttributes.get(endTimestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos).toLowerCase()) && isParsable(pos)) {
+                uniqueAttributes.put(endTimestampLabel, pos);
             } else if ((uniqueAttributes.get(startTimestampLabel) == -1) && getMainAttributePosition(StartTsValues, header.get(pos)) && isParsable(pos)) {
                 uniqueAttributes.put(startTimestampLabel, pos);
             } else if ((uniqueAttributes.get(resourceLabel) == -1) && getMainAttributePosition(resourceValues, header.get(pos))) {
@@ -112,7 +112,7 @@ class LogSampleImpl implements LogSample, Constants {
 
 
     private void setOtherTimestamps() {
-        int timeStampPos = uniqueAttributes.get(timestampLabel);
+        int timeStampPos = uniqueAttributes.get(endTimestampLabel);
         int StartTimeStampPos = uniqueAttributes.get(startTimestampLabel);
 
         for (int pos = 0; pos < header.size(); pos++) {
@@ -167,7 +167,7 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public String getTimestampLabel() {
-        return timestampLabel;
+        return endTimestampLabel;
     }
 
     @Override
@@ -221,23 +221,23 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public String getTimestampFormat() {
-        return timestampFormat;
+    public String getEndTimestampFormat() {
+        return endTimestampFormat;
     }
 
     @Override
-    public void setTimestampFormat(String s) {
-        timestampFormat = s;
+    public void setEndTimestampFormat(String s) {
+        endTimestampFormat = s;
     }
 
     @Override
-    public String getStartTsFormat() {
-        return startTsFormat;
+    public String getStartTimestampFormat() {
+        return startTimestampFormat;
     }
 
     @Override
-    public void setStartTsFormat(String s) {
-        startTsFormat = s;
+    public void setStartTimestampFormat(String s) {
+        startTimestampFormat = s;
     }
 
 }

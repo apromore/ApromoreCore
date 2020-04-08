@@ -317,10 +317,10 @@ public class ConstructUserInterface implements Constants {
     private void updateTimestampPos(int pos, String timestampLabel, String format){
         if (timestampLabel.equals(sample.getTimestampLabel())) {
             sample.getUniqueAttributes().put(timestampLabel, pos);
-            sample.setTimestampFormat(format);
+            sample.setEndTimestampFormat(format);
         } else if (timestampLabel.equals(sample.getStartTimestampLabel())) {
             sample.getUniqueAttributes().put(timestampLabel, pos);
-            sample.setStartTsFormat(format);
+            sample.setStartTimestampFormat(format);
         } else if (timestampLabel.equals(sample.getOtherTimestampLabel())) {
             sample.getOtherTimestamps().put(pos, format);
         }
