@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.swing.UIManager;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
@@ -203,17 +201,17 @@ public class DirectlyFollowGraphPlus {
         buildDirectlyFollowsGraph();                //first method to execute
         
         // Bruce: debug only
-        writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_buildDirectlyFollowsGraph.bpmn");
+        //writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_buildDirectlyFollowsGraph.bpmn");
         
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
         
         // Bruce: debug only
-        writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_detectLoops.bpmn");
+        //writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_detectLoops.bpmn");
         
         detectParallelisms();                       //depends on detectLoops()
         
         // Bruce: debug only
-        writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_detectParallelisms.bpmn");
+        //writeDiagram(convertIntoBPMNDiagram(), "BPMNDiagram_After_detectParallelisms.bpmn");
 
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:

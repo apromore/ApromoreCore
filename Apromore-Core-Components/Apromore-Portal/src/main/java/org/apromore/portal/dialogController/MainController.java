@@ -37,7 +37,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -387,7 +387,7 @@ public class MainController extends BaseController implements MainControllerInte
 
         try {
             String id = UUID.randomUUID().toString();
-            SignavioSession session = new SignavioSession(editSession, null, this, process, version, null, null, requestParameterTypes);
+            ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelInSignavio.zul?id=" + id;
@@ -408,7 +408,7 @@ public class MainController extends BaseController implements MainControllerInte
 
         try {
             String id = UUID.randomUUID().toString();
-            SignavioSession session = new SignavioSession(editSession, null, this, process, version, null, null, requestParameterTypes);
+            ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelInBPMNio.zul?id=" + id;

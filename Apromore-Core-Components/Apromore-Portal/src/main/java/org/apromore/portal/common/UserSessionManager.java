@@ -41,7 +41,7 @@ import org.apromore.model.FolderType;
 import org.apromore.model.MembershipType;
 import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.security.ApromoreWebAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public abstract class UserSessionManager {
     /**
      * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
      */
-    static Map<String,SignavioSession> editSessionMap = new HashMap<>();
+    static Map<String,ApromoreSession> editSessionMap = new HashMap<>();
 
     public static void setCurrentUser(UserType user) {
         setAttribute(USER, user);
@@ -173,11 +173,11 @@ public abstract class UserSessionManager {
     }
 
     // TODO: fix the memory leak by reclaiming stale sessions
-    public static void setEditSession(String id, SignavioSession session) {
+    public static void setEditSession(String id, ApromoreSession session) {
         editSessionMap.put(id, session);
     }
 
-    public static SignavioSession getEditSession(String id) {
+    public static ApromoreSession getEditSession(String id) {
         return editSessionMap.get(id);
     }
 

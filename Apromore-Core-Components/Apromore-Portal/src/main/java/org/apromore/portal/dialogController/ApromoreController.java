@@ -61,7 +61,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 
@@ -70,9 +70,9 @@ import org.apromore.portal.util.StreamUtil;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class SignavioController extends BaseController {
+public class ApromoreController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApromoreController.class.getCanonicalName());
 
     private MainController mainC;
 
@@ -84,13 +84,13 @@ public class SignavioController extends BaseController {
     private JSONObject differences;
     private boolean isNewProcess=false;
     
-    public SignavioController() {
+    public ApromoreController() {
         super();
 
         String id = Executions.getCurrent().getParameter("id");
         isNewProcess = Boolean.valueOf(Executions.getCurrent().getParameter("newProcess"));
         if (id != null) {
-            SignavioSession session = UserSessionManager.getEditSession(id);
+            ApromoreSession session = UserSessionManager.getEditSession(id);
             if (session == null) {
                 throw new AssertionError("No edit session associated with id " + id);
             }

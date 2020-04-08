@@ -63,6 +63,8 @@ public class BpmnDefinitions extends BpmnElement {
 	 *
 	 * @author Anna Kalenkova
 	 * Sep 22, 2013
+	 * @modified: Bruce Nguyen
+	 *     - Add ProMJGraph to constructor to reuse an existing layout
 	 */
 	public static class BpmnDefinitionsBuilder {
 
