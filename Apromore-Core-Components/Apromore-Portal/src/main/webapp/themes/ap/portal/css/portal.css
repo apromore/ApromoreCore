@@ -418,8 +418,6 @@
   margin-bottom: 10px;
 }
 
-
-
 .ap-about-window .z-listbox-body::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 7px;
@@ -437,4 +435,10 @@ img[src="img/icon/bpmn-22x22.png"] {
 
 .z-menuitem-image {
   filter: var(--ap-filter-ico-normal-dark);
+}
+
+/* hack for trash icon in menu */
+.z-menuitem-text img[src='portalPluginResource/File/Delete/trash.svg'] {
+  margin-left: -2px !important;
+  margin-right: 10px !important;
 }

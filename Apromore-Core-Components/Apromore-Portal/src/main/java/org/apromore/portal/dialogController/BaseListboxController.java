@@ -277,6 +277,8 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void renameFolder() throws InterruptedException {
+        PortalPlugin editSelectionMetadataPlugin;
+
         getMainController().eraseMessage();
         try {
             List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
@@ -291,12 +293,16 @@ public abstract class BaseListboxController extends BaseController {
                         break;
                     }
                 }
-
                 new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
-                Messagebox.show("Select one folder.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                try {
+                    editSelectionMetadataPlugin = portalPluginMap.get("Edit metadata");
+                    editSelectionMetadataPlugin.execute(portalContext);
+                } catch (Exception e) {
+                    Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                }
             }
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);

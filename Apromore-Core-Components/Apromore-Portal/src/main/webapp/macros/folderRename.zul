@@ -24,7 +24,7 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 
-<window width="400px" closable="false" position="center" id="winFolderRename">
+<window width="400px" closable="false" position="center" title="Rename folder" id="winFolderRename">
     <vbox vflex="1">
         <grid sclass="ap-grid">
             <columns sizable="true">
