@@ -46,8 +46,8 @@ public interface LogSample {
     List<Integer> getEventAttributesPos();
     Map<Integer, String> getOtherTimestamps();
 
-    String getTimestampFormat();
-    void setTimestampFormat(String s);
-    String getStartTsFormat();
-    void setStartTsFormat(String s);
+    String getEndTimestampFormat();
+    void setEndTimestampFormat(String s);
+    String getStartTimestampFormat();
+    void setStartTimestampFormat(String s);
 }

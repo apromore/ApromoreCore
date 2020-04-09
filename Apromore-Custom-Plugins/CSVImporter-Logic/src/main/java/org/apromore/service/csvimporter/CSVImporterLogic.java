@@ -53,10 +53,9 @@ public interface CSVImporterLogic {
      *
      * @param reader  a source of CSV data; this must be open to the beginning of the data so that the header may be read
      * @param sample  header configuration
-     * @param errorAcceptance  maximum acceptable error fraction, e.g. 0.2 to set the error rate at 20%
      * @throws InvalidCSVException if more than <var>errorAcceptance</var> of the data has errors
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogModel prepareXesModel(CSVReader reader, LogSample sample, double errorAcceptance) throws InvalidCSVException, IOException;
+    LogModel prepareXesModel(CSVReader reader, LogSample sample) throws IOException;
 
 }
