@@ -27,6 +27,9 @@ public class ConstructCSVSample {
         this.media = media;
     }
 
+    public ConstructCSVSample() {
+    }
+
     LogSample getCSVSample(String fileEncoding, int logSampleSize) {
         String charset = fileEncoding;
         try (CSVReader csvReader = newCSVReader(charset)) {
@@ -43,7 +46,7 @@ public class ConstructCSVSample {
         }
     }
 
-    private CSVReader newCSVReader(String charset) throws InvalidCSVException, IOException {
+    CSVReader newCSVReader(String charset) throws InvalidCSVException, IOException {
         // Guess at ethe separator character
         Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
         BufferedReader brReader = new BufferedReader(reader);

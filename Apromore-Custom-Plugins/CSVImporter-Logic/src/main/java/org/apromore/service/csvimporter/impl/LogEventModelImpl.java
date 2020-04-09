@@ -101,4 +101,9 @@ class LogEventModelImpl implements LogEventModel {
     public Map<String, String> getCaseAttributes() {
         return caseAttributes;
     }
+
+    @Override
+    public void setEndTimestamp(Timestamp endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
 }

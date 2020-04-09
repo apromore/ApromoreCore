@@ -56,7 +56,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     public void setEventLogService(EventLogService newEventLogService) {
         this.eventLogService = newEventLogService;
     }
-    private boolean isLogPublic;
+
 
     // FileImporterPlugin implementation
     @Override
@@ -80,7 +80,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             setEncoding.setModel(new ListModelList<>(fileEncoding));
             LogSample sample = CSVSample.getCSVSample(getFileEncoding(window), logSampleSize);
 
-            ConstructUserInterface userInterface = new ConstructUserInterface(sample, media, window);
+            ConstructUserInterface userInterface = new ConstructUserInterface(sample, media, window, csvImporterLogic, eventLogService, portalContext, isLogPublic);
 
             if(sample != null){
                 userInterface.setUpUI();

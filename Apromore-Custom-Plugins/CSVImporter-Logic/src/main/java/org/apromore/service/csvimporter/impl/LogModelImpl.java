@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apromore.service.csvimporter.LogErrorReport;
 import org.apromore.service.csvimporter.LogEventModel;
 import org.apromore.service.csvimporter.LogModel;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -44,48 +46,24 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 class LogModelImpl implements LogModel {
 
     private List<LogEventModel> rows;
-    private long lineCount;
-    private long errorCount;
-    private List<String> invalidRows;
-    private boolean errorCheck;
+    private List<LogErrorReport> logErrorReport;
 
-    LogModelImpl(List<LogEventModel> rows, long lineCount, long errorCount, List<String> invalidRows, boolean errorCheck) {
+
+    LogModelImpl(List<LogEventModel> rows, List<LogErrorReport> logErrorReportImpl) {
         this.rows        = rows;
-        this.lineCount   = lineCount;
-        this.errorCount  = errorCount;
-        this.invalidRows = invalidRows;
-        this.errorCheck  = errorCheck;
+        this.logErrorReport = logErrorReportImpl;
     }
 
     @Override
     public List<LogEventModel> getRows() { return rows; }
 
     @Override
-    public long getLineCount() { return lineCount; }
-
-    @Override
-    public long getErrorCount() { return errorCount; }
-
-    @Override
-    public List<String> getInvalidRows() { return invalidRows; }
-
-    @Override
-    public boolean getErrorCheck() { return errorCheck; }
+    public List<LogErrorReport> getLogErrorReport() { return logErrorReport; }
 
     @Override
     public XLog getXLog() { return createXLog(rows); }
 
 
-    // Internal methods
-
-    /**
-     * Creates the X log.
-     * <p>
-     * create xlog element, assign respective extensions and attributes for each event and trace
-     *
-     * @param traces the traces
-     * @return the x log
-     */
     private static XLog createXLog(List<LogEventModel> traces) {
         if (traces == null) return null;
 

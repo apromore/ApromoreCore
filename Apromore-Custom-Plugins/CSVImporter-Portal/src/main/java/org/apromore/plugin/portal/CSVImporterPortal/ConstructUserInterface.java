@@ -1,17 +1,23 @@
 package org.apromore.plugin.portal.CSVImporterPortal;
 
+import com.opencsv.CSVReader;
 import org.apache.commons.lang.StringUtils;
-import org.apromore.service.csvimporter.LogSample;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
+import org.apromore.service.csvimporter.*;
+import org.deckfour.xes.model.XLog;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import javax.xml.datatype.DatatypeFactory;
+import java.io.*;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.*;
 
 
 public class ConstructUserInterface implements Constants {
@@ -23,11 +29,18 @@ public class ConstructUserInterface implements Constants {
     private Div popUpBox;
     Button[] formatBtns;
     List<Listbox> dropDownLists;
-
-    public ConstructUserInterface(LogSample sample, Media media, Window window) {
+    private CSVImporterLogic csvImporterLogic;
+    PortalContext portalContext;
+    EventLogService eventLogService;
+    private boolean isLogPublic;
+    public ConstructUserInterface(LogSample sample, Media media, Window window, CSVImporterLogic csvImporterLogic, EventLogService eventLogService, PortalContext portalContext, boolean isLogPublic) {
         this.sample = sample;
         this.window = window;
         this.media = media;
+        this.csvImporterLogic = csvImporterLogic;
+        this.portalContext = portalContext;
+        this.eventLogService = eventLogService;
+        this.isLogPublic= isLogPublic;
     }
 
 
@@ -418,7 +431,6 @@ public class ConstructUserInterface implements Constants {
         }
     }
 
-
     public Window getWindow() {
         return window;
     }
@@ -428,162 +440,261 @@ public class ConstructUserInterface implements Constants {
     }
 
 
-
-    // TODO: Needs careful review
     private void convertToXes() {
-//        String charset = getFileEncoding();
+
+        // If any of the mandatory fields are missing show alert message to the user and return
+        StringBuilder headNOTDefined = validateUniqueAttributes(sample.getUniqueAttributes());
+        if (headNOTDefined.length() != 0) {
+            Messagebox.show(headNOTDefined.toString(), "Missing fields!", Messagebox.OK, Messagebox.ERROR);
+        } else {
+            String charset = "UTF-8";
+            ConstructCSVSample CSVSample = new ConstructCSVSample();
+
+            try (CSVReader reader = CSVSample.newCSVReader(charset)) {
+                LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
+                List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+
+                if(errorReport.isEmpty()){
+                    saveLog(xesModel);
+                } else {
+
+                    // Show pop up
+
+
+
+
+
+                }
+
+
+
+
+
+
+//                if (xesModel.getErrorCount() > 0) {
+//                    String notificationMessage;
+//                    notificationMessage = "Imported: " + xesModel.getLineCount() + " row(s), with " + xesModel.getErrorCount() + " invalid row(s) being amended.  \n\n" +
+//                            "Invalid rows: \n";
 //
-//        try (CSVReader reader = newCSVReader(charset)) {
-//            LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample, maxErrorFraction);
+//                    for (int i = 0; i < Math.min(xesModel.getInvalidRows().size(), 5); i++) {
+//                        notificationMessage = notificationMessage + xesModel.getInvalidRows().get(i) + "\n";
+//                    }
 //
-//            if (xesModel.getErrorCount() > 0) {
-//                String notificationMessage;
-//                notificationMessage = "Imported: " + xesModel.getLineCount() + " row(s), with " + xesModel.getErrorCount() + " invalid row(s) being amended.  \n\n" +
-//                        "Invalid rows: \n";
-//
-//                for (int i = 0; i < Math.min(xesModel.getInvalidRows().size(), 5); i++) {
-//                    notificationMessage = notificationMessage + xesModel.getInvalidRows().get(i) + "\n";
-//                }
-//
-//                if (xesModel.getInvalidRows().size() > 5) {
-//                    notificationMessage = notificationMessage + "\n ...";
-//                }
-//                Messagebox.show(notificationMessage
-//                        , "Invalid CSV File",
-//                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-//                        new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
-//                        (EventListener) evt -> {
-//                            if (evt.getName().equals("onOK")) {
-//                                File tempFile = File.createTempFile("Error_Report", ".txt");
-//                                FileWriter writer = new FileWriter(tempFile);
-//                                for (String str : xesModel.getInvalidRows()) {
-//                                    writer.write(str + System.lineSeparator());
-//                                }
-//                                writer.close();
-//                                Filedownload.save(new FileInputStream(tempFile),
-//                                        "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
-//                            }
-//                        });
-//            }
-//
-//            if (xesModel.getErrorCheck()) {
-//                Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload" +
-//                                " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
-//                                "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
-//                        "Confirm Dialog",
-//                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
-//                        new String[]{"Skip rows", "Skip columns", "Cancel"},
-//                        Messagebox.QUESTION, null, (EventListener) evt -> {
-//                            if (evt.getName().equals("onOK")) {
-//                                for (int i = 0; i < xesModel.getRows().size(); i++) {
-//                                    for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
-//                                        if (entry.getKey() == null) {
-//                                            continue;
-//                                        }
-//                                        long tempLong = entry.getValue().getTime();
-//                                        java.util.Calendar cal = java.util.Calendar.getInstance();
-//                                        cal.setTimeInMillis(tempLong);
-//                                        if (cal.get(Calendar.YEAR) == 1900) {
-//                                            System.out.println("Invalid timestamp. Entry Removed.");
-//                                            xesModel.getRows().remove(i);
-//                                        }
-//                                    }
-//                                }
-//
-//                                Messagebox.show("Hello Ok!");
-//                                // create XES file
-//                                XLog xlog = xesModel.getXLog();
-//                                if (xlog != null) {
-//                                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
-//                                }
-//
-//                                window.invalidate();
-//                                window.detach();
-//
-//                            } else if (evt.getName().equals("onIgnore")) {
-//                                for (int i = 0; i < xesModel.getRows().size(); i++) {
-//                                    xesModel.getRows().get(i).setOtherTimestamps(null);
-//                                }
-//                                Messagebox.show("Hello Ignore!");
-//                                // create XES file
-//                                XLog xlog = xesModel.getXLog();
-//                                if (xlog != null) {
-//                                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
-//                                }
-//
-//                                window.invalidate();
-//                                window.detach();
-//                            } else {
-//                                //
-//                            }
-//                        });
-//            } else {
-//                Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file " +
-//                        "has been imported.");
-//                XLog xlog = xesModel.getXLog();
-//                if (xlog != null) {
-//                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
-//                }
-//
-//                window.invalidate();
-//                window.detach();
-//            }
-//
-//        } catch (InvalidCSVException e) {
-//            if (e.getInvalidRows() == null) {
-//                Messagebox.show(e.getMessage(), "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
-//
-//            } else {
-//                Messagebox.show(e.getMessage(), "Invalid CSV File",
-//                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-//                        new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
-//                        new EventListener() {
-//                            public void onEvent(Event evt) throws Exception {
+//                    if (xesModel.getInvalidRows().size() > 5) {
+//                        notificationMessage = notificationMessage + "\n ...";
+//                    }
+//                    Messagebox.show(notificationMessage
+//                            , "Invalid CSV File",
+//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+//                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+//                            (EventListener) evt -> {
 //                                if (evt.getName().equals("onOK")) {
 //                                    File tempFile = File.createTempFile("Error_Report", ".txt");
-//                                    try (FileWriter writer = new FileWriter(tempFile)) {
-//                                        for (String str : e.getInvalidRows()) {
-//                                            writer.write(str + System.lineSeparator());
-//                                        }
-//                                        Filedownload.save(new FileInputStream(tempFile),
-//                                                "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+//                                    FileWriter writer = new FileWriter(tempFile);
+//                                    for (String str : xesModel.getInvalidRows()) {
+//                                        writer.write(str + System.lineSeparator());
+//                                    }
+//                                    writer.close();
+//                                    Filedownload.save(new FileInputStream(tempFile),
+//                                            "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+//                                }
+//                            });
+//                }
 //
-//                                    } finally {
-//                                        tempFile.delete();
+//                if (xesModel.getErrorCheck()) {
+//                    Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload" +
+//                                    " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
+//                                    "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
+//                            "Confirm Dialog",
+//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
+//                            new String[]{"Skip rows", "Skip columns", "Cancel"},
+//                            Messagebox.QUESTION, null, (EventListener) evt -> {
+//                                if (evt.getName().equals("onOK")) {
+//                                    for (int i = 0; i < xesModel.getRows().size(); i++) {
+//                                        for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
+//                                            if (entry.getKey() == null) {
+//                                                continue;
+//                                            }
+//                                            long tempLong = entry.getValue().getTime();
+//                                            java.util.Calendar cal = java.util.Calendar.getInstance();
+//                                            cal.setTimeInMillis(tempLong);
+//                                            if (cal.get(Calendar.YEAR) == 1900) {
+//                                                System.out.println("Invalid timestamp. Entry Removed.");
+//                                                xesModel.getRows().remove(i);
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    Messagebox.show("Hello Ok!");
+//                                    // create XES file
+//                                    XLog xlog = xesModel.getXLog();
+//                                    if (xlog != null) {
+//                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
+//                                    }
+//
+//                                    window.invalidate();
+//                                    window.detach();
+//
+//                                } else if (evt.getName().equals("onIgnore")) {
+//                                    for (int i = 0; i < xesModel.getRows().size(); i++) {
+//                                        xesModel.getRows().get(i).setOtherTimestamps(null);
+//                                    }
+//                                    Messagebox.show("Hello Ignore!");
+//                                    // create XES file
+//                                    XLog xlog = xesModel.getXLog();
+//                                    if (xlog != null) {
+//                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
+//                                    }
+//
+//                                    window.invalidate();
+//                                    window.detach();
+//                                } else {
+//                                    //
+//                                }
+//                            });
+//                } else {
+//
+//                }
+
+            } catch (InvalidCSVException e) {
+//                if (e.getInvalidRows() == null) {
+//                    Messagebox.show(e.getMessage(), "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+//
+//                } else {
+//                    Messagebox.show(e.getMessage(), "Invalid CSV File",
+//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+//                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+//                            new EventListener() {
+//                                public void onEvent(Event evt) throws Exception {
+//                                    if (evt.getName().equals("onOK")) {
+//                                        File tempFile = File.createTempFile("Error_Report", ".txt");
+//                                        try (FileWriter writer = new FileWriter(tempFile)) {
+//                                            for (String str : e.getInvalidRows()) {
+//                                                writer.write(str + System.lineSeparator());
+//                                            }
+//                                            Filedownload.save(new FileInputStream(tempFile),
+//                                                    "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+//
+//                                        } finally {
+//                                            tempFile.delete();
+//                                        }
 //                                    }
 //                                }
 //                            }
-//                        }
-//                );
-//            }
-//        } catch (IOException e) {
-//            Messagebox.show("Failed to read file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            Messagebox.show("Failed to save file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
-//            e.printStackTrace();
-//        }
+//                    );
+//                }
+
+
+
+            } catch (IOException e) {
+                Messagebox.show("Failed to read file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
+                e.printStackTrace();
+            } catch (Exception e) {
+                Messagebox.show("Failed to save file: " + Arrays.toString(e.getStackTrace()), "Error", Messagebox.OK, Messagebox.ERROR);
+                e.printStackTrace();
+            }
+        }
     }
 
-//    private void saveLog(XLog xlog, String name) throws Exception {
+
+    private StringBuilder validateUniqueAttributes(Map<String, Integer> mainAttributes) {
+        String[] attributesToCheck = {sample.getCaseIdLabel(), sample.getActivityLabel(), sample.getTimestampLabel()};
+        StringBuilder importMessage = new StringBuilder();
+        String messingField;
+        String mess;
+        for (String attribute : attributesToCheck) {
+            if (mainAttributes.get(attribute) == -1) {
+                if (attribute.equals(sample.getCaseIdLabel())) {
+                    messingField = "Case ID";
+                } else if (attribute.equals(sample.getActivityLabel())) {
+                    messingField = "Activity";
+                } else {
+                    messingField = "End Timestamp";
+                }
+                mess = "No attribute has been selected as " + messingField + "!";
+                if (importMessage.length() == 0) {
+                    importMessage.append(mess);
+                } else {
+                    importMessage.append(System.lineSeparator()).append(mess);
+                }
+            }
+        }
+        return importMessage;
+    }
+
+
+    private void saveLog(LogModel logModel) throws Exception {
+        XLog xlog = logModel.getXLog();
+        String name = media.getName().replaceFirst("[.][^.]+$", "");
+        if (xlog != null) {
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            eventLogService.exportToStream(outputStream, xlog);
+
+            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+
+            eventLogService.importLog(
+                    portalContext.getCurrentUser().getUsername(),
+                    folderId,
+                    name,
+                    new ByteArrayInputStream(outputStream.toByteArray()),
+                    "xes.gz",
+                    "",  // domain
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                    isLogPublic  // public?
+            );
+
+            window.invalidate();
+            window.detach();
+
+            Messagebox.show("Total number of lines processed: " + logModel.getRows().size() + "\n Your file has been imported successfully!");
+
+            portalContext.refreshContent();
+        }
+    }
+
+
+
+    private void errorEncountered(LogModel xesModel) throws IOException {
+
+        Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/error.zul", null, null);
+
+
+        Button toEventAttributes = (Button) errorPopUp.getFellow("downloadErrorLog");
+        toEventAttributes.addEventListener("onClick", event ->
+                downloadErrorLog()
+        );
+
+//        List<Integer> invalidOthertimestamp = new ArrayList<>();
+//        List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+//        for (int othertimestampPos : sample.getOtherTimestamps().keySet()) {
+//            if(errorReport.stream().anyMatch(p -> p.getColumnIndex() == othertimestampPos)){
+//                invalidOthertimestamp.add(othertimestampPos);
+//            }
+//        }
+//        Messagebox.Button[] buttons;
+//        String [] buttonsLable;
 //
-//        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        eventLogService.exportToStream(outputStream, xlog);
+//        if(!invalidOthertimestamp.isEmpty()){
+//            buttons =  new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.RETRY, Messagebox.Button.CANCEL};
+//            buttonsLable = new String[]{"Download Error Report", "Cancel"};
+//        }else{
+//            buttons=  new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL};
 //
-//        int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
-//
-//        eventLogService.importLog(
-//                portalContext.getCurrentUser().getUsername(),
-//                folderId,
-//                name,
-//                new ByteArrayInputStream(outputStream.toByteArray()),
-//                "xes.gz",
-//                "",  // domain
-//                DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-//                isLogPublic  // public?
-//        );
-//
-//        portalContext.refreshContent();
-//    }
+//        }
+
+    }
+
+    private void downloadErrorLog() throws IOException {
+
+        File tempFile = File.createTempFile("Error_Report", ".txt");
+        FileWriter writer = new FileWriter(tempFile);
+//        for (String str : xesModel.getInvalidRows()) {
+//            writer.write(str + System.lineSeparator());
+//        }
+        writer.close();
+        Filedownload.save(new FileInputStream(tempFile),
+                "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+
+    }
 
 }
