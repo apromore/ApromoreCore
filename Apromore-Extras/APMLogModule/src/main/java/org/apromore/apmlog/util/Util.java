@@ -101,5 +101,8 @@ public class Util {
     }
 
     private static final DecimalFormat df2 = new DecimalFormat("###############.##");
-
+    
+    public static boolean isNumeric(String s) {
+        return s.matches("-?\\d+(\\.\\d+)?") && !s.contains("_");
+    }
 }
