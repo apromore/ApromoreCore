@@ -113,9 +113,9 @@
                             !junit*,
                             !net.didion.jwnl*,
                             org.xeslite.external,
-                            org.apromore.apmlog;version="[0.1,1)",
-                            org.apromore.apmlog.util;version="[0.1,1)",
-                            org.apromore.apmlog.impl;version="[0.1,1)",
+                            org.apromore.apmlog;version="[1.0,2)",
+                            org.apromore.apmlog.util;version="[1.0,2)",
+                            org.apromore.apmlog.impl;version="[1.0,2)",
                             *
                         </Import-Package>
                         <Export-Package>
@@ -590,7 +590,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apmlog</artifactId>
-            <version>0.1</version>
         </dependency>
 		
 		<!-- GUI related dependencies -->
