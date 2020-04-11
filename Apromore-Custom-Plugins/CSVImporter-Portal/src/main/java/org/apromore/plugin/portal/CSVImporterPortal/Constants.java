@@ -2,7 +2,7 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 
 interface Constants {
 
-
+    char[] supportedSeparators = {',','|',';','\t'};
     double maxErrorFraction = 0.2;  // Accept up to 20% error rate
     String[] allowedExtensions = {"csv", "xls", "xlsx"};
     String[] fileEncoding = {"UTF-8",
