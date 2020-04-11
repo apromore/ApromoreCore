@@ -1,0 +1,35 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne.
+  ~ Copyright (C) 2019 - 2020 The University of Tartu.
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+
+<window closable="true" id="errorWindow" maximizable="true" hflex="min" vflex="min" height="50vh" width="60vw"
+        position="center" title="Invalid Data Encountered!"
+        style="min-width: 900px;max-width: 60vw;min-height: 300px; max-height: 50vh;"
+        xmlns:h="http://www.w3.org/1999/xhtml">
+
+    <h:span>We have detected X invalid data in your log. In the following column(s):</h:span>
+    <h:span>You can still import the log by Skipping the invalid row(s) or Ignoring the invalid column(s)</h:span>
+
+        <button id="downloadErrorLog" label="Download Full Error Report" iconSclass="z-icon-arrow-circle-down fa-lg z-icon-fw"   />
+        <button id="skipInvalidRows" label="Skip Invalid Row(s)" iconSclass="z-icon-times-circle fa-lg z-icon-fw" />
+        <button id="skipInvalidColumns" label="Skip Invalid Column(s)" iconSclass="z-icon-times-circle fa-lg z-icon-fw" />
+        <button id="cancelImport" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" />
+</window>

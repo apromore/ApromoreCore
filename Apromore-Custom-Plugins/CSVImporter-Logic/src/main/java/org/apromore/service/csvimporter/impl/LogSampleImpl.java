@@ -72,7 +72,7 @@ class LogSampleImpl implements LogSample, Constants {
                 uniqueAttributes.put(caseIdLabel, pos);
             } else if ((uniqueAttributes.get(activityLabel) == -1) && getMainAttributePosition(activityValues, header.get(pos))) {
                 uniqueAttributes.put(activityLabel, pos);
-            } else if ((uniqueAttributes.get(endTimestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos).toLowerCase()) && isParsable(pos)) {
+            } else if ((uniqueAttributes.get(endTimestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos)) && isParsable(pos)) {
                 uniqueAttributes.put(endTimestampLabel, pos);
             } else if ((uniqueAttributes.get(startTimestampLabel) == -1) && getMainAttributePosition(StartTsValues, header.get(pos)) && isParsable(pos)) {
                 uniqueAttributes.put(startTimestampLabel, pos);

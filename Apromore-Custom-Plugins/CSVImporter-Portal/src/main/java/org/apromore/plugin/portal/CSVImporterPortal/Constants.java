@@ -3,7 +3,6 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 interface Constants {
 
     char[] supportedSeparators = {',','|',';','\t'};
-    double maxErrorFraction = 0.2;  // Accept up to 20% error rate
     String[] allowedExtensions = {"csv", "xls", "xlsx"};
     String[] fileEncoding = {"UTF-8",
                 "UTF-16",
@@ -20,25 +19,31 @@ interface Constants {
     };
     int logSampleSize = 100;
 
-
-    // UI ids
-    String setEncodingId = "setEncoding";
-    String myGridId = "myGrid";
-    String popUPBoxId = "popUPBox";
-    String ignoreToEventBtnId = "setOtherAll";
-    String eventToIgnoreBtnId = "setIgnoreAll";
-    String toXESBtnId = "toXESButton";
-    String cancelBtnId = "cancelButton";
-    String popUpHelpId = "popUpHelp";
-
-    String popupID = "pop_";
-    String textboxID = "txt_";
-    String labelID = "lbl_";
-
     Integer columnWidth = 180;
     Integer indexColumnWidth = 50;
 
     String eventAttributeLabel = "eventAttribute";
     String caseAttributeLabel = "caseAttribute";
     String ignoreLabel = "ignoreAttribute";
+
+    // UI ids
+    String setEncodingId = "setEncoding";
+    String myGridId = "myGrid";
+
+    String ignoreToEventBtnId = "setOtherAll";
+    String eventToIgnoreBtnId = "setIgnoreAll";
+    String toXESBtnId = "toXESButton";
+    String cancelBtnId = "cancelButton";
+
+    String popUpDivId = "popUPBox";
+    String popUpHelpId = "popUpHelp";
+    String popUpFormatWindowId = "pop_";
+    String popUpTextBoxId = "txt_";
+    String popUpLabelId = "lbl_";
+
+    String handleDownloadBtnId = "downloadErrorLog";
+    String handleSkipRowsBtnId = "skipInvalidRows";
+    String handleSkipColumnsBtnId = "skipInvalidColumns";
+    String handleCancelBtnId = "cancelImport";
+
 }

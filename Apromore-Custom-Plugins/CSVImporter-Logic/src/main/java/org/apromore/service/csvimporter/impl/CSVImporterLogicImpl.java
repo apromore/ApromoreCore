@@ -53,9 +53,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     @Override
     public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws IOException {
         logErrorReport = new ArrayList<>();
-        int lineIndex = 0;
+        int lineIndex = 1; // set to 1 since first line is the header
         boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
-        CSVReader myRader = reader;
         try {
 
             String[] header = reader.readNext();
@@ -133,7 +132,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                 // If PreferMonthFirst changed to True, we have to start over.
                 if (!preferMonthFirst && preferMonthFirstChanged) {
-                    prepareXesModel(myRader, sample);
+                    prepareXesModel(reader, sample);
                 }
 
 
@@ -176,6 +175,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
+        if(theValue == null || theValue.isEmpty()) return null;
+
         Timestamp stamp;
         if (format != null) {
             stamp = parse.tryParsingWithFormat(theValue, format);
@@ -196,7 +197,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     }
 
     private void invalidRow(int rowIndex, int columnIndex, String header, String error) {
-        logErrorReport.add(new LogErrorReportImpl(rowIndex, columnIndex, header, "Invalid" + error + " value!"));
+        logErrorReport.add(new LogErrorReportImpl(rowIndex, columnIndex, header, "Invalid " + error + " value!"));
         validRow = false;
     }
 
