@@ -34,6 +34,7 @@ import java.util.*;
  * Modified: Chii Chang (04/02/2020)
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (06/03/2020)
+ * Modified: Chii Chang (11/04/2020)
  */
 public class PLog {
 
@@ -49,8 +50,6 @@ public class PLog {
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
 
-//    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
-//    private UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueSetMap;
 
     private long minDuration = 0;
     private long medianDuration = 0;
@@ -77,6 +76,9 @@ public class PLog {
 
     private List<PTrace> originalPTraceList;
     private UnifiedMap<Integer, Integer> originalVariantIdFreqMap;
+
+    private UnifiedMap<String, Integer> originalActivityMaxOccurMap;
+    private UnifiedMap<String, Integer> previousActivityMaxOccurMap;
 
     public UnifiedMap<Integer, Integer> previousVariantIdFreqMap;
     public List<PTrace> previousPTraceList;
@@ -208,6 +210,9 @@ public class PLog {
         this.originalVariantIdFreqMap = new UnifiedMap<>(apmVariantIdFreqMap);
         this.previousVariantIdFreqMap = new UnifiedMap<>(apmVariantIdFreqMap);
 
+        this.originalActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
+        this.previousActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
+
 
         HashBiMap<Integer, String> aiMap = apmLog.getActIdNameMap();
 
@@ -232,6 +237,7 @@ public class PLog {
         startTime = originalStartTime;
         endTime = originalEndTime;
         variantIdFreqMap = originalVariantIdFreqMap;
+        activityMaxOccurMap = originalActivityMaxOccurMap;
 
         for(int i=0; i<validTraceIndexBS.length(); i++) {
             validTraceIndexBS.set(i, true);
@@ -253,6 +259,7 @@ public class PLog {
             startTime = previousStartTime;
             endTime = previousEndTime;
             variantIdFreqMap = previousVariantIdFreqMap;
+            activityMaxOccurMap = previousActivityMaxOccurMap;
 
             for (int i = 0; i < validTraceIndexBS.length(); i++) {
                 validTraceIndexBS.set(i, previousValidTraceIndexBS.get(i));
@@ -277,6 +284,7 @@ public class PLog {
         previousStartTime = startTime;
         previousEndTime = endTime;
         previousVariantIdFreqMap = variantIdFreqMap;
+        previousActivityMaxOccurMap = activityMaxOccurMap;
 
         for (int i = 0; i < previousValidTraceIndexBS.length(); i++) {
             previousValidTraceIndexBS.set(i, validTraceIndexBS.get(i));
@@ -562,7 +570,6 @@ public class PLog {
             theOPTraceList.add(pTrace);
         }
 
-//        return originalPTraceList;
         return theOPTraceList;
     }
 
