@@ -291,6 +291,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
                         Listbox box = dropDownLists.get(colPos);
                         String timestampLabel = box.getSelectedItem().getValue();
+                        resetSelect(colPos);
                         updateTimestampPos(colPos, timestampLabel, format);
                     }else{
                         check_lbl.setZclass(redLabelCSS);
@@ -315,18 +316,16 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         List<Listbox> menuDropDownLists = new ArrayList<>();
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<>();
 
-        menuItems.put(sample.getCaseIdLabel(), "Case ID");
-        menuItems.put(sample.getActivityLabel(), "Activity");
-        menuItems.put(sample.getTimestampLabel(), "End timestamp");
-        menuItems.put(sample.getStartTimestampLabel(), "Start timestamp");
-        menuItems.put(sample.getOtherTimestampLabel(), "Other timestamp");
-        menuItems.put(sample.getResourceLabel(), "Resource");
+        menuItems.put(caseIdLabel, "Case ID");
+        menuItems.put(activityLabel, "Activity");
+        menuItems.put(endTimestampLabel, "End timestamp");
+        menuItems.put(startTimestampLabel, "Start timestamp");
+        menuItems.put(otherTimestampLabel, "Other timestamp");
+        menuItems.put(resourceLabel, "Resource");
         menuItems.put(caseAttributeLabel, "Case Attribute");
         menuItems.put(eventAttributeLabel, "Event Attribute");
         menuItems.put(ignoreLabel, "Ignore Attribute");
 
-        // get index of "eventAttribute" item and select it.
-        int eventAttributeIndex = new ArrayList<String>(menuItems.keySet()).indexOf(eventAttributeLabel);
 
         for (int pos = 0; pos < sample.getHeader().size(); pos++) {
             Listbox box = new Listbox();
@@ -341,63 +340,66 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 item.setId(myItem.getKey());
 
                 if ((box.getSelectedItem() == null) && (
-                        (myItem.getKey().equals(sample.getCaseIdLabel()) && (sample.getUniqueAttributes().get(sample.getCaseIdLabel()) == pos)) ||
-                                (myItem.getKey().equals(sample.getActivityLabel()) && (sample.getUniqueAttributes().get(sample.getActivityLabel()) == pos)) ||
-                                (myItem.getKey().equals(sample.getTimestampLabel()) && (sample.getUniqueAttributes().get(sample.getTimestampLabel()) == pos)) ||
-                                (myItem.getKey().equals(sample.getStartTimestampLabel()) && (sample.getUniqueAttributes().get(sample.getStartTimestampLabel()) == pos)) ||
-                                (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimestamps().containsKey(pos))) ||
-                                (myItem.getKey().equals(sample.getResourceLabel()) && (sample.getUniqueAttributes().get(sample.getResourceLabel()) == pos)) ||
-                                (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
-                                (myItem.getKey().equals(eventAttributeLabel) && (sample.getEventAttributesPos().contains(pos)))) ||
-                                (myItem.getKey().equals(ignoreLabel) && (sample.getIgnoredPos().contains(pos)))
+                        (myItem.getKey().equals(caseIdLabel) && sample.getCaseIdPos() == pos) ||
+                                (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
+                                (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos))||
+                                (myItem.getKey().equals(startTimestampLabel) && sample.getStartTimestampPos()== pos) ||
+                                (myItem.getKey().equals(otherTimestampLabel) && sample.getOtherTimestamps().containsKey(pos)) ||
+                                (myItem.getKey().equals(resourceLabel) && sample.getResourcePos() == pos) ||
+                                (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
+                                (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||
+                                (myItem.getKey().equals(ignoreLabel) && sample.getIgnoredPos().contains(pos))
                 ) {
                     item.setSelected(true);
                 }
-
                 box.appendChild(item);
             }
 
 
             box.addEventListener("onSelect", (Event event) -> {
-                // get selected index, and check if it is one of main attributes
                 String selected = box.getSelectedItem().getValue();
                 int colPos = Integer.parseInt(box.getId());
-                resetColPos(colPos);
-                closePopUpBox(colPos);
-                hideFormatBtn(formatBtns[colPos]);
+                resetSelect(colPos);
 
-                if (selected.equals(sample.getCaseIdLabel()) || selected.equals(sample.getActivityLabel()) || selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel()) || new String(selected).equals(sample.getResourceLabel())) {
-
-                    int oldColPos = sample.getUniqueAttributes().get(selected);
-                    if (oldColPos != -1) {
-                        Listbox oldBox = menuDropDownLists.get(oldColPos);
-                        oldBox.setSelectedIndex(eventAttributeIndex);
-                        resetColPos(oldColPos);
-                        closePopUpBox(oldColPos);
-                        hideFormatBtn(formatBtns[oldColPos]);
-                    }
-
-                    if (selected.equals(sample.getTimestampLabel()) || selected.equals(sample.getStartTimestampLabel())) {
-                        if(sample.isParsable(colPos)){
-                            updateTimestampPos(colPos, selected, null);
-                        }else{
-                            showFormatBtn(formatBtns[colPos]);
-                            openPopUpBox(colPos);
-                        }
+                if (selected.equals(caseIdLabel)) {
+                    resetUniqueAttribute(sample.getCaseIdPos());
+                    sample.setCaseIdPos(colPos);
+                } else if (selected.equals(activityLabel)) {
+                    resetUniqueAttribute(sample.getActivityPos());
+                    sample.setActivityPos(colPos);
+                } else if (selected.equals(endTimestampLabel)) {
+                    resetUniqueAttribute(sample.getEndTimestampPos());
+                    if (sample.isParsable(colPos)) {
+                        updateTimestampPos(colPos, selected, null);
                     } else {
-                        sample.getUniqueAttributes().put(selected, colPos);
-                    }
-
-                } else if (selected.equals(ignoreLabel)) {
-                    sample.getIgnoredPos().add(colPos);
-                } else if (selected.equals(sample.getOtherTimestampLabel())) {
-                    if(sample.isParsable(colPos)){
-                        sample.getOtherTimestamps().put(colPos, null);
-                    }else{
+                        sample.getEventAttributesPos().add(colPos);
                         showFormatBtn(formatBtns[colPos]);
                         openPopUpBox(colPos);
                     }
-                } else if(selected.equals(caseAttributeLabel)){
+
+                } else if (selected.equals(startTimestampLabel)) {
+                    resetUniqueAttribute(sample.getStartTimestampPos());
+                    if (sample.isParsable(colPos)) {
+                        updateTimestampPos(colPos, selected, null);
+                    } else {
+                        sample.getEventAttributesPos().add(colPos);
+                        showFormatBtn(formatBtns[colPos]);
+                        openPopUpBox(colPos);
+                    }
+                } else if (selected.equals(resourceLabel)) {
+                    resetUniqueAttribute(sample.getResourcePos());
+                    sample.setResourcePos(colPos);
+                } else if (selected.equals(ignoreLabel)) {
+                    sample.getIgnoredPos().add(colPos);
+                } else if (selected.equals(otherTimestampLabel)) {
+                    if (sample.isParsable(colPos)) {
+                        sample.getOtherTimestamps().put(colPos, null);
+                    } else {
+                        sample.getEventAttributesPos().add(colPos);
+                        showFormatBtn(formatBtns[colPos]);
+                        openPopUpBox(colPos);
+                    }
+                } else if (selected.equals(caseAttributeLabel)) {
                     sample.getCaseAttributesPos().add(colPos);
                 }
             });
@@ -408,14 +410,63 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         this.dropDownLists = menuDropDownLists;
     }
 
+
+    private void resetUniqueAttribute(int oldColPos){
+        if (oldColPos != -1) {
+            resetSelect(oldColPos);
+
+            Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
+            int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
+            Listbox oldBox = dropDownLists.get(oldColPos);
+            oldBox.setSelectedIndex(eventAttributeIndex);
+            sample.getEventAttributesPos().add(oldColPos);
+        }
+    }
+
+    private void resetSelect(int pos) {
+        if (sample.getOtherTimestamps().containsKey(pos)) {
+            sample.getOtherTimestamps().remove(pos);
+            closePopUpBox(pos);
+            hideFormatBtn(formatBtns[pos]);
+
+        } else if (sample.getIgnoredPos().contains(pos)) {
+            sample.getIgnoredPos().remove(Integer.valueOf(pos));
+
+        } else if(sample.getCaseAttributesPos().contains(pos)) {
+            sample.getCaseAttributesPos().remove(Integer.valueOf(pos));
+
+        } else if(sample.getEventAttributesPos().contains(pos)) {
+            sample.getEventAttributesPos().remove(Integer.valueOf(pos));
+
+        } else if(sample.getCaseIdPos() == pos){
+            sample.setCaseIdPos(-1);
+
+        } else if(sample.getActivityPos() == pos){
+            sample.setActivityPos(-1);
+
+        } else if(sample.getEndTimestampPos() == pos){
+            sample.setEndTimestampPos(-1);
+            closePopUpBox(pos);
+            hideFormatBtn(formatBtns[pos]);
+
+        } else if(sample.getStartTimestampPos() == pos){
+            sample.setStartTimestampPos(-1);
+            closePopUpBox(pos);
+            hideFormatBtn(formatBtns[pos]);
+
+        } else if(sample.getResourcePos() == pos){
+            sample.setResourcePos(-1);
+        }
+    }
+
     private void updateTimestampPos(int pos, String timestampLabel, String format){
-        if (timestampLabel.equals(sample.getTimestampLabel())) {
-            sample.getUniqueAttributes().put(timestampLabel, pos);
+        if (timestampLabel.equals(endTimestampLabel)) {
+            sample.setEndTimestampPos(pos);
             sample.setEndTimestampFormat(format);
-        } else if (timestampLabel.equals(sample.getStartTimestampLabel())) {
-            sample.getUniqueAttributes().put(timestampLabel, pos);
+        } else if (timestampLabel.equals(startTimestampLabel)) {
+            sample.setStartTimestampPos(pos);
             sample.setStartTimestampFormat(format);
-        } else if (timestampLabel.equals(sample.getOtherTimestampLabel())) {
+        } else if (timestampLabel.equals(otherTimestampLabel)) {
             sample.getOtherTimestamps().put(pos, format);
         }
     }
@@ -437,21 +488,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private void hideFormatBtn(Button myButton){
         myButton.setSclass("ap-csv-importer-format-icon ap-hidden");
-    }
-
-    private void resetColPos(int pos) {
-        if (sample.getOtherTimestamps().get(pos) != null) {
-            sample.getOtherTimestamps().remove(pos);
-        } else if (sample.getIgnoredPos().contains(pos)) {
-            sample.getIgnoredPos().remove(Integer.valueOf(pos));
-        } else {
-            for (Map.Entry<String, Integer> entry : sample.getUniqueAttributes().entrySet()) {
-                if (entry.getValue() == pos) {
-                    sample.getUniqueAttributes().put(entry.getKey(), -1);
-                    break;
-                }
-            }
-        }
     }
 
     private void setButtons(){
@@ -514,8 +550,8 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private void convertToXes() {
 
-        // If any of the mandatory fields are missing show alert message to the user and return
-        StringBuilder headNOTDefined = validateUniqueAttributes(sample.getUniqueAttributes());
+        // If any of the mandatory fields are missing show alert message to the user
+        StringBuilder headNOTDefined = validateUniqueAttributes();
         if (headNOTDefined.length() != 0) {
             Messagebox.show(headNOTDefined.toString(), "Missing fields!", Messagebox.OK, Messagebox.ERROR);
         } else {
@@ -529,157 +565,40 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                         handleInvalidData(xesModel);
                     }
                 }
-
-//                if (xesModel.getErrorCount() > 0) {
-//                    String notificationMessage;
-//                    notificationMessage = "Imported: " + xesModel.getLineCount() + " row(s), with " + xesModel.getErrorCount() + " invalid row(s) being amended.  \n\n" +
-//                            "Invalid rows: \n";
-//
-//                    for (int i = 0; i < Math.min(xesModel.getInvalidRows().size(), 5); i++) {
-//                        notificationMessage = notificationMessage + xesModel.getInvalidRows().get(i) + "\n";
-//                    }
-//
-//                    if (xesModel.getInvalidRows().size() > 5) {
-//                        notificationMessage = notificationMessage + "\n ...";
-//                    }
-//                    Messagebox.show(notificationMessage
-//                            , "Invalid CSV File",
-//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-//                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
-//                            (EventListener) evt -> {
-//                                if (evt.getName().equals("onOK")) {
-//                                    File tempFile = File.createTempFile("Error_Report", ".txt");
-//                                    FileWriter writer = new FileWriter(tempFile);
-//                                    for (String str : xesModel.getInvalidRows()) {
-//                                        writer.write(str + System.lineSeparator());
-//                                    }
-//                                    writer.close();
-//                                    Filedownload.save(new FileInputStream(tempFile),
-//                                            "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
-//                                }
-//                            });
-//                }
-//
-//                if (xesModel.getErrorCheck()) {
-//                    Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload" +
-//                                    " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
-//                                    "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
-//                            "Confirm Dialog",
-//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
-//                            new String[]{"Skip rows", "Skip columns", "Cancel"},
-//                            Messagebox.QUESTION, null, (EventListener) evt -> {
-//                                if (evt.getName().equals("onOK")) {
-//                                    for (int i = 0; i < xesModel.getRows().size(); i++) {
-//                                        for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
-//                                            if (entry.getKey() == null) {
-//                                                continue;
-//                                            }
-//                                            long tempLong = entry.getValue().getTime();
-//                                            java.util.Calendar cal = java.util.Calendar.getInstance();
-//                                            cal.setTimeInMillis(tempLong);
-//                                            if (cal.get(Calendar.YEAR) == 1900) {
-//                                                System.out.println("Invalid timestamp. Entry Removed.");
-//                                                xesModel.getRows().remove(i);
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    Messagebox.show("Hello Ok!");
-//                                    // create XES file
-//                                    XLog xlog = xesModel.getXLog();
-//                                    if (xlog != null) {
-//                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
-//                                    }
-//
-//                                    window.invalidate();
-//                                    window.detach();
-//
-//                                } else if (evt.getName().equals("onIgnore")) {
-//                                    for (int i = 0; i < xesModel.getRows().size(); i++) {
-//                                        xesModel.getRows().get(i).setOtherTimestamps(null);
-//                                    }
-//                                    Messagebox.show("Hello Ignore!");
-//                                    // create XES file
-//                                    XLog xlog = xesModel.getXLog();
-//                                    if (xlog != null) {
-//                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""));
-//                                    }
-//
-//                                    window.invalidate();
-//                                    window.detach();
-//                                } else {
-//                                    //
-//                                }
-//                            });
-//                } else {
-//
-//                }
-
-//            } catch (InvalidCSVException e) {
-//                Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-//                if (e.getInvalidRows() == null) {
-//                    Messagebox.show(e.getMessage(), "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
-//
-//                } else {
-//                    Messagebox.show(e.getMessage(), "Invalid CSV File",
-//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-//                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
-//                            new EventListener() {
-//                                public void onEvent(Event evt) throws Exception {
-//                                    if (evt.getName().equals("onOK")) {
-//                                        File tempFile = File.createTempFile("Error_Report", ".txt");
-//                                        try (FileWriter writer = new FileWriter(tempFile)) {
-//                                            for (String str : e.getInvalidRows()) {
-//                                                writer.write(str + System.lineSeparator());
-//                                            }
-//                                            Filedownload.save(new FileInputStream(tempFile),
-//                                                    "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
-//
-//                                        } finally {
-//                                            tempFile.delete();
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                    );
-//                }
-//
-//
-//
             }
             catch (IOException e) {
                 Messagebox.show("Failed to read file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
             } catch (Exception e) {
-                Messagebox.show("Failed to save file: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show("An error happened! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
             }
 
         }
     }
 
-    private StringBuilder validateUniqueAttributes(Map<String, Integer> mainAttributes) {
-        String[] attributesToCheck = {sample.getCaseIdLabel(), sample.getActivityLabel(), sample.getTimestampLabel()};
+    private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
-        String messingField;
-        String mess;
-        for (String attribute : attributesToCheck) {
-            if (mainAttributes.get(attribute) == -1) {
-                if (attribute.equals(sample.getCaseIdLabel())) {
-                    messingField = "Case ID";
-                } else if (attribute.equals(sample.getActivityLabel())) {
-                    messingField = "Activity";
-                } else {
-                    messingField = "End Timestamp";
-                }
-                mess = "No attribute has been selected as " + messingField + "!";
-                if (importMessage.length() == 0) {
-                    importMessage.append(mess);
-                } else {
-                    importMessage.append(System.lineSeparator()).append(mess);
-                }
+        String mess = "No attribute has been selected as ";
+
+        if (sample.getCaseIdPos() == -1) {
+            importMessage.append(mess + "Case ID!");
+        }
+        if (sample.getActivityPos() == -1) {
+            if (importMessage.length() == 0) {
+                importMessage.append(mess + "Activity!");
+            } else {
+                importMessage.append(System.lineSeparator()).append(mess + "Activity!");
             }
         }
+        if (sample.getEndTimestampPos() == -1){
+            if (importMessage.length() == 0) {
+                importMessage.append(mess + "End Timestamp!");
+            } else {
+                importMessage.append(System.lineSeparator()).append(mess + "End Timestamp!");
+            }
+        }
+
         return importMessage;
     }
 
@@ -761,7 +680,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                         try(CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding())) {
                             if (reader != null) {
                                 saveLog(csvImporterLogic.prepareXesModel(reader, sample));
-                                //setUpUI();
                             }
                         }
                     }

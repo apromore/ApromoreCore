@@ -29,7 +29,6 @@ import java.util.*;
 
 public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
-
     @Override
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws IOException {
 
@@ -43,6 +42,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         return new LogSampleImpl(header, lines);
     }
+
 
     private final Parse parse = new Parse();
 
@@ -92,28 +92,28 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
 
                 // Case id:
-                caseId = line[sample.getUniqueAttributes().get(caseIdLabel)];
+                caseId = line[sample.getCaseIdPos()];
                 if (caseId == null || caseId.isEmpty()) {
-                    invalidRow(lineIndex, sample.getUniqueAttributes().get(caseIdLabel), header[sample.getUniqueAttributes().get(caseIdLabel)], "Case ID");
+                    invalidRow(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], "Case ID");
                 }
 
                 // Activity
-                activity = line[sample.getUniqueAttributes().get(activityLabel)];
+                activity = line[sample.getActivityPos()];
                 if (activity == null || activity.isEmpty()) {
-                    invalidRow(lineIndex, sample.getUniqueAttributes().get(activityLabel), header[sample.getUniqueAttributes().get(activityLabel)], "Activity");
+                    invalidRow(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], "Activity");
                 }
 
                 // End Timestamp
-                endTimestamp = parseTimestampValue(line[sample.getUniqueAttributes().get(endTimestampLabel)], sample.getEndTimestampFormat());
+                endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
                 if (endTimestamp == null) {
-                    invalidRow(lineIndex, sample.getUniqueAttributes().get(endTimestampLabel), header[sample.getUniqueAttributes().get(endTimestampLabel)], "End Timestamp");
+                    invalidRow(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "End Timestamp");
                 }
 
                 // Start Timestamp
-                if (sample.getUniqueAttributes().get(startTimestampLabel) != -1) {
-                    startTimestamp = parseTimestampValue(line[sample.getUniqueAttributes().get(startTimestampLabel)], sample.getStartTimestampFormat());
+                if (sample.getStartTimestampPos()!= -1) {
+                    startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                     if (startTimestamp == null) {
-                        invalidRow(lineIndex, sample.getUniqueAttributes().get(startTimestampLabel), header[sample.getUniqueAttributes().get(startTimestampLabel)], "Start Timestamp");
+                        invalidRow(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Start Timestamp");
                     }
                 }
 
@@ -137,10 +137,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
 
                 // Resource
-                if (sample.getUniqueAttributes().get(resourceLabel) != -1) {
-                    resource = line[sample.getUniqueAttributes().get(resourceLabel)];
-                    if (resource == null) {
-                        invalidRow(lineIndex, sample.getUniqueAttributes().get(resourceLabel), header[sample.getUniqueAttributes().get(resourceLabel)], "Resource");
+                if (sample.getResourcePos() != -1) {
+                    resource = line[sample.getResourcePos()];
+                    if (resource == null || resource.isEmpty()) {
+                        invalidRow(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], "Resource");
                     }
                 }
 

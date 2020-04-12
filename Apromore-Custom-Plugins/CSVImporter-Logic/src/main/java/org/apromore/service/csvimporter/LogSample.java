@@ -27,27 +27,35 @@ import java.util.Map;
 
 public interface LogSample {
 
-    String getCaseIdLabel();
-    String getActivityLabel();
-    String getTimestampLabel();
-    String getStartTimestampLabel();
-    String getOtherTimestampLabel();
-    String getResourceLabel();
-
-    boolean isParsable(int colPos);
-    boolean isParsableWithFormat(int colPos, String format);
-
     List<String> getHeader();
     List<List<String>> getLines();
 
-    Map<String, Integer> getUniqueAttributes();
-    List<Integer> getIgnoredPos();
+    int getCaseIdPos();
+    void setCaseIdPos(int pos);
+
+    int getActivityPos();
+    void setActivityPos(int pos);
+
+    int getEndTimestampPos();
+    void setEndTimestampPos(int pos);
+
+    int getStartTimestampPos();
+    void setStartTimestampPos(int pos);
+
+    int getResourcePos();
+    void setResourcePos(int pos);
+
     List<Integer> getCaseAttributesPos();
     List<Integer> getEventAttributesPos();
     Map<Integer, String> getOtherTimestamps();
+    List<Integer> getIgnoredPos();
 
     String getEndTimestampFormat();
-    void setEndTimestampFormat(String s);
+    void setEndTimestampFormat(String format);
+
     String getStartTimestampFormat();
-    void setStartTimestampFormat(String s);
+    void setStartTimestampFormat(String format);
+
+    boolean isParsable(int colPos);
+    boolean isParsableWithFormat(int colPos, String format);
 }

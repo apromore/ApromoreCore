@@ -22,35 +22,44 @@
 
 package org.apromore.service.csvimporter.impl;
 
+import lombok.Data;
 import org.apromore.service.csvimporter.LogSample;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Data
 class LogSampleImpl implements LogSample, Constants {
 
     private final Parse parse = new Parse();
 
     private List<String> header;
     private List<List<String>> lines;
-    private Map<String, Integer> uniqueAttributes;
-    private String endTimestampFormat;
-    private String startTimestampFormat;
-    private List<Integer> ignoredPos;
-    private HashMap<Integer, String> otherTimestamps;
+
+    private int caseIdPos;
+    private int activityPos;
+    private int endTimestampPos;
+    private int startTimestampPos;
+    private int resourcePos;
     private List<Integer> caseAttributesPos;
     private List<Integer> eventAttributesPos;
+    private HashMap<Integer, String> otherTimestamps;
+    private List<Integer> ignoredPos;
+    private String endTimestampFormat;
+    private String startTimestampFormat;
 
     LogSampleImpl(List<String> header, List<List<String>> lines) {
         this.header = header;
         this.lines = lines;
-        this.ignoredPos = new ArrayList<>();
-        this.caseAttributesPos = new ArrayList<>();
-        this.eventAttributesPos = new ArrayList<>();
-        this.endTimestampFormat = null;
-        this.startTimestampFormat = null;
+
+        caseAttributesPos = new ArrayList<>();
+        eventAttributesPos = new ArrayList<>();
+        ignoredPos = new ArrayList<>();
         otherTimestamps = new HashMap<>();
+        endTimestampFormat = null;
+        startTimestampFormat = null;
+
 
         setUniqueAttributes();
         setOtherTimestamps();
@@ -59,30 +68,28 @@ class LogSampleImpl implements LogSample, Constants {
 
 
     private void setUniqueAttributes(){
-        uniqueAttributes = new HashMap<>();
-        uniqueAttributes.put(caseIdLabel, -1);
-        uniqueAttributes.put(activityLabel, -1);
-        uniqueAttributes.put(endTimestampLabel, -1);
-        uniqueAttributes.put(startTimestampLabel, -1);
-        uniqueAttributes.put(resourceLabel, -1);
+        caseIdPos = -1;
+        activityPos = -1;
+        endTimestampPos = -1;
+        startTimestampPos = -1;
+        resourcePos = -1;
 
-        // Populate mainAttributes, timestampFormat, startTsFormat
         for (int pos = 0; pos < header.size(); pos++) {
-            if ((uniqueAttributes.get(caseIdLabel) == -1) && getMainAttributePosition(caseIdValues, header.get(pos))) {
-                uniqueAttributes.put(caseIdLabel, pos);
-            } else if ((uniqueAttributes.get(activityLabel) == -1) && getMainAttributePosition(activityValues, header.get(pos))) {
-                uniqueAttributes.put(activityLabel, pos);
-            } else if ((uniqueAttributes.get(endTimestampLabel) == -1) && getMainAttributePosition(timestampValues, header.get(pos)) && isParsable(pos)) {
-                uniqueAttributes.put(endTimestampLabel, pos);
-            } else if ((uniqueAttributes.get(startTimestampLabel) == -1) && getMainAttributePosition(StartTsValues, header.get(pos)) && isParsable(pos)) {
-                uniqueAttributes.put(startTimestampLabel, pos);
-            } else if ((uniqueAttributes.get(resourceLabel) == -1) && getMainAttributePosition(resourceValues, header.get(pos))) {
-                uniqueAttributes.put(resourceLabel, pos);
+            if (caseIdPos == -1 && guessUniqueAttributesPos(caseIdValues, header.get(pos))) {
+                caseIdPos = pos;
+            } else if (activityPos == -1 && guessUniqueAttributesPos(activityValues, header.get(pos))) {
+                activityPos = pos;
+            } else if (endTimestampPos == -1 && guessUniqueAttributesPos(timestampValues, header.get(pos)) && isParsable(pos)) {
+                endTimestampPos =pos;
+            } else if (startTimestampPos == -1 && guessUniqueAttributesPos(StartTsValues, header.get(pos)) && isParsable(pos)) {
+                startTimestampPos =pos;
+            } else if (resourcePos == -1 && guessUniqueAttributesPos(resourceValues, header.get(pos))) {
+                resourcePos = pos;
             }
         }
     }
 
-    private boolean getMainAttributePosition(String[] col, String elem) {
+    private boolean guessUniqueAttributesPos(String[] col, String elem) {
         if (col == timestampValues || col == StartTsValues) {
             return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
         } else {
@@ -112,11 +119,8 @@ class LogSampleImpl implements LogSample, Constants {
 
 
     private void setOtherTimestamps() {
-        int timeStampPos = uniqueAttributes.get(endTimestampLabel);
-        int StartTimeStampPos = uniqueAttributes.get(startTimestampLabel);
-
         for (int pos = 0; pos < header.size(); pos++) {
-            if ((pos != timeStampPos) && (pos != StartTimeStampPos) && isParsable(pos)) {
+            if ((pos != endTimestampPos) && (pos != startTimestampPos) && isParsable(pos)) {
                 otherTimestamps.put(pos, null);
             }
         }
@@ -124,11 +128,11 @@ class LogSampleImpl implements LogSample, Constants {
 
 
     private void setCaseAndEventAttributesPos() {
-        if (uniqueAttributes.get(caseIdLabel) == -1) return;
+        if (caseIdPos == -1) return;
 
         // set all attributes that are not main attributes or timestamps as case attributes
         for (int pos = 0; pos < header.size(); pos++) {
-            if (!uniqueAttributes.containsValue(pos) && !otherTimestamps.containsKey(pos)) {
+            if (!(pos == caseIdPos || pos == activityPos || pos == endTimestampPos || pos == startTimestampPos || pos == resourcePos) && !otherTimestamps.containsKey(pos)) {
                 caseAttributesPos.add(pos);
             }
         }
@@ -136,10 +140,10 @@ class LogSampleImpl implements LogSample, Constants {
         // set ones who are not consistent within a case as event attributes instead of case attributes
         List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
         for (List<String> myLine : lines) {
-            if (myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(uniqueAttributes.get(caseIdLabel))))) { // new case id
+            if (myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(caseIdPos)))) { // new case id
                 myCaseAttributes = new ArrayList<>();
                 for (int pos : caseAttributesPos) {
-                    myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(uniqueAttributes.get(caseIdLabel)), pos, myLine.get(pos)));
+                    myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(caseIdPos), pos, myLine.get(pos)));
                 }
             } else {
                 for (int pos = 0; pos < caseAttributesPos.size(); pos++) {
@@ -152,92 +156,4 @@ class LogSampleImpl implements LogSample, Constants {
             }
         }
     }
-
-
-    // Accessors
-    @Override
-    public String getCaseIdLabel() {
-        return caseIdLabel;
-    }
-
-    @Override
-    public String getActivityLabel() {
-        return activityLabel;
-    }
-
-    @Override
-    public String getTimestampLabel() {
-        return endTimestampLabel;
-    }
-
-    @Override
-    public String getStartTimestampLabel() {
-        return startTimestampLabel;
-    }
-
-    @Override
-    public String getOtherTimestampLabel() {
-        return otherTimestampLabel;
-    }
-
-    @Override
-    public String getResourceLabel() {
-        return resourceLabel;
-    }
-
-    @Override
-    public List<String> getHeader() {
-        return header;
-    }
-
-    @Override
-    public List<List<String>> getLines() {
-        return lines;
-    }
-
-    @Override
-    public Map<String, Integer> getUniqueAttributes() {
-        return uniqueAttributes;
-    }
-
-    @Override
-    public List<Integer> getCaseAttributesPos() {
-        return caseAttributesPos;
-    }
-
-    @Override
-    public List<Integer> getEventAttributesPos() {
-        return eventAttributesPos;
-    }
-
-    @Override
-    public List<Integer> getIgnoredPos() {
-        return ignoredPos;
-    }
-
-    @Override
-    public HashMap<Integer, String> getOtherTimestamps() {
-        return otherTimestamps;
-    }
-
-    @Override
-    public String getEndTimestampFormat() {
-        return endTimestampFormat;
-    }
-
-    @Override
-    public void setEndTimestampFormat(String s) {
-        endTimestampFormat = s;
-    }
-
-    @Override
-    public String getStartTimestampFormat() {
-        return startTimestampFormat;
-    }
-
-    @Override
-    public void setStartTimestampFormat(String s) {
-        startTimestampFormat = s;
-    }
-
 }

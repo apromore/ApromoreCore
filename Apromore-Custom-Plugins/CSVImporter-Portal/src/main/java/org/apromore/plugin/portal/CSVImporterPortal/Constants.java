@@ -22,6 +22,12 @@ interface Constants {
     Integer columnWidth = 180;
     Integer indexColumnWidth = 50;
 
+    String caseIdLabel = "caseId";
+    String activityLabel = "activity";
+    String endTimestampLabel = "endTimestamp";
+    String startTimestampLabel = "startTimestamp";
+    String otherTimestampLabel = "otherTimestamp";
+    String resourceLabel = "resource";
     String eventAttributeLabel = "eventAttribute";
     String caseAttributeLabel = "caseAttribute";
     String ignoreLabel = "ignoreAttribute";

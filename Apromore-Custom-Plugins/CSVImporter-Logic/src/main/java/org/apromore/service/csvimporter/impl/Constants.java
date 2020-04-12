@@ -21,14 +21,6 @@
 package org.apromore.service.csvimporter.impl;
 
 public interface Constants {
-
-    String caseIdLabel = "caseId";
-    String activityLabel = "activity";
-    String endTimestampLabel = "endTimestamp";
-    String startTimestampLabel = "startTimestamp";
-    String otherTimestampLabel = "otherTimestamp";
-    String resourceLabel = "resource";
-
     String[] caseIdValues    = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
     String[] activityValues  = {"activity", "activity id", "activity-id", "operation", "event"};
     String[] resourceValues  = {"resource", "agent", "employee", "group"};
