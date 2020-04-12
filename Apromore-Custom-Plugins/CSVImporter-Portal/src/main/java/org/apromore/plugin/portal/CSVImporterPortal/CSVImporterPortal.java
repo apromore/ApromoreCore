@@ -35,6 +35,7 @@ import org.apromore.service.csvimporter.*;
 import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
+import org.zkoss.zhtml.P;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -654,7 +655,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 Messagebox.show("Failed to read file: " + e, "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
             } catch (Exception e) {
-                Messagebox.show("Failed to save file: " + Arrays.toString(e.getStackTrace()), "Error", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show("Failed to save file: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
             }
 
@@ -724,6 +725,43 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
         errorPopUp.doModal();
 
+
+//        "Invalid fields detected. \nSelect Skip rows to upload" +
+//                                    " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
+//                                    "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
+
+//
+
+
+        Label span = (Label) errorPopUp.getFellow(handleMessageSpan);
+        span.setValue(String.valueOf(xesModel.getLogErrorReport().size()));
+
+
+//        Listbox columnList = (Listbox) errorPopUp.getFellow(handleInvalidColumnsList);
+//        for (LogErrorReport error: xesModel.getLogErrorReport()) {
+//            if(!columnList.hasFellow(error.getHeader())){
+//                Listitem item = new Listitem();
+//                item.setId(error.getHeader());
+//                item.setLabel(error.getHeader());
+//                item.setValue(error.getHeader());
+//                columnList.appendChild(item);
+//            }
+//        }
+
+
+        Label columnList = (Label) errorPopUp.getFellow(handleInvalidColumnsList);
+        StringBuilder invalidColumns = new StringBuilder();
+
+        Set<String> columns = new HashSet<String>();
+        for (LogErrorReport error: xesModel.getLogErrorReport()) {
+            columns.add(error.getHeader());
+        }
+        for (String col: columns) {
+            invalidColumns.append(col).append(" | ");
+        }
+        columnList.setValue(invalidColumns.toString().substring(0, invalidColumns.toString().length() - 2));
+
+
         Button downloadBtn = (Button) errorPopUp.getFellow(handleDownloadBtnId);
         downloadBtn.addEventListener("onClick", event -> {
                     downloadErrorLog(xesModel.getLogErrorReport());
@@ -760,8 +798,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
         );
 
-
-        Button cancelButton = (Button) window.getFellow(handleCancelBtnId);
+        Button cancelButton = (Button) errorPopUp.getFellow(handleCancelBtnId);
         cancelButton.addEventListener("onClick", event -> {
             errorPopUp.invalidate();
             errorPopUp.detach();

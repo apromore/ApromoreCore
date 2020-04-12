@@ -41,6 +41,8 @@ interface Constants {
     String popUpTextBoxId = "txt_";
     String popUpLabelId = "lbl_";
 
+    String handleMessageSpan = "message";
+    String handleInvalidColumnsList = "invalidColumnsList";
     String handleDownloadBtnId = "downloadErrorLog";
     String handleSkipRowsBtnId = "skipInvalidRows";
     String handleSkipColumnsBtnId = "skipInvalidColumns";
