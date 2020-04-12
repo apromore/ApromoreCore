@@ -23,10 +23,6 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -35,7 +31,6 @@ import org.apromore.service.csvimporter.*;
 import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
-import org.zkoss.zhtml.P;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -353,7 +348,8 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                                 (myItem.getKey().equals(sample.getOtherTimestampLabel()) && (sample.getOtherTimestamps().containsKey(pos))) ||
                                 (myItem.getKey().equals(sample.getResourceLabel()) && (sample.getUniqueAttributes().get(sample.getResourceLabel()) == pos)) ||
                                 (myItem.getKey().equals(caseAttributeLabel) && (sample.getCaseAttributesPos().contains(pos))) ||
-                                (myItem.getKey().equals(eventAttributeLabel) && (sample.getEventAttributesPos().contains(pos))))
+                                (myItem.getKey().equals(eventAttributeLabel) && (sample.getEventAttributesPos().contains(pos)))) ||
+                                (myItem.getKey().equals(ignoreLabel) && (sample.getIgnoredPos().contains(pos)))
                 ) {
                     item.setSelected(true);
                 }
@@ -719,47 +715,58 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     }
 
-
     private void handleInvalidData(LogModel xesModel) throws IOException {
 
         Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
         errorPopUp.doModal();
 
 
-//        "Invalid fields detected. \nSelect Skip rows to upload" +
-//                                    " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
-//                                    "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
-
-//
-
-
-        Label span = (Label) errorPopUp.getFellow(handleMessageSpan);
-        span.setValue(String.valueOf(xesModel.getLogErrorReport().size()));
-
-
-//        Listbox columnList = (Listbox) errorPopUp.getFellow(handleInvalidColumnsList);
-//        for (LogErrorReport error: xesModel.getLogErrorReport()) {
-//            if(!columnList.hasFellow(error.getHeader())){
-//                Listitem item = new Listitem();
-//                item.setId(error.getHeader());
-//                item.setLabel(error.getHeader());
-//                item.setValue(error.getHeader());
-//                columnList.appendChild(item);
-//            }
-//        }
-
+        Label errorCount = (Label) errorPopUp.getFellow(handleErrorCount);
+        errorCount.setValue(String.valueOf(xesModel.getLogErrorReport().size()));
 
         Label columnList = (Label) errorPopUp.getFellow(handleInvalidColumnsList);
-        StringBuilder invalidColumns = new StringBuilder();
+        Label ignoredList = (Label) errorPopUp.getFellow(handleIgnoredColumnsList);
 
-        Set<String> columns = new HashSet<String>();
+
+        Set<String> invColList = new HashSet<String>();
+        Set<String> igColList = new HashSet<String>();
         for (LogErrorReport error: xesModel.getLogErrorReport()) {
-            columns.add(error.getHeader());
+            invColList.add(error.getHeader());
+            if(sample.getOtherTimestamps().containsKey(error.getColumnIndex())){
+                igColList.add(error.getHeader());
+            }
         }
-        for (String col: columns) {
-            invalidColumns.append(col).append(" | ");
+
+        columnList.setValue(columnList(invColList));
+
+        if(!igColList.isEmpty()){
+            Label ignoreLbl = (Label) errorPopUp.getFellow(handleIgnoreColLbl);
+            ignoreLbl.setVisible(true);
+            ignoredList.setValue(columnList(igColList));
+
+            List<Integer> columnIndex = xesModel.getLogErrorReport().stream()
+                    .map(LogErrorReport::getColumnIndex)
+                    .collect(Collectors.toList());
+
+            Button skipColumns = (Button) errorPopUp.getFellow(handleSkipColumnsBtnId);
+            skipColumns.setVisible(true);
+            skipColumns.addEventListener("onClick", event -> {
+                        errorPopUp.invalidate();
+                        errorPopUp.detach();
+
+                        for (int pos: columnIndex) {
+                            sample.getOtherTimestamps().remove(pos);
+                            sample.getIgnoredPos().add(pos);
+                        }
+                        try(CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding())) {
+                            if (reader != null) {
+                                saveLog(csvImporterLogic.prepareXesModel(reader, sample));
+                                //setUpUI();
+                            }
+                        }
+                    }
+            );
         }
-        columnList.setValue(invalidColumns.toString().substring(0, invalidColumns.toString().length() - 2));
 
 
         Button downloadBtn = (Button) errorPopUp.getFellow(handleDownloadBtnId);
@@ -776,33 +783,22 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 }
         );
 
-
-        Button skipColumns = (Button) errorPopUp.getFellow(handleSkipColumnsBtnId);
-        skipColumns.addEventListener("onClick", event -> {
-            List<Integer> columnIndex = xesModel.getLogErrorReport().stream()
-                    .map(LogErrorReport::getColumnIndex)
-                    .collect(Collectors.toList());
-
-            for (int pos: columnIndex) {
-                if(sample.getOtherTimestamps().get(pos) != null){
-                    sample.getOtherTimestamps().remove(pos);
-                }
-            }
-
-            try(CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding())) {
-                if (reader != null) {
-                    LogModel myXesModel = csvImporterLogic.prepareXesModel(reader, sample);
-                    saveLog(myXesModel);
-                }
-            }
-        }
-        );
-
         Button cancelButton = (Button) errorPopUp.getFellow(handleCancelBtnId);
         cancelButton.addEventListener("onClick", event -> {
             errorPopUp.invalidate();
             errorPopUp.detach();
         });
+    }
+
+    private String columnList(Set<String> list){
+        StringBuilder colList = new StringBuilder();
+        for (String col: list) {
+            colList.append(col).append(" | ");
+        }
+        if(colList.length() > 0){
+           return colList.toString().substring(0, colList.toString().length() - 2);
+        }
+        return null;
     }
 
     private void downloadErrorLog(List<LogErrorReport> errorReport) throws Exception {
