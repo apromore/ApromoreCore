@@ -4,7 +4,7 @@ import lombok.Data;
 import org.apromore.service.csvimporter.LogErrorReport;
 
 @Data
-public class LogErrorReportImpl implements LogErrorReport {
+class LogErrorReportImpl implements LogErrorReport {
     int rowIndex;
     int columnIndex;
     String error;

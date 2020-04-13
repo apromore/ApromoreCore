@@ -3,7 +3,7 @@ package org.apromore.service.csvimporter.impl;
 import lombok.Data;
 
 @Data
-public class CaseAttributesDiscovery {
+class CaseAttributesDiscovery {
 
     private String caseId;
     private int position;

@@ -20,7 +20,7 @@
 
 package org.apromore.service.csvimporter.impl;
 
-public interface Constants {
+interface Constants {
     String[] caseIdValues    = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
     String[] activityValues  = {"activity", "activity id", "activity-id", "operation", "event"};
     String[] resourceValues  = {"resource", "agent", "employee", "group"};

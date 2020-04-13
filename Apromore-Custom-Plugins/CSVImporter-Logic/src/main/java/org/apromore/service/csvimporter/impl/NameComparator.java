@@ -36,26 +36,14 @@ import java.util.regex.Pattern;
  * Beware that negative signs and decimal point are not treated as part of the numbers.
  * This can lead to unexpected behaviors: "-1" &lt; "-2", "1.2" &lt; "1.11", and "1.0" &lt; "1.00".
  */
-public class NameComparator implements Comparator<String> {
-
-    /** Test harness. */
-    public static void main(String[] arg) {
-        NameComparator comparator = new NameComparator();
-        int result = comparator.compare(arg[0], arg[1]);
-        System.out.print(arg[0]);
-        System.out.print(result < 0 ? " < " :
-                         result > 0 ? " > " : " = ");
-        System.out.println(arg[1]);
-    }
+class NameComparator implements Comparator<String> {
 
     private Matcher m1, m2;
 
     public NameComparator() {
-
         // Extracts the leading token, which is a run of either only digits or only non-digits, or empty
         // Leading zeroes are ignored by the "digits" capturing group
         Pattern p = Pattern.compile("(?<token>(0*(?<digits>\\d+))|(\\D*))(?<remainder>.*)");
-
         m1 = p.matcher("");
         m2 = p.matcher("");
     }
