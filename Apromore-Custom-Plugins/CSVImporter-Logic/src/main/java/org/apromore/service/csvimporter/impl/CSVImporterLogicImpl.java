@@ -173,11 +173,6 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        if (theValue == null || theValue.isEmpty()) {
-            parse.setParseFailMess("Field is empty or has a null value!");
-            return null;
-        }
-
         Timestamp stamp;
         if (format != null) {
             stamp = parse.tryParsingWithFormat(theValue, format);

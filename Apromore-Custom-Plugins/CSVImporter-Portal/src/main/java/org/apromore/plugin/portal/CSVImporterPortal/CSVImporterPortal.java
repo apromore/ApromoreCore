@@ -260,7 +260,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             check_lbl.setId(popUpLabelId + pos);
             String redLabelCSS = "redLabel";
             String greenLabelCSS = "greenLabel";
-            String couldNotParse = "Could not parse timestamp!";
+            String couldNotParse = "Could not parse as timestamp!";
             String parsedMessage = "Parsed correctly!";
 
             check_lbl.setZclass(redLabelCSS);
@@ -275,7 +275,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             textbox.setPopupAttributes(helpP, "after_start", "", "", "toggle");
 
             textbox.addEventListener("onChanging", (InputEvent event) -> {
-                if (StringUtils.isBlank(event.getValue()) || event.getValue().length() < 6) {
+                if (StringUtils.isBlank(event.getValue())) {
                     textbox.setPlaceholder("Specify timestamp format");
                 } else {
                     int colPos = Integer.parseInt(textbox.getId().replace(popUpTextBoxId, ""));
@@ -358,46 +358,55 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 int colPos = Integer.parseInt(box.getId());
                 resetSelect(colPos);
 
-                if (selected.equals(caseIdLabel)) {
-                    resetUniqueAttribute(sample.getCaseIdPos());
-                    sample.setCaseIdPos(colPos);
-                } else if (selected.equals(activityLabel)) {
-                    resetUniqueAttribute(sample.getActivityPos());
-                    sample.setActivityPos(colPos);
-                } else if (selected.equals(endTimestampLabel)) {
-                    resetUniqueAttribute(sample.getEndTimestampPos());
-                    if (sample.isParsable(colPos)) {
-                        updateTimestampPos(colPos, selected, null);
-                    } else {
-                        sample.getEventAttributesPos().add(colPos);
-                        showFormatBtn(formatBtns[colPos]);
-                        openPopUpBox(colPos);
-                    }
-
-                } else if (selected.equals(startTimestampLabel)) {
-                    resetUniqueAttribute(sample.getStartTimestampPos());
-                    if (sample.isParsable(colPos)) {
-                        updateTimestampPos(colPos, selected, null);
-                    } else {
-                        sample.getEventAttributesPos().add(colPos);
-                        showFormatBtn(formatBtns[colPos]);
-                        openPopUpBox(colPos);
-                    }
-                } else if (selected.equals(resourceLabel)) {
-                    resetUniqueAttribute(sample.getResourcePos());
-                    sample.setResourcePos(colPos);
-                } else if (selected.equals(ignoreLabel)) {
-                    sample.getIgnoredPos().add(colPos);
-                } else if (selected.equals(otherTimestampLabel)) {
-                    if (sample.isParsable(colPos)) {
-                        sample.getOtherTimestamps().put(colPos, null);
-                    } else {
-                        sample.getEventAttributesPos().add(colPos);
-                        showFormatBtn(formatBtns[colPos]);
-                        openPopUpBox(colPos);
-                    }
-                } else if (selected.equals(caseAttributeLabel)) {
-                    sample.getCaseAttributesPos().add(colPos);
+                switch(selected) {
+                    case caseIdLabel:
+                        resetUniqueAttribute(sample.getCaseIdPos());
+                        sample.setCaseIdPos(colPos);
+                        break;
+                    case activityLabel:
+                        resetUniqueAttribute(sample.getActivityPos());
+                        sample.setActivityPos(colPos);
+                        break;
+                    case endTimestampLabel:
+                        resetUniqueAttribute(sample.getEndTimestampPos());
+                        if (sample.isParsable(colPos)) {
+                            updateTimestampPos(colPos, selected, null);
+                        } else {
+                            sample.getEventAttributesPos().add(colPos);
+                            showFormatBtn(formatBtns[colPos]);
+                            openPopUpBox(colPos);
+                        }
+                        break;
+                    case startTimestampLabel:
+                        resetUniqueAttribute(sample.getStartTimestampPos());
+                        if (sample.isParsable(colPos)) {
+                            updateTimestampPos(colPos, selected, null);
+                        } else {
+                            sample.getEventAttributesPos().add(colPos);
+                            showFormatBtn(formatBtns[colPos]);
+                            openPopUpBox(colPos);
+                        }
+                        break;
+                    case resourceLabel:
+                        resetUniqueAttribute(sample.getResourcePos());
+                        sample.setResourcePos(colPos);
+                        break;
+                    case ignoreLabel:
+                        sample.getIgnoredPos().add(colPos);
+                        break;
+                    case otherTimestampLabel:
+                        if (sample.isParsable(colPos)) {
+                            sample.getOtherTimestamps().put(colPos, null);
+                        } else {
+                            sample.getEventAttributesPos().add(colPos);
+                            showFormatBtn(formatBtns[colPos]);
+                            openPopUpBox(colPos);
+                        }
+                        break;
+                    case caseAttributeLabel:
+                        sample.getCaseAttributesPos().add(colPos);
+                        break;
+                    default:
                 }
             });
 
@@ -420,36 +429,24 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     }
 
     private void resetSelect(int pos) {
+        closePopUpBox(pos);
+        hideFormatBtn(formatBtns[pos]);
         if (sample.getOtherTimestamps().containsKey(pos)) {
             sample.getOtherTimestamps().remove(pos);
-            closePopUpBox(pos);
-            hideFormatBtn(formatBtns[pos]);
-
         } else if (sample.getIgnoredPos().contains(pos)) {
             sample.getIgnoredPos().remove(Integer.valueOf(pos));
-
         } else if (sample.getCaseAttributesPos().contains(pos)) {
             sample.getCaseAttributesPos().remove(Integer.valueOf(pos));
-
         } else if (sample.getEventAttributesPos().contains(pos)) {
             sample.getEventAttributesPos().remove(Integer.valueOf(pos));
-
         } else if (sample.getCaseIdPos() == pos) {
             sample.setCaseIdPos(-1);
-
         } else if (sample.getActivityPos() == pos) {
             sample.setActivityPos(-1);
-
         } else if (sample.getEndTimestampPos() == pos) {
             sample.setEndTimestampPos(-1);
-            closePopUpBox(pos);
-            hideFormatBtn(formatBtns[pos]);
-
         } else if (sample.getStartTimestampPos() == pos) {
             sample.setStartTimestampPos(-1);
-            closePopUpBox(pos);
-            hideFormatBtn(formatBtns[pos]);
-
         } else if (sample.getResourcePos() == pos) {
             sample.setResourcePos(-1);
         }

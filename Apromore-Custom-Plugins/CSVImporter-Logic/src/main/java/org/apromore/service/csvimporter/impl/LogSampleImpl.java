@@ -100,11 +100,11 @@ class LogSampleImpl implements LogSample, Constants {
     @Override
     public boolean isParsable(int pos) {
         for (List<String> myLine : lines) {
-            if (parse.tryParsing(myLine.get(pos)) == null) {
-                return false;
+            if (parse.tryParsing(myLine.get(pos)) != null) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

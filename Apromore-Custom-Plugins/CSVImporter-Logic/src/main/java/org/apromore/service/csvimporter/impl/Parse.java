@@ -22,6 +22,7 @@
 
 package org.apromore.service.csvimporter.impl;
 
+import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.dateparser.DateParserUtils;
 
 import java.sql.Timestamp;
@@ -36,6 +37,8 @@ class Parse {
 
     public Timestamp tryParsingWithFormat(String theDate, String theFormat) {
         try {
+            if(theDate == null || theDate.isEmpty()) throw new InvalidCSVException("Field is empty or has a null value!");
+
             SimpleDateFormat formatter = new SimpleDateFormat(theFormat);
             formatter.setLenient(false);
             Calendar cal = Calendar.getInstance();
@@ -51,6 +54,8 @@ class Parse {
 
     public Timestamp tryParsing(String theDate) {
         try {
+            if(theDate == null || theDate.isEmpty()) throw new InvalidCSVException("Field is empty or has a null value!");
+
             return new Timestamp(DateParserUtils.parseCalendar(theDate).getTimeInMillis());
         } catch (Exception e) {
             parseFailMess = e.getMessage();
@@ -65,9 +70,5 @@ class Parse {
 
     public String getParseFailMess() {
         return parseFailMess;
-    }
-
-    public void setParseFailMess(String parseFailMess) {
-        this.parseFailMess = parseFailMess;
     }
 }
