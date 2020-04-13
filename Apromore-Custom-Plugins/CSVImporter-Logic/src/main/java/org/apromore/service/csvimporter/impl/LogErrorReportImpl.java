@@ -16,11 +16,4 @@ public class LogErrorReportImpl implements LogErrorReport {
         this.columnIndex = columnIndex;
         this.header = header;
     }
-
-    public LogErrorReportImpl(int rowIndex, String error) {
-        this.rowIndex = rowIndex;
-        this.error = error;
-        this.columnIndex = Integer.parseInt(null);
-        this.header = null;
-    }
 }

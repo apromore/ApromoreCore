@@ -36,7 +36,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         List<List<String>> lines = new ArrayList<>();
         String[] myLine;
-        while ((myLine = reader.readNext()) != null && myLine.length == header.size() && lines.size() <= sampleSize) {
+        while ((myLine = reader.readNext()) != null && lines.size() <= sampleSize) {
+            if (myLine.length != header.size()) continue;
+
             lines.add(Arrays.asList(myLine));
         }
 
@@ -58,62 +60,62 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         try {
 
             String[] header = reader.readNext();
+            String[] line;
 
-            List<LogEventModel> logData = new ArrayList<>();
-            HashMap<String, Timestamp> otherTimestamps;
-            HashMap<String, String> eventAttributes;
-            HashMap<String, String> caseAttributes;
             String caseId;
             String activity;
             Timestamp endTimestamp;
             Timestamp startTimestamp;
             String resource;
+            HashMap<String, String> caseAttributes;
+            HashMap<String, String> eventAttributes;
+            HashMap<String, Timestamp> otherTimestamps;
 
-            String[] line;
+            List<LogEventModel> logData = new ArrayList<>();
 
             while ((line = reader.readNext()) != null) { // new row, new event.
                 validRow = true;
                 lineIndex++;
 
-                if (line.length == 0) {
+                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n")))) { //empty row
                     continue;
                 }
 
                 if (header.length != line.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")."));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
                     continue;
                 }
 
-                otherTimestamps = new HashMap<>();
-                eventAttributes = new HashMap<>();
-                caseAttributes = new HashMap<>();
                 startTimestamp = null;
                 resource = null;
+                caseAttributes = new HashMap<>();
+                eventAttributes = new HashMap<>();
+                otherTimestamps = new HashMap<>();
 
 
                 // Case id:
                 caseId = line[sample.getCaseIdPos()];
                 if (caseId == null || caseId.isEmpty()) {
-                    invalidRow(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], "Case ID");
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], "Invalid value!"));
                 }
 
                 // Activity
                 activity = line[sample.getActivityPos()];
                 if (activity == null || activity.isEmpty()) {
-                    invalidRow(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], "Activity");
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], "Invalid value!"));
                 }
 
                 // End Timestamp
                 endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
                 if (endTimestamp == null) {
-                    invalidRow(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "End Timestamp");
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "Invalid value!"));
                 }
 
                 // Start Timestamp
-                if (sample.getStartTimestampPos()!= -1) {
+                if (sample.getStartTimestampPos() != -1) {
                     startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                     if (startTimestamp == null) {
-                        invalidRow(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Start Timestamp");
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Invalid value!"));
                     }
                 }
 
@@ -125,7 +127,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                         if (tempTimestamp != null) {
                             otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
                         } else {
-                            invalidRow(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], "Other timestamp");
+                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], "Invalid value!"));
                         }
                     }
                 }
@@ -140,7 +142,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                 if (sample.getResourcePos() != -1) {
                     resource = line[sample.getResourcePos()];
                     if (resource == null || resource.isEmpty()) {
-                        invalidRow(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], "Resource");
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], "Invalid value!"));
                     }
                 }
 
@@ -169,13 +171,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             return new LogModelImpl(sortTraces(logData), logErrorReport);
 
         } catch (Exception e) {
-           throw e;
+            throw e;
         }
-
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        if(theValue == null || theValue.isEmpty()) return null;
+        if (theValue == null || theValue.isEmpty()) return null;
 
         Timestamp stamp;
         if (format != null) {
@@ -185,7 +186,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                 if (!preferMonthFirstChanged) {
                     preferMonthFirstChanged = parse.getPreferMonthFirst();
                 }
-
             }
         } else {
             stamp = parse.tryParsing(theValue);
@@ -196,8 +196,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         return stamp;
     }
 
-    private void invalidRow(int rowIndex, int columnIndex, String header, String error) {
-        logErrorReport.add(new LogErrorReportImpl(rowIndex, columnIndex, header, "Invalid " + error + " value!"));
+    private void invalidRow(LogErrorReportImpl error) {
+        logErrorReport.add(error);
         validRow = false;
     }
 
