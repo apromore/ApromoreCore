@@ -71,6 +71,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         HashMap<String, Timestamp> otherTimestamps;
 
         List<LogEventModel> logData = new ArrayList<>();
+        String errorMessage = "Field is empty or has a null value!";
 
         while ((line = reader.readNext()) != null) { // new row, new event.
             validRow = true;
@@ -95,26 +96,26 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             // Case id:
             caseId = line[sample.getCaseIdPos()];
             if (caseId == null || caseId.isEmpty()) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], "Field is empty or have a null value!"));
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
             }
 
             // Activity
             activity = line[sample.getActivityPos()];
             if (activity == null || activity.isEmpty()) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], "Field is empty or have a null value!"));
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
             }
 
             // End Timestamp
             endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
             if (endTimestamp == null) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "Field is empty or have a null value!"));
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], errorMessage));
             }
 
             // Start Timestamp
             if (sample.getStartTimestampPos() != -1) {
                 startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                 if (startTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Field is empty or have a null value!"));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], errorMessage));
                 }
             }
 

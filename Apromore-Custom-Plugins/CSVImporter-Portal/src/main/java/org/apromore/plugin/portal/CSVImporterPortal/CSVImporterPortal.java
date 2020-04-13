@@ -57,7 +57,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     private PortalContext portalContext;
 
     private LogSample sample;
-    private LogModel xesModel;
 
     private Div popUpBox;
     private Button[] formatBtns;
@@ -87,7 +86,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         this.media = media;
         this.portalContext = portalContext;
         this.isLogPublic = isLogPublic;
-        this.xesModel = null;
 
         CSVFileReader CSVReader = new CSVFileReader();
         try {
@@ -552,18 +550,15 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             Messagebox.show(headNOTDefined.toString(), "Missing fields!", Messagebox.OK, Messagebox.ERROR);
         } else {
             try {
-                if (xesModel == null) {
-                    CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                    if (reader != null) {
-                        xesModel = csvImporterLogic.prepareXesModel(reader, sample);
+                CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
+                if (reader != null) {
+                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
+                    List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+                    if (errorReport.isEmpty()) {
+                        saveXLog(xesModel);
+                    } else {
+                        handleInvalidData(xesModel);
                     }
-                }
-
-                List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
-                if (errorReport.isEmpty()) {
-                    saveXLog();
-                } else {
-                    handleInvalidData();
                 }
             } catch (Exception e) {
                 Messagebox.show("Error! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -597,7 +592,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         return importMessage;
     }
 
-    private void handleInvalidData() {
+    private void handleInvalidData(LogModel xesModel) {
         try {
             Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
             errorPopUp.doModal();
@@ -645,8 +640,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                             }
 
                             CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                            xesModel = csvImporterLogic.prepareXesModel(reader, sample);
-                            saveXLog();
+                            saveXLog(csvImporterLogic.prepareXesModel(reader, sample));
                         }
                 );
             }
@@ -661,7 +655,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             skipRows.addEventListener("onClick", event -> {
                         errorPopUp.invalidate();
                         errorPopUp.detach();
-                        saveXLog();
+                        saveXLog(xesModel);
                     }
             );
 
@@ -701,7 +695,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             String[] headerRecord = {"#", "Row Index", "Column", "Error message"};
             csvWriter.writeNext(headerRecord);
 
-            int counter = 0;
+            int counter = 1;
             for (LogErrorReport error : errorReport) {
                 csvWriter.writeNext(new String[]{String.valueOf(counter++), String.valueOf(error.getRowIndex()), error.getHeader(), error.getError()});
             }
@@ -716,7 +710,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
     }
 
-    private void saveXLog() {
+    private void saveXLog(LogModel xesModel) {
         try {
             XLog xlog = xesModel.getXLog();
             if (xlog == null) {

@@ -38,6 +38,7 @@
                 <label value="Select Skip Invalid Row(s) rows to upload by skipping all rows containing invalid fields."/>
                 <separator/>
                 <label id="ignoreCol" visible="false" value="Select Ignore Invalid Column(s) to upload by skipping the entire column(s) containing invalid fields."/>
+                <separator/>
                 <label id="ignoredColumnsList"/>
                 <separator/>
             </div>
@@ -47,7 +48,7 @@
             <div style="padding: 8px">
                 <hlayout spacing="0">
                     <div hflex="1">
-                        <button id="downloadErrorLog" label="Download Full Error Report"
+                        <button id="downloadErrorLog" label="Download Error Report"
                                 iconSclass="z-icon-arrow-circle-down fa-lg z-icon-fw" style="position:relative;"/>
 
                         <button id="skipInvalidRows" label="Skip Invalid Row(s)"
