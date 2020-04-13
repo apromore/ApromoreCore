@@ -561,7 +561,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
                 List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
                 if (errorReport.isEmpty()) {
-                    saveLog();
+                    saveXLog();
                 } else {
                     handleInvalidData();
                 }
@@ -620,14 +620,14 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 }
             }
             if(!invColList.isEmpty()){
-                columnList.setValue("Following column(s) have errors: " + columnList(invColList));
+                columnList.setValue("Following column(s) include(s) one or more errors: " + columnList(invColList));
             }
 
             if (!igColList.isEmpty()) {
                 Label ignoredList = (Label) errorPopUp.getFellow(handleIgnoredColumnsList);
                 Label ignoreLbl = (Label) errorPopUp.getFellow(handleIgnoreColLbl);
                 ignoreLbl.setVisible(true);
-                ignoredList.setValue(columnList(igColList));
+                ignoredList.setValue("Following column(s) will be ignored: " + columnList(igColList));
 
                 List<Integer> columnIndex = errorReport.stream()
                         .map(LogErrorReport::getColumnIndex)
@@ -646,7 +646,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
                             CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
                             xesModel = csvImporterLogic.prepareXesModel(reader, sample);
-                            saveLog();
+                            saveXLog();
                         }
                 );
             }
@@ -661,7 +661,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             skipRows.addEventListener("onClick", event -> {
                         errorPopUp.invalidate();
                         errorPopUp.detach();
-                        saveLog();
+                        saveXLog();
                     }
             );
 
@@ -716,7 +716,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
     }
 
-    private void saveLog() {
+    private void saveXLog() {
         try {
             XLog xlog = xesModel.getXLog();
             if (xlog == null) {
@@ -743,7 +743,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             window.invalidate();
             window.detach();
 
-            Messagebox.show("Total number of lines processed: " + xesModel.getRows().size() + "\n Your file has been imported successfully!");
+            Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!");
 
             portalContext.refreshContent();
         } catch (InvalidCSVException e) {

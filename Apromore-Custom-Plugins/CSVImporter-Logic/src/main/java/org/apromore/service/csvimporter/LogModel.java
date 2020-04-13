@@ -22,13 +22,12 @@
 
 package org.apromore.service.csvimporter;
 
-import java.util.List;
-;
 import org.deckfour.xes.model.XLog;
 
-public interface LogModel {
+import java.util.List;
 
-    List<LogEventModel> getRows();
+public interface LogModel {
+    int getRowsCount();
     List<LogErrorReport> getLogErrorReport();
     XLog getXLog();
 }

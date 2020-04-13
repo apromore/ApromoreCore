@@ -22,17 +22,16 @@
 
 package org.apromore.service.csvimporter.impl;
 
-import org.apromore.service.csvimporter.LogEventModel;
+import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.Map;
 
-class LogEventModelImpl implements LogEventModel {
-
-    // Instance variable
+@Data
+class LogEventModel {
 
     private String caseID;
-    private String concept;
+    private String activity;
     private Timestamp endTimestamp;
     private Timestamp startTimestamp;
     private String resource;
@@ -41,69 +40,14 @@ class LogEventModelImpl implements LogEventModel {
     private Map<String, String> caseAttributes;
 
 
-    // Constructor
-
-    LogEventModelImpl(String caseID, String concept, Timestamp endTimestamp, Timestamp startTimestamp, Map<String, Timestamp> otherTimestamps, String resource, Map<String, String> eventAttributes, Map<String, String> caseAttributes) {
+    LogEventModel(String caseID, String activity, Timestamp endTimestamp, Timestamp startTimestamp, Map<String, Timestamp> otherTimestamps, String resource, Map<String, String> eventAttributes, Map<String, String> caseAttributes) {
         this.caseID = caseID;
-        this.concept = concept;
+        this.activity = activity;
         this.endTimestamp = endTimestamp;
         this.startTimestamp = startTimestamp;
         this.otherTimestamps = otherTimestamps;
         this.resource = resource;
         this.eventAttributes = eventAttributes;
         this.caseAttributes = caseAttributes;
-    }
-
-
-        // Accessors
-
-    @Override
-    public String getCaseID() {
-        return caseID;
-    }
-
-    @Override
-    public String getConcept() {
-        return concept;
-    }
-
-    @Override
-    public Timestamp getEndTimestamp() {
-        return endTimestamp;
-    }
-
-    @Override
-    public Timestamp getStartTimestamp() {
-        return startTimestamp;
-    }
-
-    @Override
-    public String getResource() {
-        return resource;
-    }
-
-    @Override
-    public void setOtherTimestamps(Map<String, Timestamp> otherTimestamps) {
-        this.otherTimestamps = otherTimestamps;
-    }
-
-    @Override
-    public Map<String, Timestamp> getOtherTimestamps() {
-        return otherTimestamps;
-    }
-
-    @Override
-    public Map<String, String> getEventAttributes() {
-        return eventAttributes;
-    }
-
-    @Override
-    public Map<String, String> getCaseAttributes() {
-        return caseAttributes;
-    }
-
-    @Override
-    public void setEndTimestamp(Timestamp endTimestamp) {
-        this.endTimestamp = endTimestamp;
     }
 }

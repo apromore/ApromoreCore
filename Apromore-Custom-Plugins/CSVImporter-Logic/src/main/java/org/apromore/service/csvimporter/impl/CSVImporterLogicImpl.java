@@ -165,7 +165,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                     }
                 }
 
-                logData.add(new LogEventModelImpl(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
+                logData.add(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
             }
 
             return new LogModelImpl(sortTraces(logData), logErrorReport);

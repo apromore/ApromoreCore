@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apromore.service.csvimporter.LogErrorReport;
-import org.apromore.service.csvimporter.LogEventModel;
 import org.apromore.service.csvimporter.LogModel;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
@@ -54,15 +53,19 @@ class LogModelImpl implements LogModel {
         this.logErrorReport = logErrorReportImpl;
     }
 
-    @Override
-    public List<LogEventModel> getRows() { return rows; }
 
     @Override
     public List<LogErrorReport> getLogErrorReport() { return logErrorReport; }
 
     @Override
-    public XLog getXLog() { return createXLog(rows); }
+    public int getRowsCount() {
+        return rows.size();
+    }
 
+    @Override
+    public XLog getXLog() {
+        return createXLog(rows);
+    }
 
     private static XLog createXLog(List<LogEventModel> traces) {
         if (traces == null) return null;
@@ -179,14 +182,14 @@ class LogModelImpl implements LogModel {
     private static XEvent createEvent(LogEventModel theTrace, XFactory xFactory, XConceptExtension concept, XLifecycleExtension lifecycle, XTimeExtension timestamp, XOrganizationalExtension resource, Boolean isEndTimestamp) {
 
         XEvent xEvent = xFactory.createEvent();
-        concept.assignName(xEvent, theTrace.getConcept());
+        concept.assignName(xEvent, theTrace.getActivity());
 
         if (theTrace.getResource() != null) {
             resource.assignResource(xEvent, theTrace.getResource());
         }
 
         XAttribute attribute;
-        if(theTrace.getOtherTimestamps() != null) {
+        if (theTrace.getOtherTimestamps() != null) {
             Map<String, Timestamp> otherTimestamps = theTrace.getOtherTimestamps();
             for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                 attribute = new XAttributeTimestampImpl(entry.getKey(), entry.getValue());
