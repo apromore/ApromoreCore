@@ -569,8 +569,13 @@ CREATE TABLE user
    date_created timestamp NOT NULL,
    first_name varchar(45) NOT NULL,
    last_name varchar(45) NOT NULL,
-   last_activity_date timestamp NOT NULL,
-   groupId int NOT NULL
+   last_activity_date timestamp,
+   groupId int NOT NULL,
+   organization varchar(255),
+   role varchar(255),
+   country varchar(255),
+   phone varchar(255),
+   subscription varchar(255)
 )
 ;
 CREATE TABLE user_group
