@@ -108,14 +108,14 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             // End Timestamp
             endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
             if (endTimestamp == null) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], errorMessage));
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
             }
 
             // Start Timestamp
             if (sample.getStartTimestampPos() != -1) {
                 startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                 if (startTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], errorMessage));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
                 }
             }
 
@@ -127,7 +127,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                     if (tempTimestamp != null) {
                         otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
                     } else {
-                        invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], "Invalid value!"));
+                        invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
                     }
                 }
             }
@@ -142,7 +142,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             if (sample.getResourcePos() != -1) {
                 resource = line[sample.getResourcePos()];
                 if (resource == null || resource.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], "Invalid value!"));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
                 }
             }
 
@@ -173,7 +173,10 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        if (theValue == null || theValue.isEmpty()) return null;
+        if (theValue == null || theValue.isEmpty()) {
+            parse.setParseFailMess("Field is empty or has a null value!");
+            return null;
+        }
 
         Timestamp stamp;
         if (format != null) {

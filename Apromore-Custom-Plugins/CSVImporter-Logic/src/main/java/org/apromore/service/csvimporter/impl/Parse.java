@@ -32,6 +32,8 @@ import java.util.Date;
 
 class Parse {
 
+    private String parseFailMess;
+
     public Timestamp tryParsingWithFormat(String theDate, String theFormat) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(theFormat);
@@ -42,6 +44,7 @@ class Parse {
             return new Timestamp(cal.getTimeInMillis());
 
         } catch (Exception e) {
+            parseFailMess = e.getMessage();
             return null;
         }
     }
@@ -50,6 +53,7 @@ class Parse {
         try {
             return new Timestamp(DateParserUtils.parseCalendar(theDate).getTimeInMillis());
         } catch (Exception e) {
+            parseFailMess = e.getMessage();
             return null;
         }
     }
@@ -59,4 +63,11 @@ class Parse {
         return DateParserUtils.getPreferMonthFirst();
     }
 
+    public String getParseFailMess() {
+        return parseFailMess;
+    }
+
+    public void setParseFailMess(String parseFailMess) {
+        this.parseFailMess = parseFailMess;
+    }
 }
