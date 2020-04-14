@@ -510,6 +510,11 @@ CREATE TABLE `user` (
   `last_name` varchar(45) NOT NULL,
   `last_activity_date` datetime,  -- null indicates never logged in --
   `groupId` int(11) NOT NULL,
+  `organization` VARCHAR(255),
+  `role` VARCHAR(255),
+  `country` VARCHAR(255),
+  `phone` VARCHAR(255),
+  `subscription` VARCHAR(255),
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_row_guid_UNIQUE` (`row_guid`),
   UNIQUE KEY `user_username_UNIQUE` (`username`),
@@ -905,14 +910,14 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'75f4a46a-bd32-4fbb-ba7a-c50d06414fac','james','2012-05-23 11:52:48','Cameron','James',NULL,1);
-INSERT INTO `user` VALUES (2,'aaf24d0d-58f2-43b1-8dcc-bf99717b708f','chathura','2012-05-23 11:59:51','Chathura','Ekanayake',NULL,2);
-INSERT INTO `user` VALUES (3,'a393f9c2-e2ee-49ed-9b6a-a1269811764c','arthur','2012-05-23 12:07:24','Arthur','Ter Hofstede',NULL,3);
-INSERT INTO `user` VALUES (4,'b6701ee5-227b-493e-9b01-85aa33acd53b','Macri','2012-05-23 20:08:03','Marie','Fauvet',NULL,4);
-INSERT INTO `user` VALUES (5,'c81da91f-facc-4eff-b648-bdc1a2a5ebbe','larosa','2012-05-23 20:24:37','Marcello','La Rosa',NULL,5);
-INSERT INTO `user` VALUES (6,'c03eff4d-3672-4c91-bfea-36c67e2423f5','felix','2012-05-23 20:37:44','Felix','Mannhardt',NULL,6);
-INSERT INTO `user` VALUES (7,'fbcd5a9a-a224-40cb-8ab9-b12436d92835','raboczi','2012-05-23 20:40:26','Simon','Raboczi',NULL,7);
-INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','admin','2012-05-28 16:51:05','Test','User',NULL,8);
+INSERT INTO `user` VALUES (1,'75f4a46a-bd32-4fbb-ba7a-c50d06414fac','james',   '2012-05-23 11:52:48','Cameron', 'James',       NULL,1,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (2,'aaf24d0d-58f2-43b1-8dcc-bf99717b708f','chathura','2012-05-23 11:59:51','Chathura','Ekanayake',   NULL,2,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (3,'a393f9c2-e2ee-49ed-9b6a-a1269811764c','arthur',  '2012-05-23 12:07:24','Arthur',  'Ter Hofstede',NULL,3,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (4,'b6701ee5-227b-493e-9b01-85aa33acd53b','Macri',   '2012-05-23 20:08:03','Marie',   'Fauvet',      NULL,4,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (5,'c81da91f-facc-4eff-b648-bdc1a2a5ebbe','larosa',  '2012-05-23 20:24:37','Marcello','La Rosa',     NULL,5,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (6,'c03eff4d-3672-4c91-bfea-36c67e2423f5','felix',   '2012-05-23 20:37:44','Felix',   'Mannhardt',   NULL,6,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (7,'fbcd5a9a-a224-40cb-8ab9-b12436d92835','raboczi', '2012-05-23 20:40:26','Simon',   'Raboczi',     NULL,7,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','admin',   '2012-05-28 16:51:05','Test',    'User',        NULL,8,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
