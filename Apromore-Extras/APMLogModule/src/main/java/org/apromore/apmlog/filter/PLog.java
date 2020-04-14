@@ -1,21 +1,12 @@
-/*
+/*-
+ * #%L
+ * Process Discoverer Logic
+ *
  * This file is part of "Apromore".
- *
- * Copyright (C) 2019 - 2020 The University of Melbourne.
- *
- * "Apromore" is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * "Apromore" is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program.
- * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * %%
+ * Copyright (C) 2019, 2020 The University of Melbourne. All Rights Reserved.
+ * %%
+ * #L%
  */
 
 package org.apromore.apmlog.filter;
@@ -49,8 +40,8 @@ public class PLog {
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
 
-//    private UnifiedMap<String, UnifiedSet<String>> rawEventAttributeValueSetMap;
-//    private UnifiedMap<String, UnifiedSet<String>> rawCaseAttributeValueSetMap;
+    private UnifiedMap<List<Integer>, Integer> variantIndexFreqMap;
+
 
     private long minDuration = 0;
     private long medianDuration = 0;
@@ -77,8 +68,12 @@ public class PLog {
 
     private List<PTrace> originalPTraceList;
     private UnifiedMap<Integer, Integer> originalVariantIdFreqMap;
+    private UnifiedMap<String, Integer> originalActivityMaxOccurMap;
 
     public UnifiedMap<Integer, Integer> previousVariantIdFreqMap;
+
+    private UnifiedMap<String, Integer> previousActivityMaxOccurMap;
+
     public List<PTrace> previousPTraceList;
 
     public BitSet previousValidTraceIndexBS;
@@ -105,6 +100,9 @@ public class PLog {
         return apmLog;
     }
 
+    public ActivityNameMapper getActivityNameMapper() {
+        return activityNameMapper;
+    }
 
     public DefaultChartDataCollection getDefaultChartDataCollection() {
         return defaultChartDataCollection;
@@ -132,6 +130,9 @@ public class PLog {
         this.originalValidTraceIndexBS.set(0, apmLog.getTraceList().size(), true);
         this.previousValidTraceIndexBS.set(0, apmLog.getTraceList().size(), true);
 
+        this.variantIndexFreqMap = new UnifiedMap<>();
+
+
         /**
          * PERFORMANCE PROBLEM
          */
@@ -157,6 +158,13 @@ public class PLog {
                 if(pTrace.caseIdDigit > maxCaseIdDigit) maxCaseIdDigit = pTrace.caseIdDigit;
                 if(minCaseIdDigit == 0 || pTrace.caseIdDigit < minCaseIdDigit) minCaseIdDigit = pTrace.caseIdDigit;
             }
+
+            List<Integer> actIndexList = pTrace.getActivityNameIndexList();
+            if (variantIndexFreqMap.containsKey(actIndexList)) {
+                int freq = variantIndexFreqMap.get(actIndexList) + 1;
+                variantIndexFreqMap.put(actIndexList, freq);
+            } else variantIndexFreqMap.put(actIndexList, 1);
+
         }
 
         this.originalPTraceList = new ArrayList<>(this.pTraceList);
@@ -209,6 +217,10 @@ public class PLog {
         this.previousVariantIdFreqMap = new UnifiedMap<>(apmVariantIdFreqMap);
 
 
+        this.originalActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
+        this.previousActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
+
+
         HashBiMap<Integer, String> aiMap = apmLog.getActIdNameMap();
 
         this.actIdNameMap = new HashBiMap<>(aiMap);
@@ -232,6 +244,7 @@ public class PLog {
         startTime = originalStartTime;
         endTime = originalEndTime;
         variantIdFreqMap = originalVariantIdFreqMap;
+        activityMaxOccurMap = originalActivityMaxOccurMap;
 
         for(int i=0; i<validTraceIndexBS.length(); i++) {
             validTraceIndexBS.set(i, true);
@@ -253,6 +266,7 @@ public class PLog {
             startTime = previousStartTime;
             endTime = previousEndTime;
             variantIdFreqMap = previousVariantIdFreqMap;
+            activityMaxOccurMap = previousActivityMaxOccurMap;
 
             for (int i = 0; i < validTraceIndexBS.length(); i++) {
                 validTraceIndexBS.set(i, previousValidTraceIndexBS.get(i));
@@ -277,6 +291,7 @@ public class PLog {
         previousStartTime = startTime;
         previousEndTime = endTime;
         previousVariantIdFreqMap = variantIdFreqMap;
+        previousActivityMaxOccurMap = activityMaxOccurMap;
 
         for (int i = 0; i < previousValidTraceIndexBS.length(); i++) {
             previousValidTraceIndexBS.set(i, validTraceIndexBS.get(i));
@@ -362,7 +377,7 @@ public class PLog {
 
 
     /**
-     * This method creates a new APMLog. It should be used only after filter editing is completed.
+     * This method creates a new APMLog. It should be used only after filterlogic editing is completed.
      * @return
      */
     public APMLog toAPMLog() {
@@ -626,4 +641,40 @@ public class PLog {
 
         return theCusPTraceList;
     }
+
+    public void setVariantIndexFreqMap(UnifiedMap<List<Integer>, Integer> variantIndexFreqMap) {
+        this.variantIndexFreqMap = variantIndexFreqMap;
+    }
+
+    public UnifiedMap<List<Integer>, Integer> getVariantIndexFreqMap() {
+        variantIndexFreqMap = new UnifiedMap<>();
+
+        for (int i = 0; i < pTraceList.size(); i++) {
+            List<Integer> actIndexList = pTraceList.get(i).getActivityNameIndexList();
+
+            if (variantIndexFreqMap.containsKey(actIndexList)) {
+                int freq = variantIndexFreqMap.get(actIndexList) + 1;
+                variantIndexFreqMap.put(actIndexList, freq);
+            } else variantIndexFreqMap.put(actIndexList, 1);
+        }
+
+        return variantIndexFreqMap;
+    }
+
+
+//    public void setVariantIndexActivitiesMap(UnifiedMap<List<Integer>, List<String>> variantIndexActivitiesMap) {
+//        this.variantIndexActivitiesMap = variantIndexActivitiesMap;
+//    }
+//
+//    public UnifiedMap<List<Integer>, List<String>> getVariantIndexActivitiesMap() {
+//        return variantIndexActivitiesMap;
+//    }
+//
+//    public void setVariantIdActivitiesMap(HashBiMap<Integer, List<String>> variantIdActivitiesMap) {
+//        this.variantIdActivitiesMap = variantIdActivitiesMap;
+//    }
+//
+//    public HashBiMap<Integer, List<String>> getVariantIdActivitiesMap() {
+//        return variantIdActivitiesMap;
+//    }
 }

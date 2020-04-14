@@ -29,7 +29,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -46,6 +45,7 @@ import java.util.List;
  * Modified: Chii Chang (17/02/2020)
  * Modified: Chii Chang (20/02/2020)
  * Modified: Chii Chang (06/03/2020)
+ * Modified: Chii Chang (11/04/2020)
  */
 public class ATrace implements Serializable, LaTrace {
 

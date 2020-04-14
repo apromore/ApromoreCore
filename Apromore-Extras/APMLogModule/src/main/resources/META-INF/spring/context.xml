@@ -46,8 +46,13 @@
     <!--<beans:bean id="apmLogEventLogPlugin" class="org.apromore.apmlog.APMLogEventLogPlugin">-->
         <!--<beans:constructor-arg ref="eventLogService"/>-->
     </beans:bean>
+    <beans:bean id="logFilterRule" class="org.apromore.apmlog.filter.rules.LogFilterRuleImpl"></beans:bean>
+    <beans:bean id="logFilter" class="org.apromore.org.apromore.logfilter.impl.LogFilterImpl">
+    </beans:bean>
 
     <!-- Expose the component as OSGi service -->
     <osgi:service ref="apmLogService" interface="org.apromore.apmlog.APMLogService" />
     <!--<osgi:service ref="apmLogEventLogPlugin" interface="org.apromore.plugin.eventlog.EventLogPlugin" />-->
+    <osgi:service ref="logFilterRule" interface="org.apromore.apmlog.filter.rules.LogFilterRule" />
+    <osgi:service ref="logFilter" interface="org.apromore.org.apromore.logfilter.LogFilterService" />
 </beans:beans>
