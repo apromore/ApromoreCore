@@ -69,8 +69,8 @@
                     <div id="popUPBox" zclass="relativePos" style="padding-top:0px;"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
                     <div sclass="ap-csv-importer-grid-wrapper">
-                        <grid id="myGrid" mold="default" hflex="min" vflex="min"
-                              onClientInfo="onClientInfo(event)" width="100%" sclass="ap-grid ap-csv-importer-grid"
+                        <grid id="myGrid" mold="default" hflex="min" height="100%"
+                              onClientInfo="onClientInfo(event)" sclass="ap-grid ap-csv-importer-grid"
                             >
                             <zscript>
                                 void onClientInfo(ClientInfoEvent evt) {

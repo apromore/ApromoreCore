@@ -35,6 +35,10 @@
   padding: 4px 10px;
 }
 
+.ap-forced-scroll .z-listbox-body {
+  overflow-x: hidden !important;
+}
+
 
 .ap-portal-layout > div > .z-west,
 .ap-portal-layout > div > .z-center {
