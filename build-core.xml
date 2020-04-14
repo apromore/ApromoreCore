@@ -79,7 +79,6 @@
     
     <fileset id="fileset-core-custom-plugins" dir="${core-dir}">
         <include name="Apromore-Custom-Plugins/Generic-Portal-Plugin/target/generic-portal-plugin-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
         
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>

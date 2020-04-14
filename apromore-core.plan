@@ -70,8 +70,6 @@
     
     <artifact type="bundle" name="org.apromore.plugin.generic-portal-plugin" version="[1.0.0, 2)"/>
     
-    <artifact type="bundle" name="org.apromore.plugin.log-management-logic" version="[1.0.0, 2)"/>
-    
     <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
