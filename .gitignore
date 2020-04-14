@@ -1,3 +1,13 @@
+# Don't want to commit object files
+**/git.properties
+**/build/*
+**/target/*
+**/upload/*
+**/apmlog/*
+**/.idea/*
+**/dependency-reduced-pom.xml
+**/catalina.home_IS_UNDEFINED
+
 # IntelliJ IDEA artifacts, see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
 **/.idea/*
 **/*.iws

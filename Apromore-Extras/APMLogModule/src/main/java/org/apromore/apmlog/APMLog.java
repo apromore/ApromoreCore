@@ -895,4 +895,8 @@ public class APMLog implements Serializable {
 
         return apmLogClone;
     }
+
+    public XLog toXLog() {
+        return APMLogToXLog.getXLog(this);
+    }
 }
