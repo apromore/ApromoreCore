@@ -15,11 +15,11 @@ public class CaseSectionEventAttributeDesc {
 
         String desc = "";
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases containing events where";
+        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases containing events where ";
 
         String attributeKey = logFilterRule.getKey();
 
-        desc += "'" + attributeKey + "' equal to [";
+        desc += "'" + getDisplayAttributeKey(attributeKey) + "' equal to [";
 
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
         List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
@@ -36,5 +36,16 @@ public class CaseSectionEventAttributeDesc {
         desc += "]";
 
         return desc;
+    }
+
+    private static String getDisplayAttributeKey(String attributeKey) {
+        switch (attributeKey) {
+            case "concept:name": return "Activity";
+            case "org:resource": return "Resource";
+            case "org:group": return "Group";
+            case "org:role": return "Role";
+            case "lifecycle:transition": return "Status";
+            default: return attributeKey;
+        }
     }
 }
