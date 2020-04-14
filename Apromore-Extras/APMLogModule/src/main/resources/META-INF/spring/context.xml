@@ -38,16 +38,10 @@
 
     <aop:aspectj-autoproxy />
 
-    <!-- Other OSGi services this component consumes -->
-    <!--<osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>-->
-
     <!-- Explicitly create the component as a Spring bean -->
     <beans:bean id="apmLogService" class="org.apromore.apmlog.impl.APMLogServiceImpl">
-    <!--<beans:bean id="apmLogEventLogPlugin" class="org.apromore.apmlog.APMLogEventLogPlugin">-->
-        <!--<beans:constructor-arg ref="eventLogService"/>-->
     </beans:bean>
 
     <!-- Expose the component as OSGi service -->
     <osgi:service ref="apmLogService" interface="org.apromore.apmlog.APMLogService" />
-    <!--<osgi:service ref="apmLogEventLogPlugin" interface="org.apromore.plugin.eventlog.EventLogPlugin" />-->
 </beans:beans>

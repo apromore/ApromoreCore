@@ -70,8 +70,6 @@
     
     <artifact type="bundle" name="org.apromore.plugin.generic-portal-plugin" version="[1.0.0, 2)"/>
     
-    <artifact type="bundle" name="org.apromore.plugin.log-management-logic" version="[1.0.0, 2)"/>
-    
     <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
@@ -83,7 +81,6 @@
     <artifact type="bundle" name="org.apromore.csvexporter-logic" version="[1.0.0, 2)"/>
     <!--<artifact type="bundle" name="org.apromore.csvexporter-portal-plugin" version="[1.0.0, 2)"/>-->
     
-    <artifact type="bundle" name="org.apromore.plugin.log-filter-logic" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.log-filter-portal-plugin-generic" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.plugin.apromore-bpmneditor" version="[1.1.0, 2)"/>

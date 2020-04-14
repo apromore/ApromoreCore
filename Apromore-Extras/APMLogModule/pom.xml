@@ -45,43 +45,6 @@
         </license>
     </licenses>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>event-log-plugin-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>log-filter-logic</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <!-- Eclipse Collections -->
-        <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections-api</artifactId>
-            <version>10.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections</artifactId>
-        </dependency>
-
-
-        <!-- Open XES -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-    </dependencies>
-    
     <build>
         <plugins>
             <plugin>
@@ -97,9 +60,10 @@
                         <Export-Package>
                             org.apromore.apmlog,
                             org.apromore.apmlog.filter,
-                            org.apromore.apmlog.filter.criterion,
-                            org.apromore.apmlog.filter.criterion.options,
-                            org.apromore.apmlog.filter.criterion.types,
+                            org.apromore.apmlog.filter.rules,
+                            org.apromore.apmlog.filter.types,
+                            org.apromore.apmlog.filter.typefilters,
+                            org.apromore.apmlog.filter.rules.desc,
                             org.apromore.apmlog.impl,
                             org.apromore.apmlog.util
                         </Export-Package>
@@ -120,8 +84,37 @@
                 </configuration>
             </plugin>
             <!-- ******************************** -->
-
-
         </plugins>
     </build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+        </dependency>
+        
+        <!--  Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>          
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>    
 </project>

@@ -19,6 +19,8 @@
  */
 package org.apromore.apmlog;
 
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
 import java.util.List;
 
 /**
@@ -30,4 +32,23 @@ public interface LaTrace {
     long getCaseIdDigit();
     int getEventSize();
     List<AActivity> getActivityList();
+    UnifiedMap<String, String> getAttributeMap();
+    int getCaseVariantId();
+    List<AEvent> getEventList();
+    long getStartTimeMilli();
+    long getEndTimeMilli();
+    long getDuration();
+    long getTotalProcessingTime();
+
+    long getAverageProcessingTime();
+
+    long getMaxProcessingTime();
+
+    long getTotalWaitingTime();
+
+    long getAverageWaitingTime();
+
+    long getMaxWaitingTime();
+
+    double getCaseUtilization();
 }

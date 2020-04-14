@@ -79,8 +79,6 @@
     
     <fileset id="fileset-core-custom-plugins" dir="${core-dir}">
         <include name="Apromore-Custom-Plugins/Generic-Portal-Plugin/target/generic-portal-plugin-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
         
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
@@ -138,7 +136,7 @@
     
     <!-- Fileset containing all libraries under for XXXAssembly under Apromore-Assembly folder, including Apromore and non-Apromore modules -->
     <!-- The files under XXXAssembly are put there by Maven compile -->
-    <!-- It must be the LAST fileset in copy-virgo target to avoid overwriting the Apromore modules taken from their own folder -->
+    <!-- It must be the FIRST fileset in copy-virgo target to avoid overwriting the Apromore modules taken from their own folder -->
     <!-- Otherwise, Maven must be run again to recopy the files to XXXAssembly -->
     <fileset id="fileset-core-assembly" dir="${core-dir}">
         <include name="Apromore-Assembly/*-Assembly/target/repository/usr/*"/>
@@ -150,6 +148,7 @@
         </copy>
         
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="fileset-core-assembly" />
             <fileset refid="fileset-core-osgi-lib" />
             <fileset refid="fileset-core-extras" />
             <fileset refid="fileset-core-old-plugin-annotation" />
@@ -162,8 +161,6 @@
             <fileset dir="${core-dir-sups}">
                 <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
             </fileset>
-            
-            <fileset refid="fileset-core-assembly" />
         </copy>
         
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
