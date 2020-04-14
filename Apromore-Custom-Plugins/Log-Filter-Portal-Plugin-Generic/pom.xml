@@ -68,14 +68,12 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
-            <version>1.1</version>
         </dependency>        
-        
+
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>log-filter-logic</artifactId>
-            <version>1.0.0</version>
-        </dependency>        
+            <groupId>org.apromore</groupId>
+            <artifactId>apmlog</artifactId>
+        </dependency>
     </dependencies>
 </project>
 

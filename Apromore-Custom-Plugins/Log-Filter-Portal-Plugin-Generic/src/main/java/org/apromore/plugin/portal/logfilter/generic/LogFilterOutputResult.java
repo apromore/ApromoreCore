@@ -23,7 +23,7 @@ package org.apromore.plugin.portal.logfilter.generic;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.plugin.portal.generic.PluginOutputResult;
 import org.deckfour.xes.model.XLog;
 
@@ -32,14 +32,14 @@ import org.deckfour.xes.model.XLog;
  */
 public class LogFilterOutputResult extends PluginOutputResult {
     private XLog log;
-    private List<LogFilterCriterion> filterCriteria;
+    private List<LogFilterRule> filterCriteria;
     
     public LogFilterOutputResult(Object...objects) throws LogFilterWrongOutputException {
         super(objects);
         List<Object> objectList = Arrays.asList(objects);
         try {
             this.log = (XLog)objectList.get(0);
-            this.filterCriteria = (List<LogFilterCriterion>)objectList.get(1);
+            this.filterCriteria = (List<LogFilterRule>)objectList.get(1);
             this.resultCode = SUCCESS_CODE;
             this.resultMessage = "Success";
         }
@@ -58,7 +58,7 @@ public class LogFilterOutputResult extends PluginOutputResult {
         return this.log;
     }
     
-    public List<LogFilterCriterion> getFilterCriteria() {
+    public List<LogFilterRule> getFilterCriteria() {
         return this.filterCriteria;
     }
 }
