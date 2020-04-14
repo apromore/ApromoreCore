@@ -612,14 +612,14 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 }
             }
             if(!invColList.isEmpty()){
-                columnList.setValue("Following column(s) include(s) one or more errors: " + columnList(invColList));
+                columnList.setValue("The following column(s) include(s) one or more errors: " + columnList(invColList));
             }
 
             if (!igColList.isEmpty()) {
                 Label ignoredList = (Label) errorPopUp.getFellow(handleIgnoredColumnsList);
                 Label ignoreLbl = (Label) errorPopUp.getFellow(handleIgnoreColLbl);
                 ignoreLbl.setVisible(true);
-                ignoredList.setValue("Following column(s) will be ignored: " + columnList(igColList));
+                ignoredList.setValue(columnList(igColList));
 
                 List<Integer> columnIndex = errorReport.stream()
                         .map(LogErrorReport::getColumnIndex)

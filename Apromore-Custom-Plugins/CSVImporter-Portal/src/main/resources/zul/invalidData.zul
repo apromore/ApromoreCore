@@ -28,17 +28,16 @@
         <center sclass="ap-csv-importer-main">
             <div>
                 <label id="count"/>
-                <label value=" invalid field(s) detected."/>
+                <label value=" invalid cell(s) detected."/>
                 <separator/>
                 <label id="invalidColumnsList"/>
                 <separator/>
                 <separator/>
                 <separator/>
 
-                <label value="Select Skip Invalid Row(s) rows to upload by skipping all rows containing invalid fields."/>
+                <label value="Select 'Skip Invalid Row(s)' to complete the upload by skipping all rows containing invalid cells."/>
                 <separator/>
-                <label id="ignoreCol" visible="false" value="Select Ignore Invalid Column(s) to upload by skipping the entire column(s) containing invalid fields."/>
-                <separator/>
+                <label id="ignoreCol" visible="false" value="Select 'Ignore Invalid Column(s)' to complete the upload by skipping the following column(s): "/>
                 <label id="ignoredColumnsList"/>
                 <separator/>
             </div>
