@@ -42,7 +42,7 @@ public class CaseSectionEventAttributeDesc {
         switch (attributeKey) {
             case "concept:name": return "Activity";
             case "org:resource": return "Resource";
-            case "org:group": return "Group";
+            case "org:group": return "Resource group";
             case "org:role": return "Role";
             case "lifecycle:transition": return "Status";
             default: return attributeKey;
