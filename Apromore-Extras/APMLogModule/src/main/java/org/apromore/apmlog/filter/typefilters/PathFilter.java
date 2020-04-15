@@ -8,6 +8,7 @@ import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 
+
 import java.util.List;
 import java.util.Set;
 
@@ -33,6 +34,41 @@ public class PathFilter {
         }
 
         List<AEvent> eventList = trace.getEventList();
+
+
+
+        if (fromVal.toLowerCase().equals("[start]")) {
+            AEvent event0 = eventList.get(0);
+            String attrVal = "";
+            switch (attributeKey) {
+                case "concept:name": attrVal = event0.getName(); break;
+                case "org:resource": attrVal = event0.getResource(); break;
+                case "lifecycle:transition": attrVal = event0.getLifecycle(); break;
+                default:
+                    if (event0.getAttributeMap().keySet().contains(attributeKey)) {
+                        attrVal = event0.getAttributeMap().get(attributeKey);
+                    }
+                    break;
+            }
+            if (attrVal.equals(toVal)) return true;
+        }
+
+        if (fromVal.toLowerCase().equals("[end]")) {
+            AEvent eventLast = eventList.get(eventList.size()-1);
+            String attrVal = "";
+            switch (attributeKey) {
+                case "concept:name": attrVal = eventLast.getName(); break;
+                case "org:resource": attrVal = eventLast.getResource(); break;
+                case "lifecycle:transition": attrVal = eventLast.getLifecycle(); break;
+                default:
+                    if (eventLast.getAttributeMap().keySet().contains(attributeKey)) {
+                        attrVal = eventLast.getAttributeMap().get(attributeKey);
+                    }
+                    break;
+            }
+            if (attrVal.equals(toVal)) return true;
+        }
+
 
         for (int i = 0; i < eventList.size(); i++) {
             AEvent event = eventList.get(i);
@@ -92,6 +128,9 @@ public class PathFilter {
             } else {
 //                System.out.println(nextAttrVal + "!=" + followedVal);
             }
+        }
+        if (fromIndex == eventList.size() - 1 && followedVal.toLowerCase().equals("[end]")) {
+            return true;
         }
         return false;
     }
