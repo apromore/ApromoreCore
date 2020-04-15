@@ -59,6 +59,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
     private static final double MAX_ERROR_FRACTION = 0.2;  // Accept up to 20% error rate
 
+    private final String[] INVALID_CSV_BUTTONS = new String[]{"Upload remaining rows", "Download error report"};
+
     @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
     char separator = Character.UNASSIGNED;
@@ -452,7 +454,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         Messagebox.show(notificationMessage
                                 , "Invalid CSV File",
                                 new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                                new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+                                INVALID_CSV_BUTTONS, Messagebox.ERROR, null,
                                 (EventListener) evt -> {
                                     if (evt.getName().equals("onOK")) {
                                         File tempFile = File.createTempFile("Error_Report", ".txt");
@@ -537,7 +539,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     } else {
                         Messagebox.show(e.getMessage() , "Invalid CSV File",
                             new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+                                INVALID_CSV_BUTTONS, Messagebox.ERROR, null,
                                 new EventListener() {
                                 public void onEvent(Event evt) throws Exception {
                                     if (evt.getName().equals("onOK")) {

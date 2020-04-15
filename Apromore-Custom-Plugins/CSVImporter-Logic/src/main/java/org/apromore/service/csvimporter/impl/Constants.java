@@ -20,6 +20,9 @@
 
 package org.apromore.service.csvimporter.impl;
 
+import java.util.Map;
+import java.util.HashMap;
+
 public interface Constants {
 
     final String caseid    = "caseid";
@@ -28,6 +31,14 @@ public interface Constants {
     final String tsStart   = "startTimestamp";
     final String tsValue   = "otherTimestamp";
     final String resource  = "resource";
+
+    final Map<String, String> fieldMap = new HashMap<String, String>() {
+        {
+            put("caseid", "Case ID");
+            put("activity", "Activity");
+            put("timestamp", "Timestamp");
+        }
+    };
 
     final String[] caseIdValues    = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
     final String[] activityValues  = {"activity", "activity id", "activity-id", "operation", "event"};
