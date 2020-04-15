@@ -1,0 +1,44 @@
+ul.workspace {
+    list-style: none;
+    width: 90%;
+}
+
+ul.workspace li {
+    width: 64px;
+    height: 85px;
+    border: 1px solid #ffffff;
+    background-position: top;
+    background-repeat: no-repeat;
+    display: inline-block;
+    padding: 7px;
+    margin: 10px;
+    cursor: pointer;
+    vertical-align: top;
+}
+
+ul.workspace li.folder, ul.workspace li.selected_folder {
+    background-image: url('../img/folder64.png');
+}
+
+ul.workspace li.process, ul.workspace li.selected_process {
+    background-image: url('../img/process64.png');
+}
+
+ul.workspace li div {
+    display: inline-block;
+    width: 64px;
+    vertical-align: top;
+    text-align: center;
+    margin-top: 55px;
+    font-size: 14px;
+}
+
+ul.workspace li:hover {
+    border: 1px solid #cccccc;
+    background-color: #eeeeee;
+}
+
+ul.workspace li.selected_folder, ul.workspace li.selected_process {
+    border: 1px solid #cccccc;
+    background-color: #eeeeee;
+}

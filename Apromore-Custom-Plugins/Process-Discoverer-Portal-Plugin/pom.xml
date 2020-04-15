@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <artifactId>process-discoverer-portal-plugin</artifactId>
+    <version>2.0.0</version>
+    <packaging>war</packaging>
+    <name>Process Discoverer Portal Plugin</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            org.apromore.portal.servlet,
+                            com.sun.xml.bind.v2,
+                            org.apromore.manager.client.*,
+                            org.apromore.portal.*,
+                            org.apromore.plugin,
+                            org.apromore.jgraph.*;version="[1.0.0,2)",
+                            org.apromore.processmining.models.*;version="[1.0,2.0)",
+                            org.apromore.processmining.plugins.*;version="[1.0,2.0)",
+                            org.eclipse.virgo.web.dm,
+                            org.springframework.beans.factory.aspectj,
+                            org.springframework.security.web.session,
+                            org.springframework.web.context,
+                            org.springframework.web.context.request,
+                            org.springframework.web.filter,
+                            org.springframework.ws.server.endpoint,
+                            org.springframework.ws.server.endpoint.adapter,
+                            org.springframework.ws.server.endpoint.mapping,
+                            org.springframework.ws.soap.saaj,
+                            org.springframework.ws.soap.server,
+                            org.springframework.ws.soap.server.endpoint,
+                            org.springframework.ws.soap.server.endpoint.mapping,
+                            org.springframework.ws.transport.http,
+                            org.zkoss.zel.impl,
+                            org.zkoss.zk.au.http,
+                            org.zkoss.zk.ui.http,
+                            org.zkoss.zul.impl,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.plugin.portal.processdiscoverer,
+                            org.apromore.plugin.portal.processdiscoverer.controllers,
+                            org.apromore.plugin.portal.processdiscoverer.data,
+                            org.apromore.plugin.portal.processdiscoverer.json,
+                            org.apromore.plugin.portal.processdiscoverer.util
+                        </Export-Package>
+                        <Web-ContextPath>processdiscoverer</Web-ContextPath>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
+                        %regex[WEB-INF/lib/(?!jbpt-bpm).*jar]
+                    </packagingExcludes>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit4</artifactId>
+                        <version>2.22.0</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <argLine>-Xmx10G</argLine>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>  
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>log-filter-portal-plugin-generic</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+           <groupId>org.apromore</groupId>
+           <artifactId>log-logic</artifactId>
+           <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>process-discoverer-logic</artifactId>
+            <version>2.0.0</version>             
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>jgraph-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>          
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom-bpmn-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>1.1</version>            
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-portal</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>log-animation-portal-plugin</artifactId>
+            <version>1.0</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.bundles</groupId>
+            <artifactId>ow2-bundles-externals-opencsv</artifactId>
+            <version>1.0.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apmlog</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>          
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+

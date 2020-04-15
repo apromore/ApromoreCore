@@ -1,0 +1,81 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<vlayout sclass="ap-pd-timestats"
+         spacing="0px"
+         xmlns:ca="client/attribute"
+         xmlns:w="client"
+         xmlns:n="native">
+  <n:div class="section">Temporal statistics</n:div>
+  <n:div class="spacer" style="height:1px;"></n:div>
+  <hlayout
+      style="overflow:auto;"
+      width="100%"
+      spacing="0px"
+      sclass="ap-pd-timestats-duration">
+    <vlayout spacing="15px" hflex="8">
+      <div sclass="ap-pd-timestats-header">
+        <n:span class="ap-icon ap-icon-static ap-icon-duration-range"></n:span>
+        <label sclass="title">${labels.e.pd.statDuration.text}</label>
+      </div>
+      <div sclass="ap-pd-duration">
+        <div>
+          <n:span>${labels.e.agg.min.text}</n:span>
+          <label id="minDuration"
+                 sclass="ap-stat-val">CaseMinDuration
+          </label>
+        </div>
+        <div>
+          <n:span>${labels.e.agg.median.text}</n:span>
+          <label id="medianDuration"
+                 sclass="ap-stat-val">CaseMedianDuration
+          </label>
+        </div>
+        <div>
+          <n:span>${labels.e.agg.mean.text}</n:span>
+          <label id="meanDuration"
+                 sclass="ap-stat-val">CaseAverageDuration
+          </label>
+        </div>
+        <div>
+          <n:span>${labels.e.agg.max.text}</n:span>
+          <label id="maxDuration"
+                 sclass="ap-stat-val">CaseMaxDuration
+          </label>
+        </div>
+      </div>
+    </vlayout>
+    <vlayout sclass="ap-pd-timestats-range"
+          hflex="7"
+          spacing="15px">
+      <div sclass="ap-pd-timestats-header">
+        <n:span class="ap-icon ap-icon-static ap-icon-clock"></n:span>
+        <label sclass="title">${labels.e.pd.statTimerange.text}</label>
+      </div>
+      <div sclass="ap-pd-timerange">
+        <div>
+          <label sclass="ap-stat-val ap-pd-start-time"
+                 id="startTime">Start time
+          </label>
+        </div>
+        <div sclass="from-to-x"
+             height="42px"
+             align="center">
+          <n:div class="ap-line-arrow">
+            <n:div class="ap-line"></n:div>
+            <n:div class="ap-arrow-down"></n:div>
+          </n:div>
+        </div>
+        <div>
+          <label sclass="ap-stat-val ap-pd-end-time"
+                 id="endTime">End time
+          </label>
+        </div>
+      </div>
+    </vlayout>
+  </hlayout>
+</vlayout>

@@ -97,6 +97,10 @@
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+        
+        <include name="Apromore-Custom-Plugins/Log-Logic/target/log-logic-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>        
     </fileset>
     
     <fileset id="fileset-core-extras" dir="${core-dir-extras}">

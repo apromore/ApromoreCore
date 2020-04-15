@@ -1,0 +1,44 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<window id="wdLogStats" title="" mode="overlapped" position="right,bottom" sclass="ap-pd-log-charts">
+    <hlayout>
+        <div align="center">
+            <vlayout>
+                <label value="Cases"/>
+                <charts id="chartCasePercent" type="pie" zoomType="x" borderWidth="0"
+                        title="" subtitle=" " reflow="false" enableZoomSelection="false"
+                        height="70" width="80" style="border:0px solid #F00;"
+                />
+                <label id="lblCasePercent" value="Cases percent"/>
+                <label id="lblCaseNumber" value="Cases number"/>
+            </vlayout>
+        </div>
+        <div align="center">
+            <vlayout>
+                <label value="Case variants"/>
+                <charts id="chartVariantPercent" type="pie" zoomType="x" borderWidth="0"
+                        title="" subtitle=" " reflow="false" enableZoomSelection="false"
+                        height="70" width="80" style="border:0px solid #F00;"
+                />
+                <label id="lblVariantPercent" value="Case variants percent"/>
+                <label id="lblVariantNumber" value="Case variants number"/>
+            </vlayout>
+        </div>
+        <div align="center">
+            <vlayout>
+                <label value="Events"/>
+                <charts id="chartEventPercent" type="pie" zoomType="x" borderWidth="0"
+                        title="" subtitle=" " reflow="false" enableZoomSelection="false"
+                        height="70" width="80" style="border:0px solid #F00;"
+                />
+                <label id="lblEventPercent" value="Events percent"/>
+                <label id="lblEventNumber" value="Events number"/>
+            </vlayout>
+        </div>
+    </hlayout>
+</window>

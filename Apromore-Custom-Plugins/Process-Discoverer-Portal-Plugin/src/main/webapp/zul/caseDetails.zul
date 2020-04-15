@@ -1,0 +1,29 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<window id="caseDetailsWindow" width="700px" sizable="true" maximizable="true" closable="true" position="center"
+        contentStyle="overflow:auto">
+  <listbox id="caseDetailsList" vflex="1" rows="10" mold="paging" pageSize="100">
+    <listhead sizable="true">
+      <listheader label="Case ID" sort="auto(caseId)"/>
+      <listheader label="Events" sort="auto(caseEvents)"/>
+      <listheader label="Case Variant" sort="auto(caseVariantId)"/>
+      <listheader label="Percentage (%)" sort="auto(caseVariantFreq)"/>
+    </listhead>
+    <template name="model">
+      <listitem>
+        <listcell label="${each.caseId}" />
+        <listcell label="${each.caseEvents}"/>
+        <listcell label="${each.caseVariantId}"/>
+        <listcell label="${each.caseVariantFreqStr}" />
+      </listitem>
+    </template>
+  </listbox>
+  <div sclass="ap-window-footer-actions">
+    <button id="downloadCSV" label="Download"/>
+  </div>
+</window>

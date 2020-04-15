@@ -87,5 +87,9 @@
     
     <artifact type="bundle" name="org.apromore.log-animation-logic" version="[1.0.0,1.0.0]"/>
 	<artifact type="bundle" name="org.apromore.plugin.log-animation-portal-plugin" version="[1.0.0,1.0.0]"/>
+    
+    <artifact type="bundle" name="org.apromore.log-logic" version="[1.0.0,1.0.0]"/>
+	<artifact type="bundle" name="org.apromore.process-discoverer-logic" version="[2.0.0,2.0.0]"/>
+	<artifact type="bundle" name="org.apromore.process-discoverer-portal-plugin" version="[2.0.0,2.0.0]"/>    
 
 </plan>

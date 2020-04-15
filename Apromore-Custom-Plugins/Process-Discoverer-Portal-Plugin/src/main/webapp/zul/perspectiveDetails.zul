@@ -1,0 +1,27 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<window id="perspectiveDetailsWindow" width="700px" sizable="true" maximizable="true" closable="true" position="center"
+        contentStyle="overflow:auto">
+  <listbox id="perspectiveDetailsList" rows="10" vflex="1">
+    <listhead sizable="true">
+      <listheader label="Value" width="45%" sort="auto(value)"/>
+      <listheader label="Occurrences" width="20%" sort="auto(occurrences)"/>
+      <listheader label="Percentage (%)" width="20%" sort="auto(freq)"/>
+    </listhead>
+    <template name="model">
+      <listitem>
+        <listcell label="${each.value}"/>
+        <listcell label="${each.occurrences}"/>
+        <listcell label="${each.freqStr}" />
+      </listitem>
+    </template>
+  </listbox>
+  <div sclass="ap-window-footer-actions">
+    <button id="downloadCSV" label="Download"/>
+  </div>
+</window>

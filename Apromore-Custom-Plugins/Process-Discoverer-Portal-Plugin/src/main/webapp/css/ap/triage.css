@@ -1,0 +1,159 @@
+
+tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
+ padding: 1px 1px 1px 1px;
+}
+
+td.z-listcell {
+    border: 1px solid transparent;
+}
+tr.z-row td.z-row-inner, tr.z-row .z-cell {
+    line-height: 25px;
+}
+div.z-listbox-body .z-listcell {
+    padding: 0;
+}
+
+tr.z-row-disabled td.z-row-inner .z-slider-area  {
+    padding: 1px 1px 1px 1px;
+    line-height: 25px;
+    background: none repeat scroll 0% 0% #AAA;
+}
+
+tr.z-row-disabled .z-slider-button {
+    background: #AAA;
+}
+
+
+div.z-listcell-cnt {
+    line-height: 25px;
+    padding: 1px 0;
+}
+.z-listbox-autopaging .z-listcell-cnt {
+    /*height: 25px;*/
+    overflow: hidden;
+    vertical-align: middle;
+}
+tbody.z-listbox-empty-body tr {
+    color: #000000;
+    height: 25px;
+    font-size: 12px;
+    font-weight: normal;
+    text-decoration: none;
+}
+tbody.z-listbox-empty-body td {
+    color: #7D7D7D;
+    line-height: 25px;
+    font-family: arial,sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: normal;
+    text-align: center;
+}
+
+.z-caption.customIcon .z-caption-content {
+    width: 100%;
+}
+
+.z-caption.customIcon {
+    background: url("") no-repeat right 0;
+    height: 16px;
+    padding-right: 20px;
+    font-weight: bold;
+    float: right;
+}
+
+.z-caption.customIcon {
+    background-position: right -16px;
+}
+
+.mainCaption {
+    display: flex;
+}
+
+.mainCaption .z-caption-content {
+    display: flex; flex-grow: 1;
+}
+
+.mainCaption .z-caption-content > .captionButtons {
+    display: inline-block;
+    flex-grow: 1;
+    text-align: right;
+    margin-right: 1px;
+}
+
+.optionButton {
+    position: absolute;
+    right: 10px;
+    margin-right: 10px;
+    min-width: 55px;
+}
+
+.shortcutButton {
+    position: absolute;
+    right: 75px;
+    margin-right: 10px;
+    min-width: 55px;
+}
+
+.helpButton {
+    position: absolute;
+    right: 140px;
+    margin-right: 10px;
+    min-width: 55px;
+}
+
+.shortcutPopup {
+    background:rgba(0,255,0,0.3);
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.z-caption.customPosition .z-caption-content i {
+    position: absolute;
+    right: 0px;
+    font-size: 16px; }
+
+tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd, td.z-listcell {
+    background: unset;
+}
+
+
+.z-label {
+    color:unset;
+}
+
+.z-row-content {
+    line-height: 0px;
+}
+
+.statsHead {
+}
+
+.z-column{
+    border:0px;
+}
+
+.z-column-content {
+    border:0px;
+    background:#F0F0F0;
+    color:#555;
+}
+
+.z-grid-header-border {
+    border-bottom: 0px solid #FFF;
+}
+
+/*
+.z-groupbox {
+padding-top: 0px;
+}
+*/
+
+.z-groupbox>.z-groupbox-header {
+    height: 8px;
+}
+
+.PDSliderContainer {
+    margin-top:15px; padding:10px; border:1px solid #CCC; background:#FFF;
+}
+

@@ -1,0 +1,129 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+<vlayout
+    id="graphSettings"
+    xmlns:ca="client/attribute"
+    xmlns:w="client"
+    xmlns:n="native"
+    sclass="ap-pd-graph-settings"
+    spacing="0">
+  <n:div class="section">Abstraction settings</n:div>
+  <n:div class="spacer" style="height:2px;"></n:div>
+  <grid sclass="ap-grid"><!-- set vflex to occupy the rest of the area -->
+    <columns>
+      <column width="130px" visible="false"/>
+      <column width="78px"/>
+      <column hflex="1"
+              style="min-width: 250px"/>
+      <column width="45px"/>
+    </columns>
+    <rows>
+      <row>
+        <label></label>
+        <label></label>
+        <div width="100%" sclass="ap-pd-metric-container" align="center">
+          <label >Abstract by</label>
+          <combobox id="metricSelector"
+                    readonly="true"
+                    width="140px"
+                    sclass="ap-pd-metric-selector"
+                    value="${labels.e.pd.metricCaseFreq.text}">
+            <comboitem value="metricCaseFreq"
+                       iconSclass="ap-icon ap-icon-tally"
+                       label="${labels.e.pd.metricCaseFreq.text}"/>
+            <comboitem value="metricAvgDuration"
+                       iconSclass="ap-icon ap-icon-duration-avg"
+                       label="${labels.e.pd.metricAvgDuration.text}"/>
+          </combobox>
+        </div>
+        <span></span>
+      </row>
+      <row>
+        <label sclass="title"
+               style="padding-left: 5px;">Metric
+        </label>
+        <label sclass="title"><!--Ordering--></label>
+        <div width="100%"
+             sclass="ap-pd-chart-bi-legend" ca:title="Ordering">
+          <div
+              align="left">
+            <label id="orderingStart"
+                   value="High"/>
+          </div>
+          <div
+              align="right">
+            <label id="orderingEnd"
+                   value="Low"/>
+          </div>
+        </div>
+        <div align="center">
+          <button id="swapOrdering"
+                  tooltiptext="Invert ordering"
+                  w:onClick="Ap.pd.swapOrdering();"
+                  sclass="ap-pd-swap-ordering"
+                  iconSclass="z-icon-exchange">
+          </button>
+        </div>
+      </row>
+      <row>
+        <checkbox id="metricCaseFreq"
+                  label="${labels.e.pd.metricCaseFreq.text}"
+                  checked="true"
+                  sclass="ap-state-on ap-pd-metric"
+                  iconSclass="ap-icon ap-icon-tally"
+        />
+        <label>Nodes</label>
+        <slider id="nodeSlider"
+                mold="scale"
+                maxpos="100"
+                curpos="100"
+                hflex="1"/>
+        <intbox id="nodeInput"
+                value="100"
+                width="34px"/>
+      </row>
+      <row>
+        <checkbox id="metricAvgDuration"
+                  label="${labels.e.pd.metricAvgDuration.text}"
+                  checked="false"
+                  sclass="ap-state-off ap-pd-metric"
+                  iconSclass="ap-icon ap-icon-duration-avg"
+        />
+        <label>Arcs</label>
+        <slider id="arcSlider"
+                mold="scale"
+                maxpos="100"
+                curpos="10"
+                hflex="1"/>
+        <intbox id="arcInput"
+                value="10"
+                width="34px"/>
+      </row>
+      <row id="parallelismRow">
+        <!-- slot for case variant -->
+        <checkbox id="metricCaseVariant"
+                  label="${labels.e.pd.metricCaseVariant.text}"
+                  sclass="ap-state-off ap-pd-metric ap-disabled"
+                  iconSclass="ap-icon ap-icon-random"
+                  disabled="true"
+                  visible="false"
+                  checked="false"/>
+        <label id="parallelismLabel"
+               sclass="ap-pd-parallel-label">Parallelism
+        </label>
+        <slider id="parallelismSlider"
+                mold="scale"
+                maxpos="100"
+                curpos="40"
+                hflex="1"/>
+        <intbox id="parallelismInput"
+                value="40"
+                width="34px"/>
+      </row>
+    </rows>
+  </grid>
+</vlayout>

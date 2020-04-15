@@ -108,6 +108,10 @@
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
         
+        <module>Apromore-Custom-Plugins/Log-Logic</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>        
+        
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
         <!-- Clients that we can distribute -->

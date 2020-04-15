@@ -1,0 +1,121 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<vlayout sclass="ap-pd-logstats"
+         spacing="0px"
+         ca:data-t="ap-pd-logstats"
+         xmlns:ca="client/attribute"
+         xmlns:w="client"
+         xmlns:n="native">
+  <n:div class="section">Log statistics</n:div>
+  <hlayout>
+    <div hflex="1"
+         align="center">
+      <vlayout spacing="0">
+        <n:div sclass="ap-pd-logstats-header ap-link">
+          <button id="cases2" sclass="ap-icon ap-icon-road" w:onClick="Ap.pd.zkSendEvent('$caseDetails', 'onClick', null)">
+          </button>
+          <label sclass="title" value="Cases" w:onClick="Ap.pd.zkSendEvent('$caseDetails', 'onClick', null)">
+          </label>
+        </n:div>
+        <div id="ap-pd-chart-case" class="ap-pd-chart" xmlns="native" />
+        <label id="lblCasePercent"
+               value="Cases percent"/>
+        <div>
+          <label id="lblCaseNumberFiltered"
+                 value="Cases number"
+                 sclass="ap-case-filtered"/>
+          /
+          <label id="lblCaseNumberTotal"
+                 value="Cases number"
+                 sclass="ap-case-total"/>
+          <label id="lblCaseNumber"
+                 value="Cases number"
+                 visible="false"/>
+        </div>
+      </vlayout>
+    </div>
+    <div hflex="1"
+         align="center">
+      <vlayout spacing="0">
+        <n:div sclass="ap-pd-logstats-header">
+          <button sclass="ap-icon ap-icon-random ap-icon-static"></button>
+          <label sclass="title"
+                 value="Case variants"/>
+        </n:div>
+        <div id="ap-pd-chart-variant" class="ap-pd-chart" xmlns="native" />
+        <label id="lblVariantPercent"
+               value="Case variants percent"/>
+        <div>
+          <label id="lblVariantNumberFiltered"
+                 value="Case variants number"
+                 sclass="ap-variant-filtered"/>
+          /
+          <label id="lblVariantNumberTotal"
+                 value="Case variants number"
+                 sclass="ap-variant-total"/>
+          <label id="lblVariantNumber"
+                 value="Case variants number"
+                 visible="false"/>
+        </div>
+      </vlayout>
+    </div>
+    <div hflex="1"
+         align="center">
+      <vlayout spacing="0">
+        <n:div sclass="ap-pd-logstats-header">
+          <button sclass="ap-icon ap-icon-flag ap-icon-static"></button>
+          <label sclass="title"
+                 value="Events"/>
+        </n:div>
+        <div id="ap-pd-chart-event" class="ap-pd-chart" xmlns="native" />
+        <label id="lblEventPercent"
+               value="Events percent"/>
+        <div>
+          <label id="lblEventNumberFiltered"
+                 value="Events number"
+                 sclass="ap-event-filtered"/>
+          /
+          <label id="lblEventNumberTotal"
+                 value="Events number"
+                 sclass="ap-event-total"/>
+          <label id="lblEventNumber"
+                 value="Events number"
+                 visible="false"/>
+        </div>
+      </vlayout>
+    </div>
+    <div hflex="1"
+         align="center">
+      <vlayout spacing="0">
+        <n:div sclass="ap-pd-logstats-header ap-link">
+          <button id="details2"
+                  sclass="ap-icon ap-icon-perspective" w:onClick="Ap.pd.zkSendEvent('$perspectiveDetails', 'onClick', null)">
+          </button>
+          <label sclass="title"
+                 id="perspectiveSelected"
+                 value="Activities" w:onClick="Ap.pd.zkSendEvent('$perspectiveDetails', 'onClick', null)">
+          </label>
+        </n:div>
+        <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="native" />
+        <label id="lblNodePercent"
+               value="Nodes percent"/>
+        <div>
+          <label id="lblNodeNumberFiltered"
+                 value="Nodes number"
+                 sclass="ap-nodes-filtered"/>
+          /
+          <label id="lblNodeNumberTotal"
+                 value="Nodes number"
+                 sclass="ap-nodes-total"/>
+        </div>
+
+      </vlayout>
+    </div>
+  </hlayout>
+</vlayout>
+

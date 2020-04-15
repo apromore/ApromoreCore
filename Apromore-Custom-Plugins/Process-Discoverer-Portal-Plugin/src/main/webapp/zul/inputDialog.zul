@@ -1,0 +1,34 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
+  ~
+  -->
+
+<window width="400px" closable="false" position="center" id="inputDialog" sclass="ap-input-dialog">
+    <vbox vflex="1">
+        <grid sclass="ap-grid ap-form">
+            <columns sizable="true">
+                <!--<column width="30%"></column>-->
+                <column width="100%"></column>
+            </columns>
+            <rows>
+				<row>
+                    <label id="labelError" value="" width="100%" style="color:red;"/>
+                </row>			
+				<row>
+                    <label id="labelMessage" value="" width="100%"/>
+                </row>
+                <row>
+                    <textbox id="txtValue" value="" width="100%"/>
+                </row>
+                <row spans="3" sclass="ap-window-footer-actions">
+                    <div align="center">
+                        <button id="btnOK" label="OK" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>
