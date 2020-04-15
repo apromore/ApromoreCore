@@ -42,10 +42,11 @@ public class ConfigBean implements Serializable {
     private String  versionEdition;
     private String  versionBuildDate;
     private boolean  enablePublish;
+    private boolean  enableTC;
 
     public ConfigBean() {}
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate, boolean enablePublish) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -70,6 +71,7 @@ public class ConfigBean implements Serializable {
         this.versionEdition     = versionEdition;
         this.versionBuildDate   = versionBuildDate;
         this.enablePublish      = enablePublish;
+        this.enableTC = enableTC;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -83,4 +85,5 @@ public class ConfigBean implements Serializable {
     public String getVersionEdition()       { return versionEdition; }
     public String getVersionBuildDate()     { return versionBuildDate; }
     public boolean getEnablePublish()     { return enablePublish; }
+    public boolean getEnableTC()     { return enableTC; }
 }

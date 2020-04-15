@@ -32,17 +32,26 @@
     let agree = $('#ap-agree');
     let pass = false
 
-    checkComply();
-    if (agree.prop('checked')) {
+    function mainCheck() {
       try {
         pass = validateInput();
       } catch(e) {
         pass = false;
       }
-    } else {
-      $('.ap-force-comply').show();
-      pass = false;
     }
+
+    if (isTCEnabled()) {
+      checkComply();
+      if (agree.prop('checked')) {
+        mainCheck();
+      } else {
+        $('.ap-force-comply').show();
+        pass = false;
+      }
+    } else {
+      mainCheck();
+    }
+
     if (!pass) {
       e.preventDefault()
       return false
@@ -51,10 +60,14 @@
   };
 
   let prefix = '#register'
-  let controls = ['firstname', 'surename', 'email', 'username', 'password', 'confirmPassword'];
+  let controls = ['firstname', 'surname', 'email', 'username', 'password', 'confirmPassword'];
 
   function getControl(name) {
     return $(`${prefix} input[name=${name}]`);
+  }
+
+  function isTCEnabled() {
+    return zk.Widget.$("$agree").isVisible();
   }
 
   function markControl(control, valid) {
@@ -82,9 +95,10 @@
     })
   }
 
-
-
   function checkComply (forceHide) {
+    if (!isTCEnabled()) {
+      return
+    }
     let agree = $('#ap-agree');
     let force = $('.ap-force-comply')
     if (agree.prop('checked') || forceHide) {
@@ -139,9 +153,11 @@
     let username = $('#ap-new-username');
     let agree = $('#ap-agree');
 
-    agree.change((e) => {
-      checkComply();
-    })
+    if (isTCEnabled() && agree) {
+      agree.change((e) => {
+        checkComply();
+      })
+    }
 
     addBlankValidators();
 
