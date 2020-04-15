@@ -160,11 +160,6 @@
             <fileset refid="fileset-core-old-plugin-logic" />
             <fileset refid="fileset-core-old-plugin-portal" />
             <fileset refid="fileset-core-custom-plugins" />
-            
-            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
-            <fileset dir="${core-dir-sups}">
-                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
-            </fileset>
         </copy>
         
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
