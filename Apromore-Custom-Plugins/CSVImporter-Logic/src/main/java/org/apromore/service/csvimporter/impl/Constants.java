@@ -44,6 +44,6 @@ public interface Constants {
     final String[] activityValues  = {"activity", "activity id", "activity-id", "operation", "event"};
     final String[] resourceValues  = {"resource", "agent", "employee", "group"};
     final String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp",
-            "completion time", "end timestamp"};
-    final String[] StartTsValues   = {"start date", "start timestamp", "start time"};
+            "completion time", "end timestamp", "end time", "timestamp2"};
+    final String[] StartTsValues   = {"start date", "start timestamp", "start time", "timestamp1"};
 }
