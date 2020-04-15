@@ -171,9 +171,9 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
         this.originalEventList = new ArrayList<>(aTraceEventList);
         this.previousEventList = new ArrayList<>(aTraceEventList);
 
-        this.validEventIndexBS.set(0, (validEventIndexBS.size()-1), true);
-        this.originalValidEventIndexBS.set(0,  (originalValidEventIndexBS.size()-1), true);
-        this.previousValidEventIndexBS.set(0,  (previousValidEventIndexBS.size()-1), true);
+        this.validEventIndexBS.set(0, (eventList.size()-1), true);
+        this.originalValidEventIndexBS.set(0,  (originalEventList.size()-1), true);
+        this.previousValidEventIndexBS.set(0,  (previousEventList.size()-1), true);
 
 
 
@@ -231,7 +231,7 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
 
 
 
-        validEventIndexBS.set(0, validEventIndexBS.size()-1, true);
+        validEventIndexBS.set(0, originalEventList.size()-1, true);
 
         startTimeMilli = originalStartTimeMilli;
         endTimeMilli = originalEndTimeMilli;

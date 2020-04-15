@@ -20,12 +20,12 @@
 
 package org.apromore.apmlog.filter;
 
-import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Section;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
@@ -114,32 +114,40 @@ public class APMLogFilter {
 
 //        pLog.updatePrevious();
 
+        // reset all
+        for (String caseId : pLog.getPTraceUnifiedMap().keySet()) {
+            PTrace pTrace = pLog.getPTraceUnifiedMap().get(caseId);
+            pTrace.reset();
+        }
+
         List<PTrace> filteredPTraceList = new ArrayList<>();
 
-        BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
+//        BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
+
+        BitSet validTraceBS = pLog.getValidTraceIndexBS();
 
         for (int i = 0; i < pLog.getOriginalPTraceList().size(); i++) {
 
-            PTrace op = pLog.getOriginalPTraceList().get(i);
+            if (validTraceBS.get(i)) {
 
-            String theId = op.getCaseId();
-            PTrace pTrace = pLog.getPTraceUnifiedMap().get(theId);
-            pTrace.reset();
+                PTrace op = pLog.getOriginalPTraceList().get(i);
 
-            PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
+                String theId = op.getCaseId();
+                PTrace pTrace = pLog.getPTraceUnifiedMap().get(theId);
+//                pTrace.reset();
 
-            if (filteredPTrace != null) {
-                if (filteredPTrace.getEventSize() > 0) {
-                    filteredPTraceList.add(filteredPTrace);
-                    validTraceBS.set(i, true);
+                PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
 
-                    filteredPTrace.update();
-                    this.pLog.getPTraceUnifiedMap().put(filteredPTrace.getCaseId(), filteredPTrace);
+                if (filteredPTrace != null) {
+                    if (filteredPTrace.getEventSize() > 0) {
+                        filteredPTraceList.add(filteredPTrace);
+                        validTraceBS.set(i, true);
+                    } else {
+                        pTrace.getValidEventIndexBitSet().clear();
+                    }
                 } else {
                     pTrace.getValidEventIndexBitSet().clear();
                 }
-            } else {
-                pTrace.getValidEventIndexBitSet().clear();
             }
         }
 
@@ -167,20 +175,20 @@ public class APMLogFilter {
                 }
             } else { //Event section
 
-//                BitSet validEventBS = pTrace.getValidEventIndexBitSet();
-                BitSet validEventBS = new BitSet(pTrace.getOriginalEventList().size());
+                BitSet validEventBS = pTrace.getValidEventIndexBitSet();
+//                BitSet validEventBS = new BitSet(pTrace.getOriginalEventList().size());
 
                 List<AEvent> eventList = pTrace.getOriginalEventList();
 
                 for (int j = 0; j < eventList.size(); j++) {
-//                    if (validEventBS.get(j)) {
-                    AEvent event = eventList.get(j);
-                    if (!toKeep(event, logFilterRule)) {
-                        validEventBS.set(j, false);
-                    } else {
-                        validEventBS.set(j);
+                    if (validEventBS.get(j)) {
+                        AEvent event = eventList.get(j);
+                        if (!toKeep(event, logFilterRule)) {
+                            validEventBS.set(j, false);
+                        } else {
+                            validEventBS.set(j);
+                        }
                     }
-//                    }
                 }
 
                 if (validEventBS.cardinality() == 0) {
