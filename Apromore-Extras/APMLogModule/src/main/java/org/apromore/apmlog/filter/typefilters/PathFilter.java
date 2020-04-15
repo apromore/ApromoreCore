@@ -50,13 +50,16 @@ public class PathFilter {
             }
 
             if (attrVal.equals(fromVal) && event.getLifecycle().equals("complete")) {
+//            if (attrVal.equals(fromVal)) {
                 boolean conform;
                 if (filterType == FilterType.DIRECT_FOLLOW) {
                     conform = conformDirectFollowVal(trace, i, attributeKey, toVal, logFilterRule);
                 } else {
                     conform = conformEventualFollowVal(trace, i, attributeKey, toVal, logFilterRule);
                 }
-                if (conform) return true; // if not conform, continus the loop
+                if (conform){
+                    return true; // if not conform, continus the loop
+                }
             }
         }
 
@@ -86,6 +89,8 @@ public class PathFilter {
             if (nextAttrVal.equals(followedVal)) {
                 return conformRequirement(trace.getEventList().get(fromIndex),
                         nextEvent, logFilterRule);
+            } else {
+//                System.out.println(nextAttrVal + "!=" + followedVal);
             }
         }
         return false;
@@ -213,14 +218,14 @@ public class PathFilter {
             case "lifecycle:transition":
                 if (event1.getLifecycle().equals(event2.getLifecycle())) return true;
                 break;
-                default:
-                    if (event1.getAttributeMap().keySet().contains(attributeKey) &&
-                    event2.getAttributeMap().keySet().contains(attributeKey)) {
-                        String val1 = event1.getAttributeValue(attributeKey);
-                        String val2 = event2.getAttributeValue(attributeKey);
-                        if (val1.equals(val2)) return true;
-                    }
-                    break;
+            default:
+                if (event1.getAttributeMap().keySet().contains(attributeKey) &&
+                        event2.getAttributeMap().keySet().contains(attributeKey)) {
+                    String val1 = event1.getAttributeValue(attributeKey);
+                    String val2 = event2.getAttributeValue(attributeKey);
+                    if (val1.equals(val2)) return true;
+                }
+                break;
         }
 
         return false;

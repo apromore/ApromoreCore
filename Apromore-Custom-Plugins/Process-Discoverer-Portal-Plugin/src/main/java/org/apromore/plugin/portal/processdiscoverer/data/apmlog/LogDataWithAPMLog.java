@@ -105,7 +105,7 @@ public class LogDataWithAPMLog extends LogData {
     }
     
     private Set<RuleValue> getDirectFollowRuleValue(String value, String attributeKey) {
-        String[] edgeParts = value.split("=>");
+        String[] edgeParts = value.split(" => ");
         RuleValue from = new RuleValue(FilterType.DIRECT_FOLLOW, OperationType.FROM, attributeKey, edgeParts[0]);
         RuleValue to = new RuleValue(FilterType.DIRECT_FOLLOW, OperationType.TO, attributeKey, edgeParts[1]);
         return new HashSet<RuleValue>(Arrays.asList(new RuleValue[] {from,to}));
