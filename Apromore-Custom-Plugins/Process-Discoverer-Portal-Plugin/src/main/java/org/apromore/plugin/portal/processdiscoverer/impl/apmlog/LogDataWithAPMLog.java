@@ -98,9 +98,9 @@ public class LogDataWithAPMLog extends LogData {
         }
     }
     
-    private Set<RuleValue> getEventAttributeRuleValue(String value, String attributeKey) {
+    private Set<RuleValue> getEventAttributeRuleValue(String value, String attributeKey, FilterType filterType) {
         Set<RuleValue> ruleValues = new HashSet<>();
-        ruleValues.add(new RuleValue(FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attributeKey, value));
+        ruleValues.add(new RuleValue(filterType, OperationType.EQUAL, attributeKey, value));
         return ruleValues;
     }
     
@@ -135,37 +135,37 @@ public class LogDataWithAPMLog extends LogData {
     @Override
     public boolean filter_RemoveTracesAnyValueOfEventAttribute(String value, String attKey) throws Exception {
         return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
-                    getEventAttributeRuleValue(value, attKey)));
+                    getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RetainTracesAnyValueOfEventAttribute(String value, String attKey) throws Exception {
         return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
-                getEventAttributeRuleValue(value, attKey)));
+                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RemoveTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
         return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ALL_VALUES,
-                getEventAttributeRuleValue(value, attKey)));
+                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RetainTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
         return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ALL_VALUES,
-                getEventAttributeRuleValue(value, attKey)));        
+                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));        
     }
     
     @Override
     public boolean filter_RemoveEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
-                getEventAttributeRuleValue(value, attKey)));
+        return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.EVENT, Inclusion.ANY_VALUE,
+                getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RetainEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
-                getEventAttributeRuleValue(value, attKey)));
+        return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.EVENT, Inclusion.ANY_VALUE,
+                getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));
     }
     
     @Override
