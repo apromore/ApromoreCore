@@ -18,10 +18,10 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.plugin.portal.processdiscoverer.vis;
 
-public enum MeasureAggregation {
-	TOTAL, CASES, MIN, MAX, MEAN, MEDIAN
+import org.apromore.processdiscoverer.Abstraction;
+
+public interface Layouter {
+    public void layout(Abstraction abs);
 }
-
-

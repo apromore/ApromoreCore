@@ -23,7 +23,7 @@ package org.apromore.plugin.portal.processdiscoverer.vis;
 import java.awt.Color;
 
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.plugin.portal.processdiscoverer.util.BPMNHelper;
+import org.apromore.plugin.portal.processdiscoverer.utils.BPMNHelper;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;

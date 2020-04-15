@@ -23,9 +23,10 @@ package org.apromore.plugin.portal.processdiscoverer;
 import org.apromore.logman.ALog;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptions;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDCustomFactory;
+import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.plugin.portal.processdiscoverer.vis.json.ProcessJSONVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
@@ -34,13 +35,14 @@ import org.deckfour.xes.model.XLog;
 public class PerformanceTest extends TestDataSetup {
     
     private void discoverProcessFromXLog(XLog xlog) {
+        PDFactory pdFactory = new PDCustomFactory();
         try {
             long timer = System.currentTimeMillis();
             ALog aLog = new ALog(xlog);
             System.out.println("Create ALog: " + (System.currentTimeMillis() - timer) + " ms.");
             
             ConfigData configData = new ConfigData();
-            UserOptions userOptions = new UserOptions();
+            UserOptionsData userOptions = new UserOptionsData();
             userOptions.setMainAttributeKey(configData.getDefaultAttribute());
             
             LogData logData = new LogData(configData, aLog);
@@ -68,7 +70,7 @@ public class PerformanceTest extends TestDataSetup {
             params.setCorrespondingDFG(dfgAbstraction);            
             //AbstractAbstraction bpmnAbstraction = processDiscoverer.generateBPMNAbstraction(params, (DFGAbstraction)dfgAbstraction);
             
-            ProcessVisualizer processVisualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer processVisualizer = pdFactory.createProcessVisualizer(null);
             timer = System.currentTimeMillis();
             String visualizedText = processVisualizer.generateVisualizationText(dfgAbstraction);
             System.out.println("Generate JSON data from BPMNDiagram: " + (System.currentTimeMillis() - timer) + " ms.");

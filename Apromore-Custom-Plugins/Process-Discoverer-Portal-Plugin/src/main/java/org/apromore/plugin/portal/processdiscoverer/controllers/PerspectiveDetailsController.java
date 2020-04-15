@@ -33,14 +33,14 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
-public class PerspectiveDetailsController extends DetailsController {
+public class PerspectiveDetailsController extends DataListController {
     Window perspectiveDetailsWindow;
 
     public PerspectiveDetailsController(PDController controller) {
         super(controller);
     }
 
-    public void generateData() {
+    private void generateData() {
         records = new ListModelList();
         rows = new ArrayList<String []>();
 
@@ -67,9 +67,10 @@ public class PerspectiveDetailsController extends DetailsController {
         return parent.getLogName() + "-" + parent.getPerspective() + ".csv";
     }
 
-    public void launch(String perspectiveName) throws Exception {
+    @Override
+    public void onEvent(Event event) throws Exception {
         perspectiveDetailsWindow = (Window) Executions.createComponents("/zul/perspectiveDetails.zul", null, null);
-        perspectiveDetailsWindow.setTitle(perspectiveName);
+        perspectiveDetailsWindow.setTitle(parent.getPerspective());
         Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");
 
         generateData();
@@ -86,4 +87,7 @@ public class PerspectiveDetailsController extends DetailsController {
         perspectiveDetailsWindow.doOverlapped();
     }
 
+    public Window getWindow() {
+        return perspectiveDetailsWindow;
+    }
 }

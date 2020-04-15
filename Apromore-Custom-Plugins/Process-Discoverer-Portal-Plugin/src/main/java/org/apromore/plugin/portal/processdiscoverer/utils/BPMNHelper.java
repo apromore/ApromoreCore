@@ -18,10 +18,22 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.plugin.portal.processdiscoverer.utils;
 
-public enum MeasureAggregation {
-	TOTAL, CASES, MIN, MAX, MEAN, MEDIAN
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+
+public class BPMNHelper {
+	public static boolean isStartNode(BPMNDiagram d, BPMNNode n) {
+		return d.getInEdges(n).isEmpty();
+	}
+
+	public static boolean isEndNode(BPMNDiagram d, BPMNNode n) {
+		return d.getOutEdges(n).isEmpty();
+	}
+	
+	public static boolean isStartingOrEndingEdge(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge, BPMNDiagram d) {
+		return isStartNode(d, edge.getSource()) || isEndNode(d, edge.getTarget());
+	}
 }
-
-

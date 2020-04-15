@@ -18,39 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.processdiscoverer.data;
+package org.apromore.plugin.portal.processdiscoverer.vis;
 
-import java.text.DecimalFormat;
-
-public class PerspectiveDetails {
-
-    private String value;
-    private long occurrences;
-    private double freq;
-    private String freqStr;
-
-    private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
-
-    public PerspectiveDetails(String value, long occurrences, double freq) {
-        this.value = value;
-        this.occurrences = occurrences;
-        this.freq = freq;
-        this.freqStr = decimalFormat.format(100 * freq);
+public class MissingLayoutException extends Exception {
+    public MissingLayoutException(String message) {
+        super(message);
     }
-
-    public String getValue() {
-        return value;
-    }
-
-    public long getOccurrences() {
-        return occurrences;
-    }
-
-    public double getFreq() {
-        return freq;
-    }
-
-    public String getFreqStr() {
-        return freqStr;
-    }
+    
+    
 }

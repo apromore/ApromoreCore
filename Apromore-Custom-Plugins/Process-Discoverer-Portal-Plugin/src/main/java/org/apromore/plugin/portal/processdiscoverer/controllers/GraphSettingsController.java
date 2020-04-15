@@ -27,7 +27,7 @@ import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptions;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -47,7 +47,7 @@ import org.zkoss.zul.Slider;
  * @author Ivo Widjaja
  * Modified: Ivo Widjaja
  */
-public class GraphSettingsController extends AbstractActionController {
+public class GraphSettingsController extends VisualController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphSettingsController.class);
 
     private final String METRIC_CASE_FREQ = "metricCaseFreq";
@@ -76,13 +76,14 @@ public class GraphSettingsController extends AbstractActionController {
 
     private boolean isNormalOrdering = true;
 
-    private UserOptions userOptions;
+    private UserOptionsData userOptions;
 
     public GraphSettingsController(PDController parent) {
         super(parent);
     }
 
-    public void initializeControls() {
+    @Override
+    public void initializeControls(Object data) {
         if (this.parent == null) return;
 
         LOGGER.info("GraphSettingsController");
@@ -308,10 +309,16 @@ public class GraphSettingsController extends AbstractActionController {
         }
     }
 
+    @Override
     public void ensureSliders() throws Exception {
         ensureSlider(nodeSlider, nodeInput);
         ensureSlider(arcSlider, arcInput);
         ensureSlider(parallelismSlider, parallelismInput);
+    }
+
+    @Override
+    public void onEvent(Event event) throws Exception {
+        throw new Exception("Unsupported interactive Event Handler");
     }
 
 

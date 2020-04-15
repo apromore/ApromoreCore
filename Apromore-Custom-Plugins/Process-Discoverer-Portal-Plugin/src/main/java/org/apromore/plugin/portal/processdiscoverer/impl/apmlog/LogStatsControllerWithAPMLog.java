@@ -18,42 +18,56 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.processdiscoverer.controllers;
+package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
 import java.text.DecimalFormat;
 
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.plugin.portal.processdiscoverer.controllers.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Label;
 
 /**
+ * LogStatsControllerWithAPMLog is a {@link LogStatsController} with some data
+ * statistics getting from APMLog.
+ * 
  * @author Chii Chang, Ivo Widjaja
  * Modified: Chii Chang (03/02/2020)
  * Modified: Ivo Widjaja
+ * Modified: Bruce Nguyen: extends from LogStatsController.
  *
  */
-public class LogStatsController extends AbstractController {
+public class LogStatsControllerWithAPMLog extends LogStatsController {
     private Component wdLogStats;
     private Label lblCasePercent, lblVariantPercent, lblEventPercent;
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
     // private final String CHART_SERIES_COLOR = "#afdaed"; // "#7FD6A0";
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogStatsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogStatsControllerWithAPMLog.class);
 
     // TO DO: Check if total can be persisted during init
     private long totalEventCount;
     private long totalCaseCount;
     private long totalVariantCount;
     private long totalNodeCount;
+    
+    private LogDataWithAPMLog logData;
 
-    public LogStatsController(PDController parent) {
+    public LogStatsControllerWithAPMLog(PDController parent)  throws Exception {
         super(parent);
+        if (!(parent.getLogData() instanceof LogDataWithAPMLog)) {
+            throw new InvalidDataException("Expect LogDataWithAPMLog data but receiving different data!");
+        }
+        else {
+            logData = (LogDataWithAPMLog)parent.getLogData();            
+        }
     }
 
     @Override
@@ -81,21 +95,29 @@ public class LogStatsController extends AbstractController {
     }
 
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
-        totalEventCount = total.getEventCount();
-        totalCaseCount = total.getCaseCount();
-        totalVariantCount = total.getVariantCount();
+        PLog pLog = logData.getFilteredPLog();
+
+        // totalEventCount = total.getEventCount();
+        totalEventCount = pLog.getOriginalEventSize();
+        // totalCaseCount = total.getCaseCount();
+        totalCaseCount = pLog.getOriginalPTraceList().size();
+        // totalVariantCount = total.getVariantCount();
+        totalVariantCount = pLog.getOriginalCaseVariantSize();
         totalNodeCount = total.getActivityCount();
 
-        long filteredEventCount = filtered.getEventCount();
-        long filteredCaseCount = filtered.getCaseCount();
-        long filteredVariantCount = filtered.getVariantCount();
+        // long filteredEventCount = filtered.getEventCount();
+        long filteredEventCount = pLog.getEventSize();
+        // long filteredCaseCount = filtered.getCaseCount();
+        long filteredCaseCount = pLog.getPTraceList().size();
+        // long filteredVariantCount = filtered.getVariantCount();
+        long filteredVariantCount = pLog.getVariantIdFreqMap().size();
         long filteredNodeCount = filtered.getActivityCount();
 
         setNumber(this.lblCaseNumberFiltered, filteredCaseCount);
         setNumber(this.lblCaseNumberTotal, totalCaseCount);
         showPercentage(this.lblCasePercent, filteredCaseCount, totalCaseCount, "case");
 
-        setNumber(this.lblVariantNumberFiltered, filtered.getVariantCount());
+        setNumber(this.lblVariantNumberFiltered, filteredVariantCount);
         setNumber(this.lblVariantNumberTotal, totalVariantCount);
         showPercentage(this.lblVariantPercent, filteredVariantCount, totalVariantCount, "variant");
 
@@ -147,12 +169,6 @@ public class LogStatsController extends AbstractController {
         AttributeLog attLog = parent.getLogData().getAttributeLog();
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
         AttributeLogSummary logSummary = attLog.getLogSummary();
-
         updateFromLogSummary(logSummary, oriLogSummary);
-    }
-
-    @Override
-    public void onEvent(Event event) throws Exception {
-        throw new Exception("Refer to LogStatsControllerWithAPMLog.");
     }
 }

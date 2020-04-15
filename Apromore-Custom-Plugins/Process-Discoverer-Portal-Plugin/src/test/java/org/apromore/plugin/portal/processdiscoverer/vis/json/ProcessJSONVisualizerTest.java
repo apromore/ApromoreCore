@@ -28,6 +28,7 @@ import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.processdiscoverer.TestDataSetup;
+import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDCustomFactory;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
@@ -160,7 +161,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureAggregation.MEAN,
                                                 false,
                                                 false);
-            ProcessVisualizer visualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
             String visText = visualizer.generateVisualizationText(abs);
             JSONArray result = new JSONArray(visText);
             JSONArray expected = readJSON_DFG_Frequency_LogWithStartCompleteEventsNonOverlapping_100_100();
@@ -185,7 +186,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureAggregation.MEAN,
                                                 false,
                                                 false);
-            ProcessVisualizer visualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
             String visText = visualizer.generateVisualizationText(abs);
             JSONArray result = new JSONArray(visText);
             JSONArray expected = readJSON_DFG_Duration_LogWithStartCompleteEventsNonOverlapping_100_100();
@@ -210,7 +211,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureAggregation.MEAN,
                                                 true,
                                                 false);
-            ProcessVisualizer visualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
             String visText = visualizer.generateVisualizationText(abs);
             JSONArray result = new JSONArray(visText);
             JSONArray expected = readJSON_DFG_DoubleWeight_LogWithStartCompleteEventsNonOverlapping_100_100();
@@ -235,7 +236,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureAggregation.MEAN,
                                                 false,
                                                 true);
-            ProcessVisualizer visualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
             String visText = visualizer.generateVisualizationText(abs);
             JSONArray result = new JSONArray(visText);
             JSONArray expected = readJSON_BPMN_Frequency_LogWithStartCompleteEventsNonOverlapping_100_100();
@@ -260,7 +261,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureAggregation.MEAN,
                                                 false,
                                                 true);
-            ProcessVisualizer visualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
             String visText = visualizer.generateVisualizationText(abs);
             JSONArray result = new JSONArray(visText);
             JSONArray expected = readJSON_BPMN_Duration_LogWithStartCompleteEventsNonOverlapping_100_100();
@@ -285,7 +286,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureAggregation.MEAN,
                                                 true,
                                                 true);
-            ProcessVisualizer visualizer = new ProcessJSONVisualizer();
+            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
             String visText = visualizer.generateVisualizationText(abs);
             JSONArray result = new JSONArray(visText);
             JSONArray expected = readJSON_BPMN_DoubleWeight_LogWithStartCompleteEventsNonOverlapping_100_100();

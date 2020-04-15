@@ -62,11 +62,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.portal.processdiscoverer,
-                            org.apromore.plugin.portal.processdiscoverer.controllers,
-                            org.apromore.plugin.portal.processdiscoverer.data,
-                            org.apromore.plugin.portal.processdiscoverer.json,
-                            org.apromore.plugin.portal.processdiscoverer.util
+                            org.apromore.plugin.portal.processdiscoverer.plugins,
+                            org.apromore.plugin.portal.processdiscoverer.servlets
                         </Export-Package>
                         <Web-ContextPath>processdiscoverer</Web-ContextPath>
                     </instructions>

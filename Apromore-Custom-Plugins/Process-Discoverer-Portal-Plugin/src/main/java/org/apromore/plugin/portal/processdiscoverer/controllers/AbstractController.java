@@ -18,39 +18,33 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.processdiscoverer.data;
+package org.apromore.plugin.portal.processdiscoverer.controllers;
 
-import java.text.DecimalFormat;
+import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
-public class PerspectiveDetails {
+public abstract class AbstractController implements EventListener<Event> {
+    protected PDController parent;
 
-    private String value;
-    private long occurrences;
-    private double freq;
-    private String freqStr;
-
-    private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
-
-    public PerspectiveDetails(String value, long occurrences, double freq) {
-        this.value = value;
-        this.occurrences = occurrences;
-        this.freq = freq;
-        this.freqStr = decimalFormat.format(100 * freq);
+    public AbstractController(PDController controller) {
+        this.parent = controller;
     }
-
-    public String getValue() {
-        return value;
+    
+    @Override
+    public void onEvent(Event event) throws Exception {
+        //
     }
-
-    public long getOccurrences() {
-        return occurrences;
+    
+    public void initializeControls(Object data) throws Exception {
+        //
     }
-
-    public double getFreq() {
-        return freq;
+    
+    public void initializeEventListeners(Object data) throws Exception {
+        
     }
-
-    public String getFreqStr() {
-        return freqStr;
+    
+    public void updateUI(Object data) throws Exception {
+        //
     }
 }

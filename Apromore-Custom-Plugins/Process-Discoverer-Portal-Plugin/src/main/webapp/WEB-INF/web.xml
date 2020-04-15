@@ -53,7 +53,7 @@
     <servlet>
         <description>Redirect ZK requests to the portal</description>
         <servlet-name>redirect</servlet-name>
-        <servlet-class>org.apromore.plugin.portal.processdiscoverer.RedirectionServlet</servlet-class>
+        <servlet-class>org.apromore.plugin.portal.processdiscoverer.servlets.RedirectionServlet</servlet-class>
     </servlet>
     <servlet>
         <description>ZK loader for ZUML pages</description>

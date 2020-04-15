@@ -28,8 +28,6 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.CaseInfo;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.plugin.portal.processdiscoverer.vis.json.ProcessJSONVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.zkoss.zk.ui.Executions;
@@ -42,18 +40,16 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-public class CaseDetailsController extends DetailsController {
+public class CaseDetailsController extends DataListController {
     private Window caseDetailsWindow;
-    private ProcessVisualizer processVisualizer;
-    private VisualizationController visController;
+    private GraphVisController visController;
 
     public CaseDetailsController(PDController controller) {
         super(controller);
-        visController = new VisualizationController(controller);
-        processVisualizer = new ProcessJSONVisualizer();
+        visController = new GraphVisController(controller);
     }
-
-    public void generateData() {
+ 
+    private void generateData() {
         List<CaseDetails> caseDetails = parent.getLogData().getCaseDetails();
         records = new ListModelList();
         rows = new ArrayList<String []>();
@@ -64,7 +60,7 @@ public class CaseDetailsController extends DetailsController {
         }
     }
 
-    public void populateCasesBasedOnActivities(Listbox listbox) {
+    private void populateCasesBasedOnActivities(Listbox listbox) {
         generateData();
         listbox.setModel(records);
     }
@@ -81,7 +77,6 @@ public class CaseDetailsController extends DetailsController {
 
     @Override
     public void onEvent(Event event) throws Exception {
-
         caseDetailsWindow = (Window) Executions.createComponents("/zul/caseDetails.zul", null, null);
         caseDetailsWindow.setTitle("Cases");
 
@@ -108,7 +103,7 @@ public class CaseDetailsController extends DetailsController {
                         MeasureType.FREQUENCY, MeasureAggregation.CASES
                     );
                     Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
-                    String visualizedText = processVisualizer.generateVisualizationText(traceAbs);
+                    String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);
                     visController.displayTraceDiagram(visualizedText);
                 } catch(Exception e) {
                     Messagebox.show(e.getMessage());

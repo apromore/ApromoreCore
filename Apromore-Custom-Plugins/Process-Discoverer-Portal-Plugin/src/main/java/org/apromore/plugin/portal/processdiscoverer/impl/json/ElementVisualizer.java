@@ -18,10 +18,23 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
-public enum MeasureAggregation {
-	TOTAL, CASES, MIN, MAX, MEAN, MEDIAN
+import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
+import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * ElementVisualizer is a common interface to generate JSON representation
+ * for an element on process maps/models.
+ * 
+ * @author Bruce Nguyen
+ *
+ */
+public interface ElementVisualizer {
+	public JSONObject generateJSON(ContainableDirectedGraphElement element) 
+	                    throws UnsupportedElementException, JSONException, MissingLayoutException;
+	
 }
-
-

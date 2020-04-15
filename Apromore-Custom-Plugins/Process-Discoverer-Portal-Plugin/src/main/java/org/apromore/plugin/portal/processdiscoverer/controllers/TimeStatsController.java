@@ -25,13 +25,14 @@ import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Label;
 
 /**
  * @author Ivo Widjaja
  * Modified: Ivo Widjaja
  */
-public class TimeStatsController extends AbstractActionController {
+public class TimeStatsController extends AbstractController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeStatsController.class);
 
     // Graph settings
@@ -46,7 +47,8 @@ public class TimeStatsController extends AbstractActionController {
         super(parent);
     }
 
-    public void initializeControls() {
+    @Override
+    public void initializeControls(Object data) {
         if (this.parent == null) return;
 
         LOGGER.info("TimeSettingsController");
@@ -68,7 +70,8 @@ public class TimeStatsController extends AbstractActionController {
         logEndTime.setValue("-");
     }
 
-    public void updateValues() {
+    @Override
+    public void updateUI(Object data) {
         LogData logData = parent.getLogData();
 
         minDuration.setValue(logData.getFilteredMinDuration());
@@ -78,5 +81,10 @@ public class TimeStatsController extends AbstractActionController {
 
         logStartTime.setValue(logData.getFilteredStartTime());
         logEndTime.setValue(logData.getFilteredEndTime());
+    }
+
+    @Override
+    public void onEvent(Event event) throws Exception {
+        throw new Exception("Unsupported interactive Event Handler");
     }
 }

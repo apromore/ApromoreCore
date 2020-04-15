@@ -38,7 +38,7 @@ import org.apromore.logman.attribute.AbstractAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptions;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -56,7 +56,7 @@ import org.zkoss.zul.Span;
  * @author Ivo Widjaja
  * Modified: Ivo Widjaja
  */
-public class ViewSettingsController extends AbstractActionController {
+public class ViewSettingsController extends VisualController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewSettingsController.class);
 
     private final List<String> BLACKLISTED_PERSPECTIVES = Arrays.asList(
@@ -71,7 +71,7 @@ public class ViewSettingsController extends AbstractActionController {
             "org:role"
     );
 
-    Map<String, MeasureAggregation> aggMap = new HashMap<String, MeasureAggregation>() {
+    private Map<String, MeasureAggregation> aggMap = new HashMap<String, MeasureAggregation>() {
         {
             put("case", MeasureAggregation.CASES);
             put("total", MeasureAggregation.TOTAL);
@@ -100,13 +100,14 @@ public class ViewSettingsController extends AbstractActionController {
     private Div freqOption;
     private Div durationOption;
 
-    private UserOptions userOptions;
+    private UserOptionsData userOptions;
 
     public ViewSettingsController(PDController parent) {
         super(parent);
     }
 
-    public void initializeControls() {
+    @Override
+    public void initializeControls(Object data) {
         if (this.parent == null) return;
 
         LOGGER.info("ViewSettingsController");
@@ -143,7 +144,8 @@ public class ViewSettingsController extends AbstractActionController {
         durationAggSelector = (Combobox) compViewSettings.getFellow("durationAggSelector");
     }
 
-    public void initializeEventListeners() {
+    @Override
+    public void initializeEventListeners(Object data) { 
         perspectiveSelector.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -247,7 +249,8 @@ public class ViewSettingsController extends AbstractActionController {
 
     }
 
-    public void updatePerspectiveSelector() {
+    @Override
+    public void updateUI(Object data) {   
         perspectiveSelector.getItems().clear();
         int selIndex = 0, i = 0;
         for (Map.Entry<String, String> entry : getPerspectiveMap().entrySet()) {
@@ -363,6 +366,11 @@ public class ViewSettingsController extends AbstractActionController {
             aggMap.get(freqAgg),
                 durationAgg
         );
+    }
+
+    @Override
+    public void onEvent(Event event) throws Exception {
+        throw new Exception("Unsupported interactive Event Handler");
     }
 
 }

@@ -20,7 +20,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
-import org.apromore.model.LogSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 
 /**
@@ -34,16 +33,25 @@ public class ContextData {
     private int containingFolderId = 0;
     private String containingFolderName = "";  
     private PortalContext portalContext;
-    private LogSummaryType logSummary;
+    private String domain;
+    private String logName;
+    private int logId;
     private boolean firstTimeLoadingFinished = false;
+    private ConfigData configData;
     
-    public ContextData(PortalContext portalContext, int containingFolderId, String containingFolderName, 
-                    LogSummaryType logSummary) {
+    public ContextData(PortalContext portalContext, 
+                        String domain,
+                        int logId, String logName,
+                        int containingFolderId, String containingFolderName, 
+                        ConfigData configData) {
         this.containingFolderId = containingFolderId;
         this.containingFolderName = containingFolderName;
         this.portalContext = portalContext;
-        this.logSummary = logSummary;
+        this.domain = domain;
+        this.logId = logId;
+        this.logName = logName;
         this.firstTimeLoadingFinished = false;
+        this.configData = configData;
     }
     
     public PortalContext  getPortalContext() {
@@ -51,15 +59,15 @@ public class ContextData {
     }
     
     public String getLogName() {
-        return logSummary.getName();
+        return logName;
     }
     
-    public Integer getLogId() {
-        return logSummary.getId();
+    public int getLogId() {
+        return logId;
     }
     
     public String getDomain() {
-        return logSummary.getDomain();
+        return domain;
     }
     
     public int getFolderId() {
@@ -76,6 +84,10 @@ public class ContextData {
     
     public void setFirstTimeLoadingFinished(boolean value) {
         this.firstTimeLoadingFinished = value;
+    }
+    
+    public ConfigData getConfigData() {
+        return this.configData;
     }
             
 }

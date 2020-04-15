@@ -34,7 +34,7 @@ import org.zkoss.zk.ui.event.Event;
  * @author Bruce Nguyen
  *
  */
-public class LogFilterController extends AbstractActionController implements LogFilterResultListener {
+public class LogFilterController extends AbstractController implements LogFilterResultListener {
     public LogFilterController(PDController controller) {
         super(controller);
     }
@@ -42,12 +42,12 @@ public class LogFilterController extends AbstractActionController implements Log
     @Override
     // Open LogFilter window
     public void onEvent(Event event) throws Exception {
-        throw new Exception("The old implementation has been removed, new log filtering is based on APMLog.");
+        throw new Exception("This class has been replaced with LogFilterControllerWithAPMLog");
     }
 
     @Override
     public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
-        // Unused
+        throw new Exception("This class has been replaced with LogFilterControllerWithAPMLog");
     }
     
 }

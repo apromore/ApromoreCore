@@ -21,14 +21,14 @@
 package org.apromore.plugin.portal.processdiscoverer.controllers;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.layout.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.jgraph.ProMJGraph;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.zkoss.zk.ui.event.Event;
 
-public class AnimationController extends AbstractActionController {
+public class AnimationController extends AbstractController {
     public AnimationController(PDController controller) {
         super(controller);
     }

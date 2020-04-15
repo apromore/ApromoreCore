@@ -24,11 +24,11 @@ import java.text.DecimalFormat;
 
 public class CaseDetails {
 
-    public String caseId;
-    public int caseEvents;
-    public int caseVariantId;
-    public double caseVariantFreq;
-    public String caseVariantFreqStr;
+    private String caseId;
+    private int caseEvents;
+    private int caseVariantId;
+    private double caseVariantFreq;
+    private String caseVariantFreqStr;
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
 

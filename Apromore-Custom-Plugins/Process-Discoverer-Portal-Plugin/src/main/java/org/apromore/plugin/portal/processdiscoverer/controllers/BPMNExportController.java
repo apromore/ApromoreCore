@@ -33,8 +33,8 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apromore.helper.Version;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.layout.MissingLayoutException;
-import org.apromore.plugin.portal.processdiscoverer.util.InputDialog;
+import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
+import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.dialogController.SelectDynamicListController;
 import org.apromore.processdiscoverer.Abstraction;
@@ -71,7 +71,7 @@ import org.zkoss.zul.Window;
  * @modified Bruce Nguyen
  *
  */
-public class BPMNExportController extends AbstractActionController {
+public class BPMNExportController extends AbstractController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
     private static final String EVENT_QUEUE = BPMNExportController.class.getCanonicalName();
     private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
@@ -92,7 +92,7 @@ public class BPMNExportController extends AbstractActionController {
     private ProgressEventListener progressListener = null;
     private boolean showProgressBar = false;
 
-    public BPMNExportController(PDController controller, boolean annotateForBIMP, boolean showProgressBar) {
+    public BPMNExportController(PDController controller, boolean showProgressBar) {
         super(controller);
     	this.portalContext = controller.getContextData().getPortalContext();
     	this.controller = controller;

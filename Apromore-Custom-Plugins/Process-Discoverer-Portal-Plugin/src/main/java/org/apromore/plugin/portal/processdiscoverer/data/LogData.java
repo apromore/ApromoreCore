@@ -23,9 +23,7 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apromore.apmlog.APMLog; //2019-11-18
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.util.Util;
 import org.apromore.logman.ALog;
 import org.apromore.logman.attribute.AbstractAttribute;
 import org.apromore.logman.attribute.AttributeType;
@@ -39,11 +37,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 
 /**
- * LogData contains log data needed for calculation or display on UI
- * Currently, there are three different log data structures to be kept: ALog, APMLog, and PLog
- * ALog is used for PD, APMLog is mostly used by the Dashboard, and PLog is used by the filter
- * but APMLog and PLog have to come together due to the current implementation of the filter
- * Hopefully, this is only temporary and these log data structures would be clean up in the future
+ * LogData contains all log data needed for calculation or display on UI
  * 
  * @author Bruce Nguyen
  *
@@ -57,12 +51,6 @@ public class LogData {
     protected ImmutableList<AbstractAttribute> indexableAttributes;
     protected TimeConverter timeConverter = new TimeConverter();
 
-    public LogData(ConfigData configData, ALog log, APMLog apmLog) {
-        this.aLog = log;
-        indexableAttributes = aLog.getAttributeStore().getIndexableEventAttributeWithLimits(
-                configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
-    }
-    
     public LogData(ConfigData configData, ALog log) {
         this.aLog = log;
         indexableAttributes = aLog.getAttributeStore().getIndexableEventAttributeWithLimits(
@@ -116,7 +104,7 @@ public class LogData {
             }
         }
         else {
-            throw new NotFoundAttributeException("Cannot find an attribute with key = " + key);
+            throw new NotFoundAttributeException("Cannot find an attribute in ALog with key = " + key);
         }
     }
     
@@ -187,11 +175,11 @@ public class LogData {
     //////////////////////// Statistics /////////////////////////////
     
     public String getFilteredStartTime() {
-        return Util.timestampStringOf(Util.millisecondToZonedDateTime(attLogSummary.getLogMinTime()), "dd MMM yy, HH:mm");
+        return timeConverter.convertMilliseconds(attLogSummary.getLogMinTime());
     }
 
     public String getFilteredEndTime() {
-            return Util.timestampStringOf(Util.millisecondToZonedDateTime(attLogSummary.getLogMaxTime()), "dd MMM yy, HH:mm");
+        return timeConverter.convertMilliseconds(attLogSummary.getLogMaxTime());
     }
 
     public String getFilteredMinDuration() {

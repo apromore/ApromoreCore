@@ -29,17 +29,17 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptions;
-import org.apromore.plugin.portal.processdiscoverer.util.InputDialog;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 
-public class LogExportController extends AbstractActionController {
+public class LogExportController extends AbstractController {
     private ContextData contextData;
-    private UserOptions userOptions;
+    private UserOptionsData userOptions;
     private LogData logData;
     
     public LogExportController(PDController controller) {
