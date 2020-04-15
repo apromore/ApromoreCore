@@ -49,6 +49,7 @@
         <constructor-arg type="String" value="${version.edition}"/>
         <constructor-arg type="String" value="${git.commit.time}"/>
         <constructor-arg type="boolean" value="${security.publish.enable}"/>
+        <constructor-arg type="boolean" value="${security.tcagree.enable}"/>
     </bean>
 
     <bean id="editor.js" class="java.lang.String">

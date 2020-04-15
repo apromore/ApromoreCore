@@ -40,7 +40,8 @@
 <?script type="text/javascript" src="themes/ap/login/js/login.js" ?>
 
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
-      <window id="login-main" border="none" sclass="ap-login ap-font-base">
+      <window id="login-main" border="none" sclass="ap-login ap-font-base"
+              use="org.apromore.portal.dialogController.LoginController">
         <h:script type="text/javascript">
           if (zk.ie || zk.ie7 || zk.ie8) {
             alert("Sorry, we don't support Internet Explorer! some features might not work correctly.");
@@ -101,7 +102,6 @@
                 </div>
               </div>
             </html>
-            <html>
               <h:div class="main">
                 <h:div class="tab-content overflow form-dark">
                   <h:div class="tab-pane fade in active" id="login">
@@ -155,7 +155,7 @@
                           </h:div>
                           <h:div class="controls ap-back-wrapper">
                             <h:a href="#login" data-toggle="tab">
-                              <div class="ap-back"
+                              <h:div class="ap-back"
                                    title="Back to login page"/>
                               <h:span><!-- back to login page--></h:span>
                         </h:a>
@@ -223,18 +223,18 @@
                       </h:div>
                     </h:fieldset>
                     <h:fieldset class="ap-comply">
-                      <h:div>
-                      <h:input type="checkbox" id="ap-agree" />
-                      <span>
-                        I agree with the
-                        <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a> and the
-                        <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
-                      </span>
-                      </h:div>
-                      <h:div>
-                      <h:input type="checkbox" id="ap-subscribe" name="subscription"/>
-                      <span>Keep me up-to-date with news and offers</span>
-                      </h:div>
+                      <div id="agree" visible="false">
+                        <h:input type="checkbox" id="ap-agree" />
+                        <h:span>
+                          I agree with the
+                          <h:a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</h:a> and the
+                          <h:a href="https://apromore.org/privacy-policy/">Privacy Policy</h:a>
+                        </h:span>
+                      </div>
+                      <div>
+                        <h:input type="checkbox" id="ap-subscribe" name="subscription"/>
+                        <h:span>Keep me up-to-date with news and offers</h:span>
+                      </div>
                     </h:fieldset>
                     <h:fieldset>
                       <h:div class="input-group">
@@ -244,7 +244,7 @@
                       </h:div>
                       <h:div class="input-group ap-back-wrapper">
                         <h:a href="#login" data-toggle="tab">
-                          <div class="ap-back"
+                          <h:div class="ap-back"
                                title="back to login page"/>
                           <h:span><!-- back to login page--></h:span>
                         </h:a>
@@ -254,30 +254,30 @@
                 </h:div>
               </h:div>
             </h:div>
-
           </h:div>
 
-          <h:div class="left-footer">
-            <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
-            <h:ul class="ap-h-links">
-              <h:li>
-                <a href="https://apromore.org/terms-and-conditions/">
-                  Terms and Conditions
-                </a>
-              </h:li>
-              <h:li>
-                <a href="https://apromore.org/privacy-policy/">
-                  Privacy Policy
-                </a>
-              </h:li>
-              <h:li>
-                ${labels.e.common.contact.text}
-              </h:li>
-            </h:ul>
-          </h:div>
+          <html>
+            <h:div class="left-footer">
+              <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
+              <h:ul class="ap-h-links">
+                <h:li>
+                  <h:a href="https://apromore.org/terms-and-conditions/">
+                    Terms &amp; Conditions
+                  </h:a>
+                </h:li>
+                <h:li>
+                  <h:a href="https://apromore.org/privacy-policy/">
+                    Privacy Policy
+                  </h:a>
+                </h:li>
+                <h:li>
+                  ${labels.e.common.contact.text}
+                </h:li>
+              </h:ul>
+            </h:div>
+          </html>
           <h:div class="slant-separator">
           </h:div>
-        </html>
       </h:div>
 
       <h:div class="ap-right-panel">
