@@ -250,7 +250,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         for (int f = 0; f <= fieldsToCheck.length - 1; f++) {
             if (posMap.get(fieldsToCheck[f]) == -1) {
-                String mess = "No " + fieldsToCheck[f] + " defined!";
+                String mess = "No field " + fieldMap.get(fieldsToCheck[f]) + " is defined";
                 importMessage = (importMessage.length() == 0 ? importMessage.append(mess) : importMessage.append(", ").append(mess));
             }
         }
