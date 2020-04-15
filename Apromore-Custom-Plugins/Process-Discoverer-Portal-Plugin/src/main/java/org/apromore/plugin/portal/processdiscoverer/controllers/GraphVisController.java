@@ -63,7 +63,8 @@ public class GraphVisController extends VisualController {
               Messagebox.INFORMATION);
     }
 
-    public void initializeEventListeners() {
+    @Override
+    public void initializeEventListeners(Object data) {
         vizBridge.addEventListener("onNodeRemovedTrace", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {

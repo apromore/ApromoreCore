@@ -115,7 +115,8 @@ public class GraphSettingsController extends VisualController {
         parallelismRow.setSclass("z-row-disabled");
     }
 
-    public void initializeEventListeners() {
+    @Override
+    public void initializeEventListeners(Object data) {
         EventListener<Event> metricListener = new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
