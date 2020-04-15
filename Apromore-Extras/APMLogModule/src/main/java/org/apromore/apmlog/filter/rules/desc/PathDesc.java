@@ -22,7 +22,9 @@ public class PathDesc {
             desc += "Eventually-follows relation ";
         }
 
-        desc += "of the \"" + logFilterRule.getKey() + "\" equal to [" ;
+        String mainAttrKey = getDisplayAttributeKey(logFilterRule.getKey());
+
+        desc += "of the \"" + mainAttrKey + "\" equal to [" ;
 
         String fromVal = "", toVal = "";
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
@@ -70,10 +72,10 @@ public class PathDesc {
             }
 
             if (requireOpt == OperationType.EQUAL) {
-                desc += "and have the same \"" + requireAttrKey + "\" ";
+                desc += "and have the same \"" + getDisplayAttributeKey(requireAttrKey) + "\" ";
             }
             if (requireOpt == OperationType.NOT_EQUAL) {
-                desc += "and have the different \"" + requireAttrKey + "\" ";
+                desc += "and have the different \"" + getDisplayAttributeKey(requireAttrKey) + "\" ";
             }
             if (lowerBoundOpt != OperationType.UNKNOWN || upperBoundOpt != OperationType.UNKNOWN) {
                 desc += "and time interval ";
@@ -95,5 +97,16 @@ public class PathDesc {
         }
 
         return desc;
+    }
+
+    private static String getDisplayAttributeKey(String attributeKey) {
+        switch (attributeKey) {
+            case "concept:name": return "Activity";
+            case "org:resource": return "Resource";
+            case "org:group": return "Resource group";
+            case "org:role": return "Role";
+            case "lifecycle:transition": return "Status";
+            default: return attributeKey;
+        }
     }
 }
