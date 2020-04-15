@@ -114,8 +114,11 @@ public class LogDataWithAPMLog extends LogData {
     private LogFilterRule getEventAttributeFilterRule(String attributeKey, 
                                                 Choice choice, Section section, Inclusion inclusion, 
                                                 Set<RuleValue> values) {
+        FilterType filterType =
+                section == Section.CASE ? FilterType.CASE_EVENT_ATTRIBUTE : FilterType.EVENT_EVENT_ATTRIBUTE;
+
         return new LogFilterRuleImpl(choice, inclusion, section,
-                FilterType.CASE_EVENT_ATTRIBUTE,
+                filterType,
                 attributeKey,
                 values,
                 null);
