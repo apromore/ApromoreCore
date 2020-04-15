@@ -445,6 +445,10 @@ public class PLog {
         this.variantIdFreqMap = variantIdFreqMap;
     }
 
+    public void setValidTraceIndexBS(BitSet validTraceIndexBS) {
+        this.validTraceIndexBS = validTraceIndexBS;
+    }
+
     /* ----------------- GET methods ------------------ */
 
     public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
@@ -593,6 +597,10 @@ public class PLog {
         return previousValidTraceIndexBS;
     }
 
+    public UnifiedMap<String, PTrace> getPTraceUnifiedMap() {
+        return pTraceUnifiedMap;
+    }
+
     /**
      * A custom PTrace list that maintains the original PTrace list
      * while each PTrace contains up-to-date event BitSet.
@@ -603,33 +611,47 @@ public class PLog {
     public List<PTrace> getCustomPTraceList() {
         BitSet currentBS = this.validTraceIndexBS;
 
-        List<HashBiMap.Entry<PTrace, Integer> > list =
-                new ArrayList<HashBiMap.Entry<PTrace, Integer> >(caseIndexMap.entrySet());
-
-
-        Collections.sort(list, new Comparator<HashBiMap.Entry<PTrace, Integer>>() {
-            @Override
-            public int compare(HashBiMap.Entry<PTrace, Integer> o1, HashBiMap.Entry<PTrace, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        });
-
         List<PTrace> theCusPTraceList = new ArrayList<>();
 
-        for (int i=0; i<list.size(); i++) {
-            PTrace pTrace = list.get(i).getKey();
+        for (int i = 0; i < originalPTraceList.size(); i++) {
+            PTrace pTrace = originalPTraceList.get(i);
+            String theId = pTrace.getCaseId();
+            PTrace pt = this.pTraceUnifiedMap.get(theId);
             if(!currentBS.get(i)) {
-                pTrace.getValidEventIndexBitSet().clear();
+                pt.getValidEventIndexBitSet().clear();
             } else {
-                String theId = pTrace.getCaseId();
-                if (this.pTraceUnifiedMap.containsKey(theId)) {
-                    PTrace pt = this.pTraceUnifiedMap.get(theId);
-                    pTrace.setValidEventIndexBS(pt.getValidEventIndexBitSet());
-                }
+                pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
             }
-
-            theCusPTraceList.add(pTrace);
+            theCusPTraceList.add(pt);
         }
+
+//        List<HashBiMap.Entry<PTrace, Integer> > list =
+//                new ArrayList<HashBiMap.Entry<PTrace, Integer> >(caseIndexMap.entrySet());
+//
+//
+//        Collections.sort(list, new Comparator<HashBiMap.Entry<PTrace, Integer>>() {
+//            @Override
+//            public int compare(HashBiMap.Entry<PTrace, Integer> o1, HashBiMap.Entry<PTrace, Integer> o2) {
+//                return o1.getValue().compareTo(o2.getValue());
+//            }
+//        });
+//
+//        List<PTrace> theCusPTraceList = new ArrayList<>();
+//
+//        for (int i=0; i<list.size(); i++) {
+//            PTrace pTrace = list.get(i).getKey();
+//            if(!currentBS.get(i)) {
+//                pTrace.getValidEventIndexBitSet().clear();
+//            } else {
+//                String theId = pTrace.getCaseId();
+//                if (this.pTraceUnifiedMap.containsKey(theId)) {
+//                    PTrace pt = this.pTraceUnifiedMap.get(theId);
+//                    pTrace.setValidEventIndexBS(pt.getValidEventIndexBitSet());
+//                }
+//            }
+//
+//            theCusPTraceList.add(pTrace);
+//        }
 
         return theCusPTraceList;
     }
