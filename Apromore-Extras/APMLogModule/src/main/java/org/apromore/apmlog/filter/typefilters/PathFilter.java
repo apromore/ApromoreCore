@@ -8,6 +8,7 @@ import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 
+
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,41 @@ public class PathFilter {
 
         List<AEvent> eventList = trace.getEventList();
 
+
+
+        if (fromVal.toLowerCase().equals("[start]")) {
+            AEvent event0 = eventList.get(0);
+            String attrVal = "";
+            switch (attributeKey) {
+                case "concept:name": attrVal = event0.getName(); break;
+                case "org:resource": attrVal = event0.getResource(); break;
+                case "lifecycle:transition": attrVal = event0.getLifecycle(); break;
+                default:
+                    if (event0.getAttributeMap().keySet().contains(attributeKey)) {
+                        attrVal = event0.getAttributeMap().get(attributeKey);
+                    }
+                    break;
+            }
+            if (attrVal.equals(toVal)) return true;
+        }
+
+        if (fromVal.toLowerCase().equals("[end]")) {
+            AEvent eventLast = eventList.get(eventList.size()-1);
+            String attrVal = "";
+            switch (attributeKey) {
+                case "concept:name": attrVal = eventLast.getName(); break;
+                case "org:resource": attrVal = eventLast.getResource(); break;
+                case "lifecycle:transition": attrVal = eventLast.getLifecycle(); break;
+                default:
+                    if (eventLast.getAttributeMap().keySet().contains(attributeKey)) {
+                        attrVal = eventLast.getAttributeMap().get(attributeKey);
+                    }
+                    break;
+            }
+            if (attrVal.equals(toVal)) return true;
+        }
+
+
         for (int i = 0; i < eventList.size(); i++) {
             AEvent event = eventList.get(i);
 
@@ -50,13 +86,16 @@ public class PathFilter {
             }
 
             if (attrVal.equals(fromVal) && event.getLifecycle().equals("complete")) {
+//            if (attrVal.equals(fromVal)) {
                 boolean conform;
                 if (filterType == FilterType.DIRECT_FOLLOW) {
                     conform = conformDirectFollowVal(trace, i, attributeKey, toVal, logFilterRule);
                 } else {
                     conform = conformEventualFollowVal(trace, i, attributeKey, toVal, logFilterRule);
                 }
-                if (conform) return true; // if not conform, continus the loop
+                if (conform){
+                    return true; // if not conform, continus the loop
+                }
             }
         }
 
@@ -86,7 +125,12 @@ public class PathFilter {
             if (nextAttrVal.equals(followedVal)) {
                 return conformRequirement(trace.getEventList().get(fromIndex),
                         nextEvent, logFilterRule);
+            } else {
+//                System.out.println(nextAttrVal + "!=" + followedVal);
             }
+        }
+        if (fromIndex == eventList.size() - 1 && followedVal.toLowerCase().equals("[end]")) {
+            return true;
         }
         return false;
     }
@@ -213,14 +257,14 @@ public class PathFilter {
             case "lifecycle:transition":
                 if (event1.getLifecycle().equals(event2.getLifecycle())) return true;
                 break;
-                default:
-                    if (event1.getAttributeMap().keySet().contains(attributeKey) &&
-                    event2.getAttributeMap().keySet().contains(attributeKey)) {
-                        String val1 = event1.getAttributeValue(attributeKey);
-                        String val2 = event2.getAttributeValue(attributeKey);
-                        if (val1.equals(val2)) return true;
-                    }
-                    break;
+            default:
+                if (event1.getAttributeMap().keySet().contains(attributeKey) &&
+                        event2.getAttributeMap().keySet().contains(attributeKey)) {
+                    String val1 = event1.getAttributeValue(attributeKey);
+                    String val2 = event2.getAttributeValue(attributeKey);
+                    if (val1.equals(val2)) return true;
+                }
+                break;
         }
 
         return false;

@@ -18,19 +18,24 @@ public class CaseIDDesc {
         List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
         Collections.sort(ruleValueList);
 
-        if (allNumeric(ruleValueList)) {
-            List<CaseVariantDesc.Pair> pairList = getPairs(ruleValueList);
-
-            for (int i = 0; i < pairList.size(); i++) {
-                desc += pairList.get(i).toString();
-                if (i < pairList.size() -1) desc += ", ";
-            }
-        } else {
-            for (int i = 0; i < ruleValueList.size(); i++) {
-                desc += ruleValueList.get(i).getStringValue();
-                if (i < ruleValueList.size() -1) desc += ", ";
-            }
+        for (int i = 0; i < ruleValueList.size(); i++) {
+            desc += ruleValueList.get(i).getStringValue();
+            if (i < ruleValueList.size() -1) desc += ", ";
         }
+
+//        if (allNumeric(ruleValueList)) {
+//            List<CaseVariantDesc.Pair> pairList = getPairs(ruleValueList);
+//
+//            for (int i = 0; i < pairList.size(); i++) {
+//                desc += pairList.get(i).toString();
+//                if (i < pairList.size() -1) desc += ", ";
+//            }
+//        } else {
+//            for (int i = 0; i < ruleValueList.size(); i++) {
+//                desc += ruleValueList.get(i).getStringValue();
+//                if (i < ruleValueList.size() -1) desc += ", ";
+//            }
+//        }
 
         desc += "]";
 

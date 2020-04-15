@@ -20,12 +20,12 @@
 
 package org.apromore.apmlog.filter;
 
+import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
-import org.apromore.apmlog.filter.types.FilterType;
-import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.filter.types.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
@@ -42,6 +42,7 @@ import java.util.List;
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (12/03/2020)
  * Modified: Chii Chang (10/04/2020)
+ * Modified: Chii Chang (15/04/2020)
  */
 public class APMLogFilter {
 
@@ -108,9 +109,10 @@ public class APMLogFilter {
     }
 
 
+
     public void filter(List<LogFilterRule> logFilterRuleList) {
 
-        pLog.updatePrevious();
+//        pLog.updatePrevious();
 
         List<PTrace> filteredPTraceList = new ArrayList<>();
 
@@ -118,24 +120,23 @@ public class APMLogFilter {
 
         for (int i = 0; i < pLog.getOriginalPTraceList().size(); i++) {
 
-            if (pLog.getValidTraceIndexBS().get(i)) {
-                PTrace op = pLog.getOriginalPTraceList().get(i);
+            PTrace op = pLog.getOriginalPTraceList().get(i);
 
-                String theId = op.getCaseId();
-                PTrace pTrace = pLog.getPTraceUnifiedMap().get(theId);
+            String theId = op.getCaseId();
+            PTrace pTrace = pLog.getPTraceUnifiedMap().get(theId);
+            pTrace.reset();
 
-                PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
+            PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
 
-                if (filteredPTrace != null) {
-                    if (filteredPTrace.getEventSize() > 0) {
-                        filteredPTraceList.add(filteredPTrace);
-                        validTraceBS.set(i, true);
-                    } else {
-                        pTrace.getValidEventIndexBitSet().clear();
-                    }
+            if (filteredPTrace != null) {
+                if (filteredPTrace.getEventSize() > 0) {
+                    filteredPTraceList.add(filteredPTrace);
+                    validTraceBS.set(i, true);
                 } else {
                     pTrace.getValidEventIndexBitSet().clear();
                 }
+            } else {
+                pTrace.getValidEventIndexBitSet().clear();
             }
         }
 
@@ -163,24 +164,27 @@ public class APMLogFilter {
                 }
             } else { //Event section
 
-                BitSet validEventBS = pTrace.getValidEventIndexBitSet();
+//                BitSet validEventBS = pTrace.getValidEventIndexBitSet();
+                BitSet validEventBS = new BitSet(pTrace.getOriginalEventList().size());
 
-                List<AEvent> eventList = pTrace.getEventList();
+                List<AEvent> eventList = pTrace.getOriginalEventList();
+
                 for (int j = 0; j < eventList.size(); j++) {
-                    if (validEventBS.get(j)) {
-                        AEvent event = eventList.get(j);
-                        if (!toKeep(event, logFilterRule)) {
-                            validEventBS.set(j, false);
-                        }
+//                    if (validEventBS.get(j)) {
+                    AEvent event = eventList.get(j);
+                    if (!toKeep(event, logFilterRule)) {
+                        validEventBS.set(j, false);
+                    } else {
+                        validEventBS.set(j);
                     }
+//                    }
                 }
 
                 if (validEventBS.cardinality() == 0) {
                     filteredTrace = null;
                     break;
                 } else {
-                    pTrace.setValidEventIndexBS(validEventBS);
-                    filteredTrace = pTrace;
+                    filteredTrace.setValidEventIndexBS(validEventBS);
                 }
             }
         }
@@ -280,6 +284,8 @@ public class APMLogFilter {
         resetDuration();
         updateCaseVariants();
     }
+
+
 
     private void resetDuration() {
         this.pLog.setMinDuration(0);
