@@ -132,6 +132,9 @@ public class APMLogFilter {
                 if (filteredPTrace.getEventSize() > 0) {
                     filteredPTraceList.add(filteredPTrace);
                     validTraceBS.set(i, true);
+
+                    filteredPTrace.update();
+                    this.pLog.getPTraceUnifiedMap().put(filteredPTrace.getCaseId(), filteredPTrace);
                 } else {
                     pTrace.getValidEventIndexBitSet().clear();
                 }

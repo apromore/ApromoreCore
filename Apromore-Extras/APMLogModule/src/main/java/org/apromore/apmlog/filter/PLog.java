@@ -620,7 +620,7 @@ public class PLog {
             if(!currentBS.get(i)) {
                 pt.getValidEventIndexBitSet().clear();
             } else {
-                pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
+                //pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
             }
             theCusPTraceList.add(pt);
         }
