@@ -1,9 +1,4 @@
-<!--
-  ~ This file is part of "Apromore".
-  ~
-  ~ Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
-  ~
-  -->
+
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
 <?page id="ap-pd2" title="Apromore - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
 <?component name="viewSettings" macroURI="components/viewSettings.zul" ?>

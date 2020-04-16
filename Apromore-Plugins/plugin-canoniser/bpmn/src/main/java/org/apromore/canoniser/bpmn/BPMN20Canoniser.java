@@ -1,10 +1,13 @@
-/*
- * This file is part of "Apromore".
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
  *
  * Copyright (C) 2012 Felix Mannhardt.
  * Copyright (C) 2012, 2014 - 2017 Queensland University of Technology.
  * Copyright (C) 2015 Adriano Augusto.
- * Copyright (C) 2018, 2020 The University of Melbourne.
+ * %%
+ * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * %%
  *
  * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +22,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
  */
 
 package org.apromore.canoniser.bpmn;

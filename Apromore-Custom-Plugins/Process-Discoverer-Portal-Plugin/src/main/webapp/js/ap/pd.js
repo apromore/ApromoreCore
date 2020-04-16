@@ -1,9 +1,8 @@
-/*
- * This file is part of "Apromore".
- *
- * Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
- *
- */
+ * %%
+ * %%
+ * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * %%
+ * %%
 (function() {
 
   /**

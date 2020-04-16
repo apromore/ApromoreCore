@@ -1,7 +1,10 @@
-/*
- * This file is part of "Apromore".
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
  *
- * Copyright (C) 2019 - 2020 The University of Melbourne.
+ * %%
+ * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * %%
  * Copyright (C) 2020 The University of Tartu.
  *
  * "Apromore" is free software; you can redistribute it and/or modify
@@ -17,6 +20,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
  */
 
 package org.apromore.service.csvimporter.impl;

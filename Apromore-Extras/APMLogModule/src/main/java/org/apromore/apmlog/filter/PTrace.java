@@ -1,13 +1,4 @@
-/*-
- * #%L
- * Process Discoverer Logic
- *
- * This file is part of "Apromore".
- * %%
- * Copyright (C) 2019 - 2020 The University of Melbourne. All rights reserved.
- * %%
- * #L%
- */
+
 
 
 package org.apromore.apmlog.filter;
