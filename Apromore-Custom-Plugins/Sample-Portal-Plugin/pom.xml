@@ -26,16 +26,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apromore.plugin</groupId>
-        <artifactId>plugin</artifactId>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
         <version>1.1</version>
         <relativePath>../../</relativePath>
     </parent>
 
     <packaging>bundle</packaging>
     <!-- Unique name of the plug-in -->
-    <artifactId>merge-portal</artifactId>
-    <name>Merge portal plugin</name>
+    <artifactId>sample-portal-plugin</artifactId>
+    <name>Example portal plugin</name>
     <description>Some description</description>
 
     <build>
@@ -46,9 +46,14 @@
                 <configuration>
                     <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
                     <instructions>
+                        <Import-Bundle>
+                            org.apromore.plugin.portal-custom-gui;version="[1.1.0,2.0)"
+                        </Import-Bundle>
                         <Import-Package>
-                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
+                            org.apromore.portal.custom.gui,
+                            org.apromore.portal.custom.gui.tab,
+                            org.apromore.portal.custom.gui.tab.impl,
                             *
                         </Import-Package>
                         <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGI bundle
@@ -75,12 +80,9 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
-
-        <!-- Dependency allowing access to manager services -->
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>merge-logic</artifactId>
-            <version>1.1.0</version>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-custom-gui</artifactId>
         </dependency>
     </dependencies>
 

@@ -23,45 +23,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>plugin</artifactId>
-        <groupId>org.apromore.plugin</groupId>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
         <version>1.1</version>
         <relativePath>../../</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apromore</groupId>
-    <artifactId>similaritysearch-portal</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1.0</version>
+    <!-- Unique name of the plug-in -->
+    <groupId>org.apromore.plugin</groupId>
+    <artifactId>merge-portal</artifactId>
+    <name>Merge portal plugin</name>
+    <description>Some description</description>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
                 <configuration>
+                    <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
                     <instructions>
-                        <Import-Bundle>
-                            org.apromore.plugin.portal-custom-gui;version="[1.1.0,2.0)"
-                        </Import-Bundle>
                         <Import-Package>
+                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
-                            org.apromore.portal.custom.gui,
-                            org.apromore.portal.custom.gui.tab,
-                            org.apromore.portal.custom.gui.tab.impl,
                             *
                         </Import-Package>
-                        <!--<Export-Package>-->
-                            <!--*-->
-                        <!--</Export-Package>-->
+                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGI bundle
+                        <Embed-Dependency>
+                            artifactId=fooBar
+                        </Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Directory>lib</Embed-Directory>
+                        -->
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 
     <dependencies>
         <!-- Mandatory dependencies on the plugin and portal plugin APIs -->
@@ -71,20 +74,15 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-custom-gui</artifactId>
+            <artifactId>portal-plugin-api</artifactId>
         </dependency>
+
+        <!-- Dependency allowing access to manager services -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>similaritysearch-logic</artifactId>
+            <artifactId>merge-logic</artifactId>
             <version>1.1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-portal</artifactId>
-            <classifier>classes</classifier>
-            <version>1.1</version>
-        </dependency>
     </dependencies>
-
 
 </project>

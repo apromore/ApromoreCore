@@ -88,16 +88,6 @@
         <!-- Canoniser Plugins -->
         <module>plugin-canoniser/bpmn</module>
 
-
-        <!-- Logic Plugins -->
-        <module>plugin-logic/similaritysearch-logic</module>
-        <module>plugin-logic/merge-logic</module>
-
-        <!-- Portal Plugins -->
-        <module>plugin-portal/sample</module>
-        <module>plugin-portal/similaritysearch-portal</module>
-        <module>plugin-portal/merge-portal</module>
-
         <!-- Portal Plugin Templates -->
         <module>plugin-templates/portal-custom-gui</module>
 
