@@ -5,13 +5,7 @@ package de.hpi.bpmn2_0.model.activity.misc;
  * #%L
  * Signavio Core Components
  * %%
- * Copyright (C) 2006 - 2020 Philipp Berger, Martin Czuchra, Gero Decker,
- * Ole Eckermann, Lutz Gericke,
- * Alexander Hold, Alexander Koglin, Oliver Kopp, Stefan Krumnow,
- * Matthias Kunze, Philipp Maschke, Falko Menge, Christoph Neijenhuis,
- * Hagen Overdick, Zhen Peng, Nicolas Peters, Kerstin Pfitzner, Daniel Polak,
- * Steffen Ryll, Kai Schlichting, Jan-Felix Schwarz, Daniel Taschik,
- * Willi Tscheschner, Björn Wagner, Sven Wagner-Boysen, Matthias Weidlich
+ * Copyright (C) 2006 - 2020 The University of Melbourne.
  * %%
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,7 +24,6 @@ package de.hpi.bpmn2_0.model.activity.misc;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- * 
  * #L%
  */
 

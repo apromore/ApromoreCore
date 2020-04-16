@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2016 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 The Apromore Initiative
+ * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
