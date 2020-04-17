@@ -1,0 +1,93 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+
+  Copyright (C) 2016 - 2017 Queensland University of Technology.
+  %%
+  Copyright (C) 2018 - 2020 The University of Melbourne.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<window width="500px" closable="false" position="center" title="Merge process models" xmlns:h="http://www.w3.org/1999/xhtml">
+    <vbox>
+        <grid sclass="ap-grid ap-form">
+            <columns sizable="true">
+                <column width="60%"></column>
+                <column width="40%"></column>
+            </columns>
+            <rows>
+                <row id="mergednamep">
+                    <label value="Process name*" width="100%"></label>
+                    <textbox width="100%"/>
+                </row>
+                <row id="mergednamev">
+                    <label value="Version Number*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row id="mergeddomainR">
+                    <label value="Domain" width="100%"/>
+                </row>
+                <row id="removeEnt">
+                    <label value="Remove entanglements"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
+                </row>
+                <row id="makePublic" visible="${labels.publish.enable}">
+                    <label value="Make Process Public"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                </row>
+                <row id="mergeAlgoChoice">
+                    <label value="Algorithm (please choose one)" width="100%"/>
+                    <listbox width="100%"/>
+                </row>
+                <row id="mergethreshold" visible="false">
+                    <label value="Model merge threshold" width="100%"/>
+                    <doublebox value="0.6" width="100%"/>
+                </row>
+                <row id="labelthreshold" visible="false">
+                    <label value="Label sim. threshold" width="100%"/>
+                    <doublebox value="0.6" width="100%"/>
+                </row>
+                <row id="contextthreshold" visible="false">
+                    <label value="Context sim. threshold" width="100%"/>
+                    <doublebox value="0.75" width="100%"/>
+                </row>
+                <row id="skipeweight" visible="false">
+                    <label value="Skip-e weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="skipnweight" visible="false">
+                    <label value="Skip-n weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="subnweight" visible="false">
+                    <label value="Sub-n weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row spans="2">
+                    <label value="* mandatory fields" sclass="ap-footnotes"/>
+                </row>
+                <row id="mergeButtons" spans="2" sclass="ap-window-footer-actions">
+                    <div align="center">
+                        <button id="mergeOKButton" label="OK" iconSclass="z-icon-check-circle" disabled="true"></button>
+                        <button id="mergeCancelButton" label="Cancel" iconSclass="z-icon-times-circle">
+                        </button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>

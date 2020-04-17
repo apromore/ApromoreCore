@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <packaging>bundle</packaging>
+    <!-- Unique name of the plug-in -->
+    <groupId>org.apromore.plugin</groupId>
+    <artifactId>merge-portal</artifactId>
+    <name>Merge portal plugin</name>
+    <description>Some description</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
+                    <instructions>
+                        <Import-Package>
+                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
+                            org.apromore.plugin,
+                            *
+                        </Import-Package>
+                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGI bundle
+                        <Embed-Dependency>
+                            artifactId=fooBar
+                        </Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Directory>lib</Embed-Directory>
+                        -->
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+        <!-- Mandatory dependencies on the plugin and portal plugin APIs -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
+
+        <!-- Dependency allowing access to manager services -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>merge-logic</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
