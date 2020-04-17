@@ -25,6 +25,7 @@
   </modules>
 
   <build>
+    <!--
     <pluginManagement>
       <plugins>
         <plugin>
@@ -62,5 +63,6 @@ Willi Tscheschner, Björn Wagner, Sven Wagner-Boysen, Matthias Weidlich</organiz
         </configuration>
       </plugin>
     </plugins>
+    -->
   </build>
 </project>
