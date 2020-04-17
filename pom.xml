@@ -1,24 +1,3 @@
-<!--
-  ~ This file is part of "Apromore".
-  ~
-  ~ Copyright (C) 2011 - 2017 Queensland University of Technology.
-  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
-  ~
-  ~ "Apromore" is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU Lesser General Public License as
-  ~ published by the Free Software Foundation; either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ "Apromore" is distributed in the hope that it will be useful, but
-  ~ WITHOUT ANY WARRANTY; without even the implied warranty
-  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  ~ See the GNU Lesser General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this program.
-  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
-  -->
-
 <!--<?xml version="1.0" encoding="UTF-8" standalone="no"?>-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -109,8 +88,12 @@
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
         
         <module>Apromore-Custom-Plugins/Log-Logic</module>
+        <module>Apromore-Custom-Plugins/Merge-Logic</module>
+        <module>Apromore-Custom-Plugins/Merge-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
         <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>        
+        <module>Apromore-Custom-Plugins/Similarity-Search-Logic</module>
+        <module>Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin</module>
         
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
@@ -312,6 +295,8 @@
         <maven.wagon-scm.extension>2.4</maven.wagon-scm.extension>
         <maven.wagon-scm-plexus.extension>1.8.1</maven.wagon-scm-plexus.extension>
         <maven.wagon-scm-svnexe.extension>1.8.1</maven.wagon-scm-svnexe.extension>
+
+        <maven.license.plugin>2.0.0</maven.license.plugin>
 
         <!-- Config locations -->
         <checkstyle.ruleset.location>checkstyle.xml</checkstyle.ruleset.location>
@@ -1374,9 +1359,9 @@
 
     <repositories>
         <repository>
-            <id>ApromoreDev.mvn-repo</id>
+            <id>ApromoreCore_SupportLibs</id>
             <name>Maven repository for JARs specific to the Apromore project</name>
-            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
+            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>
         </repository>
         <repository>
             <id>EclipseLink Repo</id>
@@ -1432,7 +1417,12 @@
         <pluginRepository>
             <id>flyway-repo</id>
             <url>https://repo.flywaydb.org/repo</url>
-        </pluginRepository>        
+        </pluginRepository>   
+		<pluginRepository>
+			<id>zkmaven</id>
+			<name>ZK Maven Plugin Repository</name>
+			<url>http://mavensync.zkoss.org/maven2</url>
+		</pluginRepository>        
     </pluginRepositories>
 
     <build>
@@ -1534,7 +1524,12 @@
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
                     <version>${flyway.version}</version>
-                </plugin>                
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${maven.license.plugin}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -1898,7 +1893,7 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
 

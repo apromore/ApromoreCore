@@ -129,6 +129,8 @@
     let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     if (!re.test(val))  {
       markControl(control, false);
+      control.attr('placeholder', 'Enter valid email address');
+      control.val('');
       pass = false
     }
     // test for password match

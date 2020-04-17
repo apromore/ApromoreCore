@@ -1,0 +1,85 @@
+<!--
+  ~ This file is part of "Apromore".
+  ~
+  ~ Copyright (C) 2011 Marie Christine.
+  ~ Copyright (C) 2012 - 2017 Queensland University of Technology.
+  ~ Copyright (C) 2018 - 2020 The University of Melbourne.
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<!-- editprocessdata window has EditDataOneProcess.java as a controller
+for editing purpose
+and CreateProcessController.java for creating process purpose.
+-->
+<zk xmlns:h="native">
+  <window width="500px" closable="false" position="center">
+    <vbox height="100%" spacing="0">
+      <grid sclass="ap-grid ap-form" height="100%">
+        <columns sizable="true">
+          <column width="30%"></column>
+          <column width="70%"></column>
+        </columns>
+        <rows>
+          <row tooltiptext="Process name modification will be applied on all process versions.">
+            <label value="Process name*" width="100%"/>
+            <textbox width="100%"/>
+          </row>
+          <row>
+            <label value="Version number*" width="100%"/>
+            <textbox width="100%"/>
+          </row>
+          <row width="100%" tooltiptext="Process domain modification will be applied on all process versions.">
+            <label value="Domain"/>
+          </row>
+          <row width="100%" tooltiptext="Process owner modification will be applied on all process versions.">
+            <label value="Owner*"/>
+          </row>
+          <row visible="false">
+            <label value="Native type*"/>
+            <listbox width="100%" multiple="false" mold="select" rows="1" />
+          </row>
+          <row>
+            <label value="Ranking"/>
+            <radiogroup>
+              <radio label="0"/>
+              <radio label="1"/>
+              <radio label="2"/>
+              <radio label="3"/>
+              <radio label="4"/>
+              <radio label="5"/>
+              <radio label="uncheck all"/>
+            </radiogroup>
+          </row>
+          <row id="makePublic" visible="${labels.publish.enable}">
+            <label value="Make model Public"/>
+            <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+          </row>
+          <row spans="3" sclass="ap-footnotes">
+            <label value="* mandatory fields" />
+          </row>
+          <row spans="3" sclass="ap-window-footer-actions">
+            <div align="right">
+              <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
+              <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
+              <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
+              <button label="Reset" iconSclass="z-icon-undo"  width="85px" tooltiptext="Restore initial values." />
+            </div>
+          </row>
+        </rows>
+      </grid>
+    </vbox>
+  </window>
+</zk>

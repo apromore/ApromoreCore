@@ -1,24 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright © 2009-2018 The Apromore Initiative.
-  ~
-  ~ This file is part of "Apromore".
-  ~
-  ~ "Apromore" is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU Lesser General Public License as
-  ~ published by the Free Software Foundation; either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ "Apromore" is distributed in the hope that it will be useful, but
-  ~ WITHOUT ANY WARRANTY; without even the implied warranty
-  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  ~ See the GNU Lesser General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this program.
-  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
-  -->
-
 <project name="Apromore - Eclipse Virgo Deployment" default="deploy-virgo">
 
     <description>Apromore Core Distribution</description>
@@ -41,8 +21,6 @@
     <property name="core-dir-plugins" location="${core-dir}/Apromore-Plugins/"/>
     <property name="core-dir-annotation" location="${core-dir}/Apromore-Plugins/plugin-annotation/"/>
     <property name="core-dir-canoniser" location="${core-dir}/Apromore-Plugins/plugin-canoniser/"/>
-    <property name="core-dir-logic-plugins" location="${core-dir}/Apromore-Plugins/plugin-logic/"/>
-    <property name="core-dir-portal-plugins" location="${core-dir}/Apromore-Plugins/plugin-portal/"/>
     <property name="core-dir-portal-templates" location="${core-dir}/Apromore-Plugins/plugin-templates/"/>
     <property name="core-dir-deploy" location="${core-dir}/Apromore-Plugins/plugin-deployment/"/>
     <property name="core-dir-osgi" location="${core-dir}/Apromore-OSGI-Bundles/"/>
@@ -99,8 +77,12 @@
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
         
         <include name="Apromore-Custom-Plugins/Log-Logic/target/log-logic-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Merge-Logic/target/merge-logic-1.1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Merge-Portal-Plugin/target/merge-portal-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>        
+        <include name="Apromore-Custom-Plugins/Similarity-Search-Logic/target/similaritysearch-logic-1.1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin/target/similaritysearch-portal-1.1.0.jar"/>
     </fileset>
     
     <fileset id="fileset-core-extras" dir="${core-dir-extras}">
@@ -118,19 +100,6 @@
         <include name="**/target/*.jar"/>
         <exclude name="**/target/*-sources.jar"/>
         <exclude name="**/core/**/*.jar"/>
-    </fileset>
-    
-    <fileset id="fileset-core-old-plugin-logic" dir="${core-dir-logic-plugins}">
-        <include name="**/target/*.jar"/>
-        <exclude name="**/target/*-sources.jar"/>
-        <exclude name="**/core/**/*.jar"/>
-    </fileset>
-    
-    <fileset id="fileset-core-old-plugin-portal" dir="${core-dir-portal-plugins}">
-        <include name="**/target/*.jar"/>
-        <exclude name="**/target/*-sources.jar"/>
-        <exclude name="**/core/**/*.jar"/>
-        <exclude name="sample/target/*.jar"/>
     </fileset>
     
     <fileset id="fileset-repo-text" dir="${core-dir}">
@@ -157,8 +126,6 @@
             <fileset refid="fileset-core-extras" />
             <fileset refid="fileset-core-old-plugin-annotation" />
             <fileset refid="fileset-core-old-plugin-canoniser" />
-            <fileset refid="fileset-core-old-plugin-logic" />
-            <fileset refid="fileset-core-old-plugin-portal" />
             <fileset refid="fileset-core-custom-plugins" />
         </copy>
         
