@@ -232,16 +232,6 @@
             <artifactId>org.eclipse.persistence.core</artifactId>
         </dependency>
 
-        <!-- BPM Imports -->
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-deco</artifactId>
-        </dependency>
-
         <!--
             Embedded  Dependencies, these are not 'provided' as otherwise they are not included in the WAR.
             So we need to exclude those in the assembly project.
