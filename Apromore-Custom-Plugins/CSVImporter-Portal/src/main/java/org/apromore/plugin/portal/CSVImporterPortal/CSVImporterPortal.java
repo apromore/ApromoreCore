@@ -60,11 +60,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
     private static final double MAX_ERROR_FRACTION = 0.2;  // Accept up to 20% error rate
 
-    private final String[] INVALID_CSV_BUTTONS = new String[]{"Upload remaining rows", "Download error report"};
+    private static final String[] INVALID_CSV_BUTTONS = new String[]{"Upload remaining rows", "Download error report"};
 
     @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
-    char separator = Character.UNASSIGNED;
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
@@ -77,12 +76,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static Integer AttribWidth = 180;
     private static Integer IndexColumnWidth = 50;
 
-
-    private LogSample sample = null;
-
-    private boolean isPublic;
-
-    private void saveLog(XLog xlog, String name, PortalContext portalContext) throws Exception {
+    private void saveLog(XLog xlog, String name, boolean isPublic, PortalContext portalContext) throws Exception {
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         eventLogService.exportToStream(outputStream, xlog);
@@ -389,10 +383,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     public void importFile(Media media, PortalContext portalContext, boolean isPublic) {
         LOGGER.info("Import file: " + media.getName());
 
-        this.isPublic = isPublic;
-
         try {
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
+            final Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
                     "zul/csvimporter.zul", null, null);
 
             if (window == null) {
@@ -416,7 +408,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 "ISO-2022-CN (Chinese)"
             }));
 
-            setEncoding.addEventListener("onSelect", event -> sample = displayCSVContent(csvImporterLogic, media, window));
+            setEncoding.addEventListener("onSelect", event -> window.setAttribute("sample", displayCSVContent(csvImporterLogic, media, window)));
 
             String[] allowedExtensions = {"csv", "xls", "xlsx"};
             if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
@@ -424,7 +416,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 return;
             }
 
-            sample = displayCSVContent(csvImporterLogic, media, window);
+            window.setAttribute("sample", displayCSVContent(csvImporterLogic, media, window));
 
             Button toXESButton = (Button) window.getFellow("toXESButton");
             toXESButton.addEventListener("onClick", event -> {
@@ -438,7 +430,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                 try (CSVReader reader = newCSVReader(media, clearEncoding)) {
-                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample, MAX_ERROR_FRACTION);
+                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, (LogSample) window.getAttribute("sample"), MAX_ERROR_FRACTION);
 
                     if (xesModel.getErrorCount() > 0) {
                         String notificationMessage;
@@ -498,7 +490,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                         // create XES file
                                         XLog xlog = xesModel.getXLog();
                                         if (xlog != null) {
-                                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), isPublic, portalContext);
                                         }
 
                                         window.invalidate();
@@ -512,7 +504,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                         // create XES file
                                         XLog xlog = xesModel.getXLog();
                                         if (xlog != null) {
-                                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), isPublic, portalContext);
                                         }
 
                                         window.invalidate();
@@ -526,7 +518,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 "has been imported.");
                         XLog xlog = xesModel.getXLog();
                         if (xlog != null) {
-                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), isPublic, portalContext);
                         }
 
                         window.invalidate();
