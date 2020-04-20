@@ -47,8 +47,6 @@
         <module>Apromore-OSGI-Bundles/log-osgi</module>
         <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>        
         <module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
         <module>Apromore-OSGI-Bundles/json-osgi</module>
@@ -72,6 +70,7 @@
         <!-- Custom Plugins -->
         <module>Apromore-Plugins</module>
         
+        <module>Apromore-Custom-Plugins/SplitMiner-Logic</module>
         <module>Apromore-Custom-Plugins/File-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
@@ -1361,7 +1360,7 @@
         <repository>
             <id>ApromoreCore_SupportLibs</id>
             <name>Maven repository for JARs specific to the Apromore project</name>
-            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>
+            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>                
         </repository>
         <repository>
             <id>EclipseLink Repo</id>
@@ -1707,7 +1706,7 @@
                                         <exclude>org.apache.commons:com.springsource.org.apache.commons.logging</exclude>
                                         <exclude>aspectj:aspectj*</exclude>
                                         <exclude>hsqldb:hsqldb</exclude>
-                                        <exclude>log4j:log4j</exclude>
+                                        <!--<exclude>log4j:log4j</exclude>-->
                                         <exclude>org.slf4j:1.5*</exclude>
                                         <exclude>org.springframework:2.*</exclude>
                                         <exclude>org.springframework:3.0.*</exclude>

@@ -36,9 +36,7 @@
     </fileset>
     
     <fileset id="fileset-core-osgi-lib" dir="${core-dir-osgi}">
-        <include name="hpi-bpt-osgi/target/hpi-bpt-osgi-1.0.jar"/>
-        <include name="bpmntk-osgi/target/bpmntk-osgi-2.1.jar"/>            
-        <include name="bpstruct-osgi/target/bpstruct-osgi-1.2.jar"/>   
+        <include name="hpi-bpt-osgi/target/hpi-bpt-osgi-1.0.jar"/> 
         <include name="eclipse-collections-osgi/target/eclipse-collections-osgi-1.1.jar"/>
         <include name="json-osgi//target/json-osgi-1.0.jar"/>
         <include name="log-osgi/target/log-osgi-1.1.jar"/>
@@ -58,6 +56,8 @@
     <fileset id="fileset-core-custom-plugins" dir="${core-dir}">
         <include name="Apromore-Custom-Plugins/Generic-Portal-Plugin/target/generic-portal-plugin-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
+        
+        <include name="Apromore-Custom-Plugins/SplitMiner-Logic/target/splitminer-logic-1.0.jar"/>
         
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
 
