@@ -103,10 +103,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>assembly</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.github.sisyphsu</groupId>
