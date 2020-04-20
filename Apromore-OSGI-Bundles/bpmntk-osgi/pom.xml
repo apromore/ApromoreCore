@@ -69,13 +69,6 @@
             <artifactId>hpi-bpt-osgi</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- 
-        <dependency>
-            <groupId>de.hpi.jbpt</groupId>
-            <artifactId>de-jbpt</artifactId>
-            <version>0.2.77</version>
-        </dependency>
-        -->
     </dependencies>
 
 </project>
