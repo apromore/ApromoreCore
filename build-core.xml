@@ -38,7 +38,7 @@
     <fileset id="fileset-core-osgi-lib" dir="${core-dir-osgi}">
         <include name="hpi-bpt-osgi/target/hpi-bpt-osgi-1.0.jar"/> 
         <include name="eclipse-collections-osgi/target/eclipse-collections-osgi-1.1.jar"/>
-        <include name="json-osgi//target/json-osgi-1.0.jar"/>
+        <include name="json-osgi/target/json-osgi-1.0.jar"/>
         <include name="log-osgi/target/log-osgi-1.1.jar"/>
         <include name="lpsolve-osgi/target/lpsolve-osgi-1.1.jar"/>
         <include name="similaritysearch-osgi/target/similaritysearch-osgi-1.1.jar"/>
