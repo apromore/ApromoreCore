@@ -29,7 +29,7 @@
                         <Embed-Dependency>
                             artifactId=bpstruct|de-jbpt|stixar-graph|pnapi-java
                             |antlr-rt|uma|stixar-util|rpst|jdom|json|kohsuke
-                            |log4j|commons-lang3
+                            |commons-lang3
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -128,12 +128,6 @@
             <version>2.0.6</version>
         </dependency>
         
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

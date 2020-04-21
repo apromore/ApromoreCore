@@ -73,7 +73,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         List<LogEventModel> logData = new ArrayList<>();
         String errorMessage = "Field is empty or has a null value!";
 
-        while ((line = reader.readNext()) != null) { // new row, new event.
+        while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) { // new row, new event.
             validRow = true;
             lineIndex++;
 
@@ -170,6 +170,10 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         return new LogModelImpl(sortTraces(logData), logErrorReport);
 
+    }
+
+    public boolean isValidLineCount(int lineCount) {
+        return true;
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {

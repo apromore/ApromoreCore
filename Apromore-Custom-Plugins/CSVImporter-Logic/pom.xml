@@ -41,7 +41,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.csvimporter
+                            org.apromore.service.csvimporter,
+                            org.apromore.service.csvimporter.dateparser
                         </Export-Package>
                     </instructions>
                 </configuration>
