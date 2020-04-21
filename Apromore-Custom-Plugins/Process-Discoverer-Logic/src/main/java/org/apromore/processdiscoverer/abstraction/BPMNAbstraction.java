@@ -40,12 +40,11 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.apromore.splitminer.SplitMiner;
+import org.apromore.splitminer.dfgp.DirectlyFollowGraphPlus;
+import org.apromore.splitminer.log.SimpleLog;
+import org.apromore.splitminer.ui.miner.SplitMinerUIResult;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-
-import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.splitminer.SplitMiner;
-import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
-import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 
 /**
  * This class represents the BPMN abstraction of logs

@@ -43,14 +43,10 @@
 
     <modules>
         <!-- OSGI -->
-        <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
         <module>Apromore-OSGI-Bundles/log-osgi</module>
         <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>        
         <module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
-        <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
         <module>Apromore-OSGI-Bundles/json-osgi</module>
         <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
@@ -72,6 +68,7 @@
         <!-- Custom Plugins -->
         <module>Apromore-Plugins</module>
         
+        <module>Apromore-Custom-Plugins/SplitMiner-Logic</module>
         <module>Apromore-Custom-Plugins/File-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
@@ -1361,7 +1358,7 @@
         <repository>
             <id>ApromoreCore_SupportLibs</id>
             <name>Maven repository for JARs specific to the Apromore project</name>
-            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>
+            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>                
         </repository>
         <repository>
             <id>EclipseLink Repo</id>
@@ -1707,7 +1704,7 @@
                                         <exclude>org.apache.commons:com.springsource.org.apache.commons.logging</exclude>
                                         <exclude>aspectj:aspectj*</exclude>
                                         <exclude>hsqldb:hsqldb</exclude>
-                                        <exclude>log4j:log4j</exclude>
+                                        <!--<exclude>log4j:log4j</exclude>-->
                                         <exclude>org.slf4j:1.5*</exclude>
                                         <exclude>org.springframework:2.*</exclude>
                                         <exclude>org.springframework:3.0.*</exclude>
@@ -1894,6 +1891,82 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
             </plugin>
+            <!--<plugin> &lt;!&ndash; http://www.mojohaus.org/license-maven-plugin/examples/example-thirdparty.html &ndash;&gt;-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>license-maven-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<includes>-->
+                        <!--<include>**/*.java</include>-->
+                        <!--<include>**/*.xml</include>-->
+                        <!--<include>**/*.zul</include>-->
+                        <!--<include>**/*.css</include>-->
+                        <!--<include>**/*.html</include>-->
+                        <!--<include>**/*.xsd</include>-->
+                    <!--</includes>-->
+                    <!--<extraExtensions>-->
+                        <!--<zul>xml</zul>-->
+                        <!--<xsd>xml</xsd>-->
+                    <!--</extraExtensions>-->
+                    <!--&lt;!&ndash; Because package doc comments precede the package declaration, the license plugin’s remove-file-header goal breaks them. &ndash;&gt;-->
+                    <!--<excludes>-->
+                        <!--<exclude>**/package-info.java</exclude>-->
+                        <!--<exclude>**/*.properties</exclude>-->
+                    <!--</excludes>-->
+                    <!--<licenseMerges>-->
+                        <!--<licenseMerge>Apache v2|The Apache Software License, Version 2.0|Apache License, Version-->
+                            <!--2.0|Apache License, version 2.0|Apache License 2.0|Apache 2.0 License|Apache 2.0|Apache-->
+                            <!--2|ALv2-->
+                        <!--</licenseMerge>-->
+                        <!--<licenseMerge>BSD|BSD License|New BSD License|The BSD License|BSD 3-clause New License-->
+                        <!--</licenseMerge>-->
+                        <!--<licenseMerge>CDDL 1.1|Common Development and Distribution License</licenseMerge>-->
+                        <!--<licenseMerge>Eclipse Distribution v1|Eclipse Distribution License - v 1.0|Eclipse Distribution-->
+                            <!--License v. 1.0|EDL 1.0-->
+                        <!--</licenseMerge>-->
+                        <!--<licenseMerge>Eclipse Public v1.0|Eclipse Public License - v 1.0|Eclipse Public License-->
+                        <!--</licenseMerge>-->
+                        <!--<licenseMerge>GPL2 w/ CPE|GNU General Public License, Version 2 with the Classpath Exception-->
+                        <!--</licenseMerge>-->
+                        <!--<licenseMerge>LGPL|GNU LESSER GENERAL PUBLIC LICENSE</licenseMerge>-->
+                        <!--<licenseMerge>LGPL v2.1|LGPL, version 2.1</licenseMerge>-->
+                        <!--<licenseMerge>LGPL v3|GNU Lesser General Public License, Version 3.0|GNU LESSER GENERAL PUBLIC-->
+                            <!--LICENSE, Version 3|lgpl_v3-->
+                        <!--</licenseMerge>-->
+                        <!--<licenseMerge>MIT License|The MIT License</licenseMerge>-->
+                    <!--</licenseMerges>-->
+
+                    <!--&lt;!&ndash; config for license:update-file-header &ndash;&gt;-->
+                    <!--<licenseName>lgpl_v3</licenseName>-->
+                    <!--<inceptionYear>2018</inceptionYear>-->
+                    <!--<organizationName>The Apromore Initiative</organizationName>-->
+                    <!--<copyrightOwners>The University of Melbourne.</copyrightOwners>-->
+                    <!--<projectName>This file is part of "Apromore Core".</projectName>-->
+                    <!--<failOnMissingHeader>true</failOnMissingHeader>-->
+                    <!--<canUpdateCopyright>true</canUpdateCopyright>-->
+                    <!--&lt;!&ndash;<canUpdateDescription>true</canUpdateDescription>&ndash;&gt;-->
+                    <!--<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>-->
+
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--&lt;!&ndash;update (or add) the header on project source files&ndash;&gt;-->
+                    <!--<execution>-->
+                        <!--<id>update-file-header</id>-->
+                        <!--<goals>-->
+                            <!--<goal>update-file-header</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>process-sources</phase>-->
+                    <!--</execution>-->
+                    <!--&lt;!&ndash;Download the license files of all aggregated dependencies and generate a summary file containing-->
+                    <!--a list of all dependencies and their licenses.&ndash;&gt;-->
+                    <!--&lt;!&ndash;<execution>-->
+                        <!--<id>aggregate-download-licenses</id>-->
+                        <!--<goals>-->
+                            <!--<goal>aggregate-download-licenses</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>package</phase>-->
+                    <!--</execution>&ndash;&gt;-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
