@@ -64,6 +64,8 @@
             <artifactId>de-jbpt</artifactId>
             <version>0.2.77</version>
         </dependency>   
+        
+        <!-- de-jbpt requires uma and json -->
         <dependency>
             <groupId>hub.top</groupId>
             <artifactId>uma</artifactId>
@@ -72,7 +74,9 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-        </dependency>         
+        </dependency>      
+
+        <!-- uma requires antlr-rt and hub.top.petrinet -->
         <dependency>
             <groupId>org.antlr.runtime</groupId>
             <artifactId>antlr-rt</artifactId>
@@ -83,13 +87,7 @@
             <artifactId>pnapi-java</artifactId>
             <version>1.0.5</version>
         </dependency>              
-        <!--
-        <dependency>
-            <groupId>de.bpt.hpi</groupId>
-            <artifactId>rpst</artifactId>
-            <version>1.0</version>
-        </dependency>
-        -->
+
     </dependencies>
 </project>
  
