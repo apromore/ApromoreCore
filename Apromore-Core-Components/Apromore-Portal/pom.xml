@@ -204,10 +204,12 @@
         <!-- BP-diff and its dependencies
              TODO: are those embedded or OSGI?
         -->
+        <!--
         <dependency>
             <groupId>diffbp</groupId>
             <artifactId>diffbp</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
