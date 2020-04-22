@@ -36,7 +36,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         List<List<String>> lines = new ArrayList<>();
         String[] myLine;
-        while ((myLine = reader.readNext()) != null && lines.size() <= sampleSize) {
+        while ((myLine = reader.readNext()) != null && lines.size() < sampleSize) {
             if (myLine.length != header.size()) continue;
 
             lines.add(Arrays.asList(myLine));
