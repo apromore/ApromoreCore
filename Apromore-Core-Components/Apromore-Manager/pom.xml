@@ -31,10 +31,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <!--
-                    There is some problem in the bpstruct JAR that causes the newer version to throw an error!
-                    So we use the older version as workaround
-                -->
                 <extensions>true</extensions>
                 <configuration>
                     <niceManifest>true</niceManifest>
