@@ -150,7 +150,7 @@ class CreateXLog {
 
         XLifecycleExtension lifecycle = XLifecycleExtension.instance();
         XTimeExtension timestamp = XTimeExtension.instance();
-        if (!isEndTimestamp) {
+        if (isEndTimestamp) {
             lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
             timestamp.assignTimestamp(xEvent, myEvent.getEndTimestamp());
         } else {
