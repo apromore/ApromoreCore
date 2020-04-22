@@ -104,7 +104,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
             if (csvReader != null) {
                 this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
-                if (sample != null) setUpUI();
+                if (sample != null) {
+                    setUpUI();
+                    setButtons();
+                }
             }
 
             window.doModal();
@@ -139,7 +142,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         setCSVGrid();
         renderGridContent();
         setPopUpFormatBox();
-        setButtons();
     }
 
     private void setCSVGrid() {
