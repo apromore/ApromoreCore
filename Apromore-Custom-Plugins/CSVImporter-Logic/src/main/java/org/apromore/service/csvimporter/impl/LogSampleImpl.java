@@ -60,10 +60,10 @@ class LogSampleImpl implements LogSample, Constants {
         endTimestampFormat = null;
         startTimestampFormat = null;
 
-
         setUniqueAttributes();
         setOtherTimestamps();
-        setCaseAndEventAttributesPos();
+        setEventAttributesPos();
+        setCaseAttributesPos();
     }
 
 
@@ -126,45 +126,50 @@ class LogSampleImpl implements LogSample, Constants {
 
     private void setOtherTimestamps() {
         for (int pos = 0; pos < header.size(); pos++) {
-            if (!isUniqueAttribute(pos) && (header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date")) && isParsable(pos)) {
+            if (isNOTUniqueAttribute(pos) && (header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date")) && isParsable(pos)) {
                 otherTimestamps.put(pos, null);
             }
         }
     }
 
-
-    private void setCaseAndEventAttributesPos() {
-        if (caseIdPos == -1) return;
-
-        // set all attributes that are not main attributes or timestamps as case attributes
+    private void setEventAttributesPos(){
+        // set all attributes that are not main attributes or timestamps as event attributes
         for (int pos = 0; pos < header.size(); pos++) {
-            if (!isUniqueAttribute(pos) && !otherTimestamps.containsKey(pos)) {
-                caseAttributesPos.add(pos);
-            }
-        }
-
-        // set ones who are not consistent within a case as event attributes instead of case attributes
-        List<CaseAttributesDiscovery> myCaseAttributes = new ArrayList<>();
-        for (List<String> myLine : lines) {
-            if (myCaseAttributes.size() == 0 || myCaseAttributes.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(caseIdPos)))) { // new case id
-                myCaseAttributes = new ArrayList<>();
-                for (int pos : caseAttributesPos) {
-                    myCaseAttributes.add(new CaseAttributesDiscovery(myLine.get(caseIdPos), pos, myLine.get(pos)));
-                }
-            } else {
-                for (int pos = 0; pos < caseAttributesPos.size(); pos++) {
-                    int finalPos = caseAttributesPos.get(pos);
-                    if (!myCaseAttributes.stream().filter(p -> p.getPosition() == finalPos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(finalPos)) && caseAttributesPos.contains(finalPos)) {
-                        caseAttributesPos.remove(new Integer(finalPos));
-                        eventAttributesPos.add(finalPos);
-                    }
-                }
+            if (isNOTUniqueAttribute(pos) && !otherTimestamps.containsKey(pos)) {
+                eventAttributesPos.add(pos);
             }
         }
     }
 
 
-    private boolean isUniqueAttribute(int pos){
-         return (pos == caseIdPos || pos == activityPos || pos == endTimestampPos || pos == startTimestampPos || pos == resourcePos);
+    private void setCaseAttributesPos() {
+        if (caseIdPos != -1 && eventAttributesPos != null && !eventAttributesPos.isEmpty()) {
+            List<CaseAttributesDiscovery> discoverList;
+            Iterator iterator = eventAttributesPos.iterator();
+            while (iterator.hasNext()){
+                discoverList = new ArrayList<>();
+                boolean caseAttribute = true;
+                int pos = (int) iterator.next();
+                for (List<String> myLine : lines) {
+                    if (discoverList.isEmpty() || discoverList.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(caseIdPos)))) { // new case id
+                        discoverList = new ArrayList<>();
+                        discoverList.add(new CaseAttributesDiscovery(myLine.get(caseIdPos), pos, myLine.get(pos)));
+                    }else if (!discoverList.stream().filter(p -> p.getPosition() == pos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(pos))) {
+                        caseAttribute = false;
+                        break;
+                    }
+                }
+                if(caseAttribute){
+                    caseAttributesPos.add(pos);
+                    iterator.remove();
+                }
+            }
+
+        }
+    }
+
+
+    private boolean isNOTUniqueAttribute(int pos){
+         return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
     }
 }
