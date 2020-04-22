@@ -126,7 +126,7 @@ class LogSampleImpl implements LogSample, Constants {
 
     private void setOtherTimestamps() {
         for (int pos = 0; pos < header.size(); pos++) {
-            if (!isUniqueAttribute(pos) && isParsable(pos)) {
+            if (!isUniqueAttribute(pos) && (header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date")) && isParsable(pos)) {
                 otherTimestamps.put(pos, null);
             }
         }
