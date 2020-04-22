@@ -99,28 +99,34 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public boolean isParsable(int pos) {
+        int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if (parse.tryParsing(myLine.get(pos)) != null) {
-                return true;
+            if(myLine.get(pos).isEmpty()){
+                emptyCount ++;
+            }else if (parse.tryParsing(myLine.get(pos)) == null) {
+                return false;
             }
         }
-        return false;
+        return emptyCount < lines.size();
     }
 
     @Override
     public boolean isParsableWithFormat(int pos, String format) {
+        int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if (format == null || format.length() != myLine.get(pos).length() || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
+            if(myLine.get(pos).isEmpty()){
+                emptyCount ++;
+            }else if (format == null || format.length() != myLine.get(pos).length() || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
                 return false;
             }
         }
-        return true;
+        return emptyCount < lines.size();
     }
 
 
     private void setOtherTimestamps() {
         for (int pos = 0; pos < header.size(); pos++) {
-            if ((pos != endTimestampPos) && (pos != startTimestampPos) && isParsable(pos)) {
+            if (!isUniqueAttribute(pos) && isParsable(pos)) {
                 otherTimestamps.put(pos, null);
             }
         }
@@ -132,7 +138,7 @@ class LogSampleImpl implements LogSample, Constants {
 
         // set all attributes that are not main attributes or timestamps as case attributes
         for (int pos = 0; pos < header.size(); pos++) {
-            if (!(pos == caseIdPos || pos == activityPos || pos == endTimestampPos || pos == startTimestampPos || pos == resourcePos) && !otherTimestamps.containsKey(pos)) {
+            if (!isUniqueAttribute(pos) && !otherTimestamps.containsKey(pos)) {
                 caseAttributesPos.add(pos);
             }
         }
@@ -155,5 +161,10 @@ class LogSampleImpl implements LogSample, Constants {
                 }
             }
         }
+    }
+
+
+    private boolean isUniqueAttribute(int pos){
+         return (pos == caseIdPos || pos == activityPos || pos == endTimestampPos || pos == startTimestampPos || pos == resourcePos);
     }
 }
