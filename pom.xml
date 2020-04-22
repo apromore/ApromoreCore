@@ -226,7 +226,6 @@
         <build-tools.version>1.1</build-tools.version>
         <test-tools.version>1.1</test-tools.version>
         <jbpt.version>0.2.433</jbpt.version>
-        <bpstruct.version>0.1.117</bpstruct.version>
         <diffbp.version>1.0</diffbp.version>
         <rpsdag.version>0.1</rpsdag.version>
         <taskmapping.version>0.1</taskmapping.version>
@@ -240,7 +239,6 @@
         <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
         <antlr4-runtime.version>4.3</antlr4-runtime.version>
-        <ini4j.version>0.5.2</ini4j.version>
         <themis.version>1.0</themis.version>
         <postgresql.version>9.3-1101-jdbc41</postgresql.version>
         <pql.version>1.2</pql.version>
@@ -362,11 +360,6 @@
             </dependency>           
             <dependency>
                 <groupId>org.apromore</groupId>
-                <artifactId>bpstruct-osgi</artifactId>
-                <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
                 <artifactId>bpmntk-osgi</artifactId>
                 <version>2.1</version>
             </dependency>             
@@ -443,11 +436,6 @@
                 <version>${jbpt.version}</version>
             </dependency>
             <dependency>
-                <groupId>ee.ut</groupId>
-                <artifactId>bpstruct</artifactId>
-                <version>${bpstruct.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>diffbp</groupId>
                 <artifactId>diffbp</artifactId>
                 <version>${diffbp.version}</version>
@@ -483,11 +471,6 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-runtime-osgi</artifactId>
                 <version>${v4-runtime.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ini4j</groupId>
-                <artifactId>ini4j-osgi</artifactId>
-                <version>${ini4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
