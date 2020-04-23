@@ -228,7 +228,6 @@
         <jbpt.version>0.2.433</jbpt.version>
         <diffbp.version>1.0</diffbp.version>
         <rpsdag.version>0.1</rpsdag.version>
-        <taskmapping.version>0.1</taskmapping.version>
         <mathCollection.version>0.1</mathCollection.version>
         <lpsolve.version>55j</lpsolve.version>
 
@@ -444,11 +443,6 @@
                 <groupId>tu</groupId>
                 <artifactId>rpsdag</artifactId>
                 <version>${rpsdag.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>tu</groupId>
-                <artifactId>taskmapping</artifactId>
-                <version>${taskmapping.version}</version>
             </dependency>
             <dependency>
                 <groupId>mathCollection</groupId>
@@ -1341,7 +1335,7 @@
         <repository>
             <id>ApromoreCore_SupportLibs</id>
             <name>Maven repository for JARs specific to the Apromore project</name>
-            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>                
+            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>
         </repository>
         <repository>
             <id>EclipseLink Repo</id>

@@ -232,10 +232,6 @@
             Embedded  Dependencies, these are not 'provided' as otherwise they are not included in the WAR.
             So we need to exclude those in the assembly project.
         -->
-        <dependency>
-            <groupId>tu</groupId>
-            <artifactId>taskmapping</artifactId>
-        </dependency>
 
         <!-- Commons -->
         <dependency>
