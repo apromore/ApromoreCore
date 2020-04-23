@@ -43,10 +43,37 @@ This document is relevant to both editions, but if you have checked out this Cor
 
 ## Configuration
 The following configuration options apply to all editions of Apromore.
-When there are additional configuration specific to a particular editions, they are documented in that edition's own README file.
+When there are additional configuration specific to a particular edition, they are documented in that edition's own README file.
 
 Almost all configuration occurs in the `site.properties` file which is located in the `ApromoreCore` directory.
 The default version of this file from a fresh git checkout contains reasonable defaults that allow the server to be started without manual configuration.
+
+
+### MySQL setup
+The H2 flat file database is the default only because it allows casual evaluation without requiring any configuration.
+For earnest use or development, Apromore should be configured to use MySQL instead..
+
+* Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
+* Create a database named 'apromore' in your MySQL server
+```bash
+mysqladmin -u root -p create apromore
+```
+You will be prompted to enter the root password of MySQL
+* Create a user named 'apromore' with the required permissions
+```bash
+mysql -u root -p
+	CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
+	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
+```
+* Create and populate the database tables.
+```bash
+mysql -u root -p apromore < Supplements/database/db-mysql.sql
+```
+
+At the end of the `db-mysql.sql` script is where we populate some of the system data including user information.  Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are 'password'by default. Once logged in, a user can change their password via `Account -> Change password` menu.
+
+* Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
+Stop and restart the server so that it picks up the changes to `site.properties`.
 
 
 ### Heap size
@@ -79,33 +106,6 @@ startup.sh -clean
 Apromore uses [Ehcache](https://www.ehcache.org/) for internal caching, which uses an XML configuration file.
 The default in a deployed server is that the `ehcache.xml` configuration file is located at `virgo-tomcat-server-3.6.4.RELEASE/configuration/ehcache.xml`.
 The manager.ehcache.config.url property in site.properties can be used to point to an `ehcache.xml` at a URL of your choice.
-
-
-### MySQL setup
-Our development is done chiefly on MySQL; the default H2 flat file database is only for the sake of zero-configuration.
-Instructions for reconfiguring Apromore to use MySQL appear below.
-
-* Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
-* Create a database named 'apromore' in your MySQL server
-```bash
-mysqladmin -u root -p create apromore
-```
-You will be prompted to enter the root password of MySQL
-* Create a user named 'apromore' with the required permissions
-```bash
-mysql -u root -p
-	CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
-	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
-```
-* Create and populate the database tables.
-```bash
-mysql -u root -p apromore < Supplements/database/db-mysql.sql
-```
-
-At the end of the `db-mysql.sql` script is where we populate some of the system data including user information.  Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are 'password'by default. Once logged in, a user can change their password via `Account -> Change password` menu.
-
-* Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
-Stop and restart the server so that it picks up the changes to `site.properties`.
 
 
 ### LDAP setup
