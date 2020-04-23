@@ -116,7 +116,7 @@ class LogSampleImpl implements LogSample, Constants {
         for (List<String> myLine : lines) {
             if(myLine.get(pos).isEmpty()){
                 emptyCount ++;
-            }else if (format == null || format.length() != myLine.get(pos).length() || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
+            }else if (format == null || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
                 return false;
             }
         }

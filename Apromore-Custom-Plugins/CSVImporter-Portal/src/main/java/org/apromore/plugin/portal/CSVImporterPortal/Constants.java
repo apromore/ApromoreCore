@@ -56,4 +56,12 @@ interface Constants {
     String handleCancelBtnId = "cancelImport";
     String handleIgnoreColLbl = "ignoreCol";
 
+
+
+    String redLabelCSS = "redLabel";
+    String greenLabelCSS = "greenLabel";
+    String couldNotParse = "Could not parse as timestamp!";
+    String parsedMessage = "Parsed correctly!";
+    String parsedAuto = "Timestamp format automatically detected. Override?";
+
 }
