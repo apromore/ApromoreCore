@@ -1,0 +1,93 @@
+<plan name="org.apromore.core" version="1.1.0" scoped="false" atomic="false" provisioning="auto"
+        xmlns="http://www.eclipse.org/virgo/schema/plan"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+    
+    <artifact type="configuration" name="site" version="0" />
+    <artifact type="configuration" name="git" version="0" />
+    
+    <!-- OSGi Libraries -->
+    <artifact type="bundle" name="org.apromore.eclipse-collections-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.hpi-bpt-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.json.osgi" version="[1.0.0, 2)"/> 
+    <artifact type="bundle" name="org.apromore.log-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.lpsolve-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.similaritysearch-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.jgraph-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.prom-models-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.prom-widgets-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.prom-bpmn-osgi" version="[1.0.0, 2)"/>
+    <!--<artifact type="bundle" name="org.apromore.prom6-osgi" version="[1.0.0, 2)"/>-->
+    <!--<artifact type="bundle" name="org.apromore.zk-osgi" version="[8.0.0, 10)"/>-->
+    <!--<artifact type="bundle" name="org.ini4j.osgi" version="[0.5.0, 2)"/>-->
+    <!--<artifact type="bundle" name="org.apromore.jdom2-osgi" version="[2.0.0, 3)"/>-->
+    
+
+    <!-- Database -->
+    <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
+
+    <!-- Load the Schemas for all the Canonisers and Web Application. -->
+    <artifact type="bundle" name="org.apromore.anf-schema" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.bpmn-schema" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.cpf-schema" version="[1.1.0, 2)"/>
+
+    <!-- Plugins API -->
+    <artifact type="bundle" name="org.apromore.plugin.api-provider" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.annotation-api-provider" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.canoniser-api-provider" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.deployment-api-provider" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.graph" version="[1.1.0, 2)"/>
+    
+    <!-- Canonisers and Annotations -->
+    <artifact type="bundle" name="org.apromore.plugin.canoniser-api" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.canoniser-bpmn" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.annotation-api" version="[1.1.0, 2)"/>
+
+    <!-- Manager -->
+    <artifact type="bundle" name="org.apromore.manager" version="[1.1.0, 2)" />
+    <artifact type="bundle" name="org.apromore.manager-ws-model" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.manager-client" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.manager-security" version="[1.1.0, 2)"/>
+    
+    <!-- Portal -->
+    <artifact type="bundle" name="org.apromore.plugin.portal-plugin-api" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.portal-custom-gui" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.portal" version="[1.1.0, 2)">
+        <property name="header:Web-ContextPath" value="/" />
+    </artifact>
+    
+    <!-- CORE CUSTOM PLUGINS -->
+    <artifact type="bundle" name="org.apromore.apmlog" version="[1.0.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.splitminer-logic" version="[1.0.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.similaritysearch-logic" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.similaritysearch-portal" version="[1.1.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.merge-logic" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.merge-portal" version="[1.1.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.plugin.generic-portal-plugin" version="[1.0.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
+    
+    <!--<artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/> -->
+    
+    <artifact type="bundle" name="@csvimporter-logic.bundle@" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.csvimporter-portal" version="[1.0.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.csvexporter-logic" version="[1.0.0, 2)"/>
+    <!--<artifact type="bundle" name="org.apromore.csvexporter-portal-plugin" version="[1.0.0, 2)"/>-->
+    
+    <artifact type="bundle" name="org.apromore.plugin.log-filter-portal-plugin-generic" version="[1.0.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.plugin.apromore-bpmneditor" version="[1.1.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.log-animation-logic" version="[1.0.0,1.0.0]"/>
+	<artifact type="bundle" name="org.apromore.plugin.log-animation-portal-plugin" version="[1.0.0,1.0.0]"/>
+    
+    <artifact type="bundle" name="org.apromore.log-logic" version="[1.0.0,1.0.0]"/>
+
+</plan>
