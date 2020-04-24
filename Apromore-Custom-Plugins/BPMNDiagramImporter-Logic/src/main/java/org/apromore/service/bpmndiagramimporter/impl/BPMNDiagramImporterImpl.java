@@ -29,6 +29,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 import java.io.File;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -177,7 +178,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
             SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
-            File schemaFile = new File(classLoader.getResource("./xsd/BPMN20.xsd").getFile());
+            // File schemaFile = new File(classLoader.getResource("xsd/BPMN20.xsd").getFile());
+            URL schemaFile = getClass().getClassLoader().getResource("xsd/BPMN20.xsd");
             Schema schema = sf.newSchema(schemaFile);
             unmarshaller.setSchema(schema);
 

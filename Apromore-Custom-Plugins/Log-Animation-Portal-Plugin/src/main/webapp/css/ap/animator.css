@@ -29,6 +29,18 @@
     ) !important;
 }
 
+.x-panel-editor-north .x-toolbar .ytb-sep {
+    background-image: none !important;
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0 3px;
+    width: 2px;
+    height: 22px;
+    border-right: 1px solid var(--ap-c-grey-minor);
+    border-left: 1px solid white;
+    vertical-align: middle;
+}
+
 body > .x-panel-noborder {
     top: calc(var(--ap-menu-height) + var(--ap-header-height)) !important;
 }
