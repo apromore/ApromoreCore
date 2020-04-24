@@ -27,4 +27,6 @@ interface Constants {
     String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp",
             "completion time", "end timestamp"};
     String[] StartTsValues   = {"start date", "start timestamp", "start time"};
+
+    String possibleTimestamp = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2})";
 }

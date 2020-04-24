@@ -26,6 +26,8 @@ import lombok.Data;
 import org.apromore.service.csvimporter.LogSample;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -123,14 +125,26 @@ class LogSampleImpl implements LogSample, Constants {
         return emptyCount < lines.size();
     }
 
-
     private void setOtherTimestamps() {
         for (int pos = 0; pos < header.size(); pos++) {
-            if (isNOTUniqueAttribute(pos) && (header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date")) && isParsable(pos)) {
+            if (isNOTUniqueAttribute(pos) && couldBeTimestamp(pos) && isParsable(pos)) {
                 otherTimestamps.put(pos, null);
             }
         }
     }
+
+    private boolean couldBeTimestamp(int pos) {
+        if((header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date"))) return true;
+
+        Pattern pattern = Pattern.compile(possibleTimestamp);
+        Matcher match;
+        for (List<String> myLine : lines) {
+            match = pattern.matcher(myLine.get(pos));
+            if(match.find()) return true;
+        }
+        return false;
+    }
+
 
     private void setEventAttributesPos(){
         // set all attributes that are not main attributes or timestamps as event attributes
