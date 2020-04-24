@@ -188,7 +188,9 @@ public class AttributeLog {
                     variantView.addActive(trace, originalTraceStatus.get(i));
                 }
                 else {
-                    throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeTrace at index = " + i + ": different bitset size");
+                    throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeTrace at traceIndex=" + i + 
+                                                                    ", traceId=" + trace.getTraceId() +
+                                                                    ": different bitset size");
                 }
             }
             
