@@ -260,7 +260,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             item.setStyle("position: fixed; z-index: 10; visibility: hidden;");
 
             Button sp = new Button();
-            sp.setStyle("margin-right:3px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
+            sp.setStyle("margin-right:1px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
             sp.setIconSclass("z-icon-times");
 
             A hidelink = new A();
@@ -285,10 +285,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 int colPos = Integer.parseInt(textbox.getId().replace(popUpTextBoxId, ""));
                 Listbox box = dropDownLists.get(colPos);
                 String selected = box.getSelectedItem().getValue();
+                resetSelect(colPos);
 
                 if (StringUtils.isBlank(event.getValue())) {
                     if (sample.isParsable(colPos)) {
-                        resetSelect(colPos);
                         parsedAuto(colPos, selected);
                     } else {
                         textbox.setPlaceholder("Specify timestamp format");
@@ -297,7 +297,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 } else {
                     String format = event.getValue();
                     if (sample.isParsableWithFormat(colPos, format)) {
-                        resetSelect(colPos);
                         parsedManual(colPos, selected, format);
                     } else {
                         failedToParse(colPos);
