@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,6 +23,7 @@
 package org.apromore.service.csvimporter.impl;
 
 import lombok.Data;
+import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogSample;
 
 import java.util.*;
@@ -46,12 +47,12 @@ class LogSampleImpl implements LogSample, Constants {
     private int resourcePos;
     private List<Integer> caseAttributesPos;
     private List<Integer> eventAttributesPos;
-    private HashMap<Integer, String> otherTimestamps;
+    private HashMap<Integer, String> otherTimestamps; // store position as key and format as value
     private List<Integer> ignoredPos;
     private String endTimestampFormat;
     private String startTimestampFormat;
 
-    LogSampleImpl(List<String> header, List<List<String>> lines) {
+    LogSampleImpl(List<String> header, List<List<String>> lines) throws Exception {
         this.header = header;
         this.lines = lines;
 
@@ -66,10 +67,11 @@ class LogSampleImpl implements LogSample, Constants {
         setOtherTimestamps();
         setEventAttributesPos();
         setCaseAttributesPos();
+        validateSample();
     }
 
 
-    private void setUniqueAttributes(){
+    private void setUniqueAttributes() {
         caseIdPos = -1;
         activityPos = -1;
         endTimestampPos = -1;
@@ -82,9 +84,9 @@ class LogSampleImpl implements LogSample, Constants {
             } else if (activityPos == -1 && guessUniqueAttributesPos(activityValues, header.get(pos))) {
                 activityPos = pos;
             } else if (endTimestampPos == -1 && guessUniqueAttributesPos(timestampValues, header.get(pos)) && isParsable(pos)) {
-                endTimestampPos =pos;
+                endTimestampPos = pos;
             } else if (startTimestampPos == -1 && guessUniqueAttributesPos(StartTsValues, header.get(pos)) && isParsable(pos)) {
-                startTimestampPos =pos;
+                startTimestampPos = pos;
             } else if (resourcePos == -1 && guessUniqueAttributesPos(resourceValues, header.get(pos))) {
                 resourcePos = pos;
             }
@@ -103,9 +105,9 @@ class LogSampleImpl implements LogSample, Constants {
     public boolean isParsable(int pos) {
         int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if(myLine.get(pos).isEmpty()){
-                emptyCount ++;
-            }else if (parse.tryParsing(myLine.get(pos)) == null) {
+            if (myLine.get(pos).isEmpty()) {
+                emptyCount++;
+            } else if (parse.tryParsing(myLine.get(pos)) == null) {
                 return false;
             }
         }
@@ -116,9 +118,9 @@ class LogSampleImpl implements LogSample, Constants {
     public boolean isParsableWithFormat(int pos, String format) {
         int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if(myLine.get(pos).isEmpty()){
-                emptyCount ++;
-            }else if (format == null || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
+            if (myLine.get(pos).isEmpty()) {
+                emptyCount++;
+            } else if (format == null || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
                 return false;
             }
         }
@@ -134,19 +136,21 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     private boolean couldBeTimestamp(int pos) {
-        if((header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date"))) return true;
+        if ((header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date"))){
+            return true;
+        }
 
         Pattern pattern = Pattern.compile(possibleTimestamp);
         Matcher match;
         for (List<String> myLine : lines) {
             match = pattern.matcher(myLine.get(pos));
-            if(match.find()) return true;
+            if (match.find()) return true;
         }
         return false;
     }
 
 
-    private void setEventAttributesPos(){
+    private void setEventAttributesPos() {
         // set all attributes that are not main attributes or timestamps as event attributes
         for (int pos = 0; pos < header.size(); pos++) {
             if (isNOTUniqueAttribute(pos) && !otherTimestamps.containsKey(pos)) {
@@ -160,7 +164,7 @@ class LogSampleImpl implements LogSample, Constants {
         if (caseIdPos != -1 && eventAttributesPos != null && !eventAttributesPos.isEmpty()) {
             List<CaseAttributesDiscovery> discoverList;
             Iterator iterator = eventAttributesPos.iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 discoverList = new ArrayList<>();
                 boolean caseAttribute = true;
                 int pos = (int) iterator.next();
@@ -168,12 +172,12 @@ class LogSampleImpl implements LogSample, Constants {
                     if (discoverList.isEmpty() || discoverList.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(caseIdPos)))) { // new case id
                         discoverList = new ArrayList<>();
                         discoverList.add(new CaseAttributesDiscovery(myLine.get(caseIdPos), pos, myLine.get(pos)));
-                    }else if (!discoverList.stream().filter(p -> p.getPosition() == pos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(pos))) {
+                    } else if (!discoverList.stream().filter(p -> p.getPosition() == pos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(pos))) {
                         caseAttribute = false;
                         break;
                     }
                 }
-                if(caseAttribute){
+                if (caseAttribute) {
                     caseAttributesPos.add(pos);
                     iterator.remove();
                 }
@@ -183,7 +187,26 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
 
-    private boolean isNOTUniqueAttribute(int pos){
-         return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
+    private boolean isNOTUniqueAttribute(int pos) {
+        return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
+    }
+
+    @Override
+    public void validateSample() throws Exception {
+        int count =0;
+        if(caseIdPos!=-1) count++;
+        if(activityPos!=-1) count++;
+        if(endTimestampPos!=-1) count++;
+        if(startTimestampPos!=-1) count++;
+        if(resourcePos!=-1) count++;
+
+        count += otherTimestamps.size();
+        count += eventAttributesPos.size();
+        count += caseAttributesPos.size();
+        count += ignoredPos.size();
+
+        if(header.size() != count){
+            throw new Exception("Failed to construct log sample! Contact out support.");
+        }
     }
 }

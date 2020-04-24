@@ -58,4 +58,6 @@ public interface LogSample {
 
     boolean isParsable(int colPos);
     boolean isParsableWithFormat(int colPos, String format);
+
+    void validateSample() throws Exception;
 }

@@ -46,7 +46,7 @@ public interface CSVImporterLogic {
      * object can be visualized by a user, corrected, and then used to configure the {@link #prepareXesModel} method
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogSample sampleCSV(CSVReader reader, int sampleSize) throws IOException;
+    LogSample sampleCSV(CSVReader reader, int sampleSize) throws Exception;
 
     /**
      * Process an entire CSV document using a given header configuration.
@@ -55,5 +55,5 @@ public interface CSVImporterLogic {
      * @param sample header configuration
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogModel prepareXesModel(CSVReader reader, LogSample sample) throws IOException;
+    LogModel prepareXesModel(CSVReader reader, LogSample sample) throws Exception;
 }

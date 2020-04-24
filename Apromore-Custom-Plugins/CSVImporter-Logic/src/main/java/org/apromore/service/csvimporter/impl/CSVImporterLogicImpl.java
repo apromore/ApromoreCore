@@ -30,7 +30,7 @@ import java.util.*;
 class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     @Override
-    public LogSample sampleCSV(CSVReader reader, int sampleSize) throws IOException {
+    public LogSample sampleCSV(CSVReader reader, int sampleSize) throws Exception {
 
         List<String> header = Arrays.asList(reader.readNext());
 
@@ -53,7 +53,9 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     private boolean validRow;
 
     @Override
-    public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws IOException {
+    public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws Exception {
+        sample.validateSample();
+
         logErrorReport = new ArrayList<>();
         int lineIndex = 1; // set to 1 since first line is the header
         boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
