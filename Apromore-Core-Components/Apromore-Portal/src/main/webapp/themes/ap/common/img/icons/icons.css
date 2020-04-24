@@ -338,6 +338,11 @@
     width: 26px !important;
 }
 
+.ap-icon-measure {
+    background-image: url('measure.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-meta-edit {
     background-image: url('meta-edit.svg') !important;
     width: 28.5px !important;
@@ -465,6 +470,11 @@
 
 .ap-icon-sign-out {
     background-image: url('sign-out.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-simulate-model {
+    background-image: url('simulate-model.svg') !important;
     width: 26px !important;
 }
 
