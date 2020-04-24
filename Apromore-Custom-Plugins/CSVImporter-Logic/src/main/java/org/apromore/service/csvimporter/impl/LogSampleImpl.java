@@ -136,7 +136,7 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     private boolean couldBeTimestamp(int pos) {
-        if ((header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date"))){
+        if ((header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date"))) {
             return true;
         }
 
@@ -193,20 +193,20 @@ class LogSampleImpl implements LogSample, Constants {
 
     @Override
     public void validateSample() throws Exception {
-        int count =0;
-        if(caseIdPos!=-1) count++;
-        if(activityPos!=-1) count++;
-        if(endTimestampPos!=-1) count++;
-        if(startTimestampPos!=-1) count++;
-        if(resourcePos!=-1) count++;
+        int count = 0;
+        if (caseIdPos != -1) count++;
+        if (activityPos != -1) count++;
+        if (endTimestampPos != -1) count++;
+        if (startTimestampPos != -1) count++;
+        if (resourcePos != -1) count++;
 
         count += otherTimestamps.size();
         count += eventAttributesPos.size();
         count += caseAttributesPos.size();
         count += ignoredPos.size();
 
-        if(header.size() != count){
-            throw new Exception("Failed to construct log sample! Contact out support.");
+        if (header.size() != count) {
+            throw new Exception("Failed to construct valid log sample! Contact out support.");
         }
     }
 }
