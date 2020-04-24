@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Component("csvImporterPortalPlugin")
@@ -50,7 +49,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     private CSVImporterLogic csvImporterLogic;
     @Inject
     private EventLogService eventLogService;
-
 
     private Window window;
     private Media media;
@@ -80,10 +78,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     @Override
     public void importFile(Media media, PortalContext portalContext, boolean isLogPublic) {
-        if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
-            Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
+
         this.media = media;
         this.portalContext = portalContext;
         this.isLogPublic = isLogPublic;
@@ -192,13 +187,12 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             Button formatBtn = new Button();
             Span parsedIcon = new Span();
 
-            if(pos == sample.getEndTimestampPos() || pos == sample.getStartTimestampPos() || sample.getOtherTimestamps().containsKey(pos)){
+            if (pos == sample.getEndTimestampPos() || pos == sample.getStartTimestampPos() || sample.getOtherTimestamps().containsKey(pos)) {
                 showFormatBtn(formatBtn);
                 showParsedGreenIcon(parsedIcon);
-            } else{
+            } else {
                 hideFormatBtn(formatBtn);
             }
-
 
             formatBtn.setIconSclass("z-icon-wrench");
 
@@ -273,10 +267,10 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             hidelink.appendChild(sp);
             sp.addEventListener("onClick", (Event event) -> item.setStyle(item.getStyle().replace("visible", "hidden")));
 
-            Label check_lbl = new Label();
-            check_lbl.setId(popUpLabelId + pos);
-            if(pos == sample.getEndTimestampPos() || pos == sample.getStartTimestampPos() || sample.getOtherTimestamps().containsKey(pos)){
-                setParsedLabel(pos, Parsed.AUTO, check_lbl);
+            Label popUpLabel = new Label();
+            popUpLabel.setId(popUpLabelId + pos);
+            if (pos == sample.getEndTimestampPos() || pos == sample.getStartTimestampPos() || sample.getOtherTimestamps().containsKey(pos)) {
+                setPopUpLabel(pos, Parsed.AUTO, popUpLabel);
             }
 
             Textbox textbox = new Textbox();
@@ -300,21 +294,19 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                         textbox.setPlaceholder("Specify timestamp format");
                         failedToParse(colPos);
                     }
-
                 } else {
                     String format = event.getValue();
-                    if(sample.isParsableWithFormat(colPos, format)){
+                    if (sample.isParsableWithFormat(colPos, format)) {
                         resetSelect(colPos);
                         parsedManual(colPos, selected, format);
-                    }
-                     else {
+                    } else {
                         failedToParse(colPos);
                     }
                 }
             });
 
-            item.appendChild(check_lbl);
             item.appendChild(hidelink);
+            item.appendChild(popUpLabel);
             item.appendChild(textbox);
 
             popUPBox.appendChild(item);
@@ -372,13 +364,13 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             box.addEventListener("onSelect", (Event event) -> {
                 String selected = box.getSelectedItem().getValue();
                 int colPos = Integer.parseInt(box.getId());
+
                 resetSelect(colPos);
                 closePopUpBox(colPos);
                 hideFormatBtn(formatBtns[colPos]);
                 hideParsedIcon(parsedIcons[colPos]);
 
-
-                switch(selected) {
+                switch (selected) {
                     case caseIdLabel:
                         resetUniqueAttribute(sample.getCaseIdPos());
                         sample.setCaseIdPos(colPos);
@@ -447,9 +439,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             sample.setStartTimestampPos(-1);
         } else if (sample.getResourcePos() == pos) {
             sample.setResourcePos(-1);
-        }
-
-        else if (sample.getOtherTimestamps().containsKey(pos)) {
+        } else if (sample.getOtherTimestamps().containsKey(pos)) {
             sample.getOtherTimestamps().remove(pos);
         } else if (sample.getIgnoredPos().contains(pos)) {
             sample.getIgnoredPos().remove(Integer.valueOf(pos));
@@ -471,26 +461,26 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             failedToParse(colPos);
         }
     }
-    private void parsedManual(int colPos, String selected, String format){
+
+    private void parsedManual(int colPos, String selected, String format) {
         updateTimestampPos(colPos, selected, format);
         showParsedGreenIcon(parsedIcons[colPos]);
-        setParsedLabel(colPos, Parsed.MANUAL, null);
+        setPopUpLabel(colPos, Parsed.MANUAL, null);
     }
 
-    private void parsedAuto(int colPos, String selected){
+    private void parsedAuto(int colPos, String selected) {
         updateTimestampPos(colPos, selected, null);
         showParsedGreenIcon(parsedIcons[colPos]);
-        setParsedLabel(colPos, Parsed.AUTO, null);
+        setPopUpLabel(colPos, Parsed.AUTO, null);
         setPopUpFormatText(colPos, "");
     }
 
-    private void failedToParse(int colPos){
+    private void failedToParse(int colPos) {
         sample.getEventAttributesPos().add(colPos);
-        setParsedLabel(colPos, Parsed.FAILED, null);
+        setPopUpLabel(colPos, Parsed.FAILED, null);
         showParsedRedIcon(parsedIcons[colPos]);
         openPopUpBox(colPos);
     }
-
 
     private void updateTimestampPos(int pos, String timestampLabel, String format) {
         if (timestampLabel.equals(endTimestampLabel)) {
@@ -504,48 +494,33 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         }
     }
 
-    private String getPopUpFormatText(int pos) {
-        Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
-        Textbox txt = (Textbox) myPopUp.getFellow(popUpTextBoxId + pos);
-        return txt.getValue();
-    }
-
-
-    private void setPopUpFormatText(int pos, String text) {
-        Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
-        Textbox txt = (Textbox) myPopUp.getFellow(popUpTextBoxId + pos);
-        txt.setValue(text);
-    }
-
-
     private void openPopUpBox(int pos) {
         Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
         myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
         Clients.evalJavaScript("adjustPos(" + pos + ")");
     }
 
-    private void setParsedLabel(int pos, Enum type, Label check_lbl){
-        if(check_lbl == null){
+    private void closePopUpBox(int pos) {
+        Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
+        myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
+    }
+
+    private void setPopUpLabel(int pos, Enum type, Label check_lbl) {
+        if (check_lbl == null) {
             Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
             check_lbl = (Label) myPopUp.getFellow(popUpLabelId + pos);
         }
 
-        if(type == Parsed.AUTO){
+        if (type == Parsed.AUTO) {
             check_lbl.setZclass(greenLabelCSS);
-            check_lbl.setValue(parsedAuto);
-        } else if(type == Parsed.MANUAL){
+            check_lbl.setValue(parsedAutoMessage);
+        } else if (type == Parsed.MANUAL) {
             check_lbl.setZclass(greenLabelCSS);
             check_lbl.setValue(parsedMessage);
-        }
-        else if(type == Parsed.FAILED){
+        } else if (type == Parsed.FAILED) {
             check_lbl.setZclass(redLabelCSS);
-            check_lbl.setValue(couldNotParse);
+            check_lbl.setValue(couldNotParseMessage);
         }
-    }
-
-    private void closePopUpBox(int pos) {
-        Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
-        myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
     }
 
     private void showFormatBtn(Button myButton) {
@@ -556,16 +531,28 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         myButton.setSclass("ap-csv-importer-format-icon ap-hidden");
     }
 
-    private void showParsedGreenIcon(Span parsedIcon){
+    private void showParsedGreenIcon(Span parsedIcon) {
         parsedIcon.setSclass("ap-csv-importer-parsed-icon z-icon-check-circle");
     }
 
-    private void showParsedRedIcon(Span parsedIcon){
+    private void showParsedRedIcon(Span parsedIcon) {
         parsedIcon.setSclass("ap-csv-importer-failedParse-icon z-icon-times-circle");
     }
 
-    private void hideParsedIcon(Span parsedIcon){
+    private void hideParsedIcon(Span parsedIcon) {
         parsedIcon.setSclass("ap-hidden");
+    }
+
+    private String getPopUpFormatText(int pos) {
+        Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
+        Textbox txt = (Textbox) myPopUp.getFellow(popUpTextBoxId + pos);
+        return txt.getValue();
+    }
+
+    private void setPopUpFormatText(int pos, String text) {
+        Window myPopUp = (Window) popUpBox.getFellow(popUpFormatWindowId + pos);
+        Textbox txt = (Textbox) myPopUp.getFellow(popUpTextBoxId + pos);
+        txt.setValue(text);
     }
 
     private void setButtons() {
@@ -681,42 +668,40 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
             List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
 
-            Label errorCount = (Label) errorPopUp.getFellow(handleErrorCount);
+            Label errorCount = (Label) errorPopUp.getFellow(errorCountLblId);
             errorCount.setValue(String.valueOf(errorReport.size()));
 
-            Label columnList = (Label) errorPopUp.getFellow(handleInvalidColumnsList);
+            Label columnList = (Label) errorPopUp.getFellow(invalidColumnsListLblId);
 
             Set<String> invColList = new HashSet<String>();
             Set<String> igColList = new HashSet<String>();
+            List<Integer> invTimestampPos = new ArrayList<>();
             for (LogErrorReport error : errorReport) {
-                if(error.getHeader() != null && !error.getHeader().isEmpty()){
+                if (error.getHeader() != null && !error.getHeader().isEmpty()) {
                     invColList.add(error.getHeader());
                     if (sample.getOtherTimestamps().containsKey(error.getColumnIndex())) {
                         igColList.add(error.getHeader());
+                        invTimestampPos.add(error.getColumnIndex());
                     }
                 }
             }
-            if(!invColList.isEmpty()){
+            if (!invColList.isEmpty()) {
                 columnList.setValue("The following column(s) include(s) one or more errors: " + columnList(invColList));
             }
 
             if (!igColList.isEmpty()) {
-                Label ignoredList = (Label) errorPopUp.getFellow(handleIgnoredColumnsList);
-                Label ignoreLbl = (Label) errorPopUp.getFellow(handleIgnoreColLbl);
+                Label ignoredList = (Label) errorPopUp.getFellow(ignoredColumnsListLblId);
+                Label ignoreLbl = (Label) errorPopUp.getFellow(ignoreColLblId);
                 ignoreLbl.setVisible(true);
                 ignoredList.setValue(columnList(igColList));
 
-                List<Integer> columnIndex = errorReport.stream()
-                        .map(LogErrorReport::getColumnIndex)
-                        .collect(Collectors.toList());
-
-                Button skipColumns = (Button) errorPopUp.getFellow(handleSkipColumnsBtnId);
+                Button skipColumns = (Button) errorPopUp.getFellow(skipColumnsBtnId);
                 skipColumns.setVisible(true);
                 skipColumns.addEventListener("onClick", event -> {
                             errorPopUp.invalidate();
                             errorPopUp.detach();
 
-                            for (int pos : columnIndex) {
+                            for (int pos : invTimestampPos) {
                                 sample.getOtherTimestamps().remove(pos);
                                 sample.getIgnoredPos().add(pos);
                             }
@@ -727,13 +712,13 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 );
             }
 
-            Button downloadBtn = (Button) errorPopUp.getFellow(handleDownloadBtnId);
+            Button downloadBtn = (Button) errorPopUp.getFellow(downloadReportBtnId);
             downloadBtn.addEventListener("onClick", event -> {
                         downloadErrorLog(errorReport);
                     }
             );
 
-            Button skipRows = (Button) errorPopUp.getFellow(handleSkipRowsBtnId);
+            Button skipRows = (Button) errorPopUp.getFellow(skipRowsBtnId);
             skipRows.addEventListener("onClick", event -> {
                         errorPopUp.invalidate();
                         errorPopUp.detach();

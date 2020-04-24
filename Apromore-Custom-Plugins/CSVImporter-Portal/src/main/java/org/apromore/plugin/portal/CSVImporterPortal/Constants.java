@@ -3,7 +3,7 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 interface Constants {
 
     char[] supportedSeparators = {',','|',';','\t'};
-    String[] allowedExtensions = {"csv", "xls", "xlsx"};
+
     String[] fileEncoding = {"UTF-8",
                 "UTF-16",
                 "windows-1250 (Eastern European)",
@@ -17,10 +17,11 @@ interface Constants {
                 "windows-31j (Japanese)",
                 "ISO-2022-CN (Chinese)"
     };
+
     int logSampleSize = 100;
 
-    Integer columnWidth = 180;
-    Integer indexColumnWidth = 50;
+    int columnWidth = 180;
+    int indexColumnWidth = 50;
 
     String caseIdLabel = "caseId";
     String activityLabel = "activity";
@@ -31,6 +32,12 @@ interface Constants {
     String eventAttributeLabel = "eventAttribute";
     String caseAttributeLabel = "caseAttribute";
     String ignoreLabel = "ignoreAttribute";
+
+    String redLabelCSS = "redLabel";
+    String greenLabelCSS = "greenLabel";
+    String couldNotParseMessage = "Could not parse as timestamp!";
+    String parsedMessage = "Parsed correctly!";
+    String parsedAutoMessage = "Timestamp format automatically detected. Override?";
 
     // UI ids
     String setEncodingId = "setEncoding";
@@ -47,21 +54,12 @@ interface Constants {
     String popUpTextBoxId = "txt_";
     String popUpLabelId = "lbl_";
 
-    String handleErrorCount = "count";
-    String handleInvalidColumnsList = "invalidColumnsList";
-    String handleIgnoredColumnsList = "ignoredColumnsList";
-    String handleDownloadBtnId = "downloadErrorLog";
-    String handleSkipRowsBtnId = "skipInvalidRows";
-    String handleSkipColumnsBtnId = "skipInvalidColumns";
+    String errorCountLblId = "count";
+    String invalidColumnsListLblId = "invalidColumnsList";
+    String ignoredColumnsListLblId = "ignoredColumnsList";
+    String downloadReportBtnId = "downloadErrorLog";
+    String skipRowsBtnId = "skipInvalidRows";
+    String skipColumnsBtnId = "skipInvalidColumns";
     String handleCancelBtnId = "cancelImport";
-    String handleIgnoreColLbl = "ignoreCol";
-
-
-
-    String redLabelCSS = "redLabel";
-    String greenLabelCSS = "greenLabel";
-    String couldNotParse = "Could not parse as timestamp!";
-    String parsedMessage = "Parsed correctly!";
-    String parsedAuto = "Timestamp format automatically detected. Override?";
-
+    String ignoreColLblId = "ignoreCol";
 }

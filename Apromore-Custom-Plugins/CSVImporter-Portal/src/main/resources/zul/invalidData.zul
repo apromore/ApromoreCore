@@ -26,7 +26,7 @@
     <style src="/themes/ap/common/css/utils.css"/>
     <borderlayout>
         <center sclass="ap-csv-importer-main">
-            <div>
+            <div style="padding: 8px">
                 <label id="count"/>
                 <label value=" invalid cell(s) detected."/>
                 <separator/>
