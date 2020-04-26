@@ -9,8 +9,6 @@
     <!-- OSGi Libraries -->
     <artifact type="bundle" name="org.apromore.eclipse-collections-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.hpi-bpt-osgi" version="[1.0.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.bpmntk-osgi" version="[2.0.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.bpstruct-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.json.osgi" version="[1.0.0, 2)"/> 
     <artifact type="bundle" name="org.apromore.log-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.lpsolve-osgi" version="[1.0.0, 2)"/>
@@ -61,6 +59,8 @@
     
     <!-- CORE CUSTOM PLUGINS -->
     <artifact type="bundle" name="org.apromore.apmlog" version="[1.0.0, 2)"/>
+    
+    <artifact type="bundle" name="org.apromore.splitminer-logic" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.similaritysearch-logic" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.similaritysearch-portal" version="[1.1.0, 2)"/>

@@ -243,6 +243,9 @@ public class ATrace extends XTraceImpl {
 	    MutableIntList matchingStartEvents = IntLists.mutable.empty(); // store remaining start events for matching
 		for (int i=0;i<this.getOriginalEvents().size();i++) {
 		    String eventName = LogUtils.getConceptName(this.getOriginalEventFromIndex(i));
+		    
+		    if (eventName.equalsIgnoreCase(Constants.MISSING_STRING_VALUE)) continue; // cannot use empty or missing values
+		    
 		    if (LogUtils.getLifecycleTransition(this.getOriginalEventFromIndex(i)).equalsIgnoreCase(Constants.LIFECYCLE_START)) {
 		        orderedStartEvents.add(i);
 		        matchingStartEvents.add(i);

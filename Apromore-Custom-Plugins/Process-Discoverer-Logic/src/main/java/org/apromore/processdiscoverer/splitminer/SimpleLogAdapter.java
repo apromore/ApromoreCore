@@ -28,14 +28,13 @@ import java.util.Map;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.logman.utils.LogUtils;
+import org.apromore.splitminer.log.SimpleLog;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.primitive.IntList;
-
-import au.edu.qut.processmining.log.SimpleLog;
 
 
 /**

@@ -70,3 +70,13 @@
     background-image: url('../../common/img/icons/export-pdf.svg') !important;
     width: 26px !important;
 }
+
+.x-panel-editor-north .x-toolbar button[title='Calculate BPMN process model metrics'] {
+    background-image: url('../../common/img/icons/measure.svg') !important;
+    width: 26px !important;
+}
+
+.x-panel-editor-north .x-toolbar button[title='Simulate in BIMP'] {
+    background-image: url('../../common/img/icons/simulate-model.svg') !important;
+    width: 26px !important;
+}

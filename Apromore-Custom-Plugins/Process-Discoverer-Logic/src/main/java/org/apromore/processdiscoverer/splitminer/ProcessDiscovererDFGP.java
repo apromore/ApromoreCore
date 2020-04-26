@@ -29,12 +29,11 @@ import java.util.Map;
 import org.apromore.processdiscoverer.abstraction.DFGAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
-
-import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.splitminer.dfgp.DFGEdge;
-import au.edu.qut.processmining.miners.splitminer.dfgp.DFGNode;
-import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
-import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
+import org.apromore.splitminer.dfgp.DFGEdge;
+import org.apromore.splitminer.dfgp.DFGNode;
+import org.apromore.splitminer.dfgp.DirectlyFollowGraphPlus;
+import org.apromore.splitminer.log.SimpleLog;
+import org.apromore.splitminer.ui.dfgp.DFGPUIResult;
 
 /**
  * This class is used as a bridging DFGP created from a DFGAbstraction

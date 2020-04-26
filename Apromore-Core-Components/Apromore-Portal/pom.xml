@@ -56,7 +56,7 @@
                                  These dependencies should be in scope provided!
                             -->
                             artifactId=
-                            diffbp|hibernate-core|jbpt|jdom|json|jaxb2-basics-runtime
+                            hibernate-core|jbpt|jdom|json|jaxb2-basics-runtime
                             |spring-social-core|spring-social-facebook|spring-social-twitter
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
@@ -135,7 +135,7 @@
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                     <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
-                        %regex[WEB-INF/lib/(?!diffbp|hibernate-core|jbpt|jdom|json|jaxb2|spring-social).*jar]
+                        %regex[WEB-INF/lib/(?!hibernate-core|jbpt|jdom|json|jaxb2|spring-social).*jar]
                     </packagingExcludes>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -201,13 +201,6 @@
             <artifactId>manager-security</artifactId>
         </dependency>
 
-        <!-- BP-diff and its dependencies
-             TODO: are those embedded or OSGI?
-        -->
-        <dependency>
-            <groupId>diffbp</groupId>
-            <artifactId>diffbp</artifactId>
-        </dependency>
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>

@@ -92,13 +92,6 @@
     </build>
 
     <dependencies>
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmndiagramimporter-logic</artifactId>
-            <version>1.1</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>log-animation-logic</artifactId>
@@ -133,11 +126,5 @@
             <version>1.1</version>
             <classifier>classes</classifier>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-petri-osgi</artifactId>
-        </dependency>
--->
     </dependencies>
 </project>
