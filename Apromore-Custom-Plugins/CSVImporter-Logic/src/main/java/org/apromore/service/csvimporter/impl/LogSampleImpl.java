@@ -23,7 +23,6 @@
 package org.apromore.service.csvimporter.impl;
 
 import lombok.Data;
-import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogSample;
 
 import java.util.*;
@@ -79,25 +78,17 @@ class LogSampleImpl implements LogSample, Constants {
         resourcePos = -1;
 
         for (int pos = 0; pos < header.size(); pos++) {
-            if (caseIdPos == -1 && guessUniqueAttributesPos(caseIdValues, header.get(pos))) {
+            if (caseIdPos == -1 && match(possibleCaseId, header.get(pos))) {
                 caseIdPos = pos;
-            } else if (activityPos == -1 && guessUniqueAttributesPos(activityValues, header.get(pos))) {
+            } else if (activityPos == -1 && match(possibleActivity, header.get(pos))) {
                 activityPos = pos;
-            } else if (endTimestampPos == -1 && guessUniqueAttributesPos(timestampValues, header.get(pos)) && isParsable(pos)) {
+            } else if (endTimestampPos == -1 && match(possibleEndTimestamp, header.get(pos)) && isParsable(pos)) {
                 endTimestampPos = pos;
-            } else if (startTimestampPos == -1 && guessUniqueAttributesPos(StartTsValues, header.get(pos)) && isParsable(pos)) {
+            } else if (startTimestampPos == -1 && match(possibleStartTimestamp, header.get(pos)) && isParsable(pos)) {
                 startTimestampPos = pos;
-            } else if (resourcePos == -1 && guessUniqueAttributesPos(resourceValues, header.get(pos))) {
+            } else if (resourcePos == -1 && match(possibleResource, header.get(pos))) {
                 resourcePos = pos;
             }
-        }
-    }
-
-    private boolean guessUniqueAttributesPos(String[] col, String elem) {
-        if (col == timestampValues || col == StartTsValues) {
-            return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
-        } else {
-            return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
         }
     }
 
@@ -136,15 +127,23 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     private boolean couldBeTimestamp(int pos) {
-        if ((header.get(pos).toLowerCase().contains("time") || header.get(pos).toLowerCase().contains("date"))) {
+        if (match(possibleOtherTimestamp, header.get(pos))) {
             return true;
         }
 
-        Pattern pattern = Pattern.compile(possibleTimestamp);
-        Matcher match;
         for (List<String> myLine : lines) {
-            match = pattern.matcher(myLine.get(pos));
-            if (match.find()) return true;
+            if (match(timestampPattern, myLine.get(pos))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean match(String myPattern, String myValue) {
+        Pattern pattern = Pattern.compile(myPattern);
+        Matcher match = pattern.matcher(myValue.replace("\uFEFF", "").toLowerCase()); //﻿ remove ﻿﻿﻿﻿\uFEFF for UTF-8 With BOM encoding
+        if (match.find()) {
+            return true;
         }
         return false;
     }

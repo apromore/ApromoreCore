@@ -21,12 +21,11 @@
 package org.apromore.service.csvimporter.impl;
 
 interface Constants {
-    String[] caseIdValues    = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
-    String[] activityValues  = {"activity", "activity id", "activity-id", "operation", "event"};
-    String[] resourceValues  = {"resource", "agent", "employee", "group"};
-    String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp",
-            "completion time", "end timestamp"};
-    String[] StartTsValues   = {"start date", "start timestamp", "start time"};
-
-    String possibleTimestamp = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2})";
+    String possibleCaseId = "^((case)|(.*(case|service|event)(\\s|-|_)?(id)).*)$";
+    String possibleActivity = "^((activity|operation)(.*)|event)$";
+    String possibleResource = "^(resource|agent|employee|group)$";
+    String possibleEndTimestamp = "^((.*(end|complete|completion).*)|(time:)?timestamp|date & time)$";
+    String possibleStartTimestamp = "^(.*start.*)$";
+    String possibleOtherTimestamp = "^(.*(date|time).*)$";
+    String timestampPattern = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2}.*)$";
 }
