@@ -112,6 +112,12 @@ public interface SecurityService {
     List<Role> getAllRoles();
 
     /**
+     * @param name  of an existing role
+     * @return the unique role with the specified <var>name</var>
+     */
+    Role findRoleByName(String name);
+
+    /**
      * @param user  arbitrary but non-null
      * @return the roles granted to the specified <var>user</var>
      */

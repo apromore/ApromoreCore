@@ -232,7 +232,7 @@
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.e.portal.security.hint}"/>
                         </hbox>
                         <div hflex="1"></div>
-                        <SimpleSearch id="simplesearchcomp" border="0" width="400px" visible="false" />
+                        <SimpleSearch id="simplesearchcomp" border="0" width="400px" visible="true" />
                     </hbox>
                     <html id="folders" width="0px" height="0px" visible="false" />
                     <tabbox id="tabbox" vflex="1" hflex="1">
