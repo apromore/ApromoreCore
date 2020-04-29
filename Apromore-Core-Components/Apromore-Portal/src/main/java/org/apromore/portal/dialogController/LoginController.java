@@ -36,6 +36,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.zkoss.zul.*;
+import org.zkoss.util.resource.Labels;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class LoginController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
-
+    private static final String COMMUNITY_TAG = "community";
     public LoginController() {
 	    super();
     }
@@ -61,10 +62,17 @@ public class LoginController extends BaseController {
     public void onCreate() throws InterruptedException {
         Window mainW = (Window) this.getFellow("login-main");
         Div agree = (Div) mainW.getFellow("agree");
+        Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
+        String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
         boolean enableTC = config.getEnableTC();
-        agree.setVisible(enableTC);
+        String versionEdition = config.getVersionEdition().toLowerCase();
 
+        agree.setVisible(enableTC);
+        if (versionEdition.contains(COMMUNITY_TAG)) {
+            src += "-" + COMMUNITY_TAG;
+        }
+        logoWithTag.setSrc(src + ".svg");
     }
 
 }
