@@ -1,4 +1,4 @@
-package org.apromore.service.csvimporter.dateparser;
+package org.apromore.service.csvimporter.impl.dateparser;
 
 import java.util.*;
 
@@ -8,7 +8,7 @@ import java.util.*;
  * @author sulin
  * @since 2019-09-12 14:34:29
  */
-public final class DateParserBuilder {
+final class DateParserBuilder {
 
     static final String[] months = {
             "january",

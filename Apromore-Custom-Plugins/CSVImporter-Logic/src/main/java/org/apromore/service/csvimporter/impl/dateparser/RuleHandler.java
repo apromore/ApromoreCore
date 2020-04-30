@@ -1,4 +1,4 @@
-package org.apromore.service.csvimporter.dateparser;
+package org.apromore.service.csvimporter.impl.dateparser;
 
 import com.github.sisyphsu.retree.ReMatcher;
 
@@ -10,7 +10,7 @@ import com.github.sisyphsu.retree.ReMatcher;
  * @since 2019-09-14 14:25:45
  */
 @FunctionalInterface
-public interface RuleHandler {
+interface RuleHandler {
 
     /**
      * Parse substring[from, to) of the specified string

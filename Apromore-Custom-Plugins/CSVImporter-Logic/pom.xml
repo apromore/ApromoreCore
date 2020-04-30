@@ -42,7 +42,7 @@
                         </Import-Package>
                         <Export-Package>
                             org.apromore.service.csvimporter,
-                            org.apromore.service.csvimporter.dateparser
+                            org.apromore.service.csvimporter.impl.dateparser
                         </Export-Package>
                     </instructions>
                 </configuration>

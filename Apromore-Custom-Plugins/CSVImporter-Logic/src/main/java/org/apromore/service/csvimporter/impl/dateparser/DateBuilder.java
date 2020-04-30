@@ -1,4 +1,4 @@
-package org.apromore.service.csvimporter.dateparser;
+package org.apromore.service.csvimporter.impl.dateparser;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import java.util.TimeZone;
  */
 @Getter
 @Setter
-public final class DateBuilder {
+final class DateBuilder {
 
     private static final ZoneId UTC_ZONE_ID = ZoneId.of("UTC");
     private static final ZoneOffset DEFAULT_OFFSET = OffsetDateTime.now().getOffset();

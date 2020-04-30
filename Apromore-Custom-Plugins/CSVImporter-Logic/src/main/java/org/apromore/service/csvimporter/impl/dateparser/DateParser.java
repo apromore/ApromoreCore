@@ -1,4 +1,4 @@
-package org.apromore.service.csvimporter.dateparser;
+package org.apromore.service.csvimporter.impl.dateparser;
 
 import com.github.sisyphsu.retree.ReMatcher;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * @author sulin
  * @since 2019-09-12 14:28:50
  */
-public final class DateParser {
+final class DateParser {
 
     private final ReMatcher matcher;
     private final DateBuilder dt = new DateBuilder();

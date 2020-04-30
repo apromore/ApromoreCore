@@ -21,9 +21,11 @@
 package org.apromore.service.csvimporter.impl;
 
 import com.opencsv.CSVReader;
-import org.apromore.service.csvimporter.*;
+import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.LogErrorReport;
+import org.apromore.service.csvimporter.LogModel;
+import org.apromore.service.csvimporter.LogSample;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -180,7 +182,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     private Timestamp parseTimestampValue(String theValue, String format) {
         Timestamp stamp;
-        if (format != null) {
+        if (format != null && !format.isEmpty()) {
             stamp = parse.tryParsingWithFormat(theValue, format);
             if (stamp == null) {
                 stamp = parse.tryParsing(theValue);

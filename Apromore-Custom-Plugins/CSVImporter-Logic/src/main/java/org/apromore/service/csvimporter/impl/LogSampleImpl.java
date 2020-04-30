@@ -142,10 +142,7 @@ class LogSampleImpl implements LogSample, Constants {
     private boolean match(String myPattern, String myValue) {
         Pattern pattern = Pattern.compile(myPattern);
         Matcher match = pattern.matcher(myValue.replace("\uFEFF", "").toLowerCase()); //﻿ remove ﻿﻿﻿﻿\uFEFF for UTF-8 With BOM encoding
-        if (match.find()) {
-            return true;
-        }
-        return false;
+        return match.find();
     }
 
 
