@@ -159,7 +159,7 @@ class LogSampleImpl implements LogSample, Constants {
     private void setCaseAttributesPos() {
         if (caseIdPos != -1 && eventAttributesPos != null && !eventAttributesPos.isEmpty()) {
             List<CaseAttributesDiscovery> discoverList;
-            Iterator iterator = eventAttributesPos.iterator();
+            Iterator<Integer> iterator = eventAttributesPos.iterator();
             while (iterator.hasNext()) {
                 discoverList = new ArrayList<>();
                 boolean caseAttribute = true;
