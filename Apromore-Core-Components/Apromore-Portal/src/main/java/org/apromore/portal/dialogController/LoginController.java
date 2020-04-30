@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 public class LoginController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
-    private static final String COMMUNITY_TAG = "community";
     public LoginController() {
         super();
     }
@@ -66,11 +65,10 @@ public class LoginController extends BaseController {
         String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
         boolean enableTC = config.getEnableTC();
-        String versionEdition = config.getVersionEdition().toLowerCase();
-
         agree.setVisible(enableTC);
-        if (versionEdition.contains(COMMUNITY_TAG)) {
-            src += "-" + COMMUNITY_TAG;
+
+        if (config.isCommunity()) {
+            src += "-" + "community";
         }
         logoWithTag.setSrc(src + ".svg");
     }
