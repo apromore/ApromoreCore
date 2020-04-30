@@ -637,23 +637,23 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
-        String mess = "No attribute has been selected as ";
+        String mess = "- No attribute has been selected as ";
 
         if (sample.getCaseIdPos() == -1) {
-            importMessage.append(mess + "Case ID!");
+            importMessage.append(mess).append("Case ID!");
         }
         if (sample.getActivityPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess + "Activity!");
+                importMessage.append(mess).append("Activity!");
             } else {
-                importMessage.append(System.lineSeparator()).append(mess + "Activity!");
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append("Activity!");
             }
         }
         if (sample.getEndTimestampPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess + "End Timestamp!");
+                importMessage.append(mess).append("End Timestamp!");
             } else {
-                importMessage.append(System.lineSeparator()).append(mess + "End Timestamp!");
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append("End Timestamp!");
             }
         }
 
@@ -674,7 +674,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
             Set<String> invColList = new HashSet<String>();
             Set<String> igColList = new HashSet<String>();
-            List<Integer> invTimestampPos = new ArrayList<>();
+            Set<Integer> invTimestampPos = new HashSet<>();
             for (LogErrorReport error : errorReport) {
                 if (error.getHeader() != null && !error.getHeader().isEmpty()) {
                     invColList.add(error.getHeader());
