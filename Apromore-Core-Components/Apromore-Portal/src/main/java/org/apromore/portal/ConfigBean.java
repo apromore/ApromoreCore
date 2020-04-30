@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public class ConfigBean implements Serializable {
 
     private static final long serialVersionUID = 117L;
+    private static final String COMMUNITY_TAG = "community";
 
     private String  siteEditor;
     private String  siteExternalHost;
@@ -89,4 +90,8 @@ public class ConfigBean implements Serializable {
     public String getVersionBuildDate()     { return versionBuildDate; }
     public boolean getEnablePublish()     { return enablePublish; }
     public boolean getEnableTC()     { return enableTC; }
+
+    public boolean isCommunity() {
+        return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
+    }
 }
