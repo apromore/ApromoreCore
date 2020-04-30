@@ -44,7 +44,7 @@
             <north title="Permissions" flex="true" splittable="true" height="330px" border="none">
                 <Permissions id="existingPermissions"/>
             </north>
-            <center title="User &amp; Groups" flex="true" border="none">
+            <center title="Users &amp; Groups" flex="true" border="none">
                 <Groups id="findGroups" vflex="true"/>
             </center>
         </borderlayout>

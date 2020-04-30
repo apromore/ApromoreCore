@@ -393,7 +393,7 @@ public class MainController extends BaseController implements MainControllerInte
             ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "macros/openModelInSignavio.zul?id=" + id;
+            String url = "macros/openModelAlternative.zul?id=" + id;
             if (annotation != null && annotation.equals(Constants.INITIAL_ANNOTATION)) url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
