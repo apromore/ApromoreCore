@@ -29,6 +29,7 @@ import org.apromore.dao.model.User;
 import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
+import org.apromore.service.SecurityService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +51,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class UserMapperUnitTest {
 
     UserMapper mapper;
+    SecurityService secSrv;
 
     @Before
     public void setUp() throws Exception {
@@ -89,7 +91,7 @@ public class UserMapperUnitTest {
         user.setDateCreated(Calendar.getInstance().getTime());
         user.setLastActivityDate(Calendar.getInstance().getTime());
 
-        UserType userType = mapper.convertUserTypes(user);
+        UserType userType = mapper.convertUserTypes(user, secSrv);
 
         assertThat(userType.getUsername(), equalTo(user.getUsername()));
         assertThat(userType.getFirstName(), equalTo(user.getFirstName()));

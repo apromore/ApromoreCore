@@ -28,6 +28,7 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
 import org.apromore.security.util.SecurityUtil;
+import org.apromore.service.SecurityService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,6 +61,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     @Inject
     private UserRepository userRepository;
 
+    @Inject
+    private SecurityService securityService;
+
 
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -85,7 +89,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         List<GrantedAuthority> authorities = getAuthorities(user.getRoles());
         UsernamePasswordAuthenticationToken authenticated = new UsernamePasswordAuthenticationToken(original.getPrincipal(),
                 original.getCredentials(), authorities);
-        authenticated.setDetails(UserMapper.convertUserTypes(user));
+        authenticated.setDetails(UserMapper.convertUserTypes(user, securityService));
 
         SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
         SecurityContextHolder.getContext().setAuthentication(authenticated);
