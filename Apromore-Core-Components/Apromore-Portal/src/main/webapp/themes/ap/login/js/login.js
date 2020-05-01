@@ -139,12 +139,26 @@
     if (control.val() !== control2.val())  {
       markControl(control, false);
       markControl(control2, false);
+      Ap.login.showMessage("The two password entries do not match");
       pass = false
     }
     return pass;
   }
 
   Ap.login.checkComply = checkComply;
+
+  Ap.login.showMessage = function (content) {
+    $('#ap-login-message .content').html(content);
+    let msg = $('#ap-login-message');
+    msg.show();
+    msg.css('visibility', 'visible');
+  }
+
+  Ap.login.closeMessage = function () {
+    let msg = $('#ap-login-message')
+    msg.hide();
+    msg.css('visibility', 'hidden');
+  }
 
   Ap.login.enhanceControls = function() {
     let phoneInput;
@@ -154,6 +168,15 @@
     let reuseEmail = $('#ap-reuse-email');
     let username = $('#ap-new-username');
     let agree = $('#ap-agree');
+    let pass = getControl('password');
+    let pass2 = getControl('confirmPassword');
+
+    pass.on('change', function() {
+      Ap.login.closeMessage()
+    })
+    pass2.on('change', function() {
+      Ap.login.closeMessage()
+    })
 
     if (isTCEnabled() && agree) {
       agree.change((e) => {
