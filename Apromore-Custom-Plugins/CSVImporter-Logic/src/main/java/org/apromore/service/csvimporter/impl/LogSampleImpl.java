@@ -158,13 +158,15 @@ class LogSampleImpl implements LogSample, Constants {
 
     private void setCaseAttributesPos() {
         if (caseIdPos != -1 && eventAttributesPos != null && !eventAttributesPos.isEmpty()) {
+            List<List<String>> myLines = sortLines(lines);
+
             List<CaseAttributesDiscovery> discoverList;
             Iterator<Integer> iterator = eventAttributesPos.iterator();
             while (iterator.hasNext()) {
                 discoverList = new ArrayList<>();
                 boolean caseAttribute = true;
                 int pos = (int) iterator.next();
-                for (List<String> myLine : lines) {
+                for (List<String> myLine : myLines) {
                     if (discoverList.isEmpty() || discoverList.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(caseIdPos)))) { // new case id
                         discoverList = new ArrayList<>();
                         discoverList.add(new CaseAttributesDiscovery(myLine.get(caseIdPos), pos, myLine.get(pos)));
@@ -185,6 +187,12 @@ class LogSampleImpl implements LogSample, Constants {
 
     private boolean isNOTUniqueAttribute(int pos) {
         return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
+    }
+
+    private List<List<String>> sortLines(List<List<String>> myLines) {
+        Comparator<String> nameOrder = new NameComparator();
+        myLines.sort((o1, o2) -> nameOrder.compare(o1.get(caseIdPos), o2.get(caseIdPos)));
+        return myLines;
     }
 
     @Override
