@@ -12,43 +12,40 @@
 	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
 	<string key="lifecycle:model" value="standard"/>
 	<trace>
+		<string key="מס לקוח" value="221"/>
 		<string key="concept:name" value="SO10000001"/>
 		<event>
-			<string key="מס לקוח" value="221"/>
 			<string key="concept:name" value="טיוטא"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="0011-11-06T16:59:00.000+10:00"/>
+			<date key="time:timestamp" value="2011-11-06T16:59:00.000+02:00"/>
 			<string key="לטיפול" value="24"/>
 		</event>
 		<event>
-			<string key="מס לקוח" value="221"/>
 			<string key="concept:name" value="מבוטלת"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="0011-11-17T13:30:00.000+10:00"/>
+			<date key="time:timestamp" value="2011-11-17T13:30:00.000+02:00"/>
 			<string key="לטיפול" value="1"/>
 		</event>
 		<event>
-			<string key="מס לקוח" value="221"/>
 			<string key="concept:name" value="בעית אובליגו"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="0011-12-08T17:29:00.000+10:00"/>
+			<date key="time:timestamp" value="2011-12-08T17:29:00.000+02:00"/>
 			<string key="לטיפול" value="25"/>
 		</event>
 		<event>
-			<string key="מס לקוח" value="221"/>
 			<string key="concept:name" value="מבוטלת"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="0011-12-18T09:12:00.000+10:00"/>
+			<date key="time:timestamp" value="2011-12-18T09:12:00.000+02:00"/>
 			<string key="לטיפול" value="24"/>
 		</event>
 	</trace>
 	<trace>
+		<string key="מס לקוח" value="452"/>
 		<string key="concept:name" value="SO11000099"/>
 		<event>
-			<string key="מס לקוח" value="452"/>
 			<string key="concept:name" value="טיוטא"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="0011-11-01T16:08:00.000+10:00"/>
+			<date key="time:timestamp" value="2011-11-01T16:08:00.000+02:00"/>
 			<string key="לטיפול" value="38"/>
 		</event>
 	</trace>
