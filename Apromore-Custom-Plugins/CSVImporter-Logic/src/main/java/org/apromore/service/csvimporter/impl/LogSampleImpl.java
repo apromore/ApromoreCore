@@ -158,7 +158,10 @@ class LogSampleImpl implements LogSample, Constants {
 
     private void setCaseAttributesPos() {
         if (caseIdPos != -1 && eventAttributesPos != null && !eventAttributesPos.isEmpty()) {
-            List<List<String>> myLines = sortLines(lines);
+            // sort by case id
+            List<List<String>> myLines = new ArrayList<>(lines);
+            Comparator<String> nameOrder = new NameComparator();
+            myLines.sort((o1, o2) -> nameOrder.compare(o1.get(caseIdPos), o2.get(caseIdPos)));
 
             List<CaseAttributesDiscovery> discoverList;
             Iterator<Integer> iterator = eventAttributesPos.iterator();
@@ -189,11 +192,6 @@ class LogSampleImpl implements LogSample, Constants {
         return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
     }
 
-    private List<List<String>> sortLines(List<List<String>> myLines) {
-        Comparator<String> nameOrder = new NameComparator();
-        myLines.sort((o1, o2) -> nameOrder.compare(o1.get(caseIdPos), o2.get(caseIdPos)));
-        return myLines;
-    }
 
     @Override
     public void validateSample() throws Exception {
