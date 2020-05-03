@@ -23,7 +23,7 @@
 package org.apromore.processdiscoverer.abstraction;
 
 import org.apromore.logman.attribute.graph.InvalidArcException;
-import org.apromore.logman.attribute.graph.selection.AttributeGraph;
+import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.bpmn.ProcessBPMNDiagram;
@@ -37,7 +37,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
  *
  */
 public class DFGAbstraction extends AbstractAbstraction {
-	public DFGAbstraction(AttributeLog log, AttributeGraph graph, AbstractionParams params) throws Exception {
+	public DFGAbstraction(AttributeLog log, FilteredGraph graph, AbstractionParams params) throws Exception {
 		super(log, params);
 		this.diagram = new ProcessBPMNDiagram(graph, log);
 		

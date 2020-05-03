@@ -25,7 +25,7 @@ package org.apromore.logman.attribute.graph;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.DataSetup;
-import org.apromore.logman.attribute.graph.selection.AttributeGraph;
+import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
@@ -245,7 +245,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), graph.getSubGraphs().get(2).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), graph.getSubGraphs().get(2).getArcs());
         
-        AttributeGraph nodeBasedGraph2 = graph.getSubGraphs().get(2);
+        FilteredGraph nodeBasedGraph2 = graph.getSubGraphs().get(2);
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(1).getNodes());
@@ -253,7 +253,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(2).getNodes());
         Assert.assertEquals(IntSets.mutable.of(2, 17, 24), nodeBasedGraph2.getSubGraphs().get(2).getArcs());  
         
-        AttributeGraph nodeBasedGraph1 = graph.getSubGraphs().get(1);
+        FilteredGraph nodeBasedGraph1 = graph.getSubGraphs().get(1);
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(1).getNodes());
@@ -261,7 +261,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(2).getNodes());
         Assert.assertEquals(IntSets.mutable.of(2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(2).getArcs());  
         
-        AttributeGraph nodeBasedGraph0 = graph.getSubGraphs().get(0);
+        FilteredGraph nodeBasedGraph0 = graph.getSubGraphs().get(0);
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(0).getArcs());  
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(1).getNodes());

@@ -10,7 +10,7 @@ import org.eclipse.collections.impl.factory.primitive.IntLongMaps;
 import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 
 /**
- * AttributeTraceGraph is an IndexedAttributeGraph implementation for AttributeTrace.
+ * AttributeTraceGraph is an {@link WeightedAttributeGraph} implementation for AttributeTrace.
  * 
  * @author hoang
  *

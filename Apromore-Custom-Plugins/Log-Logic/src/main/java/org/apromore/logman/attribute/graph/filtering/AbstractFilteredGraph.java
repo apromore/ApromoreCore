@@ -20,23 +20,22 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph.selection;
+package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.graph.InvalidArcException;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.set.primitive.IntSet;
 
-public abstract class AbstractAttributeGraph implements AttributeGraph {
+public abstract class AbstractFilteredGraph implements FilteredGraph {
     protected AttributeLogGraph originalGraph;
     protected BitSet nodeBitMask; //true indicate that the node i (also at the index i, node = index) is active
     protected BitSet arcBitMask; //true indicate that the arc i (also at the index i, arc = index) is active
     
-    public AbstractAttributeGraph(AttributeLogGraph originalGraph, BitSet nodeBitMask, BitSet arcBitMask) {
+    public AbstractFilteredGraph(AttributeLogGraph originalGraph, BitSet nodeBitMask, BitSet arcBitMask) {
         this.originalGraph = originalGraph;
         this.nodeBitMask = nodeBitMask;
         this.arcBitMask = arcBitMask;
@@ -138,7 +137,7 @@ public abstract class AbstractAttributeGraph implements AttributeGraph {
     ///////////////////// ARC OPERATIONS //////////////////////////////////
     
     @Override
-    public int getArc(int source, int target) throws InvalidArcException {
+    public int getArc(int source, int target) {
         return originalGraph.getArc(source, target);
     }
     
@@ -190,8 +189,8 @@ public abstract class AbstractAttributeGraph implements AttributeGraph {
     @Override
     public boolean equals(Object other) {
         if (other == null) return false;
-        if (!(other instanceof AttributeGraph)) return false;
-        AttributeGraph otherGraph = (AttributeGraph)other;
+        if (!(other instanceof FilteredGraph)) return false;
+        FilteredGraph otherGraph = (FilteredGraph)other;
         return (this.getNodes().equals(otherGraph.getNodes()) && this.getArcs().equals(otherGraph.getArcs()));
     }
     

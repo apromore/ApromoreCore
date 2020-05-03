@@ -24,7 +24,7 @@ package org.apromore.processdiscoverer.abstraction;
 
 
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.graph.selection.AttributeGraph;
+import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.processdiscoverer.Abstraction;
@@ -88,7 +88,7 @@ public class AbstractionFactory {
                 params.invertedNodes(), params.invertedArcs());
 
         long timer = System.currentTimeMillis();
-        AttributeGraph filteredGraph = graph.filter(params.getNodeSelectThreshold(), params.getArcSelectThreshold());
+        FilteredGraph filteredGraph = graph.filter(params.getNodeSelectThreshold(), params.getArcSelectThreshold());
         
         this.dfgAbstraction = new DFGAbstraction(log, filteredGraph, params);
         log.resetDataStatus();

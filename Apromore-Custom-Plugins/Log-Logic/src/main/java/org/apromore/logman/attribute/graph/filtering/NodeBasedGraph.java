@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph.selection;
+package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 import java.util.LinkedList;
@@ -38,8 +38,14 @@ import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.eclipse.collections.impl.factory.primitive.IntStacks;
 
-public class NodeBasedGraph extends AbstractAttributeGraph {
-    private MutableList<AttributeGraph> subGraphs = Lists.mutable.empty();
+/**
+ * NodeBasedGraph is FilteredGraph based on filtering out nodes
+ * 
+ * @author Bruce Nguyen
+ *
+ */
+public class NodeBasedGraph extends AbstractFilteredGraph {
+    private MutableList<FilteredGraph> subGraphs = Lists.mutable.empty();
     private GraphTraversedArcs forwardArcs;
     private GraphTraversedArcs backwardArcs;
     private boolean isStartEndConnected = false;
@@ -355,7 +361,7 @@ public class NodeBasedGraph extends AbstractAttributeGraph {
     }
     
     @Override
-    public ListIterable<AttributeGraph> getSubGraphs() {
+    public ListIterable<FilteredGraph> getSubGraphs() {
         return subGraphs;
     }
 

@@ -32,7 +32,7 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * WeightedAttributeGraph is a subgraph of AttributeMatrixGraph with added weights for nodes/arcs.
+ * WeightedAttributeGraph is a subgraph of {@link AttributeMatrixGraph} with added weights for nodes/arcs.
  * 
  * @author Bruce Nguyen
  *
@@ -91,13 +91,11 @@ public abstract class WeightedAttributeGraph {
     
     //////////////////////////////// NODES OPERATIONS //////////////////////////////
     
-    public String getNodeName(int node) throws InvalidNodeException {
+    public String getNodeName(int node) {
         if (containNode(node)) {
             return attMatrixGraph.getNodeName(node);
         }
-        else {
-            throw new InvalidNodeException("Cannot get name for invalid node: node = " + node);
-        }
+        return "";
     }
     
     public int getNodeFromName(String nodeName) {

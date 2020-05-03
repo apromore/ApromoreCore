@@ -26,9 +26,10 @@ import java.util.Comparator;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.selection.AttributeGraph;
-import org.apromore.logman.attribute.graph.selection.NodeBasedGraph;
+import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
+import org.apromore.logman.attribute.graph.filtering.NodeBasedGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.DoubleList;
@@ -48,8 +49,8 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * AttributeLogGraph is an IndexedAttributeGraph implementation for AttributeLog.
- * AttributeLogGraph can be created by adding graphs of all AttributeTrace. 
+ * AttributeLogGraph is an {@link WeightedAttributeGraph} implementation for AttributeLog.
+ * AttributeLogGraph can be created by adding graphs of all {@link AttributeTrace}. 
  * AttributeLogGraph can be filtered on nodes and arcs to create subgraphs. 
  * This is filtering at the graph level, not at the log level.
  * 
@@ -92,7 +93,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private MutableIntObjectMap<MutableDoubleList> originalArcDurs = IntObjectMaps.mutable.empty();
     
     // Sub-graphs and related data and parameters
-    private MutableList<AttributeGraph> subGraphs = Lists.mutable.empty();
+    private MutableList<FilteredGraph> subGraphs = Lists.mutable.empty();
     private IntList sortedNodes;
     private IntList sortedArcs;
     private IndexableAttribute subGraphsSortedAttribute;
@@ -284,7 +285,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     
     ///////////////////////////// MEAUSURES ////////////////////////////////////////
     
-    public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation) throws InvalidNodeException {
+    public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation) {
         int node = this.getNodeFromName(nodeName);
         return (node >= 0) ? this.getNodeWeight(node, type, aggregation) : 0;
     }
@@ -449,18 +450,12 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         // Build arc-based graphs from the smallest one first
         //timer = System.currentTimeMillis();
         NodeBasedGraph preGraph = null;
-        for (AttributeGraph nodeGraph: subGraphs.toReversed()) {
+        for (FilteredGraph nodeGraph: subGraphs.toReversed()) {
             ((NodeBasedGraph)nodeGraph).buildSubGraphs(preGraph, arcInverted);
             preGraph = (NodeBasedGraph)nodeGraph;
         }
         
         System.out.println("Build all graphs: " + (System.currentTimeMillis() - timer) + " ms.");
-        
-//        System.out.println("Build all graphs: " + (System.currentTimeMillis() - timer) + " ms.");
-//        System.out.println("Number of node slider graphs: " + subGraphs.size());
-//        for (int i=0;i<subGraphs.size();i++) {
-//            System.out.println("Number of arc slider graphs at node slider level " + i + ": " + subGraphs.get(i).getSubGraphs().size());
-//        }
     }  
     
     // This method only builds bins of nodes based on one single connected node
@@ -548,14 +543,14 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         return (numberOfNodes == kUpperBound ? k : k+1);
     }
     
-    public ListIterable<AttributeGraph> getSubGraphs() {
+    public ListIterable<FilteredGraph> getSubGraphs() {
         return subGraphs;
     }
     
     // Select an AttributeGraph based on node and arc thresholds set on the UI
-    public AttributeGraph filter(double nodeThreshold, double arcThreshold) {
+    public FilteredGraph filter(double nodeThreshold, double arcThreshold) {
         long numberOfNodes = Math.round(nodeThreshold*this.getNodes().size());
-        AttributeGraph nodeBasedGraph = subGraphs.getLast();
+        FilteredGraph nodeBasedGraph = subGraphs.getLast();
         for (int i=0;i<subGraphs.size();i++) {
             if (subGraphs.get(i).getNodes().size() <= numberOfNodes) {
                 nodeBasedGraph = subGraphs.get(i);
@@ -564,9 +559,9 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             }
         }
         
-        ListIterable<AttributeGraph> arcSubGraphs = nodeBasedGraph.getSubGraphs();
+        ListIterable<FilteredGraph> arcSubGraphs = nodeBasedGraph.getSubGraphs();
         long numberOfArcs = Math.round(arcThreshold*nodeBasedGraph.getArcs().size());
-        AttributeGraph arcBasedGraph = arcSubGraphs.getLast();
+        FilteredGraph arcBasedGraph = arcSubGraphs.getLast();
         for (int i=0;i<arcSubGraphs.size();i++) {
             if (arcSubGraphs.get(i).getArcs().size() <= numberOfArcs) {
                 arcBasedGraph = arcSubGraphs.get(i);

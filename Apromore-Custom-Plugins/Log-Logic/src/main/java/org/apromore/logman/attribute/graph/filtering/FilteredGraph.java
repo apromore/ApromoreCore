@@ -20,19 +20,18 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph.selection;
+package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.graph.InvalidArcException;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.set.primitive.IntSet;
 
-public interface AttributeGraph {
+public interface FilteredGraph {
     public AttributeLogGraph getOriginalGraph();
     public BitSet cloneNodeBitMask();
     public BitSet cloneArcBitMask();
@@ -50,12 +49,12 @@ public interface AttributeGraph {
     public IntSet getOutgoingArcsWithoutSelfLoops(int node);
     public IntList getSortedArcs();
     public IntList getSortedArcsWithoutSelfLoops();
-    public int getArc(int source, int target) throws InvalidArcException;    
+    public int getArc(int source, int target);    
     public int getSource(int arc);    
     public int getTarget(int arc);    
     public IntSet getArcs();    
     public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation);    
     public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation);
     public boolean isPerfectSequence();
-    public ListIterable<AttributeGraph> getSubGraphs();
+    public ListIterable<FilteredGraph> getSubGraphs();
 }

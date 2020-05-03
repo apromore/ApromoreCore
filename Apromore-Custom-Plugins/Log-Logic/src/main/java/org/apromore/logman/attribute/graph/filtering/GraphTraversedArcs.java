@@ -20,10 +20,28 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.filtering;
 
-public class InvalidNodeException extends Exception {
-    public InvalidNodeException(String message) {
-        super(message);
+import java.util.BitSet;
+
+public class GraphTraversedArcs {
+    private BitSet arcBitMask; 
+    
+    public GraphTraversedArcs(BitSet arcBitMask) {
+        this.arcBitMask = arcBitMask;
+        this.arcBitMask.clear();
     }
+    
+    public void markAddArc(int arc) {
+        arcBitMask.set(arc);
+    }
+    
+    public boolean containArc(int arc) {
+        return arcBitMask.get(arc);
+    }
+    
+    public void clear() {
+        arcBitMask.clear();
+    }
+    
 }
