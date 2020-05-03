@@ -25,6 +25,7 @@ package org.apromore.logman.attribute.graph;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.DataSetup;
+import org.apromore.logman.attribute.graph.selection.AttributeGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
@@ -276,18 +277,11 @@ public class AttributeLogGraphTest extends DataSetup {
     public void test_Exception() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
-        AttributeLogGraph graph = attLog.getGraphView().getLogGraph();
+        AttributeLogGraph graph = attLog.getGraphView();
         graph.buildSubGraphs(attLog.getAttribute(), MeasureType.FREQUENCY, MeasureAggregation.TOTAL, false, false);
         
         try {
-            graph.removeNode(100);
-            Assert.fail("InvalidNodeException or InvalidArcException does not happen");
-        } catch (InvalidNodeException | InvalidArcException e1) {
-            // TODO Auto-generated catch block
-        }
-        
-        try {
-            graph.addNode(100);
+            graph.addNode(1000);
             Assert.fail("InvalidNodeException or InvalidArcException does not happen");
         } catch (InvalidNodeException e) {
             // TODO Auto-generated catch block

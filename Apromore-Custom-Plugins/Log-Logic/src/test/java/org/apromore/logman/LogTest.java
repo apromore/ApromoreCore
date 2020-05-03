@@ -26,10 +26,12 @@ import java.util.BitSet;
 
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.exception.InvalidAttributeLogStatusUpdateException;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.logman.attribute.log.AttributeTrace;
-import org.apromore.logman.attribute.log.AttributeTraceVariants;
+import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
@@ -120,8 +122,8 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(0, attTrace.getDuration());
         Assert.assertEquals(0, attTrace.getStartTime());
         Assert.assertEquals(0, attTrace.getEndTime());
-        Assert.assertEquals(0, attTrace.getActiveArcs().size());
-        Assert.assertEquals(0, attTrace.getActiveNodes().size());
+        Assert.assertEquals(0, attTrace.getActiveGraph().getArcs().size());
+        Assert.assertEquals(0, attTrace.getActiveGraph().getNodes().size());
         
         // LogSummary
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
@@ -258,26 +260,26 @@ public class LogTest extends DataSetup {
                 dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00").getMillis()), attTrace0.getEndTimeTrace());    
         Assert.assertEquals(false, attTrace0.isEmpty());
         
-        Assert.assertEquals(IntSets.mutable.of(3,2), attTrace0.getActiveArcs());
-        Assert.assertEquals(IntSets.mutable.of(0,1,2), attTrace0.getActiveNodes());
+        Assert.assertEquals(IntSets.mutable.of(3,2), attTrace0.getActiveGraph().getArcs());
+        Assert.assertEquals(IntSets.mutable.of(0,1,2), attTrace0.getActiveGraph().getNodes());
         
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(0));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(1));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(2));
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(1));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(1));        
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(2));   
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeWeight(2, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.TOTAL));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.MIN));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.MAX));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(1, MeasureType.DURATION, MeasureAggregation.MIN));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(1, MeasureType.DURATION, MeasureAggregation.MAX));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(2, MeasureType.DURATION, MeasureAggregation.MIN));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(2, MeasureType.DURATION, MeasureAggregation.MAX));
         
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(2));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(3));
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(2));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(2));
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(3));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(3));        
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getArcWeight(2, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(2, MeasureType.DURATION, MeasureAggregation.MIN));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(2, MeasureType.DURATION, MeasureAggregation.MAX));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(3, MeasureType.DURATION, MeasureAggregation.MIN));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(3, MeasureType.DURATION, MeasureAggregation.MAX));
 
     }
     

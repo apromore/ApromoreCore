@@ -23,7 +23,7 @@
 package org.apromore.processdiscoverer.bpmn;
 
 import org.apromore.logman.Constants;
-import org.apromore.logman.attribute.graph.AttributeGraph;
+import org.apromore.logman.attribute.graph.selection.AttributeGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;

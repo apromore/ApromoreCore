@@ -22,6 +22,8 @@
 
 package org.apromore.logman.attribute.log;
 
+import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
+
 public class AttributeLogVariantView {
     private AttributeTraceVariants originalVariants;
     private AttributeTraceVariants activeVariants;

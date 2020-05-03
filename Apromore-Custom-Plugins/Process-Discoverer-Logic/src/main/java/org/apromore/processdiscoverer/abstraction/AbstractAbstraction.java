@@ -90,13 +90,13 @@ public abstract class AbstractAbstraction implements Abstraction {
 		int nodeId = 0;
 		for (BPMNNode node: diagram.getNodes()) {
 			if (node instanceof Activity) {
-				double nodePrimaryWeight = log.getGraphView().getLogGraph().getNodeWeight(node.getLabel(), params.getPrimaryType(), 
+				double nodePrimaryWeight = log.getGraphView().getNodeWeight(node.getLabel(), params.getPrimaryType(), 
 						params.getPrimaryAggregation());
 				nodePrimaryWeights.put(node, nodePrimaryWeight);
 				maxNodePrimaryWeight = Math.max(maxNodePrimaryWeight, nodePrimaryWeight);
             	minNodePrimaryWeight = Math.min(minNodePrimaryWeight, nodePrimaryWeight);
 				if (params.getSecondary()) {
-					nodeSecondaryWeights.put(node, log.getGraphView().getLogGraph().getNodeWeight(node.getLabel(), params.getSecondaryType(), 
+					nodeSecondaryWeights.put(node, log.getGraphView().getNodeWeight(node.getLabel(), params.getSecondaryType(), 
 							params.getSecondaryAggregation()));
 				}
 			}

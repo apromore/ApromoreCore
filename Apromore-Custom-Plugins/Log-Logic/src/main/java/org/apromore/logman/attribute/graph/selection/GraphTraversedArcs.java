@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.selection;
 
 import java.util.BitSet;
 

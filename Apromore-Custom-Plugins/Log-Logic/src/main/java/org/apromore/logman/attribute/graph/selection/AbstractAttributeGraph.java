@@ -20,10 +20,14 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.selection;
 
 import java.util.BitSet;
 
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.graph.InvalidArcException;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.set.primitive.IntSet;
 
@@ -78,7 +82,7 @@ public abstract class AbstractAttributeGraph implements AttributeGraph {
     
     @Override
     public IntSet getNodes() {
-        return originalGraph.getOriginalNodes().select(node -> nodeBitMask.get(node)).toImmutable();
+        return originalGraph.getNodes().select(node -> nodeBitMask.get(node)).toImmutable();
     }
     
     @Override
@@ -97,28 +101,28 @@ public abstract class AbstractAttributeGraph implements AttributeGraph {
     }
     
     @Override
-    public String getNodeName(int node) {
+    public String getNodeName(int node) throws Exception {
         return originalGraph.getNodeName(node);
     }
     
     @Override
     public IntSet getIncomingArcs(int node) {
-        return originalGraph.getIncomingOriginalArcs(node).select(arc -> arcBitMask.get(arc));
+        return originalGraph.getIncomingArcs(node).select(arc -> arcBitMask.get(arc));
     }
     
     @Override
     public IntSet getOutgoingArcs(int node) {
-        return originalGraph.getOutgoingOriginalArcs(node).select(arc -> arcBitMask.get(arc));
+        return originalGraph.getOutgoingArcs(node).select(arc -> arcBitMask.get(arc));
     }
     
     @Override
     public IntSet getIncomingArcsWithoutSelfLoops(int node) {
-        return originalGraph.getIncomingOriginalArcs(node).select(arc -> arcBitMask.get(arc) && getSource(arc) != node);
+        return originalGraph.getIncomingArcs(node).select(arc -> arcBitMask.get(arc) && getSource(arc) != node);
     }
     
     @Override
     public IntSet getOutgoingArcsWithoutSelfLoops(int node) {
-        return originalGraph.getOutgoingOriginalArcs(node).select(arc -> arcBitMask.get(arc) && getTarget(arc) != node);
+        return originalGraph.getOutgoingArcs(node).select(arc -> arcBitMask.get(arc) && getTarget(arc) != node);
     }
     
     @Override
@@ -130,18 +134,6 @@ public abstract class AbstractAttributeGraph implements AttributeGraph {
     public IntList getSortedArcsWithoutSelfLoops() {
         return originalGraph.getSortedArcs().select(arc -> arcBitMask.get(arc) && getSource(arc) != getTarget(arc));
     }
-    
-//    @Override
-//    public IntList getIncomingSortedArcsWithoutSelfLoops(int node) {
-//        return originalGraph.getIncomingOriginalSortedArcs(node).select(arc -> arcBitMask.get(arc) && getSource(arc) != node);
-//    }
-    
-//    @Override
-//    public IntList getOutgoingSortedArcsWithoutSelfLoops(int node) {
-//        return originalGraph.getOutgoingOriginalSortedArcs(node).select(arc -> arcBitMask.get(arc) && getTarget(arc) != node);
-//    }
-    
-    
     
     ///////////////////// ARC OPERATIONS //////////////////////////////////
     
@@ -162,7 +154,7 @@ public abstract class AbstractAttributeGraph implements AttributeGraph {
     
     @Override
     public IntSet getArcs() {
-        return originalGraph.getOriginalArcs().select(arc -> arcBitMask.get(arc)).toImmutable();
+        return originalGraph.getArcs().select(arc -> arcBitMask.get(arc)).toImmutable();
     }
     
     @Override

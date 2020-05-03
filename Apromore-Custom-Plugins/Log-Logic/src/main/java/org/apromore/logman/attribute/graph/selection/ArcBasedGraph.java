@@ -20,10 +20,11 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.selection;
 
 import java.util.BitSet;
 
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.factory.Lists;
 

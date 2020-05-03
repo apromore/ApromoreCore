@@ -22,8 +22,8 @@
 
 package org.apromore.processdiscoverer.abstraction;
 
-import org.apromore.logman.attribute.graph.AttributeGraph;
 import org.apromore.logman.attribute.graph.InvalidArcException;
+import org.apromore.logman.attribute.graph.selection.AttributeGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.bpmn.ProcessBPMNDiagram;
@@ -64,13 +64,13 @@ public class DFGAbstraction extends AbstractAbstraction {
 		maxArcPrimaryWeight = 0;
 		
 		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge: diagram.getEdges()) {
-			int arc = log.getGraphView().getLogGraph().getArc(edge.getSource().getLabel(), edge.getTarget().getLabel());
-			double arcWeight = log.getGraphView().getLogGraph().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation());
+			int arc = log.getGraphView().getArc(edge.getSource().getLabel(), edge.getTarget().getLabel());
+			double arcWeight = log.getGraphView().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation());
 			arcPrimaryWeights.put(edge, arcWeight);
 			maxArcPrimaryWeight = Math.max(maxArcPrimaryWeight, arcWeight);
 			minArcPrimaryWeight = Math.min(minArcPrimaryWeight, arcWeight);
 			if (params.getSecondary()) {
-				arcSecondaryWeights.put(edge, log.getGraphView().getLogGraph().getArcWeight(arc, params.getSecondaryType(), params.getSecondaryAggregation()));
+				arcSecondaryWeights.put(edge, log.getGraphView().getArcWeight(arc, params.getSecondaryType(), params.getSecondaryAggregation()));
 			}
 			
 		}

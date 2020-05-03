@@ -20,10 +20,14 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.selection;
 
 import java.util.BitSet;
 
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.graph.InvalidArcException;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.set.primitive.IntSet;
@@ -39,15 +43,13 @@ public interface AttributeGraph {
     public boolean containNode(int node);    
     public int getSourceNode();    
     public int getSinkNode();
-    public String getNodeName(int node);
+    public String getNodeName(int node) throws Exception;
     public IntSet getIncomingArcs(int node);    
     public IntSet getOutgoingArcs(int node);    
     public IntSet getIncomingArcsWithoutSelfLoops(int node);
     public IntSet getOutgoingArcsWithoutSelfLoops(int node);
     public IntList getSortedArcs();
     public IntList getSortedArcsWithoutSelfLoops();
-//    public IntList getIncomingSortedArcsWithoutSelfLoops(int node);
-//    public IntList getOutgoingSortedArcsWithoutSelfLoops(int node);    
     public int getArc(int source, int target) throws InvalidArcException;    
     public int getSource(int arc);    
     public int getTarget(int arc);    
