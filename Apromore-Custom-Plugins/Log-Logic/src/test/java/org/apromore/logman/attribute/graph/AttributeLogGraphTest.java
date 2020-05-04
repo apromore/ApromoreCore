@@ -286,7 +286,7 @@ public class AttributeLogGraphTest extends DataSetup {
         addResult = graph.addNode(1);
         Assert.assertEquals(false, addResult);
         
-        int arc1 = graph.getArc(0, 3);
+        int arc1 = graph.getArc(0, 2);
         Assert.assertNotEquals(-1, arc1);
         
         int arc2 = graph.getArc(100, 0);

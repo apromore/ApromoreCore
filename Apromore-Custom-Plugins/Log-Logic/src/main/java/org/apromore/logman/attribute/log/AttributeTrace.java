@@ -81,8 +81,10 @@ public class AttributeTrace {
     
     public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace) {
         this.originalTrace = originalTrace;
+        this.attribute = attribute;
         this.activeGraph = new AttributeTraceGraph(this);
-        this.setAttribute(attribute);
+        initializeOriginalData();
+        updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
     }
     
     public AttributeTraceGraph getActiveGraph() {
@@ -187,7 +189,7 @@ public class AttributeTrace {
                 
                 if (preIndex >= 0) {
                     int preNode = originalValueTrace.get(preIndex);
-                    int arc = activeGraph.getArc(preNode, node);
+                    int arc = attribute.getMatrixGraph().getArc(preNode, node);
                     long arcDur = originalStartTimeTrace.get(i) - originalEndTimeTrace.get(preIndex);
                     if (arcDur < 0) arcDur = 0;
                     activeGraph.addArc(arc);
@@ -226,12 +228,12 @@ public class AttributeTrace {
             activeGraph.incrementNodeTotalFrequency(sinkNode, 1);
             activeGraph.collectNodeDuration(sinkNode, 0);
             
-            int sourceArc = activeGraph.getArc(sourceNode, attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(1)));
+            int sourceArc = attribute.getMatrixGraph().getArc(sourceNode, attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(1)));
             activeGraph.addArc(sourceArc);
             activeGraph.incrementArcTotalFrequency(sourceArc, 1);
             activeGraph.collectArcDuration(sourceArc, 0);
             
-            int sinkArc = activeGraph.getArc(attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-2)), sinkNode);
+            int sinkArc = attribute.getMatrixGraph().getArc(attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-2)), sinkNode);
             activeGraph.addArc(sinkArc);
             activeGraph.incrementArcTotalFrequency(sinkArc, 1);
             activeGraph.collectArcDuration(sinkArc, 0);            

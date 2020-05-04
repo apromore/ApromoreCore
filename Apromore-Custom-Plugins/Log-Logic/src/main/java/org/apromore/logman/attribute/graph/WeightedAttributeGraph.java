@@ -78,7 +78,6 @@ public abstract class WeightedAttributeGraph {
     }
     
     public void addNodes(IntSet nodes) {
-        graphNodes.addAll(nodes);
         nodes.forEach(node -> addNode(node));
     }
     
@@ -95,7 +94,6 @@ public abstract class WeightedAttributeGraph {
     }
 
     public void addArcs(IntSet arcs) {
-        graphArcs.addAll(arcs);
         arcs.forEach(arc -> addArc(arc));
     }
     

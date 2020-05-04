@@ -43,6 +43,7 @@ import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.SortedSets;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntDoubleMaps;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
@@ -229,11 +230,13 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     }
     
     private void collectNodeFrequency(int node, double nodeFreq) {
-        if (nodeFreqs.contains(node)) nodeFreqs.get(node).add(nodeFreq); 
+        if (!nodeFreqs.containsKey(node)) nodeFreqs.put(node, DoubleLists.mutable.empty()); 
+        nodeFreqs.get(node).add(nodeFreq); 
     }
     
     private void collectNodeDuration(int node, DoubleList nodeDurs) {
-        if (nodeDurations.contains(node)) nodeDurations.get(node).addAll(nodeDurs);
+        if (!nodeDurations.containsKey(node)) nodeDurations.put(node, DoubleLists.mutable.empty());  
+        nodeDurations.get(node).addAll(nodeDurs);
     }
     
     //////////////////////////// Arc measure ///////////////////////////////////
@@ -281,11 +284,13 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     }
     
     private void collectArcFrequency(int arc, double arcFreq) {
-        if (arcFreqs.contains(arc)) arcFreqs.get(arc).add(arcFreq);
+        if (!arcFreqs.containsKey(arc)) arcFreqs.put(arc, DoubleLists.mutable.empty());  
+        arcFreqs.get(arc).add(arcFreq);
     }
     
     private void collectArcDuration(int arc, DoubleList arcDurs) {
-        if (arcDurations.contains(arc)) arcDurations.get(arc).addAll(arcDurs);
+        if (!arcDurations.containsKey(arc)) arcDurations.put(arc, DoubleLists.mutable.empty());  
+        arcDurations.get(arc).addAll(arcDurs);
     }
     
     

@@ -41,7 +41,8 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
     }
     
     public void collectNodeDuration(int node, long nodeDuration) {
-        if (nodeDurs.contains(node)) nodeDurs.get(node).add(nodeDuration);
+        if (!nodeDurs.containsKey(node)) nodeDurs.put(node, DoubleLists.mutable.empty()); 
+        nodeDurs.get(node).add(nodeDuration);
     }
     
     public void incrementArcTotalFrequency(int arc, long arcTotalCount) {
@@ -49,7 +50,8 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
     }
     
     public void collectArcDuration(int arc, long arcDuration) {
-        if (arcDurs.contains(arc)) arcDurs.get(arc).add(arcDuration);
+        if (!arcDurs.containsKey(arc)) arcDurs.put(arc, DoubleLists.mutable.empty()); 
+        arcDurs.get(arc).add(arcDuration);
     }
     
     public DoubleList getNodeDurations(int node) {
@@ -83,17 +85,17 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         else {
             switch (aggregation) {
             case TOTAL:
-                return nodeDurs.get(node).sum();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum();
             case MEAN:
-                return nodeDurs.get(node).average();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
             case MIN:
-                return nodeDurs.get(node).min();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min();
             case MAX:
-                return nodeDurs.get(node).max();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max();
             case MEDIAN:
-                return nodeDurs.get(node).median();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median();
             default:
-                return nodeDurs.get(node).average();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
             }
         }
     }
@@ -121,17 +123,17 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         else {
             switch (aggregation) {
             case TOTAL:
-                return arcDurs.get(arc).sum();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).sum();
             case MEAN:
-                return arcDurs.get(arc).average();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average();
             case MIN:
-                return arcDurs.get(arc).min();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).min();
             case MAX:
-                return arcDurs.get(arc).max();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).max();
             case MEDIAN:
-                return arcDurs.get(arc).median();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).median();
             default:
-                return arcDurs.get(arc).average();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average();
             }
         }
     }
