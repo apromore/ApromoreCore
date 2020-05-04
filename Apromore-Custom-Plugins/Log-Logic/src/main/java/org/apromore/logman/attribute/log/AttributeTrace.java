@@ -81,8 +81,8 @@ public class AttributeTrace {
     
     public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace) {
         this.originalTrace = originalTrace;
-        this.attribute = attribute;
         this.activeGraph = new AttributeTraceGraph(this);
+        this.setAttribute(attribute);
     }
     
     public AttributeTraceGraph getActiveGraph() {
@@ -97,7 +97,7 @@ public class AttributeTrace {
     // If the trace is being filtered, apply the same filter to the new perspective
     public void setAttribute(IndexableAttribute newAttribute) {
         this.attribute = newAttribute;
-        this.activeGraph.setAttribute(attribute);
+        this.activeGraph.resetToAttribute(attribute);
         initializeOriginalData();
         updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
     }

@@ -93,12 +93,11 @@ public class AttributeLog {
 	    this.fullLog = log;
 	    this.attribute = attribute;
 	    this.originalTraceStatus = fullLog.getOriginalTraceStatus();
-	    if (log.getOriginalTraces().size()==0 || attribute == null) {
-	        return;
-	    }
-
+	    if (log.getOriginalTraces().size()==0 || attribute == null) return;
+	    
 	    this.variantView = new AttributeLogVariantView(this);
 		this.graphView = new AttributeLogGraph(this);
+		
         for(int i=0; i<fullLog.getOriginalTraces().size(); i++) {
             ATrace trace = fullLog.getOriginalTraces().get(i);
             AttributeTrace attTrace = new AttributeTrace(attribute, trace);
@@ -126,7 +125,7 @@ public class AttributeLog {
 	    if (newAttribute != this.attribute && newAttribute != null) {
 	        attribute = newAttribute;
 	        variantView.reset();
-	        graphView.setAttribute(attribute);
+	        graphView.resetToAttribute(attribute);
 	        activeTraces.clear();
     	    for (int i=0; i<originalTraces.size(); i++) {
     	        AttributeTrace attTrace = originalTraces.get(i);

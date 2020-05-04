@@ -52,7 +52,7 @@ public abstract class WeightedAttributeGraph {
         this.attMatrixGraph = attribute.getMatrixGraph();
     }
     
-    public void setAttribute(IndexableAttribute attribute) {
+    public void resetToAttribute(IndexableAttribute attribute) {
         this.attMatrixGraph = attribute.getMatrixGraph();
         clear();
     }
