@@ -20,7 +20,7 @@
   -->
 
 
-<window closable="true" id="errorWindow" maximizable="false" hflex="min" vflex="min" height="40vh" width="60vw"
+<window closable="true" id="errorWindow" maximizable="false" hflex="min" vflex="min" height="230px" width="672px"
         position="center" title="Invalid Data Encountered!">
     <style src="/themes/ap/csv-importer/css/index.css"/>
     <style src="/themes/ap/common/css/utils.css"/>
@@ -45,8 +45,8 @@
 
         <south sclass="ap-csv-importer-footer" hflex="min" style="border:0; border-top-width: 1px">
             <div style="padding: 8px">
-                <hlayout spacing="0">
-                    <div hflex="1">
+                <hbox spacing="0" align="center" pack="center" hflex="1" vflex="1">
+                    <div hflex="1" style="text-align: center;">
                         <button id="downloadErrorLog" label="Download Error Report"
                                 iconSclass="z-icon-arrow-circle-down fa-lg z-icon-fw" style="position:relative;"/>
 
@@ -60,7 +60,7 @@
                                 style="position:relative;"/>
                     </div>
                     <separator/>
-                </hlayout>
+                </hbox>
             </div>
         </south>
     </borderlayout>
