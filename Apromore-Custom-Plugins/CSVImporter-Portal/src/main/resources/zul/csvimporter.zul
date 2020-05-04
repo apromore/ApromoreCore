@@ -132,14 +132,15 @@
             </south>
         </borderlayout>
         <script defer="true" type="text/javascript" src="/themes/ap/csv-importer/js/deferred.js"></script>
+
+        <popup id="autoParsed" width="272px">
+            Timestamp format automatically detected!
+        </popup>
+        <popup id="manualParsed" width="232px">
+            Timestamp format parsed correctly!
+        </popup>
+        <popup id="errorParsing" width="200px">
+            Could not parse as timestamp!
+        </popup>
     </window>
-    <popup id="autoParsed" width="272px">
-        Timestamp format automatically detected!
-    </popup>
-    <popup id="manualParsed" width="232px">
-        Timestamp format parsed correctly!
-    </popup>
-    <popup id="errorParsing" width="200px">
-        Could not parse as timestamp!
-    </popup>
 </zk>
