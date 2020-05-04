@@ -60,37 +60,37 @@ import org.eclipse.collections.impl.factory.primitive.IntSets;
 public class AttributeLogGraph extends WeightedAttributeGraph {
     private AttributeLog attLog;
     
-    private MutableIntDoubleMap originalNodeTotalFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeCaseFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMinFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMaxFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMedianFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMeanFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeTotalFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeCaseFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMinFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMaxFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMedianFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMeanFreqs = IntDoubleMaps.mutable.empty();
     
-    private MutableIntDoubleMap originalNodeTotalDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMinDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMaxDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMedianDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalNodeMeanDurs = IntDoubleMaps.mutable.empty();   
+    private MutableIntDoubleMap nodeTotalDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMinDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMaxDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMedianDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMeanDurs = IntDoubleMaps.mutable.empty();   
     
-    private MutableIntDoubleMap originalArcTotalFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcCaseFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMinFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMaxFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMedianFreqs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMeanFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcTotalFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcCaseFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMinFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMaxFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMedianFreqs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMeanFreqs = IntDoubleMaps.mutable.empty();
     
-    private MutableIntDoubleMap originalArcTotalDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMinDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMaxDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMedianDurs = IntDoubleMaps.mutable.empty();
-    private MutableIntDoubleMap originalArcMeanDurs = IntDoubleMaps.mutable.empty(); 
+    private MutableIntDoubleMap arcTotalDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMinDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMaxDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMedianDurs = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMeanDurs = IntDoubleMaps.mutable.empty(); 
     
     // Used for calculating median
-    private MutableIntObjectMap<MutableDoubleList> originalNodeFreqs = IntObjectMaps.mutable.empty();
-    private MutableIntObjectMap<MutableDoubleList> originalNodeDurs = IntObjectMaps.mutable.empty();
-    private MutableIntObjectMap<MutableDoubleList> originalArcFreqs = IntObjectMaps.mutable.empty();
-    private MutableIntObjectMap<MutableDoubleList> originalArcDurs = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> nodeFreqs = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> nodeDurations = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> arcFreqs = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> arcDurations = IntObjectMaps.mutable.empty();
     
     // Sub-graphs and related data and parameters
     private MutableList<FilteredGraph> subGraphs = Lists.mutable.empty();
@@ -105,44 +105,44 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private boolean arcInverted = false;
     
     public AttributeLogGraph(AttributeLog attLog) {
-        super(attLog.getAttribute().getMatrixGraph());
+        super(attLog.getAttribute());
         this.attLog = attLog;
     }
     
     @Override
-    public void reset() {
-        super.reset();
+    public void clear() {
+        super.clear();
         
-        originalNodeTotalFreqs.clear(); 
-        originalNodeCaseFreqs.clear();
-        originalNodeMinFreqs.clear(); 
-        originalNodeMaxFreqs.clear();
-        originalNodeMedianFreqs.clear();
-        originalNodeMeanFreqs.clear();
+        nodeTotalFreqs.clear(); 
+        nodeCaseFreqs.clear();
+        nodeMinFreqs.clear(); 
+        nodeMaxFreqs.clear();
+        nodeMedianFreqs.clear();
+        nodeMeanFreqs.clear();
                  
-        originalNodeTotalDurs.clear();
-        originalNodeMinDurs.clear();
-        originalNodeMaxDurs.clear();
-        originalNodeMedianDurs.clear();
-        originalNodeMeanDurs.clear();
+        nodeTotalDurs.clear();
+        nodeMinDurs.clear();
+        nodeMaxDurs.clear();
+        nodeMedianDurs.clear();
+        nodeMeanDurs.clear();
                  
-        originalArcTotalFreqs.clear();
-        originalArcCaseFreqs.clear();
-        originalArcMinFreqs.clear();
-        originalArcMaxFreqs.clear();
-        originalArcMedianFreqs.clear();
-        originalArcMeanFreqs.clear();
+        arcTotalFreqs.clear();
+        arcCaseFreqs.clear();
+        arcMinFreqs.clear();
+        arcMaxFreqs.clear();
+        arcMedianFreqs.clear();
+        arcMeanFreqs.clear();
                  
-        originalArcTotalDurs.clear();
-        originalArcMinDurs.clear();
-        originalArcMaxDurs.clear();
-        originalArcMedianDurs.clear();
-        originalArcMeanDurs.clear();
+        arcTotalDurs.clear();
+        arcMinDurs.clear();
+        arcMaxDurs.clear();
+        arcMedianDurs.clear();
+        arcMeanDurs.clear();
         
-        originalNodeFreqs.clear();
-        originalNodeDurs.clear();
-        originalArcFreqs.clear();
-        originalArcDurs.clear();
+        nodeFreqs.clear();
+        nodeDurations.clear();
+        arcFreqs.clear();
+        arcDurations.clear();
         
         subGraphs.clear();
     }
@@ -158,24 +158,30 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     public void finalUpdate() {
         Median medianCalculator = new Median();
         graphNodes.forEach(node -> {
-            originalNodeMeanFreqs.put(node, originalNodeTotalFreqs.get(node)/attLog.getTraces().size());
-            originalNodeMeanDurs.put(node, originalNodeTotalDurs.get(node)/originalNodeTotalFreqs.get(node));
-            originalNodeMedianFreqs.put(node, medianCalculator.evaluate(originalNodeFreqs.get(node).toArray()));
-            originalNodeMedianDurs.put(node, medianCalculator.evaluate(originalNodeDurs.get(node).toArray()));
-            if (originalNodeCaseFreqs.get(node) != attLog.getTraces().size()) {// there's a case not containing the node
-                originalNodeMinFreqs.put(node, 0);
+            nodeMeanFreqs.put(node, nodeTotalFreqs.get(node)/attLog.getTraces().size());
+            nodeMeanDurs.put(node, nodeTotalDurs.get(node)/nodeTotalFreqs.get(node));
+            nodeMedianFreqs.put(node, medianCalculator.evaluate(nodeFreqs.get(node).toArray()));
+            nodeMedianDurs.put(node, medianCalculator.evaluate(nodeDurations.get(node).toArray()));
+            if (nodeCaseFreqs.get(node) != attLog.getTraces().size()) {// there's a case not containing the node
+                nodeMinFreqs.put(node, 0);
             }
         });
         
         graphArcs.forEach(arc -> {
-            originalArcMeanFreqs.put(arc, originalArcTotalFreqs.getIfAbsentPut(arc, 0)/attLog.getTraces().size());
-            originalArcMeanDurs.put(arc, originalArcTotalDurs.get(arc)/originalArcTotalFreqs.get(arc));
-            originalArcMedianFreqs.put(arc, medianCalculator.evaluate(originalArcFreqs.get(arc).toArray()));
-            originalArcMedianDurs.put(arc, medianCalculator.evaluate(originalArcDurs.get(arc).toArray()));
-            if (originalArcCaseFreqs.get(arc) != attLog.getTraces().size()) { // there's a case not containing the arc
-                originalArcMinFreqs.put(arc, 0);
+            arcMeanFreqs.put(arc, arcTotalFreqs.getIfAbsentPut(arc, 0)/attLog.getTraces().size());
+            arcMeanDurs.put(arc, arcTotalDurs.get(arc)/arcTotalFreqs.get(arc));
+            arcMedianFreqs.put(arc, medianCalculator.evaluate(arcFreqs.get(arc).toArray()));
+            arcMedianDurs.put(arc, medianCalculator.evaluate(arcDurations.get(arc).toArray()));
+            if (arcCaseFreqs.get(arc) != attLog.getTraces().size()) { // there's a case not containing the arc
+                arcMinFreqs.put(arc, 0);
             }
         });
+        
+        // Release data structures storing median values
+        nodeFreqs.clear();
+        nodeDurations.clear();
+        arcFreqs.clear();
+        arcDurations.clear();
     }    
 
     ////////////////////////////  Node measure ///////////////////////////////////
@@ -195,39 +201,39 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     }    
     
     private void incrementNodeTotalFrequency(int node, double nodeTotalCount) {
-        originalNodeTotalFreqs.put(node, originalNodeTotalFreqs.getIfAbsentPut(node, 0) + nodeTotalCount);
+        nodeTotalFreqs.put(node, nodeTotalFreqs.getIfAbsentPut(node, 0) + nodeTotalCount);
     }
     
     private void incrementNodeCaseFrequency(int node, double nodeCaseCount) {
-        originalNodeCaseFreqs.put(node, originalNodeCaseFreqs.getIfAbsentPut(node, 0) + (nodeCaseCount>0 ? 1 : 0));
+        nodeCaseFreqs.put(node, nodeCaseFreqs.getIfAbsentPut(node, 0) + (nodeCaseCount>0 ? 1 : 0));
     }
     
     private void incrementNodeTotalDuration(int node, double nodeTotalDuration) {
-        originalNodeTotalDurs.put(node, originalNodeTotalDurs.getIfAbsentPut(node, 0) + nodeTotalDuration);
+        nodeTotalDurs.put(node, nodeTotalDurs.getIfAbsentPut(node, 0) + nodeTotalDuration);
     }
     
     private void updateNodeMinFrequency(int node, double nodeCount) {
-        originalNodeMinFreqs.put(node, Math.min(originalNodeMinFreqs.getIfAbsentPut(node, Double.MAX_VALUE), nodeCount));
+        nodeMinFreqs.put(node, Math.min(nodeMinFreqs.getIfAbsentPut(node, Double.MAX_VALUE), nodeCount));
     }
     
     private void updateNodeMaxFrequency(int node, double nodeCount) {
-        originalNodeMaxFreqs.put(node, Math.max(originalNodeMaxFreqs.getIfAbsentPut(node, 0), nodeCount));
+        nodeMaxFreqs.put(node, Math.max(nodeMaxFreqs.getIfAbsentPut(node, 0), nodeCount));
     }
     
     private void updateNodeMinDuration(int node, double nodeDuration) {
-        originalNodeMinDurs.put(node, Math.min(originalNodeMinDurs.getIfAbsentPut(node, Double.MAX_VALUE), nodeDuration));
+        nodeMinDurs.put(node, Math.min(nodeMinDurs.getIfAbsentPut(node, Double.MAX_VALUE), nodeDuration));
     }
     
     private void updateNodeMaxDuration(int node, double nodeDuration) {
-        originalNodeMaxDurs.put(node, Math.max(originalNodeMaxDurs.getIfAbsentPut(node, 0), nodeDuration));
+        nodeMaxDurs.put(node, Math.max(nodeMaxDurs.getIfAbsentPut(node, 0), nodeDuration));
     }
     
     private void collectNodeFrequency(int node, double nodeFreq) {
-        if (originalNodeFreqs.contains(node)) originalNodeFreqs.get(node).add(nodeFreq); 
+        if (nodeFreqs.contains(node)) nodeFreqs.get(node).add(nodeFreq); 
     }
     
     private void collectNodeDuration(int node, DoubleList nodeDurs) {
-        if (originalNodeDurs.contains(node)) originalNodeDurs.get(node).addAll(nodeDurs);
+        if (nodeDurations.contains(node)) nodeDurations.get(node).addAll(nodeDurs);
     }
     
     //////////////////////////// Arc measure ///////////////////////////////////
@@ -247,39 +253,39 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     }    
     
     private void incrementArcTotalFrequency(int arc, double arcTotalCount) {
-        originalArcTotalFreqs.put(arc, originalArcTotalFreqs.getIfAbsentPut(arc, 0) + arcTotalCount);
+        arcTotalFreqs.put(arc, arcTotalFreqs.getIfAbsentPut(arc, 0) + arcTotalCount);
     }
     
     private void incrementArcCaseFrequency(int arc, double arcCaseCount) {
-        originalArcCaseFreqs.put(arc, originalArcCaseFreqs.getIfAbsentPut(arc, 0) + (arcCaseCount>0 ? 1 : 0));
+        arcCaseFreqs.put(arc, arcCaseFreqs.getIfAbsentPut(arc, 0) + (arcCaseCount>0 ? 1 : 0));
     }
     
     private void incrementArcTotalDuration(int arc, double arcTotalDuration) {
-        originalArcTotalDurs.put(arc, originalArcTotalDurs.getIfAbsentPut(arc, 0) + arcTotalDuration);
+        arcTotalDurs.put(arc, arcTotalDurs.getIfAbsentPut(arc, 0) + arcTotalDuration);
     }
     
     private void updateArcMinFrequency(int arc, double arcCount) {
-        originalArcMinFreqs.put(arc, Math.min(originalArcMinFreqs.getIfAbsentPut(arc, Double.MAX_VALUE), arcCount));
+        arcMinFreqs.put(arc, Math.min(arcMinFreqs.getIfAbsentPut(arc, Double.MAX_VALUE), arcCount));
     }
     
     private void updateArcMaxFrequency(int arc, double arcCount) {
-        originalArcMaxFreqs.put(arc, Math.max(originalArcMaxFreqs.getIfAbsentPut(arc, 0), arcCount));
+        arcMaxFreqs.put(arc, Math.max(arcMaxFreqs.getIfAbsentPut(arc, 0), arcCount));
     }
     
     private void updateArcMinDuration(int arc, double arcDuration) {
-        originalArcMinDurs.put(arc, Math.min(originalArcMinDurs.getIfAbsentPut(arc, Double.MAX_VALUE), arcDuration));
+        arcMinDurs.put(arc, Math.min(arcMinDurs.getIfAbsentPut(arc, Double.MAX_VALUE), arcDuration));
     }
     
     private void updateArcMaxDuration(int arc, double arcDuration) {
-        originalArcMaxDurs.put(arc, Math.max(originalArcMaxDurs.getIfAbsentPut(arc, 0), arcDuration));
+        arcMaxDurs.put(arc, Math.max(arcMaxDurs.getIfAbsentPut(arc, 0), arcDuration));
     }
     
     private void collectArcFrequency(int arc, double arcFreq) {
-        if (originalArcFreqs.contains(arc)) originalArcFreqs.get(arc).add(arcFreq);
+        if (arcFreqs.contains(arc)) arcFreqs.get(arc).add(arcFreq);
     }
     
     private void collectArcDuration(int arc, DoubleList arcDurs) {
-        if (originalArcDurs.contains(arc)) originalArcDurs.get(arc).addAll(arcDurs);
+        if (arcDurations.contains(arc)) arcDurations.get(arc).addAll(arcDurs);
     }
     
     
@@ -292,55 +298,55 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     
     @Override
     public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation) {
-        return getNodeWeightMap(type, aggregation).get(node);
+        return (!containNode(node) ? 0d : getNodeWeightMap(type, aggregation).get(node));
     }
     
     @Override
     public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation) {
-        return getArcWeightMap(type, aggregation).get(arc);
+        return (!containArc(arc) ? 0d : getArcWeightMap(type, aggregation).get(arc));
     }
     
     public double getArcStructuralWeight(int arc) {
-        return arcWeightsForGraphStructure.getIfAbsent(arc, 0);
+        return (!containArc(arc) ? 0d : arcWeightsForGraphStructure.getIfAbsent(arc, 0));
     }   
     
     public double getNodeStructuralWeight(int node) {
-        return nodeWeightsForGraphStructure.getIfAbsent(node, 0);
+        return (!containNode(node) ? 0d : nodeWeightsForGraphStructure.getIfAbsent(node, 0));
     }
     
     private IntDoubleMap getNodeWeightMap(MeasureType type, MeasureAggregation aggregation) {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
-                return originalNodeTotalFreqs;
+                return nodeTotalFreqs;
             case CASES:
-                return originalNodeCaseFreqs;                
+                return nodeCaseFreqs;                
             case MEAN:
-                return originalNodeMeanFreqs;
+                return nodeMeanFreqs;
             case MIN:
-                return originalNodeMinFreqs;
+                return nodeMinFreqs;
             case MAX:
-                return originalNodeMaxFreqs;
+                return nodeMaxFreqs;
             case MEDIAN:
-                return originalNodeMedianFreqs;
+                return nodeMedianFreqs;
             default:
-                return originalNodeTotalFreqs;
+                return nodeTotalFreqs;
             }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return originalNodeTotalDurs;
+                return nodeTotalDurs;
             case MEAN:
-                return originalNodeMeanDurs;
+                return nodeMeanDurs;
             case MIN:
-                return originalNodeMinDurs;
+                return nodeMinDurs;
             case MAX:
-                return originalNodeMaxDurs;
+                return nodeMaxDurs;
             case MEDIAN:
-                return originalNodeMedianDurs;
+                return nodeMedianDurs;
             default:
-                return originalNodeTotalDurs;
+                return nodeTotalDurs;
             }
         }
     }
@@ -349,35 +355,35 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
-                return originalArcTotalFreqs;
+                return arcTotalFreqs;
             case CASES:
-                return originalArcCaseFreqs;                
+                return arcCaseFreqs;                
             case MEAN:
-                return originalArcMeanFreqs;
+                return arcMeanFreqs;
             case MIN:
-                return originalArcMinFreqs;
+                return arcMinFreqs;
             case MAX:
-                return originalArcMaxFreqs;
+                return arcMaxFreqs;
             case MEDIAN:
-                return originalArcMedianFreqs;
+                return arcMedianFreqs;
             default:
-                return originalArcTotalFreqs;
+                return arcTotalFreqs;
             }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return originalArcTotalDurs;
+                return arcTotalDurs;
             case MEAN:
-                return originalArcMeanDurs;
+                return arcMeanDurs;
             case MIN:
-                return originalArcMinDurs;
+                return arcMinDurs;
             case MAX:
-                return originalArcMaxDurs;
+                return arcMaxDurs;
             case MEDIAN:
-                return originalArcMedianDurs;
+                return arcMedianDurs;
             default:
-                return originalArcTotalDurs;
+                return arcTotalDurs;
             }
         }
     }

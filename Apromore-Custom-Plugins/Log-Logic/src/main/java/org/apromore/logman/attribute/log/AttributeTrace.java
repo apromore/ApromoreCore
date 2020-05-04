@@ -82,17 +82,22 @@ public class AttributeTrace {
     public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace) {
         this.originalTrace = originalTrace;
         this.attribute = attribute;
-        this.activeGraph = new AttributeTraceGraph(attribute.getMatrixGraph());
-        refresh();
+        this.activeGraph = new AttributeTraceGraph(this);
     }
     
     public AttributeTraceGraph getActiveGraph() {
         return activeGraph;
     }
     
+    public IndexableAttribute getAttribute() {
+        return this.attribute;
+    }
+    
     // Set this trace to the new perspective attribute including the original data
     // If the trace is being filtered, apply the same filter to the new perspective
-    public void refresh() {
+    public void setAttribute(IndexableAttribute newAttribute) {
+        this.attribute = newAttribute;
+        this.activeGraph.setAttribute(attribute);
         initializeOriginalData();
         updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
     }
@@ -161,7 +166,7 @@ public class AttributeTrace {
         activeStartTimeTrace.clear();
         activeEndTimeTrace.clear();
         activeDurationTrace.clear();
-        activeGraph.reset();
+        activeGraph.clear();
         
         int preIndex = -1;
         for (int i=1; i<=originalValueTrace.size()-2; i++) { // exclude the two artificial start and end events

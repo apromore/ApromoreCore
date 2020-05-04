@@ -25,9 +25,7 @@ package org.apromore.logman;
 import java.util.BitSet;
 
 import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.exception.InvalidAttributeLogStatusUpdateException;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureType;
+import org.apromore.logman.attribute.graph.AttributeTraceGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.logman.attribute.log.AttributeTrace;
@@ -263,23 +261,23 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.of(3,2), attTrace0.getActiveGraph().getArcs());
         Assert.assertEquals(IntSets.mutable.of(0,1,2), attTrace0.getActiveGraph().getNodes());
         
-        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeWeight(2, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.TOTAL));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.MIN));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.MAX));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(1, MeasureType.DURATION, MeasureAggregation.MIN));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(1, MeasureType.DURATION, MeasureAggregation.MAX));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(2, MeasureType.DURATION, MeasureAggregation.MIN));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeWeight(2, MeasureType.DURATION, MeasureAggregation.MAX));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeTotalFrequency(0));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeTotalFrequency(1));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getNodeTotalFrequency(2));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeTotalDuration(0));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMinDuration(0));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(0));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMinDuration(1));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(1));        
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMinDuration(2));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(2));   
         
-        Assert.assertEquals(1, attTrace0.getActiveGraph().getArcWeight(2, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        Assert.assertEquals(1, attTrace0.getActiveGraph().getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(2, MeasureType.DURATION, MeasureAggregation.MIN));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(2, MeasureType.DURATION, MeasureAggregation.MAX));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(3, MeasureType.DURATION, MeasureAggregation.MIN));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcWeight(3, MeasureType.DURATION, MeasureAggregation.MAX));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getArcTotalFrequency(2));
+        Assert.assertEquals(1, attTrace0.getActiveGraph().getArcTotalFrequency(3));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMinDuration(2));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMaxDuration(2));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMinDuration(3));
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMaxDuration(3));        
 
     }
     
@@ -399,76 +397,77 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(false, attTrace0.isEmpty());
         
-        Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), attTrace0.getActiveArcs());
-        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5), attTrace0.getActiveNodes());
+        AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
+        Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), traceGraph0.getArcs());
+        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5), traceGraph0.getNodes());
         
-        Assert.assertEquals(4, attTrace0.getNodeTotalCount(0));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(1));
-        Assert.assertEquals(4, attTrace0.getNodeTotalCount(2));
-        Assert.assertEquals(2, attTrace0.getNodeTotalCount(3));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(4)); //-1
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(5)); //-2
+        Assert.assertEquals(4, traceGraph0.getNodeTotalFrequency(0));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(1));
+        Assert.assertEquals(4, traceGraph0.getNodeTotalFrequency(2));
+        Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(3));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(4)); //-1
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(5)); //-2
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(0));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(1));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(1));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(1));        
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(1));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(1));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(1));        
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(2));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(2));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(2));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(3));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(3));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(3));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
         
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(0)); //0,1,2,8,12,15,17,20,24
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(1));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(2));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(8));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(12));
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(15));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(17));
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(20));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(24));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(0)); //0,1,2,8,12,15,17,20,24
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(1));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(2));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(8));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(12));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(15));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(17));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(20));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(24));
         
-        Assert.assertEquals(60000, attTrace0.getArcMinDuration(0));
-        Assert.assertEquals(120000, attTrace0.getArcMaxDuration(0));
+        Assert.assertEquals(60000, traceGraph0.getArcMinDuration(0));
+        Assert.assertEquals(120000, traceGraph0.getArcMaxDuration(0));
         
-        Assert.assertEquals(180000, attTrace0.getArcMinDuration(1));
-        Assert.assertEquals(180000, attTrace0.getArcMaxDuration(1));
+        Assert.assertEquals(180000, traceGraph0.getArcMinDuration(1));
+        Assert.assertEquals(180000, traceGraph0.getArcMaxDuration(1));
         
-        Assert.assertEquals(600000, attTrace0.getArcMinDuration(2));
-        Assert.assertEquals(600000, attTrace0.getArcMaxDuration(2));
+        Assert.assertEquals(600000, traceGraph0.getArcMinDuration(2));
+        Assert.assertEquals(600000, traceGraph0.getArcMaxDuration(2));
         
-        Assert.assertEquals(240000, attTrace0.getArcMinDuration(8));
-        Assert.assertEquals(240000, attTrace0.getArcMaxDuration(8));
+        Assert.assertEquals(240000, traceGraph0.getArcMinDuration(8));
+        Assert.assertEquals(240000, traceGraph0.getArcMaxDuration(8));
         
-        Assert.assertEquals(540000, attTrace0.getArcMinDuration(12));
-        Assert.assertEquals(540000, attTrace0.getArcMaxDuration(12));
+        Assert.assertEquals(540000, traceGraph0.getArcMinDuration(12));
+        Assert.assertEquals(540000, traceGraph0.getArcMaxDuration(12));
         
-        Assert.assertEquals(300000, attTrace0.getArcMinDuration(15));
-        Assert.assertEquals(420000, attTrace0.getArcMaxDuration(15));
+        Assert.assertEquals(300000, traceGraph0.getArcMinDuration(15));
+        Assert.assertEquals(420000, traceGraph0.getArcMaxDuration(15));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(17));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(17));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(17));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(17));
         
-        Assert.assertEquals(360000, attTrace0.getArcMinDuration(20));
-        Assert.assertEquals(480000, attTrace0.getArcMaxDuration(20));
+        Assert.assertEquals(360000, traceGraph0.getArcMinDuration(20));
+        Assert.assertEquals(480000, traceGraph0.getArcMaxDuration(20));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(24));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(24));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(24));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(24));
         
         
         // Variants
@@ -581,85 +580,86 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(false, attTrace0.isEmpty());
         
-        Assert.assertEquals(IntSets.mutable.of(1,8,9,11,14,17,23,24,34,35), attTrace0.getActiveArcs());
-        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5,6), attTrace0.getActiveNodes());
+        AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
+        Assert.assertEquals(IntSets.mutable.of(1,8,9,11,14,17,23,24,34,35), traceGraph0.getArcs());
+        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5,6), traceGraph0.getNodes());
         
-        Assert.assertEquals(2, attTrace0.getNodeTotalCount(0));
-        Assert.assertEquals(4, attTrace0.getNodeTotalCount(1));
-        Assert.assertEquals(2, attTrace0.getNodeTotalCount(2));
-        Assert.assertEquals(2, attTrace0.getNodeTotalCount(3));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(4)); 
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(5)); 
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(6)); 
+        Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(0));
+        Assert.assertEquals(4, traceGraph0.getNodeTotalFrequency(1));
+        Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(2));
+        Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(3));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(4)); 
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(5)); 
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(6)); 
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(0));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(1));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(1));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(1));        
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(1));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(1));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(1));        
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(2));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(2));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(2));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(3));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(3));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(3));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(6));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(6));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(6));          
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(6));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(6));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(6));          
         
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(1)); //1,8,9,11,14,17,23,24,34,35
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(8));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(9));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(11));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(14));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(17));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(23));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(24));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(34));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(35));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(1)); //1,8,9,11,14,17,23,24,34,35
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(8));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(9));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(11));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(14));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(17));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(23));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(24));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(34));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(35));
         
-        Assert.assertEquals(60000, attTrace0.getArcMinDuration(1));
-        Assert.assertEquals(540000, attTrace0.getArcMaxDuration(1));
+        Assert.assertEquals(60000, traceGraph0.getArcMinDuration(1));
+        Assert.assertEquals(540000, traceGraph0.getArcMaxDuration(1));
         
-        Assert.assertEquals(120000, attTrace0.getArcMinDuration(8));
-        Assert.assertEquals(180000, attTrace0.getArcMaxDuration(8));
+        Assert.assertEquals(120000, traceGraph0.getArcMinDuration(8));
+        Assert.assertEquals(180000, traceGraph0.getArcMaxDuration(8));
         
-        Assert.assertEquals(240000, attTrace0.getArcMinDuration(9));
-        Assert.assertEquals(240000, attTrace0.getArcMaxDuration(9));
+        Assert.assertEquals(240000, traceGraph0.getArcMinDuration(9));
+        Assert.assertEquals(240000, traceGraph0.getArcMaxDuration(9));
         
-        Assert.assertEquals(600000, attTrace0.getArcMinDuration(11));
-        Assert.assertEquals(600000, attTrace0.getArcMaxDuration(11));
+        Assert.assertEquals(600000, traceGraph0.getArcMinDuration(11));
+        Assert.assertEquals(600000, traceGraph0.getArcMaxDuration(11));
         
-        Assert.assertEquals(480000, attTrace0.getArcMinDuration(14));
-        Assert.assertEquals(480000, attTrace0.getArcMaxDuration(14));
+        Assert.assertEquals(480000, traceGraph0.getArcMinDuration(14));
+        Assert.assertEquals(480000, traceGraph0.getArcMaxDuration(14));
         
-        Assert.assertEquals(300000, attTrace0.getArcMinDuration(17));
-        Assert.assertEquals(300000, attTrace0.getArcMaxDuration(17));
+        Assert.assertEquals(300000, traceGraph0.getArcMinDuration(17));
+        Assert.assertEquals(300000, traceGraph0.getArcMaxDuration(17));
         
-        Assert.assertEquals(420000, attTrace0.getArcMinDuration(23));
-        Assert.assertEquals(420000, attTrace0.getArcMaxDuration(23));
+        Assert.assertEquals(420000, traceGraph0.getArcMinDuration(23));
+        Assert.assertEquals(420000, traceGraph0.getArcMaxDuration(23));
         
-        Assert.assertEquals(360000, attTrace0.getArcMinDuration(24));
-        Assert.assertEquals(360000, attTrace0.getArcMaxDuration(24));
+        Assert.assertEquals(360000, traceGraph0.getArcMinDuration(24));
+        Assert.assertEquals(360000, traceGraph0.getArcMaxDuration(24));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(34));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(34));     
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(34));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(34));     
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(35));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(35));           
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(35));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(35));           
     }
     
     @Test
@@ -747,13 +747,7 @@ public class LogTest extends DataSetup {
             logBitMap1.setTraceBitSet(new BitSet(1), 1); // remove trace
             logBitMap1.addEventBitSet(LogBitMap.newBitSet(11), 11); // keep all events
             log.updateLogStatus(logBitMap1);
-        } catch (InvalidLogBitMapException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidALogStatusUpdateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidAttributeLogStatusUpdateException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -770,10 +764,7 @@ public class LogTest extends DataSetup {
         // Filter traces of AttributeLog
         try {
             attLog.refresh();
-        } catch (InvalidLogBitMapException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidAttributeLogStatusUpdateException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -822,13 +813,7 @@ public class LogTest extends DataSetup {
             logBitMap1.setTraceBitSet(LogBitMap.newBitSet(1), 1); // re-add trace
             logBitMap1.addEventBitSet(LogBitMap.newBitSet(11), 11); // keep all events
             log.updateLogStatus(logBitMap1);
-        } catch (InvalidLogBitMapException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidALogStatusUpdateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidAttributeLogStatusUpdateException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -846,10 +831,7 @@ public class LogTest extends DataSetup {
         // Refresh AttributeLog
         try {
             attLog.refresh();
-        } catch (InvalidLogBitMapException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidAttributeLogStatusUpdateException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -920,13 +902,7 @@ public class LogTest extends DataSetup {
             logBitMap1.setTraceBitSet(LogBitMap.newBitSet(1), 1); // keep trace
             logBitMap1.addEventBitSet(LogBitMap.newBitSet(11, 5, 11), 11);
             log.updateLogStatus(logBitMap1);
-        } catch (InvalidLogBitMapException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidALogStatusUpdateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidAttributeLogStatusUpdateException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -943,10 +919,7 @@ public class LogTest extends DataSetup {
         // Filter traces of AttributeLog
         try {
             attLog.refresh();
-        } catch (InvalidLogBitMapException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidAttributeLogStatusUpdateException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -1025,59 +998,60 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(false, attTrace0.isEmpty());
         
-        Assert.assertEquals(IntSets.mutable.of(2,12,15,17,20,27), attTrace0.getActiveArcs());
-        Assert.assertEquals(IntSets.mutable.of(0,2,3,4,5), attTrace0.getActiveNodes());
+        AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
+        Assert.assertEquals(IntSets.mutable.of(2,12,15,17,20,27), traceGraph0.getArcs());
+        Assert.assertEquals(IntSets.mutable.of(0,2,3,4,5), traceGraph0.getNodes());
         
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(0));
-        Assert.assertEquals(3, attTrace0.getNodeTotalCount(2));
-        Assert.assertEquals(2, attTrace0.getNodeTotalCount(3));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(4)); //-1
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(5)); //-2
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(0));
+        Assert.assertEquals(3, traceGraph0.getNodeTotalFrequency(2));
+        Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(3));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(4)); //-1
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(5)); //-2
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(0));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(0));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(0));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(2));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(2));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(2));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(2));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(3));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(3));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(3));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(3));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
         
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(2)); //2,12,15,17,20,27
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(12));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(15));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(17));
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(20));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(27));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(2)); //2,12,15,17,20,27
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(12));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(15));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(17));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(20));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(27));
         
-        Assert.assertEquals(600000, attTrace0.getArcMinDuration(2));
-        Assert.assertEquals(600000, attTrace0.getArcMaxDuration(2));
+        Assert.assertEquals(600000, traceGraph0.getArcMinDuration(2));
+        Assert.assertEquals(600000, traceGraph0.getArcMaxDuration(2));
         
-        Assert.assertEquals(540000, attTrace0.getArcMinDuration(12));
-        Assert.assertEquals(540000, attTrace0.getArcMaxDuration(12));
+        Assert.assertEquals(540000, traceGraph0.getArcMinDuration(12));
+        Assert.assertEquals(540000, traceGraph0.getArcMaxDuration(12));
         
-        Assert.assertEquals(420000, attTrace0.getArcMinDuration(15));
-        Assert.assertEquals(420000, attTrace0.getArcMaxDuration(15));
+        Assert.assertEquals(420000, traceGraph0.getArcMinDuration(15));
+        Assert.assertEquals(420000, traceGraph0.getArcMaxDuration(15));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(17));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(17));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(17));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(17));
         
-        Assert.assertEquals(360000, attTrace0.getArcMinDuration(20));
-        Assert.assertEquals(480000, attTrace0.getArcMaxDuration(20));
+        Assert.assertEquals(360000, traceGraph0.getArcMinDuration(20));
+        Assert.assertEquals(480000, traceGraph0.getArcMaxDuration(20));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(27));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(27));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(27));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(27));
     }
     
     @Test
@@ -1196,76 +1170,77 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(LongArrayList.newListWith(0,60000,60000,60000,60000,60000,60000,60000,60000,60000,60000,60000,0), attTrace0.getDurationTrace());         
         
-        Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), attTrace0.getActiveArcs());
-        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5), attTrace0.getActiveNodes());
+        AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
+        Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), traceGraph0.getArcs());
+        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5), traceGraph0.getNodes());
         
-        Assert.assertEquals(4, attTrace0.getNodeTotalCount(0));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(1));
-        Assert.assertEquals(4, attTrace0.getNodeTotalCount(2));
-        Assert.assertEquals(2, attTrace0.getNodeTotalCount(3));
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(4)); //-1
-        Assert.assertEquals(1, attTrace0.getNodeTotalCount(5)); //-2
+        Assert.assertEquals(4, traceGraph0.getNodeTotalFrequency(0));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(1));
+        Assert.assertEquals(4, traceGraph0.getNodeTotalFrequency(2));
+        Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(3));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(4)); //-1
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(5)); //-2
         
-        Assert.assertEquals(240000, attTrace0.getNodeTotalDuration(0));
-        Assert.assertEquals(60000, attTrace0.getNodeMinDuration(0));
-        Assert.assertEquals(60000, attTrace0.getNodeMaxDuration(0));
+        Assert.assertEquals(240000, traceGraph0.getNodeTotalDuration(0));
+        Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(0));
+        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(0));
         
-        Assert.assertEquals(60000, attTrace0.getNodeTotalDuration(1));
-        Assert.assertEquals(60000, attTrace0.getNodeMinDuration(1));
-        Assert.assertEquals(60000, attTrace0.getNodeMaxDuration(1));        
+        Assert.assertEquals(60000, traceGraph0.getNodeTotalDuration(1));
+        Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(1));
+        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(1));        
         
-        Assert.assertEquals(240000, attTrace0.getNodeTotalDuration(2));
-        Assert.assertEquals(60000, attTrace0.getNodeMinDuration(2));
-        Assert.assertEquals(60000, attTrace0.getNodeMaxDuration(2));   
+        Assert.assertEquals(240000, traceGraph0.getNodeTotalDuration(2));
+        Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(2));
+        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(2));   
 
-        Assert.assertEquals(120000, attTrace0.getNodeTotalDuration(3));
-        Assert.assertEquals(60000, attTrace0.getNodeMinDuration(3));
-        Assert.assertEquals(60000, attTrace0.getNodeMaxDuration(3));
+        Assert.assertEquals(120000, traceGraph0.getNodeTotalDuration(3));
+        Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(3));
+        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(3));
         
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(4));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
 
-        Assert.assertEquals(0, attTrace0.getNodeTotalDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMinDuration(5));
-        Assert.assertEquals(0, attTrace0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
         
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(0)); //0,1,2,8,12,15,17,20,24
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(1));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(2));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(8));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(12));
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(15));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(17));
-        Assert.assertEquals(2, attTrace0.getArcTotalCount(20));
-        Assert.assertEquals(1, attTrace0.getArcTotalCount(24));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(0)); //0,1,2,8,12,15,17,20,24
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(1));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(2));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(8));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(12));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(15));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(17));
+        Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(20));
+        Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(24));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(0));
-        Assert.assertEquals(60000, attTrace0.getArcMaxDuration(0));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(0));
+        Assert.assertEquals(60000, traceGraph0.getArcMaxDuration(0));
         
-        Assert.assertEquals(120000, attTrace0.getArcMinDuration(1));
-        Assert.assertEquals(120000, attTrace0.getArcMaxDuration(1));
+        Assert.assertEquals(120000, traceGraph0.getArcMinDuration(1));
+        Assert.assertEquals(120000, traceGraph0.getArcMaxDuration(1));
         
-        Assert.assertEquals(540000, attTrace0.getArcMinDuration(2));
-        Assert.assertEquals(540000, attTrace0.getArcMaxDuration(2));
+        Assert.assertEquals(540000, traceGraph0.getArcMinDuration(2));
+        Assert.assertEquals(540000, traceGraph0.getArcMaxDuration(2));
         
-        Assert.assertEquals(180000, attTrace0.getArcMinDuration(8));
-        Assert.assertEquals(180000, attTrace0.getArcMaxDuration(8));
+        Assert.assertEquals(180000, traceGraph0.getArcMinDuration(8));
+        Assert.assertEquals(180000, traceGraph0.getArcMaxDuration(8));
         
-        Assert.assertEquals(480000, attTrace0.getArcMinDuration(12));
-        Assert.assertEquals(480000, attTrace0.getArcMaxDuration(12));
+        Assert.assertEquals(480000, traceGraph0.getArcMinDuration(12));
+        Assert.assertEquals(480000, traceGraph0.getArcMaxDuration(12));
         
-        Assert.assertEquals(240000, attTrace0.getArcMinDuration(15));
-        Assert.assertEquals(360000, attTrace0.getArcMaxDuration(15));
+        Assert.assertEquals(240000, traceGraph0.getArcMinDuration(15));
+        Assert.assertEquals(360000, traceGraph0.getArcMaxDuration(15));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(17));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(17));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(17));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(17));
         
-        Assert.assertEquals(300000, attTrace0.getArcMinDuration(20));
-        Assert.assertEquals(420000, attTrace0.getArcMaxDuration(20));
+        Assert.assertEquals(300000, traceGraph0.getArcMinDuration(20));
+        Assert.assertEquals(420000, traceGraph0.getArcMaxDuration(20));
         
-        Assert.assertEquals(0, attTrace0.getArcMinDuration(24));
-        Assert.assertEquals(0, attTrace0.getArcMaxDuration(24));
+        Assert.assertEquals(0, traceGraph0.getArcMinDuration(24));
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(24));
         
         
         // Variants

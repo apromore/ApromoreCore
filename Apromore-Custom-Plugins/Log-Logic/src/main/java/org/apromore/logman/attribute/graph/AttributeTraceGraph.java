@@ -1,6 +1,6 @@
 package org.apromore.logman.attribute.graph;
 
-import org.apromore.logman.attribute.AttributeMatrixGraph;
+import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.primitive.DoubleList;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.api.map.primitive.MutableIntLongMap;
@@ -16,38 +16,48 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
  *
  */
 public class AttributeTraceGraph extends WeightedAttributeGraph {
-
-    private MutableIntLongMap originalNodeTotalFreqs = IntLongMaps.mutable.empty();
-    private MutableIntLongMap originalArcTotalFreqs = IntLongMaps.mutable.empty();
-    private MutableIntObjectMap<MutableDoubleList> originalNodeDurs = IntObjectMaps.mutable.empty();
-    private MutableIntObjectMap<MutableDoubleList> originalArcDurs = IntObjectMaps.mutable.empty();
+    private AttributeTrace attTrace;
+    private MutableIntLongMap nodeTotalFreqs = IntLongMaps.mutable.empty();
+    private MutableIntLongMap arcTotalFreqs = IntLongMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> nodeDurs = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> arcDurs = IntObjectMaps.mutable.empty();
     
-    public AttributeTraceGraph(AttributeMatrixGraph matrixGraph) {
-        super(matrixGraph);
+    public AttributeTraceGraph(AttributeTrace attTrace) {
+        super(attTrace.getAttribute());
+        this.attTrace = attTrace;
+    }
+    
+    @Override
+    public void clear() {
+        super.clear();
+        nodeTotalFreqs.clear();
+        arcTotalFreqs.clear();
+        nodeDurs.clear();
+        arcDurs.clear();
     }
     
     public void incrementNodeTotalFrequency(int node, long nodeTotalCount) {
-        originalNodeTotalFreqs.put(node, originalNodeTotalFreqs.getIfAbsentPut(node, 0) + nodeTotalCount);
+        nodeTotalFreqs.put(node, nodeTotalFreqs.getIfAbsentPut(node, 0) + nodeTotalCount);
     }
     
     public void collectNodeDuration(int node, long nodeDuration) {
-        if (originalNodeDurs.contains(node)) originalNodeDurs.get(node).add(nodeDuration);
+        if (nodeDurs.contains(node)) nodeDurs.get(node).add(nodeDuration);
     }
     
     public void incrementArcTotalFrequency(int arc, long arcTotalCount) {
-        originalArcTotalFreqs.put(arc, originalArcTotalFreqs.getIfAbsentPut(arc, 0) + arcTotalCount);
+        arcTotalFreqs.put(arc, arcTotalFreqs.getIfAbsentPut(arc, 0) + arcTotalCount);
     }
     
     public void collectArcDuration(int arc, long arcDuration) {
-        if (originalArcDurs.contains(arc)) originalArcDurs.get(arc).add(arcDuration);
+        if (arcDurs.contains(arc)) arcDurs.get(arc).add(arcDuration);
     }
     
     public DoubleList getNodeDurations(int node) {
-        return originalNodeDurs.getIfAbsent(node, DoubleLists.mutable::empty).toImmutable();
+        return nodeDurs.getIfAbsent(node, DoubleLists.mutable::empty).toImmutable();
     }
     
     public DoubleList getArcDurations(int arc) {
-        return originalArcDurs.getIfAbsent(arc, DoubleLists.mutable::empty).toImmutable();
+        return arcDurs.getIfAbsent(arc, DoubleLists.mutable::empty).toImmutable();
     }
 
     @Override
@@ -55,35 +65,35 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
-                return originalNodeTotalFreqs.get(node);
+                return nodeTotalFreqs.get(node);
             case CASES:
-                return (originalNodeTotalFreqs.get(node) > 0 ? 1 : 0);                
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);                
             case MEAN:
-                return (originalNodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
             case MIN:
-                return (originalNodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
             case MAX:
-                return (originalNodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
             case MEDIAN:
-                return (originalNodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
             default:
-                return (originalNodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
             }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return originalNodeDurs.get(node).sum();
+                return nodeDurs.get(node).sum();
             case MEAN:
-                return originalNodeDurs.get(node).average();
+                return nodeDurs.get(node).average();
             case MIN:
-                return originalNodeDurs.get(node).min();
+                return nodeDurs.get(node).min();
             case MAX:
-                return originalNodeDurs.get(node).max();
+                return nodeDurs.get(node).max();
             case MEDIAN:
-                return originalNodeDurs.get(node).median();
+                return nodeDurs.get(node).median();
             default:
-                return originalNodeDurs.get(node).average();
+                return nodeDurs.get(node).average();
             }
         }
     }
@@ -93,35 +103,35 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
-                return originalArcTotalFreqs.get(arc);
+                return arcTotalFreqs.get(arc);
             case CASES:
-                return (originalArcTotalFreqs.get(arc) > 0 ? 1 : 0);                
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);                
             case MEAN:
-                return (originalArcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
             case MIN:
-                return (originalArcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
             case MAX:
-                return (originalArcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
             case MEDIAN:
-                return (originalArcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
             default:
-                return (originalArcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
             }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return originalArcDurs.get(arc).sum();
+                return arcDurs.get(arc).sum();
             case MEAN:
-                return originalArcDurs.get(arc).average();
+                return arcDurs.get(arc).average();
             case MIN:
-                return originalArcDurs.get(arc).min();
+                return arcDurs.get(arc).min();
             case MAX:
-                return originalArcDurs.get(arc).max();
+                return arcDurs.get(arc).max();
             case MEDIAN:
-                return originalArcDurs.get(arc).median();
+                return arcDurs.get(arc).median();
             default:
-                return originalArcDurs.get(arc).average();
+                return arcDurs.get(arc).average();
             }
         }
     }

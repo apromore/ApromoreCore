@@ -22,7 +22,6 @@
 
 package org.apromore.processdiscoverer.abstraction;
 
-import org.apromore.logman.attribute.graph.InvalidArcException;
 import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.AbstractionParams;
@@ -57,7 +56,7 @@ public class DFGAbstraction extends AbstractAbstraction {
 	
 
 	@Override
-	protected void updateArcWeights(AbstractionParams params) throws InvalidArcException {
+	protected void updateArcWeights(AbstractionParams params) throws Exception {
 		arcPrimaryWeights.clear();
 		arcSecondaryWeights.clear();
 		minArcPrimaryWeight = Double.MAX_VALUE;
@@ -65,6 +64,11 @@ public class DFGAbstraction extends AbstractAbstraction {
 		
 		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge: diagram.getEdges()) {
 			int arc = log.getGraphView().getArc(edge.getSource().getLabel(), edge.getTarget().getLabel());
+			if (arc == -1) {
+			    throw new Exception("Updating arc weights: unable to find an arc with source=" + edge.getSource().getLabel() + 
+			                            ", target=" + edge.getTarget().getLabel());
+			}
+			
 			double arcWeight = log.getGraphView().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation());
 			arcPrimaryWeights.put(edge, arcWeight);
 			maxArcPrimaryWeight = Math.max(maxArcPrimaryWeight, arcWeight);

@@ -104,9 +104,12 @@ public class AttributeLog {
             AttributeTrace attTrace = new AttributeTrace(attribute, trace);
             originalTraces.add(attTrace);
             originalTraceIdMap.put(trace.getTraceId(), attTrace);
-            if (originalTraceStatus.get(i) && !attTrace.isEmpty()) activeTraces.add(attTrace);
-            variantView.add(attTrace, originalTraceStatus.get(i));
-            graphView.addTraceGraph(attTrace.getActiveGraph());
+            variantView.addOriginalTrace(attTrace);
+            if (originalTraceStatus.get(i) && !attTrace.isEmpty()) { 
+                activeTraces.add(attTrace);
+                variantView.addActiveTrace(attTrace);
+                graphView.addTraceGraph(attTrace.getActiveGraph());
+            }
         }
         
         variantView.finalUpdate();
@@ -119,18 +122,21 @@ public class AttributeLog {
 	
     // Change the perspective attribute of this log without having to recreate a new AttributeLog
     // When changing the attribute, each AttributeTrace will switch to the new attribute
-	public void setAttribute(IndexableAttribute newAttribute) throws Exception {
+	public void setAttribute(IndexableAttribute newAttribute) {
 	    if (newAttribute != this.attribute && newAttribute != null) {
 	        attribute = newAttribute;
 	        variantView.reset();
-	        graphView.reset();
+	        graphView.setAttribute(attribute);
 	        activeTraces.clear();
     	    for (int i=0; i<originalTraces.size(); i++) {
     	        AttributeTrace attTrace = originalTraces.get(i);
-    	        attTrace.refresh();
-    	        if (originalTraceStatus.get(i) && !attTrace.isEmpty()) activeTraces.add(attTrace);
-    	        variantView.add(attTrace, originalTraceStatus.get(i));
-    	        graphView.addTraceGraph(attTrace.getActiveGraph());
+    	        attTrace.setAttribute(newAttribute);
+    	        variantView.addOriginalTrace(attTrace);
+    	        if (originalTraceStatus.get(i) && !attTrace.isEmpty()) {
+    	            activeTraces.add(attTrace);
+    	            variantView.addActiveTrace(attTrace);
+    	            graphView.addTraceGraph(attTrace.getActiveGraph());
+    	        }
     	    }
     	    
     	    variantView.finalUpdate();
@@ -169,8 +175,8 @@ public class AttributeLog {
         }
         else {
             activeTraces.clear();
-            variantView.resetActive();
-            graphView.reset();
+            variantView.resetActiveData();
+            graphView.clear();
             
             if (!logBitMap.getTraceBitSet().equals(this.getOriginalTraceStatus())) {
                 originalTraceStatus = logBitMap.getTraceBitSet();
@@ -184,9 +190,11 @@ public class AttributeLog {
                         trace.updateOriginalEventStatus(logBitMap.getEventBitSetAtIndex(i));
                         dataStatusChanged = true;
                     }
-                    if (originalTraceStatus.get(i) && !trace.isEmpty()) activeTraces.add(trace);
-                    graphView.addTraceGraph(trace.getActiveGraph());
-                    variantView.addActive(trace, originalTraceStatus.get(i));
+                    if (originalTraceStatus.get(i) && !trace.isEmpty()) {
+                        activeTraces.add(trace);
+                        graphView.addTraceGraph(trace.getActiveGraph());
+                        variantView.addActiveTrace(trace);
+                    }
                 }
                 else {
                     throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeTrace at traceIndex=" + i + 

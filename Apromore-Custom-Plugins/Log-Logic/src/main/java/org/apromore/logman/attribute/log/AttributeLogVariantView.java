@@ -38,17 +38,16 @@ public class AttributeLogVariantView {
         activeVariants.reset();
     }
     
-    protected void add(AttributeTrace trace, boolean isActive) {
+    protected void addOriginalTrace(AttributeTrace trace) {
         originalVariants.add(trace);
-        if (isActive && !trace.isEmpty()) activeVariants.add(trace);
     }
     
-    protected void resetActive() {
+    protected void addActiveTrace(AttributeTrace trace) {
+        activeVariants.add(trace);
+    }
+    
+    protected void resetActiveData() {
         activeVariants.reset();
-    }
-    
-    protected void addActive(AttributeTrace trace, boolean isActive) {
-        if (isActive && !trace.isEmpty()) activeVariants.add(trace);
     }
     
     protected void finalUpdate() {
