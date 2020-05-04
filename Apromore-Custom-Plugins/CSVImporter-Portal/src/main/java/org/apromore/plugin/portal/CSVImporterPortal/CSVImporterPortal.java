@@ -189,7 +189,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
             if (pos == sample.getEndTimestampPos() || pos == sample.getStartTimestampPos() || sample.getOtherTimestamps().containsKey(pos)) {
                 showFormatBtn(formatBtn);
-                showParsedGreenIcon(parsedIcon);
+                showAutoParsedGreenIcon(parsedIcon);
             } else {
                 hideFormatBtn(formatBtn);
             }
@@ -463,13 +463,11 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
     private void parsedManual(int colPos, String selected, String format) {
         updateTimestampPos(colPos, selected, format);
-        showParsedGreenIcon(parsedIcons[colPos]);
         setPopUpLabel(colPos, Parsed.MANUAL, null);
     }
 
     private void parsedAuto(int colPos, String selected) {
         updateTimestampPos(colPos, selected, null);
-        showParsedGreenIcon(parsedIcons[colPos]);
         setPopUpLabel(colPos, Parsed.AUTO, null);
         setPopUpFormatText(colPos, "");
     }
@@ -477,7 +475,6 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     private void failedToParse(int colPos) {
         sample.getEventAttributesPos().add(colPos);
         setPopUpLabel(colPos, Parsed.FAILED, null);
-        showParsedRedIcon(parsedIcons[colPos]);
         openPopUpBox(colPos);
     }
 
@@ -513,12 +510,15 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         if (type == Parsed.AUTO) {
             check_lbl.setZclass(greenLabelCSS);
             check_lbl.setValue(parsedAutoMessage);
+            showAutoParsedGreenIcon(parsedIcons[pos]);
         } else if (type == Parsed.MANUAL) {
             check_lbl.setZclass(greenLabelCSS);
             check_lbl.setValue(parsedMessage);
+            showManualParsedGreenIcon(parsedIcons[pos]);
         } else if (type == Parsed.FAILED) {
             check_lbl.setZclass(redLabelCSS);
             check_lbl.setValue(couldNotParseMessage);
+            showParsedRedIcon(parsedIcons[pos]);
         }
     }
 
@@ -530,12 +530,19 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         myButton.setSclass("ap-csv-importer-format-icon ap-hidden");
     }
 
-    private void showParsedGreenIcon(Span parsedIcon) {
+    private void showAutoParsedGreenIcon(Span parsedIcon) {
         parsedIcon.setSclass("ap-csv-importer-parsed-icon z-icon-check-circle");
+        parsedIcon.setTooltip(autoParsed);
+    }
+
+    private void showManualParsedGreenIcon(Span parsedIcon) {
+        parsedIcon.setSclass("ap-csv-importer-parsed-icon z-icon-check-circle");
+        parsedIcon.setTooltip(manualParsed);
     }
 
     private void showParsedRedIcon(Span parsedIcon) {
         parsedIcon.setSclass("ap-csv-importer-failedParse-icon z-icon-times-circle");
+        parsedIcon.setTooltip(errorParsing);
     }
 
     private void hideParsedIcon(Span parsedIcon) {

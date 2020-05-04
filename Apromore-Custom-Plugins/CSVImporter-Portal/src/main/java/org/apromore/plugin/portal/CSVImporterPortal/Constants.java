@@ -62,4 +62,8 @@ interface Constants {
     String skipColumnsBtnId = "skipInvalidColumns";
     String handleCancelBtnId = "cancelImport";
     String ignoreColLblId = "ignoreCol";
+
+    String autoParsed = "autoParsed";
+    String manualParsed = "manualParsed";
+    String errorParsing = "errorParsing";
 }
