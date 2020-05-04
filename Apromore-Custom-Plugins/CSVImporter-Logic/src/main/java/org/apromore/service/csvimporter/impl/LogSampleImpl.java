@@ -64,6 +64,7 @@ class LogSampleImpl implements LogSample, Constants {
 
         setUniqueAttributes();
         setOtherTimestamps();
+        onlyOnetimestampFound();
         setEventAttributesPos();
         setCaseAttributesPos();
         validateSample();
@@ -155,6 +156,16 @@ class LogSampleImpl implements LogSample, Constants {
         }
     }
 
+    // If only one timestamp found then set it as endTimestamp
+    private void onlyOnetimestampFound() {
+        if (endTimestampPos == -1 && startTimestampPos == -1 && otherTimestamps.size() == 1) {
+            endTimestampPos = otherTimestamps.keySet().stream().findFirst().get();
+            otherTimestamps.remove(endTimestampPos);
+        } else if (endTimestampPos == -1 && (otherTimestamps == null || otherTimestamps.isEmpty()) && startTimestampPos != -1){
+            endTimestampPos = startTimestampPos;
+            startTimestampPos = -1;
+        }
+    }
 
     private void setCaseAttributesPos() {
         if (caseIdPos != -1 && eventAttributesPos != null && !eventAttributesPos.isEmpty()) {
