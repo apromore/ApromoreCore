@@ -84,10 +84,8 @@
                  label="${labels.e.agg.total.text}"/>
       <comboitem value="mean"
                  label="${labels.e.agg.mean.text}"/>
-      <!--<comboitem value="median_frequency"
+      <comboitem value="median"
                  label="${labels.e.agg.median.text}"/>
-      <comboitem value="mode_frequency"
-                 label="${labels.e.agg.mode.text}"/>-->
       <comboitem value="max"
                  label="${labels.e.agg.max.text}"/>
       <comboitem value="min"
@@ -117,10 +115,8 @@
                  label="${labels.e.agg.total.text}"/>
       <comboitem value="mean"
                  label="${labels.e.agg.mean.text}"/>
-      <!--
-      <comboitem value="median_duration"
+      <comboitem value="median"
                  label="${labels.e.agg.median.text}"/>
-      -->
       <comboitem value="max"
                  label="${labels.e.agg.max.text}"/>
       <comboitem value="min"
