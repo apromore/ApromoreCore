@@ -221,8 +221,8 @@ public abstract class WeightedAttributeGraph {
         return getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEAN);
     }
     
-    public long getNodeMedianFrequency(int node) {
-        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN);
+    public double getNodeMedianFrequency(int node) {
+        return getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN);
     }
     
     public long getNodeTotalDuration(int node) {
@@ -241,8 +241,8 @@ public abstract class WeightedAttributeGraph {
         return getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEAN);
     }
     
-    public long getNodeMedianDuration(int node) {
-        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEDIAN);
+    public double getNodeMedianDuration(int node) {
+        return getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEDIAN);
     }
     
     public long getArcTotalFrequency(int arc) {
@@ -265,8 +265,8 @@ public abstract class WeightedAttributeGraph {
         return getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEAN);
     }
     
-    public long getArcMedianFrequency(int arc) {
-        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN);
+    public double getArcMedianFrequency(int arc) {
+        return getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN);
     }
     
     public long getArcTotalDuration(int arc) {
@@ -285,7 +285,7 @@ public abstract class WeightedAttributeGraph {
         return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEAN);
     }
     
-    public long getArcMedianDuration(int arc) {
-        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEDIAN);
+    public double getArcMedianDuration(int arc) {
+        return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEDIAN);
     }
 }

@@ -83,8 +83,8 @@ public class DataSetup {
         return this.readXESFile("src/test/logs/L1_complete_events_only_with_resources.xes");
     }
     
-    public XLog readLogWithStartCompleteEventsNonOverlapping() {
-        return this.readXESFile("src/test/logs/L1_start_complete_no_overlapping.xes");
+    public XLog readLogWithStartCompleteEventsNonOverlappingRepeats() {
+        return this.readXESFile("src/test/logs/L1_start_complete_no_overlapping_repeats.xes");
     }
     
     public XLog readLogWithStartCompleteEventsOverlapping() {
