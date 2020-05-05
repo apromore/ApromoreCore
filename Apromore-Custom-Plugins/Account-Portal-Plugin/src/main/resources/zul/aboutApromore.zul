@@ -26,8 +26,8 @@
 <window id="pluginInfo" height="70vh" width="70vw" sizable="false" sclass="ap-about-window">
     <tabbox vflex="1">
         <tabs>
-            <tab label="Details"/>
-            <tab label="Active plugins" visible="false" />
+            <tab label="Details" />
+            <tab label="Active plugins" visible="false"/>
         </tabs>
         <tabpanels>
             <tabpanel hflex="1">

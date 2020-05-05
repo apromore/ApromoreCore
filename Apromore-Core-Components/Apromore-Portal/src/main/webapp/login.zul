@@ -104,6 +104,13 @@
               You need to agree with the Terms &amp;amp; Conditions and the Privacy Policy
             </div>
           </div>
+          <div xmlns="http://www.w3.org/1999/xhtml" id="ap-login-message" style="display: none;">
+            <div class="alert alert-warning">
+              <button type="button" class="close" onClick="Ap.login.closeMessage(true);">&#xd7;</button>
+              <i class="icon-remove-circle"></i>
+              <span class="content"></span>
+            </div>
+          </div>
         </html>
         <h:div class="main">
           <h:div class="tab-content overflow form-dark">

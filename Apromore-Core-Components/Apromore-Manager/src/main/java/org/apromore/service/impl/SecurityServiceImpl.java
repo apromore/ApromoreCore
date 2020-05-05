@@ -180,6 +180,11 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public Role findRoleByName(String name) {
+        return roleRepo.findByName(name);
+    }
+
+    @Override
     public Set<Role> findRolesByUser(User user) {
         return roleRepo.findByUser(user);
     }

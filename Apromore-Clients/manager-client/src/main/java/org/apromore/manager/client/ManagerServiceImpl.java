@@ -118,7 +118,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType readUserByUsername(String username) {
-        return UserMapper.convertUserTypes(secSrv.getUserByName(username));
+        return UserMapper.convertUserTypes(secSrv.getUserByName(username), secSrv);
     }
 
     /**
@@ -135,7 +135,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<UserType> users = new ArrayList<>();
         for (User user: secSrv.searchUsers(searchString)) {
-            users.add(UserMapper.convertUserTypes(user));
+            users.add(UserMapper.convertUserTypes(user, secSrv));
         }
 
         return users;
@@ -168,7 +168,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType readUserByEmail(String email) throws Exception {
-        return UserMapper.convertUserTypes(secSrv.getUserByEmail(email));
+        return UserMapper.convertUserTypes(secSrv.getUserByEmail(email), secSrv);
     }
 
     /**
@@ -866,7 +866,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType writeUser(UserType user) throws Exception {
-        return  UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(user)));
+        return UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(user, secSrv)), secSrv);
     }
 
     /**
@@ -928,7 +928,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception {
-        userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(currentUser),
+        userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(currentUser, secSrv),
                                         SearchHistoryMapper.convertFromSearchHistoriesType(searchHist));
     }
 }

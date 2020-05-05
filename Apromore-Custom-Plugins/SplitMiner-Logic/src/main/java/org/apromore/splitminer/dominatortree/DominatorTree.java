@@ -1,8 +1,10 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * %%
+ *
  * Copyright (C) 2010 - University of Tartu
+ * %%
+ * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as

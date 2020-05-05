@@ -24,10 +24,10 @@
 
 package org.apromore.portal.dialogController;
 
-import javax.xml.bind.JAXBException;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.SummariesType;
@@ -40,8 +40,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Window;
 
 public class SimpleSearchController extends BaseController {
@@ -92,34 +92,24 @@ public class SimpleSearchController extends BaseController {
      * @param comboValue the combox value the user entered.
      */
     private void refreshSearch(String comboValue) {
-        if (UserSessionManager.getCurrentUser() != null) {
-            List<SearchHistoriesType> previousSearches = this.mainC.getSearchHistory();
+        if (UserSessionManager.getCurrentUser() == null) {
+            return;
+        }
 
-            if (previousSearches != null) {
-                int j = 0;
-                while (j < previousSearches.size() && previousSearches.get(j).getSearch().compareTo(comboValue) < 0) {
-                    j++;
-                }
+        List<SearchHistoriesType> previousSearches = this.mainC.getSearchHistory();
 
-                Iterator<Comboitem> it = previousSearchesCB.getItems().iterator();
-                while (j < previousSearches.size() && previousSearches.get(j).getSearch().startsWith(comboValue)) {
-                    j++;
-                    if (it != null && it.hasNext()) {
-                        it.next().setLabel(previousSearches.get(j).getSearch());
-                    } else {
-                        it = null;
-                        if (j < previousSearches.size()) {
-                            new Comboitem(previousSearches.get(j).getSearch()).setParent(previousSearchesCB);
-                        }
-                    }
-                }
+        if (previousSearches == null) {
+            return;
+        }
 
-                while (it != null && it.hasNext()) {
-                    it.next();
-                    it.remove();
-                }
+        List<String> list = new ArrayList<>();
+        for (SearchHistoriesType previousSearch: previousSearches) {
+            if (previousSearch.getSearch().startsWith(comboValue)) {
+                list.add(previousSearch.getSearch());
             }
         }
+
+        previousSearchesCB.setModel(new ListModelList<>(list));
     }
 
     /**

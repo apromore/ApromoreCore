@@ -219,8 +219,7 @@ public class ProcessServiceImpl implements ProcessService {
 
         try {
             // Firstly, do we need to use the searchExpression
-            SearchExpressionBuilder seb = new SearchExpressionBuilder();
-            String conditions = seb.buildSearchConditions(searchExpression);
+            String conditions = SearchExpressionBuilder.buildSearchConditions(searchExpression);
 
             // Now... Build the Object tree from this list of processes.
             processSummaries = ui.buildProcessSummaryList(folderId, conditions, null);
