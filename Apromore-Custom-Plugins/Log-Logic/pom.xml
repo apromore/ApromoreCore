@@ -36,7 +36,9 @@
                             org.apromore.logman.attribute.exception,
                             org.apromore.logman.attribute.log,
                             org.apromore.logman.attribute.log.relation,
+                            org.apromore.logman.attribute.log.variants,
                             org.apromore.logman.attribute.graph,
+                            org.apromore.logman.attribute.graph.filtering,
                             org.apromore.logman.utils
                         </Export-Package>
                     </instructions>
