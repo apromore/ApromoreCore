@@ -29,7 +29,7 @@
         <listheader label="Name"              hflex="7"/>                   <!-- name -->
         <listheader label="ID"                hflex="1"    align="center"/> <!-- id -->
         <listheader label="Format"            width="80px" align="center" />                 <!-- originalNativeType -->
-        <listheader label="Domain"            hflex="1"/>                   <!-- domain -->
+        <listheader label="Domain"            hflex="1" visible="false" />                   <!-- domain -->
         <listheader label="Rating"            width="90px" align="center"/> <!-- ranking -->
         <listheader label="Latest version"    width="100px"  align="center"/> <!-- lastVersion -->
         <listheader label="Owner"             hflex="1"/>                   <!-- owner -->
