@@ -31,9 +31,9 @@ import java.util.List;
 /**
  * Create the Search Expression used in the read process summaries.
  */
-public class SearchExpressionBuilder {
+public abstract class SearchExpressionBuilder {
 
-    public String buildSearchConditions(String searchExpression) throws UnsupportedEncodingException {
+    public static String buildSearchConditions(String searchExpression) throws UnsupportedEncodingException {
         String condition = "";
         if (searchExpression != null && searchExpression.compareTo("") != 0) {
             //condition = " and ";
@@ -64,7 +64,7 @@ public class SearchExpressionBuilder {
      * @param keywordSearch the search expression
      * @return the SQL condition corresponding to keywordSearch
      */
-    public List<String> mapQuery(String keywordSearch) {
+    public static List<String> mapQuery(String keywordSearch) {
         List<String> res = new ArrayList<>();
         String term = "";
         int state = 1;
@@ -111,7 +111,7 @@ public class SearchExpressionBuilder {
      * @return the JPQL-escaped version of the <var>character</var>
      * @see http://docs.oracle.com/cd/E11035_01/kodo41/full/html/ejb3_langref.html#ejb3_langref_lit
      */
-    private String escape(String character) {
+    private static String escape(String character) {
         assert character.length() == 1;
         switch (character) {
         case "'":
