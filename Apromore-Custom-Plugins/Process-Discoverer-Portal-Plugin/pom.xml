@@ -90,7 +90,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <argLine>-Xmx10G</argLine>
+                    <argLine>-Xmx20G</argLine>
                     <includes>
                         <include>**/*.java</include>
                     </includes>
