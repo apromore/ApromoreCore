@@ -377,6 +377,10 @@ public class ATrace implements Serializable, LaTrace {
     }
 
     private IntArrayList getFollowUpIndexList(XTrace xTrace, int fromIndex, String conceptName) {
+
+        XEvent startEvent = xTrace.get(fromIndex);
+        XAttributeMap seAttributeMap = startEvent.getAttributes();
+
         IntArrayList followUpIndex = new IntArrayList();
         if ( (fromIndex + 1) < xTrace.size()) {
             for (int i = (fromIndex + 1); i < xTrace.size(); i++) {
@@ -385,7 +389,8 @@ public class ATrace implements Serializable, LaTrace {
                 if (xAttributeMap.containsKey("concept:name") && xAttributeMap.containsKey("lifecycle:transition")) {
                     String actName = xAttributeMap.get("concept:name").toString();
                     String lifecycle = xAttributeMap.get("lifecycle:transition").toString().toLowerCase();
-                    if (actName.equals(conceptName)) {
+
+                    if (haveSameAttributeValues(seAttributeMap, xAttributeMap)) {
                         if (!lifecycle.equals("start")) {
                             followUpIndex.add(i);
                             if (lifecycle.equals("complete") ||
@@ -395,10 +400,33 @@ public class ATrace implements Serializable, LaTrace {
                             }
                         }
                     }
+
+//                    if (actName.equals(conceptName)) {
+//                        if (!lifecycle.equals("start")) {
+//                            followUpIndex.add(i);
+//                            if (lifecycle.equals("complete") ||
+//                                    lifecycle.equals("manualskip") ||
+//                                    lifecycle.equals("autoskip")) {
+//                                break;
+//                            }
+//                        }
+//                    }
                 }
             }
             return followUpIndex;
         } else return null;
+    }
+
+    private boolean haveSameAttributeValues(XAttributeMap xAttributeMap1, XAttributeMap xAttributeMap2) {
+        for (String key : xAttributeMap1.keySet()) {
+            if (!key.toLowerCase().equals("time:timestamp") && !key.toLowerCase().equals("lifecycle:transition")) {
+                if (!xAttributeMap2.containsKey(key)) return false;
+                String val1 = xAttributeMap1.get(key).toString();
+                String val2 = xAttributeMap2.get(key).toString();
+                if (!val1.equals(val2)) return false;
+            }
+        }
+        return true;
     }
 
     /**
