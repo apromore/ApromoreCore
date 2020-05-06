@@ -33,7 +33,6 @@ import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.deckfour.xes.model.XLog;
-import org.junit.Test;
 
 public class PerformanceTest extends TestDataSetup {
     
@@ -122,7 +121,7 @@ public class PerformanceTest extends TestDataSetup {
         }
     }
 
-    @Test
+    //@Test
     public void test_Performance_Iterations() {
         System.out.println("Read all XLog data objects used in this test into memory");
         XLog[] logs = new XLog[7];
