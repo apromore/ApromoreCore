@@ -156,8 +156,7 @@ public class ALog extends XLogImpl {
     
     // This batch update with LogBitMap is safe as it can check the validity of all bitsets
     // by comparing their size with the corresponding log/trace size.
-    public void updateLogStatus(LogBitMap logBitMap) 
-                            throws InvalidALogStatusUpdateException, InvalidLogBitMapException, InvalidAttributeLogStatusUpdateException {
+    public void updateLogStatus(LogBitMap logBitMap) throws Exception {
         boolean hasBeenUpdated = false;
         if (logBitMap.getTraceBitSetSize() != this.getOriginalTraces().size()) {
             throw new InvalidALogStatusUpdateException("Invalid update of ALog: different size from the log size.");

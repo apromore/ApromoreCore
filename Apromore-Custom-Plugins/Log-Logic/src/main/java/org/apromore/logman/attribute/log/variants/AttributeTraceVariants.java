@@ -20,11 +20,13 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.log;
+package org.apromore.logman.attribute.log.variants;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;

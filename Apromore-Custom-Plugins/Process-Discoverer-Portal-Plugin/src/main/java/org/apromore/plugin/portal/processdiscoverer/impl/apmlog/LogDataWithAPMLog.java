@@ -43,10 +43,7 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.util.Util;
 import org.apromore.logman.ALog;
-import org.apromore.logman.InvalidALogStatusUpdateException;
-import org.apromore.logman.InvalidLogBitMapException;
 import org.apromore.logman.LogBitMap;
-import org.apromore.logman.attribute.exception.InvalidAttributeLogStatusUpdateException;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
@@ -265,7 +262,7 @@ public class LogDataWithAPMLog extends LogData {
         return this.filteredAPMLog.getMaxDurationString();
     }
     
-    public void updateLog(PLog pLog, APMLog apmLog) throws InvalidLogBitMapException, InvalidALogStatusUpdateException, InvalidAttributeLogStatusUpdateException {
+    public void updateLog(PLog pLog, APMLog apmLog) throws Exception {
         this.filteredAPMLog = apmLog;
         this.filteredPLog = pLog;
         List<PTrace> pTraces = pLog.getCustomPTraceList(); 

@@ -28,10 +28,11 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apromore.logman.ALog;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
-import org.apromore.logman.InvalidLogBitMapException;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.exception.InvalidAttributeLogStatusUpdateException;
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -86,26 +87,28 @@ public class AttributeLog {
     private AttributeLogVariantView variantView;
     
     // Graph view of the log
-    private AttributeLogGraphView graphView;
+    private AttributeLogGraph graphView;
     
 	public AttributeLog(ALog log, IndexableAttribute attribute) {
 	    this.fullLog = log;
 	    this.attribute = attribute;
 	    this.originalTraceStatus = fullLog.getOriginalTraceStatus();
-	    if (log.getOriginalTraces().size()==0 || attribute == null) {
-	        return;
-	    }
-
+	    if (log.getOriginalTraces().size()==0 || attribute == null) return;
+	    
 	    this.variantView = new AttributeLogVariantView(this);
-		this.graphView = new AttributeLogGraphView(this);
+		this.graphView = new AttributeLogGraph(this);
+		
         for(int i=0; i<fullLog.getOriginalTraces().size(); i++) {
             ATrace trace = fullLog.getOriginalTraces().get(i);
-            AttributeTrace attTrace = new AttributeTrace(trace, attribute);
+            AttributeTrace attTrace = new AttributeTrace(attribute, trace);
             originalTraces.add(attTrace);
             originalTraceIdMap.put(trace.getTraceId(), attTrace);
-            if (originalTraceStatus.get(i) && !attTrace.isEmpty()) activeTraces.add(attTrace);
-            variantView.add(attTrace, originalTraceStatus.get(i));
-            graphView.add(attTrace);
+            variantView.addOriginalTrace(attTrace);
+            if (originalTraceStatus.get(i) && !attTrace.isEmpty()) { 
+                activeTraces.add(attTrace);
+                variantView.addActiveTrace(attTrace);
+                graphView.addTraceGraph(attTrace.getActiveGraph());
+            }
         }
         
         variantView.finalUpdate();
@@ -122,14 +125,17 @@ public class AttributeLog {
 	    if (newAttribute != this.attribute && newAttribute != null) {
 	        attribute = newAttribute;
 	        variantView.reset();
-	        graphView.reset();
+	        graphView.resetToAttribute(attribute);
 	        activeTraces.clear();
     	    for (int i=0; i<originalTraces.size(); i++) {
     	        AttributeTrace attTrace = originalTraces.get(i);
     	        attTrace.setAttribute(newAttribute);
-    	        if (originalTraceStatus.get(i) && !attTrace.isEmpty()) activeTraces.add(attTrace);
-    	        variantView.add(attTrace, originalTraceStatus.get(i));
-    	        graphView.add(attTrace);
+    	        variantView.addOriginalTrace(attTrace);
+    	        if (originalTraceStatus.get(i) && !attTrace.isEmpty()) {
+    	            activeTraces.add(attTrace);
+    	            variantView.addActiveTrace(attTrace);
+    	            graphView.addTraceGraph(attTrace.getActiveGraph());
+    	        }
     	    }
     	    
     	    variantView.finalUpdate();
@@ -154,7 +160,7 @@ public class AttributeLog {
 	    return variantView;
 	}
 	
-	public AttributeLogGraphView getGraphView() {
+	public AttributeLogGraph getGraphView() {
 	    return graphView;
 	}
 	
@@ -162,14 +168,14 @@ public class AttributeLog {
 	// Filter this log
 	// This batch update is safe as it can check the validity of the bitset
 	// Note that this method if calling alone will make this object out of sync with its original ALog
-	public void updateLogStatus(LogBitMap logBitMap) throws InvalidLogBitMapException, InvalidAttributeLogStatusUpdateException {
+	public void updateLogStatus(LogBitMap logBitMap) throws Exception {
         if (logBitMap.size() != this.getOriginalTraces().size()) {
             throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeLog: different bitmap size from the log size.");
         }
         else {
             activeTraces.clear();
-            variantView.resetActive();
-            graphView.reset();
+            variantView.resetActiveData();
+            graphView.clear();
             
             if (!logBitMap.getTraceBitSet().equals(this.getOriginalTraceStatus())) {
                 originalTraceStatus = logBitMap.getTraceBitSet();
@@ -180,12 +186,14 @@ public class AttributeLog {
                 AttributeTrace trace = getOriginalTraceFromIndex(i);
                 if (logBitMap.getEventBitSetSizeAtIndex(i) == trace.getOriginalValueTrace().size()) {
                     if (!logBitMap.getEventBitSetAtIndex(i).equals(trace.getOriginalEventStatus())) {
-                        trace.setOriginalEventStatus(logBitMap.getEventBitSetAtIndex(i));
+                        trace.updateOriginalEventStatus(logBitMap.getEventBitSetAtIndex(i));
                         dataStatusChanged = true;
                     }
-                    if (originalTraceStatus.get(i) && !trace.isEmpty()) activeTraces.add(trace);
-                    graphView.add(trace);
-                    variantView.addActive(trace, originalTraceStatus.get(i));
+                    if (originalTraceStatus.get(i) && !trace.isEmpty()) {
+                        activeTraces.add(trace);
+                        graphView.addTraceGraph(trace.getActiveGraph());
+                        variantView.addActiveTrace(trace);
+                    }
                 }
                 else {
                     throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeTrace at traceIndex=" + i + 
@@ -202,7 +210,7 @@ public class AttributeLog {
 	// Reload data from the current ALog and Attribute
 	// This method can be applied after the ALog has been changed, e.g. after filtering.
 	// This method makes this object in sync again with its ALog status
-	public void refresh() throws InvalidLogBitMapException, InvalidAttributeLogStatusUpdateException {
+	public void refresh() throws Exception {
 	    this.updateLogStatus(fullLog.getLogBitMapAtActivityLevel());
 	}
 	

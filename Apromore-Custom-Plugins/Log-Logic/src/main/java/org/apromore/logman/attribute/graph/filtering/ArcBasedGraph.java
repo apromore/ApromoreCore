@@ -20,28 +20,37 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 
-public class GraphTraversedArcs {
-    private BitSet arcBitMask; 
-    
-    public GraphTraversedArcs(BitSet arcBitMask) {
-        this.arcBitMask = arcBitMask;
-        this.arcBitMask.clear();
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.eclipse.collections.api.list.ListIterable;
+import org.eclipse.collections.impl.factory.Lists;
+
+/**
+ * ArcBasedGraph is FilteredGraph based on filtering out arcs
+ * 
+ * @author Bruce Nguyen
+ *
+ */
+public class ArcBasedGraph extends AbstractFilteredGraph {
+    public ArcBasedGraph(AttributeLogGraph originalGraph, BitSet nodeBitMask, BitSet arcBitMask) {
+        super(originalGraph, nodeBitMask, arcBitMask);
     }
     
-    public void markAddArc(int arc) {
-        arcBitMask.set(arc);
+    @Override
+    public ListIterable<FilteredGraph> getSubGraphs() {
+        return Lists.immutable.empty();
     }
     
-    public boolean containArc(int arc) {
-        return arcBitMask.get(arc);
+    
+    public boolean isOutgoingConnected(int node) {
+        return !getOutgoingArcsWithoutSelfLoops(node).isEmpty();
     }
     
-    public void clear() {
-        arcBitMask.clear();
+    public boolean isIncomingConnected(int node) {
+        return !getIncomingArcsWithoutSelfLoops(node).isEmpty();
     }
     
 }

@@ -23,7 +23,7 @@
 package org.apromore.processdiscoverer.bpmn;
 
 import org.apromore.logman.Constants;
-import org.apromore.logman.attribute.graph.AttributeGraph;
+import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
@@ -49,7 +49,7 @@ public class ProcessBPMNDiagram extends SimpleBPMNDiagram {
     private BPMNNode startNode;
     private BPMNNode endNode;    
     
-    public ProcessBPMNDiagram(AttributeGraph processGraph, AttributeLog log) {
+    public ProcessBPMNDiagram(FilteredGraph processGraph, AttributeLog log) {
         super(log);
         IntObjectHashMap<BPMNNode> map = new IntObjectHashMap<>();
 

@@ -78,6 +78,7 @@ public class ViewSettingsController extends VisualController {
             put("case", MeasureAggregation.CASES);
             put("total", MeasureAggregation.TOTAL);
             put("mean", MeasureAggregation.MEAN);
+            put("median", MeasureAggregation.MEDIAN);
             put("max", MeasureAggregation.MAX);
             put("min", MeasureAggregation.MIN);
         }
