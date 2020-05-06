@@ -224,7 +224,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             if(result.getTotalCount() > 1) {
                 displayProcessSummaries(process.getName() + ": Sim Search", resultToDisplay, context);
             }
-
+            context.refreshContent();
             Messagebox.show(message);
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
