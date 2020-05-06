@@ -46,7 +46,7 @@ public abstract class SearchExpressionBuilder {
                         current.compareTo(" ) ") == 0 || current.compareTo(" ( ") == 0) {
                     condition += current;
                 } else {
-                    condition += " p.id in (select k.processId FROM Keywords k WHERE k.value like '%" + current + "%' )";
+                    condition += " p.id in (select k.processId FROM Keywords k WHERE k.value like '%" + current + "%' AND k.type = 'process')";
                 }
             }
         }

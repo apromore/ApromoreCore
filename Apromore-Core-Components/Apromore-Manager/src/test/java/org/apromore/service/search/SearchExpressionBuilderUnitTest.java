@@ -61,6 +61,7 @@ public class SearchExpressionBuilderUnitTest {
     }
 
 
+    @org.junit.Ignore
     @Test
     public void buildExpressionWithRealData() throws Exception {
         expression = SearchExpressionBuilder.buildSearchConditions("invoicing");

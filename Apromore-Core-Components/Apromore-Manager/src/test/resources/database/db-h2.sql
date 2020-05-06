@@ -1378,25 +1378,20 @@ CREATE UNIQUE INDEX id_primary_workspace ON workspace(id)
 ;
 CREATE INDEX workspace_user ON workspace(userId)
 ;
-CREATE VIEW keywords AS
-  SELECT process.id AS processId, process.id AS value
-  FROM process
-  UNION 
-  SELECT process.id AS processId, process.name AS word
-  FROM process
-  UNION 
-  SELECT process.id AS processId, process.domain AS domain
-  FROM process
-  UNION 
-  SELECT process.id AS processId, native_type.nat_type AS original_type
-  FROM process JOIN native_type ON (process.nativeTypeId = native_type.id)
-  UNION 
-  SELECT process.id AS processId, user.first_name AS firstname
-  FROM process JOIN user ON (process.owner = user.username)
-  UNION 
-  SELECT process.id AS processId, user.last_name AS lastname
-  FROM process JOIN user ON (process.owner = user.username)
-  UNION 
-  SELECT process_branch.processId AS processId, process_branch.branch_name AS branch_name
-  FROM process_branch;
 
+CREATE VIEW keywords AS
+  SELECT process.id AS value,           'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId FROM process UNION
+  SELECT process.name AS value,         'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId FROM process UNION
+  SELECT process.domain AS value,       'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId FROM process UNION
+  SELECT native_type.nat_type AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    FROM process join native_type ON (process.nativeTypeId = native_type.id) UNION
+  SELECT user.first_name AS value,      'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    FROM process join user ON (process.owner = user.username) UNION
+  SELECT user.last_name AS value,       'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    FROM process join user ON (process.owner = user.username) UNION
+  SELECT process_branch.branch_name AS value, 'process' AS type, process_branch.processId AS processId, NULL AS logId, NULL AS folderId FROM process_branch UNION
+  SELECT log.id AS value,     'log' AS type, NULL AS processId, log.id AS logId, NULL AS folderId FROM log UNION
+  SELECT log.name AS value,   'log' AS type, NULL AS processId, log.id AS logId, NULL AS folderId FROM log UNION
+  SELECT log.domain AS value, 'log' AS type, NULL AS processId, log.id AS logId, NULL AS folderId FROM log UNION
+  SELECT folder.folder_name AS value, 'folder' AS type, NULL AS processId, NULL AS logId, folder.id AS folderId FROM folder
+;
