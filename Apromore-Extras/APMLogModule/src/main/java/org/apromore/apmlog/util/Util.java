@@ -106,16 +106,28 @@ public class Util {
     private static final DecimalFormat df2 = new DecimalFormat("###############.##");
 
     public static boolean isNumeric(String s) {
+
+        if (s.equals("")) return false;
+
         UnifiedSet<Character> validChars = getValidCharactersOfNumbers();
+
+        if (!String.valueOf(s.charAt(0)).equals("-")) {
+            if (!validChars.contains(s.charAt(0))) return false;
+        }
+
 
         boolean allNum = true;
 
-        for (int i = 0; i < s.length(); i++) {
-            Character c = s.charAt(i);
-            if (!validChars.contains(c)) {
-                allNum = false;
-                break;
+        if (s.length() > 1) {
+            for (int i = 0; i < s.length(); i++) {
+                Character c = s.charAt(i);
+                if (!validChars.contains(c)) {
+                    allNum = false;
+                    break;
+                }
             }
+        } else {
+            if (!validChars.contains(s.charAt(0))) allNum = false;
         }
 
         return allNum;
