@@ -47,10 +47,11 @@ public class ConfigBean implements Serializable {
     private String  versionBuildDate;
     private boolean  enablePublish;
     private boolean  enableTC;
+    private boolean  enableFullUserReg;
 
     public ConfigBean() {}
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC, boolean enableFullUserReg) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -75,7 +76,8 @@ public class ConfigBean implements Serializable {
         this.versionEdition     = versionEdition;
         this.versionBuildDate   = versionBuildDate;
         this.enablePublish      = enablePublish;
-        this.enableTC = enableTC;
+        this.enableTC           = enableTC;
+        this.enableFullUserReg  = enableFullUserReg;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -88,8 +90,9 @@ public class ConfigBean implements Serializable {
     public String getMinorVersionNumber()   { return minorVersionNumber; }
     public String getVersionEdition()       { return versionEdition; }
     public String getVersionBuildDate()     { return versionBuildDate; }
-    public boolean getEnablePublish()     { return enablePublish; }
-    public boolean getEnableTC()     { return enableTC; }
+    public boolean getEnablePublish()       { return enablePublish; }
+    public boolean getEnableTC()            { return enableTC; }
+    public boolean getEnableFullUserReg()   { return enableFullUserReg; }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
