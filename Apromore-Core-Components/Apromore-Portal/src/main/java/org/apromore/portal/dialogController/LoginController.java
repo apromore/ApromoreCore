@@ -61,11 +61,22 @@ public class LoginController extends BaseController {
     public void onCreate() throws InterruptedException {
         Window mainW = (Window) this.getFellow("login-main");
         Div agree = (Div) mainW.getFellow("agree");
+        Div role = (Div) mainW.getFellow("role");
+        Div organization = (Div) mainW.getFellow("organization");
+        Div country = (Div) mainW.getFellow("country");
+        Div phone = (Div) mainW.getFellow("phone");
         Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
         String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
         boolean enableTC = config.getEnableTC();
+        boolean enableFullUserReg = config.getEnableFullUserReg();
         agree.setVisible(enableTC);
+        if (enableFullUserReg) {
+            role.setVisible(true);
+            organization.setVisible(true);
+            country.setVisible(true);
+            phone.setVisible(true);
+        }
 
         if (config.isCommunity()) {
             src += "-" + "community";
