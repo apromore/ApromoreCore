@@ -848,3 +848,7 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 .z-combobox-readonly>input {
     background: transparent;
 }
+
+.z-fileupload-manager .z-div .z-label:first-child {
+    visibility: hidden !important;
+}

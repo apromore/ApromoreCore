@@ -449,3 +449,7 @@ img[src="img/icon/bpmn-22x22.png"] {
   margin-left: -2px !important;
   margin-right: 10px !important;
 }
+
+.ap-importer-filename {
+  color: var(--ap-c-text-heading);
+}
