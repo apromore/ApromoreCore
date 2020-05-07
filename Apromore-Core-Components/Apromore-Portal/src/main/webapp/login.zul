@@ -65,8 +65,7 @@
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              The resource you just requested is no longer available.
-              This may be caused by connection or infrastructure issue.
+              Your session might have been expired. Please try to reload the page.
             </div>
           </div>
           <div if="${param['error'] == '3'}" xmlns="http://www.w3.org/1999/xhtml">
