@@ -49,10 +49,11 @@ public interface ProcessRepositoryCustom  {
      * Find all the Processes based on the Conditions and folder. This could be done Using Specifications?
      * Ammendment: This says all processes in a folder. It shouldn't worry about public or not (or should it).
      * @param folderId the folder to search in.
+     * @param userRowGuid only processes visible to this user
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions);
+    List<Process> findAllProcessesByFolder(final Integer folderId, final String userRowGuid, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 

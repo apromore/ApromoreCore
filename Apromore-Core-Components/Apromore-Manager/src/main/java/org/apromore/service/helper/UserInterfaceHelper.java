@@ -59,11 +59,12 @@ public interface UserInterfaceHelper {
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.
      * @param folderId the search conditions
-     * @param conditions the search conditions
-     * @param similarProcesses something
+     * @param conditions the search conditions for process models
+     * @param logConditions the search conditions for logs
+     * @param folderConditions the search conditions for folders
      * @return the list of process Summaries
      */
-    SummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses);
+    SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions);
 
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.

@@ -123,7 +123,7 @@ public class SimpleSearchController extends BaseController {
             throw new Exception("Search requires a folder to be selected");
         }
         String query = previousSearchesCB.getValue();
-        SummariesType processSummaries = getService().readProcessSummaries(folder.getId(), query);
+        SummariesType processSummaries = getService().readProcessSummaries(folder.getId(), UserSessionManager.getCurrentUser().getId(), query);
         int nbAnswers = processSummaries.getSummary().size();
         String message = "Search returned " + nbAnswers;
         if (nbAnswers > 1) {

@@ -214,15 +214,15 @@ public class ProcessServiceImpl implements ProcessService {
      *      {@inheritDoc}
      */
     @Override
-    public SummariesType readProcessSummaries(final Integer folderId, final String searchExpression) {
+    public SummariesType readProcessSummaries(final Integer folderId, final String userRowGuid, final String searchExpression) {
         SummariesType processSummaries = null;
 
         try {
-            // Firstly, do we need to use the searchExpression
-            String conditions = SearchExpressionBuilder.buildSearchConditions(searchExpression);
+            processSummaries = ui.buildProcessSummaryList(folderId, userRowGuid,
+                SearchExpressionBuilder.buildSearchConditions(searchExpression, "p", "processId", "process"),  // processes
+                SearchExpressionBuilder.buildSearchConditions(searchExpression, "l", "logId",     "log"),      // logs
+                SearchExpressionBuilder.buildSearchConditions(searchExpression, "f", "folderId",  "folder"));  // folders
 
-            // Now... Build the Object tree from this list of processes.
-            processSummaries = ui.buildProcessSummaryList(folderId, conditions, null);
         } catch (UnsupportedEncodingException usee) {
             LOGGER.error("Failed to get Process Summaries: " + usee.toString());
         }

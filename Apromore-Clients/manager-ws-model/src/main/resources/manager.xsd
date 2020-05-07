@@ -1251,6 +1251,7 @@
     <!-- DataAccess Data Types -->
     <xs:complexType name="ReadProcessSummariesInputMsgType">
         <xs:attribute name="FolderId" type="xs:int"/>
+        <xs:attribute name="UserId" type="xs:string"/>
         <xs:attribute name="SearchExpression" type="xs:string"/>
     </xs:complexType>
 
