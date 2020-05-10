@@ -30,6 +30,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -73,7 +74,8 @@ public class ProcessMergeController extends BaseController {
         this.mainC = mainC;
 
         this.processMergeW = (Window) Executions.createComponents("macros/processmerge.zul", null, null);
-        this.processMergeW.setTitle("Merge processes.");
+        this.processMergeW.setTitle(Labels.getLabel("e.merge.title.text", "Process merging"));
+
 
         Row processNameR = (Row) this.processMergeW.getFellow("mergednamep");
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();

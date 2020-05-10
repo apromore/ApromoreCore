@@ -137,7 +137,7 @@
     <!-- ////////////////////////////// -->
 
     <session-config>
-        <session-timeout>60</session-timeout>
+        <session-timeout>2</session-timeout>
     </session-config>
 
     <mime-mapping>

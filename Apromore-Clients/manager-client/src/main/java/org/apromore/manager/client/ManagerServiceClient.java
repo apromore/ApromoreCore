@@ -715,11 +715,12 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public SummariesType readProcessSummaries(final Integer folderId, final String searchCriteria) {
+    public SummariesType readProcessSummaries(final Integer folderId, final String userId, final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
         msg.setFolderId(folderId);
+        msg.setUserId(userId);
         msg.setSearchExpression(searchCriteria);
 
         JAXBElement<ReadProcessSummariesInputMsgType> request = WS_CLIENT_FACTORY.createReadProcessSummariesRequest(msg);

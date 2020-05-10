@@ -204,7 +204,7 @@ public interface ManagerService {
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
-    SummariesType readProcessSummaries(Integer folderId, String searchCriteria);
+    SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria);
 
     /**
      * Run a search for similar processes models.

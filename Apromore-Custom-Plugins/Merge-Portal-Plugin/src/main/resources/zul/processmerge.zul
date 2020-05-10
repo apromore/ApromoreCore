@@ -22,7 +22,7 @@
   #L%
   -->
 
-<window width="500px" closable="false" position="center" title="Merge process models" xmlns:h="http://www.w3.org/1999/xhtml">
+<window width="500px" closable="false" position="center" title="Process merging" xmlns:h="http://www.w3.org/1999/xhtml">
     <vbox>
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">

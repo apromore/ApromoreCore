@@ -65,8 +65,7 @@
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              The resource you just requested is no longer available.
-              This may be caused by connection or infrastructure issue.
+              Your session might have been expired. Please try to reload the page.
             </div>
           </div>
           <div if="${param['error'] == '3'}" xmlns="http://www.w3.org/1999/xhtml">
@@ -192,22 +191,22 @@
                       <h:input type="text" name="surname"
                                placeholder="Last name*"/>
                     </h:div>
-                    <h:div class="controls">
+                    <div sclass="controls" id="organization" visible="false">
                       <h:input type="text" name="organization"
                                placeholder="Organization"/>
-                    </h:div>
-                    <h:div class="controls">
+                    </div>
+                    <div sclass="controls" id="role" visible="false">
                       <h:input type="text" name="role"
                                placeholder="Role"/>
-                    </h:div>
-                    <h:div class="controls">
+                    </div>
+                    <div sclass="controls" id="country" visible="false">
                       <h:input type="text" id="ap-new-user-country" name="country"
                                placeholder="Country"/>
-                    </h:div>
-                    <h:div class="controls">
+                    </div>
+                    <div sclass="controls" id="phone" visible="false">
                       <h:input type="tel" id="ap-new-user-phone" name="phone" value="+61"
                                placeholder="Phone"/>
-                    </h:div>
+                    </div>
                     <h:div class="controls">
                       <h:input type="text" name="email" id="ap-new-email" placeholder="Email address*"/>
                     </h:div>

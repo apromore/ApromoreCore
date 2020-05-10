@@ -90,7 +90,7 @@ public class UIHelperImplIntgTest {
     public void TestUIHelper() throws Exception {
         createProcessModel("testUI");
 
-        SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "", null);
+        SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "testUserRowGuid", "", "", "");
 
         assertThat(summariesType, notNullValue());
         assertThat(summariesType.getSummary().size(), greaterThan(0));

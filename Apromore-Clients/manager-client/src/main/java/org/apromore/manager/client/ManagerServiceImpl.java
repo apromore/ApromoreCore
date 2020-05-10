@@ -496,12 +496,13 @@ public class ManagerServiceImpl implements ManagerService {
     /**
      * Get the Process Summaries from the Apromore Manager.
      * @param folderId the folder we are currently asking for the process Ids.
+     * @param userRowGuid the user to whom the processes must be visible
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
     @Override
-    public SummariesType readProcessSummaries(Integer folderId, String searchCriteria) {
-        return procSrv.readProcessSummaries(folderId, searchCriteria);
+    public SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria) {
+        return procSrv.readProcessSummaries(folderId, userRowGuid, searchCriteria);
     }
 
     /**

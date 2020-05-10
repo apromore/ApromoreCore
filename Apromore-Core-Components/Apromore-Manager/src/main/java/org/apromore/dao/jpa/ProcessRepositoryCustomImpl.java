@@ -51,7 +51,7 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
 
 
     private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g WHERE g.type = :public ";
-    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g JOIN p.folder f WHERE g.type = :public AND f.id = ";
+    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g JOIN p.folder f, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gp.hasRead = TRUE) AND f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
 
 
@@ -82,16 +82,21 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions) {
+    public List<Process> findAllProcessesByFolder(final Integer folderId, final String userRowGuid, final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_PROCESSES_FOLDER_JPA).append(folderId);
+        if (folderId == 0) {
+            strQry.append("SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gp.hasRead = TRUE) AND p.folder IS NULL");
+        } else {
+            strQry.append(GET_ALL_PROCESSES_FOLDER_JPA).append(folderId);
+        }
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" AND ").append(conditions);
         }
         strQry.append(GET_ALL_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
-        query.setParameter("public", PUBLIC);
+        query.setParameter("userRowGuid", userRowGuid);
+
         return query.getResultList();
     }
 

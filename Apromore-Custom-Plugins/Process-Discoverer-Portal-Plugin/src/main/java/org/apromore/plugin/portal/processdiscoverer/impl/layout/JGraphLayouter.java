@@ -189,6 +189,8 @@ public class JGraphLayouter implements Layouter {
 			
 		}
 		
+		proMLayout.cleanUp(); //remember to clean up for GC
+		
 		return layout;
 	}
 	

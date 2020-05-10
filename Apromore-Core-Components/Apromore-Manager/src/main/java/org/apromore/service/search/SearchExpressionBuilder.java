@@ -33,7 +33,7 @@ import java.util.List;
  */
 public abstract class SearchExpressionBuilder {
 
-    public static String buildSearchConditions(String searchExpression) throws UnsupportedEncodingException {
+    public static String buildSearchConditions(String searchExpression, String tableVar, String keywordsTableIdField, String type) throws UnsupportedEncodingException {
         String condition = "";
         if (searchExpression != null && searchExpression.compareTo("") != 0) {
             //condition = " and ";
@@ -46,7 +46,7 @@ public abstract class SearchExpressionBuilder {
                         current.compareTo(" ) ") == 0 || current.compareTo(" ( ") == 0) {
                     condition += current;
                 } else {
-                    condition += " p.id in (select k.processId FROM Keywords k WHERE k.value like '%" + current + "%' AND k.type = 'process')";
+                    condition += " " + tableVar + ".id in (select k." + keywordsTableIdField + " FROM Keywords k WHERE k.value like '%" + current + "%' AND k.type = '" + type + "')";
                 }
             }
         }

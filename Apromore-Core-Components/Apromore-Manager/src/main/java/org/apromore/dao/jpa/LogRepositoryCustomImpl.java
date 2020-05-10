@@ -70,8 +70,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
     private static final String GET_ALL_LOGS_JPA = "SELECT l FROM Log l ";
-    private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM Log l JOIN l.folder f ";
-    private static final String GET_ALL_FOLDER_JPA = "f.id = ";
+    private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM GroupLog gl JOIN gl.log l JOIN gl.group g JOIN l.folder f, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gl.hasRead = TRUE) AND f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by l.id";
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     @PersistenceContext
@@ -113,19 +112,22 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Log> findAllLogsByFolder(final Integer folderId, final String conditions) {
+    public List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions) {
         boolean whereAdded = false;
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_LOGS_FOLDER_JPA);
-        strQry.append(" WHERE ");
-        if (conditions != null && !conditions.isEmpty()) {
-            strQry.append(conditions);
-            strQry.append(" AND ");
+        if (folderId == 0) {
+            strQry.append("SELECT l FROM GroupLog gl JOIN gl.log l JOIN gl.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gl.hasRead = TRUE) AND l.folder IS NULL");
+        } else {
+            strQry.append(GET_ALL_LOGS_FOLDER_JPA).append(folderId);
         }
-        strQry.append(GET_ALL_FOLDER_JPA).append(folderId);
+        if (conditions != null && !conditions.isEmpty()) {
+            strQry.append(" AND ").append(conditions);
+        }
         strQry.append(GET_ALL_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
+        query.setParameter("userRowGuid", userRowGuid);
+
         return query.getResultList();
     }
 

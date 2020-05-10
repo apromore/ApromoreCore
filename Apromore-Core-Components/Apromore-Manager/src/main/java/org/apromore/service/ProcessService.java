@@ -63,7 +63,7 @@ public interface ProcessService {
      * @param searchExpression the search expression to limit the search.
      * @return The ProcessSummariesType used for Webservices.
      */
-    SummariesType readProcessSummaries(final Integer folderId, final String searchExpression);
+    SummariesType readProcessSummaries(final Integer folderId, final String userRowGuid, final String searchExpression);
 
     /**
      * Import a Process.

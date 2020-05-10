@@ -39,6 +39,7 @@ import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 public class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape"; 
@@ -149,7 +150,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         return true;
     }
     
-    //@Test
+    @Test
     public void testGenerateJSON_DFG_Frequency() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
@@ -174,7 +175,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         }
     }
     
-    //@Test
+    @Test
     public void testGenerateJSON_DFG_Duration() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
@@ -199,7 +200,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         }
     }
     
-    //@Test
+    @Test
     public void testGenerateJSON_DFG_Frequency_DoubleWeight() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
@@ -224,7 +225,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         }
     }
     
-    //@Test
+    @Test
     public void testGenerateJSON_BPMN_Frequency() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
@@ -249,7 +250,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         }
     }
     
-    //@Test
+    @Test
     public void testGenerateJSON_BPMN_Duration() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
@@ -274,7 +275,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         }
     }
     
-    //@Test
+    @Test
     public void testGenerateJSON_BPMN_Frequency_DoubleWeight() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
