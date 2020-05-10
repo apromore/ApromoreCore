@@ -143,7 +143,7 @@
   </servlet-mapping>
 
   <session-config>
-    <session-timeout>240</session-timeout>
+    <session-timeout>30</session-timeout>
   </session-config>
 
   <mime-mapping>
