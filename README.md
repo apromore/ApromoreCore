@@ -7,7 +7,7 @@ This repository contains source code of [Apromore](https://apromore.org) Core.  
 * [Apromore Community Edition](https://github.com/apromore/ApromoreCE), which is open source.
 * [Apromore Enterprise Edition](https://github.com/apromore/ApromoreEE), which is proprietary.
 
-This document is relevant to both editions, but if you have checked out this Core repository on its own, you are in the wrong place and should instead first check out one the two editions listed above.
+This document is relevant to both editions, but if you have checked out this Core repository on its own, you are in the wrong place and should instead first check out one of the two editions listed above.
 
 
 ## System requirements
