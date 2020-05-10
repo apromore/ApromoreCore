@@ -120,7 +120,7 @@
     </servlet-mapping>
 
     <session-config>
-        <session-timeout>240</session-timeout>
+        <session-timeout>2</session-timeout>
     </session-config>
 
     <mime-mapping>
