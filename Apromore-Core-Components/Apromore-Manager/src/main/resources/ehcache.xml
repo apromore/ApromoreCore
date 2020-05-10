@@ -108,8 +108,7 @@
     -->
     <cache name="xlog"
            maxEntriesLocalHeap="0"
-           timeToIdleSeconds="0"
-           timeToLiveSeconds="17280000"
+           timeToIdleSeconds="1800"
            diskSpoolBufferSizeMB="30"
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="720"
