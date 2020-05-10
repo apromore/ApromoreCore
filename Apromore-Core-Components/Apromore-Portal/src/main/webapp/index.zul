@@ -6,6 +6,8 @@
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
+  Copyright (C) 2020 Apromore Pty Ltd.
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -39,6 +41,7 @@
 <?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/index.css" ?>
 <?link rel="stylesheet" type="text/css" href="themes/ap/portal/css/portal.css" ?>
 <?script src="themes/ap/common/js/index.js"?>
+<?script src="themes/ap/portal/js/portal.js" ?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -213,6 +216,7 @@
             </west>
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
+
                     <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
@@ -234,10 +238,13 @@
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />
                     </hbox>
-                    <html id="folders" width="0px" height="0px" visible="false" />
+                    <html id="folders" visible="false" />
+                    <div style="position:absolute; padding: 8px 5px 0 2px; z-index: 10000;" sclass="ap-bread-crumbs">
+                        <span sclass="ap-portal-crumb">Home</span><html id="breadCrumbs" />
+                    </div>
                     <tabbox id="tabbox" vflex="1" hflex="1">
                         <tabs id="tabs" vflex="1" hflex="1">
-                            <tab label="Processes"/>
+                            <tab id="tabCrumbs" sclass="ap-tab-crumbs" style="pointer-events: none;"/>
                         </tabs>
                         <tabpanels id="tabpanels" vflex="1" hflex="1">
                             <tabpanel vflex="1" hflex="1">
