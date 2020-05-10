@@ -453,3 +453,16 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-importer-filename {
   color: var(--ap-c-text-heading);
 }
+
+.ap-portal-crumb {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.ap-portal-crumb a {
+  color: var(--ap-c-widget);
+}
+
+.ap-portal-crumb a:hover {
+  color: var(--ap-c-widget-hover);
+}

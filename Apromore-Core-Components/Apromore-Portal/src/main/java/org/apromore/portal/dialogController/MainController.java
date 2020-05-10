@@ -89,7 +89,8 @@ public class MainController extends BaseController implements MainControllerInte
 
     private NavigationController navigation;
 
-//    public Html breadCrumbs;
+    public Html breadCrumbs;
+    public Tab tabCrumbs;
     private Paginal pg;
 
     private String host;
@@ -129,7 +130,8 @@ public class MainController extends BaseController implements MainControllerInte
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
             Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
-//            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+            this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
             this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
@@ -140,6 +142,24 @@ public class MainController extends BaseController implements MainControllerInte
             switchToProcessSummaryView();
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
+
+            controller = this;
+            MainController self = this;
+
+            this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    int selectedFolderId = Integer.parseInt(event.getData().toString());
+                    self.selectBreadcrumFolder(selectedFolderId);
+                }
+            });
+
+            this.breadCrumbs.addEventListener("onReloadBreadcrumbs", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    self.reloadBreadcrumbs();
+                }
+            });
 
             qe.subscribe(
                     new EventListener<Event>() {
@@ -171,7 +191,7 @@ public class MainController extends BaseController implements MainControllerInte
             e.printStackTrace();
             Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
-        controller=this;
+
     }
 
     // Bruce: Do not use Executions.sendRedirect as it does not work 
@@ -200,12 +220,16 @@ public class MainController extends BaseController implements MainControllerInte
         updateTabs(userId);
         updateActions();
 
-        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
-
         if (loadTree) {
             this.loadTree();
         }
 
+        reloadBreadcrumbs();
+    }
+
+    public void reloadBreadcrumbs () {
+        String userId = UserSessionManager.getCurrentUser().getId();
+        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
         if (UserSessionManager.getCurrentFolder() != null) {
             FolderType folder = UserSessionManager.getCurrentFolder();
@@ -434,8 +458,44 @@ public class MainController extends BaseController implements MainControllerInte
     		Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
     	}
     }
-    
 
+    public FolderType getBreadcrumFolder(int selectedFolderId) {
+        FolderType selectedFolder = null;
+        List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+
+        for (FolderType folder : breadcrumbFolders) {
+            if (folder.getId() == selectedFolderId) {
+                selectedFolder = folder;
+                break;
+            }
+        }
+        return selectedFolder;
+    }
+
+    public void selectBreadcrumFolder (int selectedFolderId) {
+        FolderType selectedFolder = this.getBreadcrumFolder(selectedFolderId);
+
+        if (selectedFolder == null) {
+            return;
+        }
+        List<FolderType> availableFolders = this.getService().getSubFolders(
+                UserSessionManager.getCurrentUser().getId(),
+                selectedFolderId
+        );
+
+        if (selectedFolder.getFolders().size() == 0) {
+            for (FolderType folderType : availableFolders) {
+                selectedFolder.getFolders().add(folderType);
+            }
+        }
+
+        UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
+        UserSessionManager.setCurrentFolder(selectedFolder);
+
+        this.reloadSummaries2();
+        this.currentFolderChanged();
+        this.clearProcessVersions();
+    }
 
     public void visualizeLog() {
         if(logVisualizerPlugin == null) {
@@ -916,27 +976,31 @@ public class MainController extends BaseController implements MainControllerInte
     	});
 
     }
-    
 
     public void setBreadcrumbs(int selectedFolderId) {
-/*
         List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
         Collections.reverse(breadcrumbFolders);
-        String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
+        String content = "";
+        int charLength = 4; // Home
 
         int i = 0;
         for (FolderType breadcrumb : breadcrumbFolders) {
-            if (i > 0) {
-                content += "<td style='font-size: 9pt;'>&gt;</td>";
-            }
-            content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
+            String folderName = breadcrumb.getFolderName();
+            String id = breadcrumb.getId().toString();
+            String onClick = "Ap.portal.clickBreadcrumb('" + id + "')";
+            content += "&gt;<span class=\"ap-portal-crumb\">" +
+                    "<a data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName + "</a>" +
+                    "</span>";
+            // content += "&gt;<span class='ap-portal-crumb'>" + folderName + "</span>";
+            charLength += folderName.length() + 1;
             i++;
         }
-
-        content += "</tr></table>";
         this.breadCrumbs.setContent(content);
-        Clients.evalJavaScript("bindBreadcrumbs();");
-*/
+//        int width = (charLength * 7) + // characters, assume 14px
+//                ((i + 1) * 12) + // padding around folder name including
+//                (2 * 6); // tab padding
+//        this.tabCrumb.setWidth(width + "px");
+        Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
     }
 }
 
