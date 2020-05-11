@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -29,6 +31,7 @@ import org.apromore.dao.model.User;
 import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
+import org.apromore.service.SecurityService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +53,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class UserMapperUnitTest {
 
     UserMapper mapper;
+    SecurityService secSrv;
 
     @Before
     public void setUp() throws Exception {
@@ -89,7 +93,7 @@ public class UserMapperUnitTest {
         user.setDateCreated(Calendar.getInstance().getTime());
         user.setLastActivityDate(Calendar.getInstance().getTime());
 
-        UserType userType = mapper.convertUserTypes(user);
+        UserType userType = mapper.convertUserTypes(user, secSrv);
 
         assertThat(userType.getUsername(), equalTo(user.getUsername()));
         assertThat(userType.getFirstName(), equalTo(user.getFirstName()));

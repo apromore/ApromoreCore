@@ -226,10 +226,8 @@
         <build-tools.version>1.1</build-tools.version>
         <test-tools.version>1.1</test-tools.version>
         <jbpt.version>0.2.433</jbpt.version>
-        <bpstruct.version>0.1.117</bpstruct.version>
         <diffbp.version>1.0</diffbp.version>
         <rpsdag.version>0.1</rpsdag.version>
-        <taskmapping.version>0.1</taskmapping.version>
         <mathCollection.version>0.1</mathCollection.version>
         <lpsolve.version>55j</lpsolve.version>
 
@@ -240,7 +238,6 @@
         <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
         <antlr4-runtime.version>4.3</antlr4-runtime.version>
-        <ini4j.version>0.5.2</ini4j.version>
         <themis.version>1.0</themis.version>
         <postgresql.version>9.3-1101-jdbc41</postgresql.version>
         <pql.version>1.2</pql.version>
@@ -362,11 +359,6 @@
             </dependency>           
             <dependency>
                 <groupId>org.apromore</groupId>
-                <artifactId>bpstruct-osgi</artifactId>
-                <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
                 <artifactId>bpmntk-osgi</artifactId>
                 <version>2.1</version>
             </dependency>             
@@ -443,11 +435,6 @@
                 <version>${jbpt.version}</version>
             </dependency>
             <dependency>
-                <groupId>ee.ut</groupId>
-                <artifactId>bpstruct</artifactId>
-                <version>${bpstruct.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>diffbp</groupId>
                 <artifactId>diffbp</artifactId>
                 <version>${diffbp.version}</version>
@@ -456,11 +443,6 @@
                 <groupId>tu</groupId>
                 <artifactId>rpsdag</artifactId>
                 <version>${rpsdag.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>tu</groupId>
-                <artifactId>taskmapping</artifactId>
-                <version>${taskmapping.version}</version>
             </dependency>
             <dependency>
                 <groupId>mathCollection</groupId>
@@ -483,11 +465,6 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-runtime-osgi</artifactId>
                 <version>${v4-runtime.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ini4j</groupId>
-                <artifactId>ini4j-osgi</artifactId>
-                <version>${ini4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -1358,7 +1335,7 @@
         <repository>
             <id>ApromoreCore_SupportLibs</id>
             <name>Maven repository for JARs specific to the Apromore project</name>
-            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>                
+            <url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>
         </repository>
         <repository>
             <id>EclipseLink Repo</id>
@@ -1891,82 +1868,6 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
             </plugin>
-            <!--<plugin> &lt;!&ndash; http://www.mojohaus.org/license-maven-plugin/examples/example-thirdparty.html &ndash;&gt;-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>license-maven-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<includes>-->
-                        <!--<include>**/*.java</include>-->
-                        <!--<include>**/*.xml</include>-->
-                        <!--<include>**/*.zul</include>-->
-                        <!--<include>**/*.css</include>-->
-                        <!--<include>**/*.html</include>-->
-                        <!--<include>**/*.xsd</include>-->
-                    <!--</includes>-->
-                    <!--<extraExtensions>-->
-                        <!--<zul>xml</zul>-->
-                        <!--<xsd>xml</xsd>-->
-                    <!--</extraExtensions>-->
-                    <!--&lt;!&ndash; Because package doc comments precede the package declaration, the license plugin’s remove-file-header goal breaks them. &ndash;&gt;-->
-                    <!--<excludes>-->
-                        <!--<exclude>**/package-info.java</exclude>-->
-                        <!--<exclude>**/*.properties</exclude>-->
-                    <!--</excludes>-->
-                    <!--<licenseMerges>-->
-                        <!--<licenseMerge>Apache v2|The Apache Software License, Version 2.0|Apache License, Version-->
-                            <!--2.0|Apache License, version 2.0|Apache License 2.0|Apache 2.0 License|Apache 2.0|Apache-->
-                            <!--2|ALv2-->
-                        <!--</licenseMerge>-->
-                        <!--<licenseMerge>BSD|BSD License|New BSD License|The BSD License|BSD 3-clause New License-->
-                        <!--</licenseMerge>-->
-                        <!--<licenseMerge>CDDL 1.1|Common Development and Distribution License</licenseMerge>-->
-                        <!--<licenseMerge>Eclipse Distribution v1|Eclipse Distribution License - v 1.0|Eclipse Distribution-->
-                            <!--License v. 1.0|EDL 1.0-->
-                        <!--</licenseMerge>-->
-                        <!--<licenseMerge>Eclipse Public v1.0|Eclipse Public License - v 1.0|Eclipse Public License-->
-                        <!--</licenseMerge>-->
-                        <!--<licenseMerge>GPL2 w/ CPE|GNU General Public License, Version 2 with the Classpath Exception-->
-                        <!--</licenseMerge>-->
-                        <!--<licenseMerge>LGPL|GNU LESSER GENERAL PUBLIC LICENSE</licenseMerge>-->
-                        <!--<licenseMerge>LGPL v2.1|LGPL, version 2.1</licenseMerge>-->
-                        <!--<licenseMerge>LGPL v3|GNU Lesser General Public License, Version 3.0|GNU LESSER GENERAL PUBLIC-->
-                            <!--LICENSE, Version 3|lgpl_v3-->
-                        <!--</licenseMerge>-->
-                        <!--<licenseMerge>MIT License|The MIT License</licenseMerge>-->
-                    <!--</licenseMerges>-->
-
-                    <!--&lt;!&ndash; config for license:update-file-header &ndash;&gt;-->
-                    <!--<licenseName>lgpl_v3</licenseName>-->
-                    <!--<inceptionYear>2018</inceptionYear>-->
-                    <!--<organizationName>The Apromore Initiative</organizationName>-->
-                    <!--<copyrightOwners>The University of Melbourne.</copyrightOwners>-->
-                    <!--<projectName>This file is part of "Apromore Core".</projectName>-->
-                    <!--<failOnMissingHeader>true</failOnMissingHeader>-->
-                    <!--<canUpdateCopyright>true</canUpdateCopyright>-->
-                    <!--&lt;!&ndash;<canUpdateDescription>true</canUpdateDescription>&ndash;&gt;-->
-                    <!--<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>-->
-
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--&lt;!&ndash;update (or add) the header on project source files&ndash;&gt;-->
-                    <!--<execution>-->
-                        <!--<id>update-file-header</id>-->
-                        <!--<goals>-->
-                            <!--<goal>update-file-header</goal>-->
-                        <!--</goals>-->
-                        <!--<phase>process-sources</phase>-->
-                    <!--</execution>-->
-                    <!--&lt;!&ndash;Download the license files of all aggregated dependencies and generate a summary file containing-->
-                    <!--a list of all dependencies and their licenses.&ndash;&gt;-->
-                    <!--&lt;!&ndash;<execution>-->
-                        <!--<id>aggregate-download-licenses</id>-->
-                        <!--<goals>-->
-                            <!--<goal>aggregate-download-licenses</goal>-->
-                        <!--</goals>-->
-                        <!--<phase>package</phase>-->
-                    <!--</execution>&ndash;&gt;-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 

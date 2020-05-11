@@ -31,10 +31,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <!--
-                    There is some problem in the bpstruct JAR that causes the newer version to throw an error!
-                    So we use the older version as workaround
-                -->
                 <extensions>true</extensions>
                 <configuration>
                     <niceManifest>true</niceManifest>
@@ -42,7 +38,7 @@
                     <instructions>
                         <Embed-Dependency>
                             <!-- Embedded non-OSGI libraries. Remember to always keep the maven-war-plugin in sync -->
-                            artifactId=taskmapping|jaxb2-basics-runtime
+                            artifactId=jaxb2-basics-runtime
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Import-Bundle>
@@ -236,10 +232,6 @@
             Embedded  Dependencies, these are not 'provided' as otherwise they are not included in the WAR.
             So we need to exclude those in the assembly project.
         -->
-        <dependency>
-            <groupId>tu</groupId>
-            <artifactId>taskmapping</artifactId>
-        </dependency>
 
         <!-- Commons -->
         <dependency>

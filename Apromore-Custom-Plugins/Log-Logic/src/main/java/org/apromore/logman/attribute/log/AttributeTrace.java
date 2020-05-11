@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -28,17 +30,14 @@ import org.apromore.logman.AActivity;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
 import org.apromore.logman.attribute.IndexableAttribute;
+import org.apromore.logman.attribute.graph.AttributeTraceGraph;
+import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
-import org.eclipse.collections.api.map.primitive.MutableIntLongMap;
-import org.eclipse.collections.api.set.primitive.IntSet;
-import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
-import org.eclipse.collections.impl.factory.primitive.IntLongMaps;
-import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 /**
@@ -62,8 +61,8 @@ import org.eclipse.collections.impl.factory.primitive.LongLists;
  *
  */
 public class AttributeTrace {
-    private ATrace originalTrace;
     private IndexableAttribute attribute;
+    private ATrace originalTrace;
     private AttributeTraceVariants variants;
 
     private MutableIntList originalActIndexes = IntLists.mutable.empty(); //applicable activity indexes in the original trace 
@@ -80,38 +79,31 @@ public class AttributeTrace {
     private MutableLongList activeEndTimeTrace = LongLists.mutable.empty();
     private MutableLongList activeDurationTrace = LongLists.mutable.empty();
     
-    // Graph-based data
-    private MutableIntSet activeNodes = IntSets.mutable.empty();
-    private MutableIntSet activeArcs = IntSets.mutable.empty();
+    private AttributeTraceGraph activeGraph;
     
-    private MutableIntLongMap activeNodeTotalCounts = IntLongMaps.mutable.empty();
-    
-    private MutableIntLongMap activeNodeTotalDurs = IntLongMaps.mutable.empty();
-    private MutableIntLongMap activeNodeMinDurs = IntLongMaps.mutable.empty();
-    private MutableIntLongMap activeNodeMaxDurs = IntLongMaps.mutable.empty();    
-    
-    private MutableIntLongMap activeArcTotalCounts = IntLongMaps.mutable.empty();
-    
-    private MutableIntLongMap activeArcTotalDurs = IntLongMaps.mutable.empty();
-    private MutableIntLongMap activeArcMinDurs = IntLongMaps.mutable.empty();
-    private MutableIntLongMap activeArcMaxDurs = IntLongMaps.mutable.empty(); 
-    
-    public AttributeTrace(ATrace originalTrace, IndexableAttribute attribute) {
+    public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace) {
         this.originalTrace = originalTrace;
-        setAttribute(attribute);
-        //this.attribute = attribute;
-        //this.initializeOriginalData();
-        //setOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
+        this.attribute = attribute;
+        this.activeGraph = new AttributeTraceGraph(this);
+        initializeOriginalData();
+        updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
+    }
+    
+    public AttributeTraceGraph getActiveGraph() {
+        return activeGraph;
+    }
+    
+    public IndexableAttribute getAttribute() {
+        return this.attribute;
     }
     
     // Set this trace to the new perspective attribute including the original data
     // If the trace is being filtered, apply the same filter to the new perspective
-    public void setAttribute(IndexableAttribute attribute) {
-        if (attribute != this.attribute && attribute != null) {
-            this.attribute = attribute;
-            initializeOriginalData();
-            setOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
-        }
+    public void setAttribute(IndexableAttribute newAttribute) {
+        this.attribute = newAttribute;
+        this.activeGraph.resetToAttribute(attribute);
+        initializeOriginalData();
+        updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
     }
     
     private void initializeOriginalData() {
@@ -171,26 +163,14 @@ public class AttributeTrace {
     }
     
     // Update active data
-    public void setOriginalEventStatus(BitSet eventBitSet) {
+    public void updateOriginalEventStatus(BitSet eventBitSet) {
         originalEventStatus = eventBitSet;
         
         activeValueTrace.clear();
         activeStartTimeTrace.clear();
         activeEndTimeTrace.clear();
         activeDurationTrace.clear();
-        
-        activeNodes.clear();
-        activeArcs.clear();
-        
-        activeNodeTotalCounts.clear();
-        activeNodeTotalDurs.clear();
-        activeNodeMinDurs.clear();
-        activeNodeMinDurs.clear();
-        
-        activeArcTotalCounts.clear();
-        activeArcTotalDurs.clear();
-        activeArcMinDurs.clear();
-        activeArcMaxDurs.clear();
+        activeGraph.clear();
         
         int preIndex = -1;
         for (int i=1; i<=originalValueTrace.size()-2; i++) { // exclude the two artificial start and end events
@@ -203,23 +183,20 @@ public class AttributeTrace {
                 activeDurationTrace.add(originalDurationTrace.get(i));
                 
                 // Graph data
-                activeNodes.add(node);
+                activeGraph.addNode(node);
+                
                 long nodeDur = originalDurationTrace.get(i);
-                activeNodeTotalCounts.put(node, activeNodeTotalCounts.getIfAbsentPut(node, 0) + 1);
-                activeNodeTotalDurs.put(node, activeNodeTotalDurs.getIfAbsentPut(node, 0) + nodeDur);
-                activeNodeMinDurs.put(node, Math.min(activeNodeMinDurs.getIfAbsentPut(node, Long.MAX_VALUE), nodeDur));
-                activeNodeMaxDurs.put(node, Math.max(activeNodeMaxDurs.getIfAbsentPut(node, 0), nodeDur));
+                activeGraph.incrementNodeTotalFrequency(node, 1);
+                activeGraph.collectNodeDuration(node, nodeDur);
                 
                 if (preIndex >= 0) {
                     int preNode = originalValueTrace.get(preIndex);
                     int arc = attribute.getMatrixGraph().getArc(preNode, node);
-                    activeArcs.add(arc);
                     long arcDur = originalStartTimeTrace.get(i) - originalEndTimeTrace.get(preIndex);
                     if (arcDur < 0) arcDur = 0;
-                    activeArcTotalCounts.put(arc, activeArcTotalCounts.getIfAbsentPut(arc, 0) + 1);
-                    activeArcTotalDurs.put(arc, activeArcTotalDurs.getIfAbsentPut(arc, 0) + arcDur);
-                    activeArcMinDurs.put(arc, Math.min(activeArcMinDurs.getIfAbsentPut(arc, Long.MAX_VALUE), arcDur));
-                    activeArcMaxDurs.put(arc, Math.max(activeArcMaxDurs.getIfAbsentPut(arc, 0), arcDur));
+                    activeGraph.addArc(arc);
+                    activeGraph.incrementArcTotalFrequency(arc, 1);
+                    activeGraph.collectArcDuration(arc, arcDur);
                 }
                 preIndex = i;
             }
@@ -244,32 +221,24 @@ public class AttributeTrace {
             activeDurationTrace.add(0);
             
             int sourceNode = attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(0));
-            activeNodes.add(sourceNode);
-            activeNodeTotalCounts.put(sourceNode, 1);
-            activeNodeTotalDurs.put(sourceNode, 0);
-            activeNodeMinDurs.put(sourceNode, 0);
-            activeNodeMaxDurs.put(sourceNode, 0);
+            activeGraph.addNode(sourceNode);
+            activeGraph.incrementNodeTotalFrequency(sourceNode, 1);
+            activeGraph.collectNodeDuration(sourceNode, 0);
             
             int sinkNode = attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-1));
-            activeNodes.add(sinkNode);
-            activeNodeTotalCounts.put(sinkNode, 1);
-            activeNodeTotalDurs.put(sinkNode, 0);
-            activeNodeMinDurs.put(sinkNode, 0);
-            activeNodeMaxDurs.put(sinkNode, 0);
+            activeGraph.addNode(sinkNode);
+            activeGraph.incrementNodeTotalFrequency(sinkNode, 1);
+            activeGraph.collectNodeDuration(sinkNode, 0);
             
             int sourceArc = attribute.getMatrixGraph().getArc(sourceNode, attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(1)));
-            activeArcs.add(sourceArc);
-            activeArcTotalCounts.put(sourceArc, 1);
-            activeArcTotalDurs.put(sourceArc, 0);
-            activeArcMinDurs.put(sourceArc, 0);
-            activeArcMaxDurs.put(sourceArc, 0);
+            activeGraph.addArc(sourceArc);
+            activeGraph.incrementArcTotalFrequency(sourceArc, 1);
+            activeGraph.collectArcDuration(sourceArc, 0);
             
             int sinkArc = attribute.getMatrixGraph().getArc(attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-2)), sinkNode);
-            activeArcs.add(sinkArc);
-            activeArcTotalCounts.put(sinkArc, 1);
-            activeArcTotalDurs.put(sinkArc, 0);
-            activeArcMinDurs.put(sinkArc, 0);
-            activeArcMaxDurs.put(sinkArc, 0);
+            activeGraph.addArc(sinkArc);
+            activeGraph.incrementArcTotalFrequency(sinkArc, 1);
+            activeGraph.collectArcDuration(sinkArc, 0);            
         }
         
     }
@@ -390,46 +359,6 @@ public class AttributeTrace {
         long targetStart = getStartTimeAtIndex(targetIndex);
         long sourceEnd = getEndTimeAtIndex(sourceIndex);
         return (targetStart > sourceEnd) ? targetStart - sourceEnd : 0;
-    }
-    
-    public IntSet getActiveNodes() {
-        return this.activeNodes;
-    }
-    
-    public IntSet getActiveArcs() {
-        return this.activeArcs;
-    }
-    
-    public long getNodeTotalCount(int node) {
-        return activeNodeTotalCounts.getIfAbsent(node, 0);
-    }
-    
-    public long getNodeTotalDuration(int node) {
-        return activeNodeTotalDurs.getIfAbsent(node, 0);
-    }
-    
-    public long getNodeMinDuration(int node) {
-        return activeNodeMinDurs.getIfAbsent(node, 0);
-    }
-    
-    public long getNodeMaxDuration(int node) {
-        return activeNodeMaxDurs.getIfAbsent(node, 0);
-    }
-    
-    public long getArcTotalCount(int arc) {
-        return activeArcTotalCounts.getIfAbsent(arc, 0);
-    }
-    
-    public long getArcTotalDuration(int arc) {
-        return activeArcTotalDurs.getIfAbsent(arc, 0);
-    }
-    
-    public long getArcMinDuration(int arc) {
-        return activeArcMinDurs.getIfAbsent(arc, 0);
-    }
-    
-    public long getArcMaxDuration(int arc) {
-        return activeArcMaxDurs.getIfAbsent(arc, 0);
     }
     
     @Override

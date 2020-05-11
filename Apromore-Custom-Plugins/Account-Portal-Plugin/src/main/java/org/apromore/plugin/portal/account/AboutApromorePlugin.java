@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -73,6 +75,7 @@ public class AboutApromorePlugin extends DefaultPortalPlugin {
         try {
             ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
             Map args = new HashMap();
+            args.put("community", config.isCommunity());
             args.put("edition", config.getVersionEdition());
             args.put("version", config.getMajorVersionNumber() + " (commit " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() + ")");
             final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/aboutApromore.zul", null, args);

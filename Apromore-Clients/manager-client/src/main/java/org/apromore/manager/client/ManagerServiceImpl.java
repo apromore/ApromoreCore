@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -118,7 +120,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType readUserByUsername(String username) {
-        return UserMapper.convertUserTypes(secSrv.getUserByName(username));
+        return UserMapper.convertUserTypes(secSrv.getUserByName(username), secSrv);
     }
 
     /**
@@ -135,7 +137,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<UserType> users = new ArrayList<>();
         for (User user: secSrv.searchUsers(searchString)) {
-            users.add(UserMapper.convertUserTypes(user));
+            users.add(UserMapper.convertUserTypes(user, secSrv));
         }
 
         return users;
@@ -168,7 +170,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType readUserByEmail(String email) throws Exception {
-        return UserMapper.convertUserTypes(secSrv.getUserByEmail(email));
+        return UserMapper.convertUserTypes(secSrv.getUserByEmail(email), secSrv);
     }
 
     /**
@@ -496,12 +498,13 @@ public class ManagerServiceImpl implements ManagerService {
     /**
      * Get the Process Summaries from the Apromore Manager.
      * @param folderId the folder we are currently asking for the process Ids.
+     * @param userRowGuid the user to whom the processes must be visible
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
     @Override
-    public SummariesType readProcessSummaries(Integer folderId, String searchCriteria) {
-        return procSrv.readProcessSummaries(folderId, searchCriteria);
+    public SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria) {
+        return procSrv.readProcessSummaries(folderId, userRowGuid, searchCriteria);
     }
 
     /**
@@ -866,7 +869,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType writeUser(UserType user) throws Exception {
-        return  UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(user)));
+        return UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(user, secSrv)), secSrv);
     }
 
     /**
@@ -928,7 +931,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception {
-        userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(currentUser),
+        userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(currentUser, secSrv),
                                         SearchHistoryMapper.convertFromSearchHistoriesType(searchHist));
     }
 }

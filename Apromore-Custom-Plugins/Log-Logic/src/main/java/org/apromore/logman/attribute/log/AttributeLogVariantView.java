@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -22,6 +24,8 @@
 
 package org.apromore.logman.attribute.log;
 
+import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
+
 public class AttributeLogVariantView {
     private AttributeTraceVariants originalVariants;
     private AttributeTraceVariants activeVariants;
@@ -36,17 +40,16 @@ public class AttributeLogVariantView {
         activeVariants.reset();
     }
     
-    protected void add(AttributeTrace trace, boolean isActive) {
+    protected void addOriginalTrace(AttributeTrace trace) {
         originalVariants.add(trace);
-        if (isActive && !trace.isEmpty()) activeVariants.add(trace);
     }
     
-    protected void resetActive() {
+    protected void addActiveTrace(AttributeTrace trace) {
+        activeVariants.add(trace);
+    }
+    
+    protected void resetActiveData() {
         activeVariants.reset();
-    }
-    
-    protected void addActive(AttributeTrace trace, boolean isActive) {
-        if (isActive && !trace.isEmpty()) activeVariants.add(trace);
     }
     
     protected void finalUpdate() {

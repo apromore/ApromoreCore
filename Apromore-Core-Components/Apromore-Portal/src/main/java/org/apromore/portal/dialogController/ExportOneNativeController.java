@@ -7,6 +7,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -128,6 +130,7 @@ public class ExportOneNativeController extends BaseController {
         cba.setLabel(Constants.NO_ANNOTATIONS);
         cba.setValue(Constants.NO_ANNOTATIONS);
         this.annotationsLB.appendChild(cba);
+        int formatIndex = 0;
 
         for (AnnotationsType annotation : annotations) {
             String nat_type = annotation.getNativeType();
@@ -136,6 +139,9 @@ public class ExportOneNativeController extends BaseController {
                 this.formatsLB.appendChild(cbi);
                 cbi.setLabel(Constants.ANNOTATIONS + " - " + annotation.getAnnotationName().get(k) + " (" + nat_type + ")");
                 cbi.setValue(Constants.ANNOTATIONS + " - " + annotation.getAnnotationName().get(k));
+                if (nat_type.equals("BPMN 2.0")) {
+                    formatIndex = this.formatsLB.getItemCount();
+                }
 
                 cba = new Listitem();
                 this.annotationsLB.appendChild(cba);
@@ -157,14 +163,15 @@ public class ExportOneNativeController extends BaseController {
                 cbi.setValue(this.formats_ext.get(extension));
             }
         }
-        formatsLB.setSelectedItem((Listitem) formatsLB.getFirstChild());
-
+        // formatsLB.setSelectedItem((Listitem) formatsLB.getFirstChild());
+        formatsLB.setSelectedIndex(formatIndex);
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.exportNativeW.getFellow("canoniserPropertiesGrid"));
+        updateActions();
 
         formatsLB.addEventListener("onSelect", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
-                        updateActions();
+
                     }
                 });
         okB.addEventListener("onClick", new EventListener<Event>() {

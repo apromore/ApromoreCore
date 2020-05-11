@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -38,9 +40,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -69,6 +74,25 @@ public class CSVImporterLogicImplUnitTest {
         return baos.toString();
     }
 
+    /**
+     * This is hack to convert the test case XML documents from the time zone where they were created to the
+     * time zone where the test is running.
+     *
+     * @param in  the XML text of the test data
+     * @param testDataTimezone  a regex for the timezone used in the test data, e.g. <code>"\\+03:00"</code>
+     * @return the XML text with the local time zone substituted
+     */
+    private String correctTimeZone(String in, String testDataTimezone) {
+        TimeZone tz = TimeZone.getDefault();
+        int offsetMinutes = (tz.getRawOffset() + tz.getDSTSavings()) / 60000;
+        NumberFormat hoursFormat = new DecimalFormat("+00;-00)");
+        NumberFormat minutesFormat = new DecimalFormat("00");
+
+        return in.replaceAll(testDataTimezone, "\\" + hoursFormat.format(offsetMinutes / 60) + ":" + minutesFormat.format(offsetMinutes % 60));
+    }
+
+
+    // Test cases
 
     /** Test {@link csvImporterLogic.sampleCSV} sampling fewer lines than contained in <code>test1-valid.csv</code>. */
     @Test
@@ -100,7 +124,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -128,7 +152,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -156,7 +180,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test3-invalid-end-timestamp.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 2);
@@ -184,7 +208,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test4-invalid-start-timestamp.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 2);
@@ -213,7 +237,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test5-empty-caseID.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -242,7 +266,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test6-different-delimiters.csv", "utf-8", ';');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -270,7 +294,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test7-record-invalid.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -325,7 +349,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedFormat = null;
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test9-differentiate-dates.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test9-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test9-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -359,7 +383,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test10-eventAttribute.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
@@ -387,7 +411,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test11-encoding.csv", "windows-1255", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);

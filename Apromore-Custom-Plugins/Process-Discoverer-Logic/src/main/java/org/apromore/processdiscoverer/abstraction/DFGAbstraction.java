@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -22,8 +24,7 @@
 
 package org.apromore.processdiscoverer.abstraction;
 
-import org.apromore.logman.attribute.graph.AttributeGraph;
-import org.apromore.logman.attribute.graph.InvalidArcException;
+import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.bpmn.ProcessBPMNDiagram;
@@ -37,7 +38,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
  *
  */
 public class DFGAbstraction extends AbstractAbstraction {
-	public DFGAbstraction(AttributeLog log, AttributeGraph graph, AbstractionParams params) throws Exception {
+	public DFGAbstraction(AttributeLog log, FilteredGraph graph, AbstractionParams params) throws Exception {
 		super(log, params);
 		this.diagram = new ProcessBPMNDiagram(graph, log);
 		
@@ -57,20 +58,25 @@ public class DFGAbstraction extends AbstractAbstraction {
 	
 
 	@Override
-	protected void updateArcWeights(AbstractionParams params) throws InvalidArcException {
+	protected void updateArcWeights(AbstractionParams params) throws Exception {
 		arcPrimaryWeights.clear();
 		arcSecondaryWeights.clear();
 		minArcPrimaryWeight = Double.MAX_VALUE;
 		maxArcPrimaryWeight = 0;
 		
 		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge: diagram.getEdges()) {
-			int arc = log.getGraphView().getLogGraph().getArc(edge.getSource().getLabel(), edge.getTarget().getLabel());
-			double arcWeight = log.getGraphView().getLogGraph().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation());
+			int arc = log.getGraphView().getArc(edge.getSource().getLabel(), edge.getTarget().getLabel());
+			if (arc == -1) {
+			    throw new Exception("Updating arc weights: unable to find an arc with source=" + edge.getSource().getLabel() + 
+			                            ", target=" + edge.getTarget().getLabel());
+			}
+			
+			double arcWeight = log.getGraphView().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation());
 			arcPrimaryWeights.put(edge, arcWeight);
 			maxArcPrimaryWeight = Math.max(maxArcPrimaryWeight, arcWeight);
 			minArcPrimaryWeight = Math.min(minArcPrimaryWeight, arcWeight);
 			if (params.getSecondary()) {
-				arcSecondaryWeights.put(edge, log.getGraphView().getLogGraph().getArcWeight(arc, params.getSecondaryType(), params.getSecondaryAggregation()));
+				arcSecondaryWeights.put(edge, log.getGraphView().getArcWeight(arc, params.getSecondaryType(), params.getSecondaryAggregation()));
 			}
 			
 		}

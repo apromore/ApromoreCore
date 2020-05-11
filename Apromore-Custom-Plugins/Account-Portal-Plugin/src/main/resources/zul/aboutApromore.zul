@@ -7,6 +7,8 @@
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
+  Copyright (C) 2020 Apromore Pty Ltd.
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -26,8 +28,8 @@
 <window id="pluginInfo" height="70vh" width="70vw" sizable="false" sclass="ap-about-window">
     <tabbox vflex="1">
         <tabs>
-            <tab label="Details"/>
-            <tab label="Active plugins"/>
+            <tab label="Details" />
+            <tab label="Active plugins" visible="false"/>
         </tabs>
         <tabpanels>
             <tabpanel hflex="1">
@@ -39,7 +41,12 @@
                             <div sclass="ap-copyright">Copyright 2019-20, The University of Melbourne. All rights reserved.</div>
                             <div sclass="ap-version">Version: ${arg.version}</div>
                             <div>
-                                Apromore Enterprise Edition is licensed under a commercial license.
+                                <span if="${arg.community}">
+                                    Apromore Community Edition is a curated version of Apromore.
+                                </span>
+                                <span if="${!arg.community}">
+                                    Apromore Enterprise Edition is licensed under a commercial license.
+                                </span>
                                 It uses open-source libraries from Apromore Core, which is licensed under the
                                 <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">GNU Lesser General Public License, Version 3.0</a>.
                                 It also uses third-party libraries, whose open-source licenses are listed

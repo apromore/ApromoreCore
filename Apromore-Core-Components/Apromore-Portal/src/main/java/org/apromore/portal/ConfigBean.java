@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -33,6 +35,7 @@ import org.slf4j.LoggerFactory;
 public class ConfigBean implements Serializable {
 
     private static final long serialVersionUID = 117L;
+    private static final String COMMUNITY_TAG = "community";
 
     private String  siteEditor;
     private String  siteExternalHost;
@@ -46,10 +49,11 @@ public class ConfigBean implements Serializable {
     private String  versionBuildDate;
     private boolean  enablePublish;
     private boolean  enableTC;
+    private boolean  enableFullUserReg;
 
     public ConfigBean() {}
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC, boolean enableFullUserReg) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -74,7 +78,8 @@ public class ConfigBean implements Serializable {
         this.versionEdition     = versionEdition;
         this.versionBuildDate   = versionBuildDate;
         this.enablePublish      = enablePublish;
-        this.enableTC = enableTC;
+        this.enableTC           = enableTC;
+        this.enableFullUserReg  = enableFullUserReg;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -87,6 +92,11 @@ public class ConfigBean implements Serializable {
     public String getMinorVersionNumber()   { return minorVersionNumber; }
     public String getVersionEdition()       { return versionEdition; }
     public String getVersionBuildDate()     { return versionBuildDate; }
-    public boolean getEnablePublish()     { return enablePublish; }
-    public boolean getEnableTC()     { return enableTC; }
+    public boolean getEnablePublish()       { return enablePublish; }
+    public boolean getEnableTC()            { return enableTC; }
+    public boolean getEnableFullUserReg()   { return enableFullUserReg; }
+
+    public boolean isCommunity() {
+        return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
+    }
 }

@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -54,7 +56,7 @@ public interface LogRepositoryCustom {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Log> findAllLogsByFolder(final Integer folderId, final String conditions);
+    List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 

@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -20,20 +22,27 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.factory.Lists;
 
-public class ArcBasedGraph extends AbstractAttributeGraph {
+/**
+ * ArcBasedGraph is FilteredGraph based on filtering out arcs
+ * 
+ * @author Bruce Nguyen
+ *
+ */
+public class ArcBasedGraph extends AbstractFilteredGraph {
     public ArcBasedGraph(AttributeLogGraph originalGraph, BitSet nodeBitMask, BitSet arcBitMask) {
         super(originalGraph, nodeBitMask, arcBitMask);
     }
     
     @Override
-    public ListIterable<AttributeGraph> getSubGraphs() {
+    public ListIterable<FilteredGraph> getSubGraphs() {
         return Lists.immutable.empty();
     }
     

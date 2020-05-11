@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -338,6 +340,11 @@
     width: 26px !important;
 }
 
+.ap-icon-measure {
+    background-image: url('measure.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-meta-edit {
     background-image: url('meta-edit.svg') !important;
     width: 28.5px !important;
@@ -465,6 +472,11 @@
 
 .ap-icon-sign-out {
     background-image: url('sign-out.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-simulate-model {
+    background-image: url('simulate-model.svg') !important;
     width: 26px !important;
 }
 

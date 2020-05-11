@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -188,6 +190,8 @@ public class JGraphLayouter implements Layouter {
 			}
 			
 		}
+		
+		proMLayout.cleanUp(); //remember to clean up for GC
 		
 		return layout;
 	}

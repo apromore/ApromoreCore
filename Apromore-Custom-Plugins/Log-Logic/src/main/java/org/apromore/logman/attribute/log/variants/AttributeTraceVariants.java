@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -20,11 +22,13 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.log;
+package org.apromore.logman.attribute.log.variants;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;

@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -20,15 +22,18 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.set.primitive.IntSet;
 
-public interface AttributeGraph {
+public interface FilteredGraph {
     public AttributeLogGraph getOriginalGraph();
     public BitSet cloneNodeBitMask();
     public BitSet cloneArcBitMask();
@@ -39,21 +44,19 @@ public interface AttributeGraph {
     public boolean containNode(int node);    
     public int getSourceNode();    
     public int getSinkNode();
-    public String getNodeName(int node);
+    public String getNodeName(int node) throws Exception;
     public IntSet getIncomingArcs(int node);    
     public IntSet getOutgoingArcs(int node);    
     public IntSet getIncomingArcsWithoutSelfLoops(int node);
     public IntSet getOutgoingArcsWithoutSelfLoops(int node);
     public IntList getSortedArcs();
     public IntList getSortedArcsWithoutSelfLoops();
-//    public IntList getIncomingSortedArcsWithoutSelfLoops(int node);
-//    public IntList getOutgoingSortedArcsWithoutSelfLoops(int node);    
-    public int getArc(int source, int target) throws InvalidArcException;    
+    public int getArc(int source, int target);    
     public int getSource(int arc);    
     public int getTarget(int arc);    
     public IntSet getArcs();    
     public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation);    
     public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation);
     public boolean isPerfectSequence();
-    public ListIterable<AttributeGraph> getSubGraphs();
+    public ListIterable<FilteredGraph> getSubGraphs();
 }

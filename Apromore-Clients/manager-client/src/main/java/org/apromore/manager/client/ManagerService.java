@@ -8,6 +8,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -204,7 +206,7 @@ public interface ManagerService {
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
-    SummariesType readProcessSummaries(Integer folderId, String searchCriteria);
+    SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria);
 
     /**
      * Run a search for similar processes models.

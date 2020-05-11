@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -68,5 +70,15 @@
 
 .x-panel-editor-north .x-toolbar button[title='Export as PDF'] {
     background-image: url('../../common/img/icons/export-pdf.svg') !important;
+    width: 26px !important;
+}
+
+.x-panel-editor-north .x-toolbar button[title='Calculate BPMN process model metrics'] {
+    background-image: url('../../common/img/icons/measure.svg') !important;
+    width: 26px !important;
+}
+
+.x-panel-editor-north .x-toolbar button[title='Simulate in BIMP'] {
+    background-image: url('../../common/img/icons/simulate-model.svg') !important;
     width: 26px !important;
 }

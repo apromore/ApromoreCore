@@ -1011,27 +1011,39 @@ INSERT INTO `search_history` VALUES (3,3,8,'goldcoast');
 UNLOCK TABLES;
 
 
-CREATE VIEW `apromore`.`keywords` AS
-  select `process`.`id` AS `processId`, `process`.`id` AS `value`
-  from `process`
-  union
-  select `process`.`id` AS `processId`, `process`.`name` AS `word`
-  from `process`
-  union
-  select `process`.`id` AS `processId`, `process`.`domain` AS `domain`
-  from `process`
-  union
-  select `process`.`id` AS `processId`, `native_type`.`nat_type` AS `original_type`
-  from `process` join `native_type` ON (`process`.`nativeTypeId` = `native_type`.`id`)
-  union
-  select `process`.`id` AS `processId`, `user`.`first_name` AS `firstname`
-  from `process` join `user` ON (`process`.`owner` = `user`.`username`)
-  union
-  select `process`.`id` AS `processId`, `user`.`last_name` AS `lastname`
-  from `process` join `user` ON (`process`.`owner` = `user`.`username`)
-  union
-  select `process_branch`.`processId` AS `processId`, `process_branch`.`branch_name` AS `branch_name`
-  from `process_branch`;
-
+CREATE VIEW apromore.keywords AS
+  select process.id
+    AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    from process union
+  select process.name
+    AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    from process union
+  select process.domain
+    AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    from process union
+  select native_type.nat_type
+    AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    from process join native_type ON (process.nativeTypeId = native_type.id) union
+  select `user`.first_name
+    AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    from process join `user` ON (process.owner = `user`.username) union
+  select `user`.last_name
+    AS value, 'process' AS type, process.id AS processId, NULL AS logId, NULL AS folderId
+    from process join `user` ON (process.owner = `user`.username) union
+  select process_branch.branch_name
+    AS value, 'process' AS type, process_branch.processId AS processId, NULL AS logId, NULL AS folderId
+    from process_branch union
+  select `log`.id
+    AS value, 'log' AS type, NULL AS processId, `log`.id AS logId, NULL AS folderId
+    from `log` union
+  select `log`.name
+    AS value, 'log' AS type, NULL AS processId, `log`.id AS logId, NULL AS folderId
+    from `log` union
+  select `log`.domain
+    AS value, 'log' AS type, NULL AS processId, `log`.id AS logId, NULL AS folderId
+    from `log` union
+  select folder.folder_name
+    AS value, 'folder' AS type, NULL AS processId, NULL AS logId, folder.id AS folderId
+    from folder;
 
 SET FOREIGN_KEY_CHECKS=1;

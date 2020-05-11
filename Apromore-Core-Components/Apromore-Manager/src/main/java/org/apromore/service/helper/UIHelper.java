@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -156,20 +158,25 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
-    public SummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses) {
+    public SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions) {
         ProcessSummaryType processSummaryType;
         SummariesType processSummaries = new SummariesType();
 
         processSummaries.setTotalCount(pRepository.count());
 
-        List<Integer> proIds = buildProcessIdList(similarProcesses);
-        List<Process> processes = pRepository.findAllProcessesByFolder(folderId, conditions);
-
+        // Process models
+        List<Process> processes = pRepository.findAllProcessesByFolder(folderId, userRowGuid, conditions);
         for (Process process : processes) {
-            processSummaryType = buildProcessList(proIds, similarProcesses, process);
+            processSummaryType = buildProcessList(null, null, process);
             if (processSummaryType != null) {
                 processSummaries.getSummary().add(processSummaryType);
             }
+        }
+
+        // Logs
+        List<Log> logs = lRepository.findAllLogsByFolder(folderId, userRowGuid, logConditions);
+        for (Log log : logs) {
+            processSummaries.getSummary().add(buildLogSummary(log));
         }
 
         return processSummaries;

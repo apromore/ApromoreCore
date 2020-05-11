@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -49,10 +51,11 @@ public interface ProcessRepositoryCustom  {
      * Find all the Processes based on the Conditions and folder. This could be done Using Specifications?
      * Ammendment: This says all processes in a folder. It shouldn't worry about public or not (or should it).
      * @param folderId the folder to search in.
+     * @param userRowGuid only processes visible to this user
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions);
+    List<Process> findAllProcessesByFolder(final Integer folderId, final String userRowGuid, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 

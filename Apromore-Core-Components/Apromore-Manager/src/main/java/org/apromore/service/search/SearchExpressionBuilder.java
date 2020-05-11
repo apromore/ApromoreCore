@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -31,9 +33,9 @@ import java.util.List;
 /**
  * Create the Search Expression used in the read process summaries.
  */
-public class SearchExpressionBuilder {
+public abstract class SearchExpressionBuilder {
 
-    public String buildSearchConditions(String searchExpression) throws UnsupportedEncodingException {
+    public static String buildSearchConditions(String searchExpression, String tableVar, String keywordsTableIdField, String type) throws UnsupportedEncodingException {
         String condition = "";
         if (searchExpression != null && searchExpression.compareTo("") != 0) {
             //condition = " and ";
@@ -46,7 +48,7 @@ public class SearchExpressionBuilder {
                         current.compareTo(" ) ") == 0 || current.compareTo(" ( ") == 0) {
                     condition += current;
                 } else {
-                    condition += " p.id in (select k.processId FROM Keywords k WHERE k.value like '%" + current + "%' )";
+                    condition += " " + tableVar + ".id in (select k." + keywordsTableIdField + " FROM Keywords k WHERE k.value like '%" + current + "%' AND k.type = '" + type + "')";
                 }
             }
         }
@@ -64,7 +66,7 @@ public class SearchExpressionBuilder {
      * @param keywordSearch the search expression
      * @return the SQL condition corresponding to keywordSearch
      */
-    public List<String> mapQuery(String keywordSearch) {
+    public static List<String> mapQuery(String keywordSearch) {
         List<String> res = new ArrayList<>();
         String term = "";
         int state = 1;
@@ -111,7 +113,7 @@ public class SearchExpressionBuilder {
      * @return the JPQL-escaped version of the <var>character</var>
      * @see http://docs.oracle.com/cd/E11035_01/kodo41/full/html/ejb3_langref.html#ejb3_langref_lit
      */
-    private String escape(String character) {
+    private static String escape(String character) {
         assert character.length() == 1;
         switch (character) {
         case "'":

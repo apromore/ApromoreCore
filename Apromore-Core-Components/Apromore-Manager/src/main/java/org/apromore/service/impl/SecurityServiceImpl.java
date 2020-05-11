@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -177,6 +179,11 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public List<Role> getAllRoles() {
         return roleRepo.findAll();
+    }
+
+    @Override
+    public Role findRoleByName(String name) {
+        return roleRepo.findByName(name);
     }
 
     @Override

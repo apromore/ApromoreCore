@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -110,6 +112,12 @@ public interface SecurityService {
      * @return every role in the system in alphabetical order by name
      */
     List<Role> getAllRoles();
+
+    /**
+     * @param name  of an existing role
+     * @return the unique role with the specified <var>name</var>
+     */
+    Role findRoleByName(String name);
 
     /**
      * @param user  arbitrary but non-null

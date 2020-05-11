@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -243,6 +245,9 @@ public class ATrace extends XTraceImpl {
 	    MutableIntList matchingStartEvents = IntLists.mutable.empty(); // store remaining start events for matching
 		for (int i=0;i<this.getOriginalEvents().size();i++) {
 		    String eventName = LogUtils.getConceptName(this.getOriginalEventFromIndex(i));
+		    
+		    if (eventName.equalsIgnoreCase(Constants.MISSING_STRING_VALUE)) continue; // cannot use empty or missing values
+		    
 		    if (LogUtils.getLifecycleTransition(this.getOriginalEventFromIndex(i)).equalsIgnoreCase(Constants.LIFECYCLE_START)) {
 		        orderedStartEvents.add(i);
 		        matchingStartEvents.add(i);

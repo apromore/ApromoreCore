@@ -169,6 +169,7 @@ let AnimationController = {
     this.startMs = new Date(timeline.startDateLabel).getTime(); // Start date in milliseconds
     this.endMs = new Date(timeline.endDateLabel).getTime(); // End date in milliseconds
     this.totalMs = this.endMs - this.startMs;
+    this.currentMs = this.startMs;
     this.totalEngineS = timeline.totalEngineSeconds; // Total engine seconds
     this.startPos = timeline.startDateSlot; // Start slot, starting from 0
     this.endPos = timeline.endDateSlot; // End slot, currently set at 120
@@ -341,9 +342,13 @@ let AnimationController = {
   // 2. Change the engine time to move the token forward/backward
   // In changing speed situation: the tokens (or markers) and clock are not updated. Their settings must be the same
   // after the engine time is changed, e.g. tokens must stay in the same position, clock must show the same datetime
-  setCurrentTime: function(time, changeSpeed, forController) {
+  setCurrentTime: function(time, timeMs, changeSpeed, forController) {
     if (time < 0) { time = 0; }
     if (time > 120) { time = 120; }
+    if (timeMs < this.startMs) { timeMs = this.startMs; }
+    if (timeMs > this.endMs) { timeMs = this.endMs; }
+
+    this.currentMs = timeMs
 
     this.svgDocs.forEach(function(svgDoc) {
       svgDoc.setCurrentTime(time);
@@ -406,30 +411,34 @@ let AnimationController = {
    * param - time: is the
    */
   updateClockOnce: function(time) {
+    let dateEl = document.getElementById('date');
+    let timeEl = document.getElementById('time');
+    let locales = 'en-GB';
     let date = new Date();
     date.setTime(time);
+
     if (window.Intl) {
-      document.getElementById('date').innerHTML = new Intl.DateTimeFormat([], {
+      dateEl.innerHTML = new Intl.DateTimeFormat(locales, {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
       }).format(date);
-      document.getElementById('time').innerHTML = new Intl.DateTimeFormat([], {
+      timeEl.innerHTML = new Intl.DateTimeFormat(locales, {
         hour12: false,
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
       }).format(date);
     } else {
       // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
-      document.getElementById('date').innerHTML = date.toDateString();
-      document.getElementById('time').innerHTML = date.toTimeString();
+      dateEl.innerHTML = date.toDateString();
+      timeEl.innerHTML = date.toTimeString();
     }
   },
 
   start: function() {
     this.pause();
-    this.setCurrentTime(this.startPos); // The startPos timing could be a little less than the first event timing in the log to accomodate the start event of BPMN
+    this.setCurrentTime(this.startPos, this.startMs); // The startPos timing could be a little less than the first event timing in the log to accomodate the start event of BPMN
   },
 
   /*
@@ -437,7 +446,10 @@ let AnimationController = {
    */
   end: function() {
     this.pause();
-    this.setCurrentTime((this.endPos * this.slotEngineMs) / 1000);
+    console.log((this.endPos * this.slotEngineMs) / 1000,
+    this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
+
+    this.setCurrentTime((this.endPos * this.slotEngineMs) / 1000, this.endMs);
     this.updateClockOnce(this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
     if (this.clockTimer) {
       clearInterval(this.clockTimer);
@@ -508,7 +520,11 @@ let AnimationController = {
     // Note: update engine time without updating markers and the clock
     let currentTime = this.getCurrentTime();
     let newTime = currentTime / speedRatio;
-    this.setCurrentTime(newTime, true);
+    this.setCurrentTime(newTime, this.slotSecondstoRealMs(newTime), true);
+  },
+
+  slotSecondstoRealMs: function (seconds) {
+    return seconds * this.timeCoef * 1000 + this.startMs
   },
 
   // Move forward 1 slot
@@ -516,9 +532,8 @@ let AnimationController = {
     if (this.getCurrentTime() >= (this.endPos * this.slotEngineMs) / 1000) {
       return;
     } else {
-      this.setCurrentTime(
-          this.getCurrentTime() + (1 * this.slotEngineMs) / 1000,
-      );
+      let s = this.getCurrentTime() + (1 * this.slotEngineMs) / 1000
+      this.setCurrentTime(s, this.slotSecondstoRealMs(s));
     }
   },
 
@@ -527,9 +542,8 @@ let AnimationController = {
     if (this.getCurrentTime() <= (this.startPos * this.slotEngineMs) / 1000) {
       return;
     } else {
-      this.setCurrentTime(
-          this.getCurrentTime() - (1 * this.slotEngineMs) / 1000,
-      );
+      let s = this.getCurrentTime() - (1 * this.slotEngineMs) / 1000
+      this.setCurrentTime(s, this.slotSecondstoRealMs(s));
     }
   },
 
@@ -537,17 +551,13 @@ let AnimationController = {
     if (this.getCurrentTime() >= (this.endPos * this.slotEngineMs) / 1000) {
       return;
     } else {
-      let tracedates = this.tracedates; //assume that this.jsonServer.tracedates has been sorted in ascending order
-      let currentTimeMillis =
-          this.getCurrentTime() * this.timeCoef * 1000 +
-          this.startMs;
-      //search for the next trace date/time immediately after the current time
+      let tracedates = this.tracedates; // assume that this.jsonServer.tracedates has been sorted in ascending order
+      // let currentTimeMillis = this.getCurrentTime() * this.timeCoef * 1000 + this.startMs;
+      // search for the next trace date/time immediately after the current time
+      console.log(this.currentMs)
       for (let i = 0; i < tracedates.length; i++) {
-        if (currentTimeMillis < tracedates[i]) {
-          this.setCurrentTime(
-              (tracedates[i] - this.startMs) /
-              (1000 * this.timeCoef),
-          );
+        if (this.currentMs < tracedates[i]) {
+          this.setCurrentTime((tracedates[i] - this.startMs) / (1000 * this.timeCoef), tracedates[i]);
           return;
         }
       }
@@ -559,16 +569,11 @@ let AnimationController = {
       return;
     } else {
       let tracedates = this.tracedates; //assume that this.jsonServer.tracedates has been sorted in ascending order
-      let currentTimeMillis =
-          this.getCurrentTime() * this.timeCoef * 1000 +
-          this.startMs;
-      //search for the previous trace date/time immediately before the current time
+      // let currentTimeMillis = this.getCurrentTime() * this.timeCoef * 1000 + this.startMs;
+      // search for the previous trace date/time immediately before the current time
       for (let i = tracedates.length - 1; i >= 0; i--) {
-        if (currentTimeMillis > tracedates[i]) {
-          this.setCurrentTime(
-              (tracedates[i] - this.startMs) /
-              (1000 * this.timeCoef),
-          );
+        if (this.currentMs > tracedates[i]) {
+          this.setCurrentTime((tracedates[i] - this.startMs) / (1000 * this.timeCoef), tracedates[i]);
           return;
         }
       }
@@ -749,7 +754,7 @@ let AnimationController = {
       evt.preventDefault();
       if (dragging) {
         let time = getTimeFromMouseX(evt);
-        this.setCurrentTime(time, null, true); // for controller only
+        this.setCurrentTime(time, this.slotSecondstoRealMs(time), null, true); // for controller only
       }
     }
 
@@ -765,7 +770,7 @@ let AnimationController = {
       }
       dragging = false;
       let time = getTimeFromMouseX(evt);
-      this.setCurrentTime(time);
+      this.setCurrentTime(time, this.slotSecondstoRealMs(time));
     }
 
     function getTimeFromMouseX(evt) {

@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -25,6 +27,7 @@ import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.*;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -40,7 +43,7 @@ import java.util.*;
 public class Util {
 
     private static final double year = 1000.0D * 60 * 60 * 24 * 365;
-    private static final double month = 1000.0D * 60 * 60 * 24 * 31;
+    private static final double month = 1000.0D * 60 * 60 * 24 * 30.42;
     private static final double week = 1000.0D * 60 * 60 * 24 * 7;
     private static final double day = 1000.0D * 60 * 60 * 24;
     private static final double hour = 1000.0D *  60 * 60;
@@ -91,21 +94,50 @@ public class Util {
         double mths = millis / month;
         double yrs = millis / year;
 
-        if (yrs > 1.0D) return df2.format(yrs) + " yrs";
-        if (mths > 1.0D) return df2.format(mths) + " mths";
-        if (wks > 1.0D) return df2.format(wks) + " wks";
-        if (days > 1.0D) return df2.format(days) + " d";
-        if (hrs > 1.0D) return df2.format(hrs) + " hrs";
-        if (mins > 1.0D) return df2.format(mins) + " mins";
-        if (secs > 1.0D) return df2.format(secs) + " secs";
-        if (millis > 1.0D) return df2.format(millis) + " millis";
+        if (yrs >= 1.0D) return df2.format(yrs) + " yrs";
+        if (mths >= 1.0D) return df2.format(mths) + " mths";
+        if (wks >= 1.0D) return df2.format(wks) + " wks";
+        if (days >= 1.0D) return df2.format(days) + " d";
+        if (hrs >= 1.0D) return df2.format(hrs) + " hrs";
+        if (mins >= 1.0D) return df2.format(mins) + " mins";
+        if (secs >= 1.0D) return df2.format(secs) + " secs";
+        if (millis >= 1.0D) return df2.format(millis) + " millis";
         return "instant";
     }
 
     private static final DecimalFormat df2 = new DecimalFormat("###############.##");
 
     public static boolean isNumeric(String s) {
-        return s.matches("-?\\d+(\\.\\d+)?") && !s.contains("_");
+        UnifiedSet<Character> validChars = getValidCharactersOfNumbers();
+
+        boolean allNum = true;
+
+        for (int i = 0; i < s.length(); i++) {
+            Character c = s.charAt(i);
+            if (!validChars.contains(c)) {
+                allNum = false;
+                break;
+            }
+        }
+
+        return allNum;
     }
 
+    public static UnifiedSet<Character> getValidCharactersOfNumbers() {
+
+        UnifiedSet<Character> validChar = new UnifiedSet<>();
+        validChar.put('0');
+        validChar.put('1');
+        validChar.put('2');
+        validChar.put('3');
+        validChar.put('4');
+        validChar.put('5');
+        validChar.put('6');
+        validChar.put('7');
+        validChar.put('8');
+        validChar.put('9');
+        validChar.put('.');
+
+        return validChar;
+    }
 }

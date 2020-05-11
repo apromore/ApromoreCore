@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -37,6 +39,7 @@ import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.model.*;
 import org.apromore.security.util.SecurityUtil;
+import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,9 +69,10 @@ public class UserMapper {
     /**
      * Convert a user object to a UserType Webservice object.
      * @param user the DB User Model
+     * @param securityService  used to look up the <var>user</var> roles
      * @return the Webservice UserType
      */
-    public static UserType convertUserTypes(User user) {
+    public static UserType convertUserTypes(User user, SecurityService securityService) {
         if (user == null) {
             return null;
         }
@@ -135,9 +139,10 @@ public class UserMapper {
     /**
      * Convert from the WS (UserType) to the DB model (User).
      * @param userType the userType from the WebService
+     * @param securityService  used to look up the <var>user</var> roles
      * @return the User dao model populated.
      */
-    public static User convertFromUserType(UserType userType) {
+    public static User convertFromUserType(UserType userType, SecurityService securityService) {
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         if (userType.getLastActivityDate() != null && !userType.getLastActivityDate().equals("")) {
@@ -185,10 +190,7 @@ public class UserMapper {
         }
 
         for (RoleType roleType : userType.getRoles()){
-            Role role = new Role();
-            role.setRowGuid(roleType.getId());
-            role.setName(roleType.getName());
-            user.getRoles().add(role);
+            user.getRoles().add(securityService.findRoleByName(roleType.getName()));
         }
 
         return user;

@@ -7,6 +7,8 @@
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
+  Copyright (C) 2020 Apromore Pty Ltd.
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -47,7 +49,7 @@
                     <label value="Version name" width="100%"/>
                     <label width="100%"/>
                 </row>
-                <row>
+                <row visible="false">
                     <label value="Export format"/>
                     <listbox width="100%" multiple="false" mold="select" rows="1">
                         <!-- listbox implemented in controller -->
@@ -59,11 +61,11 @@
                         <!-- listbox implemented in controller -->
                     </listbox>
                 </row>
-                <row spans="1,2" id="canoniserSelectionRow" visible="false">
+                <row spans="1,2" id="canoniserSelectionRow" visible="true">
                     <label value="Canoniser" width="100%" tooltiptext="Canoniser used for this Process"/>
                     <!-- combobox implemented in SelectDynamicListController -->
                 </row>
-                <row spans="3" id="canoniserPropertiesRow" visible="false">
+                <row spans="3" id="canoniserPropertiesRow" visible="true">
                     <groupbox width="100%">
                         <attribute name="onOpen"><![CDATA[
                             arrow.setSclass("open-" + self.isOpen());
@@ -80,7 +82,7 @@
                         </grid>
                     </groupbox>
                 </row>
-                <row spans="3" id="canoniserMandatoryFieldsRow" visible="false">
+                <row spans="3" id="canoniserMandatoryFieldsRow" visible="true">
                     <label value="*: mandatory fields."/>
                 </row>
                 <row spans="2"  sclass="ap-window-footer-actions">

@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -83,8 +85,8 @@ public class DataSetup {
         return this.readXESFile("src/test/logs/L1_complete_events_only_with_resources.xes");
     }
     
-    public XLog readLogWithStartCompleteEventsNonOverlapping() {
-        return this.readXESFile("src/test/logs/L1_start_complete_no_overlapping.xes");
+    public XLog readLogWithStartCompleteEventsNonOverlappingRepeats() {
+        return this.readXESFile("src/test/logs/L1_start_complete_no_overlapping_repeats.xes");
     }
     
     public XLog readLogWithStartCompleteEventsOverlapping() {

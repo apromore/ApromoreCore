@@ -1,48 +1,26 @@
 ![apromore](http://apromore.org/wp-content/uploads/2019/11/Apromore-banner_narrow.png "apromore")
 
-# Apromore Community Edition
+# Apromore Core
 
-This repository contains source code of [Apromore](https://apromore.org) Community Edition. Suitable for developers and advanced users, it allows one to fully configure Apromore (e.g. you can choose to use the H2 or MySQL database, the plugins you want to install, configure LDAP access and Apromore Portal’s URL, etc.). It includes the core platform and all the experimental plugins built by the community. You can either build this edition locally or run it from our pubic nodes in [Australia](http://apromore.cis.unimelb.edu.au/) and [Estonia](http://apromore.cs.ut.ee/).
+This repository contains source code of [Apromore](https://apromore.org) Core.  This is not a standalone repository; it is a submodule containing components common to the two Apromore editions:
+
+* [Apromore Community Edition](https://github.com/apromore/ApromoreCE), which is open source.
+* [Apromore Enterprise Edition](https://github.com/apromore/ApromoreEE), which is proprietary.
+
+This document is relevant to both editions, but if you have checked out this Core repository on its own, you are in the wrong place and should instead first check out one of the two editions listed above.
 
 
-## System Requirements
-* Windows 7 or newer or Mac OSX 10.8 to 10.11 (other users - check out our [Docker-based version](https://github.com/apromore/ApromoreDocker))
-* Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. Note newer versions, including Java SE 11, are currently not supported
+## System requirements
+* Windows 7 or newer or Mac OSX 10.8 or newer (other users - check out our [Docker-based version](https://github.com/apromore/ApromoreDocker))
+* Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or
+  ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8.
+  Note that newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer
 * [Apache Ant](https://ant.apache.org/bindownload.cgi) 1.10.1 or newer
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
-* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.6 or 5.7. Note version 8.0 is currently not supported
+* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.6 or 5.7.
+  Note that version 8.0 is currently not supported.
 
-
-## Installation instructions
-* Download and unzip the latest [Apromore release](https://github.com/apromore/ApromoreCore/releases/latest) or check out the source code using git: `git clone https://github.com/apromore/ApromoreCore.git`
-* Open command prompt/terminal and change to the root of the project `cd ApromoreCore`
-* Run the maven command `mvn clean install`.  This will build the Apromore manager, portal and editor and all the extra plugins.
-* Create an empty H2 database `ant create-h2`.  Only do this once, unless you just want to reset to a blank database later on.
-* Run the ant command `ant start-virgo`.  This will install, configure and start Eclipse Virgo, and deploy Apromore.
-* Open a web browser to [http://localhost:9000](http://localhost:9000). Use "admin”/“password” to access as administrator, or create a new account.
-* Keep the prompt/terminal window open, Ctrl-C on the window will shut the server down.
-
-## Configuration
-* Almost all configuration occurs in the top level `site.properties` file.  The default version of this file from a fresh git
-checkout contains reasonable defaults that use H2 as the main database, but disable PQL (which requires MySQL or Postgres and
-more intricate configuration).
-
-* H2 running from a flat file is the default database for the sake of zero-configuration.
-However our development is done chiefly on MySQL; instructions for reconfiguring Apromore to use MySQL appear below.
-We do have plugins for Postgres and Oracle, but some extra setup will be required since we only have sql scripts to create the
-database for H2 and MySQL.
-
-* You can upload some sample data into the system with the following command
-```bash
-ant install-sample-data
-```
-     /airport contains a Configurable BPMN process models which demonstrate configurability   
-     /pql contains Petri nets in PNML format from the PQL test suite   
-     /repair contains a BPMN model which demonstrates log animation   
-* Some of Apromore's features are implemented as Java applets running client-side in the browser.  If you possess an code-signing
-certificate (not an SSL certificate), you can edit the top-level `codesigning.properties` file to use your certificate rather
-than the self-signed certificate included in the source tree.  This will avoid browser warnings.
 
 ## Common problems
 
@@ -51,7 +29,7 @@ than the self-signed certificate included in the source tree.  This will avoid b
 
 > Server fails to start.
 * If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
-* If you already run another server (e.g. OS X Server) may need to change the port number 8443 in `Supplements/Virgo/tomcat-server.xml`.
+* If you already run another server (e.g. OS X Server) you may need to change the port number 8443 in `Supplements/Virgo/tomcat-server.xml`.
 
 > Login screen appears, but "admin" / "password" doesn't work.
 * You may need to run `ant create-h2` to populate the H2 database.
@@ -62,13 +40,18 @@ than the self-signed certificate included in the source tree.  This will avoid b
 > Where is the server log?
 * `Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log`
 
-> I grabbed the PQL.MySQL-1.2.sql file directly from the PQL sources and it doesn't work!
-* Edit the file and change the uuid attribute of the jbpt_petri_nodes table from VARCHAR(50) to VARCHAR(100) in two places
 
-> Models always show up in the log as unable to be indexed.
-* Check that LoLA executable is correctly configured.
+## Configuration
+The following configuration options apply to all editions of Apromore.
+When there are additional configuration specific to a particular edition, they are documented in that edition's own README file.
 
-## MySQL setup (optional)
+Almost all configuration occurs in the `site.properties` file which is located in the `ApromoreCore` directory.
+The default version of this file from a fresh git checkout contains reasonable defaults that allow the server to be started without manual configuration.
+
+
+### MySQL setup
+The H2 flat file database is the default only because it allows casual evaluation without requiring any configuration.
+For earnest use or development, Apromore should be configured to use MySQL instead..
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 * Create a database named 'apromore' in your MySQL server
@@ -93,33 +76,39 @@ At the end of the `db-mysql.sql` script is where we populate some of the system 
 Stop and restart the server so that it picks up the changes to `site.properties`.
 
 
-## Predictive monitoring setup (optional)
+### Heap size
+Memory limits are set using the usual JVM parameters.
+If you start Apromore using Ant (appropriate during development) it looks like this:
 
-* Predictive monitoring requires the use of MySQL, as described above. Populate the database with additional tables as follows:
-```bash
-mysql -u root -p apromore < Supplements/database/Nirdizati.MySQL-1.0.sql
+> ant start-virgo -Dstartup.java.opts="-server -Xmx15g -Xmn2g"
+
+When you do not explicitly set `startup.java.opts`, the default value in `ApromoreCore/build-core.xml` will be used.
+
+If you start Apromore by directly running the startup script (appropriate in production) then the startup options must be set in the `JAVA_OPTS` environment variable.
+Unlike Ant-based startup, no sensible default value will be set if `JAVA_OPTS` is omitted, so it's likely the server will fail with memory-related errors.
+
+On Windows:
+
+```dos
+set "JAVA_OPTS= -server -Xms20g -Xmx20g"
+startup.bat -clean
 ```
-* Check out predictive monitoring repository from GitHub:
+
+On unix-style systems:
+
 ```bash
-git clone https://github.com/nirdizati/nirdizati-training-backend.git
+export JAVA_OPTS="-server -Xms20g -Xmx20g"
+startup.sh -clean
 ```
-* Set up additional servers (alongside the Apromore server), as directed in `nirdizati-training-backend/apromore/README.md`
-* In site.properties, set the following properties:
-  - `training.python` must be set to the location of a Python 3 executable
-   - `training.backend` must be directory containing `nirdizati-training-backend`
-   - `training.tmpDir` must be a writable directory for temporary files
-   - `training.logFile` must be a writable file path for logging
-The following properties may usually by left at their default values:
-   - `kafka.host` can be left at the default `localhost:909`2, presuming Zookeeper and Kafka are running locally
-   - the various `kafka.*.topic` properties should already match those used in the `nirdizati-training-backend` scripts
-* Stop and restart the server so that it picks up the changes to `site.properties`.
-* Ensure that the following bundles are present in the Virgo `pickup` directory (`ant start-virgo` copies them there on startup):
-  - Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar
-  - Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war
-  - Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war
 
 
-## LDAP setup (optional)
+### Cache size
+Apromore uses [Ehcache](https://www.ehcache.org/) for internal caching, which uses an XML configuration file.
+The default in a deployed server is that the `ehcache.xml` configuration file is located at `virgo-tomcat-server-3.6.4.RELEASE/configuration/ehcache.xml`.
+The manager.ehcache.config.url property in site.properties can be used to point to an `ehcache.xml` at a URL of your choice.
+
+
+### LDAP setup
 
 As distributed, Apromore maintains its own catalogue of users and passwords.
 It can be modified to instead allow login based on an external LDAP directory.
@@ -175,23 +164,3 @@ mvn clean install -pl :apromore-portal -amd
 ```
 
 When the server starts with the modified portal, it will automatically create new accounts for valid LDAP logins.
-
-
-## PQL setup (optional)
-* [LoLA 2.0](http://service-technology.org/lola/) is required for PQL support
-* PQL queries over the process store are only supported on MySQL.  Create and populate the database with additional tables for PQL:
-```bash
-mysql -u root -p apromore < Supplements/database/PQL.MySQL-1.2.sql
-```
-* In `site.properties`, perform the following changes:
-  - Change `pql.numberOfIndexerThreads` to at least 1
-  - Change `pql.numberOfQueryThreads` to at least 1
-  - Change `pql.lola.dir` to the location of your LoLA 2.0 executable
-  - Change the various `pql.mysql.*` properties to match your MySQL database
-* In `build.xml`, uncomment the inclusion of the following PQL components in the `pickupRepo` fileset:
-  - APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war
-  - Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan
-    PQL-Logic/target/pql-logic-1.1.jar
-  - PQL-Logic-WS/target/pql-logic-ws-1.1.war
-  - PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar
-* Also, uncomment the following component in the `copy-virgo` target: `PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar`

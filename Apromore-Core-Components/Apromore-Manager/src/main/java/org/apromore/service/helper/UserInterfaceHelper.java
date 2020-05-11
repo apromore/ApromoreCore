@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -59,11 +61,12 @@ public interface UserInterfaceHelper {
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.
      * @param folderId the search conditions
-     * @param conditions the search conditions
-     * @param similarProcesses something
+     * @param conditions the search conditions for process models
+     * @param logConditions the search conditions for logs
+     * @param folderConditions the search conditions for folders
      * @return the list of process Summaries
      */
-    SummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses);
+    SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions);
 
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.

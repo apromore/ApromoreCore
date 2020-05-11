@@ -7,6 +7,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -40,6 +42,7 @@ import org.apromore.service.DomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -137,7 +140,7 @@ public class MergePlugin extends DefaultPortalPlugin {
         this.context = context;
 
         this.processMergeW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/processmerge.zul", null, null);
-        this.processMergeW.setTitle("Merge processes.");
+        this.processMergeW.setTitle(Labels.getLabel("e.merge.title.text", "Process merging"));
 
         Row processNameR = (Row) this.processMergeW.getFellow("mergednamep");
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();

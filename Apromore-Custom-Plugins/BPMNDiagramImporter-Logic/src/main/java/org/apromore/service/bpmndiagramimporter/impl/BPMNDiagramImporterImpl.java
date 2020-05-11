@@ -7,6 +7,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -29,6 +31,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 import java.io.File;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -177,7 +180,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
             SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
-            File schemaFile = new File(classLoader.getResource("./xsd/BPMN20.xsd").getFile());
+            // File schemaFile = new File(classLoader.getResource("xsd/BPMN20.xsd").getFile());
+            URL schemaFile = getClass().getClassLoader().getResource("xsd/BPMN20.xsd");
             Schema schema = sf.newSchema(schemaFile);
             unmarshaller.setSchema(schema);
 
