@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -30,7 +32,7 @@ import org.zkoss.zul.RowRenderer;
 /**
  * The Class GridRendererController.
  */
-public class GridRendererController implements RowRenderer<String[]> {
+class GridRendererController implements RowRenderer<String[]> {
 
 	private Integer AttribWidth;
 	/*
@@ -43,11 +45,8 @@ public class GridRendererController implements RowRenderer<String[]> {
 			lbl.setValue(data[i]);
 			lbl.setWidth(this.AttribWidth + "px");
 			lbl.setMultiline(false);
-//			lbl.setMaxlength(25);
 			lbl.setTooltiptext(data[i]);
 			row.appendChild(lbl);
-
-//			row.setStyle("height: 10px;");
 		}
 	}
 

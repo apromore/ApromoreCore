@@ -26,6 +26,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Embed-Dependency>
+                            artifactId=retree
+                        </Embed-Dependency>
+
                         <Import-Package>
 
                             org.deckfour.xes.*;version="2.27",
@@ -37,7 +41,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.csvimporter
+                            org.apromore.service.csvimporter,
+                            org.apromore.service.csvimporter.impl.dateparser
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -98,6 +103,18 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.sisyphsu</groupId>
+            <artifactId>retree</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

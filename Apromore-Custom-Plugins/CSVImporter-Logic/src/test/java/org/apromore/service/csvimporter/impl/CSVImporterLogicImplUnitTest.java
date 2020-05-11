@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -22,43 +24,39 @@
 
 package org.apromore.service.csvimporter.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.google.common.io.ByteStreams;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.RFC4180ParserBuilder;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.junit.Test;
 
-import com.google.common.io.ByteStreams;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.RFC4180ParserBuilder;
-import com.opencsv.enums.CSVReaderNullFieldIndicator;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TimeZone;
 
-/** Test suite for {@link CSVImporterLogicImpl}. */
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+
 public class CSVImporterLogicImplUnitTest {
 
     /** Expected headers for <code>test1-valid.csv</code>. */
     private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", " process type");
 
-    /** Test instance. */
     private CSVImporterLogic csvImporterLogic = new CSVImporterLogicImpl();
-
-    private static final double MAX_ERROR_FRACTION = 0.2;
-
-    // Internal methods
 
     private static CSVReader newCSVReader(String filename, String charset, char delimiter) {
         return new CSVReaderBuilder(new InputStreamReader(CSVImporterLogicImplUnitTest.class.getResourceAsStream(filename), Charset.forName(charset)))
@@ -76,10 +74,27 @@ public class CSVImporterLogicImplUnitTest {
         return baos.toString();
     }
 
+    /**
+     * This is hack to convert the test case XML documents from the time zone where they were created to the
+     * time zone where the test is running.
+     *
+     * @param in  the XML text of the test data
+     * @param testDataTimezone  a regex for the timezone used in the test data, e.g. <code>"\\+03:00"</code>
+     * @return the XML text with the local time zone substituted
+     */
+    private String correctTimeZone(String in, String testDataTimezone) {
+        TimeZone tz = TimeZone.getDefault();
+        int offsetMinutes = (tz.getRawOffset() + tz.getDSTSavings()) / 60000;
+        NumberFormat hoursFormat = new DecimalFormat("+00;-00)");
+        NumberFormat minutesFormat = new DecimalFormat("00");
+
+        return in.replaceAll(testDataTimezone, "\\" + hoursFormat.format(offsetMinutes / 60) + ":" + minutesFormat.format(offsetMinutes % 60));
+    }
+
 
     // Test cases
 
-    /** Test {@link CSVImporterLogic.sampleCSV} sampling fewer lines than contained in <code>test1-valid.csv</code>. */
+    /** Test {@link csvImporterLogic.sampleCSV} sampling fewer lines than contained in <code>test1-valid.csv</code>. */
     @Test
     public void testSampleCSV_undersample() throws Exception {
         CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
@@ -109,19 +124,17 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assert logModel.getInvalidRows().isEmpty();
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -129,9 +142,6 @@ public class CSVImporterLogicImplUnitTest {
         // Validate result
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
-
-
-
     }
 
     /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
@@ -142,19 +152,17 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(2, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assert logModel.getInvalidRows().isEmpty();
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -162,11 +170,7 @@ public class CSVImporterLogicImplUnitTest {
         // Validate result
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
-
-
     }
-
-
 
     /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
     @Test
@@ -176,19 +180,17 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test3-invalid-end-timestamp.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 2);
         csvReader = newCSVReader("/test3-invalid-end-timestamp.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assertEquals(1, logModel.getInvalidRows().size());
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -196,7 +198,6 @@ public class CSVImporterLogicImplUnitTest {
         // Validate result
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
-
     }
 
     /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
@@ -207,19 +208,17 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test4-invalid-start-timestamp.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 2);
         csvReader = newCSVReader("/test4-invalid-start-timestamp.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample,MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assertEquals(1, logModel.getInvalidRows().size());
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -227,7 +226,6 @@ public class CSVImporterLogicImplUnitTest {
         // Validate result
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
-
     }
 
 
@@ -239,19 +237,17 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test5-empty-caseID.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test5-empty-caseID.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assertEquals(0, logModel.getInvalidRows().size());
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -270,19 +266,48 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test6-different-delimiters.csv", "utf-8", ';');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test6-different-delimiters.csv", "utf-8", ';');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assertEquals(0, logModel.getInvalidRows().size());
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+        /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
+    @Test
+    public void testPrepareXesModel_test7_record_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest7 - Record invalid");
+
+        // Set up inputs and expected outputs
+        CSVReader csvReader = newCSVReader("/test7-record-invalid.csv", "utf-8", ',');
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        sample.setStartTimestampPos(2);
+        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+        csvReader = newCSVReader("/test7-record-invalid.csv", "utf-8", ',');
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(1, logModel.getRowsCount());
+        assertEquals(2, logModel.getLogErrorReport().size());
+
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -296,65 +321,22 @@ public class CSVImporterLogicImplUnitTest {
 
     /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
     @Test
-    public void testPrepareXesModel_test7_record_invalid() throws Exception {
-
-        System.out.println("\n************************************\ntest7 - Record invalid");
-
-        // Set up inputs and expected outputs
-        CSVReader csvReader = newCSVReader("/test7-record-invalid.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8"));
-
-        // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
-        csvReader = newCSVReader("/test7-record-invalid.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
-
-        // Validate result
-        assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(2, logModel.getRows().size());
-        assertEquals(1, logModel.getErrorCount());
-        assertEquals(2, logModel.getInvalidRows().size());
-
-
-//        System.out.println("Error is: " + logModel.getInvalidRows().get(0));
-
-        assertEquals("Row: 3, Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp",
-                logModel.getInvalidRows().get(1));
-
-        assertEquals("Row: 1, Error: number of columns does not match number of headers. Number of headers: 5, Number of columns: 7.\n",
-                logModel.getInvalidRows().get(0));
-        // Continue with the XES conversion
-        XLog xlog = logModel.getXLog();
-
-        // Validate result
-        assertNotNull(xlog);
-        assertEquals(expectedXES, toString(xlog));
-
-    }
-
-
-    /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
-    @Test(expected = InvalidCSVException.class)
     public void testPrepareXesModel_test8_all_invalid() throws Exception {
 
         System.out.println("\n************************************\ntest8 - All invalid");
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test8-all-invalid.csv", "utf-8", ',');
-//        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 2);
         csvReader = newCSVReader("/test8-all-invalid.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
+        // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(3, logModel.getErrorCount());
-        assertEquals(3, logModel.getInvalidRows().size());
-
+        assertEquals(0, logModel.getRowsCount());
+        assertEquals(3, logModel.getLogErrorReport().size());
     }
 
 
@@ -367,25 +349,29 @@ public class CSVImporterLogicImplUnitTest {
         String expectedFormat = null;
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test9-differentiate-dates.csv", "utf-8", ',');
-//        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test9-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setEndTimestampPos(3);
+        sample.setStartTimestampPos(2);
+        sample.getEventAttributesPos().remove(Integer.valueOf(2));
+        sample.getEventAttributesPos().remove(Integer.valueOf(3));
         csvReader = newCSVReader("/test9-differentiate-dates.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         assertNotNull(logModel);
+        assertEquals(13, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
 
-        for(int i =0; i < logModel.getRows().size(); i++) {
-            dateFormats.add(logModel.getRows().get(i).getStartTimestamp().toString());
-        }
-        expectedFormat = Parse.determineFormatForArray(dateFormats, 1);
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
 
-        assertEquals("yyyy-dd-MM HH:mm:ss.SSS", expectedFormat);
-        assertEquals(13, logModel.getLineCount());
-        assertEquals(13, logModel.getRows().size());
-
-
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
     }
 
 
@@ -393,31 +379,27 @@ public class CSVImporterLogicImplUnitTest {
     @Test
     public void testPrepareXesModel_test10_detect_name() throws Exception {
 
-        System.out.println("\n************************************\ntest10 - Detect name");
+        System.out.println("\n************************************\ntest10 - Event Attribute");
 
         // Set up inputs and expected outputs
-        CSVReader csvReader = newCSVReader("/test10-detect-name.csv", "utf-8", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8"));
+        CSVReader csvReader = newCSVReader("/test10-eventAttribute.csv", "utf-8", ',');
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
-        csvReader = newCSVReader("/test10-detect-name.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        csvReader = newCSVReader("/test10-eventAttribute.csv", "utf-8", ',');
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getLineCount());
-        assertEquals(3, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assertEquals(0, logModel.getInvalidRows().size());
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
-
-
     }
 
     /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
@@ -429,29 +411,24 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test11-encoding.csv", "windows-1255", ',');
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8"));
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
 
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        sample.setActivityPos(1);
+        sample.getEventAttributesPos().remove(Integer.valueOf(1));
         csvReader = newCSVReader("/test11-encoding.csv", "windows-1255", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(5, logModel.getLineCount());
-        assertEquals(5, logModel.getRows().size());
-        assertEquals(0, logModel.getErrorCount());
-        assertEquals(0, logModel.getInvalidRows().size());
+        assertEquals(5, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
-
-        // TODO this isn't working for Windows machines.
-//        assertEquals(expectedXES, toString(xlog));
-
-
+        assertEquals(expectedXES, toString(xlog));
     }
-
 }

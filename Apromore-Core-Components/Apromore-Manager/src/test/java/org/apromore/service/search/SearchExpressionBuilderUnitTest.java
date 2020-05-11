@@ -6,6 +6,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -38,56 +40,53 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class SearchExpressionBuilderUnitTest {
 
-    private static final String SEARCH_EXPRESSION_SINGLE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' )";
-    private static final String SEARCH_EXPRESSION_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' ) or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' ) ) ";
-    private static final String SEARCH_EXPRESSION_AND = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' ) and  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' )";
-    private static final String SEARCH_EXPRESSION_AND_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' ) or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' ) )  and  p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' )";
-    private static final String SEARCH_EXPRESSION_APOSTROPHE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%''apostrophe''%' )";
-    private static final String SEARCH_EXPRESSION_2APOSTROPHE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%double''''apostrophe%' )";
-    private static final String SEARCH_EXPRESSION_BACKSLASH = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%\\backslash\\%' )";
+    private static final String SEARCH_EXPRESSION_SINGLE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' AND k.type = 'process')";
+    private static final String SEARCH_EXPRESSION_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' AND k.type = 'process') or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' AND k.type = 'process') ) ";
+    private static final String SEARCH_EXPRESSION_AND = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' AND k.type = 'process') and  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' AND k.type = 'process')";
+    private static final String SEARCH_EXPRESSION_AND_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' AND k.type = 'process') or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' AND k.type = 'process') )  and  p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' AND k.type = 'process')";
+    private static final String SEARCH_EXPRESSION_APOSTROPHE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%''apostrophe''%' AND k.type = 'process')";
+    private static final String SEARCH_EXPRESSION_2APOSTROPHE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%double''''apostrophe%' AND k.type = 'process')";
+    private static final String SEARCH_EXPRESSION_BACKSLASH = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%\\backslash\\%' AND k.type = 'process')";
     
     private String expression;
 
-/*
     @Test
     public void buildExpressionWithEmptyNullString() throws Exception {
-        expression = SearchExpressionBuilder.buildSearchConditions("");
+        expression = SearchExpressionBuilder.buildSearchConditions("", "p", "processId", "process");
         assertThat(expression, equalTo(""));
 
-        expression = SearchExpressionBuilder.buildSearchConditions(null);
+        expression = SearchExpressionBuilder.buildSearchConditions(null, "p", "processId", "process");
         assertThat(expression, equalTo(""));
 
-        expression = SearchExpressionBuilder.buildSearchConditions(" ");
+        expression = SearchExpressionBuilder.buildSearchConditions(" ", "p", "processId", "process");
         assertThat(expression, equalTo(""));
     }
 
 
     @Test
     public void buildExpressionWithRealData() throws Exception {
-        expression = SearchExpressionBuilder.buildSearchConditions("invoicing");
+        expression = SearchExpressionBuilder.buildSearchConditions("invoicing", "p", "processId", "process");
         assertThat(expression, containsString("k.value like '%invoicing%'"));
         assertThat(expression, equalTo(SEARCH_EXPRESSION_SINGLE));
 
-        expression = SearchExpressionBuilder.buildSearchConditions("(yawl;protos)");
-        System.err.println(expression);
+        expression = SearchExpressionBuilder.buildSearchConditions("(yawl;protos)", "p", "processId", "process");
         assertThat(expression, containsString("'%yawl%'"));
         assertThat(expression, containsString("'%protos%'"));
         assertThat(expression, equalTo(SEARCH_EXPRESSION_OR));
 
-        expression = SearchExpressionBuilder.buildSearchConditions("yawl,protos");
+        expression = SearchExpressionBuilder.buildSearchConditions("yawl,protos", "p", "processId", "process");
         assertThat(expression, equalTo(SEARCH_EXPRESSION_AND));
 
-        expression = SearchExpressionBuilder.buildSearchConditions("(yawl;protos),invoicing");
+        expression = SearchExpressionBuilder.buildSearchConditions("(yawl;protos),invoicing", "p", "processId", "process");
         assertThat(expression, equalTo(SEARCH_EXPRESSION_AND_OR));
 
-        expression = SearchExpressionBuilder.buildSearchConditions("'apostrophe'");
+        expression = SearchExpressionBuilder.buildSearchConditions("'apostrophe'", "p", "processId", "process");
         assertThat(expression, equalTo(SEARCH_EXPRESSION_APOSTROPHE));
 
-        expression = SearchExpressionBuilder.buildSearchConditions("double''apostrophe");
+        expression = SearchExpressionBuilder.buildSearchConditions("double''apostrophe", "p", "processId", "process");
         assertThat(expression, equalTo(SEARCH_EXPRESSION_2APOSTROPHE));
 
-        expression = SearchExpressionBuilder.buildSearchConditions("\\backslash\\");
+        expression = SearchExpressionBuilder.buildSearchConditions("\\backslash\\", "p", "processId", "process");
         assertThat(expression, equalTo(SEARCH_EXPRESSION_BACKSLASH));
     }
-*/
 }

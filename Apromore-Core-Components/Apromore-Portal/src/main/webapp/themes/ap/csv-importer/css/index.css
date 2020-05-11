@@ -4,6 +4,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -68,6 +70,36 @@
     top: 3px;
     right: 2px;
 }
+
+
+.ap-csv-importer-parsed-icon {
+    background-color: transparent;
+    color: rgba(144, 198, 149, 1);
+    border: 0;
+    position: absolute;
+    width: 28px;
+    height: 24px;
+    border-radius: 8px;
+    padding: 0;
+    top: 2px;
+    right: 23px;
+    font-size: 1.11em;
+}
+
+.ap-csv-importer-failedParse-icon {
+    background-color: transparent;
+    color: rgba(207, 0, 15, 1);
+    border: 0;
+    position: absolute;
+    width: 28px;
+    height: 24px;
+    border-radius: 8px;
+    padding: 0;
+    top: 4px;
+    right: 23px;
+    font-size: 1.4em;
+}
+
 
 .ap-csv-importer-format-icon:hover {
     color: white;

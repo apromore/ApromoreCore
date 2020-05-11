@@ -4,262 +4,208 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
+ * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
 package org.apromore.service.csvimporter.impl;
 
 import com.opencsv.CSVReader;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import java.io.*;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.InvalidCSVException;
-import org.apromore.service.csvimporter.LogEventModel;
+import org.apromore.service.csvimporter.LogErrorReport;
 import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
+import java.sql.Timestamp;
+import java.util.*;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
+class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     @Override
-    public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
+    public LogSample sampleCSV(CSVReader reader, int sampleSize) throws Exception {
 
-        // Obtain the header
-        List<String> header = new ArrayList<>();
-        Collections.addAll(header, reader.readNext());
-        if (header.isEmpty()) {
-            throw new InvalidCSVException("Could not parse file!");
-        }
+        List<String> header = Arrays.asList(reader.readNext());
 
-        // Obtain the sample of lines
         List<List<String>> lines = new ArrayList<>();
-        for (String[] s = reader.readNext(); s != null && lines.size() < sampleSize; s = reader.readNext()) {
-            if(s!=null && s.length > 2){
-                lines.add(Arrays.asList(s));
-            }
+        String[] myLine;
+        while ((myLine = reader.readNext()) != null && lines.size() < sampleSize) {
+            if (myLine.length != header.size()) continue;
+
+            lines.add(Arrays.asList(myLine));
         }
 
-        // Construct the sample (no mutation expected after this point, although this isn't enforced by the code))
         return new LogSampleImpl(header, lines);
     }
 
+
+    private final Parse parse = new Parse();
+
+    boolean preferMonthFirstChanged;
+    private List<LogErrorReport> logErrorReport;
+    private boolean validRow;
+
     @Override
-    public LogModel prepareXesModel(CSVReader reader, LogSample sample, double errorAcceptance) throws InvalidCSVException, IOException {
-        int errorCount = 0;
-        int lineCount = 0;
-        int finishCount = 0;
-        boolean errorCheck = false;
+    public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws Exception {
+        sample.validateSample();
 
-        ArrayList<String> invalidRows = new ArrayList<>();
-        try {
+        logErrorReport = new ArrayList<>();
+        int lineIndex = 1; // set to 1 since first line is the header
+        boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
-            // read first line from CSV as header
-            String[] header = reader.readNext();
+        String[] header = reader.readNext();
+        String[] line;
 
-            // If any of the mandatory fields are missing show alert message to the user and return
-            StringBuilder headNOTDefined = checkFields(sample.getHeads());
-            if (headNOTDefined.length() != 0) {
-                throw new InvalidCSVException(headNOTDefined.toString());
+        String caseId;
+        String activity;
+        Timestamp endTimestamp;
+        Timestamp startTimestamp;
+        String resource;
+        HashMap<String, String> caseAttributes;
+        HashMap<String, String> eventAttributes;
+        HashMap<String, Timestamp> otherTimestamps;
+
+        List<LogEventModel> logData = new ArrayList<>();
+        String errorMessage = "Field is empty or has a null value!";
+
+        while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) { // new row, new event.
+            validRow = true;
+            lineIndex++;
+
+            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n")))) { //empty row
+                continue;
+            }
+
+            if (header.length != line.length) {
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                continue;
+            }
+
+            startTimestamp = null;
+            resource = null;
+            caseAttributes = new HashMap<>();
+            eventAttributes = new HashMap<>();
+            otherTimestamps = new HashMap<>();
+
+
+            // Case id:
+            caseId = line[sample.getCaseIdPos()];
+            if (caseId == null || caseId.isEmpty()) {
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
+            }
+
+            // Activity
+            activity = line[sample.getActivityPos()];
+            if (activity == null || activity.isEmpty()) {
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
+            }
+
+            // End Timestamp
+            endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
+            if (endTimestamp == null) {
+                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
+            }
+
+            // Start Timestamp
+            if (sample.getStartTimestampPos() != -1) {
+                startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
+                if (startTimestamp == null) {
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
+                }
             }
 
 
-            // create model "LogEventModel" of the log data
-            // We set mandatory fields and other fields are set with hash map
-            List<LogEventModel> logData = new ArrayList<>();
-            HashMap<String, Timestamp> otherTimestamps;
-            HashMap<String, String> others;
-            HashMap<String, String> caseAttributes;
-            Timestamp startTimestamp = null;
-            String resourceCol = null;
-            String errorMessage = null;
-
-            for (Iterator<String[]> it = reader.iterator(); finishCount < 50 && isValidLineCount(lineCount);) {
-                String[] line = it.next();
-                boolean rowGTG = true;
-                if(line == null) {
-                    // if line is empty, move to next iteration, until 50 lines are empty
-                    finishCount++;
-                    continue;
-                } else {
-                    lineCount++;
-                }
-
-                if (line != null && line.length > 2) {
-                    try {
-                        otherTimestamps = new HashMap<>();
-                        others = new HashMap<>();
-                        caseAttributes = new HashMap<>();
-
-                        for (int p = 0; p <= line.length - 1; p++) {
-                            if (sample.getOtherTimeStampsPos().get(p) != null) {
-                                otherTimestamps.put(header[p], Parse.parseTimestamp(line[p], sample.getOtherTimeStampsPos().get(p)));
-                            } else if(!sample.getCaseAttributesPos().isEmpty() && sample.getCaseAttributesPos().contains(p)){
-                                caseAttributes.put(header[p], line[p]);
-                            }
-                            else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) &&
-                                    p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) &&
-                                    p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() || !sample.getIgnoredPos().contains(p)) &&
-                                    (sample.getCaseAttributesPos().isEmpty() || !sample.getCaseAttributesPos().contains(p))) {
-
-                                others.put(header[p], line[p]);
-                                if (header.length != line.length) {
-                                    invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match" +
-                                            " number of headers. " + "Number of headers: " + header.length + "," +
-                                            " Number of columns: " + line.length + ".\n");
-                                    errorCount++;
-                                    rowGTG = false;
-                                    break;
-                                }
-
-                            }
-                        }
-                        Timestamp tStamp = Parse.parseTimestamp(line[sample.getHeads().get(timestamp)], sample.getTimestampFormat());
-
-                        if (sample.getHeads().get(tsStart) != -1) {
-                            startTimestamp = Parse.parseTimestamp(line[sample.getHeads().get(tsStart)], sample.getStartTsFormat());
-                            if (startTimestamp == null) {
-                                if (tStamp != null) {
-                                    startTimestamp = tStamp;
-                                    invalidRows.add("Row: " + (lineCount) + ", Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
-                                } else {
-                                    invalidRows.add("Row: " + (lineCount) + ", Error: Start time stamp field is invalid.");
-                                    errorCount++;
-                                }
-                            }
-                        }
-
-                        // Notify if resource field is empty
-                        if (sample.getHeads().get(resource) != -1) {
-                            resourceCol = line[sample.getHeads().get(resource)];
-                        }
-                        // check if end stimestamp field is null
-                        if (tStamp == null) {
-                            if (startTimestamp != null) {
-                                tStamp = startTimestamp;
-                                invalidRows.add("Row: " + (lineCount) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
-                            } else {
-                                invalidRows.add("Row: " + (lineCount) + ", Error: End time stamp field is empty.");
-                                errorCount++;
-                                continue;
-                            }
-                        }
-                        if (otherTimestamps != null) {
-                            for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
-                                if (entry.getKey() != null) {
-                                    if (entry.getValue() == null) {
-                                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                        Date date = dateFormat.parse("01/01/1900");
-                                        long time = date.getTime();
-                                        Timestamp tempTime = new Timestamp(time);
-                                        entry.setValue(tempTime);
-                                        invalidRows.add("Row: " + (lineCount) + ", Error: " + entry.getKey() +
-                                                " field is invalid timestamp.");
-                                        errorCheck = true;
-                                    }
-                                }
-                            }
-                        }
-                        if (rowGTG) {
-                            logData.add(new LogEventModelImpl(line[sample.getHeads().get(caseid)], line[sample.getHeads().get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others, caseAttributes));
-                        }
-                    } catch (Exception e) {
-                        errorMessage = ExceptionUtils.getStackTrace(e);
-                        e.printStackTrace();
-                        errorCount++;
-                        if (line.length > 4) {
-                            invalidRows.add("Row: " + (lineCount) + ", Error: Something went wrong. Content: " + line[0] + "," +
-                                    line[1] + "," + line[2] + "," + line[3] + " ...");
-                            errorCount++;
-                        } else {
-                            invalidRows.add("Row: " + (lineCount ) + ", Error: Content: " + " Empty, or too short for display.");
-                            errorCount++;
-                        }
+            // Other timestamps
+            if (!sample.getOtherTimestamps().isEmpty()) {
+                for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
+                    Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue());
+                    if (tempTimestamp != null) {
+                        otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
+                    } else {
+                        invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
                     }
                 }
             }
 
-            if (errorCount > (lineCount * errorAcceptance)) {
-                String notificationMessage = "Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file. \n" +
-                        "\n Invalid rows: \n";
-
-                for (int i = 0; i < Math.min(5, invalidRows.size()); i++) {
-                    notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
-                }
-                LOGGER.error(errorMessage);
-
-//                throw new InvalidCSVException(notificationMessage, invalidRows);
-
+            // If PreferMonthFirst changed to True, we have to start over.
+            if (!preferMonthFirst && preferMonthFirstChanged) {
+                prepareXesModel(reader, sample);
             }
 
-            return new LogModelImpl(sortTraces(logData), lineCount, errorCount, invalidRows, errorCheck);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
+            // Resource
+            if (sample.getResourcePos() != -1) {
+                resource = line[sample.getResourcePos()];
+                if (resource == null || resource.isEmpty()) {
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
+                }
+            }
+
+            // If row is invalid, continue to next row.
+            if (!validRow) {
+                continue;
+            }
+
+            // Case Attributes
+            if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
+                for (int columnPos : sample.getCaseAttributesPos()) {
+                    caseAttributes.put(header[columnPos], line[columnPos]);
+                }
+            }
+
+            // Event Attributes
+            if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
+                for (int columnPos : sample.getEventAttributesPos()) {
+                    eventAttributes.put(header[columnPos], line[columnPos]);
+                }
+            }
+
+            logData.add(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
         }
+
+        return new LogModelImpl(sortTraces(logData), logErrorReport);
+
     }
 
     public boolean isValidLineCount(int lineCount) {
         return true;
     }
 
-    /**
-     * Gets the pos.
-     *
-     * @param col  the col: array which has possible names for each of the mandatory fields.
-     * @param elem the elem: one item of the CSV line array
-     * @return the pos: boolean value confirming if the elem is the required element.
-     */
-    private static boolean getPos(String[] col, String elem) {
-        if (col == timestampValues || col == StartTsValues) {
-            return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
+    private Timestamp parseTimestampValue(String theValue, String format) {
+        Timestamp stamp;
+        if (format != null && !format.isEmpty()) {
+            stamp = parse.tryParsingWithFormat(theValue, format);
+            if (stamp == null) {
+                stamp = parse.tryParsing(theValue);
+                if (!preferMonthFirstChanged) {
+                    preferMonthFirstChanged = parse.getPreferMonthFirst();
+                }
+            }
         } else {
-            return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
-        }
-    }
-
-    /**
-     * Check fields.
-     * <p>
-     * Check if all mandatory fields are found in the file, otherwise, construct a message based on the missed fields.
-     *
-     * @param posMap the pos map
-     * @return the string builder
-     */
-    private StringBuilder checkFields(Map<String, Integer> posMap) {
-        String[] fieldsToCheck = {caseid, activity, timestamp};
-        StringBuilder importMessage = new StringBuilder();
-
-        for (int f = 0; f <= fieldsToCheck.length - 1; f++) {
-            if (posMap.get(fieldsToCheck[f]) == -1) {
-                String mess = "No field " + fieldMap.get(fieldsToCheck[f]) + " is defined";
-                importMessage = (importMessage.length() == 0 ? importMessage.append(mess) : importMessage.append(", ").append(mess));
+            stamp = parse.tryParsing(theValue);
+            if (!preferMonthFirstChanged) {
+                preferMonthFirstChanged = parse.getPreferMonthFirst();
             }
         }
-
-        return importMessage;
+        return stamp;
     }
 
+    private void invalidRow(LogErrorReportImpl error) {
+        logErrorReport.add(error);
+        validRow = false;
+    }
 
     private static List<LogEventModel> sortTraces(List<LogEventModel> traces) {
         Comparator<String> nameOrder = new NameComparator();
