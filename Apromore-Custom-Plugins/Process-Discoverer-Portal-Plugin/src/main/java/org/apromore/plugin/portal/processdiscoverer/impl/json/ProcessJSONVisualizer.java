@@ -85,6 +85,7 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
     @Override
     public void cleanUp() {
         layouter.cleanUp();
+        System.out.println("ProcessVisualizer cleanup is done!");
     }
 
 }

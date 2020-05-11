@@ -65,6 +65,7 @@ public class ProcessDiscoverer {
     // A door to clean up memory as PD logic is memory-intensive
     public void cleanUp() {
         absManager.cleanUp();
+        System.out.println("PD-Logic cleanup is done!");
     }
     
 }

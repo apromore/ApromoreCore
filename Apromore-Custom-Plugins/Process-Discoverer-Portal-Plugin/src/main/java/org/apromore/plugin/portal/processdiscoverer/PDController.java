@@ -66,10 +66,8 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.SessionCleanup;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
@@ -95,7 +93,7 @@ import org.zkoss.zul.Window;
  * by ZK and the web server. For example, in its cleanup routine, data-intensive components such as PD Logic 
  * and Process Visualizer will be called to clean up themselves.
  */
-public class PDController extends BaseController implements SessionCleanup {
+public class PDController extends BaseController {
 
     ///////////////////// LOCAL CONSTANTS /////////////////////////////
 
@@ -238,6 +236,10 @@ public class PDController extends BaseController implements SessionCleanup {
 
             initialize();
             initializeDefaults();
+            
+            getDesktop().getSession().setAttribute("processDiscoverer", processDiscoverer);
+            getDesktop().getSession().setAttribute("processVisualizer", processVisualizer);
+            getDesktop().getSession().setAttribute("userSessionId", userSessionId);
         }
         catch (Exception ex) {
             Messagebox.show("Error occurred while initializing: " + ex.getMessage());
@@ -634,13 +636,5 @@ public class PDController extends BaseController implements SessionCleanup {
 
     public DecimalFormat getDecimalFormatter() {
         return this.decimalFormat;
-    }
-
-    // Called when this session is destroyed
-    @Override
-    public void cleanup(Session sess) throws Exception {
-        processDiscoverer.cleanUp();
-        processVisualizer.cleanUp();
-        UserSessionManager.removeEditSession(userSessionId);
     }
 }
