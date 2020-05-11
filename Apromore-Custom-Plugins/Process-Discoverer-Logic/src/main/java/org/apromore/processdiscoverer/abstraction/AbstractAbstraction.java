@@ -22,7 +22,6 @@
 
 package org.apromore.processdiscoverer.abstraction;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +55,6 @@ public abstract class AbstractAbstraction implements Abstraction {
 	protected Map<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>,Double> arcPrimaryWeights = new HashMap<>();
 	protected Map<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>,Double> arcSecondaryWeights = new HashMap<>();
 	protected AbstractionParams params;
-	protected Map<BPMNNode, Point> nodeLayoutMap;
 	protected Layout layout;
 	
 	protected double minNodePrimaryWeight = Double.MAX_VALUE;
@@ -243,6 +241,7 @@ public abstract class AbstractAbstraction implements Abstraction {
     
     @Override
     public void setLayout(Layout layout) {
+        if (this.layout != null) this.layout.cleanUp();
         this.layout = layout;
     }
     
@@ -280,5 +279,14 @@ public abstract class AbstractAbstraction implements Abstraction {
         
         return true;
     }
-
+    
+    @Override
+    public void cleanUp() {
+        nodePrimaryWeights.clear();
+        nodeSecondaryWeights.clear();
+        arcPrimaryWeights.clear();
+        arcSecondaryWeights.clear();
+        if (layout != null) layout.cleanUp();
+    }
+    
 }

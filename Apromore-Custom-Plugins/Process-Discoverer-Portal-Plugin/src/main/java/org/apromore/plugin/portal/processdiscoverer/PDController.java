@@ -64,8 +64,10 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.SessionCleanup;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
@@ -73,7 +75,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
- * This class acts as the main controller for the main window.<br>
+ * This class acts as the main controller for PD<br>
  * Other controllers under the controllers package are used to handle specific behaviors.<br>
  * All UI controls are contained in the main window (todo: no subclasses for panels on the window).<br>
  * To avoid managing too many individual variables, they are all grouped under data objects
@@ -85,8 +87,13 @@ import org.zkoss.zul.Window;
  * then ZK client engine sends an onLoaded event to the main window, triggering windowListener().
  * TODO: as this is open in a separate browser tab with a different ZK execution from that of the portal,
  * if the user signs out of the portal tab, the actions in this plugin calling to the portal session would fail
+ * 
+ * In addition, as PD consumes substantial memory resources in various ways (e.g. using third-party libraries),
+ * it implements SessionCleanup interface and registers with ZK to be called upon the Session is destroyed 
+ * by ZK and the web server. For example, in its cleanup routine, data-intensive components such as PD Logic 
+ * and Process Visualizer will be called to clean up themselves.
  */
-public class PDController extends BaseController {
+public class PDController extends BaseController implements SessionCleanup {
 
     ///////////////////// LOCAL CONSTANTS /////////////////////////////
 
@@ -149,6 +156,7 @@ public class PDController extends BaseController {
 
     //////////////////// DATA ///////////////////////////////////
 
+    private String userSessionId;
     private ConfigData configData;
     private ContextData contextData;
     private LogData logData;
@@ -166,14 +174,14 @@ public class PDController extends BaseController {
      
     public void onCreate() throws InterruptedException {
         try {
-            String id = Executions.getCurrent().getParameter("id");
-            if (id == null) {
+            userSessionId = Executions.getCurrent().getParameter("id");
+            if (userSessionId == null) {
                 throw new AssertionError("No id parameter in URL");
             }
     
-            ApromoreSession session = UserSessionManager.getEditSession(id);
+            ApromoreSession session = UserSessionManager.getEditSession(userSessionId);
             if (session == null) {
-                throw new AssertionError("No edit session associated with id " + id);
+                throw new AssertionError("No edit session associated with id " + userSessionId);
             }
     
             // Prepare services
@@ -249,11 +257,7 @@ public class PDController extends BaseController {
 
     // Adjust UI when detecting special conditions
     private void initializeDefaults() {
-        // if (logData.getAttributeLog().getValues().size() > configData.getAttributeUniqueValuesToForceAdjust()) {
-        //   userOptions.setNodeFilterValue(80);
-        //   nodeSlider.setCurpos(userOptions.getNodeFilterValue());
-        //   nodeInput.setValue((int)userOptions.getNodeFilterValue());
-        // }
+
     }
 
     private void initializeControls() {
@@ -628,5 +632,13 @@ public class PDController extends BaseController {
 
     public DecimalFormat getDecimalFormatter() {
         return this.decimalFormat;
+    }
+
+    // Called when this session is destroyed
+    @Override
+    public void cleanup(Session sess) throws Exception {
+        processDiscoverer.cleanUp();
+        processVisualizer.cleanUp();
+        UserSessionManager.removeEditSession(userSessionId);
     }
 }

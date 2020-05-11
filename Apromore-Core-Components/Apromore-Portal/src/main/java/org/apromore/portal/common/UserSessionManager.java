@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
 import javax.naming.Context;
-import javax.naming.Name;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -182,6 +182,10 @@ public abstract class UserSessionManager {
 
     public static ApromoreSession getEditSession(String id) {
         return editSessionMap.get(id);
+    }
+    
+    public static void removeEditSession(String id) {
+        editSessionMap.remove(id);
     }
 
     public static void setCurrentFolder(FolderType folder) {

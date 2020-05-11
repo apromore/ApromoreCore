@@ -56,4 +56,5 @@ public interface Abstraction {
 	Layout getLayout();
 	void setLayout(Layout layout);
 	boolean equal(Abstraction other);
+	void cleanUp(); // An abstraction is usually memory-intensive, needs cleanup.
 }

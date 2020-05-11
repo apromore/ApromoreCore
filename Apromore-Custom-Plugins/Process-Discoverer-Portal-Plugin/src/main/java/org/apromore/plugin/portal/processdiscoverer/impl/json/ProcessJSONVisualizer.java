@@ -22,7 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
-import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.impl.layout.JGraphLayouter;
 import org.apromore.plugin.portal.processdiscoverer.vis.Layouter;
 import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
@@ -46,9 +45,7 @@ import org.json.JSONObject;
  */
 public class ProcessJSONVisualizer implements ProcessVisualizer {
 	private VisualToolkit visToolkit = new VisualToolkit();
-	
-	public ProcessJSONVisualizer(PDController pdController) {
-	}
+	private Layouter layouter = new JGraphLayouter(); 
 	
     @Override
     public String generateVisualizationText(Abstraction abs) throws Exception {
@@ -56,7 +53,7 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
         VisualSettings visSettings = new VisualSettings();
         
         long timer1 = System.currentTimeMillis();
-        Layouter layouter = new JGraphLayouter(visSettings); 
+        layouter.setVisualSettings(visSettings);
         layouter.layout(abs);
         System.out.println("Layout BPMNDiagram: " + (System.currentTimeMillis() - timer1) + " ms.");
         
@@ -82,5 +79,10 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
 		
 		return jsonProcess;
 	}
+
+    @Override
+    public void cleanUp() {
+        layouter.cleanUp();
+    }
 
 }

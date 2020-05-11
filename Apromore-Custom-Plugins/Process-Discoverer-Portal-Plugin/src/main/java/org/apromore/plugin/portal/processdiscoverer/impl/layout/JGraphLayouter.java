@@ -85,24 +85,25 @@ public class JGraphLayouter implements Layouter {
 	
 	private int SEQUENCE_LENGTH = 3;
 	
-	private VisualSettings visSettings;
+	private VisualSettings visSettings = VisualSettings.standard();
 	
-	public JGraphLayouter(VisualSettings visSettings) {
-	    this.visSettings = visSettings;
-	    
-	    ACTIVITY_STD_WIDTH = visSettings.getActivityWidth();
-	    ACTIVITY_STD_HEIGHT = visSettings.getActivityHeight();
-	    
-	    EVENT_STD_WIDTH = visSettings.getEventWidth();
-	    EVENT_STD_HEIGHT = visSettings.getEventHeight();
-	    
-	    GATEWAY_STD_WIDTH = visSettings.getGatewayWidth();
-	    GATEWAY_STD_HEIGHT = visSettings.getGatewayHeight();
-	    
-	    INTRA_CELL_SPACING = visSettings.getIntraCellSpacing();
-	    INTER_RANK_CELL_SPACING = visSettings.getInterRankCellSpacing();
-	    PARALLEL_EDGE_SPACING = visSettings.getParallelEdgeSpacing();
-	}
+    @Override
+    public void setVisualSettings(VisualSettings visSettings) {
+        this.visSettings = visSettings;
+        
+        ACTIVITY_STD_WIDTH = visSettings.getActivityWidth();
+        ACTIVITY_STD_HEIGHT = visSettings.getActivityHeight();
+        
+        EVENT_STD_WIDTH = visSettings.getEventWidth();
+        EVENT_STD_HEIGHT = visSettings.getEventHeight();
+        
+        GATEWAY_STD_WIDTH = visSettings.getGatewayWidth();
+        GATEWAY_STD_HEIGHT = visSettings.getGatewayHeight();
+        
+        INTRA_CELL_SPACING = visSettings.getIntraCellSpacing();
+        INTER_RANK_CELL_SPACING = visSettings.getInterRankCellSpacing();
+        PARALLEL_EDGE_SPACING = visSettings.getParallelEdgeSpacing();
+    }	
 	
 	@Override
     public void layout(Abstraction abs) {
@@ -188,8 +189,6 @@ public class JGraphLayouter implements Layouter {
 			}
 			
 		}
-		
-		proMLayout.cleanUp(); //remember to clean up for GC
 		
 		return layout;
 	}
@@ -627,30 +626,6 @@ public class JGraphLayouter implements Layouter {
 	    return new Point2D.Double(D, W);
 	}
 	
-//	public Point2D getDistWeight2(double sX, double sY, double tX, double tY, double pX, double pY) {
-//	    double W, D;
-//
-//	    D = ( pY - sY + (sX-pX) * (sY-tY) / (sX-tX) ) /  Math.sqrt( 1 + Math.pow((sY-tY) / (sX-tX), 2) );
-//	    W = Math.sqrt(  Math.pow(pX-sY,2) + Math.pow(pX-sX,2) - Math.pow(D,2)  );
-//	    double distAB = Math.sqrt(Math.pow(tX-sX, 2) + Math.pow(tY-sY, 2));
-//	    W = W / distAB;
-//
-//	    //Check whether the point (PointX, PointY) is on right or left of the line src to tgt. 
-//	    //For instance : a point C(X, Y) and line (AB).  d=(xB-xA)(yC-yA)-(yB-yA)(xC-xA). 
-//	    //If d>0, then C is on left of the line. if d<0, it is on right. if d=0, it is on the line.
-//	    double delta1 = (tX-sX)*(pY-sY)-(tY-sY)*(pX-sX);
-//	    delta1 = (delta1 >= 0) ? 1 : -1;
-//	        
-//	    //check whether the point (PointX, PointY) is "behind" the line src to tgt
-//	    double delta2 = (tX-sX)*(pX-sX)+(tY-sY)*(pY-sY);
-//	    delta2 = (delta2 >= 0) ? 1 : -1;
-//
-//	    D = Math.abs(D) * delta1;   //ensure that sign of D is same as sign of delta1. Hence we need to take absolute value of D and multiply by delta1
-//	    W = W * delta2;
-//
-//	    return new Point2D.Double(D, W);
-//	}
-	
 	/**
 	 * Return a list of distance-weight points (X=distance, Y=weight) for an edge
 	 * @param edge
@@ -674,22 +649,6 @@ public class JGraphLayouter implements Layouter {
 			}
 		}
 
-		/*
-		System.out.println("Edge: " + edge.getSource().getLabel() + " => " + edge.getTarget().getLabel());
-		System.out.println("Source (X,Y): " + s.getX() + "," + s.getY());
-		System.out.println("Target (X,Y): " + t.getX() + "," + t.getY());
-		System.out.print("Waypoints (X,Y): ");
-		for (Point2D p : waypoints) {
-		    System.out.print("(" + p.getX() + "," + p.getY() + ")" + " -> ");
-		}
-		System.out.println();
-        System.out.print("Waypoints (D,W): ");
-        for (Point2D p : dwPoints) {
-            System.out.print(p.getX() + "," + p.getY() + " -> ");
-        }
-        System.out.println();
-        */		
-		
 		return dwPoints;
 	}
 	
@@ -703,4 +662,10 @@ public class JGraphLayouter implements Layouter {
 		}
 		return null;
 	}
+
+    @Override
+    public void cleanUp() {
+        // TODO Auto-generated method stub
+    }
+
 }

@@ -24,30 +24,30 @@ package org.apromore.processdiscoverer;
 
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
-import org.apromore.processdiscoverer.abstraction.AbstractionFactory;
+import org.apromore.processdiscoverer.abstraction.AbstractionManager;
 
 /**
  * A single class to represent ProcessDiscoverer logic
  * @author Bruce Nguyen
  */
 public class ProcessDiscoverer {
-    private AbstractionFactory absFactory;
+    private AbstractionManager absManager;
     
     public ProcessDiscoverer(AttributeLog log) {
-        absFactory = new AbstractionFactory(log);
+        absManager = new AbstractionManager(log);
     }
     
     public Abstraction generateDFGAbstraction(AbstractionParams params) throws Exception {
-    	return absFactory.createDFGAbstraction(params.clone());
+    	return absManager.createDFGAbstraction(params.clone());
     }
     
     public Abstraction generateBPMNAbstraction(AbstractionParams params, Abstraction dfgAbstraction) throws Exception {
-    	return absFactory.createBPMNAbstraction(params.clone(), dfgAbstraction);
+    	return absManager.createBPMNAbstraction(params.clone(), dfgAbstraction);
     }
     
     // This method does not affect the internal status of ProcessDiscoverer object
     public Abstraction generateTraceAbstraction(String traceID, AbstractionParams params) throws Exception {
-        AttributeLog log = absFactory.getLog();
+        AttributeLog log = absManager.getLog();
     	if(log == null || log.getTraces().size() == 0) {
     		throw new Exception("No log abstraction has been done yet!");
     	}
@@ -57,7 +57,12 @@ public class ProcessDiscoverer {
         	throw new Exception("The trace with ID = " + traceID + " is not in the current log (may have been filtered out)!");
         }
        
-        return absFactory.createTraceAbstraction(attTrace, log, params);
+        return absManager.createTraceAbstraction(attTrace, log, params);
+    }
+    
+    // A door to clean up memory as PD logic is memory-intensive
+    public void cleanUp() {
+        absManager.cleanUp();
     }
     
 }
