@@ -48,29 +48,29 @@
                     <label value="Initial version number" width="100%" />
                     <textbox width="100%" />
                 </row>
-                <row spans="1,1,1">
+                <row spans="1,1,1" visible="false">
                     <label value="Owner*" width="100%"/>
                     <label width="100%" tooltiptext="default value"/>
                 </row>
-                <row spans="1,2">
+                <row spans="1,2" visible="false">
                     <label value="Creation date*" width="100%"/>
                     <textbox width="100%"/>
                 </row>
-                <row spans="1,2">
+                <row spans="1,2" visible="false">
                     <label value="Last update" width="100%" tooltiptext="optional"/>
                     <textbox width="100%"/>
                 </row>
-                <row spans="1,2">
+                <row spans="1,2" visible="false">
                     <label value="Documentation" width="100%" tooltiptext="optional"/>
                     <textbox width="100%" rows="4"/>
                 </row>
-                <row spans="1,2">
+                <row spans="1,2" visible="false">
                     <label value="Domain" width="100%" tooltiptext="optional"/>
                 </row>
-                <row spans="1,2" id="canoniserSelectionRow">
+                <row spans="1,2" id="canoniserSelectionRow" visible="false">
                     <label value="Canoniser" width="100%" tooltiptext="Canoniser used for this Process" />
                 </row>
-                <row spans="3">
+                <row spans="3" visible="false">
                     <groupbox width="100%" >
                         <attribute name="onOpen"><![CDATA[
                             arrow.setSclass("open-" + self.isOpen());
