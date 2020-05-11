@@ -26,9 +26,9 @@
 
 <listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process model." sclass="ap-process-detail">
     <listhead sizable="true">
-        <listheader hflex="min" label="Branch" sort="auto(version.name)"/>
+        <listheader hflex="min" label="Branch" sort="auto(version.name)" visible="false"/>
         <listheader hflex="min" label="Version" sort="auto(version.name)"/>
-        <listheader hflex="min" label="Last Update" sort="auto(version.lastUpdate)"/>
-        <listheader hflex="min" label="Annotation(s)"/>
+        <listheader hflex="min" label="Last update" sort="auto(version.lastUpdate)"/>
+        <listheader hflex="min" label="Annotation(s)" visible="false"/>
     </listhead>
 </listbox>
