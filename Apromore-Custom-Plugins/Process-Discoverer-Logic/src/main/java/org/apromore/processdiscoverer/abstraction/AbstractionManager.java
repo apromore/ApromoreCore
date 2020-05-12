@@ -42,13 +42,13 @@ import org.apromore.processdiscoverer.AbstractionParams;
  * @author Bruce Nguyen
  *
  */
-public class AbstractionFactory {
+public class AbstractionManager {
     private AttributeLog log;
     private AttributeLogGraph graph;
     private DFGAbstraction dfgAbstraction;
     private BPMNAbstraction bpmnAbstraction;
     
-    public AbstractionFactory(AttributeLog log) {
+    public AbstractionManager(AttributeLog log) {
         this.log = log;
         this.dfgAbstraction = null;
         this.bpmnAbstraction = null;
@@ -145,6 +145,12 @@ public class AbstractionFactory {
     
     public TraceAbstraction createTraceAbstraction(AttributeTrace attTrace, AttributeLog log, AbstractionParams params) {
         return new TraceAbstraction(attTrace, log, params);
+    }
+    
+    public void cleanUp() {
+        graph.clear();
+        if (dfgAbstraction != null) dfgAbstraction.cleanUp();
+        if (bpmnAbstraction != null) bpmnAbstraction.cleanUp();
     }
 
 }

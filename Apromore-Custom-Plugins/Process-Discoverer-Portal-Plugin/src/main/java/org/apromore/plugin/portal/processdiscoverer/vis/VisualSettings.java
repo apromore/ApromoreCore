@@ -65,6 +65,10 @@ public class VisualSettings {
     private String start_name_name = Constants.START_NAME;
     private String end_event_name = Constants.END_NAME;
     
+    public static VisualSettings standard() {
+        return new VisualSettings();
+    }
+    
     public DecimalFormat getDecimalFormatter() {
     	return decimalFormatter;
     }

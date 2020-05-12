@@ -36,6 +36,10 @@ import org.apromore.processmining.models.jgraph.ProMJGraph;
 
 /**
  * Represent the layout for BPMNDiagram 
+ * 
+ * @todo Layout is coupled with JGraph (ProMJGraph), should be independent of layouter implementations.
+ * This requires refactoring of the prom-bpmn module as it is coupled with ProMJGraph.
+ * 
  * @author Bruce Nguyen
  *
  */
@@ -110,5 +114,13 @@ public class Layout {
 	
 	public double getVerticalLength(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge) {
 		return this.getVerticalLength(edge.getSource(), edge.getTarget());
+	}
+	
+	// Cleaning up is required because the layout engine likely consumes substantial memory resources 
+	// This is a good thing to do regardless of what layout engine is being used.
+	public void cleanUp() {
+	    diagram = null;
+	    if (elementIDMap != null) elementIDMap.clear();
+	    graphLayout.cleanUp();
 	}
 }

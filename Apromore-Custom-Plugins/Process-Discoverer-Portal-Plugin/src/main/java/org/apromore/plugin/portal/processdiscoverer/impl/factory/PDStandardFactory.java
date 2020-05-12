@@ -142,7 +142,7 @@ public class PDStandardFactory implements PDFactory {
 
     @Override
     public ProcessVisualizer createProcessVisualizer(PDController pdController) throws Exception {
-        return new ProcessJSONVisualizer(pdController);
+        return new ProcessJSONVisualizer();
     }
 
 }

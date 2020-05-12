@@ -28,4 +28,6 @@ import org.apromore.processdiscoverer.Abstraction;
 
 public interface Layouter {
     public void layout(Abstraction abs);
+    public void setVisualSettings(VisualSettings visSettings);
+    public void cleanUp();
 }

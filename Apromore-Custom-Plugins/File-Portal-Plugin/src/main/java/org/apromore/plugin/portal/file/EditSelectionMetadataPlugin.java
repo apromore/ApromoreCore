@@ -42,9 +42,8 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
 
-    private String label = "Edit metadata";
+    private String label = "Rename"; // "Edit metadata"
     private String groupLabel = "File";
-
 
     // PortalPlugin overrides
 
@@ -60,7 +59,7 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "meta-edit.svg";
+        return "rename.svg"; // "meta-edit.svg"
     }
 
     @Override

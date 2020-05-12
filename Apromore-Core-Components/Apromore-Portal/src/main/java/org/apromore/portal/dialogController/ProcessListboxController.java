@@ -36,6 +36,7 @@ import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
+// import org.apromore.portal.util.SummaryComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
@@ -53,11 +54,15 @@ public class ProcessListboxController extends BaseListboxController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessListboxController.class);
 
     private Listheader columnScore;
+    private Listheader columnName;
 
     public ProcessListboxController(MainController mainController) {
         super(mainController, "macros/listbox/processSummaryListbox.zul", new SummaryItemRenderer(mainController));
 
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
+        this.columnName = (Listheader) this.getListBox().getFellow("columnName");
+        // this.columnName.setSortAscending(new SummaryComparator(true, 1));
+        // this.columnName.setSortDescending(new SummaryComparator(false, 1));
 
         // Add plugin attributes as additional columns
         for (PortalProcessAttributePlugin plugin: (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins")) {

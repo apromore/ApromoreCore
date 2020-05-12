@@ -4,7 +4,7 @@
 
 # Build tagging
 version.edition = @version.edition@
-version.number  = 7.13
+version.number  = 7.16
 
 # Network
 
@@ -72,7 +72,7 @@ manager.enableCPF = true
 
 # Beware that no whitespace can be present around the commas
 portal.menuorder = Account,File,Settings,Discover,Analyze,Redesign,Implement,Monitor
-portal.menuitemorder.File = Upload,Download,Export log as CSV,Create folder,Create model,Create model (legacy editor),Edit model,Edit model (legacy editor),Edit metadata,Delete
+portal.menuitemorder.File = Upload,Download,Export log as CSV,Create folder,Create model,Create model (legacy editor),Edit model,Edit model (legacy editor),Rename,Delete
 
 # Security
 security.publish.enable = false

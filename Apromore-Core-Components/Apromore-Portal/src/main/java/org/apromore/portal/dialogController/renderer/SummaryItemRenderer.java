@@ -26,6 +26,7 @@
 
 package org.apromore.portal.dialogController.renderer;
 
+import org.apromore.portal.util.DateTimeNormalizer;
 import java.util.HashSet;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(process));
         listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
+        listItem.appendChild(renderProcessLastUpdate(process));
         listItem.appendChild(renderOwner(process));
 
         // Append columns for any process attributes supplied via plugins
@@ -137,6 +139,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(log));
         listItem.appendChild(renderNA());
         listItem.appendChild(renderNA());
+        listItem.appendChild(renderNA());
         listItem.appendChild(renderOwner(log));
 
         // Append columns for any log attributes supplied via plugins
@@ -161,7 +164,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
         // Skip 5 columns that don't apply to folders
         Listcell spacer = new Listcell();
-        spacer.setSpan(5);
+        spacer.setSpan(6);
         listitem.appendChild(spacer);
 
         // Append columns for any folder attributes supplied via plugins
@@ -221,7 +224,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderNA() {
-        return wrapIntoListCell(new Label("N/A"));
+        return wrapIntoListCell(new Label(" "));
     }
 
     protected Listcell renderOwner(final SummaryType summaryType) {
@@ -230,6 +233,17 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
         return wrapIntoListCell(new Label(process.getLastVersion()));
+    }
+
+    protected Listcell renderProcessLastUpdate(final ProcessSummaryType process) {
+        List<VersionSummaryType> summaries = process.getVersionSummaries();
+        int lastIndex = summaries.size() - 1;
+        String lastUpdate = summaries.get(lastIndex).getLastUpdate();
+
+        if (lastUpdate != null) {
+            lastUpdate = DateTimeNormalizer.parse(lastUpdate);
+        }
+        return wrapIntoListCell(new Label(lastUpdate));
     }
 
     protected Listcell renderDomain(final SummaryType summaryType) {
@@ -286,7 +300,12 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     private Listcell wrapIntoListCell(Component cp) {
         Listcell lc = new Listcell();
-        lc.appendChild(cp);
+        if (cp instanceof Label) {
+            Label lbl = (Label)cp;
+            lc.setLabel(lbl.getValue());
+        } else {
+            lc.appendChild(cp);
+        }
         return lc;
     }
 
