@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -39,6 +39,7 @@ import java.util.*;
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (06/03/2020)
  * Modified: Chii Chang (11/04/2020)
+ * Modified: Chii Chang (12/05/2020)
  */
 public class PLog {
 
@@ -51,6 +52,7 @@ public class PLog {
     private List<PTrace> pTraceList;
     private UnifiedMap<Integer, Integer> variantIdFreqMap;
     private HashBiMap<Integer, String> actIdNameMap;
+    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
 
@@ -224,6 +226,7 @@ public class PLog {
 
         this.caseAttributeValueFreqMap = apmLog.getCaseAttributeValueFreqMap();
         this.eventAttributeValueFreqMap = apmLog.getEventAttributeValueFreqMap();
+        this.eventAttributeValueCasesFreqMap = apmLog.getEventAttributeValueCasesFreqMap();
 
         LOGGER.info("done");
     }
@@ -391,6 +394,7 @@ public class PLog {
         APMLog apmLog = new APMLog(traceList,
                 variantIdFreqMap,
                 actIdNameMap,
+                eventAttributeValueCasesFreqMap,
                 eventAttributeValueFreqMap,
                 caseAttributeValueFreqMap,
                 traceUM,
@@ -454,6 +458,10 @@ public class PLog {
     }
 
     /* ----------------- GET methods ------------------ */
+
+    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueCasesFreqMap() {
+        return eventAttributeValueCasesFreqMap;
+    }
 
     public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
         return eventAttributeValueFreqMap;
@@ -624,7 +632,7 @@ public class PLog {
             if(!currentBS.get(i)) {
                 pt.getValidEventIndexBitSet().clear();
             } else {
-                //pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
+                pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
             }
             theCusPTraceList.add(pt);
         }

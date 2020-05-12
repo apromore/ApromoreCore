@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -50,6 +50,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (04/02/2020)
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (06/03/2020) - public APMLog(List<ATrace> inputTraceList)
+ * Modified: Chii Chang (12/05/2020)
  */
 public class APMLog implements Serializable {
 
@@ -57,6 +58,7 @@ public class APMLog implements Serializable {
     private List<ATrace> traceList;
     private UnifiedMap<Integer, Integer> variantIdFreqMap;
     private HashBiMap<Integer, String> actIdNameMap;
+    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
     private UnifiedMap<String, Integer> activityMaxOccurMap = new UnifiedMap<>();
@@ -82,6 +84,7 @@ public class APMLog implements Serializable {
         activityNameMapper = new ActivityNameMapper();
 
         traceList = new ArrayList<>();
+        eventAttributeValueCasesFreqMap = new UnifiedMap<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         caseAttributeValueFreqMap = new UnifiedMap<>();
         activityMaxOccurMap = new UnifiedMap<>();
@@ -108,8 +111,6 @@ public class APMLog implements Serializable {
         LOGGER.info(">>> Create actIdNameMap");
         for(XTrace xTrace : xLog) {
 
-
-
             for(int i=0; i < xTrace.size(); i++) {
                 XEvent xEvent = xTrace.get(i);
                 String conceptName = "";
@@ -117,15 +118,10 @@ public class APMLog implements Serializable {
                     conceptName = xEvent.getAttributes().get("concept:name").toString();
                 }
                 if(!actIdNameMap.containsValue(conceptName)) {
-                    actIdNameMap.put(actIdCount, conceptName);
+                    actIdNameMap.put(actIdCount, conceptName.intern());
                     actIdCount += 1;
                 }
-
-
             }
-
-
-
         }
         LOGGER.info(">>> Create actIdNameMap DONE");
 
@@ -221,7 +217,7 @@ public class APMLog implements Serializable {
             int idNum = 1;
             for(int i=(list.size()-1); i>=0; i--) {
                 variantIdFreqMap.put(idNum, list.get(i).getValue());
-//                originalVariantIdFreqMap.put(idNum, list.get(i).getValue());//2019-11-10
+//                originalVariantIdFreqMap.put(idNum, list.getById(i).getValue());//2019-11-10
                 if(!variantIdActIdListMap.containsKey(idNum)) {
                     variantIdActIdListMap.put(idNum, list.get(i).getKey());
                     int initVId = tempActIdListToVIdMap.get(list.get(i).getKey());
@@ -245,7 +241,7 @@ public class APMLog implements Serializable {
         }
 
         /**
-         * This part is required for LogFilter to filter by case variant
+         * This part is required for LogFilter to filterlogic by case variant
          */
         LOGGER.info("*** Write case variant ID to the original XLog");
         for(int i=0; i < xLog.size(); i++) {
@@ -263,16 +259,12 @@ public class APMLog implements Serializable {
         defaultChartDataCollection = new DefaultChartDataCollection(this);
     }
 
-    /**
-     * Allow one to create APMLog by inserting an ATrace list
-     *
-     * @param inputTraceList
-     */
     public APMLog(List<ATrace> inputTraceList) {
 
         activityNameMapper = new ActivityNameMapper();
 
         traceList = new ArrayList<>();
+        eventAttributeValueCasesFreqMap = new UnifiedMap<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
         caseAttributeValueFreqMap = new UnifiedMap<>();
         activityMaxOccurMap = new UnifiedMap<>();
@@ -444,10 +436,10 @@ public class APMLog implements Serializable {
     //    private void updateEventAttributeValueSetMap(ATrace aTrace) {
 //        for (String key : aTrace.getRawEventAttributeValueSetMap().keySet()) {
 //            if (this.rawEventAttributeValueSetMap.containsKey(key)) {
-//                this.rawEventAttributeValueSetMap.get(key).addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+//                this.rawEventAttributeValueSetMap.getById(key).addAll(aTrace.getRawEventAttributeValueSetMap().getById(key));
 //            } else {
 //                UnifiedSet<String> vals = new UnifiedSet<>();
-//                vals.addAll(aTrace.getRawEventAttributeValueSetMap().get(key));
+//                vals.addAll(aTrace.getRawEventAttributeValueSetMap().getById(key));
 //                this.rawEventAttributeValueSetMap.put(key, vals);
 //            }
 //        }
@@ -481,11 +473,35 @@ public class APMLog implements Serializable {
 
     private void updateEventAttributeValueFreqMap(ATrace aTrace) {
         for(String key : aTrace.getEventAttributeValueFreqMap().keySet()) {
+
+            if (this.eventAttributeValueCasesFreqMap.containsKey(key)) {
+                UnifiedMap<String, Integer> valueFreqMapOfTrace = aTrace.getEventAttributeValueFreqMap().get(key);
+                UnifiedMap<String, Integer> valCaseFreqMapOfLog = this.eventAttributeValueCasesFreqMap.get(key);
+                for(String attrValue : valueFreqMapOfTrace.keySet()) {
+                    if (valCaseFreqMapOfLog.keySet().contains(attrValue)) {
+                        int cFreq = valCaseFreqMapOfLog.get(attrValue) + 1;
+                        valCaseFreqMapOfLog.put(attrValue, cFreq);
+                    } else {
+                        valCaseFreqMapOfLog.put(attrValue, 1);
+                    }
+                    this.eventAttributeValueCasesFreqMap.put(key, valCaseFreqMapOfLog);
+                }
+            } else {
+                UnifiedMap<String, Integer> valueCaseFreqMapOfLog = new UnifiedMap<>();
+                UnifiedMap<String, Integer> valueFreqMapOfTrace = aTrace.getEventAttributeValueFreqMap().get(key);
+
+                for(String attrValue : valueFreqMapOfTrace.keySet()) {
+                    valueCaseFreqMapOfLog.put(attrValue, 1);
+                }
+                this.eventAttributeValueCasesFreqMap.put(key, valueCaseFreqMapOfLog);
+            }
+
+
             if (this.eventAttributeValueFreqMap.containsKey(key)) {
-                UnifiedMap<String, Integer> valueFreqMapOfTrace =
-                        aTrace.getEventAttributeValueFreqMap().get(key);
-                UnifiedMap<String, Integer> valueFreqMapOfLog =
-                        this.eventAttributeValueFreqMap.get(key);
+                UnifiedMap<String, Integer> valueFreqMapOfTrace = aTrace.getEventAttributeValueFreqMap().get(key);
+                UnifiedMap<String, Integer> valueFreqMapOfLog = this.eventAttributeValueFreqMap.get(key);
+
+
                 for(String attrValue : valueFreqMapOfTrace.keySet()) {
                     int attrFreqOfTrace = valueFreqMapOfTrace.get(attrValue);
                     if(valueFreqMapOfLog.containsKey(attrValue)) {
@@ -498,8 +514,7 @@ public class APMLog implements Serializable {
                 this.eventAttributeValueFreqMap.put(key, valueFreqMapOfLog);
             }else{
                 UnifiedMap<String, Integer> valueFreqMapOfLog = new UnifiedMap<>();
-                UnifiedMap<String, Integer> valueFreqMapOfTrace =
-                        aTrace.getEventAttributeValueFreqMap().get(key);
+                UnifiedMap<String, Integer> valueFreqMapOfTrace = aTrace.getEventAttributeValueFreqMap().get(key);
 
                 for(String attrValue : valueFreqMapOfTrace.keySet()) {
                     int attrFreqOfTrace = valueFreqMapOfTrace.get(attrValue);
@@ -513,9 +528,9 @@ public class APMLog implements Serializable {
 
 //    private void updateCaseAttributeValueSetMap(ATrace aTrace) {
 //        for(String key : aTrace.getAttributeMap().keySet()) {
-//            String attrValue = aTrace.getAttributeMap().get(key);
+//            String attrValue = aTrace.getAttributeMap().getById(key);
 //            if (this.rawCaseAttributeValueSetMap.containsKey(key)) {
-//                this.rawCaseAttributeValueSetMap.get(key).put(attrValue);
+//                this.rawCaseAttributeValueSetMap.getById(key).put(attrValue);
 //            } else {
 //                UnifiedSet<String> vals = new UnifiedSet<>();
 //                vals.put(key);
@@ -585,6 +600,10 @@ public class APMLog implements Serializable {
 
     public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
         return eventAttributeValueFreqMap;
+    }
+
+    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueCasesFreqMap() {
+        return eventAttributeValueCasesFreqMap;
     }
 
     public List<String> getCaseAttributeNameList() {
@@ -792,6 +811,7 @@ public class APMLog implements Serializable {
     public APMLog(List<ATrace> traceList,
                   UnifiedMap<Integer, Integer> variantIdFreqMap,
                   HashBiMap<Integer, String> actIdNameMap,
+                  UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap,
                   UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
                   UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
                   UnifiedMap<String, ATrace> traceUnifiedMap,
@@ -807,6 +827,7 @@ public class APMLog implements Serializable {
         this.traceList = traceList;
         this.variantIdFreqMap = variantIdFreqMap;
         this.actIdNameMap = actIdNameMap;
+        this.eventAttributeValueCasesFreqMap = eventAttributeValueCasesFreqMap;
         this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
         this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
 //        this.rawEventAttributeValueSetMap = rawEventAttributeValueFreqMap;
@@ -849,6 +870,19 @@ public class APMLog implements Serializable {
             actIdNameMapForClone.put(key, this.actIdNameMap.get(key));
         }
 
+        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValCasesFreqMapForClone = new UnifiedMap<>();
+
+        for (String key : this.eventAttributeValueCasesFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMapForClone = new UnifiedMap<>();
+            UnifiedMap<String, Integer> valFreqMap = this.eventAttributeValueCasesFreqMap.get(key);
+
+            for (String val : valFreqMap.keySet()) {
+                valFreqMapForClone.put(val, valFreqMap.get(val));
+            }
+
+            eventAttrValCasesFreqMapForClone.put(key, valFreqMapForClone);
+        }
+
         UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValFreqMapForClone = new UnifiedMap<>();
 
         for (String key : this.eventAttributeValueFreqMap.keySet()) {
@@ -884,6 +918,7 @@ public class APMLog implements Serializable {
         APMLog apmLogClone = new APMLog(traceListForClone,
                 variIdFreqMapForClone,
                 actIdNameMapForClone,
+                eventAttrValCasesFreqMapForClone,
                 eventAttrValFreqMapForClone,
                 caseAttrValFreqMapForClone,
                 traceUnifiedMapForClone,
