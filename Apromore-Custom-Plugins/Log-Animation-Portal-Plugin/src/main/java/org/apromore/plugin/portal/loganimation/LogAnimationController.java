@@ -27,37 +27,33 @@
 package org.apromore.plugin.portal.loganimation;
 
 // Java 2 Standard packages
-import java.util.*;
-
-// Java 2 Enterprise packages
-import javax.inject.Inject;
-
-// Third party packages
-import org.apromore.plugin.editor.EditorPlugin;
-import org.apromore.portal.context.EditorPluginResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // Local packages
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
+// Third party packages
+import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.SaveAsDialogController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.loganimation.LogAnimationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 /**
  * Java bound to the <code>animateLogInSignavio.zul</code> ZUML document.
@@ -67,23 +63,28 @@ public class LogAnimationController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationController.class.getCanonicalName());
 
     private MainController mainC;
-
+    private String pluginSessionId;
     private EditSessionType editSession;
     private ProcessSummaryType process;
     private VersionSummaryType version;
     private Set<RequestParameterType<?>> params;
-
+    
+    /*
+     * The initialization must be put inside the constructor as
+     * it will push the result to Execution's arguments to be used 
+     * inside the ZUL file with the $arg.$ object.
+     */
     public LogAnimationController() {
         super();
 
-        String id = Executions.getCurrent().getParameter("id");
-        if (id == null) {
+        pluginSessionId = Executions.getCurrent().getParameter("id");
+        if (pluginSessionId == null) {
             throw new AssertionError("No id parameter in URL");
         }
 
-        ApromoreSession session = UserSessionManager.getEditSession(id);
+        ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
         if (session == null) {
-            throw new AssertionError("No edit session associated with id " + id);
+            throw new AssertionError("No edit session associated with id " + pluginSessionId);
         }
 
         editSession = session.getEditSession();
@@ -201,16 +202,20 @@ public class LogAnimationController extends BaseController {
                 }
             }
         });
+        
+
     }
 
     /*
+     * Once the constructor has been executed, the onCreate method will be called from the ZUL
+     * file. The ZK Desktop can only be active inside the onCreate method once the ZUL
+     * file has been processed by ZK.
+     */
     public void onCreate() throws InterruptedException {
-
-        //Window window = (Window) this.getFellowIfAny("win");  // If we needed a dynamic ZK UI, we'd be able to mutate it here
-
-        //Clients.evalJavaScript("initialize()");
+        // Store objects to be cleaned up when the session timeouts 
+        Desktop desktop = getDesktop();
+        desktop.setAttribute("pluginSessionId", pluginSessionId);
     }
-    */
 
     /**
      * @param json

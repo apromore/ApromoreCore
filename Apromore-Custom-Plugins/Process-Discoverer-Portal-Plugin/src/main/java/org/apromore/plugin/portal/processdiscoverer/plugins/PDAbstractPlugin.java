@@ -109,6 +109,7 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
             
             sessionId = UUID.randomUUID().toString();
             UserSessionManager.setEditSession(sessionId, session);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
   This file is part of "Apromore Core".
-
-  Copyright (C) 2011 - 2017 Queensland University of Technology.
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
@@ -24,8 +21,20 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
+
+<?page title="${labels.brand.name} - Access denied" contentType="text/html;charset=UTF-8"?>
+<?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/common/css/index.css" ?>
+<?link rel="stylesheet" type="text/css" href="/themes/ap/common/css/errors.css" ?>
 <zk>
-    <listener>
-            <listener-class>org.apromore.plugin.portal.processdiscoverer.PDDesktopCleaner</listener-class>
-    </listener>
+    <div xmlns="http://www.w3.org/1999/xhtml" class="ap-centered-hv">
+        <div class="ap-error-box">
+            <div><img src="/themes/${labels.theme}/common/img/brand/logo-colour.svg"/></div>
+            <div class="ap-error-message">
+                You have just tried to access a resource that you don't have permissions for.
+            </div>
+            <div>
+                <a href="/login.zul" >Return to Home</a>
+            </div>
+        </div>
+    </div>
 </zk>

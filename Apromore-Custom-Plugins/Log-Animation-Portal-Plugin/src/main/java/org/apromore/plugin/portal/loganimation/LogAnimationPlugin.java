@@ -57,7 +57,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
 public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimationPluginInterface {
-
     private String label = ""; //initialized in Spring beans
     private String groupLabel = ""; //initialized in Spring beans
 

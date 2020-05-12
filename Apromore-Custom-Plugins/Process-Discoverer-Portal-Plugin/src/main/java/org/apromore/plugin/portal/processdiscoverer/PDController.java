@@ -31,6 +31,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.model.LogSummaryType;
@@ -66,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -156,7 +159,6 @@ public class PDController extends BaseController {
 
     //////////////////// DATA ///////////////////////////////////
 
-    private String userSessionId;
     private ConfigData configData;
     private ContextData contextData;
     private LogData logData;
@@ -174,14 +176,14 @@ public class PDController extends BaseController {
      
     public void onCreate() throws InterruptedException {
         try {
-            userSessionId = Executions.getCurrent().getParameter("id");
-            if (userSessionId == null) {
+            String pluginSessionId = Executions.getCurrent().getParameter("id");
+            if (pluginSessionId == null) {
                 throw new AssertionError("No id parameter in URL");
             }
     
-            ApromoreSession session = UserSessionManager.getEditSession(userSessionId);
+            ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
             if (session == null) {
-                throw new AssertionError("No edit session associated with id " + userSessionId);
+                throw new AssertionError("No edit session associated with id " + pluginSessionId);
             }
     
             // Prepare services
@@ -237,9 +239,13 @@ public class PDController extends BaseController {
             initialize();
             initializeDefaults();
             
-            getDesktop().getSession().setAttribute("processDiscoverer", processDiscoverer);
-            getDesktop().getSession().setAttribute("processVisualizer", processVisualizer);
-            getDesktop().getSession().setAttribute("userSessionId", userSessionId);
+            System.out.println("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
+            System.out.println("Desktop ID = " + getDesktop().getId());
+            
+            // Finally, store objects to be cleaned up when the session timeouts 
+            getDesktop().setAttribute("processDiscoverer", processDiscoverer);
+            getDesktop().setAttribute("processVisualizer", processVisualizer);
+            getDesktop().setAttribute("pluginSessionId", pluginSessionId);
         }
         catch (Exception ex) {
             Messagebox.show("Error occurred while initializing: " + ex.getMessage());

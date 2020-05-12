@@ -26,6 +26,6 @@
   -->
 <zk>
     <listener>
-            <listener-class>org.apromore.plugin.portal.processdiscoverer.PDDesktopCleaner</listener-class>
+        <listener-class>org.apromore.plugin.portal.loganimation.LogAnimationCleaner</listener-class>
     </listener>
 </zk>
