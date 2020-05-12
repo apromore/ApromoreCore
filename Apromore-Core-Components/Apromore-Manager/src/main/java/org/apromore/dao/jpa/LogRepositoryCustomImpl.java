@@ -32,6 +32,7 @@ package org.apromore.dao.jpa;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
 import org.apromore.apmlog.impl.APMLogServiceImpl;
+import org.apromore.common.ConfigBean;
 import org.apromore.dao.CacheRepository;
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
@@ -86,6 +87,9 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     @Resource
     private APMLogService apmLogService;
+
+    @Resource
+    private ConfigBean config;
 
 
     /* ************************** JPA Methods here ******************************* */
@@ -147,7 +151,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             try {
                 final String name = logNameId + "_" + logName + ".xes.gz";
-                exportToFile("../Event-Logs-Repository/", name, log);
+                exportToFile(config.getLogsDir()+ "/", name, log);
 
                 LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
 
@@ -182,7 +186,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         if (log != null) {
             try {
                 String name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                File file = new File("../Event-Logs-Repository/" + name);
+                File file = new File(config.getLogsDir() + "/" + name);
                 file.delete();
 
                 // Remove corresponding object from cache
@@ -220,7 +224,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 LOGGER.info("Cache for [KEY: " + key + "] is null.");
 
                 try {
-                    String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
+                    String name = config.getLogsDir() + "/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
                     XFactory factory = getXFactory(factoryName);
                     XLog xlog = importFromFile(factory, name);
 

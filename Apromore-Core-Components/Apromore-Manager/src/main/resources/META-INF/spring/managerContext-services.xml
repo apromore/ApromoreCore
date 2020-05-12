@@ -34,6 +34,7 @@
 
     <bean id="config" class="org.apromore.common.ConfigBean">
         <property name="enableCPF" value="${manager.enableCPF}"/>
+        <property name="logsDir" value="${logs.dir}"/>
     </bean>
 
     <context:component-scan base-package="org.apromore.security"/>

@@ -28,7 +28,11 @@ package org.apromore.common;
 
 public class ConfigBean {
     private Boolean enableCPF = true;
+    private String logsDir = "../Event-Logs-Repository";
 
     public Boolean getEnableCPF() { return enableCPF; }
     public void setEnableCPF(final Boolean enableCPF) { this.enableCPF = enableCPF; }
+
+    public String getLogsDir() { return logsDir; }
+    public void setLogsDir(final String logsDir) { this.logsDir = logsDir; }
 }

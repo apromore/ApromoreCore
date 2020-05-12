@@ -24,6 +24,7 @@
 
 package org.apromore.service.impl;
 
+import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
@@ -103,9 +104,10 @@ public class EventLogServiceImplTest {
         userSrv = createMock(UserService.class);
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
+        ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
-                userSrv, ui, statisticRepository);
+                userSrv, ui, statisticRepository, config);
     }
 
 

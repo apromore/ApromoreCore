@@ -31,7 +31,6 @@ import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.*;
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -106,10 +105,6 @@ public class Log implements Serializable {
     }
 
     public void setName(final String newName) {
-        String file_name = filePath + "_" + name + ".xes.gz";
-        File file = new File("../Event-Logs-Repository/" + file_name);
-        String new_file_name = filePath + "_" + newName + ".xes.gz";
-        file.renameTo(new File("../Event-Logs-Repository/" + new_file_name));
         this.name = newName;
     }
 

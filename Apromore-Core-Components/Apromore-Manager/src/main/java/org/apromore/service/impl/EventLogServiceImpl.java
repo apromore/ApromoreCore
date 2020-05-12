@@ -26,6 +26,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
@@ -60,6 +61,7 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -87,6 +89,7 @@ public class EventLogServiceImpl implements EventLogService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
+    private File logsDir;
 
 //    @javax.annotation.Resource
 //    private Set<EventLogPlugin> eventLogPlugins;
@@ -101,7 +104,7 @@ public class EventLogServiceImpl implements EventLogService {
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
                                final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
                                final UserService userSrv, final UserInterfaceHelper ui,
-                               final StatisticRepository statisticRepository) {
+                               final StatisticRepository statisticRepository, final ConfigBean configBean) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.groupLogRepo = groupLogRepository;
@@ -109,6 +112,7 @@ public class EventLogServiceImpl implements EventLogService {
         this.userSrv = userSrv;
         this.ui = ui;
         this.statisticRepository = statisticRepository;
+        this.logsDir = new File(configBean.getLogsDir());
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -201,7 +205,7 @@ public class EventLogServiceImpl implements EventLogService {
         log.setDomain(domain);
         log.setCreateDate(created);
         log.setFilePath(path);
-        log.setName(logName);
+        updateLogName(log, logName);
         log.setRanking("");
         log.setUser(user);
 
@@ -231,7 +235,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public void updateLogMetaData(Integer logId, String logName, boolean isPublic) {
         Log log = logRepo.findUniqueByID(logId);
-        log.setName(logName);
+        updateLogName(log, logName);
 
         Set<GroupLog> groupLogs = log.getGroupLogs();
         Set<GroupLog> publicGroupLogs = filterPublicGroupLogs(groupLogs);
@@ -246,6 +250,14 @@ public class EventLogServiceImpl implements EventLogService {
         }
 
         logRepo.saveAndFlush(log);
+    }
+
+    private void updateLogName(Log log, String newName) {
+        String file_name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
+        File file = new File("../Event-Logs-Repository/" + file_name);
+        String new_file_name = log.getFilePath() + "_" + newName + ".xes.gz";
+        file.renameTo(new File("../Event-Logs-Repository/" + new_file_name));
+        log.setName(newName);
     }
 
     @Override
