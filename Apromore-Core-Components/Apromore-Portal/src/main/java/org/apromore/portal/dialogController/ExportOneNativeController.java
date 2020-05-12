@@ -63,6 +63,7 @@ import org.zkoss.zul.Row;
 public class ExportOneNativeController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportOneNativeController.class);
+    private static final boolean isSilent = true;
 
     private final Window exportNativeW;
     private final MainController mainC;
@@ -198,7 +199,12 @@ public class ExportOneNativeController extends BaseController {
                 cancelAll();
             }
         });
-        exportNativeW.doModal();
+
+        if (isSilent) {
+            export();
+        } else {
+            exportNativeW.doModal();
+        }
     }
 
 

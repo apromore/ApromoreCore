@@ -30,12 +30,12 @@
     <listheader width="40px" visible="true"/>
     <listheader label="Score" hflex="1" visible="true" id="columnScore"/>
     <listheader label="Name" id="columnName" hflex="4" />                   <!-- name -->
-    <listheader label="ID" hflex="1" align="center"/> <!-- id -->
+    <listheader label="ID" width="80px" align="center"/> <!-- id -->
     <listheader label="Format" width="80px" align="center" visible="false"/>                 <!-- originalNativeType -->
     <listheader label="Domain" hflex="1" visible="false"/>                   <!-- domain -->
     <listheader label="Rating" width="90px" align="center" visible="false"/> <!-- ranking -->
-    <listheader label="Last version" width="100px" align="center"/> <!-- lastVersion -->
-    <listheader label="Last update" width="180px" align="center"  /> <!-- lastVersion -->
+    <listheader label="Last version" width="140px" align="center"/> <!-- lastVersion -->
+    <listheader label="Last update" width="140px" align="center"  /> <!-- lastVersion -->
     <listheader label="Owner" hflex="1"/>                   <!-- owner -->
   </listhead>
 </listbox>

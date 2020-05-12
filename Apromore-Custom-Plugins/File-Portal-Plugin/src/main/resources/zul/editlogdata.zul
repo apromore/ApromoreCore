@@ -30,7 +30,7 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 <zk xmlns:h="native">
-    <window width="500px" closable="false" position="center">
+    <window width="500px" closable="false" position="center" title="Rename event log">
         <vbox height="100%" spacing="0">
             <grid sclass="ap-grid ap-form" height="100%">
                 <columns sizable="true">
@@ -46,7 +46,7 @@ and CreateProcessController.java for creating process purpose.
                         <label value="Make log Public"/>
                         <checkbox id="makePublicCheckbox" checked="false" tooltiptext="Tick this checkbox if you wish to make this Log available to all Users"/>
                     </row>
-                    <row spans="3" sclass="ap-footnotes">
+                    <row spans="3" sclass="ap-footnotes" visible="false">
                         <label value="* mandatory fields" />
                     </row>
                     <row spans="3" sclass="ap-window-footer-actions">
