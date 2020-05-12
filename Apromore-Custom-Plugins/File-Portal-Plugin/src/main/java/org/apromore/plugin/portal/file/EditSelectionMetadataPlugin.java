@@ -33,6 +33,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.file.impl.EditListMetadataController;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,13 +69,18 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
             MainController mainC = (MainController) portalContext.getMainController();
 
             mainC.eraseMessage();
-            Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
+            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
 
-            if (selectedElements.size() != 0) {
-                new EditListMetadataController(mainC, selectedElements);
-
+            if (folderIds.size() > 0) {
+                mainC.geBaseListboxController().renameFolder();
             } else {
-                mainC.displayMessage("No process versions or event logs selected.");
+                Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
+
+                if (selectedElements.size() > 0) {
+                    new EditListMetadataController(mainC, selectedElements);
+                } else {
+                    mainC.displayMessage("No folder, process version or event log is selected.");
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Unable to edit selection metadata", e);

@@ -21,6 +21,7 @@ if [ -z "$cur_dev" ]
 	    echo "Failed to get develop!" 1>&2
 	exit 1
 fi
+git checkout $cur_dev -- site.properties
 git checkout $cur_dev
 if [ "$?" = "0" ]; then
 	echo "Pulling from remote develop ..."
@@ -31,6 +32,7 @@ if [ "$?" = "0" ]; then
     case $yn in
         [Yy]* ) echo 'Rebasing ...';
         	git rebase $cur_dev $cur_branch;
+        	cp site.properties.mysql site.properties
         	exit;;
         [Nn]* ) git checkout $cur_branch;
         	exit;;

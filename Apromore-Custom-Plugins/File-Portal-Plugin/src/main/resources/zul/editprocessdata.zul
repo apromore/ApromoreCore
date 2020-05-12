@@ -30,7 +30,7 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 <zk xmlns:h="native">
-    <window width="500px" closable="false" position="center">
+    <window width="500px" closable="false" position="center" title="Rename process model">
         <vbox height="100%" spacing="0">
             <grid sclass="ap-grid ap-form" height="100%">
                 <columns sizable="true">
@@ -42,7 +42,7 @@ and CreateProcessController.java for creating process purpose.
                         <label value="Process name*" width="100%"/>
                         <textbox width="100%"/>
                     </row>
-                    <row>
+                    <row visible="false">
                         <label value="Version number*" width="100%"/>
                         <textbox width="100%"/>
                     </row>
@@ -73,7 +73,7 @@ and CreateProcessController.java for creating process purpose.
                         <label value="Make model Public"/>
                         <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
                     </row>
-                    <row spans="3" sclass="ap-footnotes">
+                    <row spans="3" sclass="ap-footnotes" visible="false">
                         <label value="* mandatory fields" />
                     </row>
                     <row spans="3" sclass="ap-window-footer-actions">

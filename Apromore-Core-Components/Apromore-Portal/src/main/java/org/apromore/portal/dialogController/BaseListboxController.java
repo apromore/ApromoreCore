@@ -177,7 +177,7 @@ public abstract class BaseListboxController extends BaseController {
 
         this.btnRenameFolder.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                renameFolder();
+                rename();
             }
         });
 
@@ -281,9 +281,7 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
-    protected void renameFolder() throws InterruptedException {
-        PortalPlugin editSelectionMetadataPlugin;
-
+    public void renameFolder() throws DialogException {
         getMainController().eraseMessage();
         try {
             List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
@@ -301,13 +299,32 @@ public abstract class BaseListboxController extends BaseController {
                 new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    protected void renameLogOrProcess() throws DialogException {
+        PortalPlugin editSelectionMetadataPlugin;
+
+        getMainController().eraseMessage();
+        try {
+            editSelectionMetadataPlugin = portalPluginMap.get("Rename");
+            editSelectionMetadataPlugin.execute(portalContext);
+        } catch (Exception e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    protected void rename() throws InterruptedException {
+        try {
+            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+
+            if (folderIds.size() == 0) {
+                renameLogOrProcess();
             } else {
-                try {
-                    editSelectionMetadataPlugin = portalPluginMap.get("Edit metadata");
-                    editSelectionMetadataPlugin.execute(portalContext);
-                } catch (Exception e) {
-                    Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-                }
+                renameFolder();
             }
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);

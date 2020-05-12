@@ -1004,5 +1004,9 @@ public class MainController extends BaseController implements MainControllerInte
 //        this.tabCrumb.setWidth(width + "px");
         Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
     }
+
+    public BaseListboxController geBaseListboxController() {
+        return this.baseListboxController;
+    }
 }
 

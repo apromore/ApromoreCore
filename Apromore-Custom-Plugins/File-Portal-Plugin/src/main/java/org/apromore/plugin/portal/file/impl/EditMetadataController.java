@@ -85,7 +85,7 @@ public class EditMetadataController extends BaseController {
         this.log = log;
 
         this.window = createComponent("zul/editlogdata.zul");
-        this.window.setTitle("Edit log metadata");
+        // this.window.setTitle("Edit log metadata");
  
         this.nameT = (Textbox) window.getFellow("nameTextbox");
         this.makePublicCb = (Checkbox) window.getFellow("makePublicCheckbox");
@@ -138,7 +138,7 @@ public class EditMetadataController extends BaseController {
         this.preVersion = version;
 
         this.window = createComponent("zul/editprocessdata.zul");
-        this.window.setTitle("Edit process model metadata");
+        // this.window.setTitle("Edit process model metadata");
 
         Rows rows = (Rows) this.window.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getFirstChild();
