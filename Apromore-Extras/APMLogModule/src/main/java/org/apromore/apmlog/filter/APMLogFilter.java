@@ -148,6 +148,8 @@ public class APMLogFilter {
 
                 PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
 
+                pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
+
                 if (filteredPTrace != null) {
                     if (filteredPTrace.getEventSize() > 0) {
                         filteredPTraceList.add(filteredPTrace);
