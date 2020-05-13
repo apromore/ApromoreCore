@@ -37,7 +37,7 @@ interface Constants {
     String greenLabelCSS = "greenLabel";
     String couldNotParseMessage = "Could not parse as timestamp!";
     String parsedMessage = "Parsed correctly!";
-    String parsedAutoMessage = "Timestamp format automatically detected. Override?";
+    String parsedAutoMessage = "Timestamp format\nautomatically detected. Override?";
 
     // UI ids
     String setEncodingId = "setEncoding";

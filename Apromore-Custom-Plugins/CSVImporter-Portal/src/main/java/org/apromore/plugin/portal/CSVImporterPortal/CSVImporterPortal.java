@@ -255,11 +255,11 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         for (int pos = 0; pos < sample.getHeader().size(); pos++) {
             Window item = new Window();
             item.setId(popUpFormatWindowId + pos);
-            item.setWidth((columnWidth) + "px");
+            item.setWidth((columnWidth + 20) + "px");
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("position: fixed; z-index: 10; visibility: hidden;");
+            item.setStyle("visibility: hidden;");
 
             Button sp = new Button();
             sp.setStyle("margin-right:1px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
@@ -512,6 +512,7 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         if (type == Parsed.AUTO) {
             check_lbl.setZclass(greenLabelCSS);
             check_lbl.setValue(parsedAutoMessage);
+            check_lbl.setMultiline(true);
             showAutoParsedGreenIcon(parsedIcons[pos]);
         } else if (type == Parsed.MANUAL) {
             check_lbl.setZclass(greenLabelCSS);

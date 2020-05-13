@@ -8,12 +8,14 @@ function adjustPos(i) {
     try {
         let targets = $('.p-1');
         let sources = $('.z-auxheader');
+        let ref = $('.relativePos').offset();
 
-        let srcPos = $(sources[i + 1]).offset()
-        // console.log(srcPos, $(targets[i]));
-        $(targets[i]).offset(srcPos);
+        let { left, top } = $(sources[i + 1]).offset()
+        left -= ref.left;
+        left += 8;
+        // top -= ref.top;
+        $(targets[i]).css({left});
     } catch(e) {
         // pass
     }
-
 }
