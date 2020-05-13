@@ -453,7 +453,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 }
 
 .ap-importer-filename {
-  color: var(--ap-c-text-heading);
+  color: var(--ap-c-text-heading) !important;
 }
 
 .ap-portal-crumb {
