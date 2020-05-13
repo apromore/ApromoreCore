@@ -39,7 +39,7 @@ public class CreateProcessPlugin extends DefaultPortalPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CreateProcessPlugin.class);
 
     private String label = "Create model";
-    private String groupLabel = "File";
+    private String groupLabel = "Discover";
 
 
     // PortalPlugin overrides

@@ -48,7 +48,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(EditSelectionPlugin.class);
 
     private String label = "Edit model";
-    private String groupLabel = "File";
+    private String groupLabel = "Discover";
 
 
     // PortalPlugin overrides

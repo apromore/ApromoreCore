@@ -34,7 +34,7 @@ import org.zkoss.zk.ui.util.Clients;
 @Component("performancePlugin")
 public class PDDurationPlugin extends PDAbstractPlugin {
 
-    private String label = "Mine performance on map/model";
+    private String label = "View performance dashboard on map/model";
     private String groupLabel = "Analyze";
     
      @Override
