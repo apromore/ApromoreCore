@@ -135,8 +135,8 @@
         </borderlayout>
         <script defer="true" type="text/javascript" src="/themes/ap/csv-importer/js/deferred.js"></script>
 
-        <popup id="autoParsed" width="272px">
-            Timestamp format automatically detected!
+        <popup id="autoParsed" width="280px">
+            Timestamp format<h:br />automatically detected!
         </popup>
         <popup id="manualParsed" width="232px">
             Timestamp format parsed correctly!
