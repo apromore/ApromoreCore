@@ -36,11 +36,13 @@
 }
 
 .ap-csv-importer .p-1 {
-    top: 80px !important;
+    top: 8px !important;
     left: 20px;
     display: block;
     box-sizing: border-box;
     box-shadow: var(--ap-box-shadow-darker);
+    position: absolute !important;
+    z-index: 10;
 }
 
 .ap-csv-importer .p-1 .z-textbox {
