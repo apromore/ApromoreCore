@@ -34,6 +34,7 @@ import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zul.Messagebox;
 
 public class EditListProcessesController2 extends BaseController {
 
@@ -52,8 +53,13 @@ public class EditListProcessesController2 extends BaseController {
                 ProcessSummaryType process = (ProcessSummaryType) key;
                 for (Integer i = 0; i < processVersions.get(process).size(); i++) {
                     VersionSummaryType version = processVersions.get(process).get(i);
-                    EditOneProcessController2 editOneProcess = new EditOneProcessController2(this.mainC, this, process, version);
-                    this.toEditList.add(editOneProcess);
+                    // EditOneProcessController2 editOneProcess = new EditOneProcessController2(this.mainC, this, process, version);
+                    // this.toEditList.add(editOneProcess);
+                    try {
+                        mainC.openProcess(process);
+                    } catch(Exception e) {
+                        Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
                 }
             }
         }

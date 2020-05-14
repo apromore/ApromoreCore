@@ -39,7 +39,7 @@ and CreateProcessController.java for creating process purpose.
                 </columns>
                 <rows>
                     <row tooltiptext="Process name modification will be applied on all process versions.">
-                        <label value="Process name*" width="100%"/>
+                        <label value="Process name" width="100%"/>
                         <textbox width="100%"/>
                     </row>
                     <row visible="false">
@@ -81,7 +81,7 @@ and CreateProcessController.java for creating process purpose.
                             <button id="okButton" label="OK" iconSclass="z-icon-check-circle" width="85px" />
                             <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
                             <button id="cancelAllButton" label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
-                            <button id="resetButton" label="Reset" iconSclass="z-icon-undo" visible="false" width="85px" tooltiptext="Restore initial values." />
+                            <button id="resetButton" label="Reset" iconSclass="z-icon-undo" width="85px" tooltiptext="Restore initial values." />
                         </div>
                     </row>
                 </rows>

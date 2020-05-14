@@ -75,6 +75,7 @@ public class TabItem extends Listitem {
         } else {
             imageCell.setSclass("ap-ico-log");
         }
+        imageCell.setStyle("vertical-align: middle; text-align:center");
         appendChild(imageCell);
 
         int pos = 0;

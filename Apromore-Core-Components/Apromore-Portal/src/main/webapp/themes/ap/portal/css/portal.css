@@ -461,6 +461,14 @@ img[src="img/icon/bpmn-22x22.png"] {
   cursor: pointer;
 }
 
+.ap-portal-crumb .ap-icon-home-solid {
+  display: inline-block;
+  background-size: 14px 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  vertical-align: top;
+}
+
 .ap-portal-crumb a {
   text-decoration: none !important;
   color: var(--ap-c-widget);
@@ -468,4 +476,13 @@ img[src="img/icon/bpmn-22x22.png"] {
 
 .ap-portal-crumb a:hover {
   color: var(--ap-c-widget-hover);
+}
+
+.ap-portal-tabbox .z-tabs-content .z-tab:not(:first-child) {
+  padding: 4px 16px 1px 8px !important;
+}
+
+.ap-portal-tabbox .z-tabs-content .z-tab:not(:first-child) .z-tab-button {
+  right: 3px;
+  top: 1px;
 }

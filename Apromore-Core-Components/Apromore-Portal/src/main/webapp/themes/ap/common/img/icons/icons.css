@@ -315,6 +315,16 @@
     width: 26px !important;
 }
 
+.ap-icon-home {
+    background-image: url('home.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-home-solid {
+    background-image: url('home-solid.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-hourglass {
     background-image: url('hourglass.svg') !important;
     width: 26px !important;

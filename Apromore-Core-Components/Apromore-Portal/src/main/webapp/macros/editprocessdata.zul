@@ -39,7 +39,7 @@ and CreateProcessController.java for creating process purpose.
         </columns>
         <rows>
           <row tooltiptext="Process name modification will be applied on all process versions.">
-            <label value="Process name*" width="100%"/>
+            <label value="Process name" width="100%"/>
             <textbox width="100%"/>
           </row>
           <row visible="false">

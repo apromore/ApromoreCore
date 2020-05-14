@@ -77,21 +77,26 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
 
         List<Listheader> listheaders = new ArrayList<>();
         if(rows.size() > 0 && rows.get(0).size() > 7) {
-            listheaders.add(new Listheader("Score", null, "3em"));
+            Listheader scoreHeader = new Listheader("Score", null);
+            scoreHeader.setWidth("50px");
+            scoreHeader.setVisible(true);
+            listheaders.add(scoreHeader);
         }
-        addListheader(listheaders, "Name",              null);
-        addListheader(listheaders, "Id",                "3em");
-        addListheader(listheaders, "Original language", "10em");
-        addListheader(listheaders, "Domain",            "5em");
-        addListheader(listheaders, "Rating",           "6em");
-        addListheader(listheaders, "Latest version",    "9em");
-        addListheader(listheaders, "Owner",             "5em");
+        addListheader(listheaders, "Name",              true, null, null, "4");
+        addListheader(listheaders, "ID",                true, "center", "80px", null);
+        addListheader(listheaders, "Original language", false, null, null, null);
+        addListheader(listheaders, "Domain",            false, null, null, null);
+        addListheader(listheaders, "Rating",           false, null, null, null);
+        addListheader(listheaders, "Last version",    true, "center", "140px", null);
+        addListheader(listheaders, "Last update",    true, "center", "140px", null);
+        addListheader(listheaders, "Owner",             true, "center", null, "1");
 
         addTab(tabName, "/themes/ap/common/img/icons/bpmn-model.svg", rows, listheaders, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
     }
 
-    private void addListheader(final List<Listheader> listheaders, String name, String width) {
-        final Listheader listheader = new Listheader(name, null, width);
+    private Listheader addListheader(final List<Listheader> listheaders, String name, boolean visible,
+                                     String align, String width, String hflex) {
+        final Listheader listheader = new Listheader(name, null);
 
         listheader.setSortAscending(new java.util.Comparator<TabItem>() {
             int position = listheaders.size();
@@ -108,8 +113,18 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
                 return o2.getValue(position).compareTo(o1.getValue(position));
             }
         });
-
+        listheader.setVisible(visible);
+        if (align != null) {
+            listheader.setAlign(align);
+        }
+        if (width != null) {
+            listheader.setWidth(width);
+        }
+        if (hflex != null) {
+            listheader.setHflex(hflex);
+        }
         listheaders.add(listheader);
+        return listheader;
     }
 
     protected ProcessSummaryRowValue createProcessSummaryRowValue(ProcessSummaryType processSummaryType, VersionSummaryType versionSummaryType) {
@@ -126,6 +141,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         processSummaryRowValue.add(processSummaryType.getDomain());
         processSummaryRowValue.add(processSummaryType.getRanking());
         processSummaryRowValue.add(processSummaryType.getLastVersion());
+        processSummaryRowValue.add(DateTimeNormalizer.parse(versionSummaryType.getLastUpdate()));
         processSummaryRowValue.add(processSummaryType.getOwner());
         return processSummaryRowValue;
     }

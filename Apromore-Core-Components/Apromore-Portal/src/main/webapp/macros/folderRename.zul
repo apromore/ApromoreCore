@@ -29,9 +29,9 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 
-<window width="400px" closable="false" position="center" title="Rename folder" id="winFolderRename">
+<window width="500px" closable="false" position="center" title="Rename folder" id="winFolderRename">
     <vbox vflex="1">
-        <grid sclass="ap-grid">
+        <grid sclass="ap-grid ap-form">
             <columns sizable="true">
                 <column width="30%"></column>
                 <column width="70%"></column>
@@ -43,8 +43,9 @@ and CreateProcessController.java for creating process purpose.
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button id="btnSave" label="Save" iconSclass="z-icon-check-circle"></button>
-                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
+                        <button id="btnSave" label="Save" iconSclass="z-icon-check-circle" width="85px"></button>
+                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle" width="85px" ></button>
+                        <button id="btnReset" label="Reset" iconSclass="z-icon-undo" width="85px" tooltiptext="Restore initial values." />
                     </div>
                 </row>
             </rows>

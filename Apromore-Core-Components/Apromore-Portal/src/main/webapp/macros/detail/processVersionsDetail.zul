@@ -24,7 +24,7 @@
   #L%
   -->
 
-<listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process model." sclass="ap-process-detail">
+<listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="Select one model or log" sclass="ap-process-detail">
     <listhead sizable="true">
         <listheader hflex="min" label="Version" align="center" sort="auto(version.name)"/>
         <listheader hflex="min" label="Last update" align="center" sort="auto(version.lastUpdate)"/>

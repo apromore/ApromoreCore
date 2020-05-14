@@ -79,7 +79,7 @@ public class CreateProcessController2 extends BaseController {
         this.mainC = mainC;
 
         this.createProcessW = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
-        this.createProcessW.setTitle("Create new process ");
+        this.createProcessW.setTitle("Create model");
         Rows rows = (Rows) this.createProcessW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getFirstChild();
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
@@ -120,7 +120,7 @@ public class CreateProcessController2 extends BaseController {
         ownerR.appendChild(ownerCB);
 
         // set row visibility at creation time
-        nativeTypesR.setVisible(true);
+        nativeTypesR.setVisible(false);
         versionNameR.setVisible(false);
         rankingR.setVisible(false);
 
