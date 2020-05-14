@@ -44,12 +44,15 @@ public class RenameFolderController extends BaseController {
     private Window folderEditWindow;
     private Button btnSave;
     private Button btnCancel;
+    private Button btnReset;
     private Textbox txtName;
+    private String prevName;
     private int folderId;
     private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
 
     public RenameFolderController(MainController mainController, int folderId, String name) throws DialogException {
         this.mainController = mainController;
+        this.prevName = name;
 
         try {
             final Window win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
@@ -58,6 +61,7 @@ public class RenameFolderController extends BaseController {
             this.txtName.setValue(name);
             this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
             this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
+            this.btnReset = (Button) this.folderEditWindow.getFellow("btnReset");
             this.folderId = folderId;
 
             folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
@@ -77,6 +81,11 @@ public class RenameFolderController extends BaseController {
                     cancel();
                 }
             });
+            btnReset.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    reset();
+                }
+            });
             win.doModal();
         } catch (Exception e) {
             throw new DialogException("Error in RenameFolderController: " + e.getMessage());
@@ -85,6 +94,10 @@ public class RenameFolderController extends BaseController {
 
     private void cancel() throws IOException {
         this.folderEditWindow.detach();
+    }
+
+    private void reset() {
+        this.txtName.setValue(prevName);
     }
 
     private void save() throws InterruptedException {

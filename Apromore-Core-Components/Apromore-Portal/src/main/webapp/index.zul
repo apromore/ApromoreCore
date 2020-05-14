@@ -240,10 +240,12 @@
                     </hbox>
                     <html id="folders" visible="false" />
                     <div style="position:absolute; padding: 8px 5px 0 2px; z-index: 10000;" sclass="ap-bread-crumbs">
-                        <span sclass="ap-portal-crumb"><a ca:onclick="Ap.portal.clickBreadcrumb('0')">Home</a></span>
+                        <span sclass="ap-portal-crumb"><a ca:onclick="Ap.portal.clickBreadcrumb('0')">
+                            <h:i class="ap-icon ap-icon-home-solid"></h:i></a>
+                        </span>
                         <html id="breadCrumbs" />
                     </div>
-                    <tabbox id="tabbox" vflex="1" hflex="1">
+                    <tabbox id="tabbox" vflex="1" hflex="1" sclass="ap-portal-tabbox">
                         <tabs id="tabs" vflex="1" hflex="1">
                             <tab id="tabCrumbs" sclass="ap-tab-crumbs" style="pointer-events: none;"/>
                         </tabs>

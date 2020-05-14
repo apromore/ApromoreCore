@@ -26,7 +26,6 @@
 
 package org.apromore.portal.dialogController.renderer;
 
-import org.apromore.portal.util.DateTimeNormalizer;
 import java.util.HashSet;
 import java.util.List;
 
@@ -46,6 +45,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import org.apromore.portal.util.DateTimeNormalizer;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;

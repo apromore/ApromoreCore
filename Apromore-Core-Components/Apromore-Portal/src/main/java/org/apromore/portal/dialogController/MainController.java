@@ -92,6 +92,7 @@ public class MainController extends BaseController implements MainControllerInte
     private NavigationController navigation;
 
     public Html breadCrumbs;
+    public Tabbox tabBox;
     public Tab tabCrumbs;
     private Paginal pg;
 
@@ -134,6 +135,7 @@ public class MainController extends BaseController implements MainControllerInte
             Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
             this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
+            this.tabBox = (Tabbox) mainW.getFellow("tabbox");
             this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
@@ -153,6 +155,7 @@ public class MainController extends BaseController implements MainControllerInte
                 public void onEvent(Event event) throws Exception {
                     int selectedFolderId = Integer.parseInt(event.getData().toString());
                     self.selectBreadcrumFolder(selectedFolderId);
+                    self.tabBox.setSelectedIndex(0);
                 }
             });
 
@@ -393,6 +396,46 @@ public class MainController extends BaseController implements MainControllerInte
         return editSession;
     }
 
+    // TO DO: Consolidate these private functions into common
+    private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
+        VersionSummaryType result = null;
+        for (VersionSummaryType version : versionSummaries) {
+            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
+                result = version;
+            }
+        }
+        return result;
+    }
+
+    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
+        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
+            return annotations.get(annotations.size() - 1);
+        }
+        return null;
+    }
+
+    private String getNativeType(String origNativeType) {
+        String nativeType = origNativeType;
+        if (origNativeType == null || origNativeType.isEmpty()) {
+            nativeType = "BPMN 2.0";
+        }
+        return nativeType;
+    }
+
+    public void openProcess(ProcessSummaryType process) throws Exception {
+        VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
+        AnnotationsType annotation = getLastestAnnotation(version.getAnnotations());
+        String nativeType = (annotation != null) ? getNativeType(annotation.getNativeType()) : getNativeType(process.getOriginalNativeType());
+        String annotationName = (annotation != null) ? annotation.getAnnotationName().get(0) : null;
+        if (nativeType.equals("BPMN 2.0")) {
+            editProcess2(process, version, nativeType, annotationName,
+                    "false", new HashSet<RequestParameterType<?>>(), false);
+        } else {
+            editProcess(process, version, nativeType, null, "false",
+                    new HashSet<RequestParameterType<?>>());
+        }
+    }
+
     /**
      * Call editor to edit process version whose id is processId, name is
      * processName and version name is version. nativeType identifies language
@@ -461,7 +504,7 @@ public class MainController extends BaseController implements MainControllerInte
     	}
     }
 
-    public FolderType getBreadcrumFolder(int selectedFolderId) {
+    public FolderType getBreadcrumFolders(int selectedFolderId) {
         FolderType selectedFolder = null;
         List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
@@ -475,11 +518,14 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void selectBreadcrumFolder (int selectedFolderId) {
-        FolderType selectedFolder = this.getBreadcrumFolder(selectedFolderId);
+        FolderType selectedFolder = this.getBreadcrumFolders(selectedFolderId);
 
         if (selectedFolder == null) {
-            return;
+            selectedFolder = new FolderType();
+            selectedFolder.setId(0);
+            selectedFolder.setFolderName("Home");
         }
+
         List<FolderType> availableFolders = this.getService().getSubFolders(
                 UserSessionManager.getCurrentUser().getId(),
                 selectedFolderId
@@ -643,17 +689,6 @@ public class MainController extends BaseController implements MainControllerInte
         return summaryTypes;
     }
     
-    private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
-        VersionSummaryType result = null;
-        for (VersionSummaryType version : versionSummaries) {
-            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
-                result = version;
-            }
-        }
-        return result;
-    }
-
-
     /**
      * Show the messages we get back from plugins.
      * @param messages the messages to display to the user.
@@ -983,25 +1018,23 @@ public class MainController extends BaseController implements MainControllerInte
         List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
         Collections.reverse(breadcrumbFolders);
         String content = "";
-        int charLength = 4; // Home
+        String crumb;
+        int breadcrumbLength = breadcrumbFolders.size();
 
         int i = 0;
         for (FolderType breadcrumb : breadcrumbFolders) {
             String folderName = breadcrumb.getFolderName();
             String id = breadcrumb.getId().toString();
             String onClick = "Ap.portal.clickBreadcrumb('" + id + "')";
-            content += "&gt;<span class=\"ap-portal-crumb\">" +
-                    "<a data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName + "</a>" +
-                    "</span>";
-            // content += "&gt;<span class='ap-portal-crumb'>" + folderName + "</span>";
-            charLength += folderName.length() + 1;
+            if (i == breadcrumbLength - 1) {
+                crumb = "<a data-last=\"true\" data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName + "</a>";
+            } else {
+                crumb = "<a data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName + "</a>";
+            }
+            content += "&gt;<span class=\"ap-portal-crumb\">" + crumb + "</span>";
             i++;
         }
         this.breadCrumbs.setContent(content);
-//        int width = (charLength * 7) + // characters, assume 14px
-//                ((i + 1) * 12) + // padding around folder name including
-//                (2 * 6); // tab padding
-//        this.tabCrumb.setWidth(width + "px");
         Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
     }
 
@@ -1009,4 +1042,3 @@ public class MainController extends BaseController implements MainControllerInte
         return this.baseListboxController;
     }
 }
-

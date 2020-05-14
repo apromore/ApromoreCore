@@ -64,9 +64,9 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
     }
 
     private void renderVersionSummary(final Listitem listItem, final VersionDetailType data) {
-        listItem.appendChild(renderVersionName(data.getVersion()));
         listItem.appendChild(renderVersionVersion(data.getVersion()));
         listItem.appendChild(renderVersionLastUpdate(data.getVersion()));
+        listItem.appendChild(renderVersionName(data.getVersion()));
         listItem.appendChild(renderVersionAnnotations(data.getVersion()));
 
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
