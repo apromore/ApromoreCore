@@ -63,5 +63,4 @@
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer.plugins" />
     <osgi:service ref="frequencyPlugin" interface="org.apromore.plugin.portal.PortalPlugin" />
-    <!--<osgi:service ref="performancePlugin" interface="org.apromore.plugin.portal.PortalPlugin" />-->
 </beans:beans>

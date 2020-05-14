@@ -35,6 +35,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
+import org.apromore.model.FolderType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
@@ -63,8 +64,6 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -146,7 +145,6 @@ public class PDController extends BaseController {
 
     //////////////////// LOCAL UTILITIES ///////////////////////////////////
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private GraphVisController graphVisController;
     private CaseDetailsController caseDetailsController;
@@ -159,6 +157,8 @@ public class PDController extends BaseController {
 
     //////////////////// DATA ///////////////////////////////////
 
+    private String pluginSessionId; // the session ID of this plugin
+    private ApromoreSession portalSession;
     private ConfigData configData;
     private ContextData contextData;
     private LogData logData;
@@ -173,28 +173,88 @@ public class PDController extends BaseController {
     public PDController() throws Exception {
         super();
     }
+    
+    //Note: this method is only valid inside onCreate() as it calls ZK current Execution
+    private boolean preparePluginSessionId() {
+        pluginSessionId = Executions.getCurrent().getParameter("id");
+        if (pluginSessionId == null) return false;
+        if (UserSessionManager.getEditSession(pluginSessionId) == null) return false;
+        return true;
+    }
+    
+    // True means the current portal session is not valid to go ahead any more
+    // It could be the Apromore Portal session has timed out or user has logged off, or 
+    // or something has made it crashed
+    private boolean preparePortalSession(String pluginSessionId) {
+        portalSession = UserSessionManager.getEditSession(pluginSessionId);
+        if (portalSession == null) return false;
+        PortalContext portalContext = (PortalContext) portalSession.get("context");
+        LogSummaryType logSummary = (LogSummaryType) portalSession.get("selection");
+        if (portalContext == null || logSummary == null) return false;
+        try {
+            FolderType currentFolder = portalContext.getCurrentFolder();
+            if (currentFolder == null) return false;
+        }
+        catch (Exception ex) {
+            return false;
+        }
+        
+        return true;
+    } 
+    
+    // Check infrastructure services to be available. They can become unavailable
+    // because of system crashes or modules crashed/undeployed
+    private boolean prepareSystemServices() {
+        canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
+        domainService = (DomainService) beanFactory.getBean("domainService");
+        processService = (ProcessService) beanFactory.getBean("processService");
+        eventLogService = (EventLogService) beanFactory.getBean("eventLogService");
+        logAnimationPluginInterface = (LogAnimationPluginInterface) beanFactory.getBean("logAnimationPlugin");
+        logFilterPlugin = (LogFilterPlugin) beanFactory.getBean("logFilterPlugin");
+        
+        if (canoniserService == null || domainService == null || processService == null ||
+                eventLogService == null || logAnimationPluginInterface == null ||
+                logFilterPlugin == null) {
+            return false;
+        }
+        return true;
+    }
+    
+    // This is to check the availability of system services before executing a related action
+    // E.g. before calling export log/model to the portal.
+    public boolean prepareCriticalServices() {
+        if (pluginSessionId == null) {
+            Messagebox.show("Process Discoverer session has not been initialized. Please open it again properly!");
+            return false;
+        }
+        
+        if (!preparePortalSession(pluginSessionId)) {
+            Messagebox.show("The Apromore Portal has become unavailable due to user logoff, timeout or some other reason. " + 
+                    "Please close Process Discover, refresh/relogin the portal and try opening Process Discoverer again.");
+            return false;
+        }
+        
+        if (!prepareSystemServices()) {
+            Messagebox.show("Critical system services are not available for Process Discoverer. Please check with your administrator!");
+            return false;
+        }
+        
+        return true;
+    }
      
     public void onCreate() throws InterruptedException {
         try {
-            String pluginSessionId = Executions.getCurrent().getParameter("id");
-            if (pluginSessionId == null) {
-                throw new AssertionError("No id parameter in URL");
+            if (!preparePluginSessionId()) {
+                Messagebox.show("Process Discoverer session has not been initialized. Please open it again properly!");
+                return;
             }
-    
-            ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
-            if (session == null) {
-                throw new AssertionError("No edit session associated with id " + pluginSessionId);
+            
+            if (!prepareCriticalServices()) {
+                return;
             }
-    
-            // Prepare services
-            canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
-            domainService = (DomainService) beanFactory.getBean("domainService");
-            processService = (ProcessService) beanFactory.getBean("processService");
-            eventLogService = (EventLogService) beanFactory.getBean("eventLogService");
-            logAnimationPluginInterface = (LogAnimationPluginInterface) beanFactory.getBean("logAnimationPlugin");
-            logFilterPlugin = (LogFilterPlugin) beanFactory.getBean("logFilterPlugin");
-    
+            
             // Prepare data
+            ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             pdFactory = (PDFactory) session.get("pdFactory");
@@ -312,8 +372,6 @@ public class PDController extends BaseController {
 
     private void initializeEventListeners() {
         try {
-            PDController self = this;
-    
             viewSettingsController.initializeEventListeners(contextData);
             graphSettingsController.initializeEventListeners(contextData);
             graphVisController.initializeEventListeners(contextData);

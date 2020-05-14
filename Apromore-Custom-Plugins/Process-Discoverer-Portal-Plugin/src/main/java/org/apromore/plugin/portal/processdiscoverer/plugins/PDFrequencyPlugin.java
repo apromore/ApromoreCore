@@ -29,6 +29,9 @@ import java.util.Locale;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.util.Clients;
 
 @Component("frequencyPlugin")
@@ -61,6 +64,9 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     public void execute(PortalContext context) {
         try {
         	boolean prepare = this.prepare(context, MeasureType.FREQUENCY); //prepare session
+        	Desktop d = Executions.getCurrent().getDesktop();
+        	Session s = Executions.getCurrent().getSession();
+        	
         	if (!prepare) return;
         	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
         } catch (Exception e) {

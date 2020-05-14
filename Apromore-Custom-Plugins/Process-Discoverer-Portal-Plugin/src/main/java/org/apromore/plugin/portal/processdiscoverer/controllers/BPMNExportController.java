@@ -112,6 +112,10 @@ public class BPMNExportController extends AbstractController {
     class ProgressEventListener implements EventListener<Event> {
         @Override
         public void onEvent(Event event) throws Exception {
+            if (!parent.prepareCriticalServices()) {
+                return;
+            }
+            
             switch (event.getName()) {
                 case CHANGE_DESCRIPTION:
                     if (descriptionLabel != null) descriptionLabel.setValue((String) event.getData());

@@ -39,6 +39,10 @@ public class AnimationController extends AbstractController {
     
     @Override
     public void onEvent(Event event) throws Exception {
+        if (!parent.prepareCriticalServices()) {
+            return;
+        }
+        
         Abstraction abs = parent.getOutputData().getAbstraction();
         if (abs.getLayout() == null) {
             throw new MissingLayoutException("Missing layout of the process map for animating");

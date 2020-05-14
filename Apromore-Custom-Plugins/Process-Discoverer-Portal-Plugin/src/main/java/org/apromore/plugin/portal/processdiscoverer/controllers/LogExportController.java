@@ -55,6 +55,10 @@ public class LogExportController extends AbstractController {
     
     @Override
     public void onEvent(Event event) throws Exception {
+        if (!parent.prepareCriticalServices()) {
+            return;
+        }
+        
         InputDialog.showInputDialog(
                 Labels.getLabel("e.pd.saveLogWin.text"), //"Save filtered log",
             "Enter a log name (no more than 60 characters)", 
