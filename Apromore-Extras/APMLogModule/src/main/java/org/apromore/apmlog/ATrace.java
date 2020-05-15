@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,6 +38,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,7 +49,6 @@ import java.util.List;
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (17/02/2020)
  * Modified: Chii Chang (20/02/2020)
- * Modified: Chii Chang (06/03/2020)
  * Modified: Chii Chang (11/04/2020)
  * Modified: Chii Chang (07/05/2020)
  */
@@ -81,11 +81,11 @@ public class ATrace implements Serializable, LaTrace {
 
     private List<Integer> activityNameIndexList;
 
-    private APMLog apmLog;
+//    private APMLog apmLog;
 
     public ATrace(XTrace xTrace, APMLog apmLog) {
 
-        this.apmLog = apmLog;
+//        this.apmLog = apmLog;
 
         activityNameIndexList = new ArrayList<>();
 
@@ -108,16 +108,9 @@ public class ATrace implements Serializable, LaTrace {
          */
 //        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().getById("case:variant").toString());
         // ELSE SET THE VARIANT ID from APMLog
-        initStats(xTrace);
+        initStats(xTrace, apmLog);
     }
 
-    /**
-     * Allow one to create ATrace by AEvents
-     * @param caseIdString
-     * @param inputEventList
-     * @param caseAttributes
-     * @param apmLog
-     */
     public ATrace(String caseIdString, List<AEvent> inputEventList,
                   UnifiedMap<String, String> caseAttributes, APMLog apmLog) {
 
@@ -140,6 +133,13 @@ public class ATrace implements Serializable, LaTrace {
         eventNameSet = new UnifiedSet<>();
 
         /* ------------- find start time and end time of trace -------------- */
+//        if (inputEventList.size() < 2) {
+//            AEvent aEvent = inputEventList.get(0);
+//            long eventTime = aEvent.getTimestampMilli();
+//            startTimeMilli = eventTime;
+//            endTimeMilli = eventTime;
+//
+//        } else {
         for (int i = 0; i < inputEventList.size(); i++) {
 
             AEvent aEvent = inputEventList.get(i);
@@ -152,6 +152,9 @@ public class ATrace implements Serializable, LaTrace {
                 endTimeMilli = eventTime;
             }
         }
+//        }
+
+
 
         /* ----------------------- set activities ----------------------------- */
 
@@ -161,6 +164,7 @@ public class ATrace implements Serializable, LaTrace {
 
 
             AEvent iAEvent = inputEventList.get(i);
+            this.eventList.add(iAEvent);
 
             fillEventAttributeValueFreqMap(iAEvent);
 
@@ -190,7 +194,7 @@ public class ATrace implements Serializable, LaTrace {
                             markedIndex.add(index);
                             AEvent fAEvent = inputEventList.get(index);
                             actEvents.add(fAEvent);
-                            this.eventList.add(fAEvent);
+
                         }
                         actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
                         actDur = actEndTime - actStartTime;
@@ -202,8 +206,7 @@ public class ATrace implements Serializable, LaTrace {
                     if (!lifecycle.equals("schedule") &&
                             !lifecycle.equals("assign") &&
                             !lifecycle.equals("reassign")) {
-                        /* When the event occurs without 'start', it is considered as a complete with no followup */
-                        this.eventList.add(iAEvent);
+
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
                                 actEndTime, actDur);
                         this.activityList.add(aActivity);
@@ -257,7 +260,12 @@ public class ATrace implements Serializable, LaTrace {
     }
 
 
-    private void initStats(XTrace xTrace) {
+
+
+    /* ------------- latest code ---------------------*/
+    private void initStats(XTrace xTrace, APMLog apmLog) {
+
+
 
         activityNameList = new ArrayList<>();
         eventNameSet = new UnifiedSet<>();
@@ -284,7 +292,7 @@ public class ATrace implements Serializable, LaTrace {
             XEvent xEvent = xTrace.get(i);
 
             AEvent iAEvent = new AEvent(xEvent);
-
+            this.eventList.add(iAEvent);
 
             fillEventAttributeValueFreqMap(iAEvent);
 
@@ -293,7 +301,7 @@ public class ATrace implements Serializable, LaTrace {
                 String lifecycle = iAEvent.getLifecycle();
                 List<AEvent> actEvents = new ArrayList<>();
                 actEvents.add(iAEvent);
-                this.eventList.add(iAEvent);
+
                 long actStartTime = iAEvent.getTimestampMilli();
                 long actEndTime = iAEvent.getTimestampMilli();
                 long actDur = 0;
@@ -302,7 +310,7 @@ public class ATrace implements Serializable, LaTrace {
                     this.hasActivity = true;
                     IntArrayList followup = getFollowUpIndexList(xTrace, i, iAEvent.getName());
 
-                    if (followup == null) {
+                    if (followup.size() == 0) {
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, iAEvent.getTimestampMilli(),
                                 iAEvent.getTimestampMilli(), 0);
                         this.activityList.add(aActivity);
@@ -313,7 +321,6 @@ public class ATrace implements Serializable, LaTrace {
                             XEvent fEvent = xTrace.get(index);
                             AEvent fAEvent = new AEvent(fEvent);
                             actEvents.add(fAEvent);
-                            this.eventList.add(fAEvent);
                         }
                         actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
                         actDur = actEndTime - actStartTime;
@@ -336,7 +343,44 @@ public class ATrace implements Serializable, LaTrace {
         }
 
         /*---------------- Fill the other attributes ----------------*/
+
+        if(endTimeMilli > startTimeMilli) {
+            this.duration = endTimeMilli - startTimeMilli;
+        }
+
         long waitCount = 0;
+
+        this.totalWaitingTime = 0;
+
+        List<Long> waitTimeList = new ArrayList<>();
+
+        for (int i = 1; i < eventList.size(); i++) {
+            AEvent aEvent = eventList.get(i);
+            String lifecycle = aEvent.getLifecycle();
+            if (lifecycle.equals("start")) {
+
+                long iTime = aEvent.getTimestampMilli();
+
+                AEvent pEvent = eventList.get(i-1);
+                long pTime = pEvent.getTimestampMilli();
+
+                long waitTime = iTime - pTime;
+                this.totalWaitingTime += waitTime;
+                waitTimeList.add(waitTime);
+                waitCount += 1;
+            }
+        }
+
+        if (this.totalWaitingTime > 0) {
+            this.averageWaitingTime = totalWaitingTime / waitCount;
+            Collections.sort(waitTimeList);
+            this.maxWaitingTime = waitTimeList.get(waitTimeList.size()-1);
+        }
+
+
+
+
+
         long processCount = 0;
         for (int i = 0; i < activityList.size(); i++) {
             AActivity activity = activityList.get(i);
@@ -349,21 +393,21 @@ public class ATrace implements Serializable, LaTrace {
             this.totalProcessingTime += activity.getDuration();
             if (activity.getDuration() > this.maxProcessingTime) this.maxProcessingTime = activity.getDuration();
 
-            if (i > 0) {
-                AActivity pActivity = activityList.get(i-1);
-                waitCount += 1;
-                long waitTime = activity.getStartTimeMilli() - pActivity.getEndTimeMilli();
-                this.totalWaitingTime += waitTime;
-                if(waitTime > this.maxWaitingTime) {
-                    this.maxWaitingTime = waitTime;
-                }
-            }
+//            if (i > 0) {
+//                AActivity pActivity = activityList.get(i-1);
+//                waitCount += 1;
+//                long waitTime = activity.getStartTimeMilli() - pActivity.getEndTimeMilli();
+//                this.totalWaitingTime += waitTime;
+//                if(waitTime > this.maxWaitingTime) {
+//                    this.maxWaitingTime = waitTime;
+//                }
+//            }
         }
         if(this.totalProcessingTime > 0 && processCount > 0) this.averageProcessingTime = this.totalProcessingTime / processCount;
-        if(this.totalWaitingTime > 0 && waitCount > 0) this.averageWaitingTime = this.totalWaitingTime / waitCount;
+//        if(this.totalWaitingTime > 0 && waitCount > 0) this.averageWaitingTime = this.totalWaitingTime / waitCount;
 
         if(endTimeMilli > startTimeMilli) {
-            this.duration = endTimeMilli - startTimeMilli;
+//            this.duration = endTimeMilli - startTimeMilli;
             if(containsActivity(xTrace)) {
                 this.caseUtilization = (double) this.totalProcessingTime / this.duration;
                 if (this.caseUtilization > 1.0) this.caseUtilization = 1.0;
@@ -403,17 +447,6 @@ public class ATrace implements Serializable, LaTrace {
                             }
                         }
                     }
-
-//                    if (actName.equals(conceptName)) {
-//                        if (!lifecycle.equals("start")) {
-//                            followUpIndex.add(i);
-//                            if (lifecycle.equals("complete") ||
-//                                    lifecycle.equals("manualskip") ||
-//                                    lifecycle.equals("autoskip")) {
-//                                break;
-//                            }
-//                        }
-//                    }
                 }
             }
             return followUpIndex;
@@ -431,13 +464,7 @@ public class ATrace implements Serializable, LaTrace {
         }
         return true;
     }
-    /**
-     * List<AEvent> version of getFollowUpIndexList()
-     * @param eventList A list of AEvent
-     * @param fromIndex start index of the searching
-     * @param conceptName the activity name of the event
-     * @return
-     */
+
     private IntArrayList getFollowUpIndexList(List<AEvent> eventList, int fromIndex, String conceptName) {
         IntArrayList followUpIndex = new IntArrayList();
         if ( (fromIndex + 1) < eventList.size()) {
@@ -605,6 +632,9 @@ public class ATrace implements Serializable, LaTrace {
     }
 
     public String getDurationString() {
+//        if(getCaseId().equals("0050554374")) {
+//            System.out.println("PAUSE");
+//        }
         return durationString;
     }
 
@@ -651,6 +681,10 @@ public class ATrace implements Serializable, LaTrace {
         this.activityNameList = activityNameList;
         this.eventNameSet = eventNameSet;
 
+
+        if(getCaseId().equals("0050554374")) {
+            System.out.println("PAUSE");
+        }
         this.startTimeString = timestampStringOf(millisecondToZonedDateTime(startTimeMilli));
         this.endTimeString = timestampStringOf(millisecondToZonedDateTime(endTimeMilli));
         this.durationString = Util.durationShortStringOf(duration);
