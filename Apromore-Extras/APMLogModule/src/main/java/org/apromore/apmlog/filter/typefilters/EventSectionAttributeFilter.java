@@ -40,7 +40,7 @@ public class EventSectionAttributeFilter {
     }
 
     private static boolean conformRule(AEvent event, LogFilterRule logFilterRule) {
-        String attributeKey = logFilterRule.getKey().toLowerCase();
+        String attributeKey = logFilterRule.getKey();
         Set<String> values = logFilterRule.getPrimaryValuesInString();
 
         switch (attributeKey) {
