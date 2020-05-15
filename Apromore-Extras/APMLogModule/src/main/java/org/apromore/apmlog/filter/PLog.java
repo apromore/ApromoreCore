@@ -631,12 +631,40 @@ public class PLog {
             PTrace pt = this.pTraceUnifiedMap.get(theId);
             if(!currentBS.get(i)) {
                 pt.getValidEventIndexBitSet().clear();
-                pt.getOriginalEventList().clear();
             } else {
-                pt.setOriginalValidEventIndexBS(pTrace.getValidEventIndexBitSet());
+//                pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
             }
             theCusPTraceList.add(pt);
         }
+
+//        List<HashBiMap.Entry<PTrace, Integer> > list =
+//                new ArrayList<HashBiMap.Entry<PTrace, Integer> >(caseIndexMap.entrySet());
+//
+//
+//        Collections.sort(list, new Comparator<HashBiMap.Entry<PTrace, Integer>>() {
+//            @Override
+//            public int compare(HashBiMap.Entry<PTrace, Integer> o1, HashBiMap.Entry<PTrace, Integer> o2) {
+//                return o1.getValue().compareTo(o2.getValue());
+//            }
+//        });
+//
+//        List<PTrace> theCusPTraceList = new ArrayList<>();
+//
+//        for (int i=0; i<list.size(); i++) {
+//            PTrace pTrace = list.get(i).getKey();
+//            if(!currentBS.get(i)) {
+//                pTrace.getValidEventIndexBitSet().clear();
+//            } else {
+//                String theId = pTrace.getCaseId();
+//                if (this.pTraceUnifiedMap.containsKey(theId)) {
+//                    PTrace pt = this.pTraceUnifiedMap.get(theId);
+//                    pTrace.setValidEventIndexBS(pt.getValidEventIndexBitSet());
+//                }
+//            }
+//
+//            theCusPTraceList.add(pTrace);
+//        }
+
         return theCusPTraceList;
     }
 }
