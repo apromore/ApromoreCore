@@ -30,19 +30,23 @@ import org.apromore.dao.FolderRepositoryCustom;
 import org.apromore.dao.GroupFolderRepository;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.dataObject.FolderTreeNode;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 
 /**
  * implementation of the org.apromore.dao.ProcessDao interface.
@@ -59,6 +63,24 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     private GroupFolderRepository groupFolderRepository;
     @Inject
     private GroupProcessRepository groupProcessRepository;
+
+    public List<Folder> findSubfolders(final int parentFolderId, final String userId, final String conditions) {
+        StringBuilder strQry = new StringBuilder(0);
+        if (parentFolderId == 0) {
+            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.hasRead = TRUE) AND f.parentFolder IS NULL");
+        } else {
+            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g JOIN f.parentFolder fp, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.hasRead = TRUE) AND fp.id = ").append(parentFolderId);
+        }
+        if (conditions != null && !conditions.isEmpty()) {
+            strQry.append(" AND ").append(conditions);
+        }
+        strQry.append(" ORDER by f.id");
+
+        Query query = em.createQuery(strQry.toString());
+        query.setParameter("userRowGuid", userId);
+
+        return query.getResultList();
+    }
 
     /**
      * @see FolderRepositoryCustom#getFolderTreeByUser(int, String)

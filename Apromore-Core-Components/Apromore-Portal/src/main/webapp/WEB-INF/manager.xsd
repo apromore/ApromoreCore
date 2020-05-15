@@ -2,6 +2,9 @@
 <!--
   #%L
   This file is part of "Apromore Core".
+
+  Copyright (C) 2011 - 2017 Queensland University of Technology.
+  Copyright (C) 2012 Felix Mannhardt.
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
@@ -22,8 +25,6 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-
-
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:qut-edu-au:schema:apromore:manager"
            xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -641,6 +642,12 @@
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
+    </xs:complexType>
+
+    <xs:complexType name="FolderSummaryType">
+        <xs:complexContent>
+            <xs:extension base="tns:SummaryType" />
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="LogSummaryType">

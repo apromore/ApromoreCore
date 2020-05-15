@@ -280,6 +280,12 @@ public class MainController extends BaseController implements MainControllerInte
         this.baseListboxController.displaySummaries(subFolders, processSummaries, isQueryResult);
     }
 
+    public void displaySearchResult(final SummariesType summaries) {
+        clearProcessVersions();
+        switchToProcessSummaryView();
+        this.baseListboxController.displaySummaries(new ArrayList<FolderType>(), summaries, true);
+    }
+
     // disable/enable features depending on user status
     public void updateActions() {
         Boolean connected = UserSessionManager.getCurrentUser() != null;

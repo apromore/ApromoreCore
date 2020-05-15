@@ -119,7 +119,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     @Override
     @SuppressWarnings("unchecked")
     public List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions) {
-        boolean whereAdded = false;
         StringBuilder strQry = new StringBuilder(0);
         if (folderId == 0) {
             strQry.append("SELECT l FROM GroupLog gl JOIN gl.log l JOIN gl.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gl.hasRead = TRUE) AND l.folder IS NULL");

@@ -32,11 +32,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-import org.apromore.common.ConfigBean;
-import org.apromore.dao.*;
-import org.apromore.dao.model.*;
-import org.apromore.dao.model.Process;
-import org.apromore.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -44,22 +39,34 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.LogRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Native;
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.AnnotationsType;
+import org.apromore.model.FolderSummaryType;
+import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
+import org.apromore.model.SummariesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.service.WorkspaceService;
 
@@ -75,10 +82,12 @@ public class UIHelper implements UserInterfaceHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(UIHelper.class);
 
     private AnnotationRepository aRepository;
+    private FolderRepository fRepository;
     private ProcessRepository pRepository;
     private LogRepository lRepository;
     private GroupProcessRepository gpRepository;
     private GroupLogRepository glRepository;
+    private GroupFolderRepository gfRepository;
     private ProcessModelVersionRepository pmvRepository;
     private WorkspaceService workspaceService;
     private boolean enableCPF;
@@ -91,6 +100,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @param groupProcessRepository process access control group Repository
      * @param processModelVersionRepository process model version Repository.
      * @param folderRepository folder repository.
+     * @param groupFolderRepository folder access control group repository
      * @param workspaceService Workspace Services.
      */
     @Inject
@@ -101,14 +111,17 @@ public class UIHelper implements UserInterfaceHelper {
                     final GroupLogRepository groupLogRepository,
                     final ProcessModelVersionRepository processModelVersionRepository,
                     final FolderRepository folderRepository,
+                    final GroupFolderRepository groupFolderRepository,
                     final WorkspaceService workspaceService,
                     final ConfigBean config) {
 
         this.aRepository = annotationRepository;
+        this.fRepository = folderRepository;
         this.pRepository = processRepository;
         this.lRepository = logRepository;
         this.gpRepository = groupProcessRepository;
         this.glRepository = groupLogRepository;
+        this.gfRepository = groupFolderRepository;
         this.pmvRepository = processModelVersionRepository;
         this.workspaceService = workspaceService;
         this.enableCPF = config.getEnableCPF();
@@ -159,27 +172,32 @@ public class UIHelper implements UserInterfaceHelper {
      * {@inheritDoc}
      */
     public SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions) {
-        ProcessSummaryType processSummaryType;
-        SummariesType processSummaries = new SummariesType();
+        SummariesType summaries = new SummariesType();
 
-        processSummaries.setTotalCount(pRepository.count());
+        summaries.setTotalCount(pRepository.count());
+
+        // Folders
+        List<Folder> folders = fRepository.findSubfolders(folderId, userRowGuid, folderConditions);
+        for (Folder folder : folders) {
+            summaries.getSummary().add(buildFolderSummary(folder));
+        }
 
         // Process models
         List<Process> processes = pRepository.findAllProcessesByFolder(folderId, userRowGuid, conditions);
         for (Process process : processes) {
-            processSummaryType = buildProcessList(null, null, process);
+            ProcessSummaryType processSummaryType = buildProcessList(null, null, process);
             if (processSummaryType != null) {
-                processSummaries.getSummary().add(processSummaryType);
+                summaries.getSummary().add(processSummaryType);
             }
         }
 
         // Logs
         List<Log> logs = lRepository.findAllLogsByFolder(folderId, userRowGuid, logConditions);
         for (Log log : logs) {
-            processSummaries.getSummary().add(buildLogSummary(log));
+            summaries.getSummary().add(buildLogSummary(log));
         }
 
-        return processSummaries;
+        return summaries;
     }
 
     /**
@@ -336,6 +354,25 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaryType.setHasOwnership(hasOwnership);
 
         return logSummaryType;
+    }
+
+    public FolderSummaryType buildFolderSummary(final Folder folder) {
+        FolderSummaryType folderSummaryType = new FolderSummaryType();
+        folderSummaryType.setId(folder.getId());
+        folderSummaryType.setName(folder.getName());
+
+        List<GroupFolder> groupFolders = gfRepository.findByFolderId(folder.getId());
+        boolean hasRead = true, hasWrite = true, hasOwnership = true;
+        for (GroupFolder groupFolder: groupFolders) {
+            hasRead = hasRead || groupFolder.isHasRead();
+            hasWrite = hasWrite || groupFolder.isHasWrite();
+            hasOwnership = hasOwnership || groupFolder.isHasOwnership();
+        }
+        folderSummaryType.setHasRead(hasRead);
+        folderSummaryType.setHasWrite(hasWrite);
+        folderSummaryType.setHasOwnership(hasOwnership);
+
+        return folderSummaryType;
     }
 
     /* Builds the list from a process record. */

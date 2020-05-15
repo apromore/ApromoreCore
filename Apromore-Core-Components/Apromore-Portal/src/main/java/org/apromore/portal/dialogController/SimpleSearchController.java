@@ -124,17 +124,13 @@ public class SimpleSearchController extends BaseController {
         if (folder == null) {
             throw new Exception("Search requires a folder to be selected");
         }
+
+        int folderId = (folder == null) ? 0 : folder.getId();
         String query = previousSearchesCB.getValue();
-        SummariesType processSummaries = getService().readProcessSummaries(folder.getId(), UserSessionManager.getCurrentUser().getId(), query);
-        int nbAnswers = processSummaries.getSummary().size();
-        String message = "Search returned " + nbAnswers;
-        if (nbAnswers > 1) {
-            message += " processes.";
-        } else {
-            message += " process.";
-        }
-        mainC.displayMessage(message);
-        mainC.displayProcessSummaries(processSummaries, true);
+        SummariesType summaries = getService().readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query);
+        int nbAnswers = summaries.getSummary().size();
+        mainC.displayMessage("Search returned " + nbAnswers + ((nbAnswers == 1) ? " result." : " results."));
+        mainC.displaySearchResult(summaries);
         addSearchHistory(query);
     }
 

@@ -26,7 +26,9 @@
 
 package org.apromore.dao;
 
+import java.util.List;
 import org.apromore.dao.dataObject.FolderTreeNode;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
 
@@ -40,6 +42,16 @@ import java.util.List;
  * @version 1.0
  */
 public interface FolderRepositoryCustom {
+
+    /**
+     * Perform a keyword search on the names of folders.
+     *
+     * @param parentFolderId  restrict the search to immediate subfolders of this parent folder
+     * @param userId  restrict the search to subfolders visible to user with the given rowGuid
+     * @param conditions  a fragment of JPAQL
+     * @return the list folders in the given folder, visible to the given userId, satisfying the conditions
+     */
+    List<Folder> findSubfolders(int parentFolderId, String userId, String conditions);
 
     /**
      * Get the Folder tree by the Users Id and Parent Folder.

@@ -77,6 +77,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
             renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
         } else if (obj instanceof LogSummaryType) {
             renderLogSummary(listItem, (LogSummaryType) obj, plugins);
+        } else if (obj instanceof FolderSummaryType) {
+            renderFolderSummary(listItem, (FolderSummaryType) obj, plugins);
         } else if (obj instanceof FolderType) {
             renderFolder(listItem, (FolderType) obj, plugins);
         } else {
@@ -153,6 +155,45 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.visualizeLog();
             }
         });
+    }
+
+    private void renderFolderSummary(final Listitem listitem, final FolderSummaryType folder, final List<PortalProcessAttributePlugin> plugins) {
+        listitem.appendChild(renderFolderImage());
+        listitem.appendChild(new Listcell());
+        listitem.appendChild(new Listcell(folder.getName()));
+        listitem.appendChild(new Listcell(folder.getId().toString()));
+
+        // Skip 5 columns that don't apply to folders
+        Listcell spacer = new Listcell();
+        spacer.setSpan(6);
+        listitem.appendChild(spacer);
+
+        /*
+        // Append columns for any folder attributes supplied via plugins
+        for (PortalProcessAttributePlugin plugin: plugins) {
+            listitem.appendChild(plugin.getListcell(folder));  // PortalProcessAttributePlugin.getListCell(FolderSampleType) doesn't exist
+        }
+        */
+
+        listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                mainController.reloadSummaries2();
+                mainController.currentFolderChanged();
+            }
+        });
+    }
+
+    private FolderType convertFolderSummaryTypeToFolderType(final FolderSummaryType summary) {
+        FolderType folder = new FolderType();
+        folder.setFolderName(summary.getName());
+        folder.setId(summary.getId());
+        folder.setHasRead(summary.isHasRead());
+        folder.setHasWrite(summary.isHasWrite());
+        folder.setHasOwnership(summary.isHasOwnership());
+
+        return folder;
     }
 
     /* Used to render folders in the list of process models. */

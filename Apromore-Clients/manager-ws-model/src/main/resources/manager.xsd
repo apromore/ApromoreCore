@@ -644,6 +644,12 @@
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
     </xs:complexType>
 
+    <xs:complexType name="FolderSummaryType">
+        <xs:complexContent>
+            <xs:extension base="tns:SummaryType" />
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="LogSummaryType">
         <xs:complexContent>
             <xs:extension base="tns:SummaryType" />

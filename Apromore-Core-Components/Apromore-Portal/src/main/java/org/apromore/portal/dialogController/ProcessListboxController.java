@@ -122,9 +122,7 @@ public class ProcessListboxController extends BaseListboxController {
         getListBox().setModel(new ListModelList<>());
         getListModel().setMultiple(true);
 
-        if (!isQueryResult) {
-            getListModel().addAll(subFolders);
-        }
+        //getListModel().addAll(subFolders);
         getListModel().addAll(summaries.getSummary());
         if (isQueryResult && getListBox().getItemCount() > 0) {
             getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
