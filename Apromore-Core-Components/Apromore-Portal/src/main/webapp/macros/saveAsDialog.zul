@@ -43,7 +43,7 @@
                     <label value="Version Number*" />
                     <textbox id="versionNumber" width="100%" />
                 </row>
-                <row visible="false">
+                <row>
                     <label value="Branch Name*" />
                     <textbox id="branchName" width="100%" />
                 </row>
