@@ -142,7 +142,15 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         processSummaryRowValue.add(processSummaryType.getRanking());
         processSummaryRowValue.add(processSummaryType.getLastVersion());
         processSummaryRowValue.add(DateTimeNormalizer.parse(versionSummaryType.getLastUpdate()));
-        processSummaryRowValue.add(processSummaryType.getOwner());
+
+        Boolean isMakePublic = processSummaryType.isMakePublic();
+        String label;
+        if (isMakePublic != null && isMakePublic == true) {
+            label = "public";
+        } else {
+            label = processSummaryType.getOwner();
+        }
+        processSummaryRowValue.add(label);
         return processSummaryRowValue;
     }
 
