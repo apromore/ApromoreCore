@@ -52,7 +52,7 @@ public class ProcessTabItemExecutor implements TabItemExecutor {
         ProcessSummaryType pst = createProcessSummaryType((ProcessSummaryRowValue) listItem.getTabRowValue());
         VersionSummaryType vst = createVersionSummaryType((ProcessSummaryRowValue) listItem.getTabRowValue());
         try {
-            mainControllerInterface.editProcess(pst, vst, pst.getOriginalNativeType(), null, "false", new HashSet<RequestParameterType<?>>());
+            mainControllerInterface.editProcess2(pst, vst, pst.getOriginalNativeType(), null, "false", new HashSet<RequestParameterType<?>>(), false);
         } catch (InterruptedException e) {
             System.out.println(pst);
             System.out.println(vst);
