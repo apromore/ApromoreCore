@@ -748,6 +748,10 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
         return previousValidEventIndexBS;
     }
 
+    public void setOriginalValidEventIndexBS(BitSet originalValidEventIndexBS) {
+        this.originalValidEventIndexBS = originalValidEventIndexBS;
+    }
+
 
     public ATrace toATrace() {
 //        if(getCaseId().equals("0050554374")) {
