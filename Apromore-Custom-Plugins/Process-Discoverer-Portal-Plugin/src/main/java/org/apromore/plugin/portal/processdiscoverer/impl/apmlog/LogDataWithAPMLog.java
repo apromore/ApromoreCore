@@ -26,6 +26,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,7 @@ import org.apromore.apmlog.util.Util;
 import org.apromore.logman.ALog;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.log.AttributeInfo;
+import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
@@ -277,5 +279,78 @@ public class LogDataWithAPMLog extends LogData {
         }
         aLog.updateLogStatus(logBitMap);
         attLog.refresh();
+        
+        //Use for debugging the bitset transfer from PLog to ALog/AttributeLog
+        //printPLogBitMap(pLog);
+        //printALogBitMap(aLog);
+        //printAttributeLogBitMap(attLog);
+    }
+    
+    // For debug only
+    private void printPLogBitMap(PLog log) {
+        BitSet bitSet = log.getValidTraceIndexBS();
+        List<PTrace> pTraces = log.getCustomPTraceList(); 
+        System.out.println("PLog trace status (trace_number:bit): ");
+        for (int i=0; i<pTraces.size(); i++) {
+            System.out.print(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
+        }
+        System.out.print("end");
+        System.out.println();
+        
+        System.out.println("PLog trace event status: ");
+        for (int i=0; i<pTraces.size(); i++) {
+            System.out.println("Trace " + i + " event status (event_number:bit):");
+            BitSet eventBitSet = pTraces.get(i).getValidEventIndexBitSet();
+            for (int j=0; j<pTraces.get(i).getOriginalEventList().size(); j++) {
+                System.out.print(j + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
+            }
+            System.out.print("end");
+            System.out.println();
+        }
+        
+    }
+    
+    // For debug only
+    private void printALogBitMap(ALog log) {
+        BitSet bitSet = log.getOriginalTraceStatus();
+        System.out.println("ALog trace status (trace_number:bit): ");
+        for (int i=0; i<log.getOriginalTraces().size(); i++) {
+            System.out.print(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
+        }
+        System.out.print("end");
+        System.out.println();
+        
+        System.out.println("ALog trace event status: ");
+        for (int i=0; i<log.getOriginalTraces().size(); i++) {
+            System.out.println("Trace " + i + " event status (event_number:bit):");
+            BitSet eventBitSet = log.getOriginalTraceFromIndex(i).getOriginalEventStatus();
+            for (int j=0; j<log.getOriginalTraceFromIndex(i).getOriginalEvents().size(); j++) {
+                System.out.print(j + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
+            }
+            System.out.print("end");
+            System.out.println();
+        }
+    }
+    
+    private void printAttributeLogBitMap(AttributeLog log) {
+        BitSet bitSet = log.getOriginalTraceStatus();
+        System.out.println("AttributeLog trace status (trace_number:bit): ");
+        for (int i=0; i<log.getOriginalTraces().size(); i++) {
+            System.out.print(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
+        }
+        System.out.print("end");
+        System.out.println();
+        
+        System.out.println("AttributeLog trace (aggregated) event status: ");
+        for (int i=0; i<log.getOriginalTraces().size(); i++) {
+            System.out.println("Trace " + i + " event status (event_number:bit):");
+            BitSet eventBitSet = log.getOriginalTraceFromIndex(i).getOriginalEventStatus();
+            // Don't count the artificial start and end events
+            for (int j=1; j<(log.getOriginalTraceFromIndex(i).getOriginalValueTrace().size()-1); j++) {
+                System.out.print((j-1) + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
+            }
+            System.out.print("end");
+            System.out.println();
+        }
     }
 }
