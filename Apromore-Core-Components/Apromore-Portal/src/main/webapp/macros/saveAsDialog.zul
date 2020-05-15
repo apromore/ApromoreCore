@@ -27,7 +27,7 @@
     TODO make a SaveAsDialogController
     listbox to choose native type implemented by the controller -->
 
-<window width="500px" closable="false" position="center">
+<window width="500px" closable="false" position="center" mode="modal">
     <vbox vflex="1">
         <grid id="saveAsGrid" sclass="ap-grid ap-form">
             <columns sizable="true">
@@ -36,11 +36,11 @@
             </columns>
             <rows>
                 <row>
-                    <label value="Name*" />
-                    <textbox id="modelName" width="100%" />
+                    <label value="Model Name" />
+                    <textbox id="modelName" width="100%" constraint="/^[a-zA-Z0-9 \\._\\-]{3,}$/: Invalid filename" />
                 </row>
                 <row>
-                    <label value="Version Number*" />
+                    <label value="Version Number" />
                     <textbox id="versionNumber" width="100%" />
                 </row>
                 <row visible="false">

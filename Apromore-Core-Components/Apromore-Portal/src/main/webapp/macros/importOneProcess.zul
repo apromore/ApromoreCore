@@ -30,8 +30,8 @@
 <!-- as many instances of this window might be created at once, components are
 	not given an id, instead, there are retrieve by their position by controller 
 	importOneProcessWindow -->
-<window position="center" title="Process model details" visible="true"
-        sizable="true" width="550px">
+<window position="center" title="Import process model" visible="true" mode="modal"
+        sizable="true" width="600px">
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
@@ -41,10 +41,10 @@
             </columns>
             <rows>
                 <row spans="1,2">
-                    <label value="Process name*" width="100%"/>
-                    <textbox width="100%"/>
+                    <label value="Model name" width="100%"/>
+                    <textbox width="100%" constraint="/^[a-zA-Z0-9 \\._\\-]{3,}$/: Invalid filename" />
                 </row>
-                <row spans="1,2">
+                <row spans="1,2" visible="false">
                     <label value="Initial version number" width="100%" />
                     <textbox width="100%" />
                 </row>
@@ -86,7 +86,7 @@
                         </grid>
                     </groupbox>
                 </row>
-                <row spans="3">
+                <row spans="3" visible="false">
                     <label value="*: mandatory fields." />
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
