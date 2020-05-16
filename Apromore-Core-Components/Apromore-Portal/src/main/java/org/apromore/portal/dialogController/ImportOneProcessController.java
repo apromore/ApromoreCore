@@ -114,7 +114,7 @@ public class ImportOneProcessController extends BaseController {
         this.nativeType = nativeType;
         this.isPublic = isPublic;
         this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
-        this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
+        // this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
         Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getChildren().get(0);
         Row versionNumberR = (Row) rows.getChildren().get(1);
