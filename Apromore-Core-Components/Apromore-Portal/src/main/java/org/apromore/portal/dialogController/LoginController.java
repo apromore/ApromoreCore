@@ -62,7 +62,9 @@ public class LoginController extends BaseController {
      */
     public void onCreate() throws InterruptedException {
         Window mainW = (Window) this.getFellow("login-main");
+        Div registerBtn = (Div) mainW.getFellow("registerBtn");
         Div agree = (Div) mainW.getFellow("agree");
+        Div subscribe = (Div) mainW.getFellow("subscribe");
         Div role = (Div) mainW.getFellow("role");
         Div organization = (Div) mainW.getFellow("organization");
         Div country = (Div) mainW.getFellow("country");
@@ -71,8 +73,13 @@ public class LoginController extends BaseController {
         String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
         boolean enableTC = config.getEnableTC();
+        boolean enableUserReg = config.getEnableUserReg();
         boolean enableFullUserReg = config.getEnableFullUserReg();
+        boolean enableSubscription = config.getEnableSubscription();
+
+        registerBtn.setVisible(enableUserReg);
         agree.setVisible(enableTC);
+        subscribe.setVisible(enableSubscription);
         if (enableFullUserReg) {
             role.setVisible(true);
             organization.setVisible(true);

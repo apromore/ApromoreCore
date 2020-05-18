@@ -52,6 +52,10 @@
       mainCheck();
     }
 
+    let subscribe = $('.z-div #ap-subscribe');
+    if (!subscribe.is(':visible')) {
+      subscribe.prop('checked', false);
+    }
     if (!pass) {
       e.preventDefault()
       return false
