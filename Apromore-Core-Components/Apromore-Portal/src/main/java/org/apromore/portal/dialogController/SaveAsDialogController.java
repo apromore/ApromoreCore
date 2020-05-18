@@ -26,9 +26,13 @@
 
 package org.apromore.portal.dialogController;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+
 import org.apromore.canoniser.Canoniser;
 import org.apromore.dao.model.Folder;
 import org.apromore.helper.Version;
@@ -224,8 +228,11 @@ public class SaveAsDialogController extends BaseController {
         String processName = this.modelName.getText();
 //        Integer processId = this.process.getId();
         Integer processId = this.editSession.getProcessId();
-//        String created = this.version.getCreationDate();
-        String created = this.editSession.getCreationDate();
+        // String created = this.version.getCreationDate();
+        // String created = this.editSession.getCreationDate();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+        String created = dateFormat.format(new Date());
+
         String branch = this.branchName.getText();
         boolean makePublic = processService.isPublicProcess(processId);
         String versionNo = versionNumber.getText();

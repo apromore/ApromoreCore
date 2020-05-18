@@ -251,7 +251,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void addProcess() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            new CreateProcessController(getMainController(), getMainController().getNativeTypes());
+            new CreateProcessController2(getMainController(), getMainController().getNativeTypes());
         } catch (SuspendNotAllowedException | InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {

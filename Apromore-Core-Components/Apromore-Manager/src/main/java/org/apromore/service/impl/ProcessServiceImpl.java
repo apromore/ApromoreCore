@@ -111,6 +111,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -315,7 +316,9 @@ public class ProcessServiceImpl implements ProcessService {
             final String newBranchName, final Version versionNumber, final Version originalVersionNumber, final User user, final String lockStatus,
             final NativeType nativeType, final CanonisedProcess cpf) throws ImportException, RepositoryException {
         ProcessModelVersion pmv;
-        String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
+        // String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
 
         try {
             if (!StringUtils.equals(originalBranchName, newBranchName)) {
@@ -330,7 +333,7 @@ public class ProcessServiceImpl implements ProcessService {
                 if (user == null) {
                     throw new ImportException("Permission to change this model denied.  No user specified.");
                 } else if (canUserWriteProcess(user, processId)) {
-                    pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
+                    pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType, now);
                     notifyProcessPlugins(pmv);  // Notify process plugin providers
                     LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATEEXISTINGPROCESS: ", processName);//call when a net is created, change version
                 } else {
@@ -904,7 +907,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Update an existing process with some changes. */
     @Transactional(readOnly = false)
     private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Version version,
-            Version originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType)  throws RepositoryException {
+            Version originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType, String lastUpdate)  throws RepositoryException {
         Canonical graph;
         OperationContext rootFragment;
         ProcessModelVersion processModelVersion = null;
@@ -943,6 +946,7 @@ public class ProcessServiceImpl implements ProcessService {
             processModelVersion.setNumVertices(graph.countVertices());
             processModelVersion.setLockStatus(Constants.NO_LOCK);
             processModelVersion.setNativeType(nativeType);
+            processModelVersion.setLastUpdateDate(lastUpdate);
         } else {
             LOGGER.error("unable to find the Process Model to update.");
         }

@@ -120,6 +120,7 @@ public class FormatServiceImpl implements FormatService {
             cp.getOriginal().reset();
             String nativeString = StreamUtil.inputStream2String(cp.getOriginal()).trim();
             nat = createNative(pmv, nativeType, nativeString);
+            nat.setLastUpdateDate(lastUpdate);
         }
 
         String canonicalString = StreamUtil.inputStream2String(cp.getCpf()).trim();
