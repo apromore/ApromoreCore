@@ -138,12 +138,12 @@
                         ${labels.e.auth.login.text}
                       </h:button>
                     </h:div>
-                    <h:div class="controls controls-row register">
+                    <div sclass="controls controls-row register" id="registerBtn">
                       <h:a href="#register" class="register-button button link-button"
                            data-toggle="tab">
                         ${labels.e.auth.addAccount.text}
                       </h:a>
-                    </h:div>
+                    </div>
                   </h:fieldset>
                 </h:form>
               </h:div>
@@ -242,9 +242,9 @@
                         <h:a href="https://apromore.org/privacy-policy/">Privacy Policy</h:a>
                       </h:span>
                     </div>
-                    <div>
-                      <h:input type="checkbox" id="ap-subscribe" name="subscription"/>
-                      <h:span>Keep me up-to-date with news and offers</h:span>
+                    <div id="subscribe" visible="false">
+                      <h:input type="checkbox" id="ap-subscribe" name="subscription" checked="true" value="subscribe"/>
+                      <h:span>I wish to be contacted about Apromore offers and news</h:span>
                     </div>
                   </h:fieldset>
                   <h:fieldset>
