@@ -1,25 +1,21 @@
-/*-
- * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
- * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
+/*
+ * This file is part of "Apromore".
  *
- * This program is free software: you can redistribute it and/or modify
+ * Copyright (C) 2019 - 2020 The University of Melbourne.
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
+ * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
 package org.apromore.apmlog;
@@ -51,6 +47,7 @@ import java.util.List;
  * Modified: Chii Chang (20/02/2020)
  * Modified: Chii Chang (11/04/2020)
  * Modified: Chii Chang (07/05/2020)
+ * Modified: Chii Chang (19/05/2020)
  */
 public class ATrace implements Serializable, LaTrace {
 
@@ -310,24 +307,31 @@ public class ATrace implements Serializable, LaTrace {
                     this.hasActivity = true;
                     IntArrayList followup = getFollowUpIndexList(xTrace, i, iAEvent.getName());
 
-                    if (followup.size() == 0) {
+                    if (followup == null) {
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, iAEvent.getTimestampMilli(),
                                 iAEvent.getTimestampMilli(), 0);
                         this.activityList.add(aActivity);
                     } else {
-                        for (int j = 0; j < followup.size(); j++) {
-                            int index = followup.get(j);
-                            markedIndex.add(index);
-                            XEvent fEvent = xTrace.get(index);
-                            AEvent fAEvent = new AEvent(fEvent);
-                            actEvents.add(fAEvent);
+
+                        if (followup.size() == 0) {
+                            AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, iAEvent.getTimestampMilli(),
+                                    iAEvent.getTimestampMilli(), 0);
+                            this.activityList.add(aActivity);
+                        } else {
+                            for (int j = 0; j < followup.size(); j++) {
+                                int index = followup.get(j);
+                                markedIndex.add(index);
+                                XEvent fEvent = xTrace.get(index);
+                                AEvent fAEvent = new AEvent(fEvent);
+                                actEvents.add(fAEvent);
+                            }
+                            actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
+                            actDur = actEndTime - actStartTime;
                         }
-                        actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
-                        actDur = actEndTime - actStartTime;
+                        AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
+                                actEndTime, actDur);
+                        this.activityList.add(aActivity);
                     }
-                    AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
-                            actEndTime, actDur);
-                    this.activityList.add(aActivity);
                 } else {
                     if (!lifecycle.equals("schedule") &&
                             !lifecycle.equals("assign") &&
