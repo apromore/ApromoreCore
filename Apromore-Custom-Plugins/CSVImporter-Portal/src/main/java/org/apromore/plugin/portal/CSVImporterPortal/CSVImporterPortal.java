@@ -347,8 +347,8 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
 
                 if ((box.getSelectedItem() == null) && (
                         (myItem.getKey().equals(caseIdLabel) && sample.getCaseIdPos() == pos) ||
-                                (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
-                                (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
+                        (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
+                        (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
                         (myItem.getKey().equals(startTimestampLabel) && sample.getStartTimestampPos() == pos) ||
                         (myItem.getKey().equals(otherTimestampLabel) && sample.getOtherTimestamps().containsKey(pos)) ||
                         (myItem.getKey().equals(resourceLabel) && sample.getResourcePos() == pos) ||
@@ -397,6 +397,9 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                         break;
                     case caseAttributeLabel:
                         sample.getCaseAttributesPos().add(colPos);
+                        break;
+                    case eventAttributeLabel:
+                        sample.getEventAttributesPos().add(colPos);
                         break;
                     case ignoreLabel:
                         sample.getIgnoredPos().add(colPos);
