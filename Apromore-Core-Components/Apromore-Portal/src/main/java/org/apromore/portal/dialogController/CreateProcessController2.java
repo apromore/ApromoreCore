@@ -78,7 +78,7 @@ public class CreateProcessController2 extends BaseController {
             InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
 
-        this.createProcessW = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
+        this.createProcessW = (Window) Executions.createComponents("macros/createProcess.zul", null, null);
         this.createProcessW.setTitle("Create model");
         Rows rows = (Rows) this.createProcessW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getFirstChild();
@@ -121,7 +121,7 @@ public class CreateProcessController2 extends BaseController {
 
         // set row visibility at creation time
         nativeTypesR.setVisible(false);
-        versionNameR.setVisible(false);
+        versionNameR.setVisible(true);
         rankingR.setVisible(false);
 
         // default values
@@ -237,6 +237,6 @@ public class CreateProcessController2 extends BaseController {
         String empty = "";
         this.processNameT.setValue(empty);
         this.domainCB.setValue(empty);
-        this.versionNumberT.setValue(empty);
+        this.versionNumberT.setValue("1.0");
     }
 }
