@@ -73,6 +73,7 @@
         <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
 
+        <module>Apromore-Custom-Plugins/About-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
