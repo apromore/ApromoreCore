@@ -79,7 +79,7 @@ public class PathDesc {
             if (i < fromList.size()-1) desc += ", ";
         }
 
-        desc += "]";
+        desc += "] ";
 
         Set<RuleValue> secondaryValues = logFilterRule.getSecondaryValues();
 

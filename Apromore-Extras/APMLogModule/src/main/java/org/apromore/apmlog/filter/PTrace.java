@@ -690,14 +690,14 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
     }
 
     public List<AEvent> getEventList() {
-        List<AEvent> aEventList = new ArrayList<>();
-        for (int i = 0; i < this.originalEventList.size(); i++) {
-            if (this.validEventIndexBS.get(i)) {
-                aEventList.add(this.originalEventList.get(i));
-            }
-        }
-        return aEventList;
-//        return eventList;
+//        List<AEvent> aEventList = new ArrayList<>();
+//        for (int i = 0; i < this.originalEventList.size(); i++) {
+//            if (this.validEventIndexBS.get(i)) {
+//                aEventList.add(this.originalEventList.get(i));
+//            }
+//        }
+//        return aEventList;
+        return eventList;
     }
 
 //    public int size() {
