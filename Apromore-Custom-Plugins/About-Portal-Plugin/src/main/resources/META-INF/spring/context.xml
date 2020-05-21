@@ -5,6 +5,8 @@
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
+  Copyright (C) 2020 Apromore Pty Ltd.
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -29,29 +31,11 @@
             http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-    <!-- Other OSGi services this component consumes -->
-    <osgi:reference id="managerService" interface="org.apromore.manager.client.ManagerService"/>
-    <osgi:reference id="securityService" interface="org.apromore.service.SecurityService"/>
-
     <!-- Expose the components as OSGi services -->
+
     <!--
-    <beans:bean id="portalPlugin4" class="org.apromore.plugin.portal.account.AboutApromorePlugin">
-        <beans:constructor-arg ref="managerService"/>
-    </beans:bean>
+    <beans:bean id="portalPlugin4" class="org.apromore.plugin.portal.about.AboutPlugin" />
     <osgi:service ref="portalPlugin4" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
     -->
-    <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.account.ChangePasswordPlugin">
-        <beans:constructor-arg ref="securityService"/>
-    </beans:bean>
-    <osgi:service ref="portalPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-
-    <!--
-    <beans:bean id="portalPlugin2" class="org.apromore.plugin.portal.account.DebugPlugin"/>
-    <osgi:service ref="portalPlugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-    -->
-
-    <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
-        <beans:bean class="org.apromore.plugin.portal.account.SignOutPlugin"/>
-    </osgi:service>
 
 </beans:beans>

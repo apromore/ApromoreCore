@@ -87,6 +87,7 @@ jpa.databasePlatform = org.eclipse.persistence.platform.database.H2Platform
 jpa.showSql          = false
 jpa.generateDDL      = false
 
+
 # Database and JPA (MySQL)
 
 #jdbc.driver   = com.mysql.jdbc.Driver
