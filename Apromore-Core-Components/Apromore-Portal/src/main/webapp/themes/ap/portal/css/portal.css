@@ -269,11 +269,75 @@
   border-radius: 7px;
 }
 
-.ap-portal-right-section .z-menubar ul li:last-child {
+.ap-portal-right-section .z-menubar ul li.ap-about-menu {
   position: absolute;
   right: 5px;
   top: 2px;
   z-index: 20000;
+}
+
+.ap-user-menu {
+  position: fixed;
+  right: 5px;
+  top: 1px;
+  z-index: 20000;
+  background-color: transparent;
+  width: 30px;
+  border: none;
+  height: 30px;
+}
+
+.ap-portal .ap-header-actions {
+  right: 34px !important;
+}
+
+.ap-user-menu li {
+  float: right;
+}
+
+.ap-user-menu .z-menu-content:hover {
+  background-color: transparent;
+}
+
+.ap-user-menu .z-menu-icon:before {
+  display: none;
+}
+
+.ap-user-menu .z-menu-text {
+  display: none;
+  color: black;
+  filter: var(--ap-filter-ico-normal-light);
+}
+
+.ap-user-menu .z-menu-icon {
+  background-image: url('../../common/img/icons/user-circle.svg') !important;
+  width: 26px !important;
+  --icon-height: 26px;
+  --bg-height: 20px;
+  box-sizing: border-box !important;
+  height: var(--icon-height) !important;
+  border: none !important;
+  background-size: auto var(--bg-height) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-origin: padding-box !important;
+  background-color: transparent;
+  border-radius: 3px !important;
+  padding: 0 !important;
+  margin: 0 0 0 0 !important;
+  cursor: pointer;
+  top: -1px;
+  filter: var(--ap-filter-ico-normal-light);
+}
+
+.ap-user-menu .z-menu-selected .z-menu-text {
+  color: black !important;
+}
+
+.ap-user-menu:hover .z-menu-text,
+.ap-user-menu:hover .z-menu-icon {
+  background-color: transparent !important;
+  filter: var(--ap-filter-ico-white) !important;
 }
 
 .ap-portal-right-section .z-menubar .z-menuseparator {
