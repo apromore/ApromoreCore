@@ -27,7 +27,7 @@
 /**
  *
  */
-package org.apromore.toolbox.clustering.algorithm.dbscan;
+package org.apromore.dao.dataObject;
 
 import java.util.ArrayList;
 import java.util.List;

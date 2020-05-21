@@ -27,9 +27,39 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.UUID;
+import java.util.regex.Pattern;
+
 import org.apromore.helper.Version;
-import org.apromore.model.*;
+import org.apromore.model.AnnotationsType;
 import org.apromore.model.Detail;
+import org.apromore.model.DomainsType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.FolderType;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.PluginMessage;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ResultPQL;
+import org.apromore.model.SearchHistoriesType;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -44,29 +74,30 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.zkoss.bind.annotation.Command;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
@@ -457,6 +488,7 @@ public class MainController extends BaseController implements MainControllerInte
      * @param requestParameterTypes request parameters types.
      * @throws InterruptedException
      */
+    @Override
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
             final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
         String instruction = "";
@@ -478,6 +510,7 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
     
+    @Override
     public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
             final String readOnly, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
         String instruction = "";
@@ -499,6 +532,7 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
     
+    @Override
     public void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws  InterruptedException {
     	try {
@@ -636,11 +670,6 @@ public class MainController extends BaseController implements MainControllerInte
 ////        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
 //    }
 
-    public void displaySimilarityClusters(final ClusterFilterType filter) {
-        switchToSimilarityClusterView();
-        ((SimilarityClustersListboxController) this.baseListboxController).displaySimilarityClusters(filter);
-    }
-
     @SuppressWarnings("unchecked")
     public Set<SummaryType> getSelectedElements() {
         if (this.baseListboxController instanceof ProcessListboxController) {
@@ -667,7 +696,7 @@ public class MainController extends BaseController implements MainControllerInte
             ArrayList<VersionSummaryType> versionList;
 
             Set<VersionDetailType> selectedVersions = ((ProcessVersionDetailController) getDetailListbox()).getListModel().getSelection();
-            Set<Object> selectedProcesses = (Set<Object>) getBaseListboxController().getListModel().getSelection();
+            Set<Object> selectedProcesses = getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
                     ProcessSummaryType processSummaryType = (ProcessSummaryType) obj;
@@ -776,24 +805,6 @@ public class MainController extends BaseController implements MainControllerInte
 
         reattachDynamicUI();
         reloadSummaries();
-    }
-
-    /* Switches all dynamic UI elements to the SimilarityClusterView. Affects the listbox, detail and filter view */
-    private void switchToSimilarityClusterView() {
-        if (this.baseListboxController != null) {
-            if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
-                return;
-            } else {
-                deattachDynamicUI();
-            }
-        }
-
-        // Otherwise create new Listbox
-        this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseListboxController = new SimilarityClustersListboxController(this,
-                null, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
-
-        reattachDynamicUI();
     }
 
     /* Load the props for this app. */

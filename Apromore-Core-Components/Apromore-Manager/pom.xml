@@ -103,8 +103,9 @@
                             org.apromore.plugin.provider.*,
                             org.apromore.mapper,
                             org.apromore.scheduler,
-                            org.apromore.service.*,
-                            org.apromore.toolbox.*,
+                            org.apromore.service,
+                            org.apromore.service.helper,
+                            org.apromore.service.model,
                             org.apromore.util
                         </Export-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>

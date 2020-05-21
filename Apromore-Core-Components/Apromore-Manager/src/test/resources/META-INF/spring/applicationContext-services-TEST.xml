@@ -89,10 +89,6 @@
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
-    <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
-        <constructor-arg value="false"/>
-    </bean>
-
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"/>
 
 

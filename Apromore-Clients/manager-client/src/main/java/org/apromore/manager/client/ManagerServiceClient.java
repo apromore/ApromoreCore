@@ -28,6 +28,23 @@
 
 package org.apromore.manager.client;
 
+import static org.springframework.ws.soap.SoapVersion.SOAP_11;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
+
 import org.apromore.helper.PluginHelper;
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
@@ -39,22 +56,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import static org.springframework.ws.soap.SoapVersion.SOAP_11;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
-
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPException;
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Performance Test for the Apromore Manager Client.
@@ -573,142 +576,6 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<GetFragmentOutputMsgType> response = (JAXBElement<GetFragmentOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue();
-    }
-
-    /**
-     * @see ManagerService#createGedMatrix()
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void createGedMatrix() {
-        LOGGER.debug("Invoking create GED Matrix method ...");
-        CreateGEDMatrixInputMsgType msg = new CreateGEDMatrixInputMsgType();
-        JAXBElement<CreateGEDMatrixInputMsgType> request = WS_CLIENT_FACTORY.createCreateGEDMatrixRequest(msg);
-        webServiceTemplate.marshalSendAndReceive(request);
-    }
-
-    /**
-     * @see ManagerService#createGedMatrix()
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public GedMatrixSummaryType getGedMatrixSummary() {
-        LOGGER.debug("Invoking retrieve GED Matrix Summary method ...");
-        GetGedMatrixSummaryInputMsgType msg = new GetGedMatrixSummaryInputMsgType();
-        JAXBElement<GetGedMatrixSummaryInputMsgType> request = WS_CLIENT_FACTORY.createGetGedMatrixSummaryRequest(msg);
-        JAXBElement<GetGedMatrixSummaryOutputMsgType> response = (JAXBElement<GetGedMatrixSummaryOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getGedMatrixSummary();
-    }
-
-    /**
-     * @see ManagerService#createClusters(org.apromore.model.ClusterSettingsType)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void createClusters(final ClusterSettingsType settings) {
-        LOGGER.debug("Invoking create clusters method ...");
-
-        CreateClustersInputMsgType msg = new CreateClustersInputMsgType();
-        msg.setClusterSettings(settings);
-
-        JAXBElement<CreateClustersInputMsgType> request = WS_CLIENT_FACTORY.createCreateClustersRequest(msg);
-
-        webServiceTemplate.marshalSendAndReceive(request);
-    }
-
-    /**
-     * @see ManagerService#getPairwiseDistances(java.util.List)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<PairDistanceType> getPairwiseDistances(final List<Integer> fragmentIds) {
-        LOGGER.debug("Invoking get pairwise distances method ...");
-
-        GetPairwiseDistancesInputMsgType msg = new GetPairwiseDistancesInputMsgType();
-        msg.setFragmentIds(new FragmentIdsType());
-        for (Integer fid : fragmentIds) {
-            msg.getFragmentIds().getFragmentId().add(fid);
-        }
-        JAXBElement<GetPairwiseDistancesInputMsgType> request = WS_CLIENT_FACTORY.createPairwiseDistancesRequest(msg);
-
-        JAXBElement<GetPairwiseDistancesOutputMsgType> response = (JAXBElement<GetPairwiseDistancesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getPairDistances().getPairDistance();
-    }
-
-    /**
-     * @see ManagerService#getClusteringSummary()
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ClusteringSummaryType getClusteringSummary() {
-        LOGGER.debug("Invoking get clustering summary method ...");
-
-        GetClusteringSummaryInputMsgType msg = new GetClusteringSummaryInputMsgType();
-        msg.setParam1("Not required");
-
-        JAXBElement<GetClusteringSummaryInputMsgType> request = WS_CLIENT_FACTORY.createGetClusteringSummaryRequest(msg);
-
-        JAXBElement<GetClusteringSummaryOutputMsgType> response = (JAXBElement<GetClusteringSummaryOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getClusteringSummary();
-    }
-
-    /**
-     * @see ManagerService#getClusterSummaries(org.apromore.model.ClusterFilterType)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<ClusterSummaryType> getClusterSummaries(final ClusterFilterType filter) {
-        LOGGER.debug("Invoking get cluster summaries method ...");
-
-        GetClusterSummariesInputMsgType msg = new GetClusterSummariesInputMsgType();
-        msg.setFilter(filter);
-
-        JAXBElement<GetClusterSummariesInputMsgType> request = WS_CLIENT_FACTORY.createGetClusterSummariesRequest(msg);
-
-        JAXBElement<GetClusterSummariesOutputMsgType> response = (JAXBElement<GetClusterSummariesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getClusterSummaries();
-    }
-
-    /**
-     * @see ManagerService#getCluster(Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ClusterType getCluster(final Integer clusterId) {
-        LOGGER.debug("Invoking get cluster method ...");
-
-        GetClusterInputMsgType msg = new GetClusterInputMsgType();
-        msg.setClusterId(clusterId);
-
-        JAXBElement<GetClusterInputMsgType> request = WS_CLIENT_FACTORY.createGetClusterRequest(msg);
-
-        JAXBElement<GetClusterOutputMsgType> response = (JAXBElement<GetClusterOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getCluster();
-    }
-
-    /**
-     * @see ManagerService#getClusters(org.apromore.model.ClusterFilterType)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<ClusterType> getClusters(final ClusterFilterType filter) {
-        LOGGER.debug("Invoking get clusters method ...");
-
-        GetClustersRequestType msg = new GetClustersRequestType();
-        msg.setClusterFilter(filter);
-
-        JAXBElement<GetClustersRequestType> request = WS_CLIENT_FACTORY.createGetClustersRequest(msg);
-
-        JAXBElement<GetClustersResponseType> response = (JAXBElement<GetClustersResponseType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getClusters();
     }
 
     /**

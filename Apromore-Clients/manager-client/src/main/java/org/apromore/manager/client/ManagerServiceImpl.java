@@ -26,25 +26,24 @@ package org.apromore.manager.client;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 //import java.util.stream.Collectors;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
+
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
@@ -52,37 +51,64 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 //import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Group;
-import org.apromore.dao.model.HistoryEnum;
-import org.apromore.dao.model.HistoryEvent;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.StatusEnum;
 import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
-import org.apromore.exception.RepositoryException;
 import org.apromore.helper.CanoniserHelper;
 import org.apromore.helper.PluginHelper;
 import org.apromore.helper.Version;
-import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
-import org.apromore.manager.client.helper.MergeProcessesHelper;
-import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
-import org.apromore.mapper.*;
-import org.apromore.model.*;
+import org.apromore.mapper.DomainMapper;
+import org.apromore.mapper.GroupMapper;
+import org.apromore.mapper.NativeTypeMapper;
+import org.apromore.mapper.SearchHistoryMapper;
+import org.apromore.mapper.UserMapper;
+import org.apromore.mapper.WorkspaceMapper;
+import org.apromore.model.DomainsType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.ExportFragmentResultType;
+import org.apromore.model.ExportLogResultType;
+import org.apromore.model.FolderType;
+import org.apromore.model.GetFragmentOutputMsgType;
+import org.apromore.model.GroupAccessType;
+import org.apromore.model.GroupType;
+import org.apromore.model.ImportLogResultType;
+import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.NativeMetaData;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SearchHistoriesType;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.PluginRequestImpl;
-import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestParameterType;
 //import org.apromore.plugin.merge.logic.MergeService;
 //import org.apromore.plugin.similaritysearch.logic.SimilarityService;
-import org.apromore.service.*;
+import org.apromore.service.CanoniserService;
+import org.apromore.service.DeploymentService;
+import org.apromore.service.DomainService;
+import org.apromore.service.EventLogService;
+import org.apromore.service.FormatService;
+import org.apromore.service.FragmentService;
+import org.apromore.service.PluginService;
+import org.apromore.service.ProcessService;
+import org.apromore.service.SecurityService;
+import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.Cluster;
 import org.apromore.service.model.DecanonisedProcess;
 import org.apromore.service.model.ProcessData;
-import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Service;
 
 /**
@@ -97,7 +123,6 @@ public class ManagerServiceImpl implements ManagerService {
     @Inject private CanoniserService canoniserService;
     @Inject private ProcessService procSrv;
     @Inject private EventLogService logSrv;
-    @Inject private ClusterService clusterService;
     @Inject private FormatService frmSrv;
     @Inject private DomainService domSrv;
     @Inject private UserService userSrv;
@@ -330,122 +355,6 @@ public class ManagerServiceImpl implements ManagerService {
         return NativeTypeMapper.convertFromNativeType(frmSrv.findAllFormats());
     }
 
-
-    /**
-     * Create a GED Matrix used in the Cluster Creation.
-     */
-    @Override
-    public void createGedMatrix() {
-        try {
-            clusterService.computeGEDMatrix();
-
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Used to get some basic details about the GED matrix.
-     */
-    @Override
-    public GedMatrixSummaryType getGedMatrixSummary() {
-        GedMatrixSummaryType gedMatrixSummary = new GedMatrixSummaryType();
-        HistoryEvent gedMatrix = clusterService.getGedMatrixLastExecutionTime();
-        GregorianCalendar calendar = new GregorianCalendar();
-        try {
-            if (gedMatrix == null) {
-                gedMatrixSummary.setBuilt(false);
-                gedMatrixSummary.setBuildDate(null);
-            } else if (gedMatrix.getStatus() == StatusEnum.FINISHED && gedMatrix.getType() == HistoryEnum.GED_MATRIX_COMPUTATION) {
-                gedMatrixSummary.setBuilt(true);
-                calendar.setTime(gedMatrix.getOccurDate());
-                gedMatrixSummary.setBuildDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
-            } else if (gedMatrix.getStatus() == StatusEnum.START && gedMatrix.getType() == HistoryEnum.GED_MATRIX_COMPUTATION) {
-                gedMatrixSummary.setBuilt(false);
-                calendar.setTime(gedMatrix.getOccurDate());
-                gedMatrixSummary.setBuildDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
-            }
-
-            return gedMatrixSummary;
-
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Create a Cluster.
-     * @param settings The settings
-     */
-    @Override
-    public void createClusters(ClusterSettingsType settings) {
-        try {
-            clusterService.cluster(ClusterMapper.convertClusterSettingsTypeToClusterSettings(settings));
-
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Get the cluster Summaries.
-     * @param filter the search filter
-     * @return the list of cluster summaries
-     */
-    @Override
-    public List<ClusterSummaryType> getClusterSummaries(ClusterFilterType filter) {
-        //return clusterService.getClusterSummaries(ClusterMapper.convertClusterFilterTypeToClusterFilter(filter))
-        //                     .stream()
-        //                     .map(ClusterMapper::convertClusterInfoToClusterSummaryType)
-        //                     .collect(Collectors.toList());
-
-        List<ClusterSummaryType> clusterSummaries = new ArrayList<>();
-        for (org.apromore.dao.model.Cluster clusterInfo: clusterService.getClusterSummaries(ClusterMapper.convertClusterFilterTypeToClusterFilter(filter))) {
-            clusterSummaries.add(ClusterMapper.convertClusterInfoToClusterSummaryType(clusterInfo));
-        }
-
-        return clusterSummaries;
-    }
-
-    /**
-     * Get a Cluster.
-     * @param clusterId the Id of the Cluster we want
-     * @return the found cluster
-     */
-    @Override
-    public ClusterType getCluster(Integer clusterId) {
-        return ClusterMapper.convertClusterToClusterType(clusterService.getCluster(clusterId));
-    }
-
-    /**
-     * Get a list of clusters.
-     * @param filter the cluster Filter
-     * @return the found list of clusters
-     */
-    @Override
-    public List<ClusterType> getClusters(ClusterFilterType filter) {
-        //return clusterService.getClusters(ClusterMapper.convertClusterFilterTypeToClusterFilter(filter))
-        //                     .stream()
-        //                     .map(ClusterMapper::convertClusterToClusterType)
-        //                     .collect(Collectors.toList());
-
-        List<ClusterType> clusters = new ArrayList<>();
-        for (Cluster cluster: clusterService.getClusters(ClusterMapper.convertClusterFilterTypeToClusterFilter(filter))) {
-            clusters.add(ClusterMapper.convertClusterToClusterType(cluster));
-        }
-
-        return clusters;
-    }
-
-    /**
-     * the cluster summary.
-     * @return a summary of all clusters
-     */
-    @Override
-    public ClusteringSummaryType getClusteringSummary() {
-        return ClusterMapper.convertClusteringSummaryToClusteringSummaryType(clusterService.getClusteringSummary());
-    }
-
     /**
      * get a Fragment.
      * @param fragmentId the id of the fragment we want
@@ -475,22 +384,6 @@ public class ManagerServiceImpl implements ManagerService {
             return res;
 
         } catch (CanoniserException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * get the distance between two fragments.
-     * @param fragmentIds the Id's of the fragments want to find the distances.
-     * @return the list of distances
-     */
-    @Override
-    public List<PairDistanceType> getPairwiseDistances(List<Integer> fragmentIds) {
-        try {
-            return ClusterMapper.convertPairDistancesToPairDistancesType(clusterService.getPairDistances(fragmentIds))
-                                .getPairDistance();
-
-        } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }
     }

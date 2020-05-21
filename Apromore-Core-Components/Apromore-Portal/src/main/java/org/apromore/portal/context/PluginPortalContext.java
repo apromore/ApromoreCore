@@ -26,21 +26,27 @@
 
 package org.apromore.portal.context;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.io.IOUtils;
-import org.apromore.model.*;
-import org.apromore.plugin.portal.*;
+import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.UserType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalSelection;
+import org.apromore.plugin.portal.PortalUI;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementation of the PortalContext that is use by portal plug-ins to communicate with the portal.
@@ -144,10 +150,5 @@ public class PluginPortalContext implements PortalContext {
     @Override
     public void refreshContent() {
         mainController.refresh();
-    }
-
-    @Override
-    public void displaySimilarityClusters(final ClusterFilterType filter) {
-        mainController.displaySimilarityClusters(filter);
     }
 }

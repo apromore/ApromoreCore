@@ -40,9 +40,4 @@ public interface SchedulerService {
      */
     void runMetricCalculations();
 
-
-    /**
-     * Runs the GED Matrix Computation
-     */
-    void runGEDMatrixComputation();
 }
