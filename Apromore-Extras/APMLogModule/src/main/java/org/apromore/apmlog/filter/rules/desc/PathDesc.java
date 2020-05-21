@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,8 +29,13 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.util.TimeUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Chii Chang
+ */
 public class PathDesc {
 
     public static String getDescription(LogFilterRule logFilterRule) {
@@ -49,14 +54,32 @@ public class PathDesc {
 
         desc += "of the \"" + mainAttrKey + "\" equal to [" ;
 
-        String fromVal = "", toVal = "";
+        List<String> fromList = new ArrayList<>();
+        List<String> toList = new ArrayList<>();
+
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
             OperationType operationType = ruleValue.getOperationType();
-            if (operationType == OperationType.FROM) fromVal = ruleValue.getStringValue();
-            if (operationType == OperationType.TO) toVal = ruleValue.getStringValue();
+            if (operationType == OperationType.FROM) {
+                String fromVal = ruleValue.getStringValue();
+                fromList.add(fromVal);
+            }
+            if (operationType == OperationType.TO) {
+                String toVal = ruleValue.getStringValue();
+                toList.add(toVal);
+            }
         }
 
-        desc += fromVal + " => " + toVal + "] ";
+        for (int i = 0; i < fromList.size(); i++) {
+            String fromVal = fromList.get(i);
+            for (int j = 0; j < toList.size(); j++) {
+                String toVal = toList.get(j);
+                desc += fromVal + " => " + toVal;
+                if (j < toList.size()-1) desc += ", ";
+            }
+            if (i < fromList.size()-1) desc += ", ";
+        }
+
+        desc += "]";
 
         Set<RuleValue> secondaryValues = logFilterRule.getSecondaryValues();
 
