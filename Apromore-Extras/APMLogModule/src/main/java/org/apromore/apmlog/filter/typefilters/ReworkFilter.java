@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,12 +30,16 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Chii Chang
+ */
 public class ReworkFilter {
     public static boolean toKeep(LaTrace pTrace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
@@ -47,32 +51,79 @@ public class ReworkFilter {
 
     private static boolean conformRule(LaTrace pTrace, LogFilterRule logFilterRule) {
 
+        Set<RuleValue> primaryVals = logFilterRule.getPrimaryValues();
+
+        UnifiedMap<String, Integer> ruleActMatchMap = new UnifiedMap<>();
+
+        for (RuleValue rv : primaryVals) {
+            String key = rv.getKey();
+            if (ruleActMatchMap.containsKey(key)) {
+                int num = ruleActMatchMap.get(key) + 1;
+                ruleActMatchMap.put(key, num);
+            } else ruleActMatchMap.put(key, 1);
+        }
 
         Inclusion inclusion = logFilterRule.getInclusion();
 
         Map<String, Integer> actNameOccurMap = getActivityNameOccurMap(pTrace);
 
-        Set<RuleValue> primaryVals = logFilterRule.getPrimaryValues();
+        UnifiedMap<String, Integer> matchedCountMap = new UnifiedMap<>();
+        for (String key : ruleActMatchMap.keySet()) {
+            matchedCountMap.put(key, 0);
+        }
 
-        int matchCount = 0;
+        for (String actName : actNameOccurMap.keySet()) {
+            int occur = actNameOccurMap.get(actName);
 
-        for (RuleValue rv : primaryVals) {
-            String key = rv.getKey();
-            if (actNameOccurMap.keySet().contains(key)) {
-                int occur = actNameOccurMap.get(key);
-                OperationType operationType = rv.getOperationType();
-                int intVal = rv.getIntValue();
 
-                if (operationType == OperationType.GREATER && occur > intVal) matchCount += 1;
-                if (operationType == OperationType.GREATER_EQUAL && occur >= intVal) matchCount += 1;
-                if (operationType == OperationType.LESS && occur < intVal) matchCount += 1;
-                if (operationType == OperationType.LESS_EQUAL && occur <= intVal) matchCount += 1;
 
+            for (RuleValue rv : primaryVals) {
+                String rvKey = rv.getKey();
+                if (rvKey.equals(actName)) {
+                    OperationType operationType = rv.getOperationType();
+                    int intVal = rv.getIntValue();
+
+
+                    if (operationType == OperationType.GREATER) {
+                        if (occur <= intVal) {
+                            break;
+                        }
+                    }
+
+                    if (operationType == OperationType.GREATER_EQUAL) {
+                        if (occur < intVal) {
+                            break;
+                        }
+                    }
+
+                    if (operationType == OperationType.LESS) {
+                        if (occur >= intVal) {
+                            break;
+                        }
+                    }
+
+                    if (operationType == OperationType.LESS_EQUAL) {
+                        if (occur > intVal) {
+                            break;
+                        }
+                    }
+
+                    int count = matchedCountMap.get(rvKey) + 1;
+                    matchedCountMap.put(rvKey, count);
+                }
             }
         }
 
-        if (matchCount == 0) return false;
-        if (inclusion == Inclusion.ALL_VALUES && matchCount < primaryVals.size()) return false;
+        int totalMatchedRule = 0;
+
+        for (String key : ruleActMatchMap.keySet()) {
+            int reqMatch = ruleActMatchMap.get(key);
+            int realMatch = matchedCountMap.get(key);
+            if (reqMatch == realMatch) totalMatchedRule += 1;
+        }
+
+        if (totalMatchedRule == 0) return false;
+        if (inclusion == Inclusion.ALL_VALUES && totalMatchedRule < ruleActMatchMap.size()) return false;
 
         return true;
     }
