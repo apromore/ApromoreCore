@@ -28,16 +28,36 @@
 
 package org.apromore.manager.client;
 
-import org.apromore.model.*;
-import org.apromore.plugin.property.RequestParameterType;
-import org.deckfour.xes.model.XLog;
-
-import javax.activation.DataHandler;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.activation.DataHandler;
+
+import org.apromore.model.DomainsType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.ExportLogResultType;
+import org.apromore.model.FolderType;
+import org.apromore.model.GetFragmentOutputMsgType;
+import org.apromore.model.GroupAccessType;
+import org.apromore.model.GroupType;
+import org.apromore.model.ImportLogResultType;
+import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.NativeMetaData;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SearchHistoriesType;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestParameterType;
 
 /**
  * Manager interface.
@@ -142,63 +162,12 @@ public interface ManagerService {
      */
     NativeTypesType readNativeTypes();
 
-
-    /**
-     * Create a GED Matrix used in the Cluster Creation.
-     */
-    void createGedMatrix();
-
-    /**
-     * Used to get some basic details about the GED matrix.
-     */
-    GedMatrixSummaryType getGedMatrixSummary();
-
-    /**
-     * Create a Cluster.
-     * @param settings The settings
-     */
-    void createClusters(ClusterSettingsType settings);
-
-    /**
-     * Get the cluster Summaries.
-     * @param filter the search filter
-     * @return the list of cluster summaries
-     */
-    List<ClusterSummaryType> getClusterSummaries(ClusterFilterType filter);
-
-    /**
-     * Get a Cluster.
-     * @param clusterId the Id of the Cluster we want
-     * @return the found cluster
-     */
-    ClusterType getCluster(Integer clusterId);
-
-    /**
-     * Get a list of clusters.
-     * @param filter the cluster Filter
-     * @return the found list of clusters
-     */
-    List<ClusterType> getClusters(ClusterFilterType filter);
-
-    /**
-     * the cluster summary.
-     * @return a summary of all clusters
-     */
-    ClusteringSummaryType getClusteringSummary();
-
     /**
      * get a Fragment.
      * @param fragmentId the id of the fragment we want
      * @return the found fragment
      */
     GetFragmentOutputMsgType getFragment(Integer fragmentId);
-
-    /**
-     * get the distance between two fragments.
-     * @param fragmentIds the Id's of the fragments want to find the distances.
-     * @return the list of distances
-     */
-    List<PairDistanceType> getPairwiseDistances(List<Integer> fragmentIds);
 
     /**
      * Get the Process Summaries from the Apromore Manager.

@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.dataObject.FragmentDataObject;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 
 /**
  * Analysis Service. Used for the Node Usage Analyser and parts of the Repository Analyser.

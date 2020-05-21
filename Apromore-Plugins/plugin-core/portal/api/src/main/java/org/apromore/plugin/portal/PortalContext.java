@@ -26,7 +26,6 @@
 
 package org.apromore.plugin.portal;
 
-import org.apromore.model.ClusterFilterType;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
@@ -75,8 +74,6 @@ public interface PortalContext {
     Object getAttribute(String attribute);
 
     void refreshContent();
-
-    void displaySimilarityClusters(final ClusterFilterType filter);
 
     MainControllerInterface getMainController();
 }

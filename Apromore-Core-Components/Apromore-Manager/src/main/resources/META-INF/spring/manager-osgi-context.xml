@@ -70,7 +70,6 @@
     <osgi:service ref="fragmentServiceImpl" interface="org.apromore.service.FragmentService" auto-export="interfaces"/>
     <osgi:service ref="canoniserServiceImpl" interface="org.apromore.service.CanoniserService" auto-export="interfaces"/>
     <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>
-    <osgi:service ref="clusterServiceImpl" interface="org.apromore.service.ClusterService" auto-export="interfaces"/>
     <osgi:service ref="formatServiceImpl" interface="org.apromore.service.FormatService" auto-export="interfaces"/>
     <osgi:service ref="domainServiceImpl" interface="org.apromore.service.DomainService" auto-export="interfaces"/>
     <osgi:service ref="userServiceImpl" interface="org.apromore.service.UserService" auto-export="interfaces"/>

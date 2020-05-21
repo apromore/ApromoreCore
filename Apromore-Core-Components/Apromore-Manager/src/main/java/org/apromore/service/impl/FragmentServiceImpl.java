@@ -26,7 +26,6 @@
 
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +33,13 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
+import org.apromore.dao.dataObject.FragmentDataObject;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -48,7 +50,6 @@ import org.apromore.service.CanonicalConverter;
 import org.apromore.service.ComposerService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

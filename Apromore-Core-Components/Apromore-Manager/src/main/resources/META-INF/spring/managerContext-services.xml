@@ -42,10 +42,6 @@
     <context:component-scan base-package="org.apromore.toolbox"/>
     <context:component-scan base-package="org.apromore.manager"/>
 
-    <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
-        <constructor-arg value="${ged.enabled}"/>
-    </bean>
-
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="defaultEncoding" value="UTF-8"/>
         <property name="host" value="${mail.host}"/>

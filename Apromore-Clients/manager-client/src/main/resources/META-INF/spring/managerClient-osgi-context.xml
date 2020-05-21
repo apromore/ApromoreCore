@@ -42,7 +42,6 @@
     <osgi:reference id="fragmentServiceImpl" interface="org.apromore.service.FragmentService"/>
     <osgi:reference id="canoniserServiceImpl" interface="org.apromore.service.CanoniserService"/>
     <osgi:reference id="processServiceImpl" interface="org.apromore.service.ProcessService"/>
-    <osgi:reference id="clusterServiceImpl" interface="org.apromore.service.ClusterService"/>
     <osgi:reference id="formatServiceImpl" interface="org.apromore.service.FormatService"/>
     <osgi:reference id="domainServiceImpl" interface="org.apromore.service.DomainService"/>
     <osgi:reference id="userServiceImpl" interface="org.apromore.service.UserService"/>
