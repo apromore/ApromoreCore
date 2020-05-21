@@ -71,6 +71,7 @@
     <artifact type="bundle" name="org.apromore.plugin.generic-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.about-portal-plugin" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
     <!--<artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/> -->

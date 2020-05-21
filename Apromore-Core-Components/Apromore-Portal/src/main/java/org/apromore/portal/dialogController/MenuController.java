@@ -63,13 +63,15 @@ public class MenuController extends Menubar {
 
     private final MainController mainC;
     private Menubar menuB;
+    private Menubar userMenu;
+    private Menuitem aboutMenuitem;
     private PortalContext portalContext;
 
     public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
         this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
-
+        this.userMenu = (Menubar) this.mainC.getFellow("userMenu");
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
             
@@ -109,8 +111,20 @@ public class MenuController extends Menubar {
                 } else {
                     menuitem.setImageContent(plugin.getIcon());
                 }
-                menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
+                String label = plugin.getLabel(Locale.getDefault());
+                menuitem.setLabel(label);
                 menuitem.setDisabled(plugin.getAvailability(portalContext) == PortalPlugin.Availability.DISABLED);
+                menuitem.addEventListener("onClick", new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        plugin.execute(new PluginPortalContext(mainC));
+                    }
+                });
+
+                if ("About".equals(menu.getLabel())) {
+                    aboutMenuitem = menuitem;
+                    continue;
+                }
 
                 // Insert the menu item into the appropriate position within the menu
                 // (As configured in site.properties in the case of the File menu, alphabetically otherwise)
@@ -128,17 +142,12 @@ public class MenuController extends Menubar {
                 }
                 menu.getMenupopup().insertBefore(menuitem, precedingMenuitem);
 
-                menuitem.addEventListener("onClick", new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        plugin.execute(new PluginPortalContext(mainC));
-                    }
-                });
             }
 
             // Add the menus to the menu bar
             for (final Menu menu: menuMap.values()) {
-                if (!"Account".equals(menu.getLabel())) {
+                if (!"Account".equals(menu.getLabel()) &&
+                    !"About".equals(menu.getLabel())) {
                     menuB.appendChild(menu);
                 }
             }
@@ -151,13 +160,15 @@ public class MenuController extends Menubar {
             for (final Menu menu: menuMap.values()) {
                 if ("Account".equals(menu.getLabel())) {
                     try {
-                        menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
-                        menu.setSclass("ap-user-menu");
+                        // menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
+                        // menu.setSclass("ap-user-menu");
+                        // menuB.appendChild(menu);
+                        Menupopup userMenupopup = menu.getMenupopup();
+                        userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
+                        this.userMenu.appendChild(menu);
                     } catch (Exception e) {
                         LOGGER.warn("Unable to set Account menu to current user name", e);
                     }
-
-                    menuB.appendChild(menu);
                 }
             }
         }
