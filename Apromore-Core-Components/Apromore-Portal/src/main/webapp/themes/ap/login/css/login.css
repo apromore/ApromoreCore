@@ -4,16 +4,18 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -406,8 +408,13 @@ body > * {
     margin-bottom: 9px;
 }
 
+/* T&C and PP agreement */
+.ap-comply span.z-html {
+    display: inline-block;
+}
+
 /* footer links */
-ul.ap-h-links {
+.ap-h-links {
     color: #fff;
     list-style-type: none;
     margin: 0;
@@ -415,21 +422,20 @@ ul.ap-h-links {
     display: inline-block;
 }
 
-.ap-h-links li {
-    display: inline;
-    margin: 0 0 0 10px;
+.ap-h-links span.z-html {
+    display: inline-block;
 }
 
-.ap-h-links li:first-child {
+.ap-h-links span:first-child {
     margin: 0 0 0 0;
 }
 
-.ap-h-links li:after {
-    margin-left: 10px;
+.ap-h-links span:after {
+    margin: 0 10px;
     content: '|';
 }
 
-.ap-h-links li:last-child:after {
+.ap-h-links span:last-child:after {
     margin-left: 0;
     content: '';
 }

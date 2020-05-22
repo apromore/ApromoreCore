@@ -7,6 +7,8 @@
  * %%
  * Copyright (C) 2018 - 2020 The University of Melbourne.
  * %%
+ * Copyright (C) 2020, Apromore Pty Ltd.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -25,8 +27,6 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.*;
-import org.apromore.model.Detail;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.SessionTab;
@@ -60,12 +60,42 @@ public class LoginController extends BaseController {
      */
     public void onCreate() throws InterruptedException {
         Window mainW = (Window) this.getFellow("login-main");
+        Div registerBtn = (Div) mainW.getFellow("registerBtn");
         Div agree = (Div) mainW.getFellow("agree");
+        Div subscribe = (Div) mainW.getFellow("subscribe");
+        Div role = (Div) mainW.getFellow("role");
+        Div organization = (Div) mainW.getFellow("organization");
+        Div country = (Div) mainW.getFellow("country");
+        Div phone = (Div) mainW.getFellow("phone");
+        Html ppAgree = (Html) mainW.getFellow("ppAgree");
+        Html andAgree = (Html) mainW.getFellow("andAgree");
+        Html tcAgree = (Html) mainW.getFellow("tcAgree");
+        Html ppLink = (Html) mainW.getFellow("ppLink");
+        Html tcLink = (Html) mainW.getFellow("tcLink");
         Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
         String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
         boolean enableTC = config.getEnableTC();
-        agree.setVisible(enableTC);
+        boolean enablePP = config.getEnablePP();
+        boolean enableUserReg = config.getEnableUserReg();
+        boolean enableFullUserReg = config.getEnableFullUserReg();
+        boolean enableSubscription = config.getEnableSubscription();
+
+        registerBtn.setVisible(enableUserReg);
+        subscribe.setVisible(enableSubscription);
+        tcLink.setVisible(enableTC);
+        ppLink.setVisible(enablePP);
+        tcAgree.setVisible(enableTC);
+        ppAgree.setVisible(enablePP);
+        agree.setVisible(enableTC || enablePP);
+        andAgree.setVisible(enableTC && enablePP);
+
+        if (enableFullUserReg) {
+            role.setVisible(true);
+            organization.setVisible(true);
+            country.setVisible(true);
+            phone.setVisible(true);
+        }
 
         if (config.isCommunity()) {
             src += "-" + "community";
