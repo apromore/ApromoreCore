@@ -69,17 +69,29 @@ public class LoginController extends BaseController {
         Div organization = (Div) mainW.getFellow("organization");
         Div country = (Div) mainW.getFellow("country");
         Div phone = (Div) mainW.getFellow("phone");
+        Html ppAgree = (Html) mainW.getFellow("ppAgree");
+        Html andAgree = (Html) mainW.getFellow("andAgree");
+        Html tcAgree = (Html) mainW.getFellow("tcAgree");
+        Html ppLink = (Html) mainW.getFellow("ppLink");
+        Html tcLink = (Html) mainW.getFellow("tcLink");
         Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
         String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
         boolean enableTC = config.getEnableTC();
+        boolean enablePP = config.getEnablePP();
         boolean enableUserReg = config.getEnableUserReg();
         boolean enableFullUserReg = config.getEnableFullUserReg();
         boolean enableSubscription = config.getEnableSubscription();
 
         registerBtn.setVisible(enableUserReg);
-        agree.setVisible(enableTC);
         subscribe.setVisible(enableSubscription);
+        tcLink.setVisible(enableTC);
+        ppLink.setVisible(enablePP);
+        tcAgree.setVisible(enableTC);
+        ppAgree.setVisible(enablePP);
+        agree.setVisible(enableTC || enablePP);
+        andAgree.setVisible(enableTC && enablePP);
+
         if (enableFullUserReg) {
             role.setVisible(true);
             organization.setVisible(true);

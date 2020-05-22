@@ -238,8 +238,15 @@
                       <h:input type="checkbox" id="ap-agree" />
                       <h:span>
                         I agree with the
-                        <h:a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</h:a> and the
-                        <h:a href="https://apromore.org/privacy-policy/">Privacy Policy</h:a>
+                        <html id="tcAgree">
+                          <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a>
+                        </html>
+                        <html id="andAgree">
+                        and the
+                        </html>
+                        <html id="ppAgree">
+                          <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+                        </html>
                       </h:span>
                     </div>
                     <div id="subscribe" visible="false">
@@ -267,26 +274,18 @@
           </h:div>
         </h:div>
 
-        <html>
-          <h:div class="left-footer">
-            <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
-            <h:ul class="ap-h-links">
-              <h:li>
-                <h:a href="https://apromore.org/terms-and-conditions/">
-                  Terms &amp; Conditions
-                </h:a>
-              </h:li>
-              <h:li>
-                <h:a href="https://apromore.org/privacy-policy/">
-                  Privacy Policy
-                </h:a>
-              </h:li>
-              <h:li>
-                ${labels.e.common.contact.text}
-              </h:li>
-            </h:ul>
+        <h:div class="left-footer">
+          <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
+          <h:div class="ap-h-links">
+            <html id="tcLink">
+              <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a>
+            </html>
+            <html id="ppLink">
+              <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+            </html>
+            <html>${labels.e.common.contact.text}</html>
           </h:div>
-        </html>
+        </h:div>
         <h:div class="slant-separator">
         </h:div>
       </h:div>
