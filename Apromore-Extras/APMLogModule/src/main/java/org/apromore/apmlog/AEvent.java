@@ -87,13 +87,15 @@ public class AEvent implements Serializable {
                     !key.equals("lifecycle:transition") &&
                     !key.equals("org:resource") &&
                     !key.equals("time:timestamp")) {
-                if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
-                    this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()));
-                } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
-                    this.attributeMap.put(key, String.valueOf(((XAttributeDiscreteImpl) xAttributeMap.get(key)).getValue()));
-                } else if (xAttributeMap.get(key) instanceof XAttributeIDImpl) {
-                    this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()));
-                }
+//                if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
+//                    this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()));
+//                } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
+//                    this.attributeMap.put(key, String.valueOf(((XAttributeDiscreteImpl) xAttributeMap.get(key)).getValue()));
+//                } else if (xAttributeMap.get(key) instanceof XAttributeIDImpl) {
+//                    this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()));
+//                }
+                this.attributeMap.put(key, xAttributeMap.get(key).toString());
+
             }
 
         }
