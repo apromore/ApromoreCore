@@ -49,6 +49,7 @@ public class ConfigBean implements Serializable {
     private String  versionBuildDate;
     private boolean  enablePublish;
     private boolean  enableTC;
+    private boolean  enablePP;
     private boolean  enableUserReg;
     private boolean  enableFullUserReg;
     private boolean  enableSubscription;
@@ -57,7 +58,7 @@ public class ConfigBean implements Serializable {
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore,
                       String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber,
-                      String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC,
+                      String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC, boolean enablePP,
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
@@ -84,6 +85,7 @@ public class ConfigBean implements Serializable {
         this.versionBuildDate   = versionBuildDate;
         this.enablePublish      = enablePublish;
         this.enableTC           = enableTC;
+        this.enablePP           = enablePP;
         this.enableUserReg      = enableUserReg;
         this.enableFullUserReg  = enableFullUserReg;
         this.enableSubscription = enableSubscription;
@@ -101,6 +103,7 @@ public class ConfigBean implements Serializable {
     public String getVersionBuildDate()     { return versionBuildDate; }
     public boolean getEnablePublish()       { return enablePublish; }
     public boolean getEnableTC()            { return enableTC; }
+    public boolean getEnablePP()            { return enablePP; }
     public boolean getEnableUserReg()       { return enableUserReg; }
     public boolean getEnableFullUserReg()   { return enableFullUserReg; }
     public boolean getEnableSubscription()  { return enableSubscription; }
