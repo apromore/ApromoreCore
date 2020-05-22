@@ -553,6 +553,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-user-circle {
+    background-image: url('user-circle.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-user {
     background-image: url('user.svg') !important;
     width: 26px !important;

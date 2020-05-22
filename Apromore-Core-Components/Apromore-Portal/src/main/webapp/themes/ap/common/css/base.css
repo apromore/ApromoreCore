@@ -245,7 +245,9 @@
     text-decoration: none;
 }
 
+.ap-header-actions .ap-icon:focus,
 .ap-header-actions .ap-icon {
+    background-color: transparent !important;
     filter: var(--ap-filter-ico-normal-light);
 }
 
