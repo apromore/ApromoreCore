@@ -408,8 +408,13 @@ body > * {
     margin-bottom: 9px;
 }
 
+/* T&C and PP agreement */
+.ap-comply span.z-html {
+    display: inline-block;
+}
+
 /* footer links */
-ul.ap-h-links {
+.ap-h-links {
     color: #fff;
     list-style-type: none;
     margin: 0;
@@ -417,21 +422,20 @@ ul.ap-h-links {
     display: inline-block;
 }
 
-.ap-h-links li {
-    display: inline;
-    margin: 0 0 0 10px;
+.ap-h-links span.z-html {
+    display: inline-block;
 }
 
-.ap-h-links li:first-child {
+.ap-h-links span:first-child {
     margin: 0 0 0 0;
 }
 
-.ap-h-links li:after {
-    margin-left: 10px;
+.ap-h-links span:after {
+    margin: 0 10px;
     content: '|';
 }
 
-.ap-h-links li:last-child:after {
+.ap-h-links span:last-child:after {
     margin-left: 0;
     content: '';
 }
