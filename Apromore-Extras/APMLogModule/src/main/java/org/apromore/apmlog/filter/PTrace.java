@@ -1,33 +1,22 @@
 /*-
  * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
- * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
+ * Process Discoverer Logic
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * This file is part of "Apromore".
+ * %%
+ * Copyright (C) 2019 - 2020 The University of Melbourne. All rights reserved.
+ * %%
  * #L%
  */
-
 
 
 package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.*;
 import org.apromore.apmlog.util.Util;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -45,6 +34,7 @@ import java.util.List;
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (06/03/2020)
  * Modified: Chii Chang (12/03/2020)
+ * Modified: Chii Chang (24/05/2020)
  */
 public class PTrace implements Comparable<PTrace>, LaTrace {
 
@@ -120,6 +110,8 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
     private UnifiedMap<String, String> previousAttributeMap;
     private List<String> previousActivityNameList;
     private UnifiedSet<String> previousEventNameSet;
+
+    private IntArrayList markedIndex;
 
     private APMLog apmLog;
 
@@ -374,7 +366,7 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
             this.activityNameIndexList = new ArrayList<>();
 
 
-            IntArrayList markedIndex = new IntArrayList();
+            markedIndex = new IntArrayList();
 
             List<Long> allTimestamps = new ArrayList<>();
 
@@ -391,12 +383,7 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
 
                     long eventTime = iAEvent.getTimestampMilli();
                     allTimestamps.add(eventTime);
-//                if(startTimeMilli == -1 || startTimeMilli > eventTime) {
-//                    startTimeMilli = eventTime;
-//                }
-//                if(endTimeMilli == -1 || endTimeMilli < eventTime) {
-//                    endTimeMilli = eventTime;
-//                }
+
                     this.eventNameSet.put(iAEvent.getName());
 
                     fillEventAttributeValueFreqMap(iAEvent);
@@ -406,8 +393,9 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
 
                     if (iAEvent.getLifecycle().toLowerCase().equals("start")) {
                         actEventList.add(iAEvent);
-                        IntArrayList follows = getFollowUpIndexes(i + 1, conceptName, this.eventList);
-                        if (follows.size() > 0) {
+                        IntArrayList follows = getFollowUpIndexes(i , conceptName, this.eventList);
+//                        IntArrayList follows = getFollowUpIndexes(this.eventList, i+1, conceptName );
+                        if (follows != null) {
                             for (int j = 0; j < follows.size(); j++) {
                                 int eventIndex = follows.get(j);
                                 markedIndex.add(follows.get(j));
@@ -428,98 +416,6 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
                     }
                 }
 
-//            AEvent iAEvent = this.eventList.get(i);
-//
-//            long eventTime = iAEvent.getTimestampMilli();
-//
-//            if(startTimeMilli == -1 || startTimeMilli > eventTime) {
-//                startTimeMilli = eventTime;
-//            }
-//            if(endTimeMilli == -1 || endTimeMilli < eventTime) {
-//                endTimeMilli = eventTime;
-//            }
-//
-//            this.eventNameSet.put(iAEvent.getName());
-//
-//            fillEventAttributeValueFreqMap(iAEvent);
-
-//            if(iAEvent.getLifecycle().equals("start")) {
-//
-//                markedEvent.put(iAEvent);
-//
-//                String startEventName = iAEvent.getName();
-//
-//                /**
-//                 * Find the waiting time
-//                 */
-//                long iTime = iAEvent.getTimestampMilli();
-//
-//                if(i > 0) {
-//                    for(int j=(i-1); j >=0; j--) {
-//                        AEvent preAEvent = this.eventList.get(j);
-//                        if(preAEvent.getLifecycle().equals("complete")) {
-//                            long preTime = preAEvent.getTimestampMilli();
-//                            if(iTime > preTime) {
-//                                long waitingTime = iTime - preTime;
-//                                this.totalWaitingTime += waitingTime;
-//                                waitCount += 1;
-//                                if(waitingTime > this.maxWaitingTime) {
-//                                    this.maxWaitingTime = waitingTime;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                boolean hasComplete = false;
-//
-//                /**
-//                 * Find the duration
-//                 */
-//                if((i+1) <= (this.eventList.size()-1)) {
-//                    for(int j=(i+1); j < this.eventList.size(); j++) {
-//                        AEvent jAEvent = this.eventList.get(j);
-//                        if(jAEvent.getName().equals(startEventName) &&
-//                                jAEvent.getLifecycle().equals("complete")) {
-//
-//                            long endTime = jAEvent.getTimestampMilli();
-//                            if(endTime > iTime) {
-//                                long processTime = endTime - iTime;
-//                                this.totalProcessingTime += processTime;
-//                                if(processTime > this.maxProcessingTime) this.maxProcessingTime = processTime;
-//                                processCount += 1;
-//
-//                                List<AEvent> aEventListForAct = new ArrayList<>();
-//                                aEventListForAct.add(iAEvent);
-//                                aEventListForAct.add(jAEvent);
-//                                AActivity aActivity = new AActivity(aEventListForAct);
-//                                this.activityList.add(aActivity);
-//                                this.activityNameList.add(aActivity.getName());
-//
-//                                this.activityNameIndexList.add(
-//                                        apmLog.getActivityNameMapper().set(aActivity.getName()));
-//
-//                                markedEvent.put(jAEvent);
-//                                hasComplete = true;
-//                            }
-//
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//
-//
-//            if( !markedEvent.contains(iAEvent) && iAEvent.getLifecycle().toLowerCase().equals("complete")) {
-//                List<AEvent> aEventListForAct = new ArrayList<>();
-//                aEventListForAct.add(iAEvent);
-//                AActivity aActivity = new AActivity(aEventListForAct);
-//                this.activityList.add(aActivity);
-//                this.activityNameList.add(aActivity.getName());
-//
-//                this.activityNameIndexList.add(
-//                        apmLog.getActivityNameMapper().set(aActivity.getName()));
-//            }
             }
             if (this.totalProcessingTime > 0 && processCount > 0)
                 this.averageProcessingTime = this.totalProcessingTime / processCount;
@@ -529,15 +425,12 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
             long firstTS = allTimestamps.get(0);
             long lastTS = allTimestamps.get(allTimestamps.size() - 1);
 
-//        if(getCaseId().equals("0050554374")) {
-//            System.out.println("PAUSE");
-//        }
+
             this.startTimeMilli = firstTS;
             this.endTimeMilli = lastTS;
 
             this.duration = lastTS - firstTS;
 
-//        this.duration = endTimeMilli - startTimeMilli;
         } else {
             this.activityList = new ArrayList<>();
             this.eventAttributeValueFreqMap = new UnifiedMap<>();
@@ -559,23 +452,93 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
     }
 
     private IntArrayList getFollowUpIndexes(int from, String conceptName, List<AEvent> eventList) {
+
+        AEvent fromEvent = eventList.get(from);
+
         IntArrayList follows = new IntArrayList();
-        for (int i = from; i < eventList.size(); i++) {
-            AEvent aEvent = eventList.get(i);
-            String actName = aEvent.getName();
-            if (actName.equals(conceptName)) {
-                String lifecycle = aEvent.getLifecycle();
-                if (lifecycle.toLowerCase().equals("start")) {
-                    break;
-                }else if(lifecycle.toLowerCase().equals("complete")) {
-                    follows.add(i);
-                    break;
-                } else {
-                    follows.add(i);
+        for (int i = from + 1; i < eventList.size(); i++) {
+            if (!markedIndex.contains(i)) {
+                AEvent aEvent = eventList.get(i);
+
+                if (haveSameAttributeValues(fromEvent, aEvent)) {
+                    String lifecycle = aEvent.getLifecycle();
+                    if (lifecycle.toLowerCase().equals("start")) {
+                        //break;
+                    } else if (lifecycle.equals("complete") ||
+                            lifecycle.equals("manualskip") ||
+                            lifecycle.equals("autoskip")) {
+                        follows.add(i);
+                        break;
+                    } else {
+                        follows.add(i);
+                    }
                 }
+
+//                String actName = aEvent.getName();
+//                if (actName.equals(conceptName)) {
+//                    String lifecycle = aEvent.getLifecycle();
+//                    if (lifecycle.toLowerCase().equals("start")) {
+//                        //break;
+//                    } else if (lifecycle.equals("complete") ||
+//                            lifecycle.equals("manualskip") ||
+//                            lifecycle.equals("autoskip")) {
+//                        follows.add(i);
+//                        break;
+//                    } else {
+//                        follows.add(i);
+//                    }
+//                }
             }
         }
         return follows;
+    }
+
+    private IntArrayList getFollowUpIndexes(List<AEvent> eventList, int fromIndex, String conceptName) {
+
+        AEvent startEvent = eventList.get(fromIndex);
+
+        IntArrayList followUpIndex = new IntArrayList();
+
+        if ( (fromIndex + 1) < eventList.size()) {
+            for (int i = (fromIndex + 1); i < eventList.size(); i++) {
+
+                if (!markedIndex.contains(i)) {
+                    AEvent aEvent = eventList.get(i);
+
+                    String lifecycle = aEvent.getLifecycle().toLowerCase();
+
+                    if (haveSameAttributeValues(startEvent, aEvent)) {
+                        if (!lifecycle.equals("start")) {
+                            followUpIndex.add(i);
+                            if (lifecycle.equals("complete") ||
+                                    lifecycle.equals("manualskip") ||
+                                    lifecycle.equals("autoskip")) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return followUpIndex;
+        } else return null;
+    }
+
+    private boolean haveSameAttributeValues(AEvent aEvent1, AEvent aEvent2) {
+
+        if (!aEvent1.getName().equals(aEvent2.getName())) return false;
+        if (!aEvent1.getResource().equals(aEvent2.getResource())) return false;
+
+        UnifiedMap<String, String> attrMap1 = aEvent1.getAttributeMap();
+        UnifiedMap<String, String> attrMap2 = aEvent2.getAttributeMap();
+
+        for (String key : attrMap1.keySet()) {
+            if (!attrMap2.containsKey(key)) return false;
+            String val1 = attrMap1.get(key);
+            String val2 = attrMap2.get(key);
+            if (!val1.equals(val2)) return false;
+        }
+
+        return true;
     }
 
     public List<Integer> getActivityNameIndexList() {
@@ -748,6 +711,9 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
         return previousValidEventIndexBS;
     }
 
+    public void setOriginalValidEventIndexBS(BitSet originalValidEventIndexBS) {
+        this.originalValidEventIndexBS = originalValidEventIndexBS;
+    }
 
     public ATrace toATrace() {
 //        if(getCaseId().equals("0050554374")) {

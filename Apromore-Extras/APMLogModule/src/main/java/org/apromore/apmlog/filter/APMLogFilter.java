@@ -278,6 +278,7 @@ public class APMLogFilter {
 
         UnifiedSet<Integer> variSet = new UnifiedSet<>();
         for(PTrace pTrace : pTraceList) {
+
             long dur = pTrace.getDuration();
             long st = pTrace.getStartTimeMilli();
             long et = pTrace.getEndTimeMilli();

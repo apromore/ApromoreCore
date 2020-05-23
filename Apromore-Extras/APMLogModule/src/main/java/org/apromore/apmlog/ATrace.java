@@ -48,6 +48,7 @@ import java.util.List;
  * Modified: Chii Chang (11/04/2020)
  * Modified: Chii Chang (07/05/2020)
  * Modified: Chii Chang (19/05/2020)
+ * Modified: Chii Chang (24/05/2020)
  */
 public class ATrace implements Serializable, LaTrace {
 
@@ -77,6 +78,8 @@ public class ATrace implements Serializable, LaTrace {
     private UnifiedSet<String> eventNameSet;
 
     private List<Integer> activityNameIndexList;
+
+    private IntArrayList markedIndex;
 
 //    private APMLog apmLog;
 
@@ -155,7 +158,7 @@ public class ATrace implements Serializable, LaTrace {
 
         /* ----------------------- set activities ----------------------------- */
 
-        IntArrayList markedIndex = new IntArrayList();
+        markedIndex = new IntArrayList();
 
         for(int i=0; i<inputEventList.size(); i++) {
 
@@ -283,7 +286,7 @@ public class ATrace implements Serializable, LaTrace {
 
         /* ----------------------- set activities ----------------------------- */
 
-        IntArrayList markedIndex = new IntArrayList();
+        markedIndex = new IntArrayList();
 
         for(int i=0; i<xTrace.size(); i++) {
             XEvent xEvent = xTrace.get(i);
@@ -396,22 +399,10 @@ public class ATrace implements Serializable, LaTrace {
             processCount += 1;
             this.totalProcessingTime += activity.getDuration();
             if (activity.getDuration() > this.maxProcessingTime) this.maxProcessingTime = activity.getDuration();
-
-//            if (i > 0) {
-//                AActivity pActivity = activityList.get(i-1);
-//                waitCount += 1;
-//                long waitTime = activity.getStartTimeMilli() - pActivity.getEndTimeMilli();
-//                this.totalWaitingTime += waitTime;
-//                if(waitTime > this.maxWaitingTime) {
-//                    this.maxWaitingTime = waitTime;
-//                }
-//            }
         }
         if(this.totalProcessingTime > 0 && processCount > 0) this.averageProcessingTime = this.totalProcessingTime / processCount;
-//        if(this.totalWaitingTime > 0 && waitCount > 0) this.averageWaitingTime = this.totalWaitingTime / waitCount;
 
         if(endTimeMilli > startTimeMilli) {
-//            this.duration = endTimeMilli - startTimeMilli;
             if(containsActivity(xTrace)) {
                 this.caseUtilization = (double) this.totalProcessingTime / this.duration;
                 if (this.caseUtilization > 1.0) this.caseUtilization = 1.0;
@@ -435,19 +426,21 @@ public class ATrace implements Serializable, LaTrace {
         IntArrayList followUpIndex = new IntArrayList();
         if ( (fromIndex + 1) < xTrace.size()) {
             for (int i = (fromIndex + 1); i < xTrace.size(); i++) {
-                XEvent xEvent = xTrace.get(i);
-                XAttributeMap xAttributeMap = xEvent.getAttributes();
-                if (xAttributeMap.containsKey("concept:name") && xAttributeMap.containsKey("lifecycle:transition")) {
-                    String actName = xAttributeMap.get("concept:name").toString();
-                    String lifecycle = xAttributeMap.get("lifecycle:transition").toString().toLowerCase();
+                if (!markedIndex.contains(i)) {
+                    XEvent xEvent = xTrace.get(i);
+                    XAttributeMap xAttributeMap = xEvent.getAttributes();
+                    if (xAttributeMap.containsKey("concept:name") && xAttributeMap.containsKey("lifecycle:transition")) {
+                        String actName = xAttributeMap.get("concept:name").toString();
+                        String lifecycle = xAttributeMap.get("lifecycle:transition").toString().toLowerCase();
 
-                    if (haveSameAttributeValues(seAttributeMap, xAttributeMap)) {
-                        if (!lifecycle.equals("start")) {
-                            followUpIndex.add(i);
-                            if (lifecycle.equals("complete") ||
-                                    lifecycle.equals("manualskip") ||
-                                    lifecycle.equals("autoskip")) {
-                                break;
+                        if (haveSameAttributeValues(seAttributeMap, xAttributeMap)) {
+                            if (!lifecycle.equals("start")) {
+                                followUpIndex.add(i);
+                                if (lifecycle.equals("complete") ||
+                                        lifecycle.equals("manualskip") ||
+                                        lifecycle.equals("autoskip")) {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -469,14 +462,32 @@ public class ATrace implements Serializable, LaTrace {
         return true;
     }
 
+    private boolean haveSameAttributeValues(UnifiedMap<String, String> attributeMap1,
+                                            UnifiedMap<String, String> attributeMap2) {
+        for (String key : attributeMap1.keySet()) {
+            if (!key.toLowerCase().equals("time:timestamp") && !key.toLowerCase().equals("lifecycle:transition")) {
+                if (!attributeMap2.containsKey(key)) return false;
+                String val1 = attributeMap1.get(key);
+                String val2 = attributeMap2.get(key);
+                if (!val1.equals(val2)) return false;
+            }
+        }
+        return true;
+    }
+
     private IntArrayList getFollowUpIndexList(List<AEvent> eventList, int fromIndex, String conceptName) {
         IntArrayList followUpIndex = new IntArrayList();
+
+        UnifiedMap<String, String> attribute1 = eventList.get(fromIndex).getAttributeMap();
+
         if ( (fromIndex + 1) < eventList.size()) {
             for (int i = (fromIndex + 1); i < eventList.size(); i++) {
                 AEvent aEvent = eventList.get(i);
                 String lifecycle = aEvent.getLifecycle();
 
-                if (aEvent.getName().equals(conceptName) && !lifecycle.equals("")) {
+                UnifiedMap<String, String> attribute2 = aEvent.getAttributeMap();
+
+                if (haveSameAttributeValues(attribute1, attribute2)) {
                     if (!lifecycle.equals("start")) {
                         followUpIndex.add(i);
                         if (lifecycle.equals("complete") ||
