@@ -1,31 +1,7 @@
-<!--
-  #%L
-  This file is part of "Apromore Core".
-
-  Copyright (C) 2018 - 2020 The University of Melbourne.
-  %%
-  Copyright (C) 2018 - 2020 The University of Melbourne.
-  %%
-  Copyright (C) 2020 Apromore Pty Ltd.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Lesser General Public License as
-  published by the Free Software Foundation, either version 3 of the
-  License, or (at your option) any later version.
-  
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Lesser Public License for more details.
-  
-  You should have received a copy of the GNU General Lesser Public
-  License along with this program.  If not, see
-  <http://www.gnu.org/licenses/lgpl-3.0.html>.
-  #L%
-  -->
-
+<?xml version='1.0' encoding='utf-8'?>
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
-    <window closable="true" id="mainWindow" minimizable="false" sizable="false" maximizable="false" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px;max-width: 95vw;min-height: 600px; max-height: 95vh;" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
+    <window closable="true" id="mainWindow" minimizable="false" sizable="false" maximizable="false" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px;max-width: 95vw;min-height: 600px; max-height: 95vh;" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer"
+        apply="org.apromore.plugin.portal.CSVImporterPortal.CSVImporterController">
         <style src="/themes/ap/csv-importer/css/index.css" />
         <style src="/themes/ap/common/css/utils.css" />
         <script type="text/javascript" src="/themes/ap/csv-importer/js/index.js"></script>
@@ -94,10 +70,10 @@
                 <div style="padding: 8px;background-color: var(--ap-c-bg-lighter) !important">
                     <hlayout spacing="0">
                         <div hflex="1">
-                            <button id="setIgnoreAll" style="position:relative;" width="180px">
+                            <button id="setIgnoreAll" style="position:relative;" width="180px" tooltiptext="Ignore all Event Attributes">
                                 Event Attribute&#x2002;&#xf061;&#x2002;Ignore
                             </button>
-                            <button id="setOtherAll" style="position:relative;" width="180px">
+                            <button id="setOtherAll" style="position:relative;" width="180px" tooltiptext="Change all Ignored Attributes to Event Attributes">
                                 Ignore&#x2002;&#xf061;&#x2002;Event Attribute
                             </button>
                             <space spacing="10px" />
