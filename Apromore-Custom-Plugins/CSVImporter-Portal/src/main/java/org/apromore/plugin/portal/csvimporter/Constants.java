@@ -1,4 +1,4 @@
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.plugin.portal.csvimporter;
 
 interface Constants {
 

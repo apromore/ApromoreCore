@@ -21,7 +21,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;

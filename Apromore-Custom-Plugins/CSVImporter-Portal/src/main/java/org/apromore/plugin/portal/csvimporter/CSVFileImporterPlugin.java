@@ -21,7 +21,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.plugin.portal.csvimporter;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -84,7 +84,7 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
         arg.put("isLogPublic", isLogPublic);
 
         // Create a CSV importer view
-        Window window = createComponent("/org/apromore/plugin/portal/CSVImporterPortal/csvImporter.zul", getClass().getClassLoader(), null, arg);
+        Window window = createComponent("/org/apromore/plugin/portal/csvimporter/csvImporter.zul", getClass().getClassLoader(), null, arg);
         window.doModal();
     }
 

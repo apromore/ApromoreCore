@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.plugin.portal.csvimporter;
 
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;

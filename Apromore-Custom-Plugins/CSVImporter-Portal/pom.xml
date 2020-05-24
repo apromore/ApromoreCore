@@ -32,7 +32,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.portal.CSVImporterPortal
+                            org.apromore.plugin.portal.csvimporter
                         </Export-Package>
                     </instructions>
                 </configuration>
