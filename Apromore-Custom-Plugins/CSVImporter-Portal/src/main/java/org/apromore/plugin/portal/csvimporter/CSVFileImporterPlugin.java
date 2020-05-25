@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Window;
 
 
@@ -78,14 +79,21 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap();
         arg.put("csvImporterLogic", csvImporterLogic);
-        arg.put("eventLogService", eventLogService);
-        arg.put("media", media);
-        arg.put("portalContext", portalContext);
-        arg.put("isLogPublic", isLogPublic);
+        arg.put("eventLogService",  eventLogService);
+        arg.put("media",            media);
+        arg.put("portalContext",    portalContext);
+        arg.put("isLogPublic",      isLogPublic);
+        Sessions.getCurrent().setAttribute("csvimport", arg);
 
         // Create a CSV importer view
-        Window window = createComponent("/org/apromore/plugin/portal/csvimporter/csvImporter.zul", getClass().getClassLoader(), null, arg);
-        window.doModal();
+        String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
+        if ("page".equals(Sessions.getCurrent().getAttribute("fileimportertarget"))) {  // create the view in its own page
+            Executions.getCurrent().sendRedirect(zul, "_blank");
+
+        } else {  // create the view in a modal popup within the current page
+            Window window = createComponent(zul, getClass().getClassLoader(), null, arg);
+            window.doModal();
+        }
     }
 
     private static <T extends org.zkoss.zk.ui.Component> T createComponent(String path, ClassLoader classLoader, org.zkoss.zk.ui.Component parent, Map<?, ?> arg) {

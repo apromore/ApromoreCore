@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
@@ -78,11 +79,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
 
-    private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
-    private EventLogService  eventLogService  = (EventLogService) Executions.getCurrent().getArg().get("eventLogService");
-    private Media            media            = (Media) Executions.getCurrent().getArg().get("media");
-    private PortalContext    portalContext    = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
-    private boolean          isLogPublic      = (Boolean) Executions.getCurrent().getArg().get("isLogPublic");
+    private CSVImporterLogic csvImporterLogic;
+    private EventLogService  eventLogService;
+    private Media            media;
+    private PortalContext    portalContext;
+    private boolean          isLogPublic;
 
     @Wire("#mainWindow")
     private Window window;
@@ -99,6 +100,17 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     @Override
     public void doFinally() {
+        Map arg = (Map) Sessions.getCurrent().getAttribute("csvimport");
+
+        csvImporterLogic = (CSVImporterLogic) arg.get("csvImporterLogic");
+        eventLogService  = (EventLogService)  arg.get("eventLogService");
+        media            = (Media)            arg.get("media");
+        portalContext    = (PortalContext)    arg.get("portalContext");
+        isLogPublic      = (Boolean)          arg.get("isLogPublic");
+
+        Sessions.getCurrent().removeAttribute("csvimport");
+
+        // Populate the window
         CSVFileReader CSVReader = new CSVFileReader();
         try {
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
@@ -120,8 +132,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     toXESButton.setDisabled(false);
                 }
             }
-
-            window.doModal();
 
         } catch (Exception e) {
             Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
