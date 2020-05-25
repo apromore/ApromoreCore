@@ -134,7 +134,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
 
         } catch (Exception e) {
-            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> Clients.evalJavaScript("window.close()"));
             window.detach();
             window.invalidate();
         }
@@ -144,6 +144,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     public void onClickCancelBtn(MouseEvent event) {
         window.invalidate();
         window.detach();
+        Clients.evalJavaScript("window.close()");
     }
 
     @Listen("onClick = #setOtherAll")
@@ -828,8 +829,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             window.invalidate();
             window.detach();
 
-            Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!");
-
+            Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!",
+                            new Messagebox.Button[] {Messagebox.Button.OK},
+                            event -> Clients.evalJavaScript("window.close()"));
             portalContext.refreshContent();
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
