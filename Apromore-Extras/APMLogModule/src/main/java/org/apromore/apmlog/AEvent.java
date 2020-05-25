@@ -127,6 +127,10 @@ public class AEvent implements Serializable {
         this.lifecycle = lifecycle;
     }
 
+    public void setTimestampMilli(long timestampMilli) {
+        this.timestampMilli = timestampMilli;
+    }
+
     public String getName() {
         return name;
     }
