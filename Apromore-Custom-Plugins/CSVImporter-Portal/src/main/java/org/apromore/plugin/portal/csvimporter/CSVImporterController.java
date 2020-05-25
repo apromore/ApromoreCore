@@ -21,40 +21,75 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.lang.StringUtils;
-import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.csvimporter.*;
+import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.InvalidCSVException;
+import org.apromore.service.csvimporter.LogErrorReport;
+import org.apromore.service.csvimporter.LogModel;
+import org.apromore.service.csvimporter.LogSample;
 import org.deckfour.xes.model.XLog;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Auxhead;
+import org.zkoss.zul.Auxheader;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Span;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
-import javax.inject.Inject;
-import javax.xml.datatype.DatatypeFactory;
-import java.io.*;
-import java.util.*;
+public class CSVImporterController extends SelectorComposer<Window> implements Constants {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
 
-@Component("csvImporterPortalPlugin")
-public class CSVImporterPortal implements FileImporterPlugin, Constants {
-
-    @Inject
     private CSVImporterLogic csvImporterLogic;
-    @Inject
-    private EventLogService eventLogService;
+    private EventLogService  eventLogService;
+    private Media            media;
+    private PortalContext    portalContext;
+    private boolean          isLogPublic;
 
+    @Wire("#mainWindow")
     private Window window;
-    private Media media;
-    private PortalContext portalContext;
+
+    @Wire("#toXESButton")
+    private Button toXESButton;
 
     private LogSample sample;
 
@@ -63,31 +98,21 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
     private Span[] parsedIcons;
     private List<Listbox> dropDownLists;
 
-    private boolean isLogPublic;
-
-    public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
-        this.csvImporterLogic = newCSVImporterLogic;
-    }
-
-    public void setEventLogService(EventLogService newEventLogService) {
-        this.eventLogService = newEventLogService;
-    }
-
     @Override
-    public Set<String> getFileExtensions() {
-        return new HashSet<>(Collections.singletonList("csv"));
-    }
+    public void doFinally() {
+        Map arg = (Map) Sessions.getCurrent().getAttribute("csvimport");
 
-    @Override
-    public void importFile(Media media, PortalContext portalContext, boolean isLogPublic) {
+        csvImporterLogic = (CSVImporterLogic) arg.get("csvImporterLogic");
+        eventLogService  = (EventLogService)  arg.get("eventLogService");
+        media            = (Media)            arg.get("media");
+        portalContext    = (PortalContext)    arg.get("portalContext");
+        isLogPublic      = (Boolean)          arg.get("isLogPublic");
 
-        this.media = media;
-        this.portalContext = portalContext;
-        this.isLogPublic = isLogPublic;
+        Sessions.getCurrent().removeAttribute("csvimport");
 
+        // Populate the window
         CSVFileReader CSVReader = new CSVFileReader();
         try {
-            this.window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
             setEncoding.addEventListener("onSelect", event -> {
@@ -104,17 +129,83 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
                 this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
                 if (sample != null) {
                     setUpUI();
-                    setButtons();
+                    toXESButton.setDisabled(false);
                 }
             }
 
-            window.doModal();
         } catch (Exception e) {
-            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> Clients.evalJavaScript("window.close()"));
             window.detach();
             window.invalidate();
         }
     }
+
+    @Listen("onClick = #cancelButton")
+    public void onClickCancelBtn(MouseEvent event) {
+        window.invalidate();
+        window.detach();
+        Clients.evalJavaScript("window.close()");
+    }
+
+    @Listen("onClick = #setOtherAll")
+    public void ignoreToEvent(MouseEvent event) {
+        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
+        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
+        int ignoreAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(ignoreLabel));
+
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
+            lb = (Listbox) window.getFellow(String.valueOf(pos));
+
+            if (lb.getSelectedIndex() == ignoreAttributeIndex) {
+                sample.getIgnoredPos().remove(Integer.valueOf(pos));
+                sample.getEventAttributesPos().add(pos);
+                lb.setSelectedIndex(eventAttributeIndex);
+            }
+        }
+    }
+
+    @Listen("onClick = #setIgnoreAll")
+    public void eventToIgnore(MouseEvent event) {
+        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
+        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
+        int ignoreAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(ignoreLabel));
+
+        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
+            lb = (Listbox) window.getFellow(String.valueOf(pos));
+            if (lb.getSelectedIndex() == eventAttributeIndex) {
+                sample.getEventAttributesPos().remove(Integer.valueOf(pos));
+                sample.getIgnoredPos().add(pos);
+                lb.setSelectedIndex(ignoreAttributeIndex);
+            }
+        }
+    }
+
+    @Listen("onClick = #toXESButton")
+    public void convertToXes() {
+        StringBuilder headNOTDefined = validateUniqueAttributes();
+        if (headNOTDefined.length() != 0) {
+            Messagebox.show(headNOTDefined.toString(), "Missing fields!", Messagebox.OK, Messagebox.ERROR);
+        } else {
+            try {
+                CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
+                if (reader != null) {
+                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
+                    List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+                    if (errorReport.isEmpty()) {
+                        saveXLog(xesModel);
+                    } else {
+                        handleInvalidData(xesModel);
+                    }
+                }
+            } catch (Exception e) {
+                Messagebox.show("Error! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    // Internal methods handling page setup (doFinally)
 
     private String getFileEncoding() {
         Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
@@ -567,86 +658,8 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
         txt.setValue(text);
     }
 
-    private void setButtons() {
 
-        Button toEventAttributes = (Button) window.getFellow(ignoreToEventBtnId);
-        toEventAttributes.setTooltiptext("Change all Ignored Attributes to Event Attributes");
-        toEventAttributes.addEventListener("onClick", event ->
-                ignoreToEvent()
-        );
-
-        Button ignoreEventAttributes = (Button) window.getFellow(eventToIgnoreBtnId);
-        ignoreEventAttributes.setTooltiptext("Ignore all Event Attributes");
-        ignoreEventAttributes.addEventListener("onClick", event ->
-                eventToIgnore()
-        );
-
-        Button toXESButton = (Button) window.getFellow(toXESBtnId);
-        toXESButton.setDisabled(false);
-        toXESButton.addEventListener("onClick", event -> {
-            convertToXes();
-        });
-
-        Button cancelButton = (Button) window.getFellow(cancelBtnId);
-        cancelButton.addEventListener("onClick", event -> {
-            window.invalidate();
-            window.detach();
-        });
-    }
-
-    private void ignoreToEvent() {
-        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
-        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
-        int ignoreAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(ignoreLabel));
-
-        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
-            lb = (Listbox) window.getFellow(String.valueOf(pos));
-
-            if (lb.getSelectedIndex() == ignoreAttributeIndex) {
-                sample.getIgnoredPos().remove(Integer.valueOf(pos));
-                sample.getEventAttributesPos().add(pos);
-                lb.setSelectedIndex(eventAttributeIndex);
-            }
-        }
-    }
-
-    private void eventToIgnore() {
-        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
-        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
-        int ignoreAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(ignoreLabel));
-
-        for (int pos = 0; pos < sample.getHeader().size(); pos++) {
-            lb = (Listbox) window.getFellow(String.valueOf(pos));
-            if (lb.getSelectedIndex() == eventAttributeIndex) {
-                sample.getEventAttributesPos().remove(Integer.valueOf(pos));
-                sample.getIgnoredPos().add(pos);
-                lb.setSelectedIndex(ignoreAttributeIndex);
-            }
-        }
-    }
-
-    private void convertToXes() {
-        StringBuilder headNOTDefined = validateUniqueAttributes();
-        if (headNOTDefined.length() != 0) {
-            Messagebox.show(headNOTDefined.toString(), "Missing fields!", Messagebox.OK, Messagebox.ERROR);
-        } else {
-            try {
-                CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                if (reader != null) {
-                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
-                    List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
-                    if (errorReport.isEmpty()) {
-                        saveXLog(xesModel);
-                    } else {
-                        handleInvalidData(xesModel);
-                    }
-                }
-            } catch (Exception e) {
-                Messagebox.show("Error! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-                e.printStackTrace();
-            }
-        }
-    }
+    // Internal methods supporting event handlers (@Listen)
 
     private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
@@ -816,8 +829,9 @@ public class CSVImporterPortal implements FileImporterPlugin, Constants {
             window.invalidate();
             window.detach();
 
-            Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!");
-
+            Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!",
+                            new Messagebox.Button[] {Messagebox.Button.OK},
+                            event -> Clients.evalJavaScript("window.close()"));
             portalContext.refreshContent();
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);

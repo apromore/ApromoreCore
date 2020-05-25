@@ -71,7 +71,8 @@
   <servlet>
     <description>ZK loader for ZUML pages</description>
     <servlet-name>zkLoader</servlet-name>
-    <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
+    <!-- <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class> -->
+    <servlet-class>org.zkoss.zk.ui.http.ApromoreLayoutServlet</servlet-class>
     <init-param>
       <param-name>update-uri</param-name>
       <param-value>/zkau</param-value>
@@ -101,7 +102,7 @@
     <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
   </servlet>
   <servlet>
-      <servlet-name>portalPluginResource</servlet-name>
+    <servlet-name>portalPluginResource</servlet-name>
     <servlet-class>org.apromore.portal.servlet.PortalPluginResourceServlet</servlet-class>
   </servlet>
 

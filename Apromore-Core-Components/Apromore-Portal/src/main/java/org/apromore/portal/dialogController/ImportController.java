@@ -57,9 +57,11 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
@@ -138,9 +140,10 @@ public class ImportController extends BaseController {
                     uploadFile((UploadEvent) event);
                 }
             });
-            okButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
+            okButton.addEventListener("onClick", new EventListener<MouseEvent>() {
+                public void onEvent(MouseEvent event) throws Exception {
                     importWindow.detach();
+                    Sessions.getCurrent().setAttribute("fileimportertarget", ((event.getKeys() & MouseEvent.META_KEY) != 0) ? "page" : "modal");
                     importFile(ImportController.this.media);
                 }
             });

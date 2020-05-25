@@ -32,7 +32,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            <!-- We're not exporting any Java packages since this is just a UI -->
+                            org.apromore.plugin.portal.csvimporter
                         </Export-Package>
                     </instructions>
                 </configuration>

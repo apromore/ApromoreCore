@@ -39,13 +39,13 @@
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
     <!-- Create beans for each class annotated with @Component within the package -->
-    <!-- <context:component-scan base-package="org.apromore.plugin.portal.CSVImporterPortal" /> -->
-    <beans:bean id="csvImporterPortalPlugin" class="org.apromore.plugin.portal.CSVImporterPortal.CSVImporterPortal">
+    <!-- <context:component-scan base-package="org.apromore.plugin.portal.csvimporter" /> -->
+    <beans:bean id="csvFileImporterPlugin" class="org.apromore.plugin.portal.csvimporter.CSVFileImporterPlugin">
         <beans:property name="csvImporterLogic" ref="csvImporterLogic"/>
         <beans:property name="eventLogService" ref="eventLogService"/>
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
-    <service ref="csvImporterPortalPlugin" interface="org.apromore.plugin.portal.FileImporterPlugin" auto-export="interfaces" />
+    <service ref="csvFileImporterPlugin" interface="org.apromore.plugin.portal.FileImporterPlugin" auto-export="interfaces" />
 
 </beans:beans>

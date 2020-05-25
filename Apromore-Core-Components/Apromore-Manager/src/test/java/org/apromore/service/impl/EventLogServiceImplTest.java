@@ -35,8 +35,7 @@ import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
@@ -51,17 +50,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.io.FileInputStream;
-import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
+import java.util.stream.Stream;
 
 import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
 import static org.easymock.EasyMock.expect;
@@ -72,10 +70,10 @@ import static org.powermock.api.easymock.PowerMock.*;
 public class EventLogServiceImplTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImplTest.class);
-
+    // inject EntityManager for simple test
+    private static EntityManagerFactory emf;
     @Rule
     public ExpectedException exception = ExpectedException.none();
-
     private LogRepository logRepository;
     private GroupRepository groupRepository;
     private GroupLogRepository groupLogRepository;
@@ -85,8 +83,30 @@ public class EventLogServiceImplTest {
     private StatisticRepository statisticRepository;
     private EventLogServiceImpl eventLogService;
 
-    // inject EntityManager for simple test
-    private static EntityManagerFactory emf;
+    private static void walkLog(XLog log) {
+        walkAttributes(log);
+        for (XTrace trace : log) {
+            walkTrace(trace);
+        }
+    }
+
+    private static void walkTrace(XTrace trace) {
+        walkAttributes(trace);
+        for (XEvent event : trace) {
+            walkAttributes(event);
+        }
+    }
+
+    private static void walkAttributes(XAttributable attributable) {
+        XAttributeMap attributeMap = attributable.getAttributes();
+        for (XAttribute attribute : attributeMap.values()) {
+            String key = attribute.getKey();
+            String value = attribute.toString();
+            key.trim();
+            value.trim();
+            walkAttributes(attribute);
+        }
+    }
 
     public EntityManagerFactory getEntityManagerFactory() {
         if (emf == null) {
@@ -110,7 +130,6 @@ public class EventLogServiceImplTest {
                 userSrv, ui, statisticRepository, config);
     }
 
-
     @Test
     public void getStatsTest() {
         List<Statistic> stats = new ArrayList<>();
@@ -122,6 +141,9 @@ public class EventLogServiceImplTest {
         verify(statisticRepository);
         assertThat(result, equalTo(stats));
     }
+
+
+    /* Below are performance testings which are comment out in production */
 
     @Test
     public void getXLogWithStatsTest() {
@@ -263,9 +285,6 @@ public class EventLogServiceImplTest {
         assertThat(result.get(5).getStat_value(), equalTo("10"));
     }
 
-
-    /* Below are performance testings which are comment out in production */
-
     @Test
     @Rollback
     @Ignore("For pressure testing only")
@@ -353,47 +372,39 @@ public class EventLogServiceImplTest {
 
     }
 
-
     @Test
     @Ignore
     public void getOpenXesVersion() {
-        XRuntimeUtils xRuntimeUtils = new XRuntimeUtils();
-        System.out.println(xRuntimeUtils.OPENXES_VERSION);
+        System.out.println("OPENXES_VERSION: " + XRuntimeUtils.OPENXES_VERSION);
 //        XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
 //        System.out.println(xFactoryNaive.isUseInterner());
     }
 
     @Test
-    public void getXlog() {
-        XTimer timer = new XTimer();
-        XLog log;
-        List<XLog> parsedLog = null;
-        // create log
-//				XLog log = createLog(20, 3000, 100, 2000);//createLog(150, 151, 500, 1000);
-        // import log
-        XFactory factory = XFactoryRegistry.instance().currentDefault();
-        XesXmlParser parser = new XesXmlParser(factory);
-        try {
-            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes.gz").getPath());
-            parsedLog = parser.parse(new GZIPInputStream(new FileInputStream(lgPath.toFile())));
+    public void validateXLogImport() {
+
+        try (Stream<Path> paths = Files.walk(Paths.get(ClassLoader.getSystemResource("XES_logs/").getPath()))) {
+            paths.filter(Files::isRegularFile)
+                    .forEach(this::getXlog);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log = parsedLog.iterator().next();
-        timer.stop();
-        System.out.println("Imported log:");
-//				System.out.println("Created log:");
-//				System.out.println("  Traces: " + NUM_TRACES);
-//				System.out.println("  Events: " + NUM_EVENTS);
-//				System.out.println("  Attributes: " + NUM_ATTRIBUTES);
-        System.out.println("Duration: " + timer.getDurationString());
+    }
 
-        // Performance profiling
-//        System.gc();
-//        try {
-//            Thread.sleep(5000);
-//        } catch (InterruptedException e) {
-//        }
-//        System.out.println("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+    private void getXlog(Path path) {
+        XTimer timer = new XTimer();
+        List<XLog> parsedLog;
+        XFactory factory = XFactoryRegistry.instance().currentDefault();
+        XesXmlParser parser = new XesXmlParser(factory);
+        try {
+            parsedLog = parser.parse(new FileInputStream(path.toFile()));
+            walkLog(parsedLog.iterator().next());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        timer.stop();
+
+        System.out.println("Imported and walked log: " + path.getFileName());
+        System.out.println("Duration: " + timer.getDurationString());
     }
 }
