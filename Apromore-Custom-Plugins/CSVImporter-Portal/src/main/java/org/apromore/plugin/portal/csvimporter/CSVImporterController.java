@@ -108,8 +108,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         portalContext    = (PortalContext)    arg.get("portalContext");
         isLogPublic      = (Boolean)          arg.get("isLogPublic");
 
-        Sessions.getCurrent().removeAttribute("csvimport");
-
         // Populate the window
         CSVFileReader CSVReader = new CSVFileReader();
         try {
@@ -134,17 +132,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
 
         } catch (Exception e) {
-            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> Clients.evalJavaScript("window.close()"));
-            window.detach();
-            window.invalidate();
+            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
         }
     }
 
     @Listen("onClick = #cancelButton")
     public void onClickCancelBtn(MouseEvent event) {
-        window.invalidate();
-        window.detach();
-        Clients.evalJavaScript("window.close()");
+        close();
     }
 
     @Listen("onClick = #setOtherAll")
@@ -661,6 +655,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     // Internal methods supporting event handlers (@Listen)
 
+    private void close() {
+        window.detach();
+        window.invalidate();
+        Clients.evalJavaScript("window.close()");  // Rely on browsers only closing windows if they were opened by Javascript
+        Sessions.getCurrent().removeAttribute("csvimport");  // Note that this can interfere with other CSV Importer windows
+    }
+
     private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
         String mess = "- No attribute has been selected as ";
@@ -826,13 +827,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     isLogPublic  // public?
             );
 
-            window.invalidate();
-            window.detach();
-
             Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!",
                             new Messagebox.Button[] {Messagebox.Button.OK},
-                            event -> Clients.evalJavaScript("window.close()"));
+                            event -> close());
             portalContext.refreshContent();
+
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
