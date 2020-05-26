@@ -24,6 +24,7 @@
 
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.filter.CaseTimeFilterTest;
 import org.apromore.apmlog.filter.DirectFollowFilterTest;
 import org.apromore.apmlog.filter.EventualFollowFilterTest;
 import org.apromore.apmlog.filter.typefilters.EventSectionAttributeFilter;
@@ -80,6 +81,14 @@ public class APMLogUnitTest {
     }
 
     @Test
+    public void testCaseTimeFilter1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test 'Case Timeframe' Filter 1");
+        XLog xLog = getXLog("files/time_active_in.xes");
+        APMLog apmLog = new APMLog(xLog);
+        CaseTimeFilterTest.testActiveIn(apmLog, this);
+    }
+
+    @Test
     public void testDirectFollowFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 1");
         XLog sample5 = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/_sample5.xes.gz")).get(0);
@@ -102,6 +111,8 @@ public class APMLogUnitTest {
         APMLog apmLog = new APMLog(xLog);
         EventualFollowFilterTest.runTest1(apmLog, this);
     }
+
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
