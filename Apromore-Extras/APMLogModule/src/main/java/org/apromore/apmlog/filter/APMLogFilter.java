@@ -135,7 +135,7 @@ public class APMLogFilter {
 
         for (int i = 0; i < originalPTraceList.size(); i++) {
 
-            System.out.println(i + " / " + (originalPTraceList.size() - 1));
+//            System.out.println(i + " / " + (originalPTraceList.size() - 1));
 
 
             if (validTraceBS.get(i)) {

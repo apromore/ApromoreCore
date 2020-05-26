@@ -35,6 +35,7 @@ import java.util.List;
  * Modified: Chii Chang (06/03/2020)
  * Modified: Chii Chang (12/03/2020)
  * Modified: Chii Chang (24/05/2020)
+ * Modified: Chii Chang (26/05/2020)
  */
 public class PTrace implements Comparable<PTrace>, LaTrace {
 
@@ -373,6 +374,7 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
             this.activityList = new ArrayList<>();
 
             for (int i = 0; i < this.eventList.size(); i++) {
+                allTimestamps.add(this.eventList.get(i).getTimestampMilli());
 
                 if (!markedIndex.contains(i)) {
 
@@ -381,8 +383,8 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
                     AEvent iAEvent = this.eventList.get(i);
                     String conceptName = iAEvent.getName();
 
-                    long eventTime = iAEvent.getTimestampMilli();
-                    allTimestamps.add(eventTime);
+//                    long eventTime = iAEvent.getTimestampMilli();
+
 
                     this.eventNameSet.put(iAEvent.getName());
 

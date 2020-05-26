@@ -79,12 +79,14 @@ public class CaseTimeFilter {
     }
 
     private static boolean intersectTimeRange(long fromTime, long toTime, LaTrace trace) {
-        List<AEvent> eventList = trace.getEventList();
-        for (int i = 0; i < eventList.size(); i++) {
-            AEvent event = eventList.get(i);
-            long time = event.getTimestampMilli();
-            if (time >= fromTime && time <= toTime) return true;
-        }
+        long traceST = trace.getStartTimeMilli();
+        long traceET = trace.getEndTimeMilli();
+
+        if (traceST <= fromTime && traceET >= toTime) return true;
+        if (traceST <= fromTime && traceET >= fromTime) return true;
+        if (traceST >= fromTime && traceET <= toTime) return true;
+        if (traceST <= toTime && traceET >= toTime) return true;
+
         return false;
     }
 

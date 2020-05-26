@@ -21,9 +21,11 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.util.Util;
+import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -49,6 +51,7 @@ import java.util.List;
  * Modified: Chii Chang (07/05/2020)
  * Modified: Chii Chang (19/05/2020)
  * Modified: Chii Chang (24/05/2020)
+ * Modified: Chii Chang (26/05/2020)
  */
 public class ATrace implements Serializable, LaTrace {
 
@@ -164,6 +167,17 @@ public class ATrace implements Serializable, LaTrace {
 
 
             AEvent iAEvent = inputEventList.get(i);
+
+            if (iAEvent.getTimestampMilli() == 0 && i > 0) {
+                for (int j = i-1; j >= 0; j--) {
+                    AEvent preEvent = eventList.get(j);
+                    if (preEvent.getTimestampMilli() > 0) {
+                        iAEvent.setTimestampMilli(inputEventList.get(i-1).getTimestampMilli());
+                        break;
+                    }
+                }
+            }
+
             this.eventList.add(iAEvent);
 
             fillEventAttributeValueFreqMap(iAEvent);
@@ -273,7 +287,20 @@ public class ATrace implements Serializable, LaTrace {
         /* ------------- find start time and end time of trace -------------- */
         for(int i=0; i<xTrace.size(); i++) {
             XEvent xEvent = xTrace.get(i);
-            long eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
+            long eventTime = 0;
+            if (!xEvent.getAttributes().containsKey("time:timestamp") && i > 0) {
+                for (int j = i-1; j >= 0; j--) {
+                    XEvent preEvent = xTrace.get(j);
+                    if (preEvent.getAttributes().containsKey("time:timestamp")) {
+                        eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(preEvent));
+                        XAttribute timestampAttribute =
+                                new XAttributeTimestampImpl("time:timestamp", eventTime);
+                        xEvent.getAttributes().put("time:timestamp", timestampAttribute);
+                        break;
+                    }
+                }
+            } else eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
+
             if(startTimeMilli == 0 || eventTime < startTimeMilli) {
                 startTimeMilli = eventTime;
             }
@@ -426,6 +453,7 @@ public class ATrace implements Serializable, LaTrace {
         IntArrayList followUpIndex = new IntArrayList();
         if ( (fromIndex + 1) < xTrace.size()) {
             for (int i = (fromIndex + 1); i < xTrace.size(); i++) {
+
                 if (!markedIndex.contains(i)) {
                     XEvent xEvent = xTrace.get(i);
                     XAttributeMap xAttributeMap = xEvent.getAttributes();
