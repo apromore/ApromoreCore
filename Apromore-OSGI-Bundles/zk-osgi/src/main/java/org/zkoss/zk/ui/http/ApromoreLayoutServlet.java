@@ -212,13 +212,11 @@ public class ApromoreLayoutServlet extends HttpServlet {
 
                                         // Apromore extension begins
                                         if (pagedef == null) {
-                                            log("Failed to get page definition: ri=" + ri + " path=" + path);
                                             try (InputStream in = ApromoreLayoutServlet.class.getClassLoader().getResourceAsStream(path)) {
                                                 pagedef = PageDefinitions.getPageDefinitionDirectly(wapp, PageDefinitions.getLocator(wapp, path), new InputStreamReader(in, "utf-8"), null);
-                                                log("Page definition from classpath " + pagedef);
 
                                             } catch (IOException e) {
-                                                log("Unable to read page definition from classpath", e);
+                                                log("Unable to read page definition from classpath: " + path, e);
                                             }
                                         }
                                         // Apromore extension ends
