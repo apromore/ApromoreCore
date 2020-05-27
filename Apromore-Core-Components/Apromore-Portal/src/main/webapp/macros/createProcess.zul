@@ -43,8 +43,8 @@ and CreateProcessController.java for creating process purpose.
             <textbox width="100%" constraint="/^[a-zA-Z0-9 \\._\\-]{1,}|$/: Invalid filename" />
           </row>
           <row>
-            <label value="Version number" width="100%"/>
-            <textbox width="100%" />
+            <label value="Version number" width="100%" />
+            <textbox width="100%" readonly="true" />
           </row>
           <row visible="false" width="100%" tooltiptext="Process domain modification will be applied on all process versions.">
             <label value="Domain"/>
