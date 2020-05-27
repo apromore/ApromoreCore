@@ -27,6 +27,18 @@
 			<string key="concept:name" value="b"/>
 			<date key="time:timestamp" value="2020-01-15T12:00:00.000+11:00"/>
 		</event>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="concept:name" value="a"/>
+			<date key="time:timestamp" value="2020-01-15T15:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="a"/>
+			<date key="time:timestamp" value="2020-01-15T16:00:00.000+11:00"/>
+		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="c2"/>
@@ -53,6 +65,18 @@
 			<string key="lifecycle:transition" value="complete"/>
 			<string key="concept:name" value="b"/>
 			<date key="time:timestamp" value="2020-01-15T16:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="concept:name" value="b"/>
+			<date key="time:timestamp" value="2020-01-15T17:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="b"/>
+			<date key="time:timestamp" value="2020-01-15T18:00:00.000+11:00"/>
 		</event>
 	</trace>
 </log>

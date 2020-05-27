@@ -24,10 +24,7 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.filter.CaseTimeFilterTest;
-import org.apromore.apmlog.filter.DirectFollowFilterTest;
-import org.apromore.apmlog.filter.DurationFilterTest;
-import org.apromore.apmlog.filter.EventualFollowFilterTest;
+import org.apromore.apmlog.filter.*;
 import org.apromore.apmlog.filter.typefilters.EventSectionAttributeFilter;
 import org.apromore.apmlog.logstats.APMLogParsingTest;
 import org.deckfour.xes.in.XesXmlGZIPParser;
@@ -154,12 +151,40 @@ public class APMLogUnitTest {
         DurationFilterTest.testMaxProcessTime(apmLog, this);
     }
 
+    @Ignore("")
     @Test
     public void testDurationFilter5() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Total Waiting Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = new APMLog(xLog);
         DurationFilterTest.testTotalWaitTime(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter6() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Average Waiting Time'");
+        XLog xLog = getXLog("files/perf_avg_wt.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testAverageWaitTime(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter7() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Max Waiting Time'");
+        XLog xLog = getXLog("files/perf_avg_wt.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testMaxWaitTime(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter8() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Utilization'");
+        XLog xLog = getXLog("files/perf_avg_wt.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testUtilization(apmLog, this);
     }
 
     @Ignore("")
@@ -187,6 +212,14 @@ public class APMLogUnitTest {
         XLog xLog = getXLog("files/_sample2ef.xes");
         APMLog apmLog = new APMLog(xLog);
         EventualFollowFilterTest.runTest1(apmLog, this);
+    }
+
+    @Test
+    public void testRework1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater Only'");
+        XLog xLog = getXLog("files/rework.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testGreaterOnly(apmLog, this);
     }
 
 
