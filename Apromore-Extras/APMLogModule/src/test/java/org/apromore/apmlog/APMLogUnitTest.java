@@ -25,7 +25,6 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.*;
-import org.apromore.apmlog.filter.typefilters.EventSectionAttributeFilter;
 import org.apromore.apmlog.logstats.APMLogParsingTest;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
@@ -37,7 +36,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 
 /**
@@ -45,21 +43,20 @@ import java.util.List;
  */
 public class APMLogUnitTest {
 
-//    private XLog bpi2013;
-//
-//    @Before
-//    public void before() throws Exception {
-//        bpi2013 = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/BPI Challenge 2013 closed problems.xes.gz")).get(0);
-//
-//    }
-//
-//    @Ignore("This test demonstrates the defect AP-1037")
-//    @Test
-//    public void testConstructor_BPIC13() {
-//        APMLog apmLog = new APMLog(bpi2013);
-//    }
+    private XLog bpi2013;
 
-    @Ignore("")
+    @Before
+    public void before() throws Exception {
+        bpi2013 = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/BPI Challenge 2013 closed problems.xes.gz")).get(0);
+
+    }
+
+    @Ignore("This test demonstrates the defect AP-1037")
+    @Test
+    public void testConstructor_BPIC13() {
+        APMLog apmLog = new APMLog(bpi2013);
+    }
+
     @Test
     public void testAPMLogParsing() throws Exception {
         XLog xLog = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/c18lmm7-2.xes.gz")).get(0);
@@ -79,7 +76,6 @@ public class APMLogUnitTest {
         APMLogParsingTest.testCompleteOnlyWithResources(xLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testCaseTimeFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Active In'");
@@ -88,7 +84,6 @@ public class APMLogUnitTest {
         CaseTimeFilterTest.testActiveIn(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testCaseTimeFilter2() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Contain In'");
@@ -97,7 +92,6 @@ public class APMLogUnitTest {
         CaseTimeFilterTest.testContainIn(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testCaseTimeFilter3() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Start In'");
@@ -106,7 +100,6 @@ public class APMLogUnitTest {
         CaseTimeFilterTest.testStartIn(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testCaseTimeFilter4() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - End In'");
@@ -115,7 +108,6 @@ public class APMLogUnitTest {
         CaseTimeFilterTest.testEndIn(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Duration'");
@@ -124,7 +116,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testDuration(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter2() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Total Processing Time'");
@@ -133,7 +124,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testTotalProcessTime(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter3() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Average Processing Time'");
@@ -142,7 +132,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testAverageProcessTime(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter4() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Max Processing Time'");
@@ -151,7 +140,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testMaxProcessTime(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter5() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Total Waiting Time'");
@@ -160,7 +148,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testTotalWaitTime(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter6() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Average Waiting Time'");
@@ -169,7 +156,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testAverageWaitTime(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter7() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Max Waiting Time'");
@@ -178,7 +164,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testMaxWaitTime(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDurationFilter8() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Case Utilization'");
@@ -187,7 +172,6 @@ public class APMLogUnitTest {
         DurationFilterTest.testUtilization(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDirectFollowFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 1");
@@ -196,7 +180,6 @@ public class APMLogUnitTest {
         DirectFollowFilterTest.runTest1(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testDirectFollowFilter2() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 2");
@@ -205,7 +188,6 @@ public class APMLogUnitTest {
         DirectFollowFilterTest.runTest2(apmLog, this);
     }
 
-    @Ignore("")
     @Test
     public void testEventualFollowFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Eventual Follow' Filter 1");
@@ -222,6 +204,77 @@ public class APMLogUnitTest {
         ReworkRepetitionFilterTest.testGreaterOnly(apmLog, this);
     }
 
+    @Test
+    public void testRework2() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater Equal'");
+        XLog xLog = getXLog("files/rework.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testGreaterEqual(apmLog, this);
+    }
+
+    @Test
+    public void testRework3() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Less Only'");
+        XLog xLog = getXLog("files/rework.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testLessOnly(apmLog, this);
+    }
+
+    @Test
+    public void testRework4() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Less Equal'");
+        XLog xLog = getXLog("files/rework.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testLessEqual(apmLog, this);
+    }
+
+    @Test
+    public void testRework5() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater and Less Equal'");
+        XLog xLog = getXLog("files/rework.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testGreaterAndLessEqual(apmLog, this);
+    }
+
+    @Test
+    public void testRework6() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Less Equal 0'");
+        XLog xLog = getXLog("files/rework.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testLessEqual0(apmLog, this);
+    }
+
+    @Test
+    public void testEventSectionEventAttribute1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Event Section Event Attribute - Resource'");
+        XLog xLog = getXLog("files/eventattr.xes");
+        APMLog apmLog = new APMLog(xLog);
+        EventSectionAttributeFilterTest.testResource(apmLog, this);
+    }
+
+    @Test
+    public void testEventSectionEventAttribute2() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Event Section Event Attribute - Activity'");
+        XLog xLog = getXLog("files/eventattr.xes");
+        APMLog apmLog = new APMLog(xLog);
+        EventSectionAttributeFilterTest.testActivity(apmLog, this);
+    }
+
+    @Test
+    public void testCaseSectionEventAttribute1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Section Event Attribute - Activity'");
+        XLog xLog = getXLog("files/eventattr.xes");
+        APMLog apmLog = new APMLog(xLog);
+        CaseSectionEventAttributeFilterTest.testActivity(apmLog, this);
+    }
+
+    @Test
+    public void testCaseSectionEventTime1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Event Time 1'");
+        XLog xLog = getXLog("files/eventattr.xes");
+        APMLog apmLog = new APMLog(xLog);
+        EventTimeFilterTest.testRetain(apmLog, this);
+    }
 
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
@@ -239,11 +292,4 @@ public class APMLogUnitTest {
         return xLog;
     }
 
-//    public static XLog parseXLogFile(File xLogFile) throws Exception {
-//        String fileName = xLogFile.getName();
-//        String extension = fileName.substring(fileName.lastIndexOf("."));
-//        XesXmlParser parser  = extension.equals(".gz") ? new XesXmlGZIPParser() : new XesXmlParser();
-//        XLog xLog = parser.parse(xLogFile).get(0);
-//        return xLog;
-//    }
 }
