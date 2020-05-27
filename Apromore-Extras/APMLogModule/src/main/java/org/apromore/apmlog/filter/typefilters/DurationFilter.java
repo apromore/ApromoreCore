@@ -73,7 +73,7 @@ public class DurationFilter {
                 default: break;
         }
 
-        return dur > durRangeFrom && dur <= durRangeTo;
+        return dur >= durRangeFrom && dur <= durRangeTo;
     }
 
 

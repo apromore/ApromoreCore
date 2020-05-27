@@ -26,6 +26,7 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.CaseTimeFilterTest;
 import org.apromore.apmlog.filter.DirectFollowFilterTest;
+import org.apromore.apmlog.filter.DurationFilterTest;
 import org.apromore.apmlog.filter.EventualFollowFilterTest;
 import org.apromore.apmlog.filter.typefilters.EventSectionAttributeFilter;
 import org.apromore.apmlog.logstats.APMLogParsingTest;
@@ -61,6 +62,7 @@ public class APMLogUnitTest {
 //        APMLog apmLog = new APMLog(bpi2013);
 //    }
 
+    @Ignore("")
     @Test
     public void testAPMLogParsing() throws Exception {
         XLog xLog = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/c18lmm7-2.xes.gz")).get(0);
@@ -80,14 +82,87 @@ public class APMLogUnitTest {
         APMLogParsingTest.testCompleteOnlyWithResources(xLog, this);
     }
 
+    @Ignore("")
     @Test
     public void testCaseTimeFilter1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test 'Case Timeframe' Filter 1");
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Active In'");
         XLog xLog = getXLog("files/time_active_in.xes");
         APMLog apmLog = new APMLog(xLog);
         CaseTimeFilterTest.testActiveIn(apmLog, this);
     }
 
+    @Ignore("")
+    @Test
+    public void testCaseTimeFilter2() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Contain In'");
+        XLog xLog = getXLog("files/time_active_in.xes");
+        APMLog apmLog = new APMLog(xLog);
+        CaseTimeFilterTest.testContainIn(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testCaseTimeFilter3() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Start In'");
+        XLog xLog = getXLog("files/time_active_in.xes");
+        APMLog apmLog = new APMLog(xLog);
+        CaseTimeFilterTest.testStartIn(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testCaseTimeFilter4() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - End In'");
+        XLog xLog = getXLog("files/time_active_in.xes");
+        APMLog apmLog = new APMLog(xLog);
+        CaseTimeFilterTest.testEndIn(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Duration'");
+        XLog xLog = getXLog("files/perf.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testDuration(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter2() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Total Processing Time'");
+        XLog xLog = getXLog("files/perf.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testTotalProcessTime(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter3() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Average Processing Time'");
+        XLog xLog = getXLog("files/perf.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testAverageProcessTime(apmLog, this);
+    }
+
+    @Ignore("")
+    @Test
+    public void testDurationFilter4() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Max Processing Time'");
+        XLog xLog = getXLog("files/perf.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testMaxProcessTime(apmLog, this);
+    }
+
+    @Test
+    public void testDurationFilter5() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Total Waiting Time'");
+        XLog xLog = getXLog("files/perf.xes");
+        APMLog apmLog = new APMLog(xLog);
+        DurationFilterTest.testTotalWaitTime(apmLog, this);
+    }
+
+    @Ignore("")
     @Test
     public void testDirectFollowFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 1");
@@ -96,6 +171,7 @@ public class APMLogUnitTest {
         DirectFollowFilterTest.runTest1(apmLog, this);
     }
 
+    @Ignore("")
     @Test
     public void testDirectFollowFilter2() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 2");
@@ -104,6 +180,7 @@ public class APMLogUnitTest {
         DirectFollowFilterTest.runTest2(apmLog, this);
     }
 
+    @Ignore("")
     @Test
     public void testEventualFollowFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test 'Eventual Follow' Filter 1");
