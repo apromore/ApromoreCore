@@ -84,7 +84,9 @@ public class LogAnimationController extends BaseController {
 
         ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
         if (session == null) {
-            throw new AssertionError("No edit session associated with id " + pluginSessionId);
+            // throw new AssertionError("No edit session associated with id " + pluginSessionId);
+            throw new AssertionError("Your session has expired. Please close this browser tab and refresh the Portal tab");
+
         }
 
         editSession = session.getEditSession();

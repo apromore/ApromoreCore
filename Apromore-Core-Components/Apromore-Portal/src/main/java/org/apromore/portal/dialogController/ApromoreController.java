@@ -97,7 +97,8 @@ public class ApromoreController extends BaseController {
         if (id != null) {
             ApromoreSession session = UserSessionManager.getEditSession(id);
             if (session == null) {
-                throw new AssertionError("No edit session associated with id " + id);
+                // throw new AssertionError("No edit session associated with id " + id);
+                throw new AssertionError("Your session has expired. Please close this browser tab and refresh the Portal tab");
             }
 
             editSession1 = session.getEditSession();
