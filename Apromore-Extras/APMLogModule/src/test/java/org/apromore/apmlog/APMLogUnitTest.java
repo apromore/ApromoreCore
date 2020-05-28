@@ -24,8 +24,6 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.filter.*;
-import org.apromore.apmlog.logstats.APMLogParsingTest;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
