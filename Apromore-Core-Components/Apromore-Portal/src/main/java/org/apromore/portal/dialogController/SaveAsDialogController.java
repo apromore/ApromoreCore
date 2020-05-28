@@ -159,7 +159,7 @@ public class SaveAsDialogController extends BaseController {
         	this.saveAsW.setTitle("Save model");
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
-            this.versionNumber.setText("1.0");
+            this.versionNumber.setText(this.originalVersionNumber);
             this.versionNumber.setReadonly(true);
             this.modelName.setText(this.modelName.getText());
             this.modelName.setReadonly(true);

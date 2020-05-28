@@ -44,7 +44,7 @@ and CreateProcessController.java for creating process purpose.
           </row>
           <row>
             <label value="Version number" width="100%" />
-            <textbox width="100%" readonly="true" />
+            <textbox width="100%" />
           </row>
           <row visible="false" width="100%" tooltiptext="Process domain modification will be applied on all process versions.">
             <label value="Domain"/>
