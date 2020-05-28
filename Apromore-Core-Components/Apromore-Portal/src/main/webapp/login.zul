@@ -67,7 +67,7 @@
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              Your session might have been expired. Please try to reload the page.
+              Your session has expired. Please refresh this browser tab.
             </div>
           </div>
           <div if="${param['error'] == '3'}" xmlns="http://www.w3.org/1999/xhtml">
