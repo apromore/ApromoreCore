@@ -42,8 +42,7 @@ public interface FileImporterPlugin {
      * Call-back that is called when this plug-in is executed.
      *
      * @param media to be imported
-     * @param context which provides access to the portal (e.g., selected items, create windows, ..)
      * @param isPublic whether to make the uploaded file publicly accessible
      */
-    void importFile(Media media, PortalContext context, boolean isPublic);
+    void importFile(Media media, boolean isPublic);
 }

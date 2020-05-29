@@ -82,6 +82,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -180,6 +181,8 @@ public class MainController extends BaseController implements MainControllerInte
 
             controller = this;
             MainController self = this;
+
+            Sessions.getCurrent().setAttribute("portalContext", portalContext);
 
             this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
                 @Override

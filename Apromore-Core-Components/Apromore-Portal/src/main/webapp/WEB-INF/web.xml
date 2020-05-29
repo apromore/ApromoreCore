@@ -71,8 +71,7 @@
   <servlet>
     <description>ZK loader for ZUML pages</description>
     <servlet-name>zkLoader</servlet-name>
-    <!-- <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class> -->
-    <servlet-class>org.zkoss.zk.ui.http.ApromoreLayoutServlet</servlet-class>
+    <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
     <init-param>
       <param-name>update-uri</param-name>
       <param-value>/zkau</param-value>

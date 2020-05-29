@@ -46,7 +46,7 @@ public class ImportControllerUnitTest {
         }
 
         @Override
-        public void importFile(Media media, PortalContext context, boolean isPublic) {
+        public void importFile(Media media, boolean isPublic) {
             System.out.println("Importing " + media);
         }
     };

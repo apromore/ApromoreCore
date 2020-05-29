@@ -36,15 +36,8 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <!-- Access the site.properties configuration artifact -->
-    <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
-    <context:property-placeholder properties-ref="properties"/>
-
-    <bean id="csvImporterLogicImpl" class="org.apromore.service.csvimporter.impl.CSVImporterLogicImpl">
-        <!-- constructor-arg and property elements go here -->
-    </bean>
-
-    <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
-    <osgi:service ref="csvImporterLogicImpl" interface="org.apromore.service.csvimporter.CSVImporterLogic" auto-export="interfaces"/>
+    <osgi:service interface="org.apromore.service.csvimporter.CSVImporterLogic">
+        <bean class="org.apromore.service.csvimporter.impl.CSVImporterLogicImpl"/>
+    </osgi:service>
 
 </beans>

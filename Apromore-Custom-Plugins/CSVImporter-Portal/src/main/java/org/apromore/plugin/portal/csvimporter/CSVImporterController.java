@@ -25,13 +25,21 @@ package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.lang.StringUtils;
@@ -45,6 +53,7 @@ import org.apromore.service.csvimporter.LogSample;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -55,6 +64,7 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Auxhead;
 import org.zkoss.zul.Auxheader;
@@ -75,21 +85,27 @@ import org.zkoss.zul.Span;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+/**
+ * Controller for <code>csvimporter.zul</code>.
+ */
 public class CSVImporterController extends SelectorComposer<Window> implements Constants {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
 
-    private CSVImporterLogic csvImporterLogic;
-    private EventLogService  eventLogService;
-    private Media            media;
-    private PortalContext    portalContext;
-    private boolean          isLogPublic;
+    // Fields injected from Spring beans/OSGi services
+    private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
 
-    @Wire("#mainWindow")
-    private Window window;
+    // Fields injected from the ZK execution
+    private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
+    private Media media = (Media) Executions.getCurrent().getArg().get("media");
 
-    @Wire("#toXESButton")
-    private Button toXESButton;
+    // Fields injected from the ZK session
+    private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+
+    // Fields injected from csvimporter.zul
+    private @Wire("#mainWindow")        Window window;
+    private @Wire("#toXESButton")       Button toXESButton;
+    private @Wire("#toPublicXESButton") Button toPublicXESButton;
 
     private LogSample sample;
 
@@ -99,14 +115,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private List<Listbox> dropDownLists;
 
     @Override
-    public void doFinally() {
-        Map arg = (Map) Sessions.getCurrent().getAttribute("csvimport");
-
-        csvImporterLogic = (CSVImporterLogic) arg.get("csvImporterLogic");
-        eventLogService  = (EventLogService)  arg.get("eventLogService");
-        media            = (Media)            arg.get("media");
-        portalContext    = (PortalContext)    arg.get("portalContext");
-        isLogPublic      = (Boolean)          arg.get("isLogPublic");
+    public void doFinally() throws Exception {
+        super.doFinally();
 
         // Populate the window
         CSVFileReader CSVReader = new CSVFileReader();
@@ -128,11 +138,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 if (sample != null) {
                     setUpUI();
                     toXESButton.setDisabled(false);
+                    toPublicXESButton.setDisabled(false);
                 }
             }
 
         } catch (Exception e) {
-            Messagebox.show("Failed to read the log!" + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
+            Messagebox.show(getLabels().getString("failed_to_read_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
         }
     }
 
@@ -174,30 +185,34 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
     }
 
-    @Listen("onClick = #toXESButton")
-    public void convertToXes() {
+    @Listen("onClick = #toXESButton; onClick = #toPublicXESButton")
+    public void convertToXes(MouseEvent event) {
         StringBuilder headNOTDefined = validateUniqueAttributes();
         if (headNOTDefined.length() != 0) {
-            Messagebox.show(headNOTDefined.toString(), "Missing fields!", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK, Messagebox.ERROR);
         } else {
             try {
                 CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
                 if (reader != null) {
                     LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
                     List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+                    boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
                     if (errorReport.isEmpty()) {
-                        saveXLog(xesModel);
+                        saveXLog(xesModel, isLogPublic);
                     } else {
-                        handleInvalidData(xesModel);
+                        handleInvalidData(xesModel, isLogPublic);
                     }
                 }
             } catch (Exception e) {
-                Messagebox.show("Error! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
             }
         }
     }
 
+    public ResourceBundle getLabels() {
+        return ResourceBundle.getBundle("WEB-INF.zk-label", Locales.getCurrent(), getClass().getClassLoader());
+    }
 
     // Internal methods handling page setup (doFinally)
 
@@ -378,7 +393,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     if (sample.isParsable(colPos)) {
                         parsedAuto(colPos, selected);
                     } else {
-                        textbox.setPlaceholder("Specify timestamp format");
+                        textbox.setPlaceholder(getLabels().getString("specify_timestamp_format"));
                         failedToParse(colPos);
                     }
                 } else {
@@ -407,15 +422,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         List<Listbox> menuDropDownLists = new ArrayList<>();
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<>();
 
-        menuItems.put(caseIdLabel, "Case ID");
-        menuItems.put(activityLabel, "Activity");
-        menuItems.put(endTimestampLabel, "End timestamp");
-        menuItems.put(startTimestampLabel, "Start timestamp");
-        menuItems.put(otherTimestampLabel, "Other timestamp");
-        menuItems.put(resourceLabel, "Resource");
-        menuItems.put(caseAttributeLabel, "Case Attribute");
-        menuItems.put(eventAttributeLabel, "Event Attribute");
-        menuItems.put(ignoreLabel, "Ignore Attribute");
+        menuItems.put(caseIdLabel,         getLabels().getString("case_id"));
+        menuItems.put(activityLabel,       getLabels().getString("activity"));
+        menuItems.put(endTimestampLabel,   getLabels().getString("end_timestamp"));
+        menuItems.put(startTimestampLabel, getLabels().getString("start_timestamp"));
+        menuItems.put(otherTimestampLabel, getLabels().getString("other_timestamp"));
+        menuItems.put(resourceLabel,       getLabels().getString("resource"));
+        menuItems.put(caseAttributeLabel,  getLabels().getString("case_attribute"));
+        menuItems.put(eventAttributeLabel, getLabels().getString("event_attribute"));
+        menuItems.put(ignoreLabel,         getLabels().getString("ignore_attribute"));
 
 
         for (int pos = 0; pos < sample.getHeader().size(); pos++) {
@@ -658,109 +673,102 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private void close() {
         window.detach();
         window.invalidate();
-        Clients.evalJavaScript("window.close()");  // Rely on browsers only closing windows if they were opened by Javascript
-        Sessions.getCurrent().removeAttribute("csvimport");  // Note that this can interfere with other CSV Importer windows
     }
 
     private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
-        String mess = "- No attribute has been selected as ";
+        String mess = getLabels().getString("no_attribute_has_been_selected_as");
 
         if (sample.getCaseIdPos() == -1) {
-            importMessage.append(mess).append("Case ID!");
+            importMessage.append(mess).append(getLabels().getString("case_id"));
         }
         if (sample.getActivityPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append("Activity!");
+                importMessage.append(mess).append(getLabels().getString("activity"));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append("Activity!");
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append(getLabels().getString("activity"));
             }
         }
         if (sample.getEndTimestampPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append("End Timestamp!");
+                importMessage.append(mess).append(getLabels().getString("end_timestamp"));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append("End Timestamp!");
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append(getLabels().getString("end_timestamp"));
             }
         }
 
         return importMessage;
     }
 
-    private void handleInvalidData(LogModel xesModel) {
-        try {
-            Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
-            errorPopUp.doModal();
+    private void handleInvalidData(LogModel xesModel, boolean isPublic) throws IOException {
+        Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
+        errorPopUp.doModal();
 
-            List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+        List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
 
-            Label errorCount = (Label) errorPopUp.getFellow(errorCountLblId);
-            errorCount.setValue(String.valueOf(errorReport.size()));
+        Label errorCount = (Label) errorPopUp.getFellow(errorCountLblId);
+        errorCount.setValue(String.valueOf(errorReport.size()));
 
-            Label columnList = (Label) errorPopUp.getFellow(invalidColumnsListLblId);
+        Label columnList = (Label) errorPopUp.getFellow(invalidColumnsListLblId);
 
-            Set<String> invColList = new HashSet<String>();
-            Set<String> igColList = new HashSet<String>();
-            Set<Integer> invTimestampPos = new HashSet<>();
-            for (LogErrorReport error : errorReport) {
-                if (error.getHeader() != null && !error.getHeader().isEmpty()) {
-                    invColList.add(error.getHeader());
-                    if (sample.getOtherTimestamps().containsKey(error.getColumnIndex())) {
-                        igColList.add(error.getHeader());
-                        invTimestampPos.add(error.getColumnIndex());
-                    }
+        Set<String> invColList = new HashSet<String>();
+        Set<String> igColList = new HashSet<String>();
+        Set<Integer> invTimestampPos = new HashSet<>();
+        for (LogErrorReport error : errorReport) {
+            if (error.getHeader() != null && !error.getHeader().isEmpty()) {
+                invColList.add(error.getHeader());
+                if (sample.getOtherTimestamps().containsKey(error.getColumnIndex())) {
+                    igColList.add(error.getHeader());
+                    invTimestampPos.add(error.getColumnIndex());
                 }
             }
-            if (!invColList.isEmpty()) {
-                columnList.setValue("The following column(s) include(s) one or more errors: " + columnList(invColList));
-            }
+        }
+        if (!invColList.isEmpty()) {
+            columnList.setValue(getLabels().getString("the_following_columns_include_errors") + columnList(invColList));
+        }
 
-            if (!igColList.isEmpty()) {
-                Label ignoredList = (Label) errorPopUp.getFellow(ignoredColumnsListLblId);
-                Label ignoreLbl = (Label) errorPopUp.getFellow(ignoreColLblId);
-                ignoreLbl.setVisible(true);
-                ignoredList.setValue(columnList(igColList));
+        if (!igColList.isEmpty()) {
+            Label ignoredList = (Label) errorPopUp.getFellow(ignoredColumnsListLblId);
+            Label ignoreLbl = (Label) errorPopUp.getFellow(ignoreColLblId);
+            ignoreLbl.setVisible(true);
+            ignoredList.setValue(columnList(igColList));
 
-                Button skipColumns = (Button) errorPopUp.getFellow(skipColumnsBtnId);
-                skipColumns.setVisible(true);
-                skipColumns.addEventListener("onClick", event -> {
-                            errorPopUp.invalidate();
-                            errorPopUp.detach();
-
-                            for (int pos : invTimestampPos) {
-                                sample.getOtherTimestamps().remove(pos);
-                                sample.getIgnoredPos().add(pos);
-                            }
-
-                            CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                            saveXLog(csvImporterLogic.prepareXesModel(reader, sample));
-                        }
-                );
-            }
-
-            Button downloadBtn = (Button) errorPopUp.getFellow(downloadReportBtnId);
-            downloadBtn.addEventListener("onClick", event -> {
-                        downloadErrorLog(errorReport);
-                    }
-            );
-
-            Button skipRows = (Button) errorPopUp.getFellow(skipRowsBtnId);
-            skipRows.addEventListener("onClick", event -> {
+            Button skipColumns = (Button) errorPopUp.getFellow(skipColumnsBtnId);
+            skipColumns.setVisible(true);
+            skipColumns.addEventListener("onClick", event -> {
                         errorPopUp.invalidate();
                         errorPopUp.detach();
-                        saveXLog(xesModel);
+
+                        for (int pos : invTimestampPos) {
+                            sample.getOtherTimestamps().remove(pos);
+                            sample.getIgnoredPos().add(pos);
+                        }
+
+                        CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
+                        saveXLog(csvImporterLogic.prepareXesModel(reader, sample), isPublic);
                     }
             );
-
-            Button cancelButton = (Button) errorPopUp.getFellow(handleCancelBtnId);
-            cancelButton.addEventListener("onClick", event -> {
-                errorPopUp.invalidate();
-                errorPopUp.detach();
-            });
-
-        } catch (IOException e) {
-            Messagebox.show("Error! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
+
+        Button downloadBtn = (Button) errorPopUp.getFellow(downloadReportBtnId);
+        downloadBtn.addEventListener("onClick", event -> {
+                    downloadErrorLog(errorReport);
+                }
+        );
+
+        Button skipRows = (Button) errorPopUp.getFellow(skipRowsBtnId);
+        skipRows.addEventListener("onClick", event -> {
+                    errorPopUp.invalidate();
+                    errorPopUp.detach();
+                    saveXLog(xesModel, isPublic);
+                }
+        );
+
+        Button cancelButton = (Button) errorPopUp.getFellow(handleCancelBtnId);
+        cancelButton.addEventListener("onClick", event -> {
+            errorPopUp.invalidate();
+            errorPopUp.detach();
+        });
     }
 
     private String columnList(Set<String> list) {
@@ -796,18 +804,18 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             InputStream csvLogStream = new FileInputStream(tempFile);
             Filedownload.save(csvLogStream, "text/csv; charset-UTF-8", "ErrorReport.csv");
         } catch (Exception e) {
-            Messagebox.show("Failed to download error log: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabels().getString("failed_to_download_error_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         } finally {
             tempFile.delete();
 
         }
     }
 
-    private void saveXLog(LogModel xesModel) {
+    private void saveXLog(LogModel xesModel, boolean isPublic) {
         try {
             XLog xlog = xesModel.getXLog();
             if (xlog == null) {
-                throw new InvalidCSVException("Failed to create XES log!");
+                throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
             }
 
             String name = media.getName().replaceFirst("[.][^.]+$", "");
@@ -824,10 +832,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     "xes.gz",
                     "",  // domain
                     DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                    isLogPublic  // public?
+                    isPublic  // public?
             );
 
-            Messagebox.show("Total number of lines processed: " + xesModel.getRowsCount() + "\n Your file has been imported successfully!",
+            Messagebox.show(MessageFormat.format(getLabels().getString("successful_upload"), xesModel.getRowsCount()),
                             new Messagebox.Button[] {Messagebox.Button.OK},
                             event -> close());
             portalContext.refreshContent();
@@ -835,7 +843,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
-            Messagebox.show("Failed to write and save log! " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabels().getString("failed_to_write_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
     }
 }

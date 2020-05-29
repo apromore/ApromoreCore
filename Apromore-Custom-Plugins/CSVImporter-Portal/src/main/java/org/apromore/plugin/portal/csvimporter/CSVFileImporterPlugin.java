@@ -23,50 +23,31 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Window;
 
-
-@Component("csvFileImporterPlugin")
 public class CSVFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVFileImporterPlugin.class);
 
-    //@Inject
     private CSVImporterLogic csvImporterLogic;
-
-    //@Inject
-    private EventLogService eventLogService;
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         LOGGER.info("Injected CSV importer logic {}", newCSVImporterLogic);
         this.csvImporterLogic = newCSVImporterLogic;
     }
-
-    public void setEventLogService(EventLogService newEventLogService) {
-        LOGGER.info("Injected event log service {}", newEventLogService);
-        this.eventLogService = newEventLogService;
-    }
-
-
-    // Implementation of FileImporterPlugin
 
     @Override
     public Set<String> getFileExtensions() {
@@ -74,42 +55,22 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
     }
 
     @Override
-    public void importFile(Media media, PortalContext portalContext, boolean isLogPublic) {
+    public void importFile(Media media, boolean isLogPublic) {
 
         // Configure the arguments to pass to the CSV importer view
-        Map arg = new HashMap();
+        Map arg = new HashMap<>();
         arg.put("csvImporterLogic", csvImporterLogic);
-        arg.put("eventLogService",  eventLogService);
-        arg.put("media",            media);
-        arg.put("portalContext",    portalContext);
-        arg.put("isLogPublic",      isLogPublic);
-        Sessions.getCurrent().setAttribute("csvimport", arg);
+        arg.put("media", media);
 
         // Create a CSV importer view
         String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
-        if ("page".equals(Sessions.getCurrent().getAttribute("fileimportertarget"))) {  // create the view in its own page
-            Executions.getCurrent().sendRedirect(zul, "_blank");
-
-        } else {  // create the view in a modal popup within the current page
-            Window window = createComponent(zul, getClass().getClassLoader(), null, arg);
-            window.doModal();
-        }
-    }
-
-    private static <T extends org.zkoss.zk.ui.Component> T createComponent(String path, ClassLoader classLoader, org.zkoss.zk.ui.Component parent, Map<?, ?> arg) {
-
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         try {
-            InputStream in = classLoader.getResourceAsStream(path);
-            if (in == null) {
-                throw new IllegalArgumentException(path + " is not in " + classLoader);
-            }
-            Reader r = new InputStreamReader(in, "UTF-8");
-            org.zkoss.zk.ui.Component component = Executions.createComponentsDirectly(r, "zul", parent, arg);
-
-            return (T) component;
+            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
+            window.doModal();
 
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid ZUL path: " + path, e);
+            LOGGER.error("Unable to create window", e);
         }
     }
 }

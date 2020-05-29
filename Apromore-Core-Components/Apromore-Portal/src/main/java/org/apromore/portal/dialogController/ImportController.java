@@ -203,7 +203,7 @@ public class ImportController extends BaseController {
         // Check whether any of the pluggable file importers can handle this file
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
-                fileImporterPlugin.importFile(importedMedia, new PluginPortalContext(mainC), isPublicCheckbox.isChecked());
+                fileImporterPlugin.importFile(importedMedia, isPublicCheckbox.isChecked());
                 return;
             }
         }
