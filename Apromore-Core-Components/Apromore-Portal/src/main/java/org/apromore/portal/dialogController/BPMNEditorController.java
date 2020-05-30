@@ -27,39 +27,34 @@
 package org.apromore.portal.dialogController;
 
 // Java 2 Standard packages
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // Java 2 Enterprise packages
 import javax.inject.Inject;
 
+// Local packages
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
-import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.EditorPluginResolver;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.util.StreamUtil;
+import org.apromore.processmining.plugins.bpmn.plugins.BpmnLayoutPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-
-import org.apromore.helper.Version;
-// Local packages
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.BaseController;
-import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.util.StreamUtil;
-import org.apromore.service.ProcessService;
-import org.json.JSONException;
 
 /**
  * This class was created to manage the BPMN model being edited in the bpmn.io editor
@@ -168,6 +163,15 @@ public class BPMNEditorController extends BaseController {
                             		editSession.getUsername(),
                                     params);
                     bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+                    
+                    if (editSession.isWithAnnotation()) {
+                        param.put("doAutoLayout", "false");
+                    } 
+                    else {
+                        BpmnLayoutPlugin layouter = new BpmnLayoutPlugin();
+                        bpmnXML = layouter.addLayout(bpmnXML, "bpmnXML");
+                        param.put("doAutoLayout", "true");
+                    }
             	}
             	
                 title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
@@ -188,15 +192,15 @@ public class BPMNEditorController extends BaseController {
                 param.put("doAutoLayout", "false");
             }
             
-            if (isNewProcess) {
-            	param.put("doAutoLayout", "false");
-            }
-            else if (editSession.isWithAnnotation()) {
-                param.put("doAutoLayout", "false");
-            } 
-            else {
-                param.put("doAutoLayout", "true");
-            }
+//            if (isNewProcess) {
+//            	param.put("doAutoLayout", "false");
+//            }
+//            else if (editSession.isWithAnnotation()) {
+//                param.put("doAutoLayout", "false");
+//            } 
+//            else {
+//                param.put("doAutoLayout", "true");
+//            }
 
             this.setTitle(title);
             if (mainC != null) {

@@ -50,7 +50,7 @@ public class BpmnImportPlugin {
 	    Bpmn bpmnRaw = importFromStream(input, filename);
 	    return selectDefault(bpmnRaw);
 	}
-
+	
 	protected Bpmn importFromStream(InputStream input, String filename) throws Exception {
 		Bpmn bpmn = importBpmnFromStream(input, filename);
 		if (bpmn == null) {
