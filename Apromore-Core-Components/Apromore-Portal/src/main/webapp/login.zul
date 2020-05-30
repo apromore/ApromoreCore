@@ -6,16 +6,18 @@
   %%
   Copyright (C) 2018 - 2020 The University of Melbourne.
   %%
+  Copyright (C) 2020 Apromore Pty Ltd.
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
   License, or (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Lesser Public License for more details.
-  
+
   You should have received a copy of the GNU General Lesser Public
   License along with this program.  If not, see
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -65,8 +67,7 @@
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              The resource you just requested is no longer available.
-              This may be caused by connection or infrastructure issue.
+              Your session might have been expired. Please try to reload the page.
             </div>
           </div>
           <div if="${param['error'] == '3'}" xmlns="http://www.w3.org/1999/xhtml">
@@ -104,6 +105,13 @@
               You need to agree with the Terms &amp;amp; Conditions and the Privacy Policy
             </div>
           </div>
+          <div xmlns="http://www.w3.org/1999/xhtml" id="ap-login-message" style="display: none;">
+            <div class="alert alert-warning">
+              <button type="button" class="close" onClick="Ap.login.closeMessage(true);">&#xd7;</button>
+              <i class="icon-remove-circle"></i>
+              <span class="content"></span>
+            </div>
+          </div>
         </html>
         <h:div class="main">
           <h:div class="tab-content overflow form-dark">
@@ -130,12 +138,12 @@
                         ${labels.e.auth.login.text}
                       </h:button>
                     </h:div>
-                    <h:div class="controls controls-row register">
+                    <div sclass="controls controls-row register" id="registerBtn">
                       <h:a href="#register" class="register-button button link-button"
                            data-toggle="tab">
                         ${labels.e.auth.addAccount.text}
                       </h:a>
-                    </h:div>
+                    </div>
                   </h:fieldset>
                 </h:form>
               </h:div>
@@ -185,22 +193,22 @@
                       <h:input type="text" name="surname"
                                placeholder="Last name*"/>
                     </h:div>
-                    <h:div class="controls">
+                    <div sclass="controls" id="organization" visible="false">
                       <h:input type="text" name="organization"
                                placeholder="Organization"/>
-                    </h:div>
-                    <h:div class="controls">
+                    </div>
+                    <div sclass="controls" id="role" visible="false">
                       <h:input type="text" name="role"
                                placeholder="Role"/>
-                    </h:div>
-                    <h:div class="controls">
+                    </div>
+                    <div sclass="controls" id="country" visible="false">
                       <h:input type="text" id="ap-new-user-country" name="country"
                                placeholder="Country"/>
-                    </h:div>
-                    <h:div class="controls">
+                    </div>
+                    <div sclass="controls" id="phone" visible="false">
                       <h:input type="tel" id="ap-new-user-phone" name="phone" value="+61"
                                placeholder="Phone"/>
-                    </h:div>
+                    </div>
                     <h:div class="controls">
                       <h:input type="text" name="email" id="ap-new-email" placeholder="Email address*"/>
                     </h:div>
@@ -230,13 +238,20 @@
                       <h:input type="checkbox" id="ap-agree" />
                       <h:span>
                         I agree with the
-                        <h:a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</h:a> and the
-                        <h:a href="https://apromore.org/privacy-policy/">Privacy Policy</h:a>
+                        <html id="tcAgree">
+                          <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a>
+                        </html>
+                        <html id="andAgree">
+                          and the
+                        </html>
+                        <html id="ppAgree">
+                          <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+                        </html>
                       </h:span>
                     </div>
-                    <div>
-                      <h:input type="checkbox" id="ap-subscribe" name="subscription"/>
-                      <h:span>Keep me up-to-date with news and offers</h:span>
+                    <div id="subscribe" visible="false">
+                      <h:input type="checkbox" id="ap-subscribe" name="subscription" checked="true" value="subscribe"/>
+                      <h:span>I wish to be contacted about Apromore offers and news</h:span>
                     </div>
                   </h:fieldset>
                   <h:fieldset>
@@ -259,26 +274,18 @@
           </h:div>
         </h:div>
 
-        <html>
-          <h:div class="left-footer">
-            <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
-            <h:ul class="ap-h-links">
-              <h:li>
-                <h:a href="https://apromore.org/terms-and-conditions/">
-                  Terms &amp; Conditions
-                </h:a>
-              </h:li>
-              <h:li>
-                <h:a href="https://apromore.org/privacy-policy/">
-                  Privacy Policy
-                </h:a>
-              </h:li>
-              <h:li>
-                ${labels.e.common.contact.text}
-              </h:li>
-            </h:ul>
+        <h:div class="left-footer">
+          <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
+          <h:div class="ap-h-links">
+            <html id="tcLink">
+              <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a>
+            </html>
+            <html id="ppLink">
+              <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+            </html>
+            <html>${labels.e.common.contact.text}</html>
           </h:div>
-        </html>
+        </h:div>
         <h:div class="slant-separator">
         </h:div>
       </h:div>

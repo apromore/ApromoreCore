@@ -53,6 +53,10 @@
         <constructor-arg type="String" value="${git.commit.time}"/>
         <constructor-arg type="boolean" value="${security.publish.enable}"/>
         <constructor-arg type="boolean" value="${security.tcagree.enable}"/>
+        <constructor-arg type="boolean" value="${security.ppagree.enable}"/>
+        <constructor-arg type="boolean" value="${security.userreg.enable}"/>
+        <constructor-arg type="boolean" value="${security.fulluserreg.enable}"/>
+        <constructor-arg type="boolean" value="${security.subscribe.enable}"/>
     </bean>
 
     <bean id="editor.js" class="java.lang.String">
