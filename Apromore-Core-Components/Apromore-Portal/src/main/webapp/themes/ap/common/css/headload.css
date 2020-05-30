@@ -52,3 +52,20 @@
 .z-loading-indicator {
     background-color: transparent;
 }
+
+/* Messagebox icons */
+.z-messagebox-question {
+    background-image: url(../img/msgbox/question.svg);
+}
+
+.z-messagebox-exclamation {
+    background-image: url(../img/msgbox/warning.svg);
+}
+
+.z-messagebox-information {
+    background-image: url(../img/msgbox/info.svg);
+}
+
+.z-messagebox-error {
+    background-image: url(../img/msgbox/stop.svg);
+}
