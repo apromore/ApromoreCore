@@ -51,7 +51,6 @@ import java.util.List;
  * Modified: Chii Chang (07/05/2020)
  * Modified: Chii Chang (19/05/2020)
  * Modified: Chii Chang (24/05/2020)
- * Modified: Chii Chang (26/05/2020)
  * Modified: Chii Chang (01/06/2020)
  */
 public class ATrace implements Serializable, LaTrace {
@@ -300,8 +299,10 @@ public class ATrace implements Serializable, LaTrace {
                         break;
                     }
                 }
-            } else eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
-
+            } else {
+                eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
+            }
+//            long eventTime = Util.epochMilliOf(Util.zonedDateTimeOf(xEvent));
             if(startTimeMilli == 0 || eventTime < startTimeMilli) {
                 startTimeMilli = eventTime;
             }
@@ -344,21 +345,16 @@ public class ATrace implements Serializable, LaTrace {
                         this.activityList.add(aActivity);
                     } else {
 
-                        if (followup.size() == 0) {
-                            AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, iAEvent.getTimestampMilli(),
-                                    iAEvent.getTimestampMilli(), 0);
-                            this.activityList.add(aActivity);
-                        } else {
-                            for (int j = 0; j < followup.size(); j++) {
-                                int index = followup.get(j);
-                                markedIndex.add(index);
-                                XEvent fEvent = xTrace.get(index);
-                                AEvent fAEvent = new AEvent(fEvent);
-                                actEvents.add(fAEvent);
-                            }
-                            actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
-                            actDur = actEndTime - actStartTime;
+                        for (int j = 0; j < followup.size(); j++) {
+                            int index = followup.get(j);
+                            markedIndex.add(index);
+                            XEvent fEvent = xTrace.get(index);
+                            AEvent fAEvent = new AEvent(fEvent);
+                            actEvents.add(fAEvent);
                         }
+                        actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
+                        actDur = actEndTime - actStartTime;
+
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
                                 actEndTime, actDur);
                         this.activityList.add(aActivity);
@@ -372,6 +368,7 @@ public class ATrace implements Serializable, LaTrace {
                         AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
                                 actEndTime, actDur);
                         this.activityList.add(aActivity);
+                        markedIndex.add(0);
                     }
                 }
             }
@@ -500,50 +497,20 @@ public class ATrace implements Serializable, LaTrace {
         } else return null;
     }
 
-
-//    private IntArrayList getFollowUpIndexList(XTrace xTrace, int fromIndex, String conceptName) {
-//
-//        XEvent startEvent = xTrace.get(fromIndex);
-//        XAttributeMap seAttributeMap = startEvent.getAttributes();
-//
-//        IntArrayList followUpIndex = new IntArrayList();
-//        if ( (fromIndex + 1) < xTrace.size()) {
-//            for (int i = (fromIndex + 1); i < xTrace.size(); i++) {
-//
-//                if (!markedIndex.contains(i)) {
-//                    XEvent xEvent = xTrace.get(i);
-//                    XAttributeMap xAttributeMap = xEvent.getAttributes();
-//                    if (xAttributeMap.containsKey("concept:name") && xAttributeMap.containsKey("lifecycle:transition")) {
-//                        String actName = xAttributeMap.get("concept:name").toString();
-//                        String lifecycle = xAttributeMap.get("lifecycle:transition").toString().toLowerCase();
-//
-//                        if (haveSameAttributeValues(seAttributeMap, xAttributeMap)) {
-//                            if (!lifecycle.equals("start")) {
-//                                followUpIndex.add(i);
-//                                if (lifecycle.equals("complete") ||
-//                                        lifecycle.equals("manualskip") ||
-//                                        lifecycle.equals("autoskip")) {
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            return followUpIndex;
-//        } else return null;
-//    }
-
     private boolean haveSameAttributeValues(XAttributeMap xAttributeMap1, XAttributeMap xAttributeMap2) {
-        for (String key : xAttributeMap1.keySet()) {
-            if (!key.toLowerCase().equals("time:timestamp") && !key.toLowerCase().equals("lifecycle:transition")) {
-                if (!xAttributeMap2.containsKey(key)) return false;
-                String val1 = xAttributeMap1.get(key).toString();
-                String val2 = xAttributeMap2.get(key).toString();
-                if (!val1.equals(val2)) return false;
-            }
-        }
-        return true;
+//        for (String key : xAttributeMap1.keySet()) {
+//            if (!key.toLowerCase().equals("time:timestamp") && !key.toLowerCase().equals("lifecycle:transition") &&
+//            !key.toLowerCase().equals("eventid")) {
+//                if (!xAttributeMap2.containsKey(key)) return false;
+//                String val1 = xAttributeMap1.get(key).toString();
+//                String val2 = xAttributeMap2.get(key).toString();
+//                if (!val1.equals(val2)) return false;
+//            }
+//        }
+//        return true;
+        String res1 = xAttributeMap1.containsKey("org:resource") ? xAttributeMap1.get("org:resource").toString() : "";
+        String res2 = xAttributeMap2.containsKey("org:resource") ? xAttributeMap2.get("org:resource").toString() : "";
+        return res1.equals(res2);
     }
 
     private boolean haveSameAttributeValues(UnifiedMap<String, String> attributeMap1,
@@ -566,15 +533,13 @@ public class ATrace implements Serializable, LaTrace {
 
         if ( (fromIndex + 1) < eventList.size()) {
             for (int i = (fromIndex + 1); i < eventList.size(); i++) {
-
                 if (!markedIndex.contains(i)) {
-
                     AEvent aEvent = eventList.get(i);
                     String lifecycle = aEvent.getLifecycle();
 
                     UnifiedMap<String, String> attribute2 = aEvent.getAttributeMap();
 
-                    if (eventList.get(fromIndex).getName().equals(aEvent.getName())) {
+                    if (aEvent.getName().equals(conceptName)) {
                         if (!lifecycle.equals("start")) {
                             followUpIndex.add(i);
                             if (lifecycle.equals("complete") ||
@@ -584,17 +549,6 @@ public class ATrace implements Serializable, LaTrace {
                             }
                         }
                     }
-
-//                if (haveSameAttributeValues(attribute1, attribute2)) {
-//                    if (!lifecycle.equals("start")) {
-//                        followUpIndex.add(i);
-//                        if (lifecycle.equals("complete") ||
-//                                lifecycle.equals("manualskip") ||
-//                                lifecycle.equals("autoskip")) {
-//                            break;
-//                        }
-//                    }
-//                }
                 }
             }
             return followUpIndex;
