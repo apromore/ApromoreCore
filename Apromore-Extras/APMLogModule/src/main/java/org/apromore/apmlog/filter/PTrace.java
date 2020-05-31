@@ -36,6 +36,7 @@ import java.util.List;
  * Modified: Chii Chang (12/03/2020)
  * Modified: Chii Chang (24/05/2020)
  * Modified: Chii Chang (26/05/2020)
+ * Modified: Chii Chang (01/06/2020)
  */
 public class PTrace implements Comparable<PTrace>, LaTrace {
 
@@ -462,7 +463,8 @@ public class PTrace implements Comparable<PTrace>, LaTrace {
             if (!markedIndex.contains(i)) {
                 AEvent aEvent = eventList.get(i);
 
-                if (haveSameAttributeValues(fromEvent, aEvent)) {
+//                if (haveSameAttributeValues(fromEvent, aEvent)) {
+                if (conceptName.equals(aEvent.getName())) {
                     String lifecycle = aEvent.getLifecycle();
                     if (lifecycle.toLowerCase().equals("start")) {
                         //break;
