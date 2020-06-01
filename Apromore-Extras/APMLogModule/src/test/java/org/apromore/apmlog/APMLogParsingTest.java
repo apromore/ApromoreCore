@@ -32,12 +32,19 @@ public class APMLogParsingTest {
             throws Exception {
         parent.printString("\n(/ 'o')/ ~ Test 'ActivityStartCompleteEventsOnly'");
         APMLog apmLog = new APMLog(xLog);
-        if (apmLog.getEventSize() != 23) {
-            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
-        } else if (apmLog.getTraceList().size() != 6) {
+
+//        parent.printString("event size = " + apmLog.getEventSize());
+//        parent.printString("trace 0 event size = " + apmLog.getTraceList().get(0).getEventList().size());
+
+        parent.printString("variant size = " + apmLog.getCaseVariantSize());
+
+
+        if (apmLog.getTraceList().size() != 6) {
             throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
-        } else if (apmLog.getCaseVariantSize() != 5) {
+        } else if (apmLog.getCaseVariantSize() != 3) {
             throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
+        } else if (apmLog.getEventSize() != 23) {
+            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
         } else if (apmLog.getUniqueActivitySize() != 5) {
             throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
         } else {
@@ -48,12 +55,12 @@ public class APMLogParsingTest {
     public static void testMissingTimestamp(XLog xLog, APMLogUnitTest parent) throws Exception {
         parent.printString("\n(/ 'o')/ ~ Test 'MissingTimestamp'");
         APMLog apmLog = new APMLog(xLog);
-        if (apmLog.getEventSize() != 23) {
-            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
-        } else if (apmLog.getTraceList().size() != 6) {
+        if (apmLog.getTraceList().size() != 6) {
             throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
         } else if (apmLog.getCaseVariantSize() != 3) {
             throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
+        } else if (apmLog.getEventSize() != 23) {
+            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
         } else if (apmLog.getUniqueActivitySize() != 5) {
             throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
         } else {
