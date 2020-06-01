@@ -224,6 +224,14 @@ let AnimationController = {
     this.createTicks();
     this.createCursor();
     this.createMetricTables();
+    let me = this;
+    window.onkeydown = function(event){
+      if(event.keyCode === 32 || e.key === " ") {
+        event.preventDefault();
+        // event.stopPropagation();
+        me.playPause();
+      }
+    };
     this.start();
   },
 
