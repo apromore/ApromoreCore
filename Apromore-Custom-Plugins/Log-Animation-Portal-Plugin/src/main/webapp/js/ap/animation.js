@@ -226,7 +226,7 @@ let AnimationController = {
     this.createMetricTables();
     let me = this;
     window.onkeydown = function(event){
-      if(event.keyCode === 32 || e.key === " ") {
+      if(event.keyCode === 32 || event.key === " ") {
         event.preventDefault();
         // event.stopPropagation();
         me.playPause();
@@ -455,7 +455,7 @@ let AnimationController = {
   end: function() {
     this.pause();
     console.log((this.endPos * this.slotEngineMs) / 1000,
-    this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
+        this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
 
     this.setCurrentTime((this.endPos * this.slotEngineMs) / 1000, this.endMs);
     this.updateClockOnce(this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
@@ -588,7 +588,11 @@ let AnimationController = {
     }
   },
 
-  isPaused: function() {
+  canPause: function() {
+    return $j('#pause').hasClass(this.PAUSE_CLS);
+  },
+
+  isPlaying: function() {
     return $j('#pause').hasClass(this.PAUSE_CLS);
   },
 
@@ -597,7 +601,7 @@ let AnimationController = {
     const btn = $j('#pause');
 
     if (typeof state === 'undefined') {
-      state = this.isPaused(); // do toggle
+      state = this.canPause(); // do toggle
     }
     if (state) {
       btn.removeClass(PAUSE_CLS).addClass(PLAY_CLS);
@@ -617,7 +621,7 @@ let AnimationController = {
   },
 
   playPause: function() {
-    if (this.isPaused()) {
+    if (this.canPause()) {
       this.pause();
     } else {
       this.play();
@@ -746,6 +750,7 @@ let AnimationController = {
 
     // Control dragging of the timeline cursor
     let dragging = false;
+    let isPlayingBeforeDrag = null;
 
     cursorEl.addEventListener('mousedown', startDragging.bind(this));
     svgTimeline.addEventListener('mousemove', onDragging.bind(this));
@@ -753,6 +758,8 @@ let AnimationController = {
     svgTimeline.addEventListener('mouseleave', stopDragging.bind(this));
 
     function startDragging(evt) {
+      isPlayingBeforeDrag = me.isPlaying();
+      console.log('isPlayingBeforeDrag - start', isPlayingBeforeDrag);
       evt.preventDefault();
       dragging = true;
       me.pause();
@@ -779,6 +786,10 @@ let AnimationController = {
       dragging = false;
       let time = getTimeFromMouseX(evt);
       this.setCurrentTime(time, this.slotSecondstoRealMs(time));
+      console.log('isPlayingBeforeDrag - end', isPlayingBeforeDrag);
+      if (isPlayingBeforeDrag) {
+        me.play();
+      }
     }
 
     function getTimeFromMouseX(evt) {
