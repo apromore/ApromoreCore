@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 2.0 -->
+<!-- OpenXES library version: 2.27 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="2.27">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+	<string key="concept:name" value="Anonymous log imported from"/>
+	<string key="lifecycle:model" value="standard"/>
+	<trace>
+		<string key="ApplicationType" value="New credit"/>
+		<string key="LoanGoal" value="Home improvement"/>
+		<string key="RequestedAmount" value="15000.0"/>
+		<string key="case:variant" value="1"/>
+		<string key="concept:name" value="Application_480049"/>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Created"/>
+			<date key="time:timestamp" value="2016-03-19T22:36:33.360+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="Application_480049"/>
+			<string key="concept:name" value="A_Create Application"/>
+			<string key="EventOrigin" value="Application"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Created"/>
+			<date key="time:timestamp" value="2016-03-19T22:36:33.370+11:00"/>
+			<string key="lifecycle:transition" value="schedule"/>
+			<string key="EventID" value="Workitem_2106648925"/>
+			<string key="concept:name" value="W_Complete application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Obtained"/>
+			<date key="time:timestamp" value="2016-03-19T22:36:33.374+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="EventID" value="Workitem_1830236516"/>
+			<string key="concept:name" value="W_Complete application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-03-19T22:36:33.377+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="ApplState_892846507"/>
+			<string key="concept:name" value="A_Concept"/>
+			<string key="EventOrigin" value="Application"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-03-19T22:37:49.070+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="ApplState_1979663019"/>
+			<string key="concept:name" value="A_Accepted"/>
+			<string key="EventOrigin" value="Application"/>
+		</event>
+		<event>
+			<string key="MonthlyCost" value="301.55"/>
+			<string key="org:resource" value="User_12"/>
+			<string key="Selected" value="true"/>
+			<string key="EventID" value="Offer_2071246348"/>
+			<string key="concept:name" value="O_Create Offer"/>
+			<string key="FirstWithdrawalAmount" value="2500.0"/>
+			<string key="Action" value="Created"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:27.996+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Accepted" value="false"/>
+			<string key="CreditScore" value="0"/>
+			<string key="NumberOfTerms" value="64"/>
+			<string key="EventOrigin" value="Offer"/>
+			<string key="OfferedAmount" value="17000.0"/>
+		</event>
+		<event>
+			<string key="OfferID" value="Offer_2071246348"/>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:29.184+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="OfferState_357993807"/>
+			<string key="concept:name" value="O_Created"/>
+			<string key="EventOrigin" value="Offer"/>
+		</event>
+		<event>
+			<string key="OfferID" value="Offer_2071246348"/>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:41.826+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="OfferState_269292529"/>
+			<string key="concept:name" value="O_Sent (mail and online)"/>
+			<string key="EventOrigin" value="Offer"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Deleted"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:41.842+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="Workitem_386629522"/>
+			<string key="concept:name" value="W_Complete application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Created"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:41.851+11:00"/>
+			<string key="lifecycle:transition" value="schedule"/>
+			<string key="EventID" value="Workitem_196938266"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Obtained"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:41.853+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="EventID" value="Workitem_1829165692"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-03-19T22:52:41.855+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="ApplState_824834188"/>
+			<string key="concept:name" value="A_Complete"/>
+			<string key="EventOrigin" value="Application"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_12"/>
+			<string key="Action" value="Released"/>
+			<date key="time:timestamp" value="2016-03-19T22:57:07.212+11:00"/>
+			<string key="lifecycle:transition" value="suspend"/>
+			<string key="EventID" value="Workitem_1382764382"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_5"/>
+			<string key="Action" value="Obtained"/>
+			<date key="time:timestamp" value="2016-03-22T21:46:52.998+11:00"/>
+			<string key="lifecycle:transition" value="resume"/>
+			<string key="EventID" value="Workitem_385544764"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_5"/>
+			<string key="Action" value="Released"/>
+			<date key="time:timestamp" value="2016-03-22T21:47:08.465+11:00"/>
+			<string key="lifecycle:transition" value="suspend"/>
+			<string key="EventID" value="Workitem_465622696"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_3"/>
+			<string key="Action" value="Obtained"/>
+			<date key="time:timestamp" value="2016-03-23T19:08:59.584+11:00"/>
+			<string key="lifecycle:transition" value="resume"/>
+			<string key="EventID" value="Workitem_668375987"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_3"/>
+			<string key="Action" value="Released"/>
+			<date key="time:timestamp" value="2016-03-23T19:09:23.284+11:00"/>
+			<string key="lifecycle:transition" value="suspend"/>
+			<string key="EventID" value="Workitem_2100938001"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_116"/>
+			<string key="Action" value="Deleted"/>
+			<date key="time:timestamp" value="2016-04-06T22:04:49.388+10:00"/>
+			<string key="lifecycle:transition" value="ate_abort"/>
+			<string key="EventID" value="Workitem_1496844287"/>
+			<string key="concept:name" value="W_Call after offers"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_116"/>
+			<string key="Action" value="Created"/>
+			<date key="time:timestamp" value="2016-04-06T22:04:49.417+10:00"/>
+			<string key="lifecycle:transition" value="schedule"/>
+			<string key="EventID" value="Workitem_1812755382"/>
+			<string key="concept:name" value="W_Validate application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_116"/>
+			<string key="Action" value="Obtained"/>
+			<date key="time:timestamp" value="2016-04-06T22:04:49.420+10:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="EventID" value="Workitem_1542573921"/>
+			<string key="concept:name" value="W_Validate application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_116"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-04-06T22:04:50.341+10:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="ApplState_1968099027"/>
+			<string key="concept:name" value="A_Validating"/>
+			<string key="EventOrigin" value="Application"/>
+		</event>
+		<event>
+			<string key="OfferID" value="Offer_2071246348"/>
+			<string key="org:resource" value="User_116"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-04-06T22:08:58.144+10:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="OfferState_1548363431"/>
+			<string key="concept:name" value="O_Returned"/>
+			<string key="EventOrigin" value="Offer"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_116"/>
+			<string key="Action" value="Released"/>
+			<date key="time:timestamp" value="2016-04-06T22:11:28.807+10:00"/>
+			<string key="lifecycle:transition" value="suspend"/>
+			<string key="EventID" value="Workitem_694227137"/>
+			<string key="concept:name" value="W_Validate application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_95"/>
+			<string key="Action" value="Obtained"/>
+			<date key="time:timestamp" value="2016-04-06T23:05:56.731+10:00"/>
+			<string key="lifecycle:transition" value="resume"/>
+			<string key="EventID" value="Workitem_1853078945"/>
+			<string key="concept:name" value="W_Validate application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_95"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-04-06T23:52:22.865+10:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="ApplState_1941352172"/>
+			<string key="concept:name" value="A_Denied"/>
+			<string key="EventOrigin" value="Application"/>
+		</event>
+		<event>
+			<string key="OfferID" value="Offer_2071246348"/>
+			<string key="org:resource" value="User_95"/>
+			<string key="Action" value="statechange"/>
+			<date key="time:timestamp" value="2016-04-06T23:52:22.896+10:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="OfferState_688137262"/>
+			<string key="concept:name" value="O_Refused"/>
+			<string key="EventOrigin" value="Offer"/>
+		</event>
+		<event>
+			<string key="org:resource" value="User_95"/>
+			<string key="Action" value="Deleted"/>
+			<date key="time:timestamp" value="2016-04-06T23:52:22.909+10:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="EventID" value="Workitem_816996777"/>
+			<string key="concept:name" value="W_Validate application"/>
+			<string key="EventOrigin" value="Workflow"/>
+		</event>
+	</trace>
+</log>

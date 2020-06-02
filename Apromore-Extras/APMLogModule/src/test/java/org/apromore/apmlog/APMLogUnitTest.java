@@ -72,6 +72,9 @@ public class APMLogUnitTest {
 
         xLog = getXLog("files/simplelogs/L1_complete_events_only_with_resources.xes");
         APMLogParsingTest.testCompleteOnlyWithResources(xLog, this);
+
+        xLog = getXLog("files/BPI Challenge 2017-480049.xes");
+        APMLogParsingTest.testCountAsSameActivityEvenResourcesAreDifferent(xLog, this);
     }
 
     @Test

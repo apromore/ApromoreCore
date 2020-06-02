@@ -4,6 +4,8 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogUnitTest;
 import org.deckfour.xes.model.XLog;
 
+import java.util.List;
+
 public class APMLogParsingTest {
 
     public static void testConcurrentStartCompleteEvents(XLog xLog, APMLogUnitTest parent)
@@ -81,6 +83,28 @@ public class APMLogParsingTest {
             throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
         } else {
             parent.printString("'CompleteOnlyWithResources' test PASS.");
+        }
+    }
+
+    public static void testCountAsSameActivityEvenResourcesAreDifferent(XLog xLog, APMLogUnitTest parent)
+            throws Exception {
+        parent.printString("\n(/ 'o')/ ~ Test 'CountAsSameActivityEvenResourcesAreDifferent'");
+        APMLog apmLog = new APMLog(xLog);
+        List<AActivity> activityList = apmLog.getTraceList().get(0).getActivityList();
+        String lastActivity = activityList.get(activityList.size()-1).getName();
+
+        if (apmLog.getTraceList().size() != 1) {
+            throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
+        } else if (apmLog.getCaseVariantSize() != 1) {
+            throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
+        } else if (apmLog.getEventSize() != 27) {
+            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
+        } else if (apmLog.getUniqueActivitySize() != 14) {
+            throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
+        } else if (!lastActivity.equals("O_Refused")) {
+            throw new AssertionError("TEST FAILED. THE LAST ACTIVITY MISMATCH.");
+        } else {
+            parent.printString("'CountAsSameActivityEvenResourcesAreDifferent' test PASS.");
         }
     }
 }
