@@ -31,6 +31,17 @@
     ) !important;
 }
 
+.x-panel-editor-north .x-toolbar > table > tbody > tr > td:first-child,
+.x-panel-editor-north .x-toolbar > table > tbody > tr > td:nth-child(2) {
+    cursor: initial !important;
+    pointer-events: none;
+}
+
+.x-panel-editor-north .x-toolbar button[title='Save'],
+.x-panel-editor-north .x-toolbar button[title='Save a copy...'] {
+    opacity: 0.3;
+}
+
 .x-panel-editor-north .x-toolbar .ytb-sep {
     background-image: none !important;
     box-sizing: border-box;
