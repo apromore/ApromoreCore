@@ -155,7 +155,6 @@ let AnimationController = {
     this.timeline = timeline;
     this.tracedates = tracedates;
 
-    console.log(this.jsonServer);
     this.svgMain = this.canvas.getSVGContainer();
     this.svgViewport = this.canvas.getSVGViewport();
     this.svgTimeline = $j('div.ap-la-timeline > svg')[0];
@@ -171,11 +170,11 @@ let AnimationController = {
     this.totalMs = this.endMs - this.startMs;
     this.currentMs = this.startMs;
     this.totalEngineS = timeline.totalEngineSeconds; // Total engine seconds
+    this.oriTotalEngineS = timeline.totalEngineSeconds;
     this.startPos = timeline.startDateSlot; // Start slot, starting from 0
     this.endPos = timeline.endDateSlot; // End slot, currently set at 120
     this.slotNum = timeline.timelineSlots; // The number of timeline vertical bars or (timeline.endDateSlot - timeline.startDateSlot)
-    // Animation milliseconds per slot
-    this.slotEngineMs = timeline.slotEngineUnit * 1000;
+    this.slotEngineMs = timeline.slotEngineUnit * 1000; // Animation milliseconds per slot
     this.slotEngineS = timeline.slotEngineUnit; // in seconds
     // Data milliseconds per slot
     this.slotDataMs = this.totalMs / this.slotNum;
@@ -262,7 +261,7 @@ let AnimationController = {
     }
   },
 
-  createProgressIndicators: function() {
+  createProgressIndicators: function(speedRatio) {
     let {logs, logNum} = this;
     let log, progressContainer, svgProgressEl, label;
     let svgProgress, svgProgresses = [];
@@ -274,7 +273,7 @@ let AnimationController = {
       svgProgress = $j(`<svg id="progressbar-${i}  xmlns="${SVG_NS}" viewBox="-10 0 20 40" ></svg>`);
       progressWrapper.append(
           $j(`<div id="progress-c-${i}"></div>`).append(
-              svgProgress.append(this.createProgressIndicatorsForLog(i + 1, log, this.timeline, 0, 0)),
+              svgProgress.append(this.createProgressIndicatorsForLog(i + 1, log, this.timeline, 0, 0, speedRatio)),
           ).append($j(`<div class="label">${log.filename}</div>`)),
       );
       svgProgress = svgProgress[0];
@@ -352,7 +351,7 @@ let AnimationController = {
   // after the engine time is changed, e.g. tokens must stay in the same position, clock must show the same datetime
   setCurrentTime: function(time, timeMs, changeSpeed, forController) {
     if (time < 0) { time = 0; }
-    if (time > 120) { time = 120; }
+    if (time > this.totalEngineS) { time = this.totalEngineS; }
     if (timeMs < this.startMs) { timeMs = this.startMs; }
     if (timeMs > this.endMs) { timeMs = this.endMs; }
 
@@ -367,7 +366,7 @@ let AnimationController = {
     }
 
     if (!changeSpeed || forController) {
-      this.updateClockOnce(time * this.timeCoef * 1000 + this.startMs);
+      this.updateClockOnce(timeMs);
     }
   },
 
@@ -454,8 +453,7 @@ let AnimationController = {
    */
   end: function() {
     this.pause();
-    console.log((this.endPos * this.slotEngineMs) / 1000,
-        this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
+    // console.log((this.endPos * this.slotEngineMs) / 1000, this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
 
     this.setCurrentTime((this.endPos * this.slotEngineMs) / 1000, this.endMs);
     this.updateClockOnce(this.endPos * this.slotEngineMs * this.timeCoef + this.startMs);
@@ -487,9 +485,30 @@ let AnimationController = {
    * @param speedRatio
    */
   changeSpeed: function(speedRatio) {
+    if (!this.slotEngineMs) {
+      return;
+    }
+    let isCurrentlyPlaying = this.isPlaying();
+    this.pause();
+    let currentTime = this.getCurrentTime();
+
+    // Update Coefficients and units to ensure consistency
+    // between the clock, timeline and SVG documents
+    this.totalEngineS = this.totalEngineS / speedRatio;
+    this.slotEngineMs = this.slotEngineMs / speedRatio;
+    this.slotEngineS = this.slotEngineS / speedRatio;
+    if (this.timeCoef) {
+      this.timeCoef = this.slotDataMs / this.slotEngineMs;
+    }
+    let slotNum = this.slotNum;
+    let slotEngineS = this.slotEngineS;
+
     // Update the speed of circle progress bar
     let curDur, curBegin, animateEl;
     let animations = $j('.progress-animation');
+
+    let newTime = currentTime / speedRatio;
+    let timeMs = this.slotSecondstoRealMs(newTime);
 
     for (let i = 0; i < animations.length; i++) {
       animateEl = animations[i];
@@ -497,28 +516,25 @@ let AnimationController = {
       curDur = curDur.substr(0, curDur.length - 1);
       curBegin = animateEl.getAttribute('begin');
       curBegin = curBegin.substr(0, curBegin.length - 1);
-
       animateEl.setAttributeNS(null, 'dur', curDur / speedRatio + 's');
       animateEl.setAttributeNS(null, 'begin', curBegin / speedRatio + 's');
     }
+    // this.createProgressIndicators(speedRatio);
 
-    // Update timeline cursor with the new speed
+    /*
     let cursorAnim = $j('#cursor-animation').get(0);
     curDur = cursorAnim.getAttribute('dur');
     curDur = curDur.substr(0, curDur.length - 1);
     curBegin = cursorAnim.getAttribute('begin');
     curBegin = curBegin.substr(0, curBegin.length - 1);
-    cursorAnim.setAttributeNS(null, 'dur', curDur / speedRatio + 's');
-    cursorAnim.setAttributeNS(null, 'begin', curBegin / speedRatio + 's');
-
-    // Update Coefficients and units to ensure consistency
-    // between the clock, timeline and SVG documents
-    if (this.slotEngineMs) {
-      this.slotEngineMs = this.slotEngineMs / speedRatio;
-      if (this.timeCoef) {
-        this.timeCoef = this.slotDataMs / this.slotEngineMs;
-      }
+    cursorAnim.setAttributeNS(null, 'begin', '0s');
+    cursorAnim.setAttributeNS(null, 'dur', slotNum * slotEngineS + 's');
+    */
+    // Update timeline cursor with the new speed
+    if (this.cursorEl) {
+      this.timelineEl.removeChild(this.cursorEl)
     }
+    this.createCursor();
 
     // Update markers: this is needed the moment before
     // changing the engine time to update existing and new markers?
@@ -526,9 +542,11 @@ let AnimationController = {
 
     // Now, change the engine time to auto ajust the tokens faster/slower
     // Note: update engine time without updating markers and the clock
-    let currentTime = this.getCurrentTime();
-    let newTime = currentTime / speedRatio;
-    this.setCurrentTime(newTime, this.slotSecondstoRealMs(newTime), true);
+    this.setCurrentTime(newTime, timeMs, true);
+
+    if (isCurrentlyPlaying) {
+      this.play();
+    }
   },
 
   slotSecondstoRealMs: function (seconds) {
@@ -562,7 +580,6 @@ let AnimationController = {
       let tracedates = this.tracedates; // assume that this.jsonServer.tracedates has been sorted in ascending order
       // let currentTimeMillis = this.getCurrentTime() * this.timeCoef * 1000 + this.startMs;
       // search for the next trace date/time immediately after the current time
-      console.log(this.currentMs)
       for (let i = 0; i < tracedates.length; i++) {
         if (this.currentMs < tracedates[i]) {
           this.setCurrentTime((tracedates[i] - this.startMs) / (1000 * this.timeCoef), tracedates[i]);
@@ -633,7 +650,8 @@ let AnimationController = {
    * log: the log object (name, color, traceCount, progress, tokenAnimations)
    * x,y: the coordinates to draw the progress bar
    */
-  createProgressIndicatorsForLog: function(logNo, log, timeline, x, y) {
+  createProgressIndicatorsForLog: function(logNo, log, timeline, x, y, speedRatio) {
+    speedRatio = speedRatio || 1;
     let {values, keyTimes, begin, dur} = log.progress;
     let color = this.apPalette[logNo - 1] || log.color;
     let progress = new SVG.G().attr({
@@ -655,8 +673,8 @@ let AnimationController = {
     pieAnim.setAttributeNS(null, 'attributeName', 'stroke-dashoffset');
     pieAnim.setAttributeNS(null, 'values', values);
     pieAnim.setAttributeNS(null, 'keyTimes', keyTimes);
-    pieAnim.setAttributeNS(null, 'begin', begin + 's');
-    pieAnim.setAttributeNS(null, 'dur', dur + 's');
+    pieAnim.setAttributeNS(null, 'begin', begin / speedRatio + 's');
+    pieAnim.setAttributeNS(null, 'dur', dur / speedRatio + 's');
     pieAnim.setAttributeNS(null, 'fill', 'freeze');
     pieAnim.setAttributeNS(null, 'repeatCount', '1');
     pie.appendChild(pieAnim);
@@ -731,7 +749,7 @@ let AnimationController = {
       fill: '#FAF0E6',
       stroke: 'grey',
       style: 'cursor: move',
-      transform: 'translate(50,50)',
+      transform: `translate(${x},${y})`,
     }).node;
 
     let cursorAnim = document.createElementNS(SVG_NS, 'animateTransform');
@@ -740,13 +758,15 @@ let AnimationController = {
     cursorAnim.setAttributeNS(null, 'id', 'cursor-animation');
     cursorAnim.setAttributeNS(null, 'begin', '0s');
     cursorAnim.setAttributeNS(null, 'dur', slotNum * slotEngineS + 's');
-    cursorAnim.setAttributeNS(null, 'by', slotEngineS);
+    cursorAnim.setAttributeNS(null, 'by', 1);
     cursorAnim.setAttributeNS(null, 'from', x + ',' + y);
     cursorAnim.setAttributeNS(null, 'to', x + slotNum * slotWidth + ',' + y);
     cursorAnim.setAttributeNS(null, 'fill', 'freeze');
 
     cursorEl.appendChild(cursorAnim);
     timelineEl.appendChild(cursorEl);
+
+    this.cursorEl = cursorEl;
 
     // Control dragging of the timeline cursor
     let dragging = false;
@@ -759,7 +779,6 @@ let AnimationController = {
 
     function startDragging(evt) {
       isPlayingBeforeDrag = me.isPlaying();
-      console.log('isPlayingBeforeDrag - start', isPlayingBeforeDrag);
       evt.preventDefault();
       dragging = true;
       me.pause();
@@ -786,7 +805,6 @@ let AnimationController = {
       dragging = false;
       let time = getTimeFromMouseX(evt);
       this.setCurrentTime(time, this.slotSecondstoRealMs(time));
-      console.log('isPlayingBeforeDrag - end', isPlayingBeforeDrag);
       if (isPlayingBeforeDrag) {
         me.play();
       }
@@ -795,7 +813,7 @@ let AnimationController = {
     function getTimeFromMouseX(evt) {
       let x = getSVGMousePosition(evt).x;
       let dx = x - me.timelineOffset.x;
-      return (dx / timelineWidth) * totalEngineS;
+      return (dx / me.timelineWidth) * me.totalEngineS;
     }
 
     // Convert from screen coordinates to SVG document coordinates
