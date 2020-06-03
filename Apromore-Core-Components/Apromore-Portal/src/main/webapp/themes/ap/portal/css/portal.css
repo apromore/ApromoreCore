@@ -484,8 +484,8 @@
 
 .ap-about-window .ap-edition .z-label {
   font-family: var(--ap-font-brand);
-  color: var(--ap-c-orange-light-1);
-  font-size: 20px;
+  color: var(--ap-c-orange-light-2);
+  font-size: 27px;
   margin-bottom: 10px;
 }
 
