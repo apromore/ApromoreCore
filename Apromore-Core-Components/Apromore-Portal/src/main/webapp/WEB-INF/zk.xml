@@ -56,6 +56,7 @@
   <system-config>
     <label-location>/WEB-INF/ui.properties</label-location>
     <label-location>/WEB-INF/brand.properties</label-location>
+    <label-location>/WEB-INF/msg.properties</label-location>
   </system-config>
 
   <library-property>
