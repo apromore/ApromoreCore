@@ -43,7 +43,8 @@ ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
 
 Ap.la.session = (function() {
   const SPEED_CONTROL = "#speed-control";
-  const STEP_VALUES = [
+  let STEP_VALUES;
+  /* STEP_VALUES = [
     0.00001,
     0.0001,
     0.0005,
@@ -64,7 +65,11 @@ Ap.la.session = (function() {
     2000,
     5000,
     10000
-  ];
+  ]; */ // Old values
+  STEP_VALUES = [
+    0.001953125, 0.00390625, 0.0078125, 0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5,
+    1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
+  ]; // _.range(-9, 11).map((x) => Math.pow(2, x))
   let editor, controller, animationData;
 
   function init(xml, url, namespace, data) {
@@ -134,7 +139,7 @@ Ap.la.session = (function() {
     let lastSliderValue = speedControl.slider("value");
     speedControl.on("slidechange", function(event, ui) {
       let speedRatio = STEP_VALUES[ui.value - 1] / STEP_VALUES[lastSliderValue - 1];
-      controller.changeSpeed(speedRatio);
+      controller.changeSpeed(speedRatio, ui.value - 10);
       lastSliderValue = ui.value;
     });
   }
