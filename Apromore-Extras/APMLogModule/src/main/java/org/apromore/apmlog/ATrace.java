@@ -52,6 +52,7 @@ import java.util.List;
  * Modified: Chii Chang (19/05/2020)
  * Modified: Chii Chang (24/05/2020)
  * Modified: Chii Chang (01/06/2020)
+ * Modified: Chii Chang (05/06/2020)
  */
 public class ATrace implements Serializable, LaTrace {
 
@@ -137,6 +138,7 @@ public class ATrace implements Serializable, LaTrace {
                 AActivity pActivity = activityList.get(i-1);
                 waitCount += 1;
                 long waitTime = activity.getStartTimeMilli() - pActivity.getEndTimeMilli();
+                if (waitTime < 0) waitTime = 0;
                 this.totalWaitingTime += waitTime;
                 if(waitTime > this.maxWaitingTime) {
                     this.maxWaitingTime = waitTime;
@@ -166,9 +168,15 @@ public class ATrace implements Serializable, LaTrace {
     private void setEventList(XTrace xTrace) {
         eventList = new ArrayList<>();
 
+        List<XEvent> xEventList = new ArrayList<>();
+
         for (int i = 0; i < xTrace.size(); i++) {
-            eventList.add(new AEvent(xTrace.get(i)));
+            XEvent xEvent = xTrace.get(i);
+            eventList.add(new AEvent(xEvent));
+            xEventList.add(xEvent);
         }
+
+        xTrace.removeAll(xEventList); //clean memory
     }
 
 
