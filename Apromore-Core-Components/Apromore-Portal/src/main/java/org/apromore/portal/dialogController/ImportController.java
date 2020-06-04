@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2011 - 2017 Queensland University of Technology.
  * Copyright (C) 2017 Adriano Augusto.
  * %%
@@ -13,12 +13,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -27,30 +27,10 @@
 
 package org.apromore.portal.dialogController;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import org.apromore.model.ImportLogResultType;
+import org.apache.commons.io.FileUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +44,19 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeFactory;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class ImportController extends BaseController {
 
@@ -80,6 +73,11 @@ public class ImportController extends BaseController {
     private Checkbox isPublicCheckbox;
 
     private Button okButton;
+
+    private Textbox fileUrl;
+    private Label fileNameLabelURL;
+    private Button okButton_URL;
+
 
     private List<ImportOneProcessController> toImportList = new ArrayList<>();
     private List<ImportOneProcessController> importedList = new ArrayList<>();
@@ -110,10 +108,16 @@ public class ImportController extends BaseController {
             final Window win = (Window) Executions.createComponents("macros/import.zul", null, null);
             this.importWindow = (Window) win.getFellow("importWindow");
             Button uploadButton = (Button) this.importWindow.getFellow("uploadButton");
+            this.fileUrl = (Textbox) this.importWindow.getFellow("fileUrl");
+            Button uploadURLButton = (Button) this.importWindow.getFellow("uploadURLButton");
             Button cancelButton = (Button) this.importWindow.getFellow("cancelButtonImport");
+            Button cancelButtonURL = (Button) this.importWindow.getFellow("cancelButtonImportURL");
             okButton = (Button) this.importWindow.getFellow("okButtonImport");
+            okButton_URL = (Button) this.importWindow.getFellow("okButtonImportURL");
             this.fileNameLabel = (Label) this.importWindow.getFellow("fileNameLabel");
+            this.fileNameLabelURL = (Label) this.importWindow.getFellow("fileNameLabelURL");
             Label supportedExtL = (Label) this.importWindow.getFellow("supportedExt");
+            Label supportedExtURL = (Label) this.importWindow.getFellow("supportedExtURL");
             isPublicCheckbox = ((Checkbox) this.importWindow.getFellow("public"));
 
             // build the list of supported extensions to display
@@ -134,10 +138,16 @@ public class ImportController extends BaseController {
                 }
             }
             supportedExtL.setValue(supportedExtS);
+            supportedExtURL.setValue(supportedExtS);
 
             uploadButton.addEventListener("onUpload", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFile((UploadEvent) event);
+                }
+            });
+            uploadURLButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFileFromURL(fileUrl.getValue());
                 }
             });
             okButton.addEventListener("onClick", new EventListener<MouseEvent>() {
@@ -147,7 +157,19 @@ public class ImportController extends BaseController {
                     importFile(ImportController.this.media);
                 }
             });
+            okButton_URL.addEventListener("onClick", new EventListener<MouseEvent>() {
+                public void onEvent(MouseEvent event) throws Exception {
+                    importWindow.detach();
+                    Sessions.getCurrent().setAttribute("fileimportertarget", ((event.getKeys() & MouseEvent.META_KEY) != 0) ? "page" : "modal");
+                    importFile(ImportController.this.media);
+                }
+            });
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    importWindow.detach();
+                }
+            });
+            cancelButtonURL.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     importWindow.detach();
                 }
@@ -182,6 +204,83 @@ public class ImportController extends BaseController {
             nativeType = fileType;
         }
         okButton.setDisabled(false);
+    }
+
+    /**
+     * Controller for uploading file from URL
+     * @param fileUrl - URL string user inputted
+     * @throws ExceptionImport if IOException, URISyntaxException, MalformedURLException happens
+     * @throws ExceptionFormats
+     */
+    private void uploadFileFromURL(String fileUrl) throws ExceptionImport, ExceptionFormats {
+
+        URL url;
+        String filename;
+        int CONNECT_TIMEOUT = 10000;
+        int READ_TIMEOUT = 10000;
+
+        try {
+            url = new URL(fileUrl.trim());
+
+            // open the connection
+            URLConnection con = url.openConnection();
+            // get and verify the header field
+            String fieldValue = con.getHeaderField("Content-Disposition");
+            if (fieldValue == null || !fieldValue.contains("filename=\"")) {
+                // no file name there -> try get it by parsing it as URI
+                filename = Paths.get(new URI(fileUrl).getPath()).getFileName().toString();
+            } else {
+                // parse the file name from the header field
+                filename = fieldValue.substring(fieldValue.indexOf("filename=\"") + 10, fieldValue.length() - 1);
+            }
+
+            if (filename == null) {
+                note.show("Couldn't find supported file. ");
+                throw new ExceptionImport("Unsupported file.");
+            }
+
+            fileNameLabelURL.setStyle("color: blue");
+            fileNameLabelURL.setFocus(false);
+            fileNameLabelURL.setValue(filename);
+
+            File testData = new File(filename);
+            FileUtils.copyURLToFile(
+                    url,
+                    testData,
+                    CONNECT_TIMEOUT,
+                    READ_TIMEOUT);
+            InputStream targetStream = new FileInputStream(testData);
+
+            media = new MediaImpl(testData.getName(), targetStream, Charset.forName("UTF-8"));
+            this.fileUrl.setValue(fileUrl);
+
+            String extension = findExtension(media.getName());
+
+            List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(
+                    "fileImporterPlugins");
+            for (FileImporterPlugin fileImporterPlugin : fileImporterPlugins) {
+                if (fileImporterPlugin.getFileExtensions().contains(extension)) {
+                    okButton_URL.setDisabled(false);
+                    return;
+                }
+            }
+
+            assert extension != null;
+            if (!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz") && !extension.equalsIgnoreCase(
+                    "xes") && !extension.equalsIgnoreCase("mxml")) {
+                String fileType = this.mainC.getNativeTypes().get(extension);
+                if (fileType == null) {
+                    throw new ExceptionImport("Unsupported extension.");
+                }
+                nativeType = fileType;
+            }
+            okButton_URL.setDisabled(false);
+
+        } catch (URISyntaxException | MalformedURLException e) {
+            throw new ExceptionImport("URL link is not correct.");
+        } catch (IOException e) {
+            throw new ExceptionImport("Couldn't find supported file. Please check the URL and try again. ");
+        }
     }
 
     private final Pattern FILE_EXTENSION_PATTERN = Pattern.compile("(?<basename>.*)\\.(?<extension>[^/\\.]*)");
