@@ -70,6 +70,7 @@ public class NewUserRegistrationHttpServletRequestHandler extends BaseServletReq
         String url = LOGIN_PAGE;
         Set<String> messages = new HashSet<>();
         HttpSession session = request.getSession(false);
+        request.setCharacterEncoding("UTF-8");
 
         try {
             if (isUserRequestOk(request, messages)) {

@@ -12,10 +12,12 @@
 
   <Service name="Catalina">
     <Connector port="9000" protocol="HTTP/1.1"
+               URIEncoding="UTF-8"
                connectionTimeout="20000"
                redirectPort="8443" maxHttpHeaderSize="10000" maxPostSize="67589953"/>
 
     <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+               URIEncoding="UTF-8"
                maxThreads="150" scheme="https" secure="true"
                clientAuth="false" sslProtocol="TLS"
                keystoreFile="configuration/keystore"
