@@ -168,15 +168,15 @@ public class ATrace implements Serializable, LaTrace {
     private void setEventList(XTrace xTrace) {
         eventList = new ArrayList<>();
 
-        List<XEvent> xEventList = new ArrayList<>();
+//        List<XEvent> xEventList = new ArrayList<>();
 
         for (int i = 0; i < xTrace.size(); i++) {
             XEvent xEvent = xTrace.get(i);
             eventList.add(new AEvent(xEvent));
-            xEventList.add(xEvent);
+//            xEventList.add(xEvent);
         }
 
-        xTrace.removeAll(xEventList); //clean memory
+//        xTrace.removeAll(xEventList); //clean memory
     }
 
 
