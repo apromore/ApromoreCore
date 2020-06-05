@@ -92,7 +92,7 @@ jpa.generateDDL      = false
 # Database and JPA (MySQL)
 
 #jdbc.driver   = com.mysql.jdbc.Driver
-#jdbc.url      = jdbc:mysql://localhost/apromore?autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true
+#jdbc.url      = jdbc:mysql://localhost/apromore?autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8
 #jdbc.username = apromore
 #jdbc.password = MAcri
 #
