@@ -76,6 +76,10 @@ public interface EventLogService {
     ExportLogResultType exportLog(Integer logId)
             throws Exception;
 
+    void cloneLog(String username, Integer folderId, String logName, Integer sourcelogId,
+                  String domain, String created, boolean publicModel)
+            throws Exception;
+
     XLog getXLog(Integer logId);
 
     XLog getXLog(Integer logId, String factoryName);

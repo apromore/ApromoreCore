@@ -314,6 +314,18 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
+    public void cloneLog(String username, Integer folderId, String logName, Integer sourceLogId,
+                  String domain, String created, boolean publicModel)
+            throws Exception {
+        Log log = logRepo.findUniqueByID(sourceLogId);
+        XLog xlog = logRepo.getProcessLog(log, null);
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        exportToStream(outputStream, xlog);
+        ByteArrayInputStream inputStreamLog = new ByteArrayInputStream(outputStream.toByteArray());
+        importLog(username, folderId, logName, inputStreamLog, "xes.gz", domain, created, publicModel);
+    }
+
+    @Override
     public XLog getXLog(Integer logId) {
         return getXLog(logId, null);
     }

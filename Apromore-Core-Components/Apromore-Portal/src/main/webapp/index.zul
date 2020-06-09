@@ -227,6 +227,9 @@
                             <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
                             <h:span class="ap-action-sep"></h:span>
+                            <button id="btnCopy" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="Copy logs"/>
+                            <button id="btnPaste" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="Paste logs"/>
+                            <h:span class="ap-action-sep"></h:span>
                             <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.e.portal.addFolder.hint}"/>
                             <button id="btnAddProcess" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
@@ -283,7 +286,7 @@
 
             </center>
         </borderlayout>
-        <menubar sclass="ap-user-menu" id="userMenu" />
+        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;"/>
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
     <!-- Following script improves performance of listbox dropdown display time-->
