@@ -32,6 +32,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.*;
+import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
@@ -226,13 +227,8 @@ public class ImportController extends BaseController {
             URLConnection con = url.openConnection();
             // get and verify the header field
             String fieldValue = con.getHeaderField("Content-Disposition");
-            if (fieldValue == null || !fieldValue.contains("filename=\"")) {
-                // no file name there -> try get it by parsing it as URI
-                filename = Paths.get(new URI(fileUrl).getPath()).getFileName().toString();
-            } else {
-                // parse the file name from the header field
-                filename = fieldValue.substring(fieldValue.indexOf("filename=\"") + 10, fieldValue.length() - 1);
-            }
+
+            filename = getFileName(fileUrl, fieldValue);
 
             if (filename == null) {
                 note.show("Couldn't find supported file. ");
@@ -276,11 +272,34 @@ public class ImportController extends BaseController {
             }
             okButton_URL.setDisabled(false);
 
-        } catch (URISyntaxException | MalformedURLException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             throw new ExceptionImport("URL link is not correct.");
         } catch (IOException e) {
             throw new ExceptionImport("Couldn't find supported file. Please check the URL and try again. ");
         }
+    }
+
+    private String getFileName(String url, String contentDisposition) throws URISyntaxException {
+        String fileName = "";
+        if (!StringUtil.isEmpty(contentDisposition)) {
+            fileName = StringUtil.contentDispositionFileName(contentDisposition);
+        }
+        if (StringUtil.isEmpty(fileName) && !StringUtil.isEmpty(contentDisposition)) {
+            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
+        }
+        if (StringUtil.isEmpty(fileName)) {
+            fileName = url.substring(url.lastIndexOf('/') + 1);
+        }
+        if (fileName.startsWith("\"")) {
+            fileName = fileName.substring(1);
+        }
+        if (fileName.endsWith("\"")) {
+            fileName = fileName.substring(0, fileName.length() - 1);
+        }
+//        if (StringUtil.isEmpty(fileName) || !StringUtil.isValidFileName(fileName)) {
+//            fileName = String.valueOf(System.currentTimeMillis());
+//        }
+        return fileName;
     }
 
     private final Pattern FILE_EXTENSION_PATTERN = Pattern.compile("(?<basename>.*)\\.(?<extension>[^/\\.]*)");
