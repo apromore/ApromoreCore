@@ -30,19 +30,13 @@ package org.apromore.service;
 import java.util.List;
 import java.util.Set;
 
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
-import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
-import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
-import org.apromore.graph.canonical.Canonical;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
@@ -133,8 +127,8 @@ public interface ProcessService {
      * @return the found Process Model Version
      * @throws ExceptionDao if the DAO found an issue.
      */
-    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Version versionNumber,
-            int numVertices, int numEdges) throws ExceptionDao;
+//    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Version versionNumber,
+//            int numVertices, int numEdges) throws ExceptionDao;
 
     /**
      * Update a process Model in the database.
@@ -160,7 +154,7 @@ public interface ProcessService {
      * @param pmv the process model version we want the Canonical for.
      * @return the built Canonical
      */
-    CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmv);
+    //CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmv);
 
     /**
      * Using the ProcessID, its branchName and its versionNumber passed in we can get the Canonical Object.
@@ -170,7 +164,7 @@ public interface ProcessService {
      * @param versionNumber the versione of the process
      * @return the built Canonical
      */
-    Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber);
+    //Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber);
 
     /**
      * Using the Process Model Version passed in we can get the Canonical format.
@@ -181,7 +175,7 @@ public interface ProcessService {
      * @param lock is it locked?
      * @return the built Canonical
      */
-    CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmvs, String processName, String branchName, boolean lock);
+    //CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmvs, String processName, String branchName, boolean lock);
 
 
     /**
@@ -192,7 +186,7 @@ public interface ProcessService {
      * @return the found process model graph.
      * @throws LockFailedException if the lock failed.
      */
-    CanonicalProcessType getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
+    //CanonicalProcessType getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
 
     /**
      * Gets the Current Process Model. this on can have any branch name.
@@ -203,8 +197,8 @@ public interface ProcessService {
      * @return the found process model graph.
      * @throws LockFailedException if the lock failed.
      */
-    CanonicalProcessType getProcessModelVersion(Integer processId, String processName, String branchName, final Version version,
-        boolean lock) throws LockFailedException;
+    //CanonicalProcessType getProcessModelVersion(Integer processId, String processName, String branchName, final Version version,
+    //   boolean lock) throws LockFailedException;
 
 
     /**
@@ -218,8 +212,8 @@ public interface ProcessService {
      * @param composingFragments the composing fragment
      * @param newVersionNumber the new version number of the process model version.
      */
-    void propagateChangesWithLockRelease(FragmentVersion originalFragment, FragmentVersion updatedFragment,
-        Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException;
+//    void propagateChangesWithLockRelease(FragmentVersion originalFragment, FragmentVersion updatedFragment,
+//        Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException;
 
 
     /**

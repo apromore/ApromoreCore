@@ -25,88 +25,6 @@
  */
 package org.apromore.service.impl;
 
-import com.processconfiguration.ConfigurationAnnotation;
-import com.processconfiguration.Variants;
-import org.apache.commons.lang.StringUtils;
-import org.apromore.anf.ANFSchema;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.aop.Event;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.common.ConfigBean;
-import org.apromore.common.Constants;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.FragmentVersionDagRepository;
-import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.NativeRepository;
-import org.apromore.dao.ProcessBranchRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.FragmentVersion;
-import org.apromore.dao.model.FragmentVersionDag;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.HistoryEnum;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Object;
-import org.apromore.dao.model.ObjectAttribute;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.Resource;
-import org.apromore.dao.model.ResourceAttribute;
-import org.apromore.dao.model.User;
-import org.apromore.exception.ExceptionDao;
-import org.apromore.exception.ExportFormatException;
-import org.apromore.exception.ImportException;
-import org.apromore.exception.LockFailedException;
-import org.apromore.exception.RepositoryException;
-import org.apromore.exception.UpdateProcessException;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.graph.canonical.CPFNode;
-import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.IAttribute;
-import org.apromore.graph.canonical.ICPFObject;
-import org.apromore.graph.canonical.ICPFResource;
-import org.apromore.graph.canonical.ObjectTypeEnum;
-import org.apromore.graph.canonical.ResourceTypeEnum;
-import org.apromore.helper.PluginHelper;
-import org.apromore.helper.Version;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.SummariesType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.plugin.process.ProcessPlugin;
-import org.apromore.service.*;
-import org.apromore.service.helper.AnnotationHelper;
-import org.apromore.service.helper.OperationContext;
-import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.DecanonisedProcess;
-import org.apromore.service.model.ProcessData;
-import org.apromore.service.search.SearchExpressionBuilder;
-import org.apromore.util.StreamUtil;
-import org.apromore.util.XMLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Element;
-
-import javax.activation.DataHandler;
-//import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,12 +33,76 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import org.apache.commons.io.IOUtils;
+
+import javax.activation.DataHandler;
+//import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apromore.aop.Event;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.common.ConfigBean;
+import org.apromore.common.Constants;
+import org.apromore.dao.AnnotationRepository;
+import org.apromore.dao.FragmentVersionDagRepository;
+import org.apromore.dao.FragmentVersionRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.NativeRepository;
+import org.apromore.dao.ProcessBranchRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.HistoryEnum;
+import org.apromore.dao.model.Native;
+import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
+import org.apromore.exception.ExceptionDao;
+import org.apromore.exception.ExportFormatException;
+import org.apromore.exception.ImportException;
+import org.apromore.exception.RepositoryException;
+import org.apromore.exception.UpdateProcessException;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.helper.Version;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.SummariesType;
+import org.apromore.plugin.process.ProcessPlugin;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.AnnotationService;
+import org.apromore.service.CanonicalConverter;
+import org.apromore.service.CanoniserService;
+import org.apromore.service.ComposerService;
+import org.apromore.service.DecomposerService;
+import org.apromore.service.FormatService;
+import org.apromore.service.FragmentService;
+import org.apromore.service.LockService;
+import org.apromore.service.ProcessService;
+import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
+import org.apromore.service.helper.AnnotationHelper;
+import org.apromore.service.helper.OperationContext;
+import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.model.CanonisedProcess;
+import org.apromore.service.model.ProcessData;
+import org.apromore.service.search.SearchExpressionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -141,15 +123,15 @@ public class ProcessServiceImpl implements ProcessService {
     private FragmentVersionDagRepository fragmentVersionDagRepo;
     private ProcessModelVersionRepository processModelVersionRepo;
     private GroupProcessRepository groupProcessRepo;
-    private CanonicalConverter converter;
-    private AnnotationService annotationSrv;
-    private CanoniserService canoniserSrv;
-    private LockService lService;
+    //private CanonicalConverter converter;
+    //private AnnotationService annotationSrv;
+    //private CanoniserService canoniserSrv;
+    //private LockService lService;
     private UserService userSrv;
     private FormatService formatSrv;
-    private FragmentService fService;
-    private ComposerService composerSrv;
-    private DecomposerService decomposerSrv;
+    //private FragmentService fService;
+    //private ComposerService composerSrv;
+    //private DecomposerService decomposerSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
     private boolean enableCPF;
@@ -198,15 +180,15 @@ public class ProcessServiceImpl implements ProcessService {
         this.fragmentVersionDagRepo = fragmentVersionDagRepo;
         this.processModelVersionRepo = processModelVersionRepo;
         this.groupProcessRepo = groupProcessRepo;
-        this.converter = converter;
-        this.annotationSrv = annotationSrv;
-        this.canoniserSrv = canoniserSrv;
-        this.lService = lService;
-        this.fService = fService;
+        //this.converter = converter;
+        //this.annotationSrv = annotationSrv;
+        //this.canoniserSrv = canoniserSrv;
+        //this.lService = lService;
+        //this.fService = fService;
         this.userSrv = userSrv;
         this.formatSrv = formatSrv;
-        this.composerSrv = composerSrv;
-        this.decomposerSrv = decomposerSrv;
+        //this.composerSrv = composerSrv;
+        //this.decomposerSrv = decomposerSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
         this.enableCPF = config.getEnableCPF();
@@ -393,6 +375,7 @@ public class ProcessServiceImpl implements ProcessService {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch,
                         version.toString(), AnnotationHelper.getAnnotationName(annName)).getContent(), "text/xml")));
             } else {
+                /*
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
                 Process process;
                 if (format.equals(Constants.CANONICAL)) {
@@ -425,6 +408,9 @@ public class ProcessServiceImpl implements ProcessService {
                     exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
                     exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
                 }
+                */
+                LOGGER.error("Failed to export process model {} to format {}", name, format);
+                throw new ExportFormatException("Failed to export process model.");
             }
 
             return exportResult;
@@ -522,22 +508,22 @@ public class ProcessServiceImpl implements ProcessService {
      * @see ProcessService#addProcessModelVersion(ProcessBranch, FragmentVersion, Version, int, int)
      *      {@inheritDoc}
      */
-    @Override
-    @Transactional(readOnly = false)
-    public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final FragmentVersion rootFragmentVersion,
-                final Version version, final int numVertices, final int numEdges) throws ExceptionDao {
-        ProcessModelVersion pmv = new ProcessModelVersion();
-
-        pmv.setProcessBranch(branch);
-        pmv.setRootFragmentVersion(rootFragmentVersion);
-        pmv.setVersionNumber(version.toString());
-        pmv.setNumVertices(numVertices);
-        pmv.setNumEdges(numEdges);
-        pmv.setCreateDate(SimpleDateFormat.getDateInstance().format(new Date()));
-        pmv.setLastUpdateDate(pmv.getCreateDate());
-
-        return processModelVersionRepo.save(pmv);
-    }
+//    @Override
+//    @Transactional(readOnly = false)
+//    public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final FragmentVersion rootFragmentVersion,
+//                final Version version, final int numVertices, final int numEdges) throws ExceptionDao {
+//        ProcessModelVersion pmv = new ProcessModelVersion();
+//
+//        pmv.setProcessBranch(branch);
+//        pmv.setRootFragmentVersion(rootFragmentVersion);
+//        pmv.setVersionNumber(version.toString());
+//        pmv.setNumVertices(numVertices);
+//        pmv.setNumEdges(numEdges);
+//        pmv.setCreateDate(SimpleDateFormat.getDateInstance().format(new Date()));
+//        pmv.setLastUpdateDate(pmv.getCreateDate());
+//
+//        return processModelVersionRepo.save(pmv);
+//    }
 
 
 
@@ -546,6 +532,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @see ProcessService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion)
      * {@inheritDoc}
      */
+    /*
     @Override
     @Transactional(readOnly = false)
     public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv) {
@@ -553,11 +540,13 @@ public class ProcessServiceImpl implements ProcessService {
         String branchName = pmv.getProcessBranch().getBranchName();
         return getCanonicalFormat(pmv, processName, branchName, false);
     }
+    */
 
     /**
      * @see ProcessService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion)
      * {@inheritDoc}
      */
+    /*
     @Override
     @Transactional(readOnly = false)
     public Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber) {
@@ -565,11 +554,13 @@ public class ProcessServiceImpl implements ProcessService {
         CanonicalProcessType cpf = getCanonicalFormat(pmv);
         return converter.convert(cpf);
     }
+    */
 
     /**
      * @see ProcessService#getCanonicalFormat(ProcessModelVersion, String, String, boolean)
      * {@inheritDoc}
      */
+    /*
     @Override
     @Transactional(readOnly = false)
     public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv, final String processName, final String branchName, final boolean lock) {
@@ -577,6 +568,7 @@ public class ProcessServiceImpl implements ProcessService {
         CanonicalProcessType tmp = new CanonicalProcessType();
         try {
             canonical = composerSrv.compose(pmv.getRootFragmentVersion());
+            //canonical = pmv.getCanonicalDocument();
             canonical.setProperty(Constants.PROCESS_NAME, processName);
             canonical.setProperty(Constants.BRANCH_NAME, branchName);
             canonical.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
@@ -628,12 +620,13 @@ public class ProcessServiceImpl implements ProcessService {
         }
         return tmp;
     }
-
+    */
 
     /**
      * @see ProcessService#getCurrentProcessModel(String, String, boolean)
      * {@inheritDoc}
      */
+    /*
     @Override
     @Transactional(readOnly = false)
     public CanonicalProcessType getCurrentProcessModel(final String processName, final String branchName, final boolean lock)
@@ -652,11 +645,13 @@ public class ProcessServiceImpl implements ProcessService {
 
         return getCanonicalFormat(pmv, processName, branchName, lock);
     }
+    */
 
     /**
      * @see ProcessService#getProcessModelVersion(Integer, String, String, Version, boolean)
      * {@inheritDoc}
      */
+    /*
     @Override
     @Transactional(readOnly = false)
     public CanonicalProcessType getProcessModelVersion(final Integer processId, final String processName, final String branchName,
@@ -679,6 +674,7 @@ public class ProcessServiceImpl implements ProcessService {
 
         return getCanonicalFormat(pmv, processName, branchName, lock);
     }
+    */
 
 
     /**
@@ -691,6 +687,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param updatedFragment the updated fragment id
      * @param composingFragments the composing fragments
      */
+    /*
     @Override
     @Transactional(readOnly = false)
     public void propagateChangesWithLockRelease(final FragmentVersion originalFragment, final FragmentVersion updatedFragment,
@@ -718,6 +715,7 @@ public class ProcessServiceImpl implements ProcessService {
             }
         }
     }
+    */
 
 
 
@@ -795,6 +793,7 @@ public class ProcessServiceImpl implements ProcessService {
                 xmlBPMNProcess = nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
                 LOGGER.info("native");
             } else {
+                /*
                 LOGGER.info("notNative");
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
                 Process process = processRepo.findOne(processId);
@@ -817,6 +816,9 @@ public class ProcessServiceImpl implements ProcessService {
                 }
                 dp = canoniserSrv.deCanonise(format, cpt, anf, new HashSet<RequestParameterType<?>>());
                 xmlBPMNProcess = IOUtils.toString(dp.getNativeFormat(), "UTF-8");
+                */
+                LOGGER.error("Not supported to retrieve the canonical format");
+                throw new RepositoryException("Not supported to retrieve the canonical format");
             }
 
             //LOGGER.info("[new method] PROCESS:\n" + xmlBPMNProcess);
@@ -881,25 +883,26 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessModelVersion pmv;
         ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
-        if (enableCPF) {
-            Canonical can = converter.convert(cpf.getCpt());
-            pmv = createProcessModelVersion(branch, version, nativeType, can, cpf.getCpt().getUri());
-
-            try {
-                if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
-                    OperationContext rootFragment = decomposerSrv.decompose(can, pmv);
-                    if (rootFragment != null) {
-                        pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
-                    } else {
-                        throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
-                    }
-                }
-            } catch (RepositoryException re) {
-                throw new ImportException("Failed to add the process model " + processName, re);
-            }
-        } else {
-            pmv = createProcessModelVersion(branch, version, nativeType, null, null);
-        }
+//        if (enableCPF) {
+//            Canonical can = converter.convert(cpf.getCpt());
+//            pmv = createProcessModelVersion(branch, version, nativeType, can, cpf.getCpt().getUri());
+//            try {
+//                if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
+//                    OperationContext rootFragment = decomposerSrv.decompose(can, pmv);
+//                    if (rootFragment != null) {
+//                        pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
+//                    } else {
+//                        throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
+//                    }
+//                }
+//            } catch (RepositoryException re) {
+//                throw new ImportException("Failed to add the process model " + processName, re);
+//            }
+//        } else {
+//            pmv = createProcessModelVersion(branch, version, nativeType, null, null);
+//        }
+        
+        pmv = createProcessModelVersion(branch, version, nativeType, null, null);
 
         return pmv;
     }
@@ -928,6 +931,7 @@ public class ProcessServiceImpl implements ProcessService {
                         pmVersion.getVersionNumber());
             }
 
+            /*
             graph = converter.convert(cpf.getCpt());
             rootFragment = decomposerSrv.decompose(graph, pmVersion);
             if (rootFragment != null) {
@@ -947,10 +951,23 @@ public class ProcessServiceImpl implements ProcessService {
             processModelVersion.setLockStatus(Constants.NO_LOCK);
             processModelVersion.setNativeType(nativeType);
             processModelVersion.setLastUpdateDate(lastUpdate);
+            */
+            
+            pmVersion.setVersionNumber(version.toString());
+            pmVersion.getProcessBranch().setCurrentProcessModelVersion(pmVersion);
+            pmVersion.setOriginalId(cpf.getCpt().getUri());
+            pmVersion.setNumEdges(0);
+            pmVersion.setNumVertices(0);
+            pmVersion.setLockStatus(Constants.NO_LOCK);
+            pmVersion.setNativeType(nativeType);
+            pmVersion.setLastUpdateDate(lastUpdate);
+            
+            return pmVersion;
         } else {
             LOGGER.error("unable to find the Process Model to update.");
+            return null;
         }
-        return processModelVersion;
+        //return processModelVersion;
     }
 
 
@@ -962,7 +979,7 @@ public class ProcessServiceImpl implements ProcessService {
             if (processBranchRepo.countProcessModelBeenForked(pmv) > 0) {
                 throw new Exception("There are other branches forked from this Process Model.");
             } else {
-                deleteFragmentVersion(pmv.getRootFragmentVersion(), true);
+                //deleteFragmentVersion(pmv.getRootFragmentVersion(), true);
             }
         } catch (Exception e) {
             String msg = "Failed to delete the process model version " + pmv.getId();
@@ -1075,8 +1092,8 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setOriginalId(netId);
         processModel.setVersionNumber(version.toString());
         if (enableCPF) {
-            processModel.setNumEdges(proModGrap.countEdges());
-            processModel.setNumVertices(proModGrap.countVertices());
+//            processModel.setNumEdges(proModGrap.countEdges());
+//            processModel.setNumVertices(proModGrap.countVertices());
         }
         processModel.setLockStatus(Constants.NO_LOCK);
         processModel.setCreateDate(now);
@@ -1086,10 +1103,10 @@ public class ProcessServiceImpl implements ProcessService {
         branch.setCurrentProcessModelVersion(processModel);
 
         if (enableCPF) {
-            addAttributesToProcessModel(proModGrap, processModel);
-            addObjectsToProcessModel(proModGrap, processModel);
-            addResourcesToProcessModel(proModGrap, processModel);
-            updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
+//            addAttributesToProcessModel(proModGrap, processModel);
+//            addObjectsToProcessModel(proModGrap, processModel);
+//            addResourcesToProcessModel(proModGrap, processModel);
+//            updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
         }
 
         return processModelVersionRepo.save(processModel);
@@ -1097,154 +1114,155 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Insert the Attributes to the ProcessModel */
-    private void addAttributesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-        for (Map.Entry<String, IAttribute> obj : proModGrap.getProperties().entrySet()) {
-            ProcessModelAttribute pmvAtt = new ProcessModelAttribute();
-            pmvAtt.setName(obj.getKey());
-            pmvAtt.setValue(obj.getValue().getValue());
-            java.lang.Object any = obj.getValue().getAny();
-            if (any instanceof Element) {
-                pmvAtt.setAny(XMLUtils.anyElementToString((Element) any));
-            }
-            else if (any instanceof Variants) {
-                String s = XMLUtils.extensionElementToString(any);
-                LOGGER.info("Variants any=" + any + " string=" + s);
-                pmvAtt.setAny(s);
-            }
-            else if (any != null) {
-                throw new IllegalArgumentException("Parsed an unsupported extension: " + any);
-            }
-            pmvAtt.setProcessModelVersion(process);
-            process.getProcessModelAttributes().add(pmvAtt);
-        }
-    }
 
-    /* Insert the Objects to the ProcessModel */
-    private void addObjectsToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-        Object objTyp;
-        if (proModGrap.getObjects() != null) {
-            for (ICPFObject cpfObj : proModGrap.getObjects()) {
-                objTyp = new org.apromore.dao.model.Object();
-                objTyp.setUri(cpfObj.getId());
-                objTyp.setName(cpfObj.getName());
-                objTyp.setNetId(cpfObj.getNetId());
-                objTyp.setConfigurable(cpfObj.isConfigurable());
-                objTyp.setProcessModelVersion(process);
-                if (cpfObj.getObjectType().equals(ObjectTypeEnum.HARD)) {
-                    objTyp.setType(ObjectTypeEnum.HARD);
-                } else {
-                    objTyp.setType(ObjectTypeEnum.SOFT);
-                    objTyp.setSoftType(cpfObj.getSoftType());
-                }
+//    private void addAttributesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
+//        for (Map.Entry<String, IAttribute> obj : proModGrap.getProperties().entrySet()) {
+//            ProcessModelAttribute pmvAtt = new ProcessModelAttribute();
+//            pmvAtt.setName(obj.getKey());
+//            pmvAtt.setValue(obj.getValue().getValue());
+//            java.lang.Object any = obj.getValue().getAny();
+//            if (any instanceof Element) {
+//                pmvAtt.setAny(XMLUtils.anyElementToString((Element) any));
+//            }
+//            else if (any instanceof Variants) {
+//                String s = XMLUtils.extensionElementToString(any);
+//                LOGGER.info("Variants any=" + any + " string=" + s);
+//                pmvAtt.setAny(s);
+//            }
+//            else if (any != null) {
+//                throw new IllegalArgumentException("Parsed an unsupported extension: " + any);
+//            }
+//            pmvAtt.setProcessModelVersion(process);
+//            process.getProcessModelAttributes().add(pmvAtt);
+//        }
+//    }
+//
+//    /* Insert the Objects to the ProcessModel */
+//    private void addObjectsToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
+//        Object objTyp;
+//        if (proModGrap.getObjects() != null) {
+//            for (ICPFObject cpfObj : proModGrap.getObjects()) {
+//                objTyp = new org.apromore.dao.model.Object();
+//                objTyp.setUri(cpfObj.getId());
+//                objTyp.setName(cpfObj.getName());
+//                objTyp.setNetId(cpfObj.getNetId());
+//                objTyp.setConfigurable(cpfObj.isConfigurable());
+//                objTyp.setProcessModelVersion(process);
+//                if (cpfObj.getObjectType().equals(ObjectTypeEnum.HARD)) {
+//                    objTyp.setType(ObjectTypeEnum.HARD);
+//                } else {
+//                    objTyp.setType(ObjectTypeEnum.SOFT);
+//                    objTyp.setSoftType(cpfObj.getSoftType());
+//                }
+//
+//                addObjectAttributes(objTyp, cpfObj);
+//
+//                process.getObjects().add(objTyp);
+//            }
+//        }
+//    }
+//
+//    /* Add Attributes to the Object Reference. */
+//    private void addObjectAttributes(final org.apromore.dao.model.Object object, final ICPFObject cpfObject) {
+//        ObjectAttribute objAtt;
+//        for (Map.Entry<String, IAttribute> e : cpfObject.getAttributes().entrySet()) {
+//            objAtt = new ObjectAttribute();
+//            objAtt.setName(e.getKey());
+//            objAtt.setValue(e.getValue().getValue());
+//            if (e.getValue().getAny() instanceof Element) {
+//                objAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+//            }
+//            objAtt.setObject(object);
+//
+//            object.getObjectAttributes().add(objAtt);
+//        }
+//    }
+//
+//    /* Insert the Resources to the ProcessModel */
+//    private void addResourcesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
+//        Resource resTyp;
+//        if (proModGrap.getResources() != null) {
+//            for (ICPFResource cpfRes : proModGrap.getResources()) {
+//                resTyp = new Resource();
+//                resTyp.setUri(cpfRes.getId());
+//                resTyp.setName(cpfRes.getName());
+//                resTyp.setOriginalId(cpfRes.getOriginalId());
+//                resTyp.setConfigurable(cpfRes.isConfigurable());
+//                if (cpfRes.getResourceType() != null) {
+//                    if (cpfRes.getResourceType().equals(ResourceTypeEnum.HUMAN)) {
+//                        resTyp.setType(ResourceTypeEnum.HUMAN);
+//                        if (cpfRes.getHumanType() != null) {
+//                            resTyp.setTypeName(cpfRes.getHumanType().value());
+//                        }
+//                    } else {
+//                        resTyp.setType(ResourceTypeEnum.NONHUMAN);
+//                        if (cpfRes.getNonHumanType() != null) {
+//                            resTyp.setTypeName(cpfRes.getNonHumanType().value());
+//                        }
+//                    }
+//                }
+//                resTyp.setProcessModelVersion(process);
+//
+//                addResourceAttributes(resTyp, cpfRes);
+//
+//                process.getResources().add(resTyp);
+//            }
+//        }
+//    }
+//
+//    /* Add Attributes to the Object Reference. */
+//    private void addResourceAttributes(final Resource resource, final ICPFResource cpfResource) {
+//        ResourceAttribute resAtt;
+//        for (Map.Entry<String, IAttribute> e : cpfResource.getAttributes().entrySet()) {
+//            resAtt = new ResourceAttribute();
+//            resAtt.setName(e.getKey());
+//            resAtt.setValue(e.getValue().getValue());
+//            if (e.getValue().getAny() instanceof Element) {
+//                resAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+//            }
+//            resAtt.setResource(resource);
+//
+//            resource.getResourceAttributes().add(resAtt);
+//        }
+//    }
+//
+//    /* Update to Process Models Resource information, specifically the Specialisation Id's. This can't be done at
+//       time of original entry as we might not have all the Resources in memory. */
+//    private void updateResourcesOnProcessModel(Set<ICPFResource> resources, ProcessModelVersion processModel) {
+//        if (resources != null) {
+//            for (ICPFResource cpfRes : resources) {
+//                addSpecialisations(processModel, cpfRes, findResource(processModel.getResources(), cpfRes.getId()));
+//            }
+//        }
+//    }
+//
+//    /* Update the Resource with it's specialisations Ids. */
+//    private void addSpecialisations(ProcessModelVersion processModel, ICPFResource cpfRes, Resource resource) {
+//        if (cpfRes.getSpecializationIds() != null) {
+//            for (String resourceId : cpfRes.getSpecializationIds()) {
+//                resource.getSpecialisations().add(findResource(processModel.getResources(), resourceId));
+//            }
+//        }
+//    }
+//
+//
+//    /* Finds the Resource using the resource Id supplied. */
+//    private Resource findResource(Set<Resource> resources, String resourceId) {
+//        Resource found = null;
+//        for (Resource resource : resources) {
+//            if (resource.getUri().equals(resourceId)) {
+//                found = resource;
+//                break;
+//            }
+//        }
+//        if (found == null) {
+//            LOGGER.warn("Could not find Resource with Id: " + resourceId);
+//        }
+//        return found;
+//    }
 
-                addObjectAttributes(objTyp, cpfObj);
 
-                process.getObjects().add(objTyp);
-            }
-        }
-    }
-
-    /* Add Attributes to the Object Reference. */
-    private void addObjectAttributes(final org.apromore.dao.model.Object object, final ICPFObject cpfObject) {
-        ObjectAttribute objAtt;
-        for (Map.Entry<String, IAttribute> e : cpfObject.getAttributes().entrySet()) {
-            objAtt = new ObjectAttribute();
-            objAtt.setName(e.getKey());
-            objAtt.setValue(e.getValue().getValue());
-            if (e.getValue().getAny() instanceof Element) {
-                objAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
-            }
-            objAtt.setObject(object);
-
-            object.getObjectAttributes().add(objAtt);
-        }
-    }
-
-    /* Insert the Resources to the ProcessModel */
-    private void addResourcesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-        Resource resTyp;
-        if (proModGrap.getResources() != null) {
-            for (ICPFResource cpfRes : proModGrap.getResources()) {
-                resTyp = new Resource();
-                resTyp.setUri(cpfRes.getId());
-                resTyp.setName(cpfRes.getName());
-                resTyp.setOriginalId(cpfRes.getOriginalId());
-                resTyp.setConfigurable(cpfRes.isConfigurable());
-                if (cpfRes.getResourceType() != null) {
-                    if (cpfRes.getResourceType().equals(ResourceTypeEnum.HUMAN)) {
-                        resTyp.setType(ResourceTypeEnum.HUMAN);
-                        if (cpfRes.getHumanType() != null) {
-                            resTyp.setTypeName(cpfRes.getHumanType().value());
-                        }
-                    } else {
-                        resTyp.setType(ResourceTypeEnum.NONHUMAN);
-                        if (cpfRes.getNonHumanType() != null) {
-                            resTyp.setTypeName(cpfRes.getNonHumanType().value());
-                        }
-                    }
-                }
-                resTyp.setProcessModelVersion(process);
-
-                addResourceAttributes(resTyp, cpfRes);
-
-                process.getResources().add(resTyp);
-            }
-        }
-    }
-
-    /* Add Attributes to the Object Reference. */
-    private void addResourceAttributes(final Resource resource, final ICPFResource cpfResource) {
-        ResourceAttribute resAtt;
-        for (Map.Entry<String, IAttribute> e : cpfResource.getAttributes().entrySet()) {
-            resAtt = new ResourceAttribute();
-            resAtt.setName(e.getKey());
-            resAtt.setValue(e.getValue().getValue());
-            if (e.getValue().getAny() instanceof Element) {
-                resAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
-            }
-            resAtt.setResource(resource);
-
-            resource.getResourceAttributes().add(resAtt);
-        }
-    }
-
-    /* Update to Process Models Resource information, specifically the Specialisation Id's. This can't be done at
-       time of original entry as we might not have all the Resources in memory. */
-    private void updateResourcesOnProcessModel(Set<ICPFResource> resources, ProcessModelVersion processModel) {
-        if (resources != null) {
-            for (ICPFResource cpfRes : resources) {
-                addSpecialisations(processModel, cpfRes, findResource(processModel.getResources(), cpfRes.getId()));
-            }
-        }
-    }
-
-    /* Update the Resource with it's specialisations Ids. */
-    private void addSpecialisations(ProcessModelVersion processModel, ICPFResource cpfRes, Resource resource) {
-        if (cpfRes.getSpecializationIds() != null) {
-            for (String resourceId : cpfRes.getSpecializationIds()) {
-                resource.getSpecialisations().add(findResource(processModel.getResources(), resourceId));
-            }
-        }
-    }
-
-
-    /* Finds the Resource using the resource Id supplied. */
-    private Resource findResource(Set<Resource> resources, String resourceId) {
-        Resource found = null;
-        for (Resource resource : resources) {
-            if (resource.getUri().equals(resourceId)) {
-                found = resource;
-                break;
-            }
-        }
-        if (found == null) {
-            LOGGER.warn("Could not find Resource with Id: " + resourceId);
-        }
-        return found;
-    }
-
-
-
+    /*
     private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment, FragmentVersion updatedFragment,
             Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException {
         LOGGER.debug("Propagating - fragment: " + originalFragment + ", parent: " + parent);
@@ -1265,8 +1283,9 @@ public class ProcessServiceImpl implements ProcessService {
         }
         LOGGER.debug("Completed propagation - fragment: " + originalFragment + ", parent: " + parent);
     }
+    */
 
-
+    /*
     private FragmentVersion createNewFragmentVersionByReplacingChild(FragmentVersion fragmentVersion, FragmentVersion oldChildFragmentVersion,
             FragmentVersion newChildFragmentVersion) {
         int lockType = 0;
@@ -1308,7 +1327,9 @@ public class ProcessServiceImpl implements ProcessService {
             fillDescendants(child, composingFragments);
         }
     }
+    */
 
+    /*
     private void createNewProcessModelVersion(ProcessModelVersion pmv, FragmentVersion rootFragment,
             Set<FragmentVersion> composingFragments, final Version newVersionNumber) throws RepositoryException {
         try {
@@ -1321,6 +1342,7 @@ public class ProcessServiceImpl implements ProcessService {
             throw new RepositoryException(de);
         }
     }
+    */
 
     /* Did the request ask for the model in the same format as it was originally added? */
     private boolean isRequestForNativeFormat(Integer processId, String branch, Version version, String format) {
