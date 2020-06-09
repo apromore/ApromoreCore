@@ -62,10 +62,12 @@ import org.zkoss.zul.Filedownload;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Set;
+import javax.xml.datatype.DatatypeFactory;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -84,6 +86,8 @@ public abstract class BaseListboxController extends BaseController {
     private final Button refreshB;
     private final Button btnUpload;
     private final Button btnDownload;
+    private final Button btnCopy;
+    private final Button btnPaste;
     private final Button btnAddFolder;
     private final Button btnAddProcess;
     //private final Button btnGEDFolder;
@@ -93,6 +97,8 @@ public abstract class BaseListboxController extends BaseController {
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
+    private ArrayList<LogSummaryType> sourceLogs = null;
+    private ArrayList<FolderType> sourceFolders = null;
 
     public BaseListboxController(MainController mainController, String componentId, ListitemRenderer itemRenderer) {
         super();
@@ -108,6 +114,8 @@ public abstract class BaseListboxController extends BaseController {
         refreshB = (Button) mainController.getFellow("refreshB");
         btnUpload = (Button) mainController.getFellow("btnUpload");
         btnDownload = (Button) mainController.getFellow("btnDownload");
+        btnCopy = (Button) mainController.getFellow("btnCopy");
+        btnPaste = (Button) mainController.getFellow("btnPaste");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
         btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
         //btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
@@ -123,6 +131,7 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void attachEvents() {
+
         this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
             @Override
             public void onEvent(KeyEvent keyEvent) throws Exception {
@@ -152,6 +161,18 @@ public abstract class BaseListboxController extends BaseController {
         this.btnDownload.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 exportFile();
+            }
+        });
+
+        this.btnCopy.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                copy();
+            }
+        });
+
+        this.btnPaste.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                paste();
             }
         });
 
@@ -298,7 +319,7 @@ public abstract class BaseListboxController extends BaseController {
                 }
                 new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
-                Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show("Only one item can be renamed at a time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -347,6 +368,55 @@ public abstract class BaseListboxController extends BaseController {
                 LOGGER.error("Nothing selected to delete?");
             }
         }
+    }
+
+    private void copy() {
+        sourceLogs = getSelectedLogs();
+        sourceFolders = getSelectedFolders();
+        if (sourceLogs == null || sourceLogs.isEmpty()) {
+            Messagebox.show("Please select at least one log.", "Copy Log", Messagebox.OK, Messagebox.ERROR);
+        } else {
+            Messagebox.show(sourceLogs.size() + " log(s) has been selected for copying.", "Copy Log", Messagebox.OK, Messagebox.INFORMATION);
+        }
+    }
+
+    private void paste() throws Exception {
+        if (sourceLogs == null || sourceLogs.isEmpty()) {
+            Messagebox.show("Please select a log and click Copy.", "Copy Log", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
+        cloneLogs(targetFolderId);
+        refreshContent();
+    }
+
+    private void cloneLogs(Integer targetFolderId) throws Exception {
+        if (sourceLogs != null && !sourceLogs.isEmpty() && targetFolderId != null) {
+            String username = UserSessionManager.getCurrentUser().getUsername();
+            String domain = "";
+            String created = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+            for (LogSummaryType log : sourceLogs) {
+                String logName = log.getName();
+                Integer sourceLogId = log.getId();
+                mainController.getEventLogService().cloneLog(username, targetFolderId, logName, sourceLogId, domain, created, false);
+            }
+        } else {
+            LOGGER.error("No folder is selected");
+        }
+    }
+
+    private ArrayList<LogSummaryType> getSelectedLogs() {
+        ArrayList<LogSummaryType> itemList = new ArrayList<>();
+        if (this instanceof ProcessListboxController) {
+            Set<Object> selectedItem = (Set<Object>) getListModel().getSelection();
+            for (Object obj : selectedItem) {
+                if (obj instanceof LogSummaryType) {
+                    itemList.add((LogSummaryType) obj);
+                }
+            }
+        }
+        return itemList;
     }
 
     private ArrayList<FolderType> getSelectedFolders() {

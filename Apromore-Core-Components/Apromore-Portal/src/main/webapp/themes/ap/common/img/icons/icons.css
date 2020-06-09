@@ -180,6 +180,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-copy {
+    background-image: url('copy.svg') !important;
+    width: 23.5px !important;
+}
+
 .ap-icon-dir-lr {
     background-image: url('dir-lr.svg') !important;
     width: 28.5px !important;
@@ -388,6 +393,11 @@
 .ap-icon-model-merge {
     background-image: url('model-merge.svg') !important;
     width: 27.40625px !important;
+}
+
+.ap-icon-paste {
+    background-image: url('paste.svg') !important;
+    width: 23.5px !important;
 }
 
 .ap-icon-pause {
