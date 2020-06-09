@@ -286,7 +286,7 @@
 
             </center>
         </borderlayout>
-        <menubar sclass="ap-user-menu" id="userMenu" />
+        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;"/>
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
     <!-- Following script improves performance of listbox dropdown display time-->
