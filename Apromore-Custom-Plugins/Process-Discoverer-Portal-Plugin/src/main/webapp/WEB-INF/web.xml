@@ -139,7 +139,7 @@
     <!-- ////////////////////////////// -->
 
     <session-config>
-        <session-timeout>5</session-timeout>
+        <session-timeout>10</session-timeout>
     </session-config>
 
     <mime-mapping>
