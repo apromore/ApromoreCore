@@ -1095,6 +1095,7 @@ div.ap-pd-drawer-splitter:hover {
 }
 
 .ap-pd-chart {
+    cursor: pointer;
     margin: 8px 0 4px 0;
 }
 

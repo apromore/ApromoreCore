@@ -37,7 +37,10 @@
       sclass="ap-pd-timestats-duration">
     <vlayout spacing="15px" hflex="8">
       <div sclass="ap-pd-timestats-header">
-        <n:span class="ap-icon ap-icon-static ap-icon-duration-range"></n:span>
+        <n:span class="ap-icon ap-icon-static ap-icon-duration-range"
+                style="cursor: pointer !important;"
+                onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabPerformance')"
+        ></n:span>
         <label sclass="title">${labels.e.pd.statDuration.text}</label>
       </div>
       <div sclass="ap-pd-duration">
@@ -71,7 +74,10 @@
           hflex="7"
           spacing="15px">
       <div sclass="ap-pd-timestats-header">
-        <n:span class="ap-icon ap-icon-static ap-icon-clock"></n:span>
+        <n:span class="ap-icon ap-icon-static ap-icon-clock"
+                style="cursor: pointer !important;"
+                onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'EventTabTimeframe')"
+        ></n:span>
         <label sclass="title">${labels.e.pd.statTimerange.text}</label>
       </div>
       <div sclass="ap-pd-timerange">
