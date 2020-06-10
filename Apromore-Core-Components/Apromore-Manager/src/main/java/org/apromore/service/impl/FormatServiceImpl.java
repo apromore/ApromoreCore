@@ -26,10 +26,11 @@
 
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.dao.AnnotationRepository;
@@ -123,11 +124,11 @@ public class FormatServiceImpl implements FormatService {
             nat.setLastUpdateDate(lastUpdate);
         }
 
-        String canonicalString = StreamUtil.inputStream2String(cp.getCpf()).trim();
-        Canonical can = createCanonical(pmv, canonicalString);
+//        String canonicalString = StreamUtil.inputStream2String(cp.getCpf()).trim();
+//        Canonical can = createCanonical(pmv, canonicalString);
 
         pmv.setNativeDocument(nat);
-        pmv.setCanonicalDocument(can);
+        //pmv.setCanonicalDocument(can);
 
         if (!isEmptyANF(cp.getAnt())) {
             String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();

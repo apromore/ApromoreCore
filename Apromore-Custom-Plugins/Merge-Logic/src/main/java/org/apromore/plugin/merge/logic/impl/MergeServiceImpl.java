@@ -27,6 +27,15 @@
 
 package org.apromore.plugin.merge.logic.impl;
 
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
@@ -35,7 +44,11 @@ import org.apromore.exception.ExceptionMergeProcess;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.SerializationException;
 import org.apromore.helper.Version;
-import org.apromore.model.*;
+import org.apromore.model.ParameterType;
+import org.apromore.model.ParametersType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionIdType;
+import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.service.CanoniserService;
@@ -50,14 +63,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Implementation of the SimilarityService Contract.
@@ -137,7 +142,7 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
         ToolboxData data = new ToolboxData();
 
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
+            //data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
         }
 
         return data;

@@ -91,7 +91,6 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.AnnotationHelper;
-import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
@@ -911,10 +910,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Version version,
             Version originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType, String lastUpdate)  throws RepositoryException {
-        Canonical graph;
-        OperationContext rootFragment;
-        ProcessModelVersion processModelVersion = null;
-
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
             throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
         }
@@ -926,9 +921,15 @@ public class ProcessServiceImpl implements ProcessService {
                 originalVersionNumber.toString());
         if (pmVersion != null) {
             if (version.toString().equals(pmVersion.getVersionNumber())) {
-                LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
+                String message = "CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
                         "\nThis process model version number: " + version + "\nCurrent process model version number: " +
-                        pmVersion.getVersionNumber());
+                        pmVersion.getVersionNumber();
+                LOGGER.error(message);
+                throw new RepositoryException(message);
+            }
+            else {
+                ProcessModelVersion pmv = createProcessModelVersion(pmVersion.getProcessBranch(), version, nativeType, null, null);
+                return pmv;
             }
 
             /*
@@ -952,20 +953,9 @@ public class ProcessServiceImpl implements ProcessService {
             processModelVersion.setNativeType(nativeType);
             processModelVersion.setLastUpdateDate(lastUpdate);
             */
-            
-            pmVersion.setVersionNumber(version.toString());
-            pmVersion.getProcessBranch().setCurrentProcessModelVersion(pmVersion);
-            pmVersion.setOriginalId(cpf.getCpt().getUri());
-            pmVersion.setNumEdges(0);
-            pmVersion.setNumVertices(0);
-            pmVersion.setLockStatus(Constants.NO_LOCK);
-            pmVersion.setNativeType(nativeType);
-            pmVersion.setLastUpdateDate(lastUpdate);
-            
-            return pmVersion;
         } else {
-            LOGGER.error("unable to find the Process Model to update.");
-            return null;
+            LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
+            throw new RepositoryException("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
         }
         //return processModelVersion;
     }
@@ -1095,6 +1085,8 @@ public class ProcessServiceImpl implements ProcessService {
 //            processModel.setNumEdges(proModGrap.countEdges());
 //            processModel.setNumVertices(proModGrap.countVertices());
         }
+        processModel.setNumEdges(0);
+        processModel.setNumVertices(0);
         processModel.setLockStatus(Constants.NO_LOCK);
         processModel.setCreateDate(now);
         processModel.setLastUpdateDate(now);
