@@ -31,28 +31,26 @@
  */
 package de.hpi.bpmn2_0.replay;
 
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.backtracking2.Backtracking;
-import de.hpi.bpmn2_0.backtracking2.Node;
-import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
+
+import de.hpi.bpmn2_0.backtracking2.Backtracking;
+import de.hpi.bpmn2_0.backtracking2.Node;
+import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 /**
  *
  * @author Administrator
@@ -123,16 +121,19 @@ public class Replayer {
         	String traceKey = "";
         	for (XEvent event : trace) {
         		int eventKey = 0; 
-        		String eventName = event.getAttributes().get("concept:name").toString();
-        		if (!eventNameKeyMap.containsKey(eventName)) {
-        			eventNameKeyMap.put(eventName, eventCount);
-        			eventKey = eventCount;
-        			eventCount++;
+        		String eventName = event.getAttributes().containsKey("concept:name") ? 
+        		                        event.getAttributes().get("concept:name").toString() : null;
+        		if (eventName != null) {
+            		if (!eventNameKeyMap.containsKey(eventName)) {
+            			eventNameKeyMap.put(eventName, eventCount);
+            			eventKey = eventCount;
+            			eventCount++;
+            		}
+            		else {
+            			eventKey = eventNameKeyMap.get(eventName);
+            		}
+            		traceKey += eventKey + ".";
         		}
-        		else {
-        			eventKey = eventNameKeyMap.get(eventName);
-        		}
-        		traceKey += eventKey + ".";
         	}
         	traceKeyMap.put(trace, traceKey);
         }
@@ -296,7 +297,7 @@ public class Replayer {
             // Traverse backtracking result from the beginning
             //---------------------------------------------
             while (!stack.empty()) {
-                node = (Node)stack.pop();
+                node = stack.pop();
                 modelNode = node.getState().getElement();
                 
                 //Skip EVENT_SKIPPED nodes: no need to show them on the replay
