@@ -316,7 +316,7 @@ public interface ManagerService {
      * @return Set of PluginInfo about installed Deployment PLugins supporting the native type
      * @throws Exception in case of any error
      */
-    Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception;
+//    Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception;
 
     /**
      * Deploy process to a running process engine

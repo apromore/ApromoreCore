@@ -65,7 +65,6 @@
 
     <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
 
-    <osgi:service ref="deploymentServiceImpl" interface="org.apromore.service.DeploymentService" auto-export="interfaces"/>
     <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>
     <osgi:service ref="canoniserServiceImpl" interface="org.apromore.service.CanoniserService" auto-export="interfaces"/>
     <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>

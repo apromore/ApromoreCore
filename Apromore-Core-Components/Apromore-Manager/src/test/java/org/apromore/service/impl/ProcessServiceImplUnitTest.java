@@ -50,7 +50,6 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.AnnotationService;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
@@ -91,14 +90,13 @@ public class ProcessServiceImplUnitTest {
         pmvDao = createMock(ProcessModelVersionRepository.class);
         UserService usrSrv = createMock(UserService.class);
         FormatService fmtSrv = createMock(FormatService.class);
-        AnnotationService annSrv = createMock(AnnotationService.class);
         CanoniserService canSrv = createMock(CanoniserService.class);
         LockService lSrv = createMock(LockService.class);
         UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
         ConfigBean config = new ConfigBean();
 
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, annSrv, canSrv, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
+        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, canSrv, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
     }
 
     @Test

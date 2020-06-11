@@ -90,7 +90,6 @@ import org.apromore.plugin.property.RequestParameterType;
 //import org.apromore.plugin.merge.logic.MergeService;
 //import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.DeploymentService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.FormatService;
@@ -110,7 +109,6 @@ import org.springframework.stereotype.Service;
 @Service("managerClient")
 public class ManagerServiceImpl implements ManagerService {
 
-    @Inject private DeploymentService deploymentService;
     @Inject private PluginService pluginService;
     @Inject private CanoniserService canoniserService;
     @Inject private ProcessService procSrv;
@@ -653,20 +651,20 @@ public class ManagerServiceImpl implements ManagerService {
      * @return Set of PluginInfo about installed Deployment PLugins supporting the native type
      * @throws Exception in case of any error
      */
-    @Override
-    public Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception {
-        //return deploymentService.listDeploymentPlugin(nativeType)
-        //                        .stream()
-        //                        .map(PluginHelper::convertPluginInfo)
-        //                        .collect(Collectors.toSet());
-
-        Set<PluginInfo> pluginInfos = new HashSet<>();
-        for (Plugin plugin: deploymentService.listDeploymentPlugin(nativeType)) {
-            pluginInfos.add(PluginHelper.convertPluginInfo(plugin));
-        }
-
-        return pluginInfos;
-    }
+//    @Override
+//    public Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception {
+//        //return deploymentService.listDeploymentPlugin(nativeType)
+//        //                        .stream()
+//        //                        .map(PluginHelper::convertPluginInfo)
+//        //                        .collect(Collectors.toSet());
+//
+//        Set<PluginInfo> pluginInfos = new HashSet<>();
+//        for (Plugin plugin: deploymentService.listDeploymentPlugin(nativeType)) {
+//            pluginInfos.add(PluginHelper.convertPluginInfo(plugin));
+//        }
+//
+//        return pluginInfos;
+//    }
 
     /**
      * Deploy process to a running process engine

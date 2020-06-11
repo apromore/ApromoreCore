@@ -79,7 +79,6 @@ import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
 import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.AnnotationService;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
@@ -158,7 +157,6 @@ public class ProcessServiceImpl implements ProcessService {
             final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final GroupProcessRepository groupProcessRepo,
-            final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, 
             final FormatService formatSrv, final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
         this.annotationRepo = annotationRepo;
