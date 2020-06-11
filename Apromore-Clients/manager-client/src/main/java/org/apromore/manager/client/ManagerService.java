@@ -40,7 +40,6 @@ import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.FolderType;
-import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.GroupAccessType;
 import org.apromore.model.GroupType;
 import org.apromore.model.ImportLogResultType;
@@ -162,12 +161,12 @@ public interface ManagerService {
      */
     NativeTypesType readNativeTypes();
 
-    /**
-     * get a Fragment.
-     * @param fragmentId the id of the fragment we want
-     * @return the found fragment
-     */
-    GetFragmentOutputMsgType getFragment(Integer fragmentId);
+//    /**
+//     * get a Fragment.
+//     * @param fragmentId the id of the fragment we want
+//     * @return the found fragment
+//     */
+//    GetFragmentOutputMsgType getFragment(Integer fragmentId);
 
     /**
      * Get the Process Summaries from the Apromore Manager.

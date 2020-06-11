@@ -56,10 +56,4 @@
         </property>
     </bean>
 
-
-    <!-- ************************** Non WebServices ************************** -->
-
-    <bean id="canonicalToGraph" class="org.apromore.graph.canonical.converter.CanonicalToGraph" />
-    <bean id="graphToCanonical" class="org.apromore.graph.canonical.converter.GraphToCanonical" />
-
 </beans>

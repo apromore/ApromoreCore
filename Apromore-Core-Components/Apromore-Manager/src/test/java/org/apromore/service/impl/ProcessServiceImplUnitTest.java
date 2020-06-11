@@ -31,16 +31,14 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.GroupRepository;
 import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
@@ -53,12 +51,8 @@ import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.AnnotationService;
-import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.ComposerService;
-import org.apromore.service.DecomposerService;
 import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
@@ -100,15 +94,11 @@ public class ProcessServiceImplUnitTest {
         AnnotationService annSrv = createMock(AnnotationService.class);
         CanoniserService canSrv = createMock(CanoniserService.class);
         LockService lSrv = createMock(LockService.class);
-        CanonicalConverter convertor = createMock(CanonicalConverter.class);
-        ComposerService composerSrv = createMock(ComposerService.class);
-        DecomposerService decomposerSrv = createMock(DecomposerService.class);
         UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
-        FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
         ConfigBean config = new ConfigBean();
 
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv, config);
+        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, annSrv, canSrv, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
     }
 
     @Test

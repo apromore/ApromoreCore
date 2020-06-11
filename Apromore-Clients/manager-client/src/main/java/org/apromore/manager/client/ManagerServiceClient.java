@@ -560,23 +560,23 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-    /**
-     * @see ManagerService#getFragment(Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public GetFragmentOutputMsgType getFragment(final Integer fragmentId) {
-        LOGGER.debug("Invoking getFragment method to retreive fragment content...");
-
-        GetFragmentInputMsgType msg = new GetFragmentInputMsgType();
-        msg.setFragmentId(fragmentId);
-
-        JAXBElement<GetFragmentInputMsgType> request = WS_CLIENT_FACTORY.createGetFragmentRequest(msg);
-
-        JAXBElement<GetFragmentOutputMsgType> response = (JAXBElement<GetFragmentOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue();
-    }
+//    /**
+//     * @see ManagerService#getFragment(Integer)
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    public GetFragmentOutputMsgType getFragment(final Integer fragmentId) {
+//        LOGGER.debug("Invoking getFragment method to retreive fragment content...");
+//
+//        GetFragmentInputMsgType msg = new GetFragmentInputMsgType();
+//        msg.setFragmentId(fragmentId);
+//
+//        JAXBElement<GetFragmentInputMsgType> request = WS_CLIENT_FACTORY.createGetFragmentRequest(msg);
+//
+//        JAXBElement<GetFragmentOutputMsgType> response = (JAXBElement<GetFragmentOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+//        return response.getValue();
+//    }
 
     /**
      * @see ManagerService#readProcessSummaries(Integer, String)

@@ -26,7 +26,6 @@ package org.apromore.manager.client;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,10 +44,8 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
-import org.apromore.cpf.CanonicalProcessType;
 //import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
@@ -67,10 +64,8 @@ import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
 import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ExportFragmentResultType;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.FolderType;
-import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.GroupAccessType;
 import org.apromore.model.GroupType;
 import org.apromore.model.ImportLogResultType;
@@ -99,7 +94,6 @@ import org.apromore.service.DeploymentService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
 import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
@@ -107,7 +101,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.DecanonisedProcess;
 import org.apromore.service.model.ProcessData;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +112,6 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Inject private DeploymentService deploymentService;
     @Inject private PluginService pluginService;
-    @Inject private FragmentService fragmentSrv;
     @Inject private CanoniserService canoniserService;
     @Inject private ProcessService procSrv;
     @Inject private EventLogService logSrv;
@@ -355,38 +347,38 @@ public class ManagerServiceImpl implements ManagerService {
         return NativeTypeMapper.convertFromNativeType(frmSrv.findAllFormats());
     }
 
-    /**
-     * get a Fragment.
-     * @param fragmentId the id of the fragment we want
-     * @return the found fragment
-     */
-    @Override
-    public GetFragmentOutputMsgType getFragment(Integer fragmentId) {
-
-        String defaultFormat = "EPML 2.0";
-
-        try {
-            if (!enableCPF) {
-                throw new CanoniserException("Fragments not supported because manager.enableCPF is false");
-            }
-
-            CanonicalProcessType cpt = fragmentSrv.getFragmentToCanonicalProcessType(fragmentId);
-            DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, null, new HashSet<RequestParameterType<?>>());
-
-            ExportFragmentResultType exportResult = new ExportFragmentResultType();
-            exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
-            exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
-
-            GetFragmentOutputMsgType res = new GetFragmentOutputMsgType();
-            res.setFragmentResult(exportResult);
-            res.setNativeType(defaultFormat);
-       
-            return res;
-
-        } catch (CanoniserException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    /**
+//     * get a Fragment.
+//     * @param fragmentId the id of the fragment we want
+//     * @return the found fragment
+//     */
+//    @Override
+//    public GetFragmentOutputMsgType getFragment(Integer fragmentId) {
+//
+//        String defaultFormat = "EPML 2.0";
+//
+//        try {
+//            if (!enableCPF) {
+//                throw new CanoniserException("Fragments not supported because manager.enableCPF is false");
+//            }
+//
+//            CanonicalProcessType cpt = fragmentSrv.getFragmentToCanonicalProcessType(fragmentId);
+//            DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, null, new HashSet<RequestParameterType<?>>());
+//
+//            ExportFragmentResultType exportResult = new ExportFragmentResultType();
+//            exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
+//            exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
+//
+//            GetFragmentOutputMsgType res = new GetFragmentOutputMsgType();
+//            res.setFragmentResult(exportResult);
+//            res.setNativeType(defaultFormat);
+//       
+//            return res;
+//
+//        } catch (CanoniserException | IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * Get the Process Summaries from the Apromore Manager.

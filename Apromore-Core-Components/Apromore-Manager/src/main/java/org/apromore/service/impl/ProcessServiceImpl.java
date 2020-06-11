@@ -80,12 +80,8 @@ import org.apromore.model.SummariesType;
 import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.AnnotationService;
-import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.ComposerService;
-import org.apromore.service.DecomposerService;
 import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
@@ -97,7 +93,6 @@ import org.apromore.service.model.ProcessData;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -148,15 +143,12 @@ public class ProcessServiceImpl implements ProcessService {
      * @param fragmentVersionDagRepo Fragment Version Dag Repository.
      * @param processModelVersionRepo Process Model Version Repository.
      * @param groupProcessRepo Group-Process Repository
-     * @param converter Canonical Format Converter.
      * @param annotationSrv Annotation Processing Service
      * @param canoniserSrv Canoniser Service.
      * @param lService Lock Service.
      * @param userSrv User Service
      * @param fService Fragment Service
      * @param formatSrv Format Service.
-     * @param composerSrv composer Service.
-     * @param decomposerSrv decomposer Service.
      * @param ui User Interface Helper.
      * @param workspaceService
      */
@@ -166,10 +158,9 @@ public class ProcessServiceImpl implements ProcessService {
             final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final GroupProcessRepository groupProcessRepo,
-            final CanonicalConverter converter, final AnnotationService annotationSrv,
-            final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
-            final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
-            final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
+            final AnnotationService annotationSrv,
+            final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, 
+            final FormatService formatSrv, final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
         this.annotationRepo = annotationRepo;
         this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
