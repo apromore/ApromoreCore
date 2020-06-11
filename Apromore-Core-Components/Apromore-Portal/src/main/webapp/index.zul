@@ -1,13 +1,10 @@
 <!--
   #%L
   This file is part of "Apromore Core".
-
   Copyright (C) 2012 - 2017 Queensland University of Technology.
   %%
-  Copyright (C) 2018 - 2020 The University of Melbourne.
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
   %%
-  Copyright (C) 2020 Apromore Pty Ltd.
-
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -227,6 +224,9 @@
                             <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
                             <h:span class="ap-action-sep"></h:span>
+                            <button id="btnCopy" visible="false" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="Copy logs"/>
+                            <button id="btnPaste" visible="false" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="Paste logs"/>
+                            <!--<h:span class="ap-action-sep"></h:span>-->
                             <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.e.portal.addFolder.hint}"/>
                             <button id="btnAddProcess" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
@@ -283,7 +283,7 @@
 
             </center>
         </borderlayout>
-        <menubar sclass="ap-user-menu" id="userMenu" />
+        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;"/>
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
     <!-- Following script improves performance of listbox dropdown display time-->

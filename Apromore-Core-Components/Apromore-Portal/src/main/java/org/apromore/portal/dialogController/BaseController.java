@@ -5,10 +5,8 @@
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -43,6 +41,7 @@ import org.zkoss.zul.Window;
 
 // Local classes
 import org.apromore.manager.client.ManagerService;
+import org.apromore.service.EventLogService;
 import org.apromore.portal.ConfigBean;
 
 /**
@@ -53,7 +52,9 @@ import org.apromore.portal.ConfigBean;
 public class BaseController extends Window {
 
     public static final String MANAGER_SERVICE = "managerClient";
+    public static final String EVENT_LOG_SERVICE = "eventLogService";
     private ManagerService managerService;
+    private EventLogService eventLogService;
 
     protected AutowireCapableBeanFactory beanFactory;
     protected ConfigBean config;
@@ -74,6 +75,14 @@ public class BaseController extends Window {
             setManagerService(managerService);
         }
         return managerService;
+    }
+
+    public EventLogService getEventLogService() {
+        if (eventLogService == null) {
+            eventLogService = (EventLogService) SpringUtil.getBean(EVENT_LOG_SERVICE);
+            setEventLogService(eventLogService);
+        }
+        return eventLogService;
     }
 
     /**
@@ -168,6 +177,9 @@ public class BaseController extends Window {
 
     private void setManagerService(final ManagerService managerService) {
         this.managerService = managerService;
+    }
+    private void setEventLogService(final EventLogService eventLogService) {
+        this.eventLogService = eventLogService;
     }
 
 }

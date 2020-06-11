@@ -2,10 +2,8 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -43,6 +41,7 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphVisController;
+import org.apromore.plugin.portal.processdiscoverer.controllers.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.LogStatsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.PerspectiveDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.TimeStatsController;
@@ -70,6 +69,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
@@ -371,6 +372,7 @@ public class PDController extends BaseController {
     }
 
     private void initializeEventListeners() {
+        PDController me = this;
         try {
             viewSettingsController.initializeEventListeners(contextData);
             graphSettingsController.initializeEventListeners(contextData);
@@ -396,7 +398,18 @@ public class PDController extends BaseController {
     
             casesDetails.addEventListener("onClick", caseDetailsController);
             perspectiveDetails.addEventListener("onClick", perspectiveDetailsController);
-    
+
+            filter.addEventListener("onInvoke", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    String view = event.getData().toString();
+                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                    logFilterController.onEvent(event);
+                    EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
+                    eqFilteredView.publish(new Event("ctrl", null, view));
+                }
+            });
+
             filter.addEventListener("onClick", pdFactory.createLogFilterController(this));
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
     

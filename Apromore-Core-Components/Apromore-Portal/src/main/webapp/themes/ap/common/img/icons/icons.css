@@ -2,10 +2,8 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -178,6 +176,11 @@
 .ap-icon-cogs {
     background-image: url('cogs.svg') !important;
     width: 28.5px !important;
+}
+
+.ap-icon-copy {
+    background-image: url('copy.svg') !important;
+    width: 23.5px !important;
 }
 
 .ap-icon-dir-lr {
@@ -388,6 +391,11 @@
 .ap-icon-model-merge {
     background-image: url('model-merge.svg') !important;
     width: 27.40625px !important;
+}
+
+.ap-icon-paste {
+    background-image: url('paste.svg') !important;
+    width: 23.5px !important;
 }
 
 .ap-icon-pause {

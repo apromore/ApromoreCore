@@ -2,10 +2,8 @@
   #%L
   This file is part of "Apromore Core".
   %%
-  Copyright (C) 2018 - 2020 The University of Melbourne.
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
   %%
-  Copyright (C) 2020 Apromore Pty Ltd.
-
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -40,7 +38,8 @@
           <label sclass="title" value="Cases" w:onClick="Ap.pd.zkSendEvent('$caseDetails', 'onClick', null)">
           </label>
         </n:div>
-        <div id="ap-pd-chart-case" class="ap-pd-chart" xmlns="native" />
+        <div id="ap-pd-chart-case" class="ap-pd-chart" xmlns="native"
+             onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabID')" />
         <label id="lblCasePercent"
                value="Cases percent"/>
         <div>
@@ -65,7 +64,8 @@
           <label sclass="title"
                  value="Case variants"/>
         </n:div>
-        <div id="ap-pd-chart-variant" class="ap-pd-chart" xmlns="native" />
+        <div id="ap-pd-chart-variant" class="ap-pd-chart" xmlns="native"
+             onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabVariant')" />
         <label id="lblVariantPercent"
                value="Case variants percent"/>
         <div>
@@ -90,7 +90,8 @@
           <label sclass="title"
                  value="Events"/>
         </n:div>
-        <div id="ap-pd-chart-event" class="ap-pd-chart" xmlns="native" />
+        <div id="ap-pd-chart-event" class="ap-pd-chart" xmlns="native"
+             onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'EventTabAttribute')" />
         <label id="lblEventPercent"
                value="Events percent"/>
         <div>
@@ -119,7 +120,8 @@
                  value="Activities" w:onClick="Ap.pd.zkSendEvent('$perspectiveDetails', 'onClick', null)">
           </label>
         </n:div>
-        <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="native" />
+        <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="native"
+             onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabAttribute')" />
         <label id="lblNodePercent"
                value="Nodes percent"/>
         <div>
