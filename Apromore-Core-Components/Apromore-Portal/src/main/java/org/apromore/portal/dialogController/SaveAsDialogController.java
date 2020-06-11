@@ -26,14 +26,13 @@
 
 package org.apromore.portal.dialogController;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import org.apromore.canoniser.Canoniser;
 import org.apromore.dao.model.Folder;
 import org.apromore.helper.Version;
 import org.apromore.model.EditSessionType;
@@ -138,18 +137,21 @@ public class SaveAsDialogController extends BaseController {
 
         saveB.addEventListener("onClick",
                 new EventListener<Event>() {
+                    @Override
                     public void onEvent(Event event) throws Exception {
                         saveModel();
                     }
                 });
         this.saveAsW.addEventListener("onOK",
                 new EventListener<Event>() {
+                    @Override
                     public void onEvent(Event event) throws Exception {
                         saveModel();
                     }
                 });
         cancelB.addEventListener("onClick",
                 new EventListener<Event>() {
+                    @Override
                     public void onEvent(Event event) throws Exception {
                         cancel();
                     }
@@ -249,7 +251,7 @@ public class SaveAsDialogController extends BaseController {
                 if (this.isSaveCurrent != null && !this.isSaveCurrent) { //Save As
                 	// the branch name is by default "MAIN", see org.apromore.common.Constants.TRUNK_NAME
                     getService().importProcess(userName, containingFolderId, nativeType, processName, versionNo, is, domain, null, created, null,
-                            makePublic, pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                            makePublic);
                     Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder", null, Messagebox.OK, Messagebox.NONE);
                 } else {
                 	//Note: the versionName parameter is never used in updateProcess(), so any value should be fine. 

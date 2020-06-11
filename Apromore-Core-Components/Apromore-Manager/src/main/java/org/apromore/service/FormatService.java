@@ -26,14 +26,15 @@
 
 package org.apromore.service;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
-import org.apromore.service.model.CanonisedProcess;
 
 /**
  * Interface for the Format Service. Defines all the methods that will do the majority of the work for
@@ -73,5 +74,5 @@ public interface FormatService {
      * @throws IOException is resetting the input streams fails.
      */
     void storeNative(String procName, ProcessModelVersion processId, String created, String lastUpdate, User user,
-        NativeType nativeType, String AnnotationVerion, CanonisedProcess cp) throws JAXBException, IOException;
+        NativeType nativeType, String AnnotationVerion, InputStream original) throws JAXBException, IOException;
 }

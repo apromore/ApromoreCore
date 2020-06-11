@@ -27,6 +27,14 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.IOUtils;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.model.ImportProcessResultType;
@@ -48,7 +56,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
@@ -57,14 +64,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class ImportOneProcessController extends BaseController {
 
@@ -340,7 +339,7 @@ public class ImportOneProcessController extends BaseController {
             String version = this.versionNumberTb.getValue();
             ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
                     version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue(),
-                    this.lastUpdateTb.getValue(), isPublic, pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                    this.lastUpdateTb.getValue(), isPublic);
 
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);

@@ -27,6 +27,7 @@
 
 package org.apromore.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -41,7 +42,6 @@ import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
 
 /**
@@ -80,7 +80,7 @@ public interface ProcessService {
      *
      */
     ProcessModelVersion importProcess(String username, Integer folderId, String processName, Version versionNumber, String nativeType,
-            CanonisedProcess cpf, String domain, String documentation, String created, String lastUpdate, boolean publicModel)
+            InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean publicModel)
             throws ImportException;
 
     /**
@@ -144,7 +144,7 @@ public interface ProcessService {
      * @param cpf the process model graph.
      */
     ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName,
-            Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf)
+            Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
             throws ImportException, RepositoryException;
 
 

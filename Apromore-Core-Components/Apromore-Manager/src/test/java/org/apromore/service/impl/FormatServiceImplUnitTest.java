@@ -27,23 +27,21 @@
 
 package org.apromore.service.impl;
 
-import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.CanonicalRepository;
-import org.apromore.dao.NativeRepository;
-import org.apromore.dao.NativeTypeRepository;
-import org.apromore.dao.model.NativeType;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.verify;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apromore.dao.NativeRepository;
+import org.apromore.dao.NativeTypeRepository;
+import org.apromore.dao.model.NativeType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test the UserService Implementation.
@@ -58,12 +56,10 @@ public class FormatServiceImplUnitTest {
 
     @Before
     public void setUp() {
-        AnnotationRepository annotationRepository = createMock(AnnotationRepository.class);
-        CanonicalRepository canonicalRepository = createMock(CanonicalRepository.class);
         NativeRepository nativeRepository = createMock(NativeRepository.class);
         nativeTypeRepository = createMock(NativeTypeRepository.class);
 
-        formatServiceImpl = new FormatServiceImpl(annotationRepository, canonicalRepository, nativeRepository, nativeTypeRepository);
+        formatServiceImpl = new FormatServiceImpl(nativeRepository, nativeTypeRepository);
     }
 
 

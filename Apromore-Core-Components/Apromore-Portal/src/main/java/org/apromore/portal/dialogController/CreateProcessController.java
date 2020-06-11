@@ -27,6 +27,18 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.activation.DataHandler;
+
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
@@ -53,17 +65,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-
-import javax.activation.DataHandler;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 public class CreateProcessController extends BaseController {
 
@@ -200,7 +201,7 @@ public class CreateProcessController extends BaseController {
                 }
 
                 ImportProcessResultType importResult = getService().importProcess(owner, folderId, nativeType, processName, versionNumber,
-                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, makePublic, new HashSet<RequestParameterType<?>>());
+                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, makePublic);
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
                 this.mainC.showPluginMessages(importResult.getMessage());

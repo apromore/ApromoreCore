@@ -30,14 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import javax.inject.Inject;
 
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -51,8 +45,8 @@ import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupLog;
 import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Native;
@@ -69,6 +63,12 @@ import org.apromore.model.ProcessVersionsType;
 import org.apromore.model.SummariesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.service.WorkspaceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
 * Used By the Services to generate the data objects used by the UI.
@@ -131,6 +131,7 @@ public class UIHelper implements UserInterfaceHelper {
     /**
      * @see UserInterfaceHelper#createProcessSummary(org.apromore.dao.model.Process, org.apromore.dao.model.ProcessBranch, org.apromore.dao.model.ProcessModelVersion, String, String, String, String, String, boolean)
      */
+    @Override
     public ProcessSummaryType createProcessSummary(Process process, ProcessBranch branch, ProcessModelVersion pmv, String nativeType,
             String domain, String created, String lastUpdate, String username, boolean isPublic) {
         ProcessSummaryType proType = new ProcessSummaryType();
@@ -171,6 +172,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
+    @Override
     public SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions) {
         SummariesType summaries = new SummariesType();
 
@@ -205,6 +207,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
+    @Override
     public SummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses) {
         SummariesType processSummaries = new SummariesType();
 
@@ -246,6 +249,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, Integer, Integer)
      * {@inheritDoc}
      */
+    @Override
     public SummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
         assert pageSize != null;
         assert pageIndex != null;
@@ -324,6 +328,7 @@ public class UIHelper implements UserInterfaceHelper {
 	return processSummary;
     }
 
+    @Override
     public LogSummaryType buildLogSummary(final Log log) {
         LogSummaryType logSummaryType = new LogSummaryType();
         logSummaryType.setId(log.getId());

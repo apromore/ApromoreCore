@@ -27,24 +27,19 @@
 package org.apromore.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
-import org.apromore.anf.AnnotationsType;
-import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.CanonicalRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
-import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.Canonical;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.service.FormatService;
-import org.apromore.service.model.CanonisedProcess;
 import org.apromore.util.StreamUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -59,9 +54,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class FormatServiceImpl implements FormatService {
-
-    private AnnotationRepository annotationRepo;
-    private CanonicalRepository canonicalRepo;
     private NativeRepository nativeRepo;
     private NativeTypeRepository nativeTypeRepo;
 
@@ -73,10 +65,7 @@ public class FormatServiceImpl implements FormatService {
      * @param nativeTypeRepository Native Type repository.
      */
     @Inject
-    public FormatServiceImpl(final AnnotationRepository annotationRepository, final CanonicalRepository canonicalRepository,
-            final NativeRepository nativeRepository, final NativeTypeRepository nativeTypeRepository) {
-        annotationRepo = annotationRepository;
-        canonicalRepo = canonicalRepository;
+    public FormatServiceImpl(final NativeRepository nativeRepository, final NativeTypeRepository nativeTypeRepository) {
         nativeRepo = nativeRepository;
         nativeTypeRepo = nativeTypeRepository;
     }
@@ -113,13 +102,12 @@ public class FormatServiceImpl implements FormatService {
     @Override
     @Transactional(readOnly = false)
     public void storeNative(String procName, ProcessModelVersion pmv, String created, String lastUpdate, User user,
-            NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException, IOException {
+            NativeType nativeType, String annVersion, InputStream original) throws JAXBException, IOException {
         //InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
         Native nat = null;
 
-        if (cp.getOriginal() != null) {
-            cp.getOriginal().reset();
-            String nativeString = StreamUtil.inputStream2String(cp.getOriginal()).trim();
+        if (original != null) {
+            String nativeString = StreamUtil.inputStream2String(original).trim();
             nat = createNative(pmv, nativeType, nativeString);
             nat.setLastUpdateDate(lastUpdate);
         }
@@ -130,33 +118,25 @@ public class FormatServiceImpl implements FormatService {
         pmv.setNativeDocument(nat);
         //pmv.setCanonicalDocument(can);
 
-        if (!isEmptyANF(cp.getAnt())) {
-            String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
-            if (annString != null && !annString.equals("")) {
-                Annotation annotation = new Annotation();
-                annotation.setContent(annString);
-                annotation.setName(annVersion);
-                annotation.setNatve(nat);
-                annotation.setProcessModelVersion(pmv);
-                annotation = annotationRepo.save(annotation);
-
-                pmv.getAnnotations().add(annotation);
-            }
-        }
+//        if (!isEmptyANF(cp.getAnt())) {
+//            String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
+//            if (annString != null && !annString.equals("")) {
+//                Annotation annotation = new Annotation();
+//                annotation.setContent(annString);
+//                annotation.setName(annVersion);
+//                annotation.setNatve(nat);
+//                annotation.setProcessModelVersion(pmv);
+//                annotation = annotationRepo.save(annotation);
+//
+//                pmv.getAnnotations().add(annotation);
+//            }
+//        }
     }
 
 
-    private boolean isEmptyANF(AnnotationsType ant) {
-        return ant == null || ant.getAnnotation() == null || ant.getAnnotation().isEmpty();
-    }
-
-    private Canonical createCanonical(ProcessModelVersion pmv, String canonicalString) {
-        Canonical canonical = new Canonical();
-        canonical.setContent(canonicalString);
-        canonical.setProcessModelVersion(pmv);
-        canonicalRepo.save(canonical);
-        return canonical;
-    }
+//    private boolean isEmptyANF(AnnotationsType ant) {
+//        return ant == null || ant.getAnnotation() == null || ant.getAnnotation().isEmpty();
+//    }
 
     private Native createNative(ProcessModelVersion pmv, NativeType nativeType, String nativeString) {
         Native nat = new Native();

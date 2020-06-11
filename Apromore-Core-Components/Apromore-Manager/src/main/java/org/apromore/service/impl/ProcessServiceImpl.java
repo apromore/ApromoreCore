@@ -49,15 +49,12 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.FragmentVersionDagRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.HistoryEnum;
@@ -87,7 +84,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.AnnotationHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.slf4j.Logger;
@@ -112,8 +108,6 @@ public class ProcessServiceImpl implements ProcessService {
     private NativeRepository nativeRepo;
     private ProcessBranchRepository processBranchRepo;
     private ProcessRepository processRepo;
-    private FragmentVersionRepository fragmentVersionRepo;
-    private FragmentVersionDagRepository fragmentVersionDagRepo;
     private ProcessModelVersionRepository processModelVersionRepo;
     private GroupProcessRepository groupProcessRepo;
     //private CanonicalConverter converter;
@@ -155,7 +149,6 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessServiceImpl(final AnnotationRepository annotationRepo,
             final NativeRepository nativeRepo, final GroupRepository groupRepo,
             final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
-            final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final GroupProcessRepository groupProcessRepo,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, 
             final FormatService formatSrv, final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
@@ -164,8 +157,6 @@ public class ProcessServiceImpl implements ProcessService {
         this.nativeRepo = nativeRepo;
         this.processBranchRepo = processBranchRepo;
         this.processRepo = processRepo;
-        this.fragmentVersionRepo = fragmentVersionRepo;
-        this.fragmentVersionDagRepo = fragmentVersionDagRepo;
         this.processModelVersionRepo = processModelVersionRepo;
         this.groupProcessRepo = groupProcessRepo;
         //this.converter = converter;
@@ -211,11 +202,11 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName,
-            final Version version, final String natType, final CanonisedProcess cpf, final String domain,
+            final Version version, final String natType, final InputStream nativeStream, final String domain,
             final String documentation, final String created, final String lastUpdate, final boolean publicModel) throws ImportException {
         LOGGER.debug("Executing operation canoniseProcess");
 
-        if (cpf == null) {
+        if (nativeStream == null) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
             throw new ImportException("Process " + processName + " Failed to import correctly.");
 //        } else if ((folderId.equals(0) && processRepo.findUniqueByName(processName) != null) ||
@@ -233,9 +224,9 @@ public class ProcessServiceImpl implements ProcessService {
                 throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
 
-            pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
+            pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType);
             LOGGER.info("Process model version: " + pmv);
-            formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
+            formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
 
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
@@ -284,7 +275,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
     public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
             final String newBranchName, final Version versionNumber, final Version originalVersionNumber, final User user, final String lockStatus,
-            final NativeType nativeType, final CanonisedProcess cpf) throws ImportException, RepositoryException {
+            final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {
         ProcessModelVersion pmv;
         // String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -293,7 +284,7 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             if (!StringUtils.equals(originalBranchName, newBranchName)) {
                 Process process = processRepo.findOne(processId);
-                pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
+                pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, nativeType);
 
                 notifyProcessPlugins(pmv);  // Notify process plugin providers
                 LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATE: ", processName);//call when net is change and then save
@@ -303,7 +294,7 @@ public class ProcessServiceImpl implements ProcessService {
                 if (user == null) {
                     throw new ImportException("Permission to change this model denied.  No user specified.");
                 } else if (canUserWriteProcess(user, processId)) {
-                    pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType, now);
+                    pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, nativeStream, nativeType, now);
                     notifyProcessPlugins(pmv);  // Notify process plugin providers
                     LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATEEXISTINGPROCESS: ", processName);//call when a net is created, change version
                 } else {
@@ -311,7 +302,7 @@ public class ProcessServiceImpl implements ProcessService {
                 }
             }
 
-            formatSrv.storeNative(processName, pmv, now, now, user, nativeType, versionNumber.toString(), cpf);
+            formatSrv.storeNative(processName, pmv, now, now, user, nativeType, versionNumber.toString(), nativeStream);
         } catch (RepositoryException | JAXBException | IOException e) {
             LOGGER.error("Failed to update process {}", processName);
             LOGGER.error("Original exception was: ", e);
@@ -867,7 +858,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Does the processing of ImportProcess. */
     @Transactional(readOnly = false)
     private ProcessModelVersion addProcess(final Process process, final String processName, final Version version, final String branchName,
-            final String created, final String lastUpdated, final CanonisedProcess cpf, NativeType nativeType) throws ImportException {
+            final String created, final String lastUpdated, NativeType nativeType) throws ImportException {
         ProcessModelVersion pmv;
         ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
@@ -898,7 +889,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Update an existing process with some changes. */
     @Transactional(readOnly = false)
     private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Version version,
-            Version originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType, String lastUpdate)  throws RepositoryException {
+            Version originalVersionNumber, String lockStatus, InputStream nativeStream, NativeType nativeType, String lastUpdate)  throws RepositoryException {
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
             throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
         }
@@ -967,20 +958,20 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    /* Delete a Fragment Version from the Database. Check if it is used by other PMV or FV first. */
-    private void deleteFragmentVersion(FragmentVersion fragmentVersion, boolean rootFragmentVersion) {
-        long processCount = processModelVersionRepo.countFragmentUsesInProcessModels(fragmentVersion);
-        long fragmentCount =  fragmentVersionRepo.countFragmentUsesInFragmentVersions(fragmentVersion);
-        if ((rootFragmentVersion && processCount == 1 && fragmentCount == 0) ||
-                (!rootFragmentVersion && processCount == 0 && fragmentCount == 0)) {
-            List<FragmentVersion> children = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
-            fragmentVersionDagRepo.deleteChildRelationships(fragmentVersion);
-            fragmentVersionRepo.delete(fragmentVersion);
-            for (FragmentVersion child : children) {
-                deleteFragmentVersion(child, false);
-            }
-        }
-    }
+//    /* Delete a Fragment Version from the Database. Check if it is used by other PMV or FV first. */
+//    private void deleteFragmentVersion(FragmentVersion fragmentVersion, boolean rootFragmentVersion) {
+//        long processCount = processModelVersionRepo.countFragmentUsesInProcessModels(fragmentVersion);
+//        long fragmentCount =  fragmentVersionRepo.countFragmentUsesInFragmentVersions(fragmentVersion);
+//        if ((rootFragmentVersion && processCount == 1 && fragmentCount == 0) ||
+//                (!rootFragmentVersion && processCount == 0 && fragmentCount == 0)) {
+//            List<FragmentVersion> children = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
+//            fragmentVersionDagRepo.deleteChildRelationships(fragmentVersion);
+//            fragmentVersionRepo.delete(fragmentVersion);
+//            for (FragmentVersion child : children) {
+//                deleteFragmentVersion(child, false);
+//            }
+//        }
+//    }
 
 
     /* Update a list of native process models with this new meta data, */

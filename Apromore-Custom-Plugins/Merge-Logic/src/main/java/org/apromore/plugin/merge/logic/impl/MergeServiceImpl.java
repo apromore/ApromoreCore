@@ -27,34 +27,25 @@
 
 package org.apromore.plugin.merge.logic.impl;
 
-import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
-import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
-import org.apromore.exception.ImportException;
 import org.apromore.exception.SerializationException;
-import org.apromore.helper.Version;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ToolboxData;
 import org.apromore.similaritysearch.tools.MergeProcesses;
 import org.slf4j.Logger;
@@ -102,36 +93,36 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
     @Transactional(readOnly = false)
     public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
                                              ParametersType parameters, ProcessVersionIdsType ids, final boolean makePublic) throws ExceptionMergeProcess {
-        List<ProcessModelVersion> models = new ArrayList<>();
-        for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
-            models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
-        }
-
-        try {
-            ToolboxData data = convertModelsToCPT(models);
-            data = getParametersForMerge(data, algo, parameters);
-
-            CanonisedProcess cp = new CanonisedProcess();
-
-            cp.setCpt(performMerge(data));
-            cp.setCpf(new ByteArrayInputStream(canoniserSrv.CPFtoString(cp.getCpt()).getBytes()));
-
-            SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
-            String created = sf.format(new Date());
-
-            // This fails as we need to specify a native type and pass in the model.
-            Version importVersion = new Version(1, 0);
-
-            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, importVersion, null, cp, domain, "", created, created, makePublic);
-
-            return ui.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
-                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username, makePublic);
-
-        } catch (SerializationException se) {
-            LOGGER.error("Failed to convert the models into the Canonical Format.", se);
-        } catch (ImportException | JAXBException ie) {
-            LOGGER.error("Failed Import the newly merged model.", ie);
-        }
+//        List<ProcessModelVersion> models = new ArrayList<>();
+//        for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
+//            models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
+//        }
+//
+//        try {
+//            ToolboxData data = convertModelsToCPT(models);
+//            data = getParametersForMerge(data, algo, parameters);
+//
+//            CanonisedProcess cp = new CanonisedProcess();
+//
+//            cp.setCpt(performMerge(data));
+//            cp.setCpf(new ByteArrayInputStream(canoniserSrv.CPFtoString(cp.getCpt()).getBytes()));
+//
+//            SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
+//            String created = sf.format(new Date());
+//
+//            // This fails as we need to specify a native type and pass in the model.
+//            Version importVersion = new Version(1, 0);
+//
+//            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, importVersion, null, cp, domain, "", created, created, makePublic);
+//
+//            return ui.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
+//                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username, makePublic);
+//
+//        } catch (SerializationException se) {
+//            LOGGER.error("Failed to convert the models into the Canonical Format.", se);
+//        } catch (ImportException | JAXBException ie) {
+//            LOGGER.error("Failed Import the newly merged model.", ie);
+//        }
 
         return null;
     }

@@ -767,7 +767,7 @@ public class ManagerServiceClient implements ManagerService {
     @SuppressWarnings("unchecked")
     public ImportProcessResultType importProcess(final String username, final Integer folderId, final String nativeType, final String processName,
             final String versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
-            final String lastUpdate, final boolean makePublic, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+            final String lastUpdate, final boolean makePublic) throws Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -782,7 +782,7 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setPublicModel(makePublic);
 
         ImportProcessInputMsgType msg = new ImportProcessInputMsgType();
-        msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));
+        //msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));
         msg.setProcessDescription(new DataHandler(new ByteArrayDataSource(xmlProcess, "text/xml")));
         msg.setEditSession(editSession);
 

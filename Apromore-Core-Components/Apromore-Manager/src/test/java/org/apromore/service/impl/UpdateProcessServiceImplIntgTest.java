@@ -30,7 +30,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -42,12 +41,10 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.helper.Version;
-import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
-import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -98,19 +95,19 @@ public class UpdateProcessServiceImplIntgTest {
 
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
-        CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
+        //CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         String username = "james";
         String domain = "Tests";
         String lastUpdate = "12/12/2011";
         String created = "12/12/2011";
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, initialVersion, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, initialVersion, natType, stream.getInputStream(), domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Update process
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
-        cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
+        //cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, stream.getInputStream());
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();

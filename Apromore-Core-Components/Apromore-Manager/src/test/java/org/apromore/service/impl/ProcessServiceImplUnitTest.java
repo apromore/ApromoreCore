@@ -35,8 +35,6 @@ import java.util.HashSet;
 
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.FragmentVersionDagRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
@@ -85,8 +83,6 @@ public class ProcessServiceImplUnitTest {
         GroupProcessRepository grpProcDao = createMock(GroupProcessRepository.class);
         ProcessBranchRepository branchDao = createMock(ProcessBranchRepository.class);
         ProcessRepository proDao = createMock(ProcessRepository.class);
-        FragmentVersionRepository fvDao = createMock(FragmentVersionRepository.class);
-        FragmentVersionDagRepository fvdDao = createMock(FragmentVersionDagRepository.class);
         pmvDao = createMock(ProcessModelVersionRepository.class);
         UserService usrSrv = createMock(UserService.class);
         FormatService fmtSrv = createMock(FormatService.class);
@@ -96,7 +92,7 @@ public class ProcessServiceImplUnitTest {
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
         ConfigBean config = new ConfigBean();
 
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, canSrv, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
+        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, pmvDao, grpProcDao, canSrv, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
     }
 
     @Test

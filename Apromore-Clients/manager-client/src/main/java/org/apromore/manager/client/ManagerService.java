@@ -256,8 +256,7 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
-            InputStream xml_process, String domain, String documentation, String created, String lastUpdate, boolean makePublic,
-            Set<RequestParameterType<?>> canoniserProperties) throws Exception;
+            InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean makePublic) throws Exception;
 
     /**
      * Get list of all currently installed Plugins.
@@ -352,7 +351,7 @@ public interface ManagerService {
      */
     void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
             String originalBranchName, String newBranchName, String versionNumber, String originalVersionNumber,
-            String preVersion, InputStream native_is) throws Exception;
+            String preVersion, InputStream nativeStream) throws Exception;
 
     /**
      * Write the modified processes which are in processVersions. For each of which, preNewVersion gives the mapping between its previous and new

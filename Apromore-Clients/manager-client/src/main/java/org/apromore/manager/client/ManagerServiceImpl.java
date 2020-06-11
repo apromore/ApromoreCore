@@ -99,7 +99,6 @@ import org.apromore.service.SecurityService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
 import org.springframework.stereotype.Service;
 
@@ -121,7 +120,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Inject private UserInterfaceHelper uiHelper;
     //@Inject private MergeService mergeSrv;
     //@Inject private SimilarityService similaritySrv;
-    private boolean enableCPF = true;
+    //private boolean enableCPF = true;
 
     private boolean isGEDMatrixReady = true;
 
@@ -497,28 +496,28 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
-            InputStream xml_process, String domain, String documentation, String created, String lastUpdate, boolean makePublic,
-            Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+            InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean makePublic) throws Exception {
 
-        CanonisedProcess canonisedProcess;
-        if (enableCPF) {
-            canonisedProcess = canoniserService.canonise(nativeType, xml_process, canoniserProperties);
-        } else {
-            canonisedProcess = new CanonisedProcess();
-            canonisedProcess.setOriginal(xml_process);
-        }
-        assert canonisedProcess != null;
-        ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, new Version(versionNumber), nativeType, canonisedProcess,
+//        CanonisedProcess canonisedProcess;
+//        if (enableCPF) {
+//            canonisedProcess = canoniserService.canonise(nativeType, xml_process, canoniserProperties);
+//        } else {
+//            canonisedProcess = new CanonisedProcess();
+//            canonisedProcess.setOriginal(xml_process);
+//        }
+//        assert canonisedProcess != null;
+        ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, new Version(versionNumber), nativeType, nativeStream,
                 domain, "", created, lastUpdate, makePublic);
         ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
                 nativeType, domain, created, lastUpdate, username, makePublic);
 
         ImportProcessResultType importResult = new ImportProcessResultType();
-        if (canonisedProcess.getMessages() != null) {
-            importResult.setMessage(PluginHelper.convertFromPluginMessages(canonisedProcess.getMessages()));
-        } else {
-            importResult.setMessage(PluginHelper.convertFromPluginMessages(Collections.emptyList()));
-        }
+//        if (canonisedProcess.getMessages() != null) {
+//            importResult.setMessage(PluginHelper.convertFromPluginMessages(canonisedProcess.getMessages()));
+//        } else {
+//            importResult.setMessage(PluginHelper.convertFromPluginMessages(Collections.emptyList()));
+//        }
+        importResult.setMessage(PluginHelper.convertFromPluginMessages(Collections.emptyList()));
         importResult.setProcessSummary(process);
 
         return importResult;
@@ -705,22 +704,22 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
             String originalBranchName, String newBranchName, String versionNumber, String originalVersionNumber,
-            String preVersion, InputStream native_is) throws Exception {
+            String preVersion, InputStream nativeStream) throws Exception {
 
         NativeType natType = frmSrv.findNativeType(nativeType);
 
-        CanonisedProcess canonisedProcess;
-        if (enableCPF) {
-            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-            canonisedProcess = canoniserService.canonise(nativeType, native_is, canoniserProperties);
-        } else {
-            canonisedProcess = new CanonisedProcess();
-            canonisedProcess.setOriginal(native_is);
-        }
-        assert canonisedProcess != null;
+//        CanonisedProcess canonisedProcess;
+//        if (enableCPF) {
+//            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+//            canonisedProcess = canoniserService.canonise(nativeType, native_is, canoniserProperties);
+//        } else {
+//            canonisedProcess = new CanonisedProcess();
+//            canonisedProcess.setOriginal(native_is);
+//        }
+//        assert canonisedProcess != null;
 
         procSrv.updateProcess(processId, processName, originalBranchName, newBranchName,
-                new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, canonisedProcess);
+                new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
 
     }
 

@@ -29,8 +29,6 @@ package org.apromore.service.impl;
 import javax.inject.Inject;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.FragmentVersionDagRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.service.LockService;
@@ -47,9 +45,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class LockServiceImpl implements LockService {
-
-    private FragmentVersionRepository fragmentVersionRepo;
-    private FragmentVersionDagRepository fragmentVersionDagRepo;
     private ProcessModelVersionRepository processModelVersionRepo;
 
 
@@ -60,10 +55,7 @@ public class LockServiceImpl implements LockService {
      * @param processModelVersionRepository Process Model Version repository.
      */
     @Inject
-    public LockServiceImpl(final FragmentVersionRepository fragmentVersionRepository,
-            final FragmentVersionDagRepository fragmentVersionDagRepository, final ProcessModelVersionRepository processModelVersionRepository) {
-        fragmentVersionRepo = fragmentVersionRepository;
-        fragmentVersionDagRepo = fragmentVersionDagRepository;
+    public LockServiceImpl(final ProcessModelVersionRepository processModelVersionRepository) {
         processModelVersionRepo = processModelVersionRepository;
     }
 
