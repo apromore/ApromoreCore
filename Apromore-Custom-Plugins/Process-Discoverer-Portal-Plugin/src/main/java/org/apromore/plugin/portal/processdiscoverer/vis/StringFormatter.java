@@ -23,7 +23,34 @@
 package org.apromore.plugin.portal.processdiscoverer.vis;
 
 public class StringFormatter {
+    private final int MAXLEN = 25;
+    private final int MAXWORDLEN = 15;
+
     public String escapeChars(String value) {
     	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
+    }
+
+    public String shortenName(String name, int len) {
+        boolean needEllipsis = false;
+        if (len <= 0) {
+            len = MAXLEN;
+        }
+        String[] parts = name.split(" ");
+        if (parts.length > 2) {
+            if (parts[0].length() > MAXWORDLEN || parts[1].length() > MAXWORDLEN) {
+                name = parts[0].substring(0, MAXWORDLEN);
+            } else {
+                name = parts[0] + " " + parts[1];
+            }
+            needEllipsis = true;
+        }
+        if (name.length() > len) {
+            name = name.substring(0, len);
+            needEllipsis = true;
+        }
+        if (needEllipsis) {
+            name += "...";
+        }
+        return name;
     }
 }

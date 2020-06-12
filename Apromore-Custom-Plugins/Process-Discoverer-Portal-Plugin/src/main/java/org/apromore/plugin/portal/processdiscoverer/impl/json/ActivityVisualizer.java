@@ -39,6 +39,7 @@ import org.json.JSONException;
  *
  */
 public class ActivityVisualizer extends AbstractNodeVisualizer {
+
     public ActivityVisualizer(VisualContext visContext, VisualSettings visSettings) {
         super(visContext, visSettings);
     }
@@ -58,7 +59,8 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
     	
     	String node_displayname = node_oriname.trim(); 
     	node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
-    	
+    	node_displayname = visSettings.getStringFormatter().shortenName(node_displayname, 0);
+
     	Abstraction abs = visContext.getProcessAbstraction();
 		AbstractionParams params = abs.getAbstractionParams();
     	
