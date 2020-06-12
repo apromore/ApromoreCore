@@ -34,12 +34,13 @@
       spacing="0px"
       sclass="ap-pd-timestats-duration">
     <vlayout spacing="15px" hflex="8">
-      <div sclass="ap-pd-timestats-header">
-        <n:span class="ap-icon ap-icon-static ap-icon-duration-range"
-                style="cursor: pointer !important;"
+      <div sclass="ap-pd-timestats-header ap-link" tooltiptext="Filter by Performance">
+        <n:span class="ap-icon ap-icon-duration-range"
                 onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabPerformance')"
         ></n:span>
-        <label sclass="title">${labels.e.pd.statDuration.text}</label>
+        <label sclass="title"
+               w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabPerformance')"
+        >${labels.e.pd.statDuration.text}</label>
       </div>
       <div sclass="ap-pd-duration">
         <div>
@@ -71,12 +72,13 @@
     <vlayout sclass="ap-pd-timestats-range"
           hflex="7"
           spacing="15px">
-      <div sclass="ap-pd-timestats-header">
-        <n:span class="ap-icon ap-icon-static ap-icon-clock"
-                style="cursor: pointer !important;"
-                onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'EventTabTimeframe')"
+      <div sclass="ap-pd-timestats-header ap-link" tooltiptext="Filter by Timeframe">
+        <n:span class="ap-icon ap-icon-clock"
+                onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabTimeframe')"
         ></n:span>
-        <label sclass="title">${labels.e.pd.statTimerange.text}</label>
+        <label sclass="title"
+               w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabTimeframe')"
+        >${labels.e.pd.statTimerange.text}</label>
       </div>
       <div sclass="ap-pd-timerange">
         <div>
