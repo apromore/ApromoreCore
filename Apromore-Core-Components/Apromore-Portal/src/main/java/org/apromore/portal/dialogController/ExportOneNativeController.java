@@ -26,13 +26,10 @@
 package org.apromore.portal.dialogController;
 
 import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apromore.canoniser.Canoniser;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginInfo;
@@ -46,7 +43,6 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
@@ -54,9 +50,9 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Window;
-import org.zkoss.zul.Row;
 
 public class ExportOneNativeController extends BaseController {
 
@@ -165,7 +161,7 @@ public class ExportOneNativeController extends BaseController {
         // formatsLB.setSelectedItem((Listitem) formatsLB.getFirstChild());
         formatsLB.setSelectedIndex(formatIndex);
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.exportNativeW.getFellow("canoniserPropertiesGrid"));
-        updateActions();
+        //updateActions();
 
         formatsLB.addEventListener("onSelect", new EventListener<Event>() {
                     @Override
@@ -206,70 +202,70 @@ public class ExportOneNativeController extends BaseController {
     }
 
 
-    protected void updateActions() throws InterruptedException {
-        this.okB.setDisabled(false);
+//    protected void updateActions() throws InterruptedException {
+//        this.okB.setDisabled(false);
+//
+//        // if the selected format is an available native format, display the choice for an annotation
+//        String selectedFormat = (String) this.formatsLB.getSelectedItem().getValue();
+//        if (formats_ext.containsValue(selectedFormat)) {
+//            this.annotationsR.setVisible(true);
+//            readCanoniserInfos(selectedFormat);
+//            this.exportNativeW.getFellow("canoniserSelectionRow").setVisible(true);
+//            this.exportNativeW.getFellow("canoniserPropertiesRow").setVisible(true);
+//            this.exportNativeW.getFellow("canoniserMandatoryFieldsRow").setVisible(true);
+//        } else {
+//            // Export of canonical format requested
+//            this.annotationsR.setVisible(false);
+//        }
+//    }
 
-        // if the selected format is an available native format, display the choice for an annotation
-        String selectedFormat = (String) this.formatsLB.getSelectedItem().getValue();
-        if (formats_ext.containsValue(selectedFormat)) {
-            this.annotationsR.setVisible(true);
-            readCanoniserInfos(selectedFormat);
-            this.exportNativeW.getFellow("canoniserSelectionRow").setVisible(true);
-            this.exportNativeW.getFellow("canoniserPropertiesRow").setVisible(true);
-            this.exportNativeW.getFellow("canoniserMandatoryFieldsRow").setVisible(true);
-        } else {
-            // Export of canonical format requested
-            this.annotationsR.setVisible(false);
-        }
-    }
-
-    private void readCanoniserInfos(final String nativeType) throws InterruptedException {
-        try {
-            canoniserInfos = getService().readCanoniserInfo(nativeType);
-
-            if (canoniserInfos.size() >= 1) {
-                List<String> canoniserNames = new ArrayList<>();
-                for (PluginInfo cInfo: canoniserInfos) {
-                    canoniserNames.add(cInfo.getName());
-                }
-
-                Row canoniserSelectionRow = (Row) this.exportNativeW.getFellow("canoniserSelectionRow");
-                if (canoniserCB != null) {
-                    canoniserCB.detach();
-                }
-                canoniserCB = new SelectDynamicListController(canoniserNames);
-                canoniserCB.setAutodrop(true);
-                canoniserCB.setWidth("85%");
-                canoniserCB.setHeight("100%");
-                canoniserCB.setAttribute("hflex", "1");
-                canoniserCB.setSelectedIndex(0);
-                canoniserSelectionRow.appendChild(canoniserCB);
-
-                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
-                    @Override
-                    public void onEvent(final Event event) throws Exception {
-                        if (event instanceof SelectEvent) {
-                            String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
-                            for (PluginInfo info: canoniserInfos) {
-                                if (info.getName().equals(selectedCanoniser)) {
-                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.DECANONISE_PARAMETER);
-                                }
-                            }
-                        }
-                    }
-                });
-
-                PluginInfo canoniserInfo = canoniserInfos.iterator().next();
-                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.DECANONISE_PARAMETER);
-
-            } else {
-                Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
-                cancel();
-            }
-        } catch (Exception e) {
-            Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
+//    private void readCanoniserInfos(final String nativeType) throws InterruptedException {
+//        try {
+//            canoniserInfos = getService().readCanoniserInfo(nativeType);
+//
+//            if (canoniserInfos.size() >= 1) {
+//                List<String> canoniserNames = new ArrayList<>();
+//                for (PluginInfo cInfo: canoniserInfos) {
+//                    canoniserNames.add(cInfo.getName());
+//                }
+//
+//                Row canoniserSelectionRow = (Row) this.exportNativeW.getFellow("canoniserSelectionRow");
+//                if (canoniserCB != null) {
+//                    canoniserCB.detach();
+//                }
+//                canoniserCB = new SelectDynamicListController(canoniserNames);
+//                canoniserCB.setAutodrop(true);
+//                canoniserCB.setWidth("85%");
+//                canoniserCB.setHeight("100%");
+//                canoniserCB.setAttribute("hflex", "1");
+//                canoniserCB.setSelectedIndex(0);
+//                canoniserSelectionRow.appendChild(canoniserCB);
+//
+//                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
+//                    @Override
+//                    public void onEvent(final Event event) throws Exception {
+//                        if (event instanceof SelectEvent) {
+//                            String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
+//                            for (PluginInfo info: canoniserInfos) {
+//                                if (info.getName().equals(selectedCanoniser)) {
+//                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.DECANONISE_PARAMETER);
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
+//
+//                PluginInfo canoniserInfo = canoniserInfos.iterator().next();
+//                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.DECANONISE_PARAMETER);
+//
+//            } else {
+//                Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
+//                cancel();
+//            }
+//        } catch (Exception e) {
+//            Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
 
     private void cancel() {
         this.exportNativeW.detach();
@@ -281,6 +277,7 @@ public class ExportOneNativeController extends BaseController {
 
     private void export() throws InterruptedException {
         try {
+            
             if (this.formatsLB.getSelectedItem().getValue() == null) {
                 Messagebox.show("Please choose a target native type", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
@@ -319,8 +316,7 @@ public class ExportOneNativeController extends BaseController {
                     withAnnotation = false;
                 }
                 ExportFormatResultType exportResult = getService().exportFormat(this.processId, processName, this.versionName,
-                        this.versionNumber, format, annotation, withAnnotation, UserSessionManager.getCurrentUser().getUsername(),
-                        pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
+                        this.versionNumber, format, UserSessionManager.getCurrentUser().getUsername());
                 try (InputStream native_is = exportResult.getNative().getInputStream()) {
                     this.mainC.showPluginMessages(exportResult.getMessage());
                     Filedownload.save(native_is, "text/xml", filename);

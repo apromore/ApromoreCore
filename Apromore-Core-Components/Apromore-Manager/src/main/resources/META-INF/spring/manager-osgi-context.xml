@@ -30,40 +30,15 @@
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
-
-    <osgi:reference id="canoniserProvider" interface="org.apromore.canoniser.provider.CanoniserProvider"/>
-    <osgi:reference id="annotationProcessorProvider" interface="org.apromore.annotation.provider.AnnotationProcessorProvider"/>
-    <osgi:reference id="deploymentProvider" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider"/>
-
-
     <osgi:reference id="apmLogService" interface="org.apromore.apmlog.APMLogService"/>
-
-    <!--<osgi:set id="eventLogPlugins" interface="org.apromore.plugin.eventlog.EventLogPlugin" availability="optional">-->
-        <!--<osgi:reference-listener bind-method="onEventLogPluginBind" unbind-method="onEventLogPluginUnbind">-->
-            <!--<beans:bean class="org.apromore.service.impl.EventLogPluginListener"/>-->
-        <!--</osgi:reference-listener>-->
-    <!--</osgi:set>-->
-
     <osgi:set id="processPlugins" interface="org.apromore.plugin.process.ProcessPlugin" availability="optional">
         <osgi:reference-listener bind-method="onProcessPluginBind" unbind-method="onProcessPluginUnbind">
             <beans:bean class="org.apromore.service.impl.ProcessPluginListener"/>
         </osgi:reference-listener>
     </osgi:set>
 
-    <!--<osgi:list id="serviceFactory" interface="org.ehcache.core.spi.service.ServiceFactory" >-->
-        <!--<osgi:comparator>-->
-            <!--<osgi:natural basis="service"/>-->
-        <!--</osgi:comparator>-->
-    <!--</osgi:list>-->
-    <!--<osgi:reference id="cachingProvider" interface="org.ehcache.jsr107.EhcacheCachingProvider"/>-->
-    <!--<osgi:reference id="cacheServiceConfigurationParser" interface="org.ehcache.xml.CacheServiceConfigurationParser"/>-->
-    <!--<osgi:reference id="cacheManagerServiceConfigurationParser" interface="org.ehcache.xml.CacheManagerServiceConfigurationParser"/>-->
-
-
     <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
-
     <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>
-    <osgi:service ref="canoniserServiceImpl" interface="org.apromore.service.CanoniserService" auto-export="interfaces"/>
     <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>
     <osgi:service ref="formatServiceImpl" interface="org.apromore.service.FormatService" auto-export="interfaces"/>
     <osgi:service ref="domainServiceImpl" interface="org.apromore.service.DomainService" auto-export="interfaces"/>
@@ -72,10 +47,8 @@
     <osgi:service ref="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService" auto-export="interfaces"/>
     <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
     <osgi:service ref="eventLogServiceImpl" interface="org.apromore.service.EventLogService" auto-export="interfaces"/>
-
     <osgi:service ref="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService" auto-export="interfaces"/>
     <osgi:service ref="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" auto-export="interfaces"/>
-
     <osgi:service ref="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository" auto-export="interfaces"/>
     <osgi:service ref="folderRepository" interface="org.apromore.dao.FolderRepository" auto-export="interfaces"/>
 

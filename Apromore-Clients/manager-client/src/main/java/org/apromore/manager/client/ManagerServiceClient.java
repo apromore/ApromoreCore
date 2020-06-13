@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -661,21 +660,16 @@ public class ManagerServiceClient implements ManagerService {
     @Override
     @SuppressWarnings("unchecked")
     public ExportFormatResultType exportFormat(final int processId, final String processName, final String branchName, final String versionNumber,
-            final String nativeType, final String annotationName, final Boolean withAnnotations, final String owner,
-            final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+            final String nativeType, final String owner) throws Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
         msg.setProcessId(processId);
         msg.setBranchName(branchName);
         msg.setFormat(nativeType);
-        msg.setAnnotationName(annotationName);
-        msg.setWithAnnotations(withAnnotations);
         msg.setProcessName(processName);
         msg.setVersionNumber(versionNumber);
         msg.setOwner(owner);
-
-        msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));
 
         JAXBElement<ExportFormatInputMsgType> request = WS_CLIENT_FACTORY.createExportFormatRequest(msg);
 
@@ -993,86 +987,7 @@ public class ManagerServiceClient implements ManagerService {
 
     }
 
-    /** (non-Javadoc)
-     * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
-     */
-    @Override
-    public Set<PluginInfo> readCanoniserInfo(final String nativeType) throws Exception {
-        LOGGER.debug("Preparing readCanoniserInfo ...");
-
-        ReadCanoniserInfoInputMsgType msg = new ReadCanoniserInfoInputMsgType();
-        msg.setNativeType(nativeType);
-
-        JAXBElement<ReadCanoniserInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadCanoniserInfoRequest(msg);
-        @SuppressWarnings("unchecked")
-        JAXBElement<ReadCanoniserInfoOutputMsgType> response = (JAXBElement<ReadCanoniserInfoOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        } else {
-            Set<PluginInfo> infoSet = new HashSet<>();
-            for (PluginInfo pluginInfo : response.getValue().getPluginInfo()) {
-                infoSet.add(pluginInfo);
-            }
-            return infoSet;
-        }
-    }
-
-    /** (non-Javadoc)
-     * @see org.apromore.manager.client.ManagerService#readNativeMetaData(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream)
-     */
-    @Override
-    public NativeMetaData readNativeMetaData(final String nativeType, final String canoniserName, final String canoniserVersion,
-                                             final InputStream nativeProcess) throws Exception {
-        ReadNativeMetaDataInputMsgType msg = new ReadNativeMetaDataInputMsgType();
-        msg.setCanoniserName(canoniserName);
-        msg.setCanoniserVersion(canoniserVersion);
-        msg.setNativeType(nativeType);
-        msg.setNativeFormat(new DataHandler(new ByteArrayDataSource(nativeProcess, "text/xml")));
-
-        JAXBElement<ReadNativeMetaDataInputMsgType> request = WS_CLIENT_FACTORY.createReadNativeMetaDataRequest(msg);
-        @SuppressWarnings("unchecked")
-        JAXBElement<ReadNativeMetaDataOutputMsgType> response = (JAXBElement<ReadNativeMetaDataOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        } else {
-            return response.getValue().getNativeMetaData();
-        }
-
-    }
-
-    /** (non-Javadoc)
-     * @see org.apromore.manager.client.ManagerService#readInitialNativeFormat(String, String, String, String, String, String, String)
-     */
-    @Override
-    public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner,
-                                               final String processName, final String versionName, final String creationDate) throws Exception {
-        ReadInitialNativeFormatInputMsgType msg = new ReadInitialNativeFormatInputMsgType();
-        msg.setCanoniserName(canoniserName);
-        msg.setCanoniserVersion(canoniserVersion);
-        msg.setNativeType(nativeType);
-
-        NativeMetaData metaData = new NativeMetaData();
-        metaData.setProcessAuthor(owner);
-        metaData.setProcessVersion(versionName);
-        metaData.setProcessName(processName);
-        msg.setNativeMetaData(metaData);
-
-        JAXBElement<ReadInitialNativeFormatInputMsgType> request = WS_CLIENT_FACTORY.createReadInitialNativeFormatRequest(msg);
-        @SuppressWarnings("unchecked")
-        JAXBElement<ReadInitialNativeFormatOutputMsgType> response = (JAXBElement<ReadInitialNativeFormatOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        } else {
-            return response.getValue().getNativeFormat();
-        }
-
-    }
-
-
-    /**
+     /**
      * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
      */
 //    @Override

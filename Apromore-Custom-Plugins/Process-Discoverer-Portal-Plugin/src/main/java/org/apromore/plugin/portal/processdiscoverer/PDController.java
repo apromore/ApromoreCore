@@ -59,7 +59,6 @@ import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -135,7 +134,7 @@ public class PDController extends BaseController {
 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
 
-    private CanoniserService canoniserService;
+    //private CanoniserService canoniserService;
     private DomainService domainService;
     private ProcessService processService;
     private EventLogService eventLogService;
@@ -206,14 +205,14 @@ public class PDController extends BaseController {
     // Check infrastructure services to be available. They can become unavailable
     // because of system crashes or modules crashed/undeployed
     private boolean prepareSystemServices() {
-        canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
+        //canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
         domainService = (DomainService) beanFactory.getBean("domainService");
         processService = (ProcessService) beanFactory.getBean("processService");
         eventLogService = (EventLogService) beanFactory.getBean("eventLogService");
         logAnimationPluginInterface = (LogAnimationPluginInterface) beanFactory.getBean("logAnimationPlugin");
         logFilterPlugin = (LogFilterPlugin) beanFactory.getBean("logFilterPlugin");
         
-        if (canoniserService == null || domainService == null || processService == null ||
+        if (domainService == null || processService == null ||
                 eventLogService == null || logAnimationPluginInterface == null ||
                 logFilterPlugin == null) {
             return false;
@@ -691,9 +690,9 @@ public class PDController extends BaseController {
         return domainService;
     }
 
-    public CanoniserService getCanoniserService() {
-        return canoniserService;
-    }
+//    public CanoniserService getCanoniserService() {
+//        return canoniserService;
+//    }
 
     public EventLogService getEvenLogService() {
         return eventLogService;

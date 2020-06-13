@@ -41,7 +41,6 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.merge.logic.MergeService;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ToolboxData;
@@ -65,7 +64,7 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeServiceImpl.class);
 
     private ProcessModelVersionRepository processModelVersionRepo;
-    private CanoniserService canoniserSrv;
+//    private CanoniserService canoniserSrv;
     private ProcessService processSrv;
     private UserInterfaceHelper ui;
 
@@ -74,14 +73,11 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      *
      * @param processModelVersionRepository Annotation Repository.
-     * @param canoniserService              Canoniser Service.
      * @param processService                Native Type repository.
      */
     @Inject
-    public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
-                            final ProcessService processService, final UserInterfaceHelper uiHelper) {
+    public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final ProcessService processService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
-        canoniserSrv = canoniserService;
         processSrv = processService;
         ui = uiHelper;
     }

@@ -22,8 +22,16 @@
 
 package org.apromore.dao.jpa;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.StatisticRepositoryCustom;
-import org.apromore.dao.dataObject.DistanceDO;
 import org.apromore.dao.model.Statistic;
 import org.apromore.util.StatType;
 import org.slf4j.Logger;
@@ -31,14 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
 
 public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom {
 

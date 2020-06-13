@@ -43,10 +43,8 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apromore.aop.Event;
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
-import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
@@ -73,14 +71,11 @@ import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
 import org.apromore.plugin.process.ProcessPlugin;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
-import org.apromore.service.helper.AnnotationHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.service.search.SearchExpressionBuilder;
@@ -101,7 +96,6 @@ public class ProcessServiceImpl implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
-    private AnnotationRepository annotationRepo;
     private GroupRepository groupRepo;
     private NativeRepository nativeRepo;
     private ProcessBranchRepository processBranchRepo;
@@ -126,16 +120,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param annotationRepo Annotations repository.
      * @param nativeRepo Native Repository.
      * @param processBranchRepo Process Branch Map Repository.
      * @param processRepo Process Repository
-     * @param fragmentVersionRepo Fragment Version Repository.
-     * @param fragmentVersionDagRepo Fragment Version Dag Repository.
      * @param processModelVersionRepo Process Model Version Repository.
      * @param groupProcessRepo Group-Process Repository
-     * @param annotationSrv Annotation Processing Service
-     * @param canoniserSrv Canoniser Service.
      * @param lService Lock Service.
      * @param userSrv User Service
      * @param fService Fragment Service
@@ -144,28 +133,19 @@ public class ProcessServiceImpl implements ProcessService {
      * @param workspaceService
      */
     @Inject
-    public ProcessServiceImpl(final AnnotationRepository annotationRepo,
-            final NativeRepository nativeRepo, final GroupRepository groupRepo,
+    public ProcessServiceImpl(final NativeRepository nativeRepo, final GroupRepository groupRepo,
             final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final GroupProcessRepository groupProcessRepo,
-            final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, 
+            final LockService lService, final UserService userSrv, 
             final FormatService formatSrv, final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
-        this.annotationRepo = annotationRepo;
         this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
         this.processBranchRepo = processBranchRepo;
         this.processRepo = processRepo;
         this.processModelVersionRepo = processModelVersionRepo;
         this.groupProcessRepo = groupProcessRepo;
-        //this.converter = converter;
-        //this.annotationSrv = annotationSrv;
-        //this.canoniserSrv = canoniserSrv;
-        //this.lService = lService;
-        //this.fService = fService;
         this.userSrv = userSrv;
         this.formatSrv = formatSrv;
-        //this.composerSrv = composerSrv;
-        //this.decomposerSrv = decomposerSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
         this.enableCPF = config.getEnableCPF();
@@ -330,7 +310,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     public ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
-            final String format, final String annName, final boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
+            final String format)
             throws ExportFormatException {
         try {
             // Debug tracing of the authenticated principal
@@ -348,9 +328,6 @@ public class ProcessServiceImpl implements ProcessService {
             if (isRequestForNativeFormat(processId, branch, version, format)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(
                         nativeRepo.getNative(processId, branch, version.toString(), format).getContent(), "text/xml")));
-            } else if (isRequestForAnnotationsOnly(format)) {
-                exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch,
-                        version.toString(), AnnotationHelper.getAnnotationName(annName)).getContent(), "text/xml")));
             } else {
                 /*
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
@@ -973,8 +950,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Update a list of native process models with this new meta data, */
-    private void updateNative(final Native natve, final String processName, final String username, final Version version)
-            throws CanoniserException, JAXBException {
+    private void updateNative(final Native natve, final String processName, final String username, final Version version) {
         if (natve != null) {
             String natType = natve.getNativeType().getNatType();
             InputStream inStr = new ByteArrayInputStream(natve.getContent().getBytes());
@@ -1321,7 +1297,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /* Did the request ask for the Annotations for this model without the actual model? */
-    private boolean isRequestForAnnotationsOnly(String format) {
-        return format.startsWith("Annotations") ;
-    }
+//    private boolean isRequestForAnnotationsOnly(String format) {
+//        return format.startsWith("Annotations") ;
+//    }
 }

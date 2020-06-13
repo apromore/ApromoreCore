@@ -39,7 +39,6 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.helper.Version;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
@@ -69,8 +68,6 @@ import org.springframework.transaction.annotation.Transactional;
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
 public class UpdateProcessServiceImplIntgTest {
 
-    @Inject
-    private CanoniserService cSrv;
     @Inject
     private ProcessService pSrv;
     @Inject

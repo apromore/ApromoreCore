@@ -48,7 +48,6 @@
     <!-- Other OSGi services this component consumes -->
     <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <osgi:reference id="logAnimationPlugin" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
-    <osgi:reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
     <osgi:reference id="domainService" interface="org.apromore.service.DomainService"/>
     <osgi:reference id="processService" interface="org.apromore.service.ProcessService"/>
 	<osgi:reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>

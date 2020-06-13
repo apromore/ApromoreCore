@@ -110,10 +110,7 @@ public class LogAnimationController extends BaseController {
                                 editSession.getOriginalBranchName(),
                                 editSession.getCurrentVersionNumber(),
                                 editSession.getNativeType(),
-                                editSession.getAnnotation(),
-                                editSession.isWithAnnotation(),
-                                editSession.getUsername(),
-                                params);
+                                editSession.getUsername());
 
                 title = editSession.getProcessName();
                 pluginMessages = exportResult1.getMessage();

@@ -28,7 +28,6 @@ package org.apromore.portal.dialogController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 // Java 2 Enterprise packages
 import javax.inject.Inject;
@@ -41,12 +40,10 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
-import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.util.StreamUtil;
-import org.apromore.processmining.plugins.bpmn.plugins.BpmnLayoutPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zhtml.Messagebox;
@@ -82,7 +79,6 @@ public class BPMNEditorController extends BaseController {
     private EditSessionType editSession;
     private ProcessSummaryType process;
     private VersionSummaryType vst;
-    private Set<RequestParameterType<?>> params;
     boolean isNewProcess = false;
 
     @Inject private UserSessionManager userSessionManager;
@@ -116,7 +112,6 @@ public class BPMNEditorController extends BaseController {
         mainC = session.getMainC();
         process = session.getProcess();
         vst = session.getVersion();
-        params =  session.getParams();
         
         Map<String, Object> param = new HashMap<>();
         try {
@@ -156,20 +151,17 @@ public class BPMNEditorController extends BaseController {
                             		editSession.getOriginalBranchName(),
                             		editSession.getCurrentVersionNumber(),
                             		editSession.getNativeType(),
-                            		annotation,
-                            		editSession.isWithAnnotation(),
-                            		editSession.getUsername(),
-                                    params);
+                            		editSession.getUsername());
                     bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-                    
-                    if (editSession.isWithAnnotation()) {
-                        param.put("doAutoLayout", "false");
-                    } 
-                    else {
-                        BpmnLayoutPlugin layouter = new BpmnLayoutPlugin();
-                        bpmnXML = layouter.addLayout(bpmnXML, "bpmnXML");
-                        param.put("doAutoLayout", "true");
-                    }
+                    param.put("doAutoLayout", "false");
+//                    if (editSession.isWithAnnotation()) {
+//                        param.put("doAutoLayout", "false");
+//                    } 
+//                    else {
+//                        BpmnLayoutPlugin layouter = new BpmnLayoutPlugin();
+//                        bpmnXML = layouter.addLayout(bpmnXML, "bpmnXML");
+//                        param.put("doAutoLayout", "true");
+//                    }
             	}
             	
                 title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
@@ -203,14 +195,6 @@ public class BPMNEditorController extends BaseController {
             this.setTitle(title);
             if (mainC != null) {
                 mainC.showPluginMessages(pluginMessages);
-            }
-
-            // We're not expecting any request parameters, so warn if we see any
-            for (RequestParameterType<?> requestParameter: params) {
-                switch (requestParameter.getId()) {
-                default:
-                    LOGGER.warn("Unsupported request parameter \"" + requestParameter.getId() + "\" with value " + requestParameter.getValue());
-                }
             }
 
             List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");

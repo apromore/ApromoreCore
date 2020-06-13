@@ -24,16 +24,15 @@
 
 package org.apromore.dao;
 
+import java.util.List;
+
 import javax.persistence.QueryHint;
 
-import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Interface domain model Data access object ProcessModelVersion.
@@ -126,29 +125,5 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
             @QueryHint(name = "eclipselink.query-results-cache.size", value = "1000")
     }, forCounting = false)
     List<ProcessModelVersion> getLatestProcessModelVersionsByUser(final String userId);
-
-    /**
-     * Find all process model version that use the fragment version.
-     * @param originalFragmentVersion the fragment version we are looking for that has been used.
-     * @return the found list of process model versions.
-     */
-    @Query("SELECT pmv FROM ProcessModelVersion pmv WHERE pmv.rootFragmentVersion = ?1")
-    List<ProcessModelVersion> getUsedProcessModelVersions(final FragmentVersion originalFragmentVersion);
-
-    /**
-     * Get the root fragments.
-     * @param minSize the minimum size fragment.
-     * @return the list of root fragment ids
-     */
-    @Query("SELECT f.id FROM FragmentVersion f JOIN f.rootProcessModelVersions pmv WHERE f.fragmentSize > ?1")
-    List<Integer> getRootFragments(int minSize);
-
-    /**
-     * Count the number of times this fragment version has been the root fragment for a process.
-     * @param fragmentVersion the fragment version we are checking to see if has been used multiple times.
-     * @return the count of times used, 0 or more
-     */
-    @Query("SELECT count(pmv) from ProcessModelVersion pmv WHERE pmv.rootFragmentVersion = ?1")
-    long countFragmentUsesInProcessModels(FragmentVersion fragmentVersion);
 
 }

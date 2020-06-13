@@ -22,19 +22,12 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-
-import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -42,11 +35,9 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.util.CollectionUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -54,7 +45,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -171,47 +161,47 @@ public class CreateProcessController2 extends BaseController {
     }
 
     protected void createProcess() throws Exception {
-        try {
-            if (this.processNameT.getValue().compareTo("") == 0 || this.nativeTypesLB.getSelectedItem() == null
-                    || this.nativeTypesLB.getSelectedItem() != null && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("") == 0) {
-                Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
-            } else {
-                String domain = this.domainCB.getValue();
-                String processName = this.processNameT.getValue();
-                String owner = UserSessionManager.getCurrentUser().getUsername();
-                String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
-                boolean makePublic = this.makePublicCb.isChecked();
-                String versionNumber = versionNumberT.getText();
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-                String creationDate = dateFormat.format(new Date());
-
-                DataHandler initialNativeFormat = getService().readInitialNativeFormat(nativeType, null, null, owner, processName,
-                        "0.0", creationDate);
-
-                // Documentation and Last Update are set to NULL & No Canoniser properties are used
-                //TODO show canoniser properties
-                Integer folderId = 0;
-                if (UserSessionManager.getCurrentFolder() != null) {
-                    folderId = UserSessionManager.getCurrentFolder().getId();
-                }
-
-                ImportProcessResultType importResult = getService().importProcess(owner, folderId, nativeType, processName, versionNumber,
-                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, makePublic);
-
-                this.mainC.displayNewProcess(importResult.getProcessSummary());
-                this.mainC.showPluginMessages(importResult.getMessage());
-
-                /* keep list of domains update */
-                this.domainCB.addItem(domain);
-
-                /* call editor */
-                editProcess(importResult.getProcessSummary());
-                closePopup();
-            }
-        } catch (WrongValueException | IOException | ExceptionImport e) {
-            e.printStackTrace();
-            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
+//        try {
+//            if (this.processNameT.getValue().compareTo("") == 0 || this.nativeTypesLB.getSelectedItem() == null
+//                    || this.nativeTypesLB.getSelectedItem() != null && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("") == 0) {
+//                Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
+//            } else {
+//                String domain = this.domainCB.getValue();
+//                String processName = this.processNameT.getValue();
+//                String owner = UserSessionManager.getCurrentUser().getUsername();
+//                String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
+//                boolean makePublic = this.makePublicCb.isChecked();
+//                String versionNumber = versionNumberT.getText();
+//                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+//                String creationDate = dateFormat.format(new Date());
+//
+//                DataHandler initialNativeFormat = getService().readInitialNativeFormat(nativeType, null, null, owner, processName,
+//                        "0.0", creationDate);
+//
+//                // Documentation and Last Update are set to NULL & No Canoniser properties are used
+//                //TODO show canoniser properties
+//                Integer folderId = 0;
+//                if (UserSessionManager.getCurrentFolder() != null) {
+//                    folderId = UserSessionManager.getCurrentFolder().getId();
+//                }
+//
+//                ImportProcessResultType importResult = getService().importProcess(owner, folderId, nativeType, processName, versionNumber,
+//                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, makePublic);
+//
+//                this.mainC.displayNewProcess(importResult.getProcessSummary());
+//                this.mainC.showPluginMessages(importResult.getMessage());
+//
+//                /* keep list of domains update */
+//                this.domainCB.addItem(domain);
+//
+//                /* call editor */
+//                editProcess(importResult.getProcessSummary());
+//                closePopup();
+//            }
+//        } catch (WrongValueException | IOException | ExceptionImport e) {
+//            e.printStackTrace();
+//            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
     }
 
     protected void editProcess(final ProcessSummaryType process) throws Exception {

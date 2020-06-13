@@ -27,7 +27,6 @@ package org.apromore.service;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -39,7 +38,6 @@ import org.apromore.exception.UpdateProcessException;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
-import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.ProcessData;
 
 /**
@@ -90,13 +88,11 @@ public interface ProcessService {
      * @param version    the version of the process model.
      * @param nativeType the format of the model
      * @param annName    the annotation format
-     * @param withAnn    do we export annotations as well.
-     * @param canoniserProperties the properties
      * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
     ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
-            final String nativeType, final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
+            final String nativeType)
             throws ExportFormatException;
 
     /**

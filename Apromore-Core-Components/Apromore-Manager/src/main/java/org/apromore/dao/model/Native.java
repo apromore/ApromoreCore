@@ -26,18 +26,16 @@ package org.apromore.dao.model;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -60,7 +58,6 @@ public class Native implements Serializable {
 
     private NativeType nativeType;
     private ProcessModelVersion processModelVersion;
-    private Set<Annotation> annotations = new HashSet<>();
 
 
     /**
@@ -119,13 +116,5 @@ public class Native implements Serializable {
         this.processModelVersion = newProcessModelVersion;
     }
 
-    @OneToMany(mappedBy = "natve")
-    public Set<Annotation> getAnnotations() {
-        return this.annotations;
-    }
-
-    public void setAnnotations(final Set<Annotation> newAnnotations) {
-        this.annotations = newAnnotations;
-    }
 
 }

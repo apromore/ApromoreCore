@@ -28,15 +28,11 @@ package org.apromore.portal.dialogController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.apromore.canoniser.Canoniser;
 import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.NativeMetaData;
 import org.apromore.model.PluginInfo;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
@@ -51,7 +47,6 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
@@ -163,132 +158,134 @@ public class ImportOneProcessController extends BaseController {
 
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.importOneProcessWindow.getFellow("canoniserPropertiesGrid"));
 
-        if (readCanoniserInfos(nativeType)) {
-            this.importOneProcessWindow.addEventListener("onLater", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    importAllProcess();
-                    Clients.clearBusy();
-                }
-            });
-            this.ownerCB.addEventListener("onChange", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    SelectDynamicListController cb = (SelectDynamicListController) event.getTarget();
-                    updateOwner(cb.getValue());
-                }
-            });
-            this.okButton.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
+//        if (readCanoniserInfos(nativeType)) {
+        this.importOneProcessWindow.addEventListener("onLater", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                importAllProcess();
+                Clients.clearBusy();
+            }
+        });
+        this.ownerCB.addEventListener("onChange", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                SelectDynamicListController cb = (SelectDynamicListController) event.getTarget();
+                updateOwner(cb.getValue());
+            }
+        });
+        this.okButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                importProcess(domainCB.getValue(), username);
+            }
+        });
+        this.okForAllButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                Clients.showBusy("Processing...");
+                Events.echoEvent("onLater", importOneProcessWindow, null);
+            }
+        });
+        this.importOneProcessWindow.addEventListener("onOK", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                if (processNameTb.getValue().compareTo("") == 0) {
+                    Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                } else {
                     importProcess(domainCB.getValue(), username);
                 }
-            });
-            this.okForAllButton.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    Clients.showBusy("Processing...");
-                    Events.echoEvent("onLater", importOneProcessWindow, null);
-                }
-            });
-            this.importOneProcessWindow.addEventListener("onOK", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    if (processNameTb.getValue().compareTo("") == 0) {
-                        Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
-                    } else {
-                        importProcess(domainCB.getValue(), username);
-                    }
-                }
-            });
-            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    cancel();
-                }
-            });
-            this.cancelAllButton.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    cancelAll();
-                }
-            });
-            this.resetButton.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    reset();
-                }
-            });
-            this.importOneProcessWindow.doModal();
-        }
-    }
-
-    private boolean readCanoniserInfos(final String nativeType) throws InterruptedException {
-        try {
-            Row canoniserSelectionRow = (Row) this.importOneProcessWindow.getFellow("canoniserSelectionRow");
-            Clients.showBusy(canoniserSelectionRow, "Reading available Canoniser for "+nativeType+"...");
-            canoniserInfos = getService().readCanoniserInfo(nativeType);
-            Clients.clearBusy(canoniserSelectionRow);
-
-            if (canoniserInfos.size() >= 1) {
-                List<String> canoniserNames = new ArrayList<>();
-                for (PluginInfo cInfo: canoniserInfos) {
-                    canoniserNames.add(cInfo.getName());
-                }
-
-                SelectDynamicListController canoniserCB = new SelectDynamicListController(canoniserNames);
-                canoniserCB.setAutodrop(true);
-                canoniserCB.setWidth("85%");
-                canoniserCB.setHeight("100%");
-                canoniserCB.setAttribute("hflex", "1");
-                canoniserCB.setSelectedIndex(0);
-                canoniserSelectionRow.appendChild(canoniserCB);
-
-                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
-                    @Override
-                    public void onEvent(final Event event) throws Exception {
-                        if (event instanceof SelectEvent) {
-                            String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
-                            for (PluginInfo info: canoniserInfos) {
-                                if (info.getName().equals(selectedCanoniser)) {
-                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.CANONISE_PARAMETER);
-                                }
-                            }
-                        }
-                    }
-                });
-
-                PluginInfo canoniserInfo = canoniserInfos.iterator().next();
-                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.CANONISE_PARAMETER);
-
-                return true;
-            } else {
-                Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", this.nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
-                return false;
             }
-        } catch (Exception e) {
-            Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-            return false;
-        }
+        });
+        this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                cancel();
+            }
+        });
+        this.cancelAllButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                cancelAll();
+            }
+        });
+        this.resetButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                reset();
+            }
+        });
+        this.importOneProcessWindow.doModal();
     }
 
+//    private boolean readCanoniserInfos(final String nativeType) throws InterruptedException {
+//        try {
+//            Row canoniserSelectionRow = (Row) this.importOneProcessWindow.getFellow("canoniserSelectionRow");
+//            Clients.showBusy(canoniserSelectionRow, "Reading available Canoniser for "+nativeType+"...");
+//            canoniserInfos = getService().readCanoniserInfo(nativeType);
+//            Clients.clearBusy(canoniserSelectionRow);
+//
+//            if (canoniserInfos.size() >= 1) {
+//                List<String> canoniserNames = new ArrayList<>();
+//                for (PluginInfo cInfo: canoniserInfos) {
+//                    canoniserNames.add(cInfo.getName());
+//                }
+//
+//                SelectDynamicListController canoniserCB = new SelectDynamicListController(canoniserNames);
+//                canoniserCB.setAutodrop(true);
+//                canoniserCB.setWidth("85%");
+//                canoniserCB.setHeight("100%");
+//                canoniserCB.setAttribute("hflex", "1");
+//                canoniserCB.setSelectedIndex(0);
+//                canoniserSelectionRow.appendChild(canoniserCB);
+//
+//                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
+//                    @Override
+//                    public void onEvent(final Event event) throws Exception {
+//                        if (event instanceof SelectEvent) {
+//                            String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
+//                            for (PluginInfo info: canoniserInfos) {
+//                                if (info.getName().equals(selectedCanoniser)) {
+//                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.CANONISE_PARAMETER);
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
+//
+//                PluginInfo canoniserInfo = canoniserInfos.iterator().next();
+//                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.CANONISE_PARAMETER);
+//
+//                return true;
+//            } else {
+//                Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", this.nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
+//                return false;
+//            }
+//        } catch (Exception e) {
+//            Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//            return false;
+//        }
+//    }
+
+    // Bruce: the Canoniser service used here is not really used (check canoniser-bpmn.BPMN20Canoniser.readMetaData()).
+    // Thus, it's the same by setting the two UI fields with values as shown
     private void readMetaData(final String nativeType, final List<String> ownerNames) throws InterruptedException {
         try {
-            NativeMetaData readNativeMetaData = getService().readNativeMetaData(nativeType, null, null, getNativeProcess());
-            this.nativeProcess.reset();
+//            NativeMetaData readNativeMetaData = getService().readNativeMetaData(nativeType, getNativeProcess());
+//            this.nativeProcess.reset();
             this.processNameTb.setValue(this.processName);
-            this.documentationTb.setValue(readNativeMetaData.getProcessDocumentation());
-            if (readNativeMetaData.getProcessCreated() != null) {
-                this.creationDateTb.setValue(readNativeMetaData.getProcessCreated().toString());
-            }
-            if (readNativeMetaData.getProcessLastUpdate() != null) {
-                this.lastUpdateTb.setValue(readNativeMetaData.getProcessLastUpdate().toString());
-            }
-            if (readNativeMetaData.getProcessAuthor() != null) {
-                if (ownerNames.contains(readNativeMetaData.getProcessAuthor())) {
-                    defaultOwner.setValue(readAuthor);
-                }
-            }
+            this.documentationTb.setValue("");
+//            this.documentationTb.setValue(readNativeMetaData.getProcessDocumentation());
+//            if (readNativeMetaData.getProcessCreated() != null) {
+//                this.creationDateTb.setValue(readNativeMetaData.getProcessCreated().toString());
+//            }
+//            if (readNativeMetaData.getProcessLastUpdate() != null) {
+//                this.lastUpdateTb.setValue(readNativeMetaData.getProcessLastUpdate().toString());
+//            }
+//            if (readNativeMetaData.getProcessAuthor() != null) {
+//                if (ownerNames.contains(readNativeMetaData.getProcessAuthor())) {
+//                    defaultOwner.setValue(readAuthor);
+//                }
+//            }
         } catch (Exception e) {
             Messagebox.show("Reading process metadata failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }

@@ -25,25 +25,30 @@
 
 package org.apromore.portal.dialogController;
 
-// Java 2 Standard packages
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.*;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+// Local packages
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
-import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.EditorPluginResolver;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.util.StreamUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zhtml.Messagebox;
-import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -53,20 +58,6 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.Window;
-
-// Local packages
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.ConfigBean;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.util.StreamUtil;
 
 /**
  * The Signavio Controller. This controls opening the signavio editor in apromore.
@@ -123,10 +114,7 @@ public class ApromoreController extends BaseController {
                             editSession1.getOriginalBranchName(),
                             editSession1.getCurrentVersionNumber(),
                             editSession1.getNativeType(),
-                            editSession1.getAnnotation(),
-                            editSession1.isWithAnnotation(),
-                            editSession1.getUsername(),
-                            params);
+                            editSession1.getUsername());
 
             title = editSession1.getProcessName();
             PluginMessages pluginMessages = exportResult1.getMessage();
@@ -147,10 +135,7 @@ public class ApromoreController extends BaseController {
                             editSession2.getOriginalBranchName(),
                             editSession2.getCurrentVersionNumber(),
                             editSession2.getNativeType(),
-                            editSession2.getAnnotation(),
-                            editSession2.isWithAnnotation(),
-                            editSession2.getUsername(),
-                            params);
+                            editSession2.getUsername());
 
                 String data2 = StreamUtil.convertStreamToString(exportResult2.getNative().getInputStream());
                 param.put("jsonData2", data2.replace("\n", " ").replace("'", "\\u0027").trim());
@@ -179,7 +164,7 @@ public class ApromoreController extends BaseController {
             for (RequestParameterType<?> requestParameter: params) {
                 switch (requestParameter.getId()) {
                 case "m1_differences_json":
-                    param.put("differences", (String) requestParameter.getValue());
+                    param.put("differences", requestParameter.getValue());
                     this.differences = new JSONObject((String) requestParameter.getValue());
                     //LOGGER.info("Request parameter \"differences\" set to " + requestParameter.getValue());
                     break;

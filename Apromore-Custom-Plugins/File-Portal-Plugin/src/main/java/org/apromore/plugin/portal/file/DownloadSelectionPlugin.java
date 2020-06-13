@@ -26,24 +26,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.ParseException;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import javax.inject.Inject;
-import org.apromore.model.*;
+
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.ExportLogResultType;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.SessionTab;
-import org.apromore.portal.common.*;
-import org.apromore.portal.dialogController.*;
-import org.apromore.portal.exception.*;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.service.EventLogService;
+import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
-import org.apromore.service.EventLogService;
-import org.apromore.service.csvexporter.CSVExporterLogic;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Window;
 
 public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
@@ -112,36 +126,46 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
     protected void exportProcessModel(MainController mainC, PortalContext portalContext) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
         mainC.eraseMessage();
 
-        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
-
-        for(Tab tab : tabs){
-            if(tab.isSelected() && tab instanceof TabQuery){
-                TabQuery tabQuery=(TabQuery)tab;
-                List<Listitem> items=tabQuery.getListBox().getItems();
-                HashMap<SummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
-                for(Listitem item : items){
-                    if(item.isSelected() && item instanceof TabListitem){
-                        TabListitem tabItem=(TabListitem)item;
-                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
-                    }
-                }
-                if(processVersion.keySet().size()>0){
-                    new ExportListNativeController(mainC, null, processVersion);
-                    return;
-                }
-            }
-        }
+//        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
+//        for(Tab tab : tabs){
+//            if(tab.isSelected() && tab instanceof TabQuery){
+//                TabQuery tabQuery=(TabQuery)tab;
+//                List<Listitem> items=tabQuery.getListBox().getItems();
+//                HashMap<SummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+//                for(Listitem item : items){
+//                    if(item.isSelected() && item instanceof TabListitem){
+//                        TabListitem tabItem=(TabListitem)item;
+//                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+//                    }
+//                }
+//                if(processVersion.keySet().size()>0){
+//                    new ExportListNativeController(mainC, null, processVersion);
+//                    return;
+//                }
+//            }
+//        }
 
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
-        if (selectedProcessVersions.size() != 0) {
-            new ExportListNativeController(mainC, null, selectedProcessVersions);
+        if (selectedProcessVersions.size() == 1) {
+            //new ExportListNativeController(mainC, null, selectedProcessVersions);
+            ProcessSummaryType model = (ProcessSummaryType)selectedProcessVersions.keySet().iterator().next();
+            VersionSummaryType version = selectedProcessVersions.get(model).get(0);
+            try {
+                ExportFormatResultType exportResult = mainC.getService().exportFormat(model.getId(), model.getName(), version.getName(),
+                        version.getVersionNumber(), model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
+                InputStream nativeStream = exportResult.getNative().getInputStream();
+                Filedownload.save(nativeStream, "text/xml", model.getName() + ".bpmn");
+            }
+            catch (Exception e) {
+                LOGGER.error("", e);
+                Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
         } else {
-            mainC.displayMessage("No process version selected.");
+            mainC.displayMessage("Please select one process model");
         }
     }
 
     public void exportLog(MainController mainC, PortalContext portalContext, LogSummaryType logSummary) {
-
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/downloadLog.zul", null, null);
             Button downloadButton = (Button) window.getFellow("downloadButton");
@@ -151,6 +175,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
             format = (Radiogroup) window.getFellow("format");
 
             format.addEventListener("onCheck", new EventListener<Event>() {
+                @Override
                 public void onEvent(Event event) throws Exception {
                     if (format.getSelectedItem().getLabel().equals("CSV")) {
                         rowEncoding.setVisible(true);
@@ -161,6 +186,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
             });
 
             downloadButton.addEventListener("onClick", new EventListener<Event>() {
+                @Override
                 public void onEvent(Event event) throws Exception {
                     if (format.getSelectedItem().getLabel().equals("CSV")) {
                         exportCSV(logSummary);
@@ -174,6 +200,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
             Button cancelButton = (Button) window.getFellow("cancelButton");
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                @Override
                 public void onEvent(Event event) throws Exception {
                     window.invalidate();
                     window.detach();

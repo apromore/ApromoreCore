@@ -33,7 +33,6 @@ import javax.inject.Inject;
 
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
-import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -41,13 +40,11 @@ import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupLog;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -79,7 +76,6 @@ public class UIHelper implements UserInterfaceHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UIHelper.class);
 
-    private AnnotationRepository aRepository;
     private FolderRepository fRepository;
     private ProcessRepository pRepository;
     private LogRepository lRepository;
@@ -102,8 +98,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @param workspaceService Workspace Services.
      */
     @Inject
-    public UIHelper(final AnnotationRepository annotationRepository,
-                    final ProcessRepository processRepository,
+    public UIHelper(final ProcessRepository processRepository,
                     final LogRepository logRepository,
                     final GroupProcessRepository groupProcessRepository,
                     final GroupLogRepository groupLogRepository,
@@ -113,7 +108,6 @@ public class UIHelper implements UserInterfaceHelper {
                     final WorkspaceService workspaceService,
                     final ConfigBean config) {
 
-        this.aRepository = annotationRepository;
         this.fRepository = folderRepository;
         this.pRepository = processRepository;
         this.lRepository = logRepository;
@@ -432,7 +426,7 @@ public class UIHelper implements UserInterfaceHelper {
                 versionSummary.setEmpty(enableCPF && processModelVersion.getNumEdges() == 0 && processModelVersion.getNumVertices() == 0);
 
                 pmVersion = new Version(processModelVersion.getVersionNumber());
-                buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), pmVersion);
+                //buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), pmVersion);
 
                 processSummary.getVersionSummaries().add(versionSummary);
 
@@ -452,30 +446,30 @@ public class UIHelper implements UserInterfaceHelper {
     }
 
     /* Builds the list of Native Summaries for a version summary. */
-    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, String branchName,
-            Version maxVersion) {
-        AnnotationsType annotation;
-        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), branchName, maxVersion.toString());
-
-        for (Annotation ann : annotations) {
-            annotation = new AnnotationsType();
-
-            if (ann.getNatve() != null) {
-                annotation.setNativeType(ann.getNatve().getNativeType().getNatType());
-                buildAnnotationNames(ann.getNatve(), annotation);
-            }
-
-            versionSummary.getAnnotations().add(annotation);
-        }
-    }
+//    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, String branchName,
+//            Version maxVersion) {
+//        AnnotationsType annotation;
+//        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), branchName, maxVersion.toString());
+//
+//        for (Annotation ann : annotations) {
+//            annotation = new AnnotationsType();
+//
+//            if (ann.getNatve() != null) {
+//                annotation.setNativeType(ann.getNatve().getNativeType().getNatType());
+//                buildAnnotationNames(ann.getNatve(), annotation);
+//            }
+//
+//            versionSummary.getAnnotations().add(annotation);
+//        }
+//    }
 
     /* Populate the Annotation names. */
-    private void buildAnnotationNames(Native nat, AnnotationsType annotation) {
-        List<Annotation> anns = aRepository.findByUri(nat.getId());
-        for (Annotation ann : anns) {
-            annotation.getAnnotationName().add(ann.getName());
-        }
-    }
+//    private void buildAnnotationNames(Native nat, AnnotationsType annotation) {
+//        List<Annotation> anns = aRepository.findByUri(nat.getId());
+//        for (Annotation ann : anns) {
+//            annotation.getAnnotationName().add(ann.getName());
+//        }
+//    }
 
     /* From a list of ProcessVersionTypes build a list of the id's of each */
     private List<Integer> buildProcessIdList(ProcessVersionsType similarProcesses) {

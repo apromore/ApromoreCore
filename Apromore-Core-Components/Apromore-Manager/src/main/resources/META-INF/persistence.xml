@@ -29,21 +29,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
-        <class>org.apromore.dao.model.Annotation</class>
-        <class>org.apromore.dao.model.Canonical</class>
-        <class>org.apromore.dao.model.Cluster</class>
-        <class>org.apromore.dao.model.ClusterAssignment</class>
-        <class>org.apromore.dao.model.Edge</class>
-        <class>org.apromore.dao.model.EdgeAttribute</class>
-        <class>org.apromore.dao.model.EdgeMapping</class>
-        <class>org.apromore.dao.model.Expression</class>
         <class>org.apromore.dao.model.Folder</class>
-        <class>org.apromore.dao.model.FolderUser</class>
-        <class>org.apromore.dao.model.Fragment</class>
-        <class>org.apromore.dao.model.FragmentDistance</class>
-        <class>org.apromore.dao.model.FragmentUser</class>
-        <class>org.apromore.dao.model.FragmentVersion</class>
-        <class>org.apromore.dao.model.FragmentVersionDag</class>
         <class>org.apromore.dao.model.Group</class>
         <class>org.apromore.dao.model.GroupFolder</class>
         <class>org.apromore.dao.model.GroupLog</class>
@@ -52,26 +38,13 @@
         <class>org.apromore.dao.model.Keywords</class>
         <class>org.apromore.dao.model.Log</class>
         <class>org.apromore.dao.model.Membership</class>
-        <class>org.apromore.dao.model.Metric</class>
         <class>org.apromore.dao.model.Native</class>
         <class>org.apromore.dao.model.NativeType</class>
-        <class>org.apromore.dao.model.Node</class>
-        <class>org.apromore.dao.model.NodeAttribute</class>
-        <class>org.apromore.dao.model.NodeMapping</class>
-        <class>org.apromore.dao.model.Object</class>
-        <class>org.apromore.dao.model.ObjectAttribute</class>
-        <class>org.apromore.dao.model.ObjectRef</class>
-        <class>org.apromore.dao.model.ObjectRefAttribute</class>
         <class>org.apromore.dao.model.Permission</class>
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.ProcessBranch</class>
         <class>org.apromore.dao.model.ProcessModelAttribute</class>
         <class>org.apromore.dao.model.ProcessModelVersion</class>
-        <class>org.apromore.dao.model.ProcessUser</class>
-        <class>org.apromore.dao.model.Resource</class>
-        <class>org.apromore.dao.model.ResourceAttribute</class>
-        <class>org.apromore.dao.model.ResourceRef</class>
-        <class>org.apromore.dao.model.ResourceRefAttribute</class>
         <class>org.apromore.dao.model.Role</class>
         <class>org.apromore.dao.model.SearchHistory</class>
         <class>org.apromore.dao.model.User</class>

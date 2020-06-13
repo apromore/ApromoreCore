@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-
 import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ExportLogResultType;
@@ -42,7 +40,6 @@ import org.apromore.model.GroupAccessType;
 import org.apromore.model.GroupType;
 import org.apromore.model.ImportLogResultType;
 import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
@@ -231,7 +228,7 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType,
-            String annotationName, Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties)
+            String owner)
             throws Exception;
 
     ExportLogResultType exportLog(int logId, String logName) throws Exception;
@@ -248,7 +245,6 @@ public interface ManagerService {
      * @param created the date and time created
      * @param lastUpdate the date and time last updated
      * @param makePublic is this process public?
-     * @param canoniserProperties canoniser properties to use
      * @return ProcessSummary List of processes after the import.
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
@@ -279,18 +275,7 @@ public interface ManagerService {
      * @return Set of PluginInfo
      * @throws Exception TODO: Fix Exception
      */
-    Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception;
-
-    /**
-     * Read some meta data form the native process XML, optionally using a special Canoniser
-     * @param nativeType of the process
-     * @param canoniserName use a special Canoniser (optional, may be NULL)
-     * @param canoniserVersion use a special Canoniser (optional, may be NULL)
-     * @param nativeProcess the process as an XML Stream.
-     * @return Meta data of Process
-     * @throws Exception in case of any error
-     */
-    NativeMetaData readNativeMetaData(String nativeType, String canoniserName, String canoniserVersion, InputStream nativeProcess) throws Exception;
+//    Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception;
 
     /**
      * Get the initial process XML for specified native type, optionally using a specific Canoniser
@@ -304,8 +289,8 @@ public interface ManagerService {
      * @return XML in native format
      * @throws Exception in case of any error
      */
-    DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName,
-            String versionName, String creationDate) throws Exception;
+//    DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName,
+//            String versionName, String creationDate) throws Exception;
 
     /**
      * Get information about all installed Deployment Plugins for the specified native type.

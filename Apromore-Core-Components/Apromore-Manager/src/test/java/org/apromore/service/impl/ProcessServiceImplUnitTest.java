@@ -29,10 +29,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.util.HashSet;
-
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
@@ -45,8 +42,6 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
 import org.apromore.service.UserService;
@@ -75,7 +70,6 @@ public class ProcessServiceImplUnitTest {
 
     @Before
     public final void setUp() throws Exception {
-        AnnotationRepository annDao = createMock(AnnotationRepository.class);
         natDao = createMock(NativeRepository.class);
         GroupRepository grpDao = createMock(GroupRepository.class);
         GroupProcessRepository grpProcDao = createMock(GroupProcessRepository.class);
@@ -84,13 +78,12 @@ public class ProcessServiceImplUnitTest {
         pmvDao = createMock(ProcessModelVersionRepository.class);
         UserService usrSrv = createMock(UserService.class);
         FormatService fmtSrv = createMock(FormatService.class);
-        CanoniserService canSrv = createMock(CanoniserService.class);
         LockService lSrv = createMock(LockService.class);
         UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
         ConfigBean config = new ConfigBean();
 
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, pmvDao, grpProcDao, canSrv, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
+        service = new ProcessServiceImpl(natDao, grpDao, branchDao, proDao, pmvDao, grpProcDao, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
     }
 
     @Test
@@ -127,7 +120,7 @@ public class ProcessServiceImplUnitTest {
 
         replay(pmvDao, natDao);
 
-        ExportFormatResultType data = service.exportProcess(name, processId, version, versionNumber, format, subStr, true, new HashSet<RequestParameterType<?>>());
+        ExportFormatResultType data = service.exportProcess(name, processId, version, versionNumber, format);
 
         verify(pmvDao, natDao);
 

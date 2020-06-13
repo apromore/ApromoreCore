@@ -31,7 +31,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.util.HashSet;
 
 import javax.inject.Inject;
 
@@ -40,8 +39,6 @@ import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummariesType;
 import org.apromore.model.SummaryType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,7 +53,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Unit test the CanoniserService Implementation.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
@@ -73,15 +69,10 @@ public class UIHelperImplIntgTest {
     @Inject
     private UserInterfaceHelper uiSrv;
     @Inject
-    private CanoniserService cSrv;
-    @Inject
     private ProcessService pSrv;
-
-    private HashSet<RequestParameterType<?>> emptyCanoniserRequest;
 
     @Before
     public void setUp() {
-        emptyCanoniserRequest = new HashSet<RequestParameterType<?>>();
     }
 
 

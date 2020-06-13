@@ -22,27 +22,17 @@
 
 package org.apromore.manager.client;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//import java.util.stream.Collectors;
-import javax.activation.DataHandler;
 import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
 
-import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
 //import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Group;
@@ -51,7 +41,6 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
-import org.apromore.helper.CanoniserHelper;
 import org.apromore.helper.PluginHelper;
 import org.apromore.helper.Version;
 import org.apromore.mapper.DomainMapper;
@@ -69,7 +58,6 @@ import org.apromore.model.GroupType;
 import org.apromore.model.ImportLogResultType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.LogSummaryType;
-import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
@@ -83,11 +71,7 @@ import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
-import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.property.RequestParameterType;
-//import org.apromore.plugin.merge.logic.MergeService;
-//import org.apromore.plugin.similaritysearch.logic.SimilarityService;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.FormatService;
@@ -107,7 +91,6 @@ import org.springframework.stereotype.Service;
 public class ManagerServiceImpl implements ManagerService {
 
     @Inject private PluginService pluginService;
-    @Inject private CanoniserService canoniserService;
     @Inject private ProcessService procSrv;
     @Inject private EventLogService logSrv;
     @Inject private FormatService frmSrv;
@@ -456,18 +439,14 @@ public class ManagerServiceImpl implements ManagerService {
      * @param processName the process name
      * @param branch the process branch name
      * @param nativeType the native type of the process model
-     * @param annotationName the annotations name
-     * @param withAnnotations with ot without annotations
      * @param owner the owner of the model
      * @return the request process model as a Stream
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     @Override
-    public ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType,
-            String annotationName, Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties)
+    public ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType, String owner)
             throws Exception {
-
-        return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber), nativeType, annotationName, withAnnotations, canoniserProperties);
+        return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber), nativeType);
     }
 
     @Override
@@ -487,7 +466,6 @@ public class ManagerServiceImpl implements ManagerService {
      * @param created the date and time created
      * @param lastUpdate the date and time last updated
      * @param makePublic is this process public?
-     * @param canoniserProperties canoniser properties to use
      * @return ProcessSummary List of processes after the import.
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
@@ -571,42 +549,45 @@ public class ManagerServiceImpl implements ManagerService {
      * @return Set of PluginInfo
      * @throws Exception TODO: Fix Exception
      */
-    @Override
-    public Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception {
-        Set<PluginInfo> results = new HashSet<>();
-        Set<Canoniser> cList = canoniserService.listByNativeType(nativeType);
-        for (Canoniser c : cList) {
-            results.add(PluginHelper.convertPluginInfo(c));
-        }
-
-        return results;
-    }
+//    @Override
+//    public Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception {
+//        Set<PluginInfo> results = new HashSet<>();
+//        Set<Canoniser> cList = canoniserService.listByNativeType(nativeType);
+//        for (Canoniser c : cList) {
+//            results.add(PluginHelper.convertPluginInfo(c));
+//        }
+//
+//        return results;
+//    }
 
     /**
      * Read some meta data form the native process XML, optionally using a special Canoniser
      * @param nativeType of the process
-     * @param canoniserName use a special Canoniser (optional, may be NULL)
-     * @param canoniserVersion use a special Canoniser (optional, may be NULL)
      * @param nativeProcess the process as an XML Stream.
      * @return Meta data of Process
      * @throws Exception in case of any error
      */
-    @Override
-    public NativeMetaData readNativeMetaData(String nativeType, String canoniserName, String canoniserVersion, InputStream nativeProcess) throws Exception {
-        Canoniser c;
-        if (canoniserName != null && canoniserVersion != null) {
-            c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
-        } else {
-            c = canoniserService.findByNativeType(nativeType);
-        }
-
-        CanoniserMetadataResult metaData = c.readMetaData(nativeProcess, new PluginRequestImpl());
-        if (metaData != null) {
-            return CanoniserHelper.convertFromCanoniserMetaData(metaData);
-        } else {
-            throw new Exception("Couldn't read meta data!");
-        }
-    }
+//    @Override
+//    public NativeMetaData readNativeMetaData(String nativeType, InputStream nativeProcess) throws Exception {
+//        Canoniser c;
+//        if (canoniserName != null && canoniserVersion != null) {
+//            c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
+//        } else {
+//            c = canoniserService.findByNativeType(nativeType);
+//        }
+//
+//        CanoniserMetadataResult metaData = c.readMetaData(nativeProcess, new PluginRequestImpl());
+//        if (metaData != null) {
+//            return CanoniserHelper.convertFromCanoniserMetaData(metaData);
+//        } else {
+//            throw new Exception("Couldn't read meta data!");
+//        }        
+//        NativeMetaData xmlMetaData = new NativeMetaData();
+//        xmlMetaData.setProcessName(metaData.getProcessName());
+//        xmlMetaData.setProcessDocumentation("");
+//        xmlMetaData.setProcessVersion("");
+//        return xmlMetaData;
+//    }
 
     /**
      * Get the initial process XML for specified native type, optionally using a specific Canoniser
@@ -620,27 +601,27 @@ public class ManagerServiceImpl implements ManagerService {
      * @return XML in native format
      * @throws Exception in case of any error
      */
-    @Override
-    public DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName,
-            String versionName, String creationDate) throws Exception {
-
-        Canoniser c;
-        if (canoniserName != null && canoniserVersion != null) {
-            c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
-        } else {
-            c = canoniserService.findByNativeType(nativeType);
-        }
-
-        ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-        Date processCreated = (creationDate == null) ? null : dateFormat.parse(creationDate);
-
-        c.createInitialNativeFormat(nativeXml, processName, versionName, owner, processCreated, new PluginRequestImpl());
-        InputStream nativeXmlInputStream = new ByteArrayInputStream(nativeXml.toByteArray());
-
-        return new DataHandler(new ByteArrayDataSource(nativeXmlInputStream, "text/xml"));
-    }
+//    @Override
+//    public DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName,
+//            String versionName, String creationDate) throws Exception {
+//
+//        Canoniser c;
+//        if (canoniserName != null && canoniserVersion != null) {
+//            c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
+//        } else {
+//            c = canoniserService.findByNativeType(nativeType);
+//        }
+//
+//        ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
+//
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+//        Date processCreated = (creationDate == null) ? null : dateFormat.parse(creationDate);
+//
+//        c.createInitialNativeFormat(nativeXml, processName, versionName, owner, processCreated, new PluginRequestImpl());
+//        InputStream nativeXmlInputStream = new ByteArrayInputStream(nativeXml.toByteArray());
+//
+//        return new DataHandler(new ByteArrayDataSource(nativeXmlInputStream, "text/xml"));
+//    }
 
     /**
      * Get information about all installed Deployment Plugins for the specified native type.

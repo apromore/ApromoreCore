@@ -24,28 +24,27 @@
 
 package org.apromore.plugin.similaritysearch.logic.impl;
 
-import org.apromore.cpf.CanonicalProcessType;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
-import org.apromore.exception.SerializationException;
-import org.apromore.model.*;
+import org.apromore.model.ParameterType;
+import org.apromore.model.ParametersType;
+import org.apromore.model.ProcessVersionType;
+import org.apromore.model.ProcessVersionsType;
+import org.apromore.model.SummariesType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ToolboxData;
-import org.apromore.similaritysearch.tools.SearchForSimilarProcesses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of the SimilarityService Contract.
@@ -59,7 +58,7 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
 
     private ProcessModelVersionRepository processModelVersionRepo;
     private FolderRepository folderRepo;
-    private CanoniserService canoniserSrv;
+    //private CanoniserService canoniserSrv;
     private UserInterfaceHelper ui;
 
     /**
@@ -71,10 +70,9 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
      */
     @Inject
     public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final FolderRepository folderRepository,
-                                 final CanoniserService canoniserService, final UserInterfaceHelper uiHelper) {
+                                 final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
         folderRepo = folderRepository;
-        canoniserSrv = canoniserService;
         ui = uiHelper;
     }
 
@@ -83,25 +81,26 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
      * @see
      *      {@inheritDoc}
      */
+    @Override
     public SummariesType searchForSimilarProcesses(final Integer processId, final String branchName, final Boolean latestVersions,
             final Integer folderId, final String userId, final String method, final ParametersType params) throws ExceptionSearchForSimilar {
         LOGGER.debug("Starting Similarity Search...");
 
         ProcessVersionsType similarProcesses = null;
-        ProcessModelVersion query = processModelVersionRepo.getLatestProcessModelVersion(processId, branchName);
-        List<ProcessModelVersion> models = getProcessModelVersionsToSearchAgainst(folderId, userId, latestVersions);
-
-        try {
-            ToolboxData data = convertModelsToCPT(models, query);
-            data = getParametersForSearch(data, method, params);
-            similarProcesses = performSearch(data);
-            if (similarProcesses.getProcessVersion().size() == 0) {
-                LOGGER.info("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
-                        query.getVersionNumber() + " probably faulty");
-            }
-        } catch (Exception se) {
-            LOGGER.error("Failed to perform the similarity search.", se);
-        }
+//        ProcessModelVersion query = processModelVersionRepo.getLatestProcessModelVersion(processId, branchName);
+//        List<ProcessModelVersion> models = getProcessModelVersionsToSearchAgainst(folderId, userId, latestVersions);
+//
+//        try {
+//            ToolboxData data = convertModelsToCPT(models, query);
+//            data = getParametersForSearch(data, method, params);
+//            similarProcesses = performSearch(data);
+//            if (similarProcesses.getProcessVersion().size() == 0) {
+//                LOGGER.info("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
+//                        query.getVersionNumber() + " probably faulty");
+//            }
+//        } catch (Exception se) {
+//            LOGGER.error("Failed to perform the similarity search.", se);
+//        }
 
         return ui.buildProcessSummaryList(userId, folderId, similarProcesses);
     }
@@ -124,19 +123,19 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
 
 
     /* Responsible for getting all the Models and converting them to CPT internal format */
-    private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query)
-            throws SerializationException, JAXBException {
-        LOGGER.debug("Loading Data for search!");
-        ToolboxData data = new ToolboxData();
-
-        data.setOrigin(canoniserSrv.XMLtoCPF(query.getCanonicalDocument().getContent()));
-        for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, canoniserSrv.XMLtoCPF(pmv.getCanonicalDocument().getContent()));
-        }
-
-        LOGGER.debug("Data Loaded for all models!");
-        return data;
-    }
+//    private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query)
+//            throws SerializationException, JAXBException {
+//        LOGGER.debug("Loading Data for search!");
+//        ToolboxData data = new ToolboxData();
+//
+//        data.setOrigin(canoniserSrv.XMLtoCPF(query.getCanonicalDocument().getContent()));
+//        for (ProcessModelVersion pmv : models) {
+//            data.addModel(pmv, canoniserSrv.XMLtoCPF(pmv.getCanonicalDocument().getContent()));
+//        }
+//
+//        LOGGER.debug("Data Loaded for all models!");
+//        return data;
+//    }
 
 
     /* Loads the Parameters used for the Search */
@@ -168,19 +167,19 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
         double similarity;
         ProcessVersionType processVersion;
         ProcessVersionsType similarProcesses = new ProcessVersionsType();
-
-        for (Map.Entry<ProcessModelVersion, CanonicalProcessType> e : data.getModel().entrySet()) {
-            similarity = SearchForSimilarProcesses.findProcessesSimilarity(
-                    data.getOrigin(), e.getValue(), data.getAlgorithm(), data.getLabelthreshold(), data.getContextthreshold(),
-                    data.getSkipnweight(), data.getSubnweight(), data.getSkipeweight());
-            if (similarity >= data.getModelthreshold()) {
-                processVersion = new ProcessVersionType();
-                processVersion.setProcessId(e.getKey().getProcessBranch().getProcess().getId());
-                processVersion.setVersionName(e.getKey().getProcessBranch().getBranchName());
-                processVersion.setScore(similarity);
-                similarProcesses.getProcessVersion().add(processVersion);
-            }
-        }
+//
+//        for (Map.Entry<ProcessModelVersion, CanonicalProcessType> e : data.getModel().entrySet()) {
+//            similarity = SearchForSimilarProcesses.findProcessesSimilarity(
+//                    data.getOrigin(), e.getValue(), data.getAlgorithm(), data.getLabelthreshold(), data.getContextthreshold(),
+//                    data.getSkipnweight(), data.getSubnweight(), data.getSkipeweight());
+//            if (similarity >= data.getModelthreshold()) {
+//                processVersion = new ProcessVersionType();
+//                processVersion.setProcessId(e.getKey().getProcessBranch().getProcess().getId());
+//                processVersion.setVersionName(e.getKey().getProcessBranch().getBranchName());
+//                processVersion.setScore(similarity);
+//                similarProcesses.getProcessVersion().add(processVersion);
+//            }
+//        }
         return similarProcesses;
     }
 }

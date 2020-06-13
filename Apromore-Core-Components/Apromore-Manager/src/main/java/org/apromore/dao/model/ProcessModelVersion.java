@@ -69,21 +69,11 @@ public class ProcessModelVersion implements Serializable {
     private Integer numEdges;
 
     private Native nativeDocument;
-    private Canonical canonicalDocument;
     private ProcessBranch processBranch;
-    private FragmentVersion rootFragmentVersion;
     private NativeType nativeType;
-
-    private Set<FragmentVersion> fragmentVersions = new HashSet<>();
-    private Set<Metric> metrics = new HashSet<>();
-
-    private Set<Annotation> annotations = new HashSet<>();
-    private Set<Node> parentProcesses = new HashSet<>();
     private Set<ProcessBranch> currentProcessModelVersion = new HashSet<>();
     private Set<ProcessBranch> sourceProcessModelVersion = new HashSet<>();
     private Set<ProcessModelAttribute> processModelAttributes = new HashSet<>();
-    private Set<Object> objects = new HashSet<>();
-    private Set<Resource> resources = new HashSet<>();
 
 
     /**
@@ -192,16 +182,6 @@ public class ProcessModelVersion implements Serializable {
         this.nativeDocument = newNative;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "canonicalId", referencedColumnName = "id")
-    public Canonical getCanonicalDocument() {
-        return this.canonicalDocument;
-    }
-
-    public void setCanonicalDocument(final Canonical newCanonical) {
-        this.canonicalDocument = newCanonical;
-    }
-
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "branchId")
@@ -211,17 +191,6 @@ public class ProcessModelVersion implements Serializable {
 
     public void setProcessBranch(final ProcessBranch newProcessBranches) {
         this.processBranch = newProcessBranches;
-    }
-
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "rootFragmentVersionId")
-    public FragmentVersion getRootFragmentVersion() {
-        return this.rootFragmentVersion;
-    }
-
-    public void setRootFragmentVersion(final FragmentVersion newRootFragmentVersion) {
-        this.rootFragmentVersion = newRootFragmentVersion;
     }
 
     @ManyToOne
@@ -240,49 +209,6 @@ public class ProcessModelVersion implements Serializable {
             joinColumns = { @JoinColumn(name = "processModelVersionId") },
             inverseJoinColumns = { @JoinColumn(name = "fragmentVersionId") }
     )
-    public Set<FragmentVersion> getFragmentVersions() {
-        return this.fragmentVersions;
-    }
-
-    public void setFragmentVersions(Set<FragmentVersion> fragmentVersions) {
-        this.fragmentVersions = fragmentVersions;
-    }
-
-    public void addFragmentVersion(FragmentVersion fragmentVersion) {
-        this.fragmentVersions.add(fragmentVersion);
-    }
-
-    @OneToMany(mappedBy = "processModelVersion")
-    public Set<Metric> getMetrics() {
-        return this.metrics;
-    }
-
-    public void setMetrics(final Set<Metric> newMetrics) {
-        this.metrics = newMetrics;
-    }
-
-    public void addMetric(Metric newMetric) {
-        this.metrics.add(newMetric);
-    }
-
-
-    @OneToMany(mappedBy = "processModelVersion")
-    public Set<Annotation> getAnnotations() {
-        return this.annotations;
-    }
-
-    public void setAnnotations(final Set<Annotation> newAnnotations) {
-        this.annotations = newAnnotations;
-    }
-
-    @OneToMany(mappedBy = "subProcess")
-    public Set<Node> getParentProcesses() {
-        return this.parentProcesses;
-    }
-
-    public void setParentProcesses(final Set<Node> newParentProcesses) {
-        this.parentProcesses = newParentProcesses;
-    }
 
     @OneToMany(mappedBy = "currentProcessModelVersion")
     public Set<ProcessBranch> getCurrentProcessModelVersion() {
@@ -310,24 +236,6 @@ public class ProcessModelVersion implements Serializable {
 
     public void setProcessModelAttributes(Set<ProcessModelAttribute> processModelAttributes) {
         this.processModelAttributes = processModelAttributes;
-    }
-
-    @OneToMany(mappedBy = "processModelVersion", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<Object> getObjects() {
-        return this.objects;
-    }
-
-    public void setObjects(Set<Object> objectTypes) {
-        this.objects = objectTypes;
-    }
-
-    @OneToMany(mappedBy = "processModelVersion", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<Resource> getResources() {
-        return this.resources;
-    }
-
-    public void setResources(Set<Resource> resourceTypes) {
-        this.resources = resourceTypes;
     }
 
 
