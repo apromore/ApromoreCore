@@ -897,10 +897,6 @@ div.ap-pd-drawer-splitter:hover {
     background-size: auto 18px !important;
 }
 
-.ap-pd-logstats-header.ap-link {
-    cursor: pointer;
-}
-
 .ap-pd-logstats-header span {
     max-width: 90px;
     width: 90px;
@@ -909,17 +905,36 @@ div.ap-pd-drawer-splitter:hover {
     text-overflow: ellipsis;
 }
 
-.ap-pd-logstats-header.ap-link:hover span {
+.ap-pd-timestats .ap-link,
+.ap-pd-logstats .ap-link {
+    cursor: pointer;
+}
+
+.ap-pd-timestats .ap-link .ap-icon,
+.ap-pd-logstats .ap-link .ap-icon {
+    cursor: pointer !important;
+}
+
+.ap-pd-timestats .ap-link .z-label,
+.ap-pd-logstats .ap-link .z-label{
+    font-weight: bold !important;
+}
+
+.ap-pd-timestats .ap-link:hover span,
+.ap-pd-logstats .ap-link:hover span {
     color: var(--ap-c-text-accent);
+}
+
+.ap-pd-timestats .ap-link:hover .ap-icon,
+.ap-pd-logstats .ap-link:hover .ap-icon {
+    filter: var(--ap-c-tab-text-hover-filter);
 }
 
 /*.ap-pd-logstats-header.ap-link .ap-icon {
     filter: var(--ap-c-tab-text-hover-filter);
 }*/
 
-.ap-pd-logstats-header.ap-link:hover .ap-icon {
-    filter: var(--ap-c-tab-text-hover-filter);
-}
+
 
 .ap-pd-logstats .ap-icon.dummy {
     width: 1px !important;
@@ -927,6 +942,8 @@ div.ap-pd-drawer-splitter:hover {
     background: none !important;
 }
 
+.ap-pd-timestats .ap-icon:focus,
+.ap-pd-timestats .ap-icon:hover,
 .ap-pd-logstats .ap-icon:focus,
 .ap-pd-logstats .ap-icon:hover {
     background-color: transparent !important;
