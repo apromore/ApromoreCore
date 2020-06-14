@@ -41,7 +41,7 @@ interface Constants {
 
     int logSampleSize = 100;
 
-    int columnWidth = 180;
+    int columnWidth = 200;
     int indexColumnWidth = 50;
 
     String caseIdLabel = "caseId";

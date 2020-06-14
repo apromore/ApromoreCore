@@ -355,7 +355,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         for (int pos = 0; pos < sample.getHeader().size(); pos++) {
             Window item = new Window();
             item.setId(popUpFormatWindowId + pos);
-            item.setWidth((columnWidth + 20) + "px");
+            item.setWidth(columnWidth + "px");
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
