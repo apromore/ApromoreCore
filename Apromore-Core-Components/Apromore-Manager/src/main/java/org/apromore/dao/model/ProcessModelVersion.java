@@ -36,8 +36,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -204,11 +202,11 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
-    @ManyToMany
-    @JoinTable(name = "process_fragment_map",
-            joinColumns = { @JoinColumn(name = "processModelVersionId") },
-            inverseJoinColumns = { @JoinColumn(name = "fragmentVersionId") }
-    )
+//    @ManyToMany
+//    @JoinTable(name = "process_fragment_map",
+//            joinColumns = { @JoinColumn(name = "processModelVersionId") },
+//            inverseJoinColumns = { @JoinColumn(name = "fragmentVersionId") }
+//    )
 
     @OneToMany(mappedBy = "currentProcessModelVersion")
     public Set<ProcessBranch> getCurrentProcessModelVersion() {

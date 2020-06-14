@@ -699,7 +699,7 @@ public class ProcessServiceImpl implements ProcessService {
                         List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
                         updateBranch(pmvs, pvid, branch);
                     } else {
-                        deleteProcessModelVersion(pvid);
+                        //deleteProcessModelVersion(pvid);
                         processRepo.delete(process);
                     }
                 } catch (ExceptionDao e) {
@@ -925,6 +925,7 @@ public class ProcessServiceImpl implements ProcessService {
                 throw new Exception("There are other branches forked from this Process Model.");
             } else {
                 //deleteFragmentVersion(pmv.getRootFragmentVersion(), true);
+                processModelVersionRepo.delete(pmv);
             }
         } catch (Exception e) {
             String msg = "Failed to delete the process model version " + pmv.getId();
