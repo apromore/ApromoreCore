@@ -1,3 +1,24 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 package org.apromore.plugin.portal.useradmin;
 
 import java.io.IOException;
@@ -13,10 +34,12 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
@@ -26,16 +49,21 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class UserAdminController {
+public class UserAdminController extends SelectorComposer<Window> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
-    final Window window;
+    Window window;
     ListModelList<Group> groupsModel;
-    final ListModelList<Role> rolesModel;
+    ListModelList<Role> rolesModel;
 
-    UserAdminController(PortalContext portalContext, SecurityService securityService) throws IOException {
-            window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/users.zul", null, null);
+    private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
+    private SecurityService securityService = (SecurityService) Executions.getCurrent().getArg().get("securityService");
+
+    //UserAdminController(PortalContext portalContext, SecurityService securityService) throws IOException {
+    @Override
+    public void doFinally() throws IOException {
+            window = getSelf();
 
             final Combobox usersCombobox = (Combobox) window.getFellow("usersCombobox");
             ListModelList<User> usersModel = new ListModelList<>(securityService.getAllUsers(), false);
