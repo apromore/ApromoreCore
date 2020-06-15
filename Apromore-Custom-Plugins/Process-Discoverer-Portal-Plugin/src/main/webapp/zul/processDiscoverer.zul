@@ -198,7 +198,7 @@
               <n:div></n:div>
             </div>
             <div hflex="2"></div>
-            <graphSettings sclass="ap-pd-drawer-box" hflex="76" />
+            <graphSettings sclass="ap-pd-drawer-box" hflex="75" />
             <div hflex="2"></div>
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
@@ -207,7 +207,7 @@
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
-            <timeStats sclass="ap-pd-drawer-box" hflex="42" />
+            <timeStats sclass="ap-pd-drawer-box" hflex="43" />
           </hlayout>
         </div>
         <!--
