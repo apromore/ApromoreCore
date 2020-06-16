@@ -44,6 +44,7 @@ public interface ProcessBranchRepository extends JpaRepository<ProcessBranch, In
      * @param processModelVersion the process model version we are looking at
      * @return the count of branches, 0 or more
      */
+    @Deprecated
     @Query("SELECT count(b) FROM ProcessBranch b WHERE b.sourceProcessModelVersion = ?1")
     long countProcessModelBeenForked(ProcessModelVersion processModelVersion);
 

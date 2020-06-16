@@ -24,16 +24,16 @@
 
 package org.apromore.mapper;
 
-import org.apromore.dao.model.NativeType;
-import org.apromore.model.NativeTypesType;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.apromore.dao.model.NativeType;
+import org.apromore.model.NativeTypesType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * SearchHistory Mapper Unit test.
@@ -54,19 +54,24 @@ public class NativeTypeMapperUnitTest {
     public void testConvertFromNativeType() throws Exception {
         List<NativeType> natTypes = new ArrayList<NativeType>();
         NativeType typ1 = new NativeType();
-        typ1.setExtension("ext");
-        typ1.setNatType("bobs");
+        typ1.setExtension("cat");
+        typ1.setNatType("xpdl");
         natTypes.add(typ1);
 
         NativeType typ2 = new NativeType();
-        typ2.setExtension("cat");
-        typ2.setNatType("xpdl");
+        typ2.setExtension("bpmn");
+        typ2.setNatType("BPMN");
         natTypes.add(typ2);
 
         NativeTypesType type = mapper.convertFromNativeType(natTypes);
+        
         assertThat(type.getNativeType().size(), equalTo(natTypes.size()));
         assertThat(type.getNativeType().get(0).getFormat(), equalTo(natTypes.get(0).getNatType()));
         assertThat(type.getNativeType().get(0).getExtension(), equalTo(natTypes.get(0).getExtension()));
+        
+        assertThat(type.getNativeType().size(), equalTo(natTypes.size()));
+        assertThat(type.getNativeType().get(1).getFormat(), equalTo(natTypes.get(1).getNatType()));
+        assertThat(type.getNativeType().get(1).getExtension(), equalTo(natTypes.get(1).getExtension()));
     }
 
 }

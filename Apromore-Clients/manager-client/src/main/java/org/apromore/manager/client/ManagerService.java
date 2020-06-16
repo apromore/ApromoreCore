@@ -156,13 +156,6 @@ public interface ManagerService {
      */
     NativeTypesType readNativeTypes();
 
-//    /**
-//     * get a Fragment.
-//     * @param fragmentId the id of the fragment we want
-//     * @return the found fragment
-//     */
-//    GetFragmentOutputMsgType getFragment(Integer fragmentId);
-
     /**
      * Get the Process Summaries from the Apromore Manager.
      * @param folderId the folder we are currently asking for the process Ids.
@@ -268,37 +261,6 @@ public interface ManagerService {
      * @throws Exception if Plugin is not found
      */
     PluginInfoResult readPluginInfo(String name, String version) throws Exception;
-
-    /**
-     * Get information about all installed Canoniser's for the specified native type.
-     * @param nativeType of the process
-     * @return Set of PluginInfo
-     * @throws Exception TODO: Fix Exception
-     */
-//    Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception;
-
-    /**
-     * Get the initial process XML for specified native type, optionally using a specific Canoniser
-     * @param nativeType of the process
-     * @param canoniserName use a special Canoniser (optional, may be NULL)
-     * @param canoniserVersion use a special Canoniser (optional, may be NULL)
-     * @param owner create with this meta data (optional, may be NULL)
-     * @param processName create with this meta data (optional, may be NULL)
-     * @param versionName create with this meta data (optional, may be NULL)
-     * @param creationDate create with this meta data (optional, may be NULL)
-     * @return XML in native format
-     * @throws Exception in case of any error
-     */
-//    DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName,
-//            String versionName, String creationDate) throws Exception;
-
-    /**
-     * Get information about all installed Deployment Plugins for the specified native type.
-     * @param nativeType of the process
-     * @return Set of PluginInfo about installed Deployment PLugins supporting the native type
-     * @throws Exception in case of any error
-     */
-//    Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception;
 
     /**
      * Deploy process to a running process engine

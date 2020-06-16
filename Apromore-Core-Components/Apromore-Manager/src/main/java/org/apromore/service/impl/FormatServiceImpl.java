@@ -101,7 +101,6 @@ public class FormatServiceImpl implements FormatService {
     @Transactional(readOnly = false)
     public void storeNative(String procName, ProcessModelVersion pmv, String created, String lastUpdate, User user,
             NativeType nativeType, String annVersion, InputStream original) throws JAXBException, IOException {
-        //InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
         Native nat = null;
 
         if (original != null) {
@@ -110,31 +109,9 @@ public class FormatServiceImpl implements FormatService {
             nat.setLastUpdateDate(lastUpdate);
         }
 
-//        String canonicalString = StreamUtil.inputStream2String(cp.getCpf()).trim();
-//        Canonical can = createCanonical(pmv, canonicalString);
-
         pmv.setNativeDocument(nat);
-        //pmv.setCanonicalDocument(can);
-
-//        if (!isEmptyANF(cp.getAnt())) {
-//            String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
-//            if (annString != null && !annString.equals("")) {
-//                Annotation annotation = new Annotation();
-//                annotation.setContent(annString);
-//                annotation.setName(annVersion);
-//                annotation.setNatve(nat);
-//                annotation.setProcessModelVersion(pmv);
-//                annotation = annotationRepo.save(annotation);
-//
-//                pmv.getAnnotations().add(annotation);
-//            }
-//        }
     }
 
-
-//    private boolean isEmptyANF(AnnotationsType ant) {
-//        return ant == null || ant.getAnnotation() == null || ant.getAnnotation().isEmpty();
-//    }
 
     private Native createNative(ProcessModelVersion pmv, NativeType nativeType, String nativeString) {
         Native nat = new Native();

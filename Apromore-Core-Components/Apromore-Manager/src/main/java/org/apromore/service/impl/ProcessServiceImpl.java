@@ -23,7 +23,6 @@
  */
 package org.apromore.service.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -54,7 +53,6 @@ import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.HistoryEnum;
-import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
@@ -102,18 +100,10 @@ public class ProcessServiceImpl implements ProcessService {
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository processModelVersionRepo;
     private GroupProcessRepository groupProcessRepo;
-    //private CanonicalConverter converter;
-    //private AnnotationService annotationSrv;
-    //private CanoniserService canoniserSrv;
-    //private LockService lService;
     private UserService userSrv;
     private FormatService formatSrv;
-    //private FragmentService fService;
-    //private ComposerService composerSrv;
-    //private DecomposerService decomposerSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
-    private boolean enableCPF;
 
     @javax.annotation.Resource
     private Set<ProcessPlugin> processPlugins;
@@ -148,7 +138,6 @@ public class ProcessServiceImpl implements ProcessService {
         this.formatSrv = formatSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
-        this.enableCPF = config.getEnableCPF();
     }
 
     /**
@@ -187,10 +176,6 @@ public class ProcessServiceImpl implements ProcessService {
         if (nativeStream == null) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
             throw new ImportException("Process " + processName + " Failed to import correctly.");
-//        } else if ((folderId.equals(0) && processRepo.findUniqueByName(processName) != null) ||
-//                (processRepo.findByNameAndFolderId(processName, folderId) != null)) {
-//            LOGGER.error("Process " + processName + " was found to already exist in the Repository.");
-//            throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
         }
 
         ProcessModelVersion pmv;
@@ -202,7 +187,7 @@ public class ProcessServiceImpl implements ProcessService {
                 throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
 
-            pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType);
+            pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType);
             LOGGER.info("Process model version: " + pmv);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
 
@@ -262,7 +247,7 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             if (!StringUtils.equals(originalBranchName, newBranchName)) {
                 Process process = processRepo.findOne(processId);
-                pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, nativeType);
+                pmv = addProcessModelVersion(process, processName, versionNumber, newBranchName, now, now, nativeType);
 
                 notifyProcessPlugins(pmv);  // Notify process plugin providers
                 LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATE: ", processName);//call when net is change and then save
@@ -329,42 +314,8 @@ public class ProcessServiceImpl implements ProcessService {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(
                         nativeRepo.getNative(processId, branch, version.toString(), format).getContent(), "text/xml")));
             } else {
-                /*
-                CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
-                Process process;
-                if (format.equals(Constants.CANONICAL)) {
-                    exportResult.setNative(new DataHandler(new ByteArrayDataSource(canoniserSrv.CPFtoString(cpt), Constants.XML_MIMETYPE)));
-                } else {
-                    DecanonisedProcess dp;
-                    AnnotationsType anf = null;
-                    process = processRepo.findOne(processId);
-                    if (withAnn) {
-                        Annotation ann = annotationRepo.getAnnotation(processId, branch, version.toString(), annName);
-                        if (ann != null) {
-                            String annotation = ann.getContent();
-                            if (annotation != null && !annotation.equals("")) {
-                                ByteArrayDataSource dataSource = new ByteArrayDataSource(annotation, Constants.XML_MIMETYPE);
-                                anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
-                            }
-                        }
-
-                        if (ann != null && !process.getNativeType().getNatType().equalsIgnoreCase(ann.getNatve().getNativeType().getNatType())) {
-                            anf = annotationSrv.preProcess(ann.getNatve().getNativeType().getNatType(), format, cpt, anf);
-                        } else {
-                            anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
-                        }
-                    } else if (annName == null) {
-                        anf = annotationSrv.preProcess(null, format, cpt, null);
-                    }
-
-                    dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
-
-                    exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
-                    exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
-                }
-                */
-                LOGGER.error("Failed to export process model {} to format {}", name, format);
-                throw new ExportFormatException("Failed to export process model.");
+                LOGGER.error("Unsupported: export process {} to format {}", name, format);
+                throw new ExportFormatException("Unsupported export format.");
             }
 
             return exportResult;
@@ -414,7 +365,6 @@ public class ProcessServiceImpl implements ProcessService {
                     process.setGroupProcesses(groupProcesses);
                 }
 
-                updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
                 if (isPublic != !publicGroupProcesses.isEmpty()) {
                     if (isPublic) {
                         workspaceSrv.createPublicStatusForUsers(process);
@@ -458,220 +408,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    /**
-     * @see ProcessService#addProcessModelVersion(ProcessBranch, FragmentVersion, Version, int, int)
-     *      {@inheritDoc}
-     */
-//    @Override
-//    @Transactional(readOnly = false)
-//    public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final FragmentVersion rootFragmentVersion,
-//                final Version version, final int numVertices, final int numEdges) throws ExceptionDao {
-//        ProcessModelVersion pmv = new ProcessModelVersion();
-//
-//        pmv.setProcessBranch(branch);
-//        pmv.setRootFragmentVersion(rootFragmentVersion);
-//        pmv.setVersionNumber(version.toString());
-//        pmv.setNumVertices(numVertices);
-//        pmv.setNumEdges(numEdges);
-//        pmv.setCreateDate(SimpleDateFormat.getDateInstance().format(new Date()));
-//        pmv.setLastUpdateDate(pmv.getCreateDate());
-//
-//        return processModelVersionRepo.save(pmv);
-//    }
-
-
-
-
-    /**
-     * @see ProcessService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion)
-     * {@inheritDoc}
-     */
-    /*
-    @Override
-    @Transactional(readOnly = false)
-    public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv) {
-        String processName = pmv.getProcessBranch().getProcess().getName();
-        String branchName = pmv.getProcessBranch().getBranchName();
-        return getCanonicalFormat(pmv, processName, branchName, false);
-    }
-    */
-
-    /**
-     * @see ProcessService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion)
-     * {@inheritDoc}
-     */
-    /*
-    @Override
-    @Transactional(readOnly = false)
-    public Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber) {
-        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber);
-        CanonicalProcessType cpf = getCanonicalFormat(pmv);
-        return converter.convert(cpf);
-    }
-    */
-
-    /**
-     * @see ProcessService#getCanonicalFormat(ProcessModelVersion, String, String, boolean)
-     * {@inheritDoc}
-     */
-    /*
-    @Override
-    @Transactional(readOnly = false)
-    public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv, final String processName, final String branchName, final boolean lock) {
-        Canonical canonical;
-        CanonicalProcessType tmp = new CanonicalProcessType();
-        try {
-            canonical = composerSrv.compose(pmv.getRootFragmentVersion());
-            //canonical = pmv.getCanonicalDocument();
-            canonical.setProperty(Constants.PROCESS_NAME, processName);
-            canonical.setProperty(Constants.BRANCH_NAME, branchName);
-            canonical.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
-            canonical.setProperty(Constants.VERSION_NUMBER, pmv.getVersionNumber());
-            canonical.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
-            canonical.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
-            if (pmv.getProcessBranch().getProcess().getNativeType() != null) {
-                canonical.setProperty(Constants.INITIAL_FORMAT, pmv.getProcessBranch().getProcess().getNativeType().getNatType());
-            } else {
-                canonical.setProperty(Constants.INITIAL_FORMAT, null);
-            }
-            if (lock) {
-                canonical.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
-            }
-            Map<String, Variants.Variant> variantMap = new HashMap<>();
-            for (ProcessModelAttribute attribute: pmv.getProcessModelAttributes()) {
-                Element extensionElements = XMLUtils.stringToAnyElement(attribute.getAny());
-                if (extensionElements != null) {
-                    java.lang.Object o = JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class,
-                                                                 com.processconfiguration.ObjectFactory.class,
-                                                                 com.signavio.ObjectFactory.class)
-                                                    .createUnmarshaller()
-                                                    .unmarshal(extensionElements);
-                    canonical.setProperty(attribute.getName(), attribute.getValue(), o);
-
-                    // Populate a map from variant IDs to the actual JAXB Variant objects
-                    if (o instanceof Variants) {
-                        Variants variants = (Variants) o;
-                        for (Variants.Variant variant: variants.getVariant()) {
-                            variantMap.put(variant.getId(), variant);
-                        }
-                    } else {
-                        LOGGER.warn("Ignoring extension element " + o);
-                    }
-                } else {
-                    canonical.setProperty(attribute.getName(), attribute.getValue(), extensionElements);
-                }
-            }
-
-            // Kludge to work around limitations in JAXB, populating configurationAnnotation/configuration@variantRef ID references
-            for (Map.Entry entry: canonical.variantMap.entrySet()) {
-                ((ConfigurationAnnotation.Configuration) entry.getKey()).setVariantRef(variantMap.get(entry.getValue()));
-            }
-
-            tmp = converter.convert(canonical);
-        } catch (ExceptionDao | JAXBException e) {
-            String msg = "Failed to retrieve the current version of the process model " + processName + " - " + branchName;
-            LOGGER.error(msg, e);
-        }
-        return tmp;
-    }
-    */
-
-    /**
-     * @see ProcessService#getCurrentProcessModel(String, String, boolean)
-     * {@inheritDoc}
-     */
-    /*
-    @Override
-    @Transactional(readOnly = false)
-    public CanonicalProcessType getCurrentProcessModel(final String processName, final String branchName, final boolean lock)
-            throws LockFailedException {
-        ProcessModelVersion pmv = processModelVersionRepo.getCurrentProcessModelVersion(processName, branchName);
-
-        if (pmv == null) {
-            return null;
-        }
-        if (lock) {
-            boolean locked = lService.lockFragment(pmv.getRootFragmentVersion().getId());
-            if (!locked) {
-                throw new LockFailedException();
-            }
-        }
-
-        return getCanonicalFormat(pmv, processName, branchName, lock);
-    }
-    */
-
-    /**
-     * @see ProcessService#getProcessModelVersion(Integer, String, String, Version, boolean)
-     * {@inheritDoc}
-     */
-    /*
-    @Override
-    @Transactional(readOnly = false)
-    public CanonicalProcessType getProcessModelVersion(final Integer processId, final String processName, final String branchName,
-            final Version version, final boolean lock) throws LockFailedException {
-        ProcessModelVersion pmv = null;
-
-        if (version != null) {
-            pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version.toString());
-        }
-
-        if (pmv == null) {
-            pmv = processModelVersionRepo.getLatestProcessModelVersion(processId, "MAIN");
-        }
-        if (lock) {
-            boolean locked = lService.lockFragment(pmv.getRootFragmentVersion().getId());
-            if (!locked) {
-                throw new LockFailedException();
-            }
-        }
-
-        return getCanonicalFormat(pmv, processName, branchName, lock);
-    }
-    */
-
-
-    /**
-     * Creates new versions for all ascendant fragments of originalFragment by
-     * replacing originalFragment with updatedFragment. New versions will be
-     * created for all process models which use any of the updated fragments as
-     * its root fragment. This method also releases locks of all ascendant
-     * fragments.
-     * @param originalFragment the original fragment id
-     * @param updatedFragment the updated fragment id
-     * @param composingFragments the composing fragments
-     */
-    /*
-    @Override
-    @Transactional(readOnly = false)
-    public void propagateChangesWithLockRelease(final FragmentVersion originalFragment, final FragmentVersion updatedFragment,
-            final Set<FragmentVersion> composingFragments, final Version newVersionNumber) throws RepositoryException {
-        // create new versions for all process models, which use this fragment as the root fragment, and unlock those process models.
-        List<ProcessModelVersion> usedProcessModels = processModelVersionRepo.getUsedProcessModelVersions(originalFragment);
-        for (ProcessModelVersion pmv : usedProcessModels) {
-            createNewProcessModelVersion(pmv, updatedFragment, composingFragments, newVersionNumber);
-        }
-
-        if (originalFragment != null) {
-            // unlock the fragment
-            LOGGER.debug("Unlocking the original fragment: " + originalFragment);
-            lService.unlockFragment(originalFragment);
-
-            // release locks of all descendant fragments of the original fragment
-            lService.unlockDescendantFragments(originalFragment);
-
-            // create new version for all ascendant fragments
-            LOGGER.debug("Propagating to parent fragments of fragment: " + originalFragment);
-            List<FragmentVersion> lockedParents = fragmentVersionRepo.getLockedParentFragments(originalFragment);
-
-            for (FragmentVersion parent : lockedParents) {
-                propagateToParentsWithLockRelease(parent, originalFragment, updatedFragment, composingFragments, newVersionNumber);
-            }
-        }
-    }
-    */
-
-
 
     /**
      * @see ProcessService#deleteProcessModel(java.util.List)
@@ -688,36 +424,24 @@ public class ProcessServiceImpl implements ProcessService {
                 if (!canUserWriteProcess(user, process.getId())) {
                     throw new UpdateProcessException("Write permission denied for " + user.getUsername());
                 }
-                List<ProcessBranch> branches = process.getProcessBranches();
-
+                //List<ProcessBranch> branches = process.getProcessBranches();
                 LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName() + " to be deleted.");
 
                 try {
-                    // Only delete the version selected, but if there is only a single version then remove all of the process
-                    if (branches.size() > 1 || (branches.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
+                    // Delete the process and branch if there's only one model version 
+                    if (pvid.getProcessBranch().getProcessModelVersions().size() > 1) {
                         ProcessBranch branch = pvid.getProcessBranch();
                         List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
-                        updateBranch(pmvs, pvid, branch);
+                        deleteProcessModelVersion(pmvs, pvid, branch);
                     } else {
-                        //deleteProcessModelVersion(pvid);
                         processRepo.delete(process);
                     }
                 } catch (ExceptionDao e) {
                     throw new UpdateProcessException("Unable to modify " + process.getName(), e);
                 }
 
-                // Also delete the PQL index for this process model version
-                //notifyDelete(pvid);
-
-                // Notify process plugin providers
                 notifyProcessPlugins(pvid);
             }
-/*
-            } catch (Exception e) {
-                String msg = "Failed to delete the current version of the Process with id: " + entry.getId();
-                LOGGER.error(msg, e);
-            }
-*/
         }
     }
 
@@ -730,7 +454,6 @@ public class ProcessServiceImpl implements ProcessService {
     public String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException {
         String xmlBPMNProcess;
         String format = "BPMN 2.0";
-        String annName = "BPMN 2.0";
 
         try {
             // Debug tracing of the authenticated principal
@@ -747,30 +470,6 @@ public class ProcessServiceImpl implements ProcessService {
                 xmlBPMNProcess = nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
                 LOGGER.info("native");
             } else {
-                /*
-                LOGGER.info("notNative");
-                CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
-                Process process = processRepo.findOne(processId);
-                DecanonisedProcess dp;
-                AnnotationsType anf = null;
-
-                Annotation ann = annotationRepo.getAnnotation(processId, branch, version.toString(), annName);
-                if (ann != null) {
-                    String annotation = ann.getContent();
-                    if (annotation != null && !annotation.equals("")) {
-                        ByteArrayDataSource dataSource = new ByteArrayDataSource(annotation, Constants.XML_MIMETYPE);
-                        anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
-                    }
-                }
-
-                if (ann != null && !process.getNativeType().getNatType().equalsIgnoreCase(ann.getNatve().getNativeType().getNatType())) {
-                    anf = annotationSrv.preProcess(ann.getNatve().getNativeType().getNatType(), format, cpt, anf);
-                } else {
-                    anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
-                }
-                dp = canoniserSrv.deCanonise(format, cpt, anf, new HashSet<RequestParameterType<?>>());
-                xmlBPMNProcess = IOUtils.toString(dp.getNativeFormat(), "UTF-8");
-                */
                 LOGGER.error("Not supported to retrieve the canonical format");
                 throw new RepositoryException("Not supported to retrieve the canonical format");
             }
@@ -785,16 +484,16 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private void updateBranch(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid, ProcessBranch branch) throws ExceptionDao {
-        ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvid);
+    private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
+        ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
         if (newCurrent == null) {
-            newCurrent = getNextVersion(pmvs, pvid);
+            newCurrent = getNextVersion(pmvs, pvidToDelete);
         }
         branch.setCurrentProcessModelVersion(newCurrent);
-        branch.getProcessModelVersions().remove(pvid);
+        branch.getProcessModelVersions().remove(pvidToDelete);
         processBranchRepo.save(branch);
 
-        deleteProcessModelVersion(pvid);
+        deleteProcessModelVersion(pvidToDelete);
     }
 
     private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid) {
@@ -832,32 +531,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     /* Does the processing of ImportProcess. */
     @Transactional(readOnly = false)
-    private ProcessModelVersion addProcess(final Process process, final String processName, final Version version, final String branchName,
+    private ProcessModelVersion addProcessModelVersion(final Process process, final String processName, final Version version, final String branchName,
             final String created, final String lastUpdated, NativeType nativeType) throws ImportException {
         ProcessModelVersion pmv;
         ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
-
-//        if (enableCPF) {
-//            Canonical can = converter.convert(cpf.getCpt());
-//            pmv = createProcessModelVersion(branch, version, nativeType, can, cpf.getCpt().getUri());
-//            try {
-//                if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
-//                    OperationContext rootFragment = decomposerSrv.decompose(can, pmv);
-//                    if (rootFragment != null) {
-//                        pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
-//                    } else {
-//                        throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
-//                    }
-//                }
-//            } catch (RepositoryException re) {
-//                throw new ImportException("Failed to add the process model " + processName, re);
-//            }
-//        } else {
-//            pmv = createProcessModelVersion(branch, version, nativeType, null, null);
-//        }
-        
         pmv = createProcessModelVersion(branch, version, nativeType, null, null);
-
         return pmv;
     }
 
@@ -887,27 +565,6 @@ public class ProcessServiceImpl implements ProcessService {
                 return pmv;
             }
 
-            /*
-            graph = converter.convert(cpf.getCpt());
-            rootFragment = decomposerSrv.decompose(graph, pmVersion);
-            if (rootFragment != null) {
-                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
-                        pmVersion.getFragmentVersions(), version);
-            }
-
-            processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
-            if (processModelVersion.getRootFragmentVersion() == null) {
-                assert rootFragment != null;
-                processModelVersion.setRootFragmentVersion(rootFragment.getCurrentFragment());
-            }
-            processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
-            processModelVersion.setOriginalId(cpf.getCpt().getUri());
-            processModelVersion.setNumEdges(graph.countEdges());
-            processModelVersion.setNumVertices(graph.countVertices());
-            processModelVersion.setLockStatus(Constants.NO_LOCK);
-            processModelVersion.setNativeType(nativeType);
-            processModelVersion.setLastUpdateDate(lastUpdate);
-            */
         } else {
             LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
             throw new RepositoryException("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
@@ -916,17 +573,10 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    /* Delete a Process Model */
     @Transactional(readOnly = false)
     private void deleteProcessModelVersion(final ProcessModelVersion pmv) throws ExceptionDao {
         try {
-            // Check is the ProcessModelVersion used by any other Branch (Check the sourceProcessModelVersionId column in branch).
-            if (processBranchRepo.countProcessModelBeenForked(pmv) > 0) {
-                throw new Exception("There are other branches forked from this Process Model.");
-            } else {
-                //deleteFragmentVersion(pmv.getRootFragmentVersion(), true);
-                processModelVersionRepo.delete(pmv);
-            }
+            processModelVersionRepo.delete(pmv);
         } catch (Exception e) {
             String msg = "Failed to delete the process model version " + pmv.getId();
             LOGGER.error(msg, e);
@@ -934,29 +584,6 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-//    /* Delete a Fragment Version from the Database. Check if it is used by other PMV or FV first. */
-//    private void deleteFragmentVersion(FragmentVersion fragmentVersion, boolean rootFragmentVersion) {
-//        long processCount = processModelVersionRepo.countFragmentUsesInProcessModels(fragmentVersion);
-//        long fragmentCount =  fragmentVersionRepo.countFragmentUsesInFragmentVersions(fragmentVersion);
-//        if ((rootFragmentVersion && processCount == 1 && fragmentCount == 0) ||
-//                (!rootFragmentVersion && processCount == 0 && fragmentCount == 0)) {
-//            List<FragmentVersion> children = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
-//            fragmentVersionDagRepo.deleteChildRelationships(fragmentVersion);
-//            fragmentVersionRepo.delete(fragmentVersion);
-//            for (FragmentVersion child : children) {
-//                deleteFragmentVersion(child, false);
-//            }
-//        }
-//    }
-
-
-    /* Update a list of native process models with this new meta data, */
-    private void updateNative(final Native natve, final String processName, final String username, final Version version) {
-        if (natve != null) {
-            String natType = natve.getNativeType().getNatType();
-            InputStream inStr = new ByteArrayInputStream(natve.getContent().getBytes());
-        }
-    }
 
     /* Inserts a new process into the DB. */
     private Process insertProcess(final String processName, final User user, final NativeType nativeType, final String domain,
@@ -1036,10 +663,6 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setProcessBranch(branch);
         processModel.setOriginalId(netId);
         processModel.setVersionNumber(version.toString());
-        if (enableCPF) {
-//            processModel.setNumEdges(proModGrap.countEdges());
-//            processModel.setNumVertices(proModGrap.countVertices());
-        }
         processModel.setNumEdges(0);
         processModel.setNumVertices(0);
         processModel.setLockStatus(Constants.NO_LOCK);
@@ -1049,247 +672,9 @@ public class ProcessServiceImpl implements ProcessService {
 
         branch.setCurrentProcessModelVersion(processModel);
 
-        if (enableCPF) {
-//            addAttributesToProcessModel(proModGrap, processModel);
-//            addObjectsToProcessModel(proModGrap, processModel);
-//            addResourcesToProcessModel(proModGrap, processModel);
-//            updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
-        }
-
         return processModelVersionRepo.save(processModel);
     }
 
-
-    /* Insert the Attributes to the ProcessModel */
-
-//    private void addAttributesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-//        for (Map.Entry<String, IAttribute> obj : proModGrap.getProperties().entrySet()) {
-//            ProcessModelAttribute pmvAtt = new ProcessModelAttribute();
-//            pmvAtt.setName(obj.getKey());
-//            pmvAtt.setValue(obj.getValue().getValue());
-//            java.lang.Object any = obj.getValue().getAny();
-//            if (any instanceof Element) {
-//                pmvAtt.setAny(XMLUtils.anyElementToString((Element) any));
-//            }
-//            else if (any instanceof Variants) {
-//                String s = XMLUtils.extensionElementToString(any);
-//                LOGGER.info("Variants any=" + any + " string=" + s);
-//                pmvAtt.setAny(s);
-//            }
-//            else if (any != null) {
-//                throw new IllegalArgumentException("Parsed an unsupported extension: " + any);
-//            }
-//            pmvAtt.setProcessModelVersion(process);
-//            process.getProcessModelAttributes().add(pmvAtt);
-//        }
-//    }
-//
-//    /* Insert the Objects to the ProcessModel */
-//    private void addObjectsToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-//        Object objTyp;
-//        if (proModGrap.getObjects() != null) {
-//            for (ICPFObject cpfObj : proModGrap.getObjects()) {
-//                objTyp = new org.apromore.dao.model.Object();
-//                objTyp.setUri(cpfObj.getId());
-//                objTyp.setName(cpfObj.getName());
-//                objTyp.setNetId(cpfObj.getNetId());
-//                objTyp.setConfigurable(cpfObj.isConfigurable());
-//                objTyp.setProcessModelVersion(process);
-//                if (cpfObj.getObjectType().equals(ObjectTypeEnum.HARD)) {
-//                    objTyp.setType(ObjectTypeEnum.HARD);
-//                } else {
-//                    objTyp.setType(ObjectTypeEnum.SOFT);
-//                    objTyp.setSoftType(cpfObj.getSoftType());
-//                }
-//
-//                addObjectAttributes(objTyp, cpfObj);
-//
-//                process.getObjects().add(objTyp);
-//            }
-//        }
-//    }
-//
-//    /* Add Attributes to the Object Reference. */
-//    private void addObjectAttributes(final org.apromore.dao.model.Object object, final ICPFObject cpfObject) {
-//        ObjectAttribute objAtt;
-//        for (Map.Entry<String, IAttribute> e : cpfObject.getAttributes().entrySet()) {
-//            objAtt = new ObjectAttribute();
-//            objAtt.setName(e.getKey());
-//            objAtt.setValue(e.getValue().getValue());
-//            if (e.getValue().getAny() instanceof Element) {
-//                objAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
-//            }
-//            objAtt.setObject(object);
-//
-//            object.getObjectAttributes().add(objAtt);
-//        }
-//    }
-//
-//    /* Insert the Resources to the ProcessModel */
-//    private void addResourcesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-//        Resource resTyp;
-//        if (proModGrap.getResources() != null) {
-//            for (ICPFResource cpfRes : proModGrap.getResources()) {
-//                resTyp = new Resource();
-//                resTyp.setUri(cpfRes.getId());
-//                resTyp.setName(cpfRes.getName());
-//                resTyp.setOriginalId(cpfRes.getOriginalId());
-//                resTyp.setConfigurable(cpfRes.isConfigurable());
-//                if (cpfRes.getResourceType() != null) {
-//                    if (cpfRes.getResourceType().equals(ResourceTypeEnum.HUMAN)) {
-//                        resTyp.setType(ResourceTypeEnum.HUMAN);
-//                        if (cpfRes.getHumanType() != null) {
-//                            resTyp.setTypeName(cpfRes.getHumanType().value());
-//                        }
-//                    } else {
-//                        resTyp.setType(ResourceTypeEnum.NONHUMAN);
-//                        if (cpfRes.getNonHumanType() != null) {
-//                            resTyp.setTypeName(cpfRes.getNonHumanType().value());
-//                        }
-//                    }
-//                }
-//                resTyp.setProcessModelVersion(process);
-//
-//                addResourceAttributes(resTyp, cpfRes);
-//
-//                process.getResources().add(resTyp);
-//            }
-//        }
-//    }
-//
-//    /* Add Attributes to the Object Reference. */
-//    private void addResourceAttributes(final Resource resource, final ICPFResource cpfResource) {
-//        ResourceAttribute resAtt;
-//        for (Map.Entry<String, IAttribute> e : cpfResource.getAttributes().entrySet()) {
-//            resAtt = new ResourceAttribute();
-//            resAtt.setName(e.getKey());
-//            resAtt.setValue(e.getValue().getValue());
-//            if (e.getValue().getAny() instanceof Element) {
-//                resAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
-//            }
-//            resAtt.setResource(resource);
-//
-//            resource.getResourceAttributes().add(resAtt);
-//        }
-//    }
-//
-//    /* Update to Process Models Resource information, specifically the Specialisation Id's. This can't be done at
-//       time of original entry as we might not have all the Resources in memory. */
-//    private void updateResourcesOnProcessModel(Set<ICPFResource> resources, ProcessModelVersion processModel) {
-//        if (resources != null) {
-//            for (ICPFResource cpfRes : resources) {
-//                addSpecialisations(processModel, cpfRes, findResource(processModel.getResources(), cpfRes.getId()));
-//            }
-//        }
-//    }
-//
-//    /* Update the Resource with it's specialisations Ids. */
-//    private void addSpecialisations(ProcessModelVersion processModel, ICPFResource cpfRes, Resource resource) {
-//        if (cpfRes.getSpecializationIds() != null) {
-//            for (String resourceId : cpfRes.getSpecializationIds()) {
-//                resource.getSpecialisations().add(findResource(processModel.getResources(), resourceId));
-//            }
-//        }
-//    }
-//
-//
-//    /* Finds the Resource using the resource Id supplied. */
-//    private Resource findResource(Set<Resource> resources, String resourceId) {
-//        Resource found = null;
-//        for (Resource resource : resources) {
-//            if (resource.getUri().equals(resourceId)) {
-//                found = resource;
-//                break;
-//            }
-//        }
-//        if (found == null) {
-//            LOGGER.warn("Could not find Resource with Id: " + resourceId);
-//        }
-//        return found;
-//    }
-
-
-    /*
-    private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment, FragmentVersion updatedFragment,
-            Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException {
-        LOGGER.debug("Propagating - fragment: " + originalFragment + ", parent: " + parent);
-        FragmentVersion newParent = createNewFragmentVersionByReplacingChild(parent, originalFragment, updatedFragment);
-        composingFragments.add(newParent);
-        fillUnchangedDescendants(newParent, updatedFragment, composingFragments);
-
-        List<ProcessModelVersion> usedProcessModels = processModelVersionRepo.getUsedProcessModelVersions(parent);
-        for (ProcessModelVersion pmv : usedProcessModels) {
-            createNewProcessModelVersion(pmv, newParent, composingFragments, newVersionNumber);
-            lService.unlockProcessModelVersion(pmv);
-        }
-        lService.unlockFragment(parent);
-
-        List<FragmentVersion> nextLockedParents = fragmentVersionRepo.getLockedParentFragments(parent);
-        for (FragmentVersion nextParent : nextLockedParents) {
-            propagateToParentsWithLockRelease(nextParent, parent, newParent, composingFragments, newVersionNumber);
-        }
-        LOGGER.debug("Completed propagation - fragment: " + originalFragment + ", parent: " + parent);
-    }
-    */
-
-    /*
-    private FragmentVersion createNewFragmentVersionByReplacingChild(FragmentVersion fragmentVersion, FragmentVersion oldChildFragmentVersion,
-            FragmentVersion newChildFragmentVersion) {
-        int lockType = 0;
-        int lockCount = 0;
-        if (fragmentVersion.getLockStatus() == 1) {
-            if (fragmentVersion.getLockCount() > 1) {
-                lockType = 1;
-                lockCount = fragmentVersion.getLockCount() - 1;
-            }
-        }
-
-        Map<String, String> childMappings = new HashMap<>();
-        Set<FragmentVersionDag> childFragmentVersionDags = fragmentVersion.getChildFragmentVersionDags();
-        for (FragmentVersionDag childFragment : childFragmentVersionDags) {
-            childMappings.put(childFragment.getPocketId(), childFragment.getChildFragmentVersion().getId().toString());
-            if (childFragment.getChildFragmentVersion().equals(oldChildFragmentVersion)) {
-                childMappings.put(childFragment.getPocketId(), newChildFragmentVersion.getId().toString());
-            }
-        }
-
-        return fService.addFragmentVersion(null, childMappings, fragmentVersion.getId().toString(),
-                lockType, lockCount, fragmentVersion.getFragmentSize(), fragmentVersion.getFragmentType());
-    }
-
-    private void fillUnchangedDescendants(FragmentVersion parent, FragmentVersion updatedChild, Set<FragmentVersion> composingFragments) {
-        List<FragmentVersion> allChilds = fragmentVersionRepo.getChildFragmentsByFragmentVersion(parent);
-        for (FragmentVersion child : allChilds) {
-            if (child.equals(updatedChild)) {
-                composingFragments.add(child);
-                fillDescendants(child, composingFragments);
-            }
-        }
-    }
-
-    private void fillDescendants(FragmentVersion fragment, Set<FragmentVersion> composingFragments) {
-        List<FragmentVersion> allChilds = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragment);
-        for (FragmentVersion child : allChilds) {
-            composingFragments.add(child);
-            fillDescendants(child, composingFragments);
-        }
-    }
-    */
-
-    /*
-    private void createNewProcessModelVersion(ProcessModelVersion pmv, FragmentVersion rootFragment,
-            Set<FragmentVersion> composingFragments, final Version newVersionNumber) throws RepositoryException {
-        try {
-            ProcessModelVersion pdo = addProcessModelVersion(pmv.getProcessBranch(), rootFragment, newVersionNumber, 0, 0);
-            for (FragmentVersion fragVersion : composingFragments) {
-                fragVersion.addProcessModelVersion(pdo);
-                pdo.addFragmentVersion(fragVersion);
-            }
-        } catch (ExceptionDao de) {
-            throw new RepositoryException(de);
-        }
-    }
-    */
 
     /* Did the request ask for the model in the same format as it was originally added? */
     private boolean isRequestForNativeFormat(Integer processId, String branch, Version version, String format) {
@@ -1297,8 +682,4 @@ public class ProcessServiceImpl implements ProcessService {
         return pmv != null && pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
     }
 
-    /* Did the request ask for the Annotations for this model without the actual model? */
-//    private boolean isRequestForAnnotationsOnly(String format) {
-//        return format.startsWith("Annotations") ;
-//    }
 }

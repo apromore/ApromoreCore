@@ -987,31 +987,6 @@ public class ManagerServiceClient implements ManagerService {
 
     }
 
-     /**
-     * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
-     */
-//    @Override
-//    public Set<PluginInfo> readDeploymentPluginInfo(final String nativeType) throws Exception {
-//        LOGGER.debug("Preparing readDeploymentPlugin ...");
-//
-//        ReadDeploymentPluginInfoInputMsgType msg = new ReadDeploymentPluginInfoInputMsgType();
-//        msg.setNativeType(nativeType);
-//
-//        JAXBElement<ReadDeploymentPluginInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadDeploymentPluginInfoRequest(msg);
-//        @SuppressWarnings("unchecked")
-//        JAXBElement<ReadDeploymentPluginInfoOutputMsgType> response = (JAXBElement<ReadDeploymentPluginInfoOutputMsgType>)
-//                webServiceTemplate.marshalSendAndReceive(request);
-//        if (response.getValue().getResult().getCode() == -1) {
-//            throw new Exception(response.getValue().getResult().getMessage());
-//        } else {
-//            Set<PluginInfo> infoSet = new HashSet<>();
-//            for (PluginInfo pluginInfo : response.getValue().getPluginInfo()) {
-//                infoSet.add(pluginInfo);
-//            }
-//            return infoSet;
-//        }
-//    }
-
     /**
      * @see org.apromore.manager.client.ManagerService#deployProcess
      * {@inheritDoc}

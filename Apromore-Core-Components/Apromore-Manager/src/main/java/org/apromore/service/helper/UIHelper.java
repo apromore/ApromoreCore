@@ -328,17 +328,6 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaryType.setDomain(log.getDomain());
         logSummaryType.setRanking(log.getRanking());
 
-//        ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(log.getId(), "MAIN");
-//        if (latestVersion != null) {
-//            logSummaryType.setLastVersion(latestVersion.getVersionNumber());
-//        }
-
-//        if (log.getUser() != null) {
-//            logSummaryType.setOwner(log.getUser().getUsername());
-//        }
-
-//        buildVersionSummaryTypeList(logSummaryType, null, process);
-
         List<GroupLog> groupLogs = glRepository.findByLogId(log.getId());
         boolean hasRead = true, hasWrite = true, hasOwnership = true;
         for (GroupLog groupLog: groupLogs) {
@@ -445,33 +434,7 @@ public class UIHelper implements UserInterfaceHelper {
         assert externalId != null;
     }
 
-    /* Builds the list of Native Summaries for a version summary. */
-//    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, String branchName,
-//            Version maxVersion) {
-//        AnnotationsType annotation;
-//        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), branchName, maxVersion.toString());
-//
-//        for (Annotation ann : annotations) {
-//            annotation = new AnnotationsType();
-//
-//            if (ann.getNatve() != null) {
-//                annotation.setNativeType(ann.getNatve().getNativeType().getNatType());
-//                buildAnnotationNames(ann.getNatve(), annotation);
-//            }
-//
-//            versionSummary.getAnnotations().add(annotation);
-//        }
-//    }
-
-    /* Populate the Annotation names. */
-//    private void buildAnnotationNames(Native nat, AnnotationsType annotation) {
-//        List<Annotation> anns = aRepository.findByUri(nat.getId());
-//        for (Annotation ann : anns) {
-//            annotation.getAnnotationName().add(ann.getName());
-//        }
-//    }
-
-    /* From a list of ProcessVersionTypes build a list of the id's of each */
+     /* From a list of ProcessVersionTypes build a list of the id's of each */
     private List<Integer> buildProcessIdList(ProcessVersionsType similarProcesses) {
         if (similarProcesses == null) {
             return null;

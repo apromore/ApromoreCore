@@ -99,9 +99,6 @@ public class ManagerServiceImpl implements ManagerService {
     @Inject private SecurityService secSrv;
     @Inject private WorkspaceService workspaceSrv;
     @Inject private UserInterfaceHelper uiHelper;
-    //@Inject private MergeService mergeSrv;
-    //@Inject private SimilarityService similaritySrv;
-    //private boolean enableCPF = true;
 
     private boolean isGEDMatrixReady = true;
 
@@ -125,11 +122,6 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public List<UserType> searchUsers(String searchString) {
-        //return secSrv.searchUsers(searchString)
-        //             .stream()
-        //             .map(UserMapper::convertUserTypes)
-        //             .collect(Collectors.toList());
-
         List<UserType> users = new ArrayList<>();
         for (User user: secSrv.searchUsers(searchString)) {
             users.add(UserMapper.convertUserTypes(user, secSrv));
@@ -145,11 +137,6 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public List<GroupType> searchGroups(String searchString) {
-        //return secSrv.searchGroups(searchString)
-        //             .stream()
-        //             .map(GroupMapper::toGroupType)
-        //             .collect(Collectors.toList());
-
         List<GroupType> groups = new ArrayList<>();
         for (Group group: secSrv.searchGroups(searchString)) {
             groups.add(GroupMapper.toGroupType(group));
@@ -325,38 +312,6 @@ public class ManagerServiceImpl implements ManagerService {
         return NativeTypeMapper.convertFromNativeType(frmSrv.findAllFormats());
     }
 
-//    /**
-//     * get a Fragment.
-//     * @param fragmentId the id of the fragment we want
-//     * @return the found fragment
-//     */
-//    @Override
-//    public GetFragmentOutputMsgType getFragment(Integer fragmentId) {
-//
-//        String defaultFormat = "EPML 2.0";
-//
-//        try {
-//            if (!enableCPF) {
-//                throw new CanoniserException("Fragments not supported because manager.enableCPF is false");
-//            }
-//
-//            CanonicalProcessType cpt = fragmentSrv.getFragmentToCanonicalProcessType(fragmentId);
-//            DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, null, new HashSet<RequestParameterType<?>>());
-//
-//            ExportFragmentResultType exportResult = new ExportFragmentResultType();
-//            exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
-//            exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
-//
-//            GetFragmentOutputMsgType res = new GetFragmentOutputMsgType();
-//            res.setFragmentResult(exportResult);
-//            res.setNativeType(defaultFormat);
-//       
-//            return res;
-//
-//        } catch (CanoniserException | IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     /**
      * Get the Process Summaries from the Apromore Manager.
@@ -474,25 +429,12 @@ public class ManagerServiceImpl implements ManagerService {
     public ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
             InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean makePublic) throws Exception {
 
-//        CanonisedProcess canonisedProcess;
-//        if (enableCPF) {
-//            canonisedProcess = canoniserService.canonise(nativeType, xml_process, canoniserProperties);
-//        } else {
-//            canonisedProcess = new CanonisedProcess();
-//            canonisedProcess.setOriginal(xml_process);
-//        }
-//        assert canonisedProcess != null;
         ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, new Version(versionNumber), nativeType, nativeStream,
                 domain, "", created, lastUpdate, makePublic);
         ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
                 nativeType, domain, created, lastUpdate, username, makePublic);
 
         ImportProcessResultType importResult = new ImportProcessResultType();
-//        if (canonisedProcess.getMessages() != null) {
-//            importResult.setMessage(PluginHelper.convertFromPluginMessages(canonisedProcess.getMessages()));
-//        } else {
-//            importResult.setMessage(PluginHelper.convertFromPluginMessages(Collections.emptyList()));
-//        }
         importResult.setMessage(PluginHelper.convertFromPluginMessages(Collections.emptyList()));
         importResult.setProcessSummary(process);
 
@@ -544,107 +486,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     /**
-     * Get information about all installed Canoniser's for the specified native type.
-     * @param nativeType of the process
-     * @return Set of PluginInfo
-     * @throws Exception TODO: Fix Exception
-     */
-//    @Override
-//    public Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception {
-//        Set<PluginInfo> results = new HashSet<>();
-//        Set<Canoniser> cList = canoniserService.listByNativeType(nativeType);
-//        for (Canoniser c : cList) {
-//            results.add(PluginHelper.convertPluginInfo(c));
-//        }
-//
-//        return results;
-//    }
-
-    /**
-     * Read some meta data form the native process XML, optionally using a special Canoniser
-     * @param nativeType of the process
-     * @param nativeProcess the process as an XML Stream.
-     * @return Meta data of Process
-     * @throws Exception in case of any error
-     */
-//    @Override
-//    public NativeMetaData readNativeMetaData(String nativeType, InputStream nativeProcess) throws Exception {
-//        Canoniser c;
-//        if (canoniserName != null && canoniserVersion != null) {
-//            c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
-//        } else {
-//            c = canoniserService.findByNativeType(nativeType);
-//        }
-//
-//        CanoniserMetadataResult metaData = c.readMetaData(nativeProcess, new PluginRequestImpl());
-//        if (metaData != null) {
-//            return CanoniserHelper.convertFromCanoniserMetaData(metaData);
-//        } else {
-//            throw new Exception("Couldn't read meta data!");
-//        }        
-//        NativeMetaData xmlMetaData = new NativeMetaData();
-//        xmlMetaData.setProcessName(metaData.getProcessName());
-//        xmlMetaData.setProcessDocumentation("");
-//        xmlMetaData.setProcessVersion("");
-//        return xmlMetaData;
-//    }
-
-    /**
-     * Get the initial process XML for specified native type, optionally using a specific Canoniser
-     * @param nativeType of the process
-     * @param canoniserName use a special Canoniser (optional, may be NULL)
-     * @param canoniserVersion use a special Canoniser (optional, may be NULL)
-     * @param owner create with this meta data (optional, may be NULL)
-     * @param processName create with this meta data (optional, may be NULL)
-     * @param versionName create with this meta data (optional, may be NULL)
-     * @param creationDate create with this meta data (optional, may be NULL)
-     * @return XML in native format
-     * @throws Exception in case of any error
-     */
-//    @Override
-//    public DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName,
-//            String versionName, String creationDate) throws Exception {
-//
-//        Canoniser c;
-//        if (canoniserName != null && canoniserVersion != null) {
-//            c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
-//        } else {
-//            c = canoniserService.findByNativeType(nativeType);
-//        }
-//
-//        ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
-//
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-//        Date processCreated = (creationDate == null) ? null : dateFormat.parse(creationDate);
-//
-//        c.createInitialNativeFormat(nativeXml, processName, versionName, owner, processCreated, new PluginRequestImpl());
-//        InputStream nativeXmlInputStream = new ByteArrayInputStream(nativeXml.toByteArray());
-//
-//        return new DataHandler(new ByteArrayDataSource(nativeXmlInputStream, "text/xml"));
-//    }
-
-    /**
-     * Get information about all installed Deployment Plugins for the specified native type.
-     * @param nativeType of the process
-     * @return Set of PluginInfo about installed Deployment PLugins supporting the native type
-     * @throws Exception in case of any error
-     */
-//    @Override
-//    public Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception {
-//        //return deploymentService.listDeploymentPlugin(nativeType)
-//        //                        .stream()
-//        //                        .map(PluginHelper::convertPluginInfo)
-//        //                        .collect(Collectors.toSet());
-//
-//        Set<PluginInfo> pluginInfos = new HashSet<>();
-//        for (Plugin plugin: deploymentService.listDeploymentPlugin(nativeType)) {
-//            pluginInfos.add(PluginHelper.convertPluginInfo(plugin));
-//        }
-//
-//        return pluginInfos;
-//    }
-
-    /**
      * Deploy process to a running process engine
      * @param branchName of the process to be deployed
      * @param processName of the process to be deployed
@@ -686,17 +527,6 @@ public class ManagerServiceImpl implements ManagerService {
             String preVersion, InputStream nativeStream) throws Exception {
 
         NativeType natType = frmSrv.findNativeType(nativeType);
-
-//        CanonisedProcess canonisedProcess;
-//        if (enableCPF) {
-//            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-//            canonisedProcess = canoniserService.canonise(nativeType, native_is, canoniserProperties);
-//        } else {
-//            canonisedProcess = new CanonisedProcess();
-//            canonisedProcess.setOriginal(native_is);
-//        }
-//        assert canonisedProcess != null;
-
         procSrv.updateProcess(processId, processName, originalBranchName, newBranchName,
                 new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
 
@@ -763,12 +593,6 @@ public class ManagerServiceImpl implements ManagerService {
     public void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception {
         for (Map.Entry<SummaryType, List<VersionSummaryType>> entry: elements.entrySet()) {
             if (entry.getKey() instanceof ProcessSummaryType) {
-                //procSrv.deleteProcessModel(elements.get(key)
-                //                                   .stream()
-                //                                   .map(versionSummary -> new ProcessData(entry.getKey().getId(), new Version(versionSummary.getVersionNumber())))
-                //                                   .collect(Collectors.toList()),
-                //                           secSrv.getUserByName(username));
-
                 List<ProcessData> processDatas = new ArrayList<>();
                 for (VersionSummaryType versionSummary: entry.getValue()) {
                     processDatas.add(new ProcessData(entry.getKey().getId(), new Version(versionSummary.getVersionNumber())));
