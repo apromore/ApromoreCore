@@ -39,7 +39,7 @@
         <div id="ap-pd-chart-case" class="ap-pd-chart" xmlns="native" />
         <label id="lblCasePercent"
                value="Cases percent"/>
-        <div sclass="ap-link" w:onClick="Ap.pd.zkSendEvent('$caseDetails', 'onClick', null)">
+        <div sclass="ap-link" w:onClick="Ap.pd.showCaseDetails()">
           <label id="lblCaseNumberFiltered"
                  value="Cases number"
                  sclass="ap-case-filtered"/>
@@ -118,7 +118,7 @@
         <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="native" />
         <label id="lblNodePercent"
                value="Nodes percent"/>
-        <div sclass="ap-link" w:onClick="Ap.pd.zkSendEvent('$perspectiveDetails', 'onClick', null)">
+        <div sclass="ap-link" w:onClick="Ap.pd.showPerspectiveDetails()">
           <label id="lblNodeNumberFiltered"
                  value="Nodes number"
                  sclass="ap-nodes-filtered"/>

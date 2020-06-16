@@ -40,6 +40,7 @@
     </template>
   </listbox>
   <div sclass="ap-window-footer-actions">
+    <label style="float:left; padding: 5px 0 0 5px;">Click on a case to inspect it</label>
     <button id="downloadCSV" label="Download"/>
   </div>
 </window>

@@ -32,6 +32,7 @@ import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
+import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -120,7 +121,14 @@ public class CaseDetailsController extends DataListController {
                 exportData();
             }
         });
-
+        try {
+            JSONObject param = (JSONObject) event.getData();
+            caseDetailsWindow.setPosition("nocenter");
+            caseDetailsWindow.setLeft((String)param.get("left"));
+            caseDetailsWindow.setTop((String)param.get("top"));
+        } catch (Exception e) {
+            // ignore the exception and proceed with default centered window
+        }
         caseDetailsWindow.doOverlapped();
     }
 
