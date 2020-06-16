@@ -98,28 +98,17 @@
                         fullscreen : true
                       });
                     }
-
-                    var autoLayout = '${arg.doAutoLayout}';
-                    //console.log('autoLayout: ' + autoLayout);
-					//console.log('BPMN before auto-layout');
 					//console.log('${arg.bpmnXML}');
-                    if (autoLayout=='true') {
-					  //alert('start layouting');	
-                      var layouter = new BPMNAutoLayout();
-                      layouter.layoutProcess('${arg.bpmnXML}', createEditor);
-                    }
-                    else {
-                      createEditor('${arg.bpmnXML}');
-                    }
+                    createEditor('${arg.bpmnXML}');
 
                     ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
-                      console.log(xml);
+                      //console.log(xml);
                       zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
                     };
 
                     ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
-                      console.log(xml);
-                      console.log(svg);
+                      //console.log(xml);
+                      //console.log(svg);
                       zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
                     };
 

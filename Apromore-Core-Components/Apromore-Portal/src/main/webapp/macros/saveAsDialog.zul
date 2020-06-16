@@ -21,10 +21,6 @@
   -->
 
 
-<!-- SaveAsDialog window has SaveAsDialogController.java as a controller
-    TODO make a SaveAsDialogController
-    listbox to choose native type implemented by the controller -->
-
 <window width="500px" closable="false" position="center" mode="modal">
     <vbox vflex="1">
         <grid id="saveAsGrid" sclass="ap-grid ap-form">
@@ -40,10 +36,6 @@
                 <row>
                     <label value="Version Number" />
                     <textbox id="versionNumber" width="100%" />
-                </row>
-                <row visible="false">
-                    <label value="Branch Name*" />
-                    <textbox id="branchName" width="100%" />
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">

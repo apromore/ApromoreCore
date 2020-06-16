@@ -48,7 +48,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -91,10 +90,6 @@ public class SaveAsDialogController extends BaseController {
     private Window saveAsW;
     private Textbox modelName;
     private Textbox versionNumber;
-    private Textbox branchName;
-//    private ProcessSummaryType process; 
-//    private VersionSummaryType version; 
-    private PluginPropertiesHelper pluginPropertiesHelper;
     private EditSessionType editSession;
     private Boolean isSaveCurrent; //null: save first time for new model, true: save existing model, false: save as
     private String modelData;
@@ -108,8 +103,6 @@ public class SaveAsDialogController extends BaseController {
     // isUpdate = null is used to indicate the special state (1) above.
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             Boolean isUpdate, String data, Window window) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
-//        this.process = process;
-//        this.version = version;
         this.editSession = editSession;
         this.isSaveCurrent = isUpdate;
         this.saveAsW = window;
@@ -119,13 +112,10 @@ public class SaveAsDialogController extends BaseController {
         Rows rows = (Rows) this.saveAsW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row modelNameR = (Row) rows.getChildren().get(0);
         Row versionNumberR = (Row) rows.getChildren().get(1);
-        Row branchNameR = (Row) rows.getChildren().get(2);
-        Row buttonGroupR = (Row) rows.getChildren().get(3);
+        Row buttonGroupR = (Row) rows.getChildren().get(2);
         this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
         this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
-        this.branchName = (Textbox) branchNameR.getFirstChild().getNextSibling();
 
-        pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.saveAsW.getFellow("saveAsGrid"));
         Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
         Button cancelB = (Button) saveB.getNextSibling();
         this.modelName.setText(this.editSession.getProcessName());
@@ -134,13 +124,6 @@ public class SaveAsDialogController extends BaseController {
         workspaceService = (WorkspaceService) SpringUtil.getBean("workspaceService");
 
         saveB.addEventListener("onClick",
-                new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        saveModel();
-                    }
-                });
-        this.saveAsW.addEventListener("onOK",
                 new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -157,8 +140,6 @@ public class SaveAsDialogController extends BaseController {
 
         if (isUpdate == null) {
         	this.saveAsW.setTitle("Save model");
-            this.branchName.setText("MAIN");
-            this.branchName.setReadonly(true);
             this.versionNumber.setText(this.originalVersionNumber);
             this.versionNumber.setReadonly(true);
             this.modelName.setText(this.modelName.getText());
@@ -166,35 +147,15 @@ public class SaveAsDialogController extends BaseController {
         }
         else if (isUpdate) {
         	this.saveAsW.setTitle("Save model");
-            String branchName = null;
             BigDecimal versionNumber;
-            BigDecimal currentVersion = new BigDecimal(editSession.getCurrentVersionNumber());
-//            BigDecimal maxVersion = new BigDecimal(editSession.getMaxVersionNumber());
-            versionNumber = createNewVersionNumber(currentVersion);
-            branchName = this.editSession.getOriginalBranchName();
-            
-//            BigDecimal maxVersion = new BigDecimal(editSession.getMaxVersionNumber());
-//            if (maxVersion.compareTo(currentVersion) > 0) {
-//                branchName = createNewBranchName(this.editSession.getOriginalBranchName());
-//            } else {
-//                branchName = this.editSession.getOriginalBranchName();
-//            }
-            
+            //BigDecimal currentVersion = new BigDecimal(editSession.getCurrentVersionNumber());
+            //versionNumber = createNewVersionNumber(currentVersion);
+            BigDecimal maxVersion = new BigDecimal(editSession.getMaxVersionNumber());
+            versionNumber = createNewVersionNumber(maxVersion);
             this.modelName.setReadonly(true);
-            this.branchName.setText(branchName);
-            this.branchName.setReadonly(true);
-//            This version.isEmpty() is unused here to indicate this is a new process
-//            as the flag isUpdate has been used above.
-//            if (version.isEmpty()) {
-//                this.versionNumber.setText("1.0");
-//            } else {
-//                this.versionNumber.setText(String.format("%1.1f", versionNumber));
-//            }
             this.versionNumber.setText(String.format("%1.1f", versionNumber));
         } else {
         	this.saveAsW.setTitle("Save model as");
-            this.branchName.setText("MAIN");
-            this.branchName.setReadonly(true);
             this.versionNumber.setText("1.0");
             //this.versionNumber.setReadonly(true);
             this.modelName.setText(this.modelName.getText() + "_new"); //18.08: add to make it a new name
@@ -218,27 +179,17 @@ public class SaveAsDialogController extends BaseController {
     }
 
     protected void saveModel() throws Exception {
-//        String userName = UserSessionManager.getCurrentUser().getUsername();
     	String userName = this.editSession.getUsername();
         String nativeType = this.editSession.getNativeType();
-//        String versionName = this.version.getName();
         String versionName = this.editSession.getOriginalVersionNumber();
-        //String domain = this.process.getDomain();
         String domain = this.editSession.getDomain();
         String processName = this.modelName.getText();
-//        Integer processId = this.process.getId();
         Integer processId = this.editSession.getProcessId();
-        // String created = this.version.getCreationDate();
-        // String created = this.editSession.getCreationDate();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
         String created = dateFormat.format(new Date());
 
-        String branch = this.branchName.getText();
         boolean makePublic = processService.isPublicProcess(processId);
         String versionNo = versionNumber.getText();
-//        if (branch == null || branch.equals("")) {
-//            branch = "MAIN";
-//        }
         int containingFolderId = this.editSession.getFolderId();
         InputStream is = new ByteArrayInputStream(this.modelData.getBytes());
 
@@ -248,20 +199,18 @@ public class SaveAsDialogController extends BaseController {
                 String containingFolderName = (folder == null) ? "Home" : folder.getName();
                 if (this.isSaveCurrent != null && !this.isSaveCurrent) { //Save As
                 	// the branch name is by default "MAIN", see org.apromore.common.Constants.TRUNK_NAME
-                    getService().importProcess(userName, containingFolderId, nativeType, processName, versionNo, is, domain, null, created, null,
-                            makePublic);
-                    Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder", null, Messagebox.OK, Messagebox.NONE);
+                    getService().importProcess(userName, containingFolderId, nativeType, processName, versionNo, is, domain, 
+                                null, created, null, makePublic);
+                    Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder", null, 
+                                        Messagebox.OK, Messagebox.NONE);
                 } else {
                 	//Note: the versionName parameter is never used in updateProcess(), so any value should be fine. 
                 	//Update the 2nd time with same name and version number for the state (1) is allowed 
-                	//because the pre-created empty model has no root fragments. 
-                    getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, processName,
-                            editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, versionName, is);
-                    Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder", null, Messagebox.OK, Messagebox.NONE);
+                    getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, editSession.getOriginalBranchName(), 
+                                                versionNo, originalVersionNumber, versionName, is);
+                    Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder", null, 
+                                                Messagebox.OK, Messagebox.NONE);
                     
-                    // 18.08: update current version number to ensure it will be always auto-increment
-                    // It seems that original version number and current version number are set 
-                    // to the same version number all the times (see MainController.createEditSession())
                     editSession.setOriginalVersionNumber(versionNo);
                     editSession.setCurrentVersionNumber(versionNo);
                     originalVersionNumber = versionNo;
@@ -271,7 +220,6 @@ public class SaveAsDialogController extends BaseController {
                 closePopup();
             }
         } catch (Exception e) {
-            //Messagebox.show("Unable to Save Model : Error: \n" + e.getMessage());
         	Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.", null, Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -293,11 +241,6 @@ public class SaveAsDialogController extends BaseController {
                     valid = false;
                     message = message + "New Version number has to be greater than " + this.editSession.getCurrentVersionNumber();
                     title = "Wrong Version Number";
-                }
-                if (this.branchName.getText().equals("") || this.branchName.getText() == null) {
-                    valid = false;
-                    message = message + "Branch Name cannot be empty";
-                    title = "Branch Name Empty";
                 }
             } else {
                 if (this.modelName.getText().equals("") || this.modelName.getText() == null) {
@@ -324,21 +267,6 @@ public class SaveAsDialogController extends BaseController {
         }
         return valid;
     }
-
-//    private String createNewBranchName(String currBranchName) {
-//        String branchName;
-//        if (currBranchName.equalsIgnoreCase("Main") || !currBranchName.matches("B[0-9]+")) {
-//            branchName = "B1";
-//        } else {
-//            Integer branchVersionNumber = 0;
-//            Matcher matcher = Pattern.compile("\\d+").matcher(currBranchName);
-//            if (matcher.find()) {
-//                branchVersionNumber = Integer.valueOf(matcher.group());
-//            }
-//            branchName = "B" + branchVersionNumber + 1;
-//        }
-//        return branchName;
-//    }
 
     private BigDecimal createNewVersionNumber(BigDecimal currentVersion) {
         return (currentVersion).add(VERSION_INCREMENT);

@@ -78,7 +78,6 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -118,22 +117,16 @@ public class MainController extends BaseController implements MainControllerInte
     private ShortMessageController shortmessageC;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-
     private NavigationController navigation;
-
     public Html breadCrumbs;
     public Tabbox tabBox;
     public Tab tabCrumbs;
     private Paginal pg;
-
     private String host;
     private String majorVersionNumber;
     private String minorVersionNumber;
     private String buildDate;
-
     private PortalPlugin logVisualizerPlugin = null;
-    
-    private Execution execution = null;
 	
 	public static MainController getController() {
         return controller;
@@ -537,7 +530,6 @@ public class MainController extends BaseController implements MainControllerInte
     public void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws  InterruptedException {
     	try {
-    		//Window window = (Window) portalContext.getUI().createComponent(this.getClass().getClassLoader(), "macros/saveAsDialog.zul", null, null);
     		SaveAsDialogController saveDiaglog = new SaveAsDialogController(process, version, editSession, isNormalSave, data);
     	}
     	catch (Exception e) {
@@ -594,14 +586,6 @@ public class MainController extends BaseController implements MainControllerInte
                     break;
                 }
             }
-//            if(logVisualizerPlugin == null) {
-//                for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
-//                    if (plugin.getName().equals("Log Visualizer")) {
-//                        logVisualizerPlugin = plugin;
-//                        break;
-//                    }
-//                }
-//            }
         }
         if(logVisualizerPlugin != null) {
             logVisualizerPlugin.execute(new PluginPortalContext(this));
@@ -656,20 +640,12 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void displayLogVersions(final LogSummaryType data) {
         //TODO
-//        switchToProcessSummaryView();
-//        ((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
     }
 
     public void clearProcessVersions() {
         switchToProcessSummaryView();
         ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
     }
-
-//    public void clearLogVersions() {
-//        //TODO
-////        switchToProcessSummaryView();
-////        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
-//    }
 
     @SuppressWarnings("unchecked")
     public Set<SummaryType> getSelectedElements() {
@@ -680,11 +656,6 @@ public class MainController extends BaseController implements MainControllerInte
             return new HashSet<>();
         }
     }
-
-//    public Set<LogSummaryType> getSelectedLogs() {
-//        LogListboxController logController = (LogListboxController) getLogListboxController();
-//        return logController.getListModel().getSelection();
-//    }
 
     /**
      * @return a map with all currently selected process models and the corresponding selected versions
@@ -846,10 +817,6 @@ public class MainController extends BaseController implements MainControllerInte
         return baseListboxController;
     }
 
-//    public BaseListboxController getLogListboxController() {
-//        return baseListboxControllerLogs;
-//    }
-
     public BaseDetailController getDetailListbox() {
         return baseDetailController;
     }
@@ -888,64 +855,9 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
         TabQuery newTab = new TabQuery(nameQuery, userID, details, query, results, portalContext);
-/*
-        String tabName = "APQL query";
-        String tabRowImage = "img/icon/bpmn-22x22.png";
-
-        List<TabRowValue> rows = new ArrayList<>();
-        for(ResultPQL resultPQL : results) {
-            TabRowValue row = new TabRowValue();
-            row.add("name");
-            row.add("id");
-            row.add("lang");
-            row.add("dom");
-            row.add("rank");
-            row.add("version");
-            row.add("own");
-            rows.add(row);
-        }
-
-        List<Listheader> listheaders = new ArrayList<>();
-        addListheader(listheaders, "Name",              null);
-        addListheader(listheaders, "Id",                "3em");
-        addListheader(listheaders, "Original language", "10em");
-        addListheader(listheaders, "Domain",            "5em");
-        addListheader(listheaders, "Ranking",           "6em");
-        addListheader(listheaders, "Latest version",    "9em");
-        addListheader(listheaders, "Owner",             "5em");
-
-        TabItemExecutor tabItemExecutor = new ProcessTabItemExecutor(portalContext.getMainController());
-
-        portalContext.setUser(
-        PortalTabImpl newTab = new PortalTabImpl(tabName, tabRowImage, rows, listheaders, tabItemExecutor, portalContext);
-*/
         SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab, true);
         updateTabs(userID);
     }
-
-/*
-    private void addListheader(final List<Listheader> listheaders, String name, String width) {
-        final Listheader listheader = new Listheader(name, null, width);
-
-        listheader.setSortAscending(new java.util.Comparator<TabItem>() {
-            int position = listheaders.size();
-            @Override
-            public int compare(TabItem o1, TabItem o2) {
-                return o1.getValue(position).compareTo(o2.getValue(position));
-            }
-        });
-
-        listheader.setSortDescending(new java.util.Comparator<TabItem>() {
-            int position = listheaders.size();
-            @Override
-            public int compare(TabItem o1, TabItem o2) {
-                return o2.getValue(position).compareTo(o1.getValue(position));
-            }
-        });
-
-        listheaders.add(listheader);
-    }
-*/
 
     private void updateTabs(String userId){
         Window mainW = (Window) this.getFellow("mainW");

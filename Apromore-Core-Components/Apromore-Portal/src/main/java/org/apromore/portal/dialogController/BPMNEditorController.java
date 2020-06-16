@@ -82,17 +82,10 @@ public class BPMNEditorController extends BaseController {
     boolean isNewProcess = false;
 
     @Inject private UserSessionManager userSessionManager;
-//    private ProcessService processService;
 
     public BPMNEditorController() {
         super();
-//        processService = (ProcessService) beanFactory.getBean("processService");
         if (userSessionManager.getCurrentUser() == null) {
-//            LOGGER.warn("Faking user session with admin(!)");
-//            UserType user = new UserType();
-//            user.setId("8");
-//            user.setUsername("admin");
-//            userSessionManager.setCurrentUser(user);
         	throw new AssertionError("Cannot open the editor without any login user!");
         }
 
@@ -154,14 +147,6 @@ public class BPMNEditorController extends BaseController {
                             		editSession.getUsername());
                     bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
                     param.put("doAutoLayout", "false");
-//                    if (editSession.isWithAnnotation()) {
-//                        param.put("doAutoLayout", "false");
-//                    } 
-//                    else {
-//                        BpmnLayoutPlugin layouter = new BpmnLayoutPlugin();
-//                        bpmnXML = layouter.addLayout(bpmnXML, "bpmnXML");
-//                        param.put("doAutoLayout", "true");
-//                    }
             	}
             	
                 title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
@@ -182,16 +167,6 @@ public class BPMNEditorController extends BaseController {
                 param.put("doAutoLayout", "false");
             }
             
-//            if (isNewProcess) {
-//            	param.put("doAutoLayout", "false");
-//            }
-//            else if (editSession.isWithAnnotation()) {
-//                param.put("doAutoLayout", "false");
-//            } 
-//            else {
-//                param.put("doAutoLayout", "true");
-//            }
-
             this.setTitle(title);
             if (mainC != null) {
                 mainC.showPluginMessages(pluginMessages);
