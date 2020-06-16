@@ -493,6 +493,18 @@
       })
   }
 
+  function showCaseDetails() {
+    let { left, top }  = $('.ap-pd-logstats').offset();
+    left -= 700; // width of caseDetail window
+    Ap.pd.zkSendEvent('$caseDetails', 'onApShow', { top: top + 'px', left: left  + 'px'});
+  }
+
+  function showPerspectiveDetails() {
+    let { left, top }  = $('.ap-pd-logstats').offset();
+    left -= 700; // width of perspectiveDetail window
+    Ap.pd.zkSendEvent('$perspectiveDetails', 'onApShow', { top: top + 'px', left: left  + 'px'});
+  }
+
   Object.assign(Ap.pd, {
     init,
     zkSendEvent,
@@ -506,7 +518,9 @@
     center,
     zoomIn,
     zoomOut,
-    resize
+    resize,
+    showCaseDetails,
+    showPerspectiveDetails,
   })
 
 })();

@@ -395,8 +395,22 @@ public class PDController extends BaseController {
                 }
             });
     
-            casesDetails.addEventListener("onClick", caseDetailsController);
-            perspectiveDetails.addEventListener("onClick", perspectiveDetailsController);
+            casesDetails.addEventListener("onApShow",
+                new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        caseDetailsController.onEvent(event);
+                    }
+                }
+            );
+            perspectiveDetails.addEventListener("onApShow",
+                new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        perspectiveDetailsController.onEvent(event);
+                    }
+                }
+            );
 
             filter.addEventListener("onInvoke", new EventListener<Event>() {
                 @Override

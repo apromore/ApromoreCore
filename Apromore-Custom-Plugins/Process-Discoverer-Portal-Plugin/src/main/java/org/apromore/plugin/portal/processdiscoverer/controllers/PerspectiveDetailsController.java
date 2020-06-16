@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
+import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -86,6 +87,14 @@ public class PerspectiveDetailsController extends DataListController {
             }
         });
 
+        try {
+            JSONObject param = (JSONObject) event.getData();
+            perspectiveDetailsWindow.setPosition("nocenter");
+            perspectiveDetailsWindow.setLeft((String)param.get("left"));
+            perspectiveDetailsWindow.setTop((String)param.get("top"));
+        } catch (Exception e) {
+            // ignore the exception and proceed with default centered window
+        }
         perspectiveDetailsWindow.doOverlapped();
     }
 
