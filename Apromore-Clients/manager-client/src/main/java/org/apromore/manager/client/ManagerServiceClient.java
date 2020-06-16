@@ -795,20 +795,19 @@ public class ManagerServiceClient implements ManagerService {
     @Override
     @SuppressWarnings("unchecked")
     public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
-            final String domain, final String processName, final String originalBranchName, final String newBranchName,
-            final String versionNumber, final String originalVersionNumber, final String preVersion, final InputStream native_is)
+            final String branchName, final String versionNumber, final String originalVersionNumber, final String preVersion, final InputStream native_is)
             throws Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
         editSession.setUsername(username);
         editSession.setNativeType(nativeType);
-        editSession.setProcessName(processName);
-        editSession.setOriginalBranchName(originalBranchName);
-        editSession.setNewBranchName(newBranchName);
+        editSession.setProcessName("");
+        editSession.setOriginalBranchName(branchName);
+        editSession.setNewBranchName(branchName);
         editSession.setOriginalVersionNumber(originalVersionNumber);
         editSession.setCurrentVersionNumber(versionNumber);
-        editSession.setDomain(domain);
+        editSession.setDomain("DOMAIN");
         editSession.setProcessId(processId);
 
         UpdateProcessInputMsgType msg = new UpdateProcessInputMsgType();

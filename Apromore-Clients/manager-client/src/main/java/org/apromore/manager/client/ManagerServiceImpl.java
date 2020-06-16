@@ -522,13 +522,11 @@ public class ManagerServiceImpl implements ManagerService {
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     @Override
-    public void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
-            String originalBranchName, String newBranchName, String versionNumber, String originalVersionNumber,
+    public void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream nativeStream) throws Exception {
 
         NativeType natType = frmSrv.findNativeType(nativeType);
-        procSrv.updateProcess(processId, processName, originalBranchName, newBranchName,
-                new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
+        procSrv.updateProcess(processId, branchName, new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
 
     }
 

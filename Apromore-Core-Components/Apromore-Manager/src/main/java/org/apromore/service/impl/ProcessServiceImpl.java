@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apromore.aop.Event;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -236,43 +235,55 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
-    public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
-            final String newBranchName, final Version versionNumber, final Version originalVersionNumber, final User user, final String lockStatus,
+    public ProcessModelVersion updateProcess(final Integer processId, final String branchName, final Version newVersion, final Version originalVersion, final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {
         ProcessModelVersion pmv;
-        // String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
+        Process process = processRepo.findOne(processId);
+        String processName = process.getName();
 
         try {
-            if (!StringUtils.equals(originalBranchName, newBranchName)) {
-                Process process = processRepo.findOne(processId);
-                pmv = addProcessModelVersion(process, processName, versionNumber, newBranchName, now, now, nativeType);
+            if (user == null) {
+                throw new ImportException("Permission to change this model denied.  No user specified.");
+            } 
+            else if (!canUserWriteProcess(user, processId)) {
+                throw new ImportException("Permission to change this model denied.");
+            } 
+            if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
+                throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
+            }
+            else {
+                ProcessModelVersion currentVersion = processModelVersionRepo.getProcessModelVersion(processId, branchName, originalVersion.toString());
+                if (currentVersion != null) {
+                    if (newVersion.toString().equals(currentVersion.getVersionNumber())) {
+                        String message = "CONFLICT! The process model " + processName + " - " + branchName + " has been updated by another user." +
+                                "\nThis process model version number: " + newVersion + "\nCurrent process model version number: " +
+                                currentVersion.getVersionNumber();
+                        LOGGER.error(message);
+                        throw new RepositoryException(message);
+                    }
+                    else {
+                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null, null);
+                        notifyProcessPlugins(pmv); 
+                        formatSrv.storeNative(processName, pmv, now, now, user, nativeType, newVersion.toString(), nativeStream);
+                        LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
+                        return pmv;
+                    }
 
-                notifyProcessPlugins(pmv);  // Notify process plugin providers
-                LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATE: ", processName);//call when net is change and then save
-
-            } else {
-                // Perform the update
-                if (user == null) {
-                    throw new ImportException("Permission to change this model denied.  No user specified.");
-                } else if (canUserWriteProcess(user, processId)) {
-                    pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, nativeStream, nativeType, now);
-                    notifyProcessPlugins(pmv);  // Notify process plugin providers
-                    LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATEEXISTINGPROCESS: ", processName);//call when a net is created, change version
                 } else {
-                    throw new ImportException("Permission to change this model denied.  Try saving as a new branch instead.");
+                    LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName 
+                            + ", branch=" + branchName + ", current version=" + originalVersion.toString());
+                    throw new RepositoryException("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName 
+                            + ", branch=" + branchName + ", current version=" + originalVersion.toString());
                 }
             }
-
-            formatSrv.storeNative(processName, pmv, now, now, user, nativeType, versionNumber.toString(), nativeStream);
         } catch (RepositoryException | JAXBException | IOException e) {
             LOGGER.error("Failed to update process {}", processName);
             LOGGER.error("Original exception was: ", e);
             throw new RepositoryException("Failed to Update process model.", e);
         }
 
-        return pmv;
     }
 
     /**
@@ -540,37 +551,36 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /* Update an existing process with some changes. */
-    @Transactional(readOnly = false)
-    private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Version version,
-            Version originalVersionNumber, String lockStatus, InputStream nativeStream, NativeType nativeType, String lastUpdate)  throws RepositoryException {
-        if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
-            throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
-        }
-        if (processName == null || originalBranchName == null || originalVersionNumber == null) {
-            throw new RepositoryException("Process Name, Branch Name and Version Number need to be supplied to update a process model!");
-        }
-
-        ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName,
-                originalVersionNumber.toString());
-        if (pmVersion != null) {
-            if (version.toString().equals(pmVersion.getVersionNumber())) {
-                String message = "CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
-                        "\nThis process model version number: " + version + "\nCurrent process model version number: " +
-                        pmVersion.getVersionNumber();
-                LOGGER.error(message);
-                throw new RepositoryException(message);
-            }
-            else {
-                ProcessModelVersion pmv = createProcessModelVersion(pmVersion.getProcessBranch(), version, nativeType, null, null);
-                return pmv;
-            }
-
-        } else {
-            LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
-            throw new RepositoryException("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
-        }
-        //return processModelVersion;
-    }
+//    @Transactional(readOnly = false)
+//    private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Version version,
+//            Version originalVersionNumber, String lockStatus, InputStream nativeStream, NativeType nativeType, String lastUpdate)  throws RepositoryException {
+//        if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
+//            throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
+//        }
+//        if (processName == null || originalBranchName == null || originalVersionNumber == null) {
+//            throw new RepositoryException("Process Name, Branch Name and Version Number need to be supplied to update a process model!");
+//        }
+//
+//        ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName,
+//                originalVersionNumber.toString());
+//        if (pmVersion != null) {
+//            if (version.toString().equals(pmVersion.getVersionNumber())) {
+//                String message = "CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
+//                        "\nThis process model version number: " + version + "\nCurrent process model version number: " +
+//                        pmVersion.getVersionNumber();
+//                LOGGER.error(message);
+//                throw new RepositoryException(message);
+//            }
+//            else {
+//                ProcessModelVersion pmv = createProcessModelVersion(pmVersion.getProcessBranch(), version, nativeType, null, null);
+//                return pmv;
+//            }
+//
+//        } else {
+//            LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
+//            throw new RepositoryException("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName);
+//        }
+//    }
 
 
     @Transactional(readOnly = false)

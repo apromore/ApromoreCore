@@ -102,16 +102,12 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         //cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, stream.getInputStream());
+        pSrv.updateProcess(pst.getId(), "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, stream.getInputStream());
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
         deleteList.add(new ProcessData(pst.getId(), updatedVersion));
         pSrv.deleteProcessModel(deleteList, user);
-
-        // Try and Find it again
-        //CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);
-        //assertThat(cpt, notNullValue());
     }
 
 }

@@ -112,19 +112,6 @@ public interface ProcessService {
     boolean isPublicProcess(Integer processId);
 
     /**
-     * Add a new ProcessModelVersion record into the DB.
-     * @param branch the process branch
-     * @param rootFragmentVersion the root fragment uri
-     * @param versionNumber the version number
-     * @param numVertices the number of nodes
-     * @param numEdges the number of edges
-     * @return the found Process Model Version
-     * @throws ExceptionDao if the DAO found an issue.
-     */
-//    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Version versionNumber,
-//            int numVertices, int numEdges) throws ExceptionDao;
-
-    /**
      * Update a process Model in the database.
      * @param processId of this update.
      * @param processName of this update.
@@ -137,80 +124,11 @@ public interface ProcessService {
      * @param nativeType the native format.
      * @param cpf the process model graph.
      */
-    ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName,
-            Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
+    ProcessModelVersion updateProcess(Integer processId, final String branchName, Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
             throws ImportException, RepositoryException;
 
 
-    /**
-     * Using the Process Model Verison passed in we can get the Canonical format.
-     * Used by a lot of methods in repoService and external.
-     * @param pmv the process model version we want the Canonical for.
-     * @return the built Canonical
-     */
-    //CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmv);
-
-    /**
-     * Using the ProcessID, its branchName and its versionNumber passed in we can get the Canonical Object.
-     * Used by a lot of methods in repoService and external.
-     * @param processId is the ID of the process to retrieve from the database
-     * @param branchName the branch name
-     * @param versionNumber the versione of the process
-     * @return the built Canonical
-     */
-    //Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber);
-
-    /**
-     * Using the Process Model Version passed in we can get the Canonical format.
-     * Used by a lot of methods in repoService and external.
-     * @param pmvs the process model version we want the Canonical for.
-     * @param processName the process name
-     * @param branchName the branch name
-     * @param lock is it locked?
-     * @return the built Canonical
-     */
-    //CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmvs, String processName, String branchName, boolean lock);
-
-
-    /**
-     * Gets the Current Process Model. this on can have any branch name.
-     * @param processName the process name.
-     * @param branchName the branch name.
-     * @param lock do we lock the records or not.
-     * @return the found process model graph.
-     * @throws LockFailedException if the lock failed.
-     */
-    //CanonicalProcessType getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
-
-    /**
-     * Gets the Current Process Model. this on can have any branch name.
-     * @param processId the process id
-     * @param processName the process name.
-     * @param branchName the branch name.
-     * @param lock do we lock the records or not.
-     * @return the found process model graph.
-     * @throws LockFailedException if the lock failed.
-     */
-    //CanonicalProcessType getProcessModelVersion(Integer processId, String processName, String branchName, final Version version,
-    //   boolean lock) throws LockFailedException;
-
-
-    /**
-     * Creates new versions for all ascendant fragments of originalFragment by
-     * replacing originalFragment with updatedFragment. New versions will be
-     * created for all process models which use any of the updated fragments as
-     * its root fragment. This method also releases locks of all ascendant
-     * fragments.
-     * @param originalFragment the original fragment id
-     * @param updatedFragment the updated fragment id
-     * @param composingFragments the composing fragment
-     * @param newVersionNumber the new version number of the process model version.
-     */
-//    void propagateChangesWithLockRelease(FragmentVersion originalFragment, FragmentVersion updatedFragment,
-//        Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException;
-
-
-    /**
+     /**
      * Deletes the current process model version of the given branch.
      * @param models A map of models that are to be removed.
      * @param user with write permission

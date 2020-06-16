@@ -294,8 +294,7 @@ public interface ManagerService {
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
-            String originalBranchName, String newBranchName, String versionNumber, String originalVersionNumber,
+    void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream nativeStream) throws Exception;
 
     /**
