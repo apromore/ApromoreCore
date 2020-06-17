@@ -51,5 +51,7 @@ public class LogFilterController extends AbstractController implements LogFilter
     public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
         throw new Exception("This class has been replaced with LogFilterControllerWithAPMLog");
     }
+
+    public void subscribeFilterResult() {}
     
 }

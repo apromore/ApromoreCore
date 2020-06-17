@@ -114,6 +114,7 @@ public class PDController extends BaseController {
 
 
     private Button filter;
+    private Button filterClear;
     private Button perspectiveDetails;
     private Button casesDetails;
     //private Button fitness;
@@ -350,6 +351,7 @@ public class PDController extends BaseController {
             perspectiveDetails = (Button) mainWindow.getFellow("perspectiveDetails");
             //fitness = (Button) mainWindow.getFellow("fitness");
             filter = (Button) mainWindow.getFellow("filter");
+            filterClear = (Button) mainWindow.getFellow("filterClear");
             animate = (Button) mainWindow.getFellow("animate");
             fitScreen = (Button) mainWindow.getFellow("fitScreen");
     
@@ -412,17 +414,29 @@ public class PDController extends BaseController {
                 }
             );
 
-            filter.addEventListener("onInvoke", new EventListener<Event>() {
+            filterClear.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    String view = event.getData().toString();
                     LogFilterController logFilterController = pdFactory.createLogFilterController(me);
-                    logFilterController.onEvent(event);
+                    logFilterController.subscribeFilterResult();
+
                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
-                    eqFilteredView.publish(new Event("ctrl", null, view));
+                    if (eqFilteredView != null) {
+                        eqFilteredView.publish(new Event("ctrl", null, "removeall"));
+                    }
                 }
             });
 
+            filter.addEventListener("onInvoke", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    String payload = event.getData().toString();
+                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                    logFilterController.onEvent(event);
+                    EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
+                    eqFilteredView.publish(new Event("ctrl", null, payload));
+                }
+            });
             filter.addEventListener("onClick", pdFactory.createLogFilterController(this));
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
     
