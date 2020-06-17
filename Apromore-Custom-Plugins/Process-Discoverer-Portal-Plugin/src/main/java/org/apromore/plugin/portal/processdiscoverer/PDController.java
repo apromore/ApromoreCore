@@ -417,13 +417,25 @@ public class PDController extends BaseController {
             filterClear.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
-                    logFilterController.subscribeFilterResult();
+                    Messagebox.show(
+                        "Are you sure you want to clear all filter?",
+                        "Confirm Dialog",
+                        Messagebox.OK | Messagebox.CANCEL,
+                        Messagebox.QUESTION,
+                        new org.zkoss.zk.ui.event.EventListener() {
+                            public void onEvent(Event evt) throws Exception {
+                                if (evt.getName().equals("onOK")) {
+                                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                                    logFilterController.subscribeFilterResult();
 
-                    EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
-                    if (eqFilteredView != null) {
-                        eqFilteredView.publish(new Event("ctrl", null, "removeall"));
-                    }
+                                    EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
+                                    if (eqFilteredView != null) {
+                                        eqFilteredView.publish(new Event("ctrl", null, "removeall"));
+                                    }
+                                }
+                            }
+                        }
+                    );
                 }
             });
 
