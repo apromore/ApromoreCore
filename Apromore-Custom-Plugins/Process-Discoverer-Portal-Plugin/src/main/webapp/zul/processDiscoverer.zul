@@ -167,6 +167,7 @@
         <button id="fitScreen" tooltiptext="Fit to screen" sclass="ap-icon ap-icon-zoom-to-fit"/>
         <n:span class="ap-action-sep"></n:span>
         <button ca:data-t="filter" id="filter" tooltiptext="Filter" sclass="ap-icon ap-icon-filter"/>
+        <button ca:data-t="filter-clear" id="filterClear" tooltiptext="Clear all filter" sclass="ap-icon ap-icon-filter-delete"/>
         <!-- <button ca:data-t="animate" id="animate" w:onClick="Ap.pd.animate()" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/> -->
         <button ca:data-t="animate" id="animate" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/>
       </div>

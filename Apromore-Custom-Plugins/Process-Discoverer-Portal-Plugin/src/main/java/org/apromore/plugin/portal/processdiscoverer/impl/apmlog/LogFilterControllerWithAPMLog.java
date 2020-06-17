@@ -70,7 +70,16 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                         parent.getUserOptions().getMainAttributeKey(), 
                         parent.getLogData().getCurrentFilterCriteria()),
                         this);
-        
+
+        subscribeFilterResult();
+    }
+
+    @Override
+    public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
+        // This has been replaced with ZK Event Queue in onEvent().
+    }
+
+    public void subscribeFilterResult() {
         // Process filtering result
         EventQueue<Event> filterEventQueue = EventQueues.lookup("apmlog_filter_package", EventQueues.DESKTOP, true);
         EventListener<Event> filteredLogEventListener = new EventListener<Event>() {
@@ -91,11 +100,6 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             }
         };
         filterEventQueue.subscribe(filteredLogEventListener);
-    }
-
-    @Override
-    public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
-        // This has been replaced with ZK Event Queue in onEvent().
     }
     
 }
