@@ -49,7 +49,6 @@ public class Util {
     private static final double second = 1000.0D;
 
     public static long epochMilliOf(ZonedDateTime zonedDateTime){
-
         long s = zonedDateTime.toInstant().toEpochMilli();
         return s;
     }
