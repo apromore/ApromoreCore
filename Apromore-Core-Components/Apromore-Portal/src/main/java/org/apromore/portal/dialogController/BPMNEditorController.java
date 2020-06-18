@@ -24,22 +24,19 @@
 
 package org.apromore.portal.dialogController;
 
-// Java 2 Standard packages
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Java 2 Enterprise packages
 import javax.inject.Inject;
 
-// Local packages
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-// Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
@@ -50,32 +47,27 @@ import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 
 /**
- * This class was created to manage the BPMN model being edited in the bpmn.io editor
- * It is based on ApromoreController originally created for the same purpose with the Signavio editor
- * Basically it keeps track of the current process model (ProcessSummaryType) and version (VersionSummaryType)
- * being edited in the bpmn.io editor. 
- * This class can be called from opening an existing model in the portal or from a New Model Creation Dialog
- * It receives input data via the user session stored in the ApromoreSession object.
- * It calls to other plugins via the toolbar buttons and it will pass the BPMN XML text to those plugins
- * It also passes the EditSessionType to other plugins and receives output back via the updated EditSessionType object 
- * The process model in the editor has three possible states:
- * 	1. It is a new model being edited. In this case, it is opened from an empty model which has been pre-created in the database
- *  2. It is a model being edited from opening an existing model
- *  3. It is being saved to a totally new model from an existing model
- * @todo: ApromoreSession should be renamed to be generic (not specific to Signavio)
- * @todo: the editor requires that a process model already created in the system even if it is a new model. It  
- * is counter-intutitive that an empty model is created in the system first and then user starts editing the model
- * In case the user leaves immediately after the editor has been opened, an empty model will exist in the system
+ * ApromoreSession and ApromoreSession.EditSessionType represent data objects of the model being opened in the editor 
+ * However, they don't contain the XML native model data which can be retrieved from the editor
+ * Remember to update these data objects after every action on the model to keep it in a consistent state.
+ * For example, after save as a new model, these data objects must be updated to the new model info.
+ * @todo there is a duplication between ApromoreSession and EditSessionType, they need to be clean later.
+ *  
  * @author Bruce Nguyen
  *
  */
 public class BPMNEditorController extends BaseController {
-
+    public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(BPMNEditorController.class.getCanonicalName());
+    private EventQueue<Event> qeBPMNEditor = EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
     private MainController mainC;
+    private ApromoreSession session;
     private EditSessionType editSession;
     private ProcessSummaryType process;
     private VersionSummaryType vst;
@@ -95,7 +87,7 @@ public class BPMNEditorController extends BaseController {
             throw new AssertionError("No id parameter in URL");
         }
 
-        ApromoreSession session = userSessionManager.getEditSession(id);
+        session = userSessionManager.getEditSession(id);
         if (session == null) {
             // throw new AssertionError("No edit session associated with id " + id);
             throw new AssertionError("Your session has expired. Please close this browser tab and refresh the Portal tab");
@@ -108,7 +100,6 @@ public class BPMNEditorController extends BaseController {
         
         Map<String, Object> param = new HashMap<>();
         try {
-            String title = null;
             PluginMessages pluginMessages = null;
             String bpmnXML = (String) session.get("bpmnXML");
             
@@ -149,14 +140,10 @@ public class BPMNEditorController extends BaseController {
                     param.put("doAutoLayout", "false");
             	}
             	
-                title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
-                this.setTitle(title);
-
                 param.put("bpmnXML",       escapeXML(bpmnXML));
                 param.put("url",           getURL(editSession.getNativeType()));
                 param.put("importPath",    getImportPath(editSession.getNativeType()));
                 param.put("exportPath",    getExportPath(editSession.getNativeType()));
-//                param.put("editor",        config.getSiteEditor());
                 param.put("editor",        "bpmneditor");
             } else {
                 param.put("bpmnXML",       bpmnXML);
@@ -167,7 +154,8 @@ public class BPMNEditorController extends BaseController {
                 param.put("doAutoLayout", "false");
             }
             
-            this.setTitle(title);
+            this.setTitle(editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
+            
             if (mainC != null) {
                 mainC.showPluginMessages(pluginMessages);
             }
@@ -189,16 +177,16 @@ public class BPMNEditorController extends BaseController {
             	boolean isNewProcessBackup = isNewProcess;
                 try {
                 	if (isNewProcess) {
-                		new SaveAsDialogController(process, vst, editSession, null, eventToString(event));
+                		new SaveAsDialogController(process, vst, session, false, eventToString(event));
                 		isNewProcess = false; // to change to save current after saving as new
                 	}
                 	else {
-                		new SaveAsDialogController(process, vst, editSession, true, eventToString(event));
+                		new SaveAsDialogController(process, vst, session, true, eventToString(event));
                 	}
                 } catch (Exception ex) {
 //                	Messagebox.show("Error saving model: " + ex.getMessage());
                     LOGGER.error("Error saving model.", ex.getStackTrace().toString());
-                    Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.");
+                    Messagebox.show("Unable to save model! Error: " + ex.getMessage());
                     isNewProcess = isNewProcessBackup; //change the status back in case of saving error
                 }
             }
@@ -210,35 +198,44 @@ public class BPMNEditorController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 boolean isNewProcessBackup = isNewProcess;
                 try {
-                	// If new model: choose Save As is the same as choose Save 
                 	if (isNewProcess) {
-                		new SaveAsDialogController(process, vst, editSession, null, eventToString(event));
+                		new SaveAsDialogController(process, vst, session, false, eventToString(event));
                 		isNewProcess = false; // to change to save current after saving as new
                 	}
                 	else {
-                		new SaveAsDialogController(process, vst, editSession, false, eventToString(event));
+                		new SaveAsDialogController(process, vst, session, false, eventToString(event));
                 	}
                 } catch (Exception ex) {
 //                	Messagebox.show("Error saving model: " + ex.getMessage());
                     LOGGER.error("Error saving model.", ex.getStackTrace().toString());
-                    Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.");
+                    Messagebox.show("Unable to save model! Error: " + ex.getMessage());
                     isNewProcess = isNewProcessBackup; //change the status back in case of saving error
                 }
             }
         });
+        
+        qeBPMNEditor.subscribe(
+                new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        if (EVENT_MESSAGE_SAVE.equals(event.getName())) {
+                            String[] data = (String[])event.getData();
+                            setTitle(data[0], data[1]);
+                        }
+                    }
+                });
     }
-
+    
+    private void setTitle(String processName, String versionNumber) {
+        this.setTitle(processName + " (" + "v" + versionNumber + ")");
+    }
 
     /**
      * @param json
      * @return the <var>json</var> escaped so that it can be quoted in Javascript.
      *     Specifically, it replaces apostrophes with \\u0027 and removes embedded newlines and leading and trailing whitespace.
      */
-    
     private String escapeXML(String xml) {
-//    	String newline = System.getProperty("line.separator");
-//        return xml.replace(newline, " ").replace("\n", " ").trim();
-    	//return xml.replaceAll("(\\r|\\n|\\r\\n)+", " ").replace("'", "");
     	return xml.replaceAll("(\\r|\\n|\\r\\n)+", " ").replace("'", "\\'");
     }
     
@@ -259,5 +256,6 @@ public class BPMNEditorController extends BaseController {
 
         throw new RuntimeException("Unsupported class of event data: " + event.getData());
     }
+    
 
 }

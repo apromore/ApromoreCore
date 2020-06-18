@@ -26,17 +26,19 @@ package org.apromore.portal.dialogController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.EditSessionType;
+import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
@@ -49,33 +51,17 @@ import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
- * This class is used to show a common diaglog for saving process models
- * It is used by editor plugins as they are opened by users to edit a new/existing model 
- * It receives input passed by the calling plugin via the EditSessionType object
- * It communicates back to the calling plugin by updating the EditSessionType object.
- * This dialog uses manager services to create or update a process model in the system
- * 
- * The model being saved has three possible states (see BPMNEditorController)
- * 1. The model is being saved to an existing EMPTY model which has been pre-created (when users select to create a new model): same name, the version remains 1.0 
- * 2. The model is opened from an existing model and now being saved to a new version (Save): same name, increasing version number
- * 3. The model is being saved to a new model (Save As): different name, starts from 1.0 version number
- * 
- * Note that state (1) above is special because the system first creates an empty model in the database, then opens
- * the empty model in the editor (not an intuitive UI design). In this case, a question is that if the model is saved with the same name 
- * and version number, will a conflict happen and not allowable as in the state (2)? Answer: the empty model can be 
- * OVERRIDEN in this case because as being an empty model it has empty canonical format (no edges, no nodes) and 
- * no root fragment, leading to no new versions of the same process (model) and branch created, and thus
- * ProcessServiceImpl.updateExistingProcess() can pass without failure. 
- * 
- * In the case of state (2), if the same version number is saved, the current process version already has a root fragment 
- * (non-empty model) leading to multiple versions of the same version number created which will make 
- * ProcessServiceImpl.updateExistingProcess() fail.
+ * ApromoreSession and ApromoreSession.EditSessionType contain data of the process model being opened in the editor 
+ * Remember to update them after actions on the process model to keep things in consistent states.
+ * The XML model native data can be retrieved right from the editor
+ * @todo there is a duplication between ApromoreSession and EditSessionType, they need to be clean later.
  * 
  * @author: Apromore
  * @modifier: Bruce Nguyen
@@ -83,45 +69,42 @@ import org.zkoss.zul.Window;
  */
 public class SaveAsDialogController extends BaseController {
 
-    private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-
-    private static final BigDecimal VERSION_INCREMENT = new BigDecimal("0.1");
+    private EventQueue<Event> qePortal = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+    private EventQueue<Event> qeBPMNEditor = EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
     private Window saveAsW;
     private Textbox modelName;
     private Textbox versionNumber;
+    
     private EditSessionType editSession;
+    private ApromoreSession session;
     private Boolean isSaveCurrent; //null: save first time for new model, true: save existing model, false: save as
     private String modelData;
-    private String originalVersionNumber;
+    
     ProcessService processService;
     WorkspaceService workspaceService;
 
-    // Note: process and version parameters are not used and redundant
-    // They may not be used because all parameters are passed in EditSessionType for consistency
-    // They are left in the method signature for compatibility purpose only
-    // isUpdate = null is used to indicate the special state (1) above.
-    public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
+    public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, ApromoreSession session,
             Boolean isUpdate, String data, Window window) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
-        this.editSession = editSession;
+        this.session = session;
+        this.editSession = session.getEditSession();
         this.isSaveCurrent = isUpdate;
         this.saveAsW = window;
         this.modelData = data;
-        this.originalVersionNumber = this.editSession.getCurrentVersionNumber();
+        
+        processService = (ProcessService) SpringUtil.getBean("processService");
+        workspaceService = (WorkspaceService) SpringUtil.getBean("workspaceService");
 
         Rows rows = (Rows) this.saveAsW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row modelNameR = (Row) rows.getChildren().get(0);
         Row versionNumberR = (Row) rows.getChildren().get(1);
         Row buttonGroupR = (Row) rows.getChildren().get(2);
         this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
+        this.modelName.setText(this.editSession.getProcessName());
         this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
-
+        this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
         Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
         Button cancelB = (Button) saveB.getNextSibling();
-        this.modelName.setText(this.editSession.getProcessName());
-        
-        processService = (ProcessService) SpringUtil.getBean("processService");
-        workspaceService = (WorkspaceService) SpringUtil.getBean("workspaceService");
 
         saveB.addEventListener("onClick",
                 new EventListener<Event>() {
@@ -138,36 +121,12 @@ public class SaveAsDialogController extends BaseController {
                     }
                 });
 
-        if (isUpdate == null) {
-        	this.saveAsW.setTitle("Save model");
-            this.versionNumber.setText(this.originalVersionNumber);
-            this.versionNumber.setReadonly(true);
-            this.modelName.setText(this.modelName.getText());
-            this.modelName.setReadonly(true);
-        }
-        else if (isUpdate) {
-        	this.saveAsW.setTitle("Save model");
-            BigDecimal versionNumber;
-            //BigDecimal currentVersion = new BigDecimal(editSession.getCurrentVersionNumber());
-            //versionNumber = createNewVersionNumber(currentVersion);
-            BigDecimal maxVersion = new BigDecimal(editSession.getMaxVersionNumber());
-            versionNumber = createNewVersionNumber(maxVersion);
-            this.modelName.setReadonly(true);
-            this.versionNumber.setText(String.format("%1.1f", versionNumber));
-        } else {
-        	this.saveAsW.setTitle("Save model as");
-            this.versionNumber.setText("1.0");
-            //this.versionNumber.setReadonly(true);
-            this.modelName.setText(this.modelName.getText() + "_new"); //18.08: add to make it a new name
-        }
-
         this.saveAsW.doModal();
     }
     
-    public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
+    public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, ApromoreSession session,
             Boolean isUpdate, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
-    	this(process, version, editSession, isUpdate, data, 
-    			(Window) Executions.createComponents("saveAsDialog.zul", null, null));
+    	this(process, version, session, isUpdate, data, (Window) Executions.createComponents("saveAsDialog.zul", null, null));
     }
     
     protected void cancel() throws Exception {
@@ -181,49 +140,98 @@ public class SaveAsDialogController extends BaseController {
     protected void saveModel() throws Exception {
     	String userName = this.editSession.getUsername();
         String nativeType = this.editSession.getNativeType();
-        String versionName = this.editSession.getOriginalVersionNumber();
-        String domain = this.editSession.getDomain();
         String processName = this.modelName.getText();
+        String versionNo = versionNumber.getText();
         Integer processId = this.editSession.getProcessId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
         String created = dateFormat.format(new Date());
 
         boolean makePublic = processService.isPublicProcess(processId);
-        String versionNo = versionNumber.getText();
         int containingFolderId = this.editSession.getFolderId();
         InputStream is = new ByteArrayInputStream(this.modelData.getBytes());
 
-        try {
-            if (validateFields()) {
-                Folder folder = workspaceService.getFolder(editSession.getFolderId());
-                String containingFolderName = (folder == null) ? "Home" : folder.getName();
-                if (this.isSaveCurrent != null && !this.isSaveCurrent) { //Save As
-                	// the branch name is by default "MAIN", see org.apromore.common.Constants.TRUNK_NAME
-                    getService().importProcess(userName, containingFolderId, nativeType, processName, versionNo, is, domain, 
-                                null, created, null, makePublic);
-                    Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder", null, 
-                                        Messagebox.OK, Messagebox.NONE);
-                } else {
-                	//Note: the versionName parameter is never used in updateProcess(), so any value should be fine. 
-                	//Update the 2nd time with same name and version number for the state (1) is allowed 
-                    getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, editSession.getOriginalBranchName(), 
-                                                versionNo, originalVersionNumber, versionName, is);
-                    Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder", null, 
-                                                Messagebox.OK, Messagebox.NONE);
-                    
-                    editSession.setOriginalVersionNumber(versionNo);
-                    editSession.setCurrentVersionNumber(versionNo);
-                    originalVersionNumber = versionNo;
+        if (validateFields()) {
+            Folder folder = workspaceService.getFolder(editSession.getFolderId());
+            String containingFolderName = (folder == null) ? "Home" : folder.getName();
+            if (!this.isSaveCurrent) { //Save As new model
+                saveAsNewModel(userName, containingFolderId, nativeType, processName, versionNo, is, "", 
+                            "", created, null, makePublic, containingFolderName);
+            } else {
+                if (session.containVersion(versionNo)) {
+                    Messagebox.show("Version " + versionNo + " already existed. Do you want to overwrite it?", 
+                                "Question", new Messagebox.Button[] { Messagebox.Button.YES, Messagebox.Button.NO}, 
+                                Messagebox.QUESTION,
+                                new org.zkoss.zk.ui.event.EventListener<ClickEvent>() {
+                                    @Override
+                                    public void onEvent(ClickEvent e) throws Exception {
+                                        switch (e.getButton()) {
+                                            case YES: 
+                                                saveCurrentModel(processId, processName, versionNo, nativeType, is, userName, containingFolderName);
+                                                break;
+                                            case NO: //Cancel is clicked
+                                                break;
+                                            default: //if the Close button is clicked, e.getButton() returns null
+                                        }
+                                    }
+                                }
+                            );
+                }
+                else {
+                    saveCurrentModel(processId, processName, versionNo, nativeType, is, userName, containingFolderName);
                 }
                 
-                qe.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
-                closePopup();
             }
+            
+            qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
+            qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null, new String[] {processName, versionNo}));
+            closePopup();
+        }
+        
+    }
+    
+    private void saveAsNewModel(String userName, Integer folderId, String processName, String versionNumber, String nativeType,
+            InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean publicModel, 
+            String containingFolderName) throws Exception {
+        try {
+            ImportProcessResultType importResult = getService().importProcess(userName, folderId, nativeType, processName, versionNumber, nativeStream, domain, 
+                    documentation, created, null, publicModel);
+            
+            // Update process data with the new process to keep a consistent state
+            editSession.setProcessId(importResult.getProcessSummary().getId());
+            editSession.setProcessName(processName);
+            editSession.setOriginalVersionNumber(versionNumber);
+            editSession.setCurrentVersionNumber(versionNumber);
+            session.setProcess(importResult.getProcessSummary());
+            session.setVersion(importResult.getProcessSummary().getVersionSummaries().get(0));
+            
+            Messagebox.show("Done!");
         } catch (Exception e) {
-        	Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.", null, Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unable to save model! Error: " + e.getMessage(), null, Messagebox.OK, Messagebox.ERROR);
+            throw e;
         }
     }
-
+    
+    private void saveCurrentModel(Integer processId, String processName, String versionNumber, String nativeType, InputStream nativeStream,
+            String userName, String containingFolderName) throws Exception {
+        try {
+            ProcessModelVersion newVersion = getService().updateProcessModelVersion(editSession.hashCode(), userName, nativeType, processId, editSession.getOriginalBranchName(), 
+                    versionNumber, editSession.getOriginalVersionNumber(), "", nativeStream);
+            
+            // Update process data with the new process to keep a consistent state
+            editSession.setOriginalVersionNumber(versionNumber);
+            editSession.setCurrentVersionNumber(versionNumber);
+            editSession.setLastUpdate(newVersion.getLastUpdateDate());
+            session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+            session.getVersion().setVersionNumber(versionNumber);
+            
+            Messagebox.show("Done!");
+        }
+        catch (Exception e) {
+            Messagebox.show(e.getMessage());
+            throw e;
+        }
+        
+    }
 
     private boolean validateFields() {
         boolean valid = true;
@@ -233,17 +241,14 @@ public class SaveAsDialogController extends BaseController {
         Version newVersion = new Version(versionNumber.getText());
         Version curVersion = new Version(editSession.getCurrentVersionNumber());
         try {
-        	if (this.isSaveCurrent == null) {
-        		//
-        	}
-        	else if (this.isSaveCurrent) {
+           if (this.isSaveCurrent) {
                 if (newVersion.compareTo(curVersion) <= 0) {
                     valid = false;
                     message = message + "New Version number has to be greater than " + this.editSession.getCurrentVersionNumber();
                     title = "Wrong Version Number";
                 }
             } else {
-                if (this.modelName.getText().equals("") || this.modelName.getText() == null) {
+                if (this.modelName.getText() == null || this.modelName.getText().trim().equals("")) {
                     valid = false;
                     message = message + "Model Name cannot be empty";
                     title = "Model Name Empty";
@@ -267,9 +272,4 @@ public class SaveAsDialogController extends BaseController {
         }
         return valid;
     }
-
-    private BigDecimal createNewVersionNumber(BigDecimal currentVersion) {
-        return (currentVersion).add(VERSION_INCREMENT);
-    }
-
 }

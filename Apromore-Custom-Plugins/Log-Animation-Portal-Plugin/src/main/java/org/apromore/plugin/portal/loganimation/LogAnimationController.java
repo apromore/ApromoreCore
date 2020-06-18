@@ -182,7 +182,7 @@ public class LogAnimationController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     //new SaveAsDialogController(process, version, editSession, true, eventToString(event));
-                	mainC.saveModel(process, version, editSession, true, eventToString(event));
+                	//mainC.saveModel(process, version, editSession, true, eventToString(event));
                 } catch (Exception e) {
                     LOGGER.error("Error saving model.", e);
                 }
@@ -193,7 +193,7 @@ public class LogAnimationController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     //new SaveAsDialogController(process, version, editSession, false, eventToString(event));
-                	mainC.saveModel(process, version, editSession, false, eventToString(event));
+                	//mainC.saveModel(process, version, editSession, false, eventToString(event));
                 } catch (Exception e) {
                     LOGGER.error("Error saving model.", e);
                 }
