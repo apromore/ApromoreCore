@@ -55,7 +55,18 @@ public class Util {
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
+        timestamp = validateTimestamp(timestamp);
         return ZonedDateTime.parse(timestamp);
+    }
+    
+    private static String validateTimestamp(String timestamp) {
+        //0000-00-00T00:00:00.000+00:00
+        String charAt10 = timestamp.substring(10, 11);
+        String validTimestamp = timestamp;
+        if (charAt10.equals(" ")) {
+            validTimestamp = timestamp.substring(0, 10) + "T" + timestamp.substring(11);
+        }
+        return validTimestamp;
     }
 
     public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
