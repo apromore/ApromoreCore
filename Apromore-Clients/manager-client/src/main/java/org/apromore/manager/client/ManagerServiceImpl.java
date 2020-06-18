@@ -23,9 +23,12 @@
 package org.apromore.manager.client;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,7 @@ import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
+import org.apromore.model.AnnotationsType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ExportLogResultType;
@@ -440,6 +444,42 @@ public class ManagerServiceImpl implements ManagerService {
 
         return importResult;
     }
+    
+    @Override
+    public ProcessSummaryType createNewEmptyProcess(String username) {
+        ProcessSummaryType proType = new ProcessSummaryType();
+        VersionSummaryType verType = new VersionSummaryType();
+        AnnotationsType annType = new AnnotationsType();
+
+        proType.setId(0);
+        proType.setName("Untitled");
+        proType.setDomain("");
+        proType.setRanking("");
+        proType.setLastVersion("1.0");
+        proType.setOriginalNativeType("BPMN 2.0");
+        proType.setOwner(username);
+        proType.setMakePublic(false);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        
+        verType.setName(Constants.TRUNK_NAME);
+        verType.setCreationDate(now);
+        verType.setLastUpdate(now);
+        verType.setVersionNumber("1.0");
+        verType.setRanking("");
+        verType.setEmpty(false);
+
+        annType.setNativeType("BPMN 2.0");
+        annType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
+        verType.getAnnotations().add(annType);
+        
+        proType.getVersionSummaries().clear();
+        proType.getVersionSummaries().add(verType);
+        
+        return proType;
+
+    }
 
     /**
      * Get list of all currently installed Plugins.
@@ -522,11 +562,11 @@ public class ManagerServiceImpl implements ManagerService {
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     @Override
-    public void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
+    public ProcessModelVersion updateProcessModelVersion(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream nativeStream) throws Exception {
 
         NativeType natType = frmSrv.findNativeType(nativeType);
-        procSrv.updateProcess(processId, branchName, new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
+        return procSrv.updateProcessModelVersion(processId, branchName, new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
 
     }
 

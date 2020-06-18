@@ -102,7 +102,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         //cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, stream.getInputStream());
+        pSrv.updateProcessModelVersion(pst.getId(), "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, stream.getInputStream());
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();

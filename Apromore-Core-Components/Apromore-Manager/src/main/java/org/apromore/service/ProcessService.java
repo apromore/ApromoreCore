@@ -124,10 +124,13 @@ public interface ProcessService {
      * @param nativeType the native format.
      * @param cpf the process model graph.
      */
-    ProcessModelVersion updateProcess(Integer processId, final String branchName, Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
+    ProcessModelVersion updateProcessModelVersion(Integer processId, final String branchName, Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
             throws ImportException, RepositoryException;
 
 
+    ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version version, final User user, final String lockStatus,
+            final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException;
+    
      /**
      * Deletes the current process model version of the given branch.
      * @param models A map of models that are to be removed.

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ExportLogResultType;
@@ -244,6 +245,10 @@ public interface ManagerService {
      */
     ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
             InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean makePublic) throws Exception;
+    
+    
+    ProcessSummaryType createNewEmptyProcess(String username);
+        
 
     /**
      * Get list of all currently installed Plugins.
@@ -294,7 +299,7 @@ public interface ManagerService {
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
+    ProcessModelVersion updateProcessModelVersion(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream nativeStream) throws Exception;
 
     /**
