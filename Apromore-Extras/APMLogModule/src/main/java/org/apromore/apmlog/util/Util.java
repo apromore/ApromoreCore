@@ -55,12 +55,8 @@ public class Util {
     }
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-        XAttribute da =
-                xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
-        Date d = ((XAttributeTimestamp) da).getValue();
-        ZonedDateTime z =
-                ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
-        return z;
+        String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
+        return ZonedDateTime.parse(timestamp);
     }
 
     public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
