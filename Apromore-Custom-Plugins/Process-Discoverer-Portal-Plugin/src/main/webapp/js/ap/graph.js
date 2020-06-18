@@ -28,6 +28,7 @@
   const LAYOUT_BREADTH_FIRST = 3;
   const NAME_PROP = 'oriname';
   const MAX_AUTOFIT_ZOOM = 1;
+  let nodeNames = [];
 
   let SIGNATURE = '/themes/ap/common/img/brand/logo-colour.svg';
 
@@ -158,12 +159,12 @@
     {
       selector: ':selected',
       style: {
-        'border-color': '#ffa500',
-        'border-width': '2px',
-        'color': '#ffa500',
-        'line-color': '#ffa500',
+        'border-color': '#bb3a50',
+        'border-width': '4px',
+        'color': '#8e2b3c',
+        'line-color': '#bb3a50',
         'line-style': 'solid',
-        'target-arrow-color': '#ffa500',
+        'target-arrow-color': '#bb3a50',
       },
     }];
   let elements = {
@@ -267,6 +268,37 @@
     cy.destroy();
   }
 
+  let prevSelected = null;
+  function collectNodeNames(source) {
+    nodeNames = [];
+    source.forEach((el) => {
+      let data = el && el.data || {};
+      if(data.id && data.oriname) {
+        nodeNames.push({
+          label: data.oriname,
+          value: data.oriname,
+          dataId: data.id,
+        })
+      }
+    });
+    $("#ap-pd-search-graph").autocomplete({
+      source: nodeNames,
+      select: function( event, ui ) {
+        if (prevSelected) {
+          cy.getElementById(prevSelected).unselect();
+          prevSelected = null;
+        }
+        if (ui.item) {
+          prevSelected = ui.item.dataId;
+          if (prevSelected) {
+            cy.getElementById(prevSelected).select();
+          }
+
+        };
+      }
+    });
+  }
+
   function loadLog(json, layoutType, retain) {
     currentLayout = layoutType;
 
@@ -278,8 +310,12 @@
     isTraceMode = false;
     reset();
     init();
-    cy.add($.parseJSON(json));
+    let source = $.parseJSON(json);
+    console.log(source);
+
+    cy.add(source);
     layout(layoutType);
+    collectNodeNames(source);
 
     if (retain) {
       cy.zoom(zoom);
@@ -471,26 +507,26 @@
 
   function exportPDF(filename) {
     rasterizeForPrint()
-      .then(function(canvas) {
-        let pdf = new jsPDF2('l', 'px', [canvas.width, canvas.height], false, true);
-        loadImage(canvas.toDataURL())
-          .then(function (raster) {
-            pdf.addImage(raster, 'PNG', 0, 0, canvas.width, canvas.height, NaN, 'FAST');
-            pdf.save(filename + '.pdf', {returnPromise: true});
-          })
+    .then(function(canvas) {
+      let pdf = new jsPDF2('l', 'px', [canvas.width, canvas.height], false, true);
+      loadImage(canvas.toDataURL())
+      .then(function (raster) {
+        pdf.addImage(raster, 'PNG', 0, 0, canvas.width, canvas.height, NaN, 'FAST');
+        pdf.save(filename + '.pdf', {returnPromise: true});
       })
+    })
   }
 
   function exportPNG(filename) {
     rasterizeForPrint()
-      .then(function(canvas) {
-        let a = document.createElement('a');
-        canvas.toBlob(function(blob) {
-          a.href = URL.createObjectURL(blob);
-          a.download = filename + '.png';
-          a.click();
-        });
-      })
+    .then(function(canvas) {
+      let a = document.createElement('a');
+      canvas.toBlob(function(blob) {
+        a.href = URL.createObjectURL(blob);
+        a.download = filename + '.png';
+        a.click();
+      });
+    })
   }
 
   function showCaseDetails() {
