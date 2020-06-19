@@ -122,4 +122,8 @@ public class FormatServiceImpl implements FormatService {
         return nat;
     }
 
+    @Override
+    public void updateNative(Native nativeData) {
+        nativeRepo.save(nativeData);
+    }
 }

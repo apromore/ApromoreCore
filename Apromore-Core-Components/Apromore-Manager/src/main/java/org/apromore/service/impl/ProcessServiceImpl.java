@@ -76,6 +76,7 @@ import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.service.search.SearchExpressionBuilder;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -229,13 +230,13 @@ public class ProcessServiceImpl implements ProcessService {
     }
     
     /**
-     * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Version, Version, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
-     * {@inheritDoc}
+     * Update an existing process model version
      */
     @Override
     @Transactional(readOnly = false)
     @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
-    public ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version version, final User user, final String lockStatus,
+    public ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, 
+            final Version version, final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
@@ -249,15 +250,13 @@ public class ProcessServiceImpl implements ProcessService {
             else if (!canUserWriteProcess(user, processId)) {
                 throw new ImportException("Permission to change this model denied.");
             } 
-            if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
-                throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
-            }
             else {
                 ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version.toString());
                 if (pmv != null) {
                     pmv.setLastUpdateDate(now);
+                    pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
+                    pmv.getNativeDocument().setLastUpdateDate(now);
                     processModelVersionRepo.save(pmv);
-                    formatSrv.storeNative(processName, pmv, now, now, user, nativeType, version.toString(), nativeStream);
                     notifyProcessPlugins(pmv); 
                     LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                     return pmv;
@@ -269,7 +268,7 @@ public class ProcessServiceImpl implements ProcessService {
                             + ", branch=" + branchName + ", current version=" + version.toString());
                 }
             }
-        } catch (RepositoryException | JAXBException | IOException e) {
+        } catch (RepositoryException e) {
             LOGGER.error("Failed to update process {}", processName);
             LOGGER.error("Original exception was: ", e);
             throw new RepositoryException("Failed to Update process model.", e);
@@ -278,13 +277,13 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Version, Version, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
-     * {@inheritDoc}
+     * Create new process model version 
      */
     @Override
     @Transactional(readOnly = false)
     @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
-    public ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version newVersion, final Version originalVersion, final User user, final String lockStatus,
+    public ProcessModelVersion createProcessModelVersion(final Integer processId, final String branchName, 
+            final Version newVersion, final Version originalVersion, final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {
         ProcessModelVersion pmv;
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

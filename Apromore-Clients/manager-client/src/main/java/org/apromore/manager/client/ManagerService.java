@@ -283,7 +283,7 @@ public interface ManagerService {
             String pluginVersion, Set<RequestParameterType<?>> deploymentProperties) throws Exception;
 
     /**
-     * Update a process in the Apromore repository.
+     * Create a process model version in the repository.
      * @param sessionCode The Session Code.
      * @param username the Username.
      * @param nativeType the process Native type.
@@ -295,12 +295,30 @@ public interface ManagerService {
      * @param versionNumber the versionNumber.
      * @param originalVersionNumber the original version number of the model.
      * @param preVersion the process current version.
-     * @param native_is the actual input stream of the model.
+     * @param nativeStream the actual input stream of the model.
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ProcessModelVersion updateProcessModelVersion(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
+    ProcessModelVersion createProcessModelVersion(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream nativeStream) throws Exception;
+    
+    
+    /**
+     * Update a process model version in the repository.
+     * @param processId the process Identifier.
+     * @param nativeType the process Native type.
+     * @param processName the process name.
+     * @param branchName the BranchName.
+     * @param versionNumber the versionNumber.
+     * @param username the Username.
+     * @param lockStatus the lock status of this version
+     * @param nativeType the native type
+     * @param nativeStream the actual input stream of the model.
+     * @throws Exception 
+     */
+    ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final String versionNumber, 
+            final String username, final String lockStatus,
+            final String nativeType, final InputStream nativeStream) throws Exception;
 
     /**
      * Write the modified processes which are in processVersions. For each of which, preNewVersion gives the mapping between its previous and new

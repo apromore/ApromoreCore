@@ -112,23 +112,33 @@ public interface ProcessService {
     boolean isPublicProcess(Integer processId);
 
     /**
-     * Update a process Model in the database.
+     * Create a process Model version in the database.
      * @param processId of this update.
      * @param processName of this update.
-     * @param originalBranchName of this update.
-     * @param newBranchName of this update.
+     * @param branchName of this update.
      * @param versionNumber of this update.
      * @param originalVersionNumber of this update.
      * @param user User who updated the process model.
      * @param lockStatus is this model now going to be locked?
      * @param nativeType the native format.
-     * @param cpf the process model graph.
+     * @param nativeStream native content.
      */
-    ProcessModelVersion updateProcessModelVersion(Integer processId, final String branchName, Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
+    ProcessModelVersion createProcessModelVersion(Integer processId, final String branchName, Version versionNumber, 
+            Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, InputStream nativeStream)
             throws ImportException, RepositoryException;
 
-
-    ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version version, final User user, final String lockStatus,
+    /**
+     * Update a process Model version in the database.
+     * @param processId of this update.
+     * @param branchName of this update.
+     * @param version Version of this update.
+     * @param user User who updated the process model.
+     * @param lockStatus is this model now going to be locked?
+     * @param nativeType the native format.
+     * @param nativeStream native content.
+     */
+    ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version version, 
+            final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException;
     
      /**
