@@ -39,12 +39,10 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -85,7 +83,7 @@ public class SaveAsDialogController extends BaseController {
     WorkspaceService workspaceService;
 
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, ApromoreSession session,
-            Boolean isUpdate, String data, Window window) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
+            Boolean isUpdate, String data, Window window) {
         this.session = session;
         this.editSession = session.getEditSession();
         this.isSaveCurrent = isUpdate;
@@ -100,7 +98,9 @@ public class SaveAsDialogController extends BaseController {
         Row versionNumberR = (Row) rows.getChildren().get(1);
         Row buttonGroupR = (Row) rows.getChildren().get(2);
         this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
-        this.modelName.setText(this.editSession.getProcessName());
+        this.modelName.setText(this.isSaveCurrent ? this.editSession.getProcessName() : 
+                                this.editSession.getProcessName() + "_new");
+        this.modelName.setReadonly(this.isSaveCurrent );
         this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
         this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
         Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
@@ -125,8 +125,9 @@ public class SaveAsDialogController extends BaseController {
     }
     
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, ApromoreSession session,
-            Boolean isUpdate, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
-    	this(process, version, session, isUpdate, data, (Window) Executions.createComponents("saveAsDialog.zul", null, null));
+            Boolean isUpdate, String data) {
+    	this(process, version, session, isUpdate, data, 
+    	        (Window) Executions.createComponents("saveAsDialog.zul", null, null));
     }
     
     protected void cancel() throws Exception {
@@ -146,7 +147,7 @@ public class SaveAsDialogController extends BaseController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
         String created = dateFormat.format(new Date());
 
-        boolean makePublic = processService.isPublicProcess(processId);
+        boolean makePublic = (this.isSaveCurrent ? processService.isPublicProcess(processId) : false);
         int containingFolderId = this.editSession.getFolderId();
         InputStream is = new ByteArrayInputStream(this.modelData.getBytes());
 
@@ -154,7 +155,7 @@ public class SaveAsDialogController extends BaseController {
             Folder folder = workspaceService.getFolder(editSession.getFolderId());
             String containingFolderName = (folder == null) ? "Home" : folder.getName();
             if (!this.isSaveCurrent) { //Save As new model
-                saveAsNewModel(userName, containingFolderId, nativeType, processName, versionNo, is, "", 
+                saveAsNewModel(userName, containingFolderId, processName, versionNo, nativeType, is, "", 
                             "", created, null, makePublic, containingFolderName);
             } else {
                 if (session.containVersion(versionNo)) {
@@ -166,7 +167,7 @@ public class SaveAsDialogController extends BaseController {
                                     public void onEvent(ClickEvent e) throws Exception {
                                         switch (e.getButton()) {
                                             case YES: 
-                                                saveCurrentModel(processId, processName, versionNo, nativeType, is, userName, containingFolderName);
+                                                saveCurrentModelVersion(processId, processName, versionNo, nativeType, is, userName, containingFolderName);
                                                 break;
                                             case NO: //Cancel is clicked
                                                 break;
@@ -177,14 +178,11 @@ public class SaveAsDialogController extends BaseController {
                             );
                 }
                 else {
-                    saveCurrentModel(processId, processName, versionNo, nativeType, is, userName, containingFolderName);
+                    createNewModelVersion(processId, processName, versionNo, nativeType, is, userName, containingFolderName);
                 }
                 
             }
             
-            qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
-            qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null, new String[] {processName, versionNo}));
-            closePopup();
         }
         
     }
@@ -204,17 +202,42 @@ public class SaveAsDialogController extends BaseController {
             session.setProcess(importResult.getProcessSummary());
             session.setVersion(importResult.getProcessSummary().getVersionSummaries().get(0));
             
-            Messagebox.show("Done!");
+            qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
+            qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null, new String[] {processName, versionNumber}));
+            closePopup();
         } catch (Exception e) {
             Messagebox.show("Unable to save model! Error: " + e.getMessage(), null, Messagebox.OK, Messagebox.ERROR);
             throw e;
         }
     }
     
-    private void saveCurrentModel(Integer processId, String processName, String versionNumber, String nativeType, InputStream nativeStream,
+    private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber, String nativeType, InputStream nativeStream,
             String userName, String containingFolderName) throws Exception {
         try {
-            ProcessModelVersion newVersion = getService().updateProcessModelVersion(editSession.hashCode(), userName, nativeType, processId, editSession.getOriginalBranchName(), 
+            ProcessModelVersion newVersion = getService().updateProcessModelVersion(processId, editSession.getOriginalBranchName(), 
+                    versionNumber, userName, "" , nativeType, nativeStream);
+            
+            // Update process data with the new process to keep a consistent state
+            editSession.setOriginalVersionNumber(versionNumber);
+            editSession.setCurrentVersionNumber(versionNumber);
+            editSession.setLastUpdate(newVersion.getLastUpdateDate());
+            session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+            session.getVersion().setVersionNumber(versionNumber);
+            
+            qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null, new String[] {processName, versionNumber}));
+            closePopup();
+        }
+        catch (Exception e) {
+            Messagebox.show(e.getMessage());
+            throw e;
+        }
+        
+    }
+    
+    private void createNewModelVersion(Integer processId, String processName, String versionNumber, String nativeType, InputStream nativeStream,
+            String userName, String containingFolderName) throws Exception {
+        try {
+            ProcessModelVersion newVersion = getService().createProcessModelVersion(editSession.hashCode(), userName, nativeType, processId, editSession.getOriginalBranchName(), 
                     versionNumber, editSession.getOriginalVersionNumber(), "", nativeStream);
             
             // Update process data with the new process to keep a consistent state
@@ -224,7 +247,9 @@ public class SaveAsDialogController extends BaseController {
             session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
             session.getVersion().setVersionNumber(versionNumber);
             
-            Messagebox.show("Done!");
+            qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
+            qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null, new String[] {processName, versionNumber}));
+            closePopup();
         }
         catch (Exception e) {
             Messagebox.show(e.getMessage());
@@ -241,13 +266,7 @@ public class SaveAsDialogController extends BaseController {
         Version newVersion = new Version(versionNumber.getText());
         Version curVersion = new Version(editSession.getCurrentVersionNumber());
         try {
-           if (this.isSaveCurrent) {
-                if (newVersion.compareTo(curVersion) <= 0) {
-                    valid = false;
-                    message = message + "New Version number has to be greater than " + this.editSession.getCurrentVersionNumber();
-                    title = "Wrong Version Number";
-                }
-            } else {
+            if (!this.isSaveCurrent) {
                 if (this.modelName.getText() == null || this.modelName.getText().trim().equals("")) {
                     valid = false;
                     message = message + "Model Name cannot be empty";
@@ -259,11 +278,13 @@ public class SaveAsDialogController extends BaseController {
                     title = "Same Model Name";
                 }
             }
+           
             if (this.versionNumber.getText().equals("") || this.versionNumber.getText() == null) {
                 valid = false;
                 message = message + "Version Number cannot be empty";
                 title = "Version Number Empty";
             }
+            
             if (!message.equals("")) {
                 Messagebox.show(message, title, Messagebox.OK, Messagebox.INFORMATION);
             }

@@ -43,7 +43,6 @@ import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -170,47 +169,24 @@ public class BPMNEditorController extends BaseController {
             e.printStackTrace();
         }
         
-        //todo: the exception catching here is not effective as ZK dialogs are asynchronous
+        BPMNEditorController editorController = this;
+        
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-            	boolean isNewProcessBackup = isNewProcess;
-                try {
-                	if (isNewProcess) {
-                		new SaveAsDialogController(process, vst, session, false, eventToString(event));
-                		isNewProcess = false; // to change to save current after saving as new
-                	}
-                	else {
-                		new SaveAsDialogController(process, vst, session, true, eventToString(event));
-                	}
-                } catch (Exception ex) {
-//                	Messagebox.show("Error saving model: " + ex.getMessage());
-                    LOGGER.error("Error saving model.", ex.getStackTrace().toString());
-                    Messagebox.show("Unable to save model! Error: " + ex.getMessage());
-                    isNewProcess = isNewProcessBackup; //change the status back in case of saving error
-                }
+            	if (isNewProcess) {
+            		new SaveAsDialogController(process, vst, session, false, eventToString(event));
+            	}
+            	else {
+            		new SaveAsDialogController(process, vst, session, true, eventToString(event));
+            	}
             }
         });
         
-        //todo: the exception catching here is not effective as ZK dialogs are asynchronous
         this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-                boolean isNewProcessBackup = isNewProcess;
-                try {
-                	if (isNewProcess) {
-                		new SaveAsDialogController(process, vst, session, false, eventToString(event));
-                		isNewProcess = false; // to change to save current after saving as new
-                	}
-                	else {
-                		new SaveAsDialogController(process, vst, session, false, eventToString(event));
-                	}
-                } catch (Exception ex) {
-//                	Messagebox.show("Error saving model: " + ex.getMessage());
-                    LOGGER.error("Error saving model.", ex.getStackTrace().toString());
-                    Messagebox.show("Unable to save model! Error: " + ex.getMessage());
-                    isNewProcess = isNewProcessBackup; //change the status back in case of saving error
-                }
+                new SaveAsDialogController(process, vst, session, false, eventToString(event));
             }
         });
         
@@ -221,6 +197,7 @@ public class BPMNEditorController extends BaseController {
                         if (EVENT_MESSAGE_SAVE.equals(event.getName())) {
                             String[] data = (String[])event.getData();
                             setTitle(data[0], data[1]);
+                            editorController.isNewProcess = false;
                         }
                     }
                 });
