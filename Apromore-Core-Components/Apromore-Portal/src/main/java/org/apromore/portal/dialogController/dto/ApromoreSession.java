@@ -24,15 +24,14 @@
 
 package org.apromore.portal.dialogController.dto;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.dialogController.MainController;
-
-import java.util.HashMap;
-import java.util.Set;
-
 import org.deckfour.xes.model.XLog;
 
 /**
@@ -147,5 +146,14 @@ public class ApromoreSession extends HashMap {
 
     public void setParams(Set<RequestParameterType<?>> params) {
         this.params = params;
+    }
+    
+    public boolean containVersion(String versionNumber) {
+        for (VersionSummaryType version : this.process.getVersionSummaries()) {
+            if (version.getVersionNumber().equalsIgnoreCase(versionNumber)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

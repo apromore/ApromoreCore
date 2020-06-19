@@ -43,42 +43,10 @@ and CreateProcessController.java for creating process purpose.
             <label value="Version number" width="100%" />
             <textbox width="100%" />
           </row>
-          <row visible="false" width="100%" tooltiptext="Process domain modification will be applied on all process versions.">
-            <label value="Domain"/>
-          </row>
-          <row visible="false" width="100%" tooltiptext="Process owner modification will be applied on all process versions.">
-            <label value="Owner*"/>
-          </row>
-          <row visible="false">
-            <label value="Native type*"/>
-            <listbox width="100%" multiple="false" mold="select" rows="1" />
-          </row>
-          <row visible="false">
-            <label value="Ranking"/>
-            <radiogroup>
-              <radio label="0"/>
-              <radio label="1"/>
-              <radio label="2"/>
-              <radio label="3"/>
-              <radio label="4"/>
-              <radio label="5"/>
-              <radio label="uncheck all"/>
-            </radiogroup>
-          </row>
-          <!--<row id="makePublic" visible="${labels.publish.enable}">-->
-          <row id="makePublic" visible="false">
-            <label value="Make model Public"/>
-            <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
-          </row>
-          <row spans="3" sclass="ap-footnotes" visible="false">
-            <label value="* mandatory fields" />
-          </row>
           <row spans="3" sclass="ap-window-footer-actions">
             <div align="right">
               <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
               <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
-              <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
-              <button label="Reset" iconSclass="z-icon-undo"  width="85px" visible="false" tooltiptext="Restore initial values." />
             </div>
           </row>
         </rows>
