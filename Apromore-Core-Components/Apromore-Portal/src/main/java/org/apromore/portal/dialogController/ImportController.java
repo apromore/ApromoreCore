@@ -46,10 +46,15 @@ import org.zkoss.zul.*;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -160,6 +165,7 @@ public class ImportController extends BaseController {
                 public void onEvent(MouseEvent event) throws Exception {
                     importWindow.detach();
                     Sessions.getCurrent().setAttribute("fileimportertarget", ((event.getKeys() & MouseEvent.META_KEY) != 0) ? "page" : "modal");
+//                    uploadFileFromURL(fileUrl.getValue());
                     importFile(ImportController.this.media);
                 }
             });
@@ -218,6 +224,32 @@ public class ImportController extends BaseController {
         int CONNECT_TIMEOUT = 10000;
         int READ_TIMEOUT = 10000;
 
+        String patternDropBox = "^https:\\/\\/www\\.dropbox\\.com.*dl=0$";
+        String patternGoogleDrive = "^https:\\/\\/drive\\.google\\.com\\/file\\/d\\/.*sharing$";
+        String patternOneDrive = "^https:\\/\\/onedrive\\.live\\.com\\/embed\\?cid.*resid.*authkey.*";
+
+        // Parse sharable link of DropBox, GoogleDrive, OneDrive to direct file download URL
+        if (Pattern.matches(patternDropBox, fileUrl)) {
+            fileUrl = fileUrl.substring(0, fileUrl.length()-1) + 1;
+        }
+        if (Pattern.matches(patternGoogleDrive, fileUrl)) {
+            String fileID;
+            int fileIDStart = fileUrl.indexOf("/d/");
+            int fileIDEnd = fileUrl.indexOf('/', fileIDStart + 3);
+            if (fileIDStart == -1) {
+                return;
+            }
+            if (fileIDEnd == -1){
+                fileID = fileUrl.substring(fileIDStart+3);
+            } else {
+                fileID = fileUrl.substring(fileIDStart+3, fileIDEnd);
+            }
+            fileUrl = "https://drive.google.com/uc?export=download&id=" + fileID;
+        }
+        if (Pattern.matches(patternOneDrive, fileUrl)) {
+            fileUrl = fileUrl.replace("embed?", "download?");
+        }
+
         try {
             url = new URL(fileUrl.trim());
 
@@ -271,8 +303,10 @@ public class ImportController extends BaseController {
             okButton_URL.setDisabled(false);
 
         } catch (MalformedURLException | URISyntaxException e) {
+            okButton_URL.setDisabled(true);
             throw new ExceptionImport("URL link is not correct.");
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
+            okButton_URL.setDisabled(true);
             throw new ExceptionImport("Couldn't find supported file. Please check the URL and try again. ");
         }
     }
@@ -294,9 +328,9 @@ public class ImportController extends BaseController {
         if (fileName.endsWith("\"")) {
             fileName = fileName.substring(0, fileName.length() - 1);
         }
-//        if (StringUtil.isEmpty(fileName) || !StringUtil.isValidFileName(fileName)) {
-//            fileName = String.valueOf(System.currentTimeMillis());
-//        }
+        if (StringUtil.isEmpty(fileName) || !StringUtil.isValidFileName(fileName)) {
+            fileName = String.valueOf(System.currentTimeMillis());
+        }
         return fileName;
     }
 
