@@ -584,7 +584,7 @@ div.ap-pd-drawer-splitter:hover {
     font-size: 14px;
 }
 
- > .z-hlayout-inner {
+> .z-hlayout-inner {
     width: 90px;
 }
 .ap-pd-logstats .z-hlayout .z-vlayout .z-hlayout {
@@ -1116,4 +1116,16 @@ div.ap-pd-drawer-splitter:hover {
 .tippy-tooltip .tippy-content {
     font-size: 12px;
     font-family: var(--ap-font-base);
+}
+
+#ap-pd-search-graph {
+    background-color:white;
+    border:none;
+    border-radius: 3px;
+    margin: 0 10px 0 4px;
+}
+
+.ui-widget {
+    font-size: 12px !important;
+    font-family: var(--ap-font-base) !important;
 }
