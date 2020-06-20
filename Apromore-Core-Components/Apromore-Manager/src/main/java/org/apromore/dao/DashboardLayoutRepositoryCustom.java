@@ -21,16 +21,8 @@
  */
 package org.apromore.dao;
 
-import org.apromore.dao.model.DashboardLayout;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+public interface DashboardLayoutRepositoryCustom {
 
-@Repository
-public interface DashboardLayoutRepository extends JpaRepository<DashboardLayout, Integer>,
-        DashboardLayoutRepositoryCustom{
-
-    @Query("SELECT d.layout FROM DashboardLayout d WHERE d.userId = ?1 AND d.logId = ?2")
-    String findByUserIdAndLogId(Integer userId, Integer logId);
+    void saveLayoutByLogId(Integer userId, Integer logId, String layout);
 
 }

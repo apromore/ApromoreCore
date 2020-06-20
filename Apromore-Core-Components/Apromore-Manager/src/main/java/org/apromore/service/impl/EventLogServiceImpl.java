@@ -332,6 +332,7 @@ public class EventLogServiceImpl implements EventLogService {
         LOGGER.info("[--IMPORTANT--] Plugin take over control ");
 //        String layout = getLayoutByLogId(8, 89);
 //        LOGGER.info("[--IMPORTANT--] Plugin take over control " + layout.substring(0, 10));
+        saveLayoutByLogId(90, 8, "test");
 
         return xLog;
     }
@@ -622,6 +623,11 @@ public class EventLogServiceImpl implements EventLogService {
         String layout = dashboardLayoutRepository.findByUserIdAndLogId(userId, logId);
         return layout;
     }
+
+    public void saveLayoutByLogId(Integer logId, Integer userId, String layout){
+        dashboardLayoutRepository.saveLayoutByLogId(userId, logId, layout);
+    }
+
 
 
 }
