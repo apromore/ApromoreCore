@@ -29,7 +29,6 @@ package org.apromore.dao.jpa;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
-import org.apromore.apmlog.impl.APMLogServiceImpl;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.CacheRepository;
 import org.apromore.dao.LogRepositoryCustom;
@@ -44,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -330,6 +328,20 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         }
         return null;
     }
+
+    public String getLayoutByLogId(Integer logId, Integer userId) {
+
+        StringBuilder strQry = new StringBuilder(0);
+        strQry.append("SELECT d.layout FROM DashboardLayout d");
+        if (logId != null && userId != null) {
+            strQry.append(" WHERE d.userId = ").append(userId);
+            strQry.append(" AND d.logId = ").append(logId);
+        }
+
+        Query query = em.createQuery(strQry.toString());
+        return (String) query.getSingleResult();
+    }
+
 
     private XFactory getXFactory(String factoryName) {
 

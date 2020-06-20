@@ -32,7 +32,6 @@ import org.apromore.exception.NotAuthorizedException;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.SummariesType;
-import org.apromore.plugin.eventlog.EventLogPlugin;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -57,11 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 //import javax.annotation.Resource;
@@ -88,6 +83,7 @@ public class EventLogServiceImpl implements EventLogService {
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
     private File logsDir;
+    private DashboardLayoutRepository dashboardLayoutRepository;
 
 //    @javax.annotation.Resource
 //    private Set<EventLogPlugin> eventLogPlugins;
@@ -102,7 +98,7 @@ public class EventLogServiceImpl implements EventLogService {
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
                                final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
                                final UserService userSrv, final UserInterfaceHelper ui,
-                               final StatisticRepository statisticRepository, final ConfigBean configBean) {
+                               final StatisticRepository statisticRepository, final ConfigBean configBean, final DashboardLayoutRepository dashboardLayoutRepository) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.groupLogRepo = groupLogRepository;
@@ -111,6 +107,7 @@ public class EventLogServiceImpl implements EventLogService {
         this.ui = ui;
         this.statisticRepository = statisticRepository;
         this.logsDir = new File(configBean.getLogsDir());
+        this.dashboardLayoutRepository = dashboardLayoutRepository;
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -333,6 +330,9 @@ public class EventLogServiceImpl implements EventLogService {
         Log log = logRepo.findUniqueByID(logId);
         XLog xLog = logRepo.getProcessLog(log, factoryName);
         LOGGER.info("[--IMPORTANT--] Plugin take over control ");
+//        String layout = getLayoutByLogId(8, 89);
+//        LOGGER.info("[--IMPORTANT--] Plugin take over control " + layout.substring(0, 10));
+
         return xLog;
     }
 
@@ -616,5 +616,12 @@ public class EventLogServiceImpl implements EventLogService {
         Log log = logRepo.findUniqueByID(logId);
         return logRepo.getAggregatedLog(log);
     }
+
+    public String getLayoutByLogId(Integer userId, Integer logId) {
+        //TODO
+        String layout = dashboardLayoutRepository.findByUserIdAndLogId(userId, logId);
+        return layout;
+    }
+
 
 }

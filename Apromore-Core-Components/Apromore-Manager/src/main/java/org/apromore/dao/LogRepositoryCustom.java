@@ -77,4 +77,6 @@ public interface LogRepositoryCustom {
      */
     APMLog getAggregatedLog(Log log);
 
+    String getLayoutByLogId(Integer logId, Integer userId);
+
 }

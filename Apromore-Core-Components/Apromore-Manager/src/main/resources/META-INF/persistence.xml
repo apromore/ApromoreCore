@@ -50,6 +50,7 @@
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Workspace</class>
         <class>org.apromore.dao.model.Statistic</class>
+        <class>org.apromore.dao.model.DashboardLayout</class>
     </persistence-unit>
 
 </persistence>

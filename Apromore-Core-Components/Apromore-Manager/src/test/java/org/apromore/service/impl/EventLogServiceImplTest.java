@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -80,6 +80,7 @@ public class EventLogServiceImplTest {
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
     private EventLogServiceImpl eventLogService;
+    private DashboardLayoutRepository dashboardLayoutRepository;
 
     private static void walkLog(XLog log) {
         walkAttributes(log);
@@ -122,10 +123,11 @@ public class EventLogServiceImplTest {
         userSrv = createMock(UserService.class);
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
+        dashboardLayoutRepository = createMock(DashboardLayoutRepository.class);
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
-                userSrv, ui, statisticRepository, config);
+                userSrv, ui, statisticRepository, config, dashboardLayoutRepository);
     }
 
     @Test
@@ -404,5 +406,18 @@ public class EventLogServiceImplTest {
 
         System.out.println("Imported and walked log: " + path.getFileName());
         System.out.println("Duration: " + timer.getDurationString());
+    }
+
+    @Test
+    public void getLayoutByLogId() {
+        Integer userId = 1;
+        Integer logId = 1;
+        String reallyLongString = "a really long String";
+        expect(dashboardLayoutRepository.findByUserIdAndLogId(userId, logId)).andReturn(reallyLongString);
+        replay(dashboardLayoutRepository);
+
+        String result = eventLogService.getLayoutByLogId(userId, logId);
+        verify(dashboardLayoutRepository);
+        assertThat(result, equalTo(reallyLongString));
     }
 }
