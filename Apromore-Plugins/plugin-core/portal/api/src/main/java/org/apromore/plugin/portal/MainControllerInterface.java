@@ -24,13 +24,11 @@
 
 package org.apromore.plugin.portal;
 
-import org.apromore.model.EditSessionType;
+import java.util.Set;
+
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
-
-import java.util.*;
 
 public interface MainControllerInterface {
 
@@ -42,9 +40,6 @@ public interface MainControllerInterface {
     void editProcess2(ProcessSummaryType process, VersionSummaryType version, String nativeType, String annotation,
 			String readOnly, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
 			throws InterruptedException;
-
-    void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
-            boolean isNormalSave, String data) throws  InterruptedException;
 
 	
 }

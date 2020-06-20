@@ -24,10 +24,10 @@
 
 package org.apromore.helper;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
 
 /**
  * Version identifier for capabilities such as bundles and packages.
@@ -299,6 +299,7 @@ public class Version implements Comparable<Version> {
      *
      * @return The string representation of this version identifier.
      */
+    @Override
     public String toString() {
         return toString0();
     }
@@ -335,6 +336,7 @@ public class Version implements Comparable<Version> {
      *
      * @return An integer which is a hash code value for this object.
      */
+    @Override
     public int hashCode() {
         if (hash != 0) {
             return hash;
@@ -359,6 +361,7 @@ public class Version implements Comparable<Version> {
      * @return {@code true} if {@code object} is a {@code Version} and is equal
      * to this object; {@code false} otherwise.
      */
+    @Override
     public boolean equals(Object object) {
         if (object == this) {
             return true;
@@ -407,24 +410,25 @@ public class Version implements Comparable<Version> {
             return 0;
         }
 
-        int result = major - other.major;
+        Integer thisMajor = (major==null ? 0 : major);
+        Integer otherMajor = (other.major==null ? 0 : other.major);
+        int result = thisMajor - otherMajor;
         if (result != 0) {
             return result;
         }
 
-
-        if (minor != null) {
-            result = minor - other.minor;
-            if (result != 0) {
-                return result;
-            }
+        Integer thisMinor = (minor==null ? 0 : minor);
+        Integer otherMinor = (other.minor==null ? 0 : other.minor);
+        result = thisMinor - otherMinor;
+        if (result != 0) {
+            return result;
         }
 
-        if (micro != null) {
-            result = micro - other.micro;
-            if (result != 0) {
-                return result;
-            }
+        Integer thisMicro = (micro==null ? 0 : micro);
+        Integer otherMicro = (other.micro==null ? 0 : other.micro);
+        result = thisMicro - otherMicro;
+        if (result != 0) {
+            return result;
         }
 
         return qualifier.compareTo(other.qualifier);

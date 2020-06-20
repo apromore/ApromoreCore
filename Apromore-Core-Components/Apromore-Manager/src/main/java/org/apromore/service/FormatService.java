@@ -30,6 +30,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
@@ -56,7 +57,7 @@ public interface FormatService {
      * @return the nativeType record
      */
     NativeType findNativeType(String nativeType);
-
+    
     /**
      * Store the Native XML in the DB.
      *
@@ -73,4 +74,6 @@ public interface FormatService {
      */
     void storeNative(String procName, ProcessModelVersion processId, String created, String lastUpdate, User user,
         NativeType nativeType, String AnnotationVerion, InputStream original) throws JAXBException, IOException;
+    
+    void updateNative(Native nativeData);
 }

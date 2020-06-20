@@ -42,6 +42,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPException;
 
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.PluginHelper;
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
@@ -731,7 +732,7 @@ public class ManagerServiceClient implements ManagerService {
             return response.getValue().getImportLogResult();
         }
     }
-
+    
     @Override
     public void editLogData(Integer logId, String logName, String username, boolean isPublic) throws Exception {
         LOGGER.debug("Preparing EditLogDataRequest.....");
@@ -787,6 +788,11 @@ public class ManagerServiceClient implements ManagerService {
             return response.getValue().getImportProcessResult();
         }
     }
+    
+    @Override
+    public ProcessSummaryType createNewEmptyProcess(String username) {
+       return null; 
+    }
 
     /**
      * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, String, String, String, java.io.InputStream)
@@ -794,7 +800,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
+    public ProcessModelVersion createProcessModelVersion(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
             final String branchName, final String versionNumber, final String originalVersionNumber, final String preVersion, final InputStream native_is)
             throws Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
@@ -822,6 +828,14 @@ public class ManagerServiceClient implements ManagerService {
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
+        return null;
+    }
+    
+    @Override
+    public ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final String version, 
+            final String user, final String lockStatus,
+            final String nativeType, final InputStream nativeStream) throws Exception {
+        throw new Exception("Not  implemented");
     }
 
 

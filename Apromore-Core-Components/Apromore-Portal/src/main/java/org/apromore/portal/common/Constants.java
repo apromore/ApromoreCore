@@ -32,6 +32,7 @@ public final class Constants {
 
     public static final String EVENT_QUEUE_REFRESH_SCREEN = "UI_UPDATES";
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
+    public static final String EVENT_QUEUE_BPMN_EDITOR = "BPMN EDITOR";
 
     // colors and style used in the table view
     // #E5E5E5 light gray

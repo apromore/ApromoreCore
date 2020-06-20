@@ -403,25 +403,49 @@ public class MainController extends BaseController implements MainControllerInte
 
         EditSessionType editSession = new EditSessionType();
 
-        editSession.setDomain(process.getDomain());
-        editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
-        editSession.setProcessId(process.getId());
-        editSession.setProcessName(process.getName());
-        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
-        editSession.setPublicModel(process.isMakePublic());
-        editSession.setOriginalBranchName(version.getName());
-        editSession.setOriginalVersionNumber(version.getVersionNumber());
-        editSession.setCurrentVersionNumber(version.getVersionNumber());
-        editSession.setMaxVersionNumber(findMaxVersion(process));
-        editSession.setFolderId(portalContext.getCurrentFolder().getId());
-        editSession.setCreationDate(version.getCreationDate());
-        editSession.setLastUpdate(version.getLastUpdate());
-        if (annotation == null) {
-            editSession.setWithAnnotation(false);
-            editSession.setAnnotation(null);
-        } else {
-            editSession.setWithAnnotation(true);
-            editSession.setAnnotation(annotation);
+        if (process == null) {
+            editSession.setDomain("");
+            editSession.setNativeType("BPMN 2.0");
+            editSession.setProcessId(process.getId());
+            editSession.setProcessName("New process model");
+            editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+            editSession.setPublicModel(process.isMakePublic());
+            editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
+            editSession.setOriginalVersionNumber(version.getVersionNumber());
+            editSession.setCurrentVersionNumber(version.getVersionNumber());
+            editSession.setMaxVersionNumber(findMaxVersion(process));
+            editSession.setFolderId(portalContext.getCurrentFolder().getId());
+            editSession.setCreationDate(version.getCreationDate());
+            editSession.setLastUpdate(version.getLastUpdate());
+            if (annotation == null) {
+                editSession.setWithAnnotation(false);
+                editSession.setAnnotation(null);
+            } else {
+                editSession.setWithAnnotation(true);
+                editSession.setAnnotation(annotation);
+            }
+        }
+        else {
+            editSession.setDomain(process.getDomain());
+            editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
+            editSession.setProcessId(process.getId());
+            editSession.setProcessName(process.getName());
+            editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+            editSession.setPublicModel(process.isMakePublic());
+            editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
+            editSession.setOriginalVersionNumber(version.getVersionNumber());
+            editSession.setCurrentVersionNumber(version.getVersionNumber());
+            editSession.setMaxVersionNumber(findMaxVersion(process));
+            editSession.setFolderId(portalContext.getCurrentFolder().getId());
+            editSession.setCreationDate(version.getCreationDate());
+            editSession.setLastUpdate(version.getLastUpdate());
+            if (annotation == null) {
+                editSession.setWithAnnotation(false);
+                editSession.setAnnotation(null);
+            } else {
+                editSession.setWithAnnotation(true);
+                editSession.setAnnotation(annotation);
+            }
         }
 
         return editSession;
@@ -513,6 +537,7 @@ public class MainController extends BaseController implements MainControllerInte
 
         try {
             String id = UUID.randomUUID().toString();
+            requestParameterTypes.add(new RequestParameterType<>("versions", process.getVersionSummaries()));
             ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
@@ -526,15 +551,13 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
     
-    @Override
-    public void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
-            boolean isNormalSave, String data) throws  InterruptedException {
-    	try {
-    		SaveAsDialogController saveDiaglog = new SaveAsDialogController(process, version, editSession, isNormalSave, data);
-    	}
-    	catch (Exception e) {
-    		Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-    	}
+    public void createNewProcess() throws InterruptedException {
+        ProcessSummaryType process = getService().createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
+        VersionSummaryType version = process.getVersionSummaries().get(0);
+        AnnotationsType annotations = version.getAnnotations().get(0);
+        String annotationName = annotations.getAnnotationName().get(0);
+        editProcess2(process, version, annotations.getNativeType(), annotationName, "false", 
+                    new HashSet<RequestParameterType<?>>(), true);
     }
 
     public FolderType getBreadcrumFolders(int selectedFolderId) {

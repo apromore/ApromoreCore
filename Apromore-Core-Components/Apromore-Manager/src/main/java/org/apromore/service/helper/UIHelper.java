@@ -84,7 +84,6 @@ public class UIHelper implements UserInterfaceHelper {
     private GroupFolderRepository gfRepository;
     private ProcessModelVersionRepository pmvRepository;
     private WorkspaceService workspaceService;
-    private boolean enableCPF;
 
 
     /**
@@ -116,7 +115,6 @@ public class UIHelper implements UserInterfaceHelper {
         this.gfRepository = groupFolderRepository;
         this.pmvRepository = processModelVersionRepository;
         this.workspaceService = workspaceService;
-        this.enableCPF = config.getEnableCPF();
     }
 
 
@@ -144,7 +142,7 @@ public class UIHelper implements UserInterfaceHelper {
         verType.setLastUpdate(lastUpdate);
         verType.setVersionNumber(pmv.getVersionNumber());
         verType.setRanking(process.getRanking());
-        verType.setEmpty(enableCPF && pmv.getNumEdges() == 0 && pmv.getNumVertices() == 0);
+        verType.setEmpty(false);
 
         if (nativeType != null && !nativeType.equals("")) {
             annType.setNativeType(nativeType);
@@ -385,6 +383,7 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /* Builds the list of version Summaries for a process. */
+    // Note: the branch name is used as the version name in VersionSummaryType
     private void buildVersionSummaryTypeList(ProcessSummaryType processSummary, ProcessVersionsType similarProcesses, Process pro) {
         VersionSummaryType versionSummary;
         ProcessVersionType processVersionType = null;
@@ -412,7 +411,7 @@ public class UIHelper implements UserInterfaceHelper {
                 if (processVersionType != null) {
                     versionSummary.setScore(processVersionType.getScore());
                 }
-                versionSummary.setEmpty(enableCPF && processModelVersion.getNumEdges() == 0 && processModelVersion.getNumVertices() == 0);
+                versionSummary.setEmpty(false);
 
                 pmVersion = new Version(processModelVersion.getVersionNumber());
                 //buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), pmVersion);

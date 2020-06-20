@@ -23,9 +23,12 @@
 package org.apromore.manager.client;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,7 @@ import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
+import org.apromore.model.AnnotationsType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ExportLogResultType;
@@ -440,6 +444,42 @@ public class ManagerServiceImpl implements ManagerService {
 
         return importResult;
     }
+    
+    @Override
+    public ProcessSummaryType createNewEmptyProcess(String username) {
+        ProcessSummaryType proType = new ProcessSummaryType();
+        VersionSummaryType verType = new VersionSummaryType();
+        AnnotationsType annType = new AnnotationsType();
+
+        proType.setId(0);
+        proType.setName("Untitled");
+        proType.setDomain("");
+        proType.setRanking("");
+        proType.setLastVersion("1.0");
+        proType.setOriginalNativeType("BPMN 2.0");
+        proType.setOwner(username);
+        proType.setMakePublic(false);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        
+        verType.setName(Constants.TRUNK_NAME);
+        verType.setCreationDate(now);
+        verType.setLastUpdate(now);
+        verType.setVersionNumber("1.0");
+        verType.setRanking("");
+        verType.setEmpty(false);
+
+        annType.setNativeType("BPMN 2.0");
+        annType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
+        verType.getAnnotations().add(annType);
+        
+        proType.getVersionSummaries().clear();
+        proType.getVersionSummaries().add(verType);
+        
+        return proType;
+
+    }
 
     /**
      * Get list of all currently installed Plugins.
@@ -505,29 +545,36 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     /**
-     * Update a process in the Apromore repository.
+     * Update a process in the repository.
      * @param sessionCode The Session Code.
      * @param username the Username.
      * @param nativeType the process Native type.
      * @param processId the process Identifier.
-     * @param domain the process domain.
      * @param processName the process name.
-     * @param originalBranchName the originalBranchName.
-     * @param newBranchName the originalBranchName.
+     * @param branchName the BranchName.
      * @param versionNumber the versionNumber.
      * @param originalVersionNumber the original version number of the model.
      * @param preVersion the process current version.
-     * @param native_is the actual input stream of the model.
-     * @throws java.io.IOException if the streams cause issues
-     * @throws Exception ... change to be something more relevant TODO: Fix Exception
+     * @param nativeStream the actual input stream of the model.
+     * @throws Exception
      */
     @Override
-    public void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String branchName, String versionNumber, String originalVersionNumber,
+    public ProcessModelVersion createProcessModelVersion(Integer sessionCode, String username, String nativeType, 
+            Integer processId, String branchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream nativeStream) throws Exception {
 
         NativeType natType = frmSrv.findNativeType(nativeType);
-        procSrv.updateProcess(processId, branchName, new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
+        return procSrv.createProcessModelVersion(processId, branchName, new Version(versionNumber), new Version(originalVersionNumber), secSrv.getUserByName(username), Constants.LOCKED, natType, nativeStream);
 
+    }
+    
+    @Override
+    public ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final String versionNumber, 
+            final String username, final String lockStatus,
+            final String nativeType, final InputStream nativeStream) throws Exception {
+        
+        NativeType natType = frmSrv.findNativeType(nativeType);
+        return procSrv.updateProcessModelVersion(processId, branchName, new Version(versionNumber), secSrv.getUserByName(username), lockStatus, natType, nativeStream);
     }
 
     /**
