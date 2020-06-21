@@ -71,6 +71,16 @@ public class ReworkRepetitionFilterTest {
         runTest(apmLog, parent, FilterType.REWORK_REPETITION, primaryValues, expectedCaseIds);
     }
 
+    public static void testGreaterEqual0(APMLog apmLog, APMLogUnitTest parent) throws Exception {
+        Set<RuleValue> primaryValues = new HashSet<>();
+        primaryValues.add(new RuleValue(FilterType.REWORK_REPETITION, OperationType.GREATER_EQUAL, "b", 0));
+        primaryValues.add(new RuleValue(FilterType.REWORK_REPETITION, OperationType.LESS_EQUAL, "b", 1));
+        UnifiedSet<String> expectedCaseIds = new UnifiedSet<>();
+        expectedCaseIds.add("t1");
+        expectedCaseIds.add("t2");
+        runTest(apmLog, parent, FilterType.REWORK_REPETITION, primaryValues, expectedCaseIds);
+    }
+
     private static void runTest(APMLog apmLog, APMLogUnitTest parent, FilterType filterType,
                                Set<RuleValue> primaryValues,
                                UnifiedSet<String> expectedCaseIds) throws Exception {

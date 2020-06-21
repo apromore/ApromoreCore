@@ -72,61 +72,111 @@ public class ReworkFilter {
             matchedCountMap.put(key, 0);
         }
 
-        for (String actName : actNameOccurMap.keySet()) {
-            int occur = actNameOccurMap.get(actName);
+        boolean reqNotOccur = false;
 
+        for (RuleValue rv : primaryVals) {
+            String rvKey = rv.getKey();
+            OperationType operationType = rv.getOperationType();
+            int intVal = rv.getIntValue();
 
+            if (actNameOccurMap.keySet().contains(rvKey)) {
+                int occur = actNameOccurMap.get(rvKey);
+                boolean proceed = false;
+                if (operationType == OperationType.GREATER) {
+                    if (occur > intVal) {
+                        proceed = true;
+                    }
+                }
 
+                if (operationType == OperationType.GREATER_EQUAL) {
+                    if (occur >= intVal) {
+                        proceed = true;
+                    }
+                }
+
+                if (operationType == OperationType.LESS) {
+                    if (occur < intVal) {
+                        proceed = true;
+                    }
+                }
+
+                if (operationType == OperationType.LESS_EQUAL) {
+                    if (occur <= intVal) {
+                        proceed = true;
+                    }
+                }
+
+                if (proceed) {
+                    int count = matchedCountMap.get(rvKey) + 1;
+                    matchedCountMap.put(rvKey, count);
+                }
+            } else {
+                if (operationType == OperationType.GREATER_EQUAL && intVal == 0) reqNotOccur = true;
+            }
+        }
+
+        if (reqNotOccur) {
             for (RuleValue rv : primaryVals) {
                 String rvKey = rv.getKey();
-                if (rvKey.equals(actName)) {
-                    OperationType operationType = rv.getOperationType();
-                    int intVal = rv.getIntValue();
 
-
-                    if (operationType == OperationType.GREATER) {
-                        if (occur <= intVal) {
-                            break;
-                        }
-                    }
-
-                    if (operationType == OperationType.GREATER_EQUAL) {
-                        if (occur < intVal) {
-                            break;
-                        }
-                    }
-
-                    if (operationType == OperationType.LESS) {
-                        if (occur >= intVal) {
-                            break;
-                        }
-                    }
-
-                    if (operationType == OperationType.LESS_EQUAL) {
-                        if (occur > intVal) {
-                            break;
-                        }
-                    }
-
+                if (!actNameOccurMap.keySet().contains(rvKey)) {
                     int count = matchedCountMap.get(rvKey) + 1;
                     matchedCountMap.put(rvKey, count);
                 }
             }
         }
 
+
         int totalMatchedRule = 0;
 
         for (String key : ruleActMatchMap.keySet()) {
             int reqMatch = ruleActMatchMap.get(key);
             int realMatch = matchedCountMap.get(key);
-            if (reqMatch == realMatch) totalMatchedRule += 1;
+            if (reqMatch <= realMatch) totalMatchedRule += 1;
         }
 
-        if (totalMatchedRule == 0) return false;
-        if (inclusion == Inclusion.ALL_VALUES && totalMatchedRule < ruleActMatchMap.size()) return false;
+        if (totalMatchedRule == 0){
+            return false;
+        }
+        if (inclusion == Inclusion.ALL_VALUES && totalMatchedRule < ruleActMatchMap.size()){
+            return false;
+        }
 
         return true;
     }
+
+
+//    private static boolean conformRule(LaTrace pTrace, LogFilterRule logFilterRule) {
+//
+//
+//        Inclusion inclusion = logFilterRule.getInclusion();
+//
+//        Map<String, Integer> actNameOccurMap = getActivityNameOccurMap(pTrace);
+//
+//        Set<RuleValue> primaryVals = logFilterRule.getPrimaryValues();
+//
+//        int matchCount = 0;
+//
+//        for (RuleValue rv : primaryVals) {
+//            String key = rv.getKey();
+//            OperationType operationType = rv.getOperationType();
+//            int intVal = rv.getIntValue();
+//            if (actNameOccurMap.keySet().contains(key)) {
+//                int occur = actNameOccurMap.get(key);
+//                if (operationType == OperationType.GREATER && occur > intVal) matchCount += 1;
+//                if (operationType == OperationType.GREATER_EQUAL && occur >= intVal) matchCount += 1;
+//                if (operationType == OperationType.LESS && occur < intVal) matchCount += 1;
+//                if (operationType == OperationType.LESS_EQUAL && occur <= intVal) matchCount += 1;
+//            } else {
+//                if (operationType == OperationType.GREATER_EQUAL && intVal == 0) matchCount += 1;
+//            }
+//        }
+//
+//        if (matchCount == 0) return false;
+//        if (inclusion == Inclusion.ALL_VALUES && matchCount < primaryVals.size()) return false;
+//
+//        return true;
+//    }
 
     private static Map<String, Integer> getActivityNameOccurMap(LaTrace pTrace) {
 
