@@ -119,6 +119,17 @@ body {
     display: none;
 }
 
+.ap-pd-action-buttons .ap-icon[disabled] {
+    display: inline-block;
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-grey-minor) !important;
+}
+
+.ap-pd-action-buttons .ap-icon[disabled]:hover {
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-grey-minor) !important;
+}
+
 .ap-pd-main-c {
     display: flex;
     position:absolute;
