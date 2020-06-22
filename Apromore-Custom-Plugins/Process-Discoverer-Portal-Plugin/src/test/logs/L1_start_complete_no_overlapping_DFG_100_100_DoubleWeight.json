@@ -3,7 +3,7 @@
       "data":{
          "shape":"roundrectangle",
          "color":"#5b889b",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"d",
          "name":"d\\n\\n6\\n60 secs",
@@ -22,7 +22,7 @@
       "data":{
          "shape":"roundrectangle",
          "color":"#769dae",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"b",
          "name":"b\\n\\n5\\n60 secs",
@@ -41,7 +41,7 @@
       "data":{
          "shape":"ellipse",
          "color":"#C1C9B0",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"|>",
          "name":"",
@@ -60,7 +60,7 @@
       "data":{
          "shape":"roundrectangle",
          "color":"#769dae",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"c",
          "name":"c\\n\\n5\\n60 secs",
@@ -79,7 +79,7 @@
       "data":{
          "shape":"ellipse",
          "color":"#C0A3A1",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"3px",
          "oriname":"[]",
          "name":"",
@@ -98,7 +98,7 @@
       "data":{
          "shape":"roundrectangle",
          "color":"#e2f2f8",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"e",
          "name":"e\\n\\n1\\n60 secs",
@@ -117,7 +117,7 @@
       "data":{
          "shape":"roundrectangle",
          "color":"#5b889b",
-         "textsize":"16px",
+         "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"a",
          "name":"a\\n\\n6\\n60 secs",

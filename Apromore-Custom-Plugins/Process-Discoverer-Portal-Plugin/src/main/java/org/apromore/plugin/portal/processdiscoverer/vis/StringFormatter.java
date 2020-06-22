@@ -23,8 +23,8 @@
 package org.apromore.plugin.portal.processdiscoverer.vis;
 
 public class StringFormatter {
-    private final int MAXLEN = 25;
-    private final int MAXWORDLEN = 15;
+    private final int MAXLEN = 60;
+    private final int MAXWORDLEN = 25;
 
     public String escapeChars(String value) {
     	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
@@ -37,12 +37,12 @@ public class StringFormatter {
         }
         String[] parts = name.split(" ");
         if (parts.length > 2) {
-            if (parts[0].length() > MAXWORDLEN || parts[1].length() > MAXWORDLEN) {
-                name = parts[0].substring(0, MAXWORDLEN);
+            if (parts[0].length() > MAXWORDLEN || parts[parts.length - 1].length() > MAXWORDLEN) {
+                name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
+                needEllipsis = true;
             } else {
-                name = parts[0] + " " + parts[1];
+                name = parts[0] + " ... " + parts[parts.length - 1];
             }
-            needEllipsis = true;
         }
         if (name.length() > len) {
             name = name.substring(0, len);
