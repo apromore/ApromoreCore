@@ -139,7 +139,15 @@ public class LogData {
     public void setCurrentFilterCriteria(Object criteria) {
         this.currentFilterCriteria = criteria;
     }
-    
+
+    public boolean isCurrentFilterCriteriaEmpty() {
+        ArrayList<LogFilterRule> filterCriteria = (ArrayList<LogFilterRule>)this.currentFilterCriteria;
+        if (filterCriteria != null && filterCriteria.size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean filter_RemoveTracesAnyValueOfEventAttribute(String value, String attKey) throws Exception {
         return false;
     }
