@@ -57,10 +57,16 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
     	}
     	jsonData.put("oriname", visSettings.getStringFormatter().escapeChars(node_oriname));
     	
-    	String node_displayname = node_oriname.trim(); 
+    	String node_displayname = node_oriname.trim();
+    	int fontSize;
     	node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
     	node_displayname = visSettings.getStringFormatter().shortenName(node_displayname, 0);
 
+		if (node_displayname.length() > 25) {
+			fontSize = visSettings.getActivityFontSizeSmall();
+		} else {
+			fontSize = visSettings.getActivityFontSize();
+		}
     	Abstraction abs = visContext.getProcessAbstraction();
 		AbstractionParams params = abs.getAbstractionParams();
     	
@@ -92,10 +98,10 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
 		jsonData.put("shape", "roundrectangle");
         jsonData.put("color", visSettings.getColorSettings().getActivityBackgroundColor(element, visContext, visSettings));
         jsonData.put("textcolor", visSettings.getColorSettings().getActivityTextColor(element, visContext, visSettings));
-        jsonData.put("width", visSettings.getActivityWidth()+"px");
-        jsonData.put("height", visSettings.getActivityHeight()+"px");
-        jsonData.put("textsize", visSettings.getActivityFontSize()+"px");
-        jsonData.put("borderwidth", visSettings.getBorderWidth()+"px");
+        jsonData.put("width", visSettings.getActivityWidth() + "px");
+        jsonData.put("height", visSettings.getActivityHeight() + "px");
+        jsonData.put("textsize", fontSize + "px");
+        jsonData.put("borderwidth", visSettings.getBorderWidth() + "px");
 	}
 
 }

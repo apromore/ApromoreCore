@@ -56,7 +56,9 @@ public class VisualSettings {
     private int inter_rank_cell_spacing = 100;
     private int parallel_edge_spacing = 30;
 
-    private int activity_font_size = 16; //"10";
+    private int activityFontSize = 14; //"10";
+    private int activityFontSizeSmall = 12; //"10";
+
     private int xor_gateway_font_size = 25; //"20"; //(used_bpmn_size) ? "20" : "10";
     private int and_gateway_font_size = 40; //"30"; //(used_bpmn_size) ? "30" : "10";
     
@@ -133,7 +135,10 @@ public class VisualSettings {
     }
     
     public int getActivityFontSize() {
-    	return activity_font_size;
+    	return activityFontSize;
+    }
+    public int getActivityFontSizeSmall() {
+        return activityFontSizeSmall;
     }
     
     public int getXORGatewayFontSize() {

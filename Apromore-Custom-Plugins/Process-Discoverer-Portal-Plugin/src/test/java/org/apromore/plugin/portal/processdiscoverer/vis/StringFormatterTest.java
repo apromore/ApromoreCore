@@ -32,7 +32,7 @@ public class StringFormatterTest {
     @Test
     public void testShortenName() {
         try {
-            if (!stringFormatter.shortenName("Great White Shark", 0).equals("Great White...")) {
+            if (!stringFormatter.shortenName("Great WhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongString Shark", 0).equals("Great ... Shark")) {
                 fail("Shorten name is not correct");
             }
             if (!stringFormatter.shortenName("Great White", 0).equals("Great White")) {
