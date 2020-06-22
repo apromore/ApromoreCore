@@ -63,10 +63,6 @@ logs.dir = ../Event-Logs-Repository
 # You can override it to use an external file from here.
 manager.ehcache.config.url = file:configuration/ehcache.xml
 
-# This feature enables the legacy CPF canonisation/decanonisation and fragment store
-# A server cannot run with "true" if it contains any models that were loaded while "false"
-manager.enableCPF = true
-
 
 # Cosmetic details
 

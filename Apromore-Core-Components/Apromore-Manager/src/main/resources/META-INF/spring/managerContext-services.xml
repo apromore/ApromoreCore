@@ -30,7 +30,6 @@
             http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
 
     <bean id="config" class="org.apromore.common.ConfigBean">
-        <property name="enableCPF" value="${manager.enableCPF}"/>
         <property name="logsDir" value="${logs.dir}"/>
     </bean>
 
