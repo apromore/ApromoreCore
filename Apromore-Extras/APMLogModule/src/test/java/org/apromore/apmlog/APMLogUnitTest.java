@@ -244,6 +244,14 @@ public class APMLogUnitTest {
     }
 
     @Test
+    public void testRework7() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater Equal 0'");
+        XLog xLog = getXLog("files/_reworkTest2.xes");
+        APMLog apmLog = new APMLog(xLog);
+        ReworkRepetitionFilterTest.testGreaterEqual0(apmLog, this);
+    }
+
+    @Test
     public void testEventSectionEventAttribute1() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Event Section Event Attribute - Resource'");
         XLog xLog = getXLog("files/eventattr.xes");

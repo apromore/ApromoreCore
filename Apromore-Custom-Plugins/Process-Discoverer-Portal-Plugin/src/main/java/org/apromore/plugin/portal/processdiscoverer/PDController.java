@@ -70,6 +70,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
@@ -418,8 +419,8 @@ public class PDController extends BaseController {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     Messagebox.show(
-                        "Are you sure you want to clear all filter?",
-                        "Confirm Dialog",
+                        "Are you sure you want to clear all filters?",
+                        "Filter log",
                         Messagebox.OK | Messagebox.CANCEL,
                         Messagebox.QUESTION,
                         new org.zkoss.zk.ui.event.EventListener() {
@@ -442,11 +443,13 @@ public class PDController extends BaseController {
             filter.addEventListener("onInvoke", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
+                    Clients.showBusy("Launch Filter Dialog ...");
                     String payload = event.getData().toString();
                     LogFilterController logFilterController = pdFactory.createLogFilterController(me);
                     logFilterController.onEvent(event);
                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
                     eqFilteredView.publish(new Event("ctrl", null, payload));
+                    Clients.clearBusy();
                 }
             });
             filter.addEventListener("onClick", pdFactory.createLogFilterController(this));
@@ -528,6 +531,8 @@ public class PDController extends BaseController {
             if (!reset) {
                 graphVisController.centerToWindow();
             }
+            boolean noFilter = this.getLogData().isCurrentFilterCriteriaEmpty();
+            filterClear.setDisabled(noFilter);
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while updating UI: " + ex.getMessage());
