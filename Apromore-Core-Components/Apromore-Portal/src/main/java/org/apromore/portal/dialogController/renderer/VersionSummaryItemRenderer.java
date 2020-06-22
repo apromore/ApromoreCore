@@ -24,6 +24,9 @@
 
 package org.apromore.portal.dialogController.renderer;
 
+import java.util.HashSet;
+import java.util.List;
+
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -39,9 +42,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-
-import java.util.HashSet;
-import java.util.List;
 
 public class VersionSummaryItemRenderer implements ListitemRenderer {
 
@@ -70,25 +70,8 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                AnnotationsType annotation = getLastestAnnotation(data.getVersion().getAnnotations());
-                String nativeType = (annotation != null) ? getNativeType(annotation.getNativeType()) : getNativeType(data.getProcess().getOriginalNativeType());
-                String annotationName = (annotation != null) ? annotation.getAnnotationName().get(0) : null;
-                if (nativeType.equals("BPMN 2.0")) {
-                    mainController.editProcess2(data.getProcess(), data.getVersion(), nativeType, annotationName,
-                        "false", new HashSet<RequestParameterType<?>>(), false);
-                } else {
-                    mainController.editProcess(data.getProcess(), data.getVersion(), nativeType, null, "false",
-                            new HashSet<RequestParameterType<?>>());
-                }
-                /*
-                if (annotation != null) {
-                    mainController.editProcess(data.getProcess(), data.getVersion(), getNativeType(annotation.getNativeType()),
-                        annotation.getAnnotationName().get(0), "false", new HashSet<RequestParameterType<?>>());
-                } else {
-                    mainController.editProcess(data.getProcess(), data.getVersion(), getNativeType(data.getProcess().getOriginalNativeType()),
-                            null, "false", new HashSet<RequestParameterType<?>>());
-                }
-                */
+                mainController.editProcess2(data.getProcess(), data.getVersion(), getNativeType(data.getProcess().getOriginalNativeType()),
+                    new HashSet<RequestParameterType<?>>(), false);
             }
 
             /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */

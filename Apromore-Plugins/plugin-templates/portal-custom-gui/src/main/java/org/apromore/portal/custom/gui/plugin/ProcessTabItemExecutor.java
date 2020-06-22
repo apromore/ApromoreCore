@@ -24,6 +24,8 @@
 
 package org.apromore.portal.custom.gui.plugin;
 
+import java.util.HashSet;
+
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.MainControllerInterface;
@@ -31,8 +33,6 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.ProcessSummaryRowValue;
 import org.apromore.portal.custom.gui.tab.impl.TabItem;
-
-import java.util.HashSet;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 2/05/2016.
@@ -50,7 +50,7 @@ public class ProcessTabItemExecutor implements TabItemExecutor {
         ProcessSummaryType pst = createProcessSummaryType((ProcessSummaryRowValue) listItem.getTabRowValue());
         VersionSummaryType vst = createVersionSummaryType((ProcessSummaryRowValue) listItem.getTabRowValue());
         try {
-            mainControllerInterface.editProcess2(pst, vst, pst.getOriginalNativeType(), null, "false", new HashSet<RequestParameterType<?>>(), false);
+            mainControllerInterface.editProcess2(pst, vst, pst.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), false);
         } catch (InterruptedException e) {
             System.out.println(pst);
             System.out.println(vst);

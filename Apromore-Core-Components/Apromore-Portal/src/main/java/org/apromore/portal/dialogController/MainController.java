@@ -42,7 +42,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apromore.helper.Version;
-import org.apromore.model.AnnotationsType;
 import org.apromore.model.Detail;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
@@ -399,54 +398,23 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
-
+    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType) {
         EditSessionType editSession = new EditSessionType();
-
-        if (process == null) {
-            editSession.setDomain("");
-            editSession.setNativeType("BPMN 2.0");
-            editSession.setProcessId(process.getId());
-            editSession.setProcessName("New process model");
-            editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
-            editSession.setPublicModel(process.isMakePublic());
-            editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
-            editSession.setOriginalVersionNumber(version.getVersionNumber());
-            editSession.setCurrentVersionNumber(version.getVersionNumber());
-            editSession.setMaxVersionNumber(findMaxVersion(process));
-            editSession.setFolderId(portalContext.getCurrentFolder().getId());
-            editSession.setCreationDate(version.getCreationDate());
-            editSession.setLastUpdate(version.getLastUpdate());
-            if (annotation == null) {
-                editSession.setWithAnnotation(false);
-                editSession.setAnnotation(null);
-            } else {
-                editSession.setWithAnnotation(true);
-                editSession.setAnnotation(annotation);
-            }
-        }
-        else {
-            editSession.setDomain(process.getDomain());
-            editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
-            editSession.setProcessId(process.getId());
-            editSession.setProcessName(process.getName());
-            editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
-            editSession.setPublicModel(process.isMakePublic());
-            editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
-            editSession.setOriginalVersionNumber(version.getVersionNumber());
-            editSession.setCurrentVersionNumber(version.getVersionNumber());
-            editSession.setMaxVersionNumber(findMaxVersion(process));
-            editSession.setFolderId(portalContext.getCurrentFolder().getId());
-            editSession.setCreationDate(version.getCreationDate());
-            editSession.setLastUpdate(version.getLastUpdate());
-            if (annotation == null) {
-                editSession.setWithAnnotation(false);
-                editSession.setAnnotation(null);
-            } else {
-                editSession.setWithAnnotation(true);
-                editSession.setAnnotation(annotation);
-            }
-        }
+        editSession.setDomain(process.getDomain());
+        editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
+        editSession.setProcessId(process.getId());
+        editSession.setProcessName(process.getName());
+        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+        editSession.setPublicModel(process.isMakePublic());
+        editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
+        editSession.setOriginalVersionNumber(version.getVersionNumber());
+        editSession.setCurrentVersionNumber(version.getVersionNumber());
+        editSession.setMaxVersionNumber(findMaxVersion(process));
+        editSession.setFolderId(portalContext.getCurrentFolder().getId());
+        editSession.setCreationDate(version.getCreationDate());
+        editSession.setLastUpdate(version.getLastUpdate());
+        editSession.setWithAnnotation(false);
+        editSession.setAnnotation(null);
 
         return editSession;
     }
@@ -462,13 +430,6 @@ public class MainController extends BaseController implements MainControllerInte
         return result;
     }
 
-    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
-        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
-            return annotations.get(annotations.size() - 1);
-        }
-        return null;
-    }
-
     private String getNativeType(String origNativeType) {
         String nativeType = origNativeType;
         if (origNativeType == null || origNativeType.isEmpty()) {
@@ -477,18 +438,15 @@ public class MainController extends BaseController implements MainControllerInte
         return nativeType;
     }
 
-    public void openProcess(ProcessSummaryType process) throws Exception {
-        VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
-        AnnotationsType annotation = getLastestAnnotation(version.getAnnotations());
-        String nativeType = (annotation != null) ? getNativeType(annotation.getNativeType()) : getNativeType(process.getOriginalNativeType());
-        String annotationName = (annotation != null) ? annotation.getAnnotationName().get(0) : null;
-        if (nativeType.equals("BPMN 2.0")) {
-            editProcess2(process, version, nativeType, annotationName,
-                    "false", new HashSet<RequestParameterType<?>>(), false);
-        } else {
-            editProcess(process, version, nativeType, null, "false",
-                    new HashSet<RequestParameterType<?>>());
-        }
+    public void openProcess(ProcessSummaryType process, VersionSummaryType version) throws Exception {
+        String nativeType = getNativeType(process.getOriginalNativeType());
+        editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
+    }
+    
+    public void openNewProcess() throws InterruptedException {
+        ProcessSummaryType process = getService().createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
+        VersionSummaryType version = process.getVersionSummaries().get(0);
+        editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), true);
     }
 
     /**
@@ -507,11 +465,11 @@ public class MainController extends BaseController implements MainControllerInte
      * @throws InterruptedException
      */
     @Override
-    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
-            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, 
+            Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
         String instruction = "";
 
-        EditSessionType editSession = createEditSession(process, version, nativeType, annotation);
+        EditSessionType editSession = createEditSession(process, version, nativeType);
 
         try {
             String id = UUID.randomUUID().toString();
@@ -519,7 +477,7 @@ public class MainController extends BaseController implements MainControllerInte
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelAlternative.zul?id=" + id;
-            if (annotation != null && annotation.equals(Constants.INITIAL_ANNOTATION)) url += "&newProcess=true";
+            if (newProcess) url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
@@ -529,11 +487,11 @@ public class MainController extends BaseController implements MainControllerInte
     }
     
     @Override
-    public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
-            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
+    public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, 
+            Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
         String instruction = "";
 
-        EditSessionType editSession = createEditSession(process, version, nativeType, annotation);
+        EditSessionType editSession = createEditSession(process, version, nativeType);
 
         try {
             String id = UUID.randomUUID().toString();
@@ -551,15 +509,6 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
     
-    public void createNewProcess() throws InterruptedException {
-        ProcessSummaryType process = getService().createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
-        VersionSummaryType version = process.getVersionSummaries().get(0);
-        AnnotationsType annotations = version.getAnnotations().get(0);
-        String annotationName = annotations.getAnnotationName().get(0);
-        editProcess2(process, version, annotations.getNativeType(), annotationName, "false", 
-                    new HashSet<RequestParameterType<?>>(), true);
-    }
-
     public FolderType getBreadcrumFolders(int selectedFolderId) {
         FolderType selectedFolder = null;
         List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);

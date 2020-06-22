@@ -27,7 +27,19 @@ package org.apromore.portal.dialogController.renderer;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apromore.model.*;
+import org.apromore.model.AnnotationsType;
+import org.apromore.model.FolderSummaryType;
+import org.apromore.model.FolderType;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.portal.PortalProcessAttributePlugin;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.util.DateTimeNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
@@ -35,20 +47,13 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-
-import org.apromore.portal.util.DateTimeNormalizer;
-import org.apromore.plugin.portal.PortalProcessAttributePlugin;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.MainController;
 
 public class SummaryItemRenderer implements ListitemRenderer {
 
@@ -106,16 +111,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
-                AnnotationsType annotation = getLastestAnnotation(version.getAnnotations());
-                String nativeType = (annotation != null) ? getNativeType(annotation.getNativeType()) : getNativeType(process.getOriginalNativeType());
-                String annotationName = (annotation != null) ? annotation.getAnnotationName().get(0) : null;
-                if (nativeType.equals("BPMN 2.0")) {
-                    mainController.editProcess2(process, version, nativeType, annotationName,
-                        "false", new HashSet<RequestParameterType<?>>(), false);
-                } else {
-                    mainController.editProcess(process, version, nativeType, null, "false",
-                            new HashSet<RequestParameterType<?>>());
-                }
+                mainController.editProcess2(process, version, getNativeType(process.getOriginalNativeType()), new HashSet<RequestParameterType<?>>(), false);
             }
 
             /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */
@@ -426,7 +422,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     public static Double roundToDecimals(Double num, int places) {
         int temp = (int) ((num * Math.pow(10, places)));
-        return ((double) temp) / Math.pow(10, places);
+        return (temp) / Math.pow(10, places);
     }
 
     private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {

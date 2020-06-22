@@ -33,12 +33,12 @@ import org.apromore.plugin.property.RequestParameterType;
 public interface MainControllerInterface {
 
 	// Edit process model in Signavio
-    void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
-                     final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException;
+    void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, 
+            Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException;
     
     // Edit process model in BPMN.io
-    void editProcess2(ProcessSummaryType process, VersionSummaryType version, String nativeType, String annotation,
-			String readOnly, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
+    void editProcess2(ProcessSummaryType process, VersionSummaryType version, String nativeType, 
+            Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
 			throws InterruptedException;
 
 	

@@ -24,48 +24,40 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.datatype.DatatypeFactory;
+
+import org.apromore.model.FolderType;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.UserType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.TabListitem;
-import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Filedownload;
-
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Set;
-import javax.xml.datatype.DatatypeFactory;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -151,38 +143,44 @@ public abstract class BaseListboxController extends BaseController {
         });
 
         this.btnUpload.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 importFile();
             }
         });
 
         this.btnDownload.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 exportFile();
             }
         });
 
         this.btnCopy.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 copy();
             }
         });
 
         this.btnPaste.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 paste();
             }
         });
 
         this.btnAddFolder.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 addFolder();
             }
         });
 
         this.btnAddProcess.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
-                addProcess();
+                mainController.openNewProcess();
             }
         });
 
@@ -195,18 +193,21 @@ public abstract class BaseListboxController extends BaseController {
         */
 
         this.btnRenameFolder.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 rename();
             }
         });
 
         this.btnRemoveFolder.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 removeFolder();
             }
         });
 
         this.btnSecurity.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 security();
             }
@@ -264,39 +265,6 @@ public abstract class BaseListboxController extends BaseController {
             new AddFolderController(getMainController());
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    protected void addProcess() throws InterruptedException {
-        getMainController().eraseMessage();
-        try {
-            new CreateProcessController2(getMainController(), getMainController().getNativeTypes());
-        } catch (SuspendNotAllowedException | InterruptedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionDomains e) {
-            String message;
-            if (e.getMessage() == null) {
-                message = "Couldn't retrieve domains reference list.";
-            } else {
-                message = e.getMessage();
-            }
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionFormats e) {
-            String message;
-            if (e.getMessage() == null) {
-                message = "Couldn't retrieve formats reference list.";
-            } else {
-                message = e.getMessage();
-            }
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionAllUsers e) {
-            String message;
-            if (e.getMessage() == null) {
-                message = "Couldn't retrieve users reference list.";
-            } else {
-                message = e.getMessage();
-            }
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -407,7 +375,7 @@ public abstract class BaseListboxController extends BaseController {
     private ArrayList<LogSummaryType> getSelectedLogs() {
         ArrayList<LogSummaryType> itemList = new ArrayList<>();
         if (this instanceof ProcessListboxController) {
-            Set<Object> selectedItem = (Set<Object>) getListModel().getSelection();
+            Set<Object> selectedItem = getListModel().getSelection();
             for (Object obj : selectedItem) {
                 if (obj instanceof LogSummaryType) {
                     itemList.add((LogSummaryType) obj);
@@ -420,7 +388,7 @@ public abstract class BaseListboxController extends BaseController {
     private ArrayList<FolderType> getSelectedFolders() {
         ArrayList<FolderType> folderList = new ArrayList<>();
         if (this instanceof ProcessListboxController) {
-            Set<Object> selectedItem = (Set<Object>) getListModel().getSelection();
+            Set<Object> selectedItem = getListModel().getSelection();
             for (Object obj : selectedItem) {
                 if (obj instanceof FolderType) {
                     folderList.add((FolderType) obj);
@@ -433,6 +401,7 @@ public abstract class BaseListboxController extends BaseController {
     /* Show the message tailored to deleting one or more folders. */
     private void showMessageProcessesDelete(final MainController mainController) throws Exception {
         Messagebox.show(PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
@@ -450,6 +419,7 @@ public abstract class BaseListboxController extends BaseController {
     /* Show the message tailored to deleting one or more folders. */
     private void showMessageFolderDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
         Messagebox.show(FOLDER_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
@@ -467,6 +437,7 @@ public abstract class BaseListboxController extends BaseController {
     /* Show a message tailored to deleting a combo of folders and processes */
     private void showMessageFoldersAndElementsDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
         Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
@@ -546,6 +517,7 @@ public abstract class BaseListboxController extends BaseController {
             setMultiple(true);
         }
 
+        @Override
         public Object getElementAt(int index) {
 
             // Elements are always accessed in the following order: subfolders, then process models, then logs
@@ -564,6 +536,7 @@ public abstract class BaseListboxController extends BaseController {
             }
         }
 
+        @Override
         public int getSize() {
             return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue() + getLogSummaries(currentLogPageIndex).getCount().intValue();
         }

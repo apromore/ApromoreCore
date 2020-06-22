@@ -60,7 +60,7 @@ public class CreateProcessPlugin extends DefaultPortalPlugin {
         MainController mainC = (MainController) portalContext.getMainController();
         mainC.eraseMessage();
         try {
-            mainC.createNewProcess();
+            mainC.openNewProcess();
         } catch (Exception e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

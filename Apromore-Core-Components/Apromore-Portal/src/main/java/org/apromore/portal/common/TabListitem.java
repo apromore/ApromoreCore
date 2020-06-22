@@ -24,7 +24,10 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.model.AnnotationsType;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -34,10 +37,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by corno on 19/08/2014.
@@ -58,14 +57,8 @@ public class TabListitem extends Listitem {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                AnnotationsType annotation = new AnnotationsType();
-                annotation.getAnnotationName().add(TabListitem.this.pst.getOriginalNativeType());
-                if (annotation!=null) {
-                    mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), annotation.getAnnotationName().get(0),
-                            "false", new HashSet<RequestParameterType<?>>());
-                } else {
-                    mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), null, "false", new HashSet<RequestParameterType<?>>());
-                }
+                mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), 
+                            new HashSet<RequestParameterType<?>>(), false);
             }
         });
     }
