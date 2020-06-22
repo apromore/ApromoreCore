@@ -38,6 +38,8 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -48,8 +50,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -79,6 +83,7 @@ public class SecurityServiceImpl implements SecurityService {
     private MembershipRepository membershipRepo;
     private WorkspaceService workspaceService;
     private MailSender mailSender;
+    private EventAdmin eventAdmin;
 
 
     /**
@@ -94,7 +99,8 @@ public class SecurityServiceImpl implements SecurityService {
                                final PermissionRepository permissionRepository,
                                final MembershipRepository membershipRepository,
                                final WorkspaceService     wrkSrv,
-                               final MailSender           mailSender) {
+                               final MailSender           mailSender,
+                               final EventAdmin           eventAdmin) {
 
         userRepo         = userRepository;
         groupRepo        = groupRepository;
@@ -103,6 +109,7 @@ public class SecurityServiceImpl implements SecurityService {
         membershipRepo   = membershipRepository;
         workspaceService = wrkSrv;
         this.mailSender  = mailSender;
+        this.eventAdmin  = eventAdmin;
     }
 
 
@@ -135,22 +142,38 @@ public class SecurityServiceImpl implements SecurityService {
         return userRepo.findByUsernameLike(searchString);
     }
 
+    private void postEvent(String action, Group group) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("action", action);
+        properties.put("group.rowGuid", group.getRowGuid());
+        properties.put("group.name", group.getName());
+        eventAdmin.postEvent(new Event(EVENT_TOPIC, properties));
+    }
+
     @Override
     public Group createGroup(String name) {
         Group group = new Group();
         group.setName(name);
         group.setType(Group.Type.GROUP);
+        Group result = groupRepo.saveAndFlush(group);
 
-        return groupRepo.saveAndFlush(group);
+        postEvent("create group", result);
+
+        return result;
     }
 
     @Override
     public Group updateGroup(Group group) {
-        return groupRepo.saveAndFlush(group);
+        Group result = groupRepo.saveAndFlush(group);
+        postEvent("update group", result);
+
+        return result;
     }
 
     @Override
     public void deleteGroup(Group group) {
+        postEvent("delete group", group);
+
         groupRepo.delete(group);
     }
 

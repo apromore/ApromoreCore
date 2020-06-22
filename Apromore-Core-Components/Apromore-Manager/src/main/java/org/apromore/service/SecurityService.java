@@ -41,6 +41,13 @@ import org.apromore.exception.UserNotFoundException;
 public interface SecurityService {
 
     /**
+     * OSGi EventAdmin topic.
+     *
+     * Changes to the groups managed by this service are published to this topic.
+     */
+    final String EVENT_TOPIC = "org/apromore/service/SECURITY";
+
+    /**
      * Gets all the users in the system and returns them in Username sort order.
      * @return a List of users in the system.
      */
