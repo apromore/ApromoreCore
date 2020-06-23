@@ -330,10 +330,6 @@ public class EventLogServiceImpl implements EventLogService {
         Log log = logRepo.findUniqueByID(logId);
         XLog xLog = logRepo.getProcessLog(log, factoryName);
         LOGGER.info("[--IMPORTANT--] Plugin take over control ");
-//        String layout = getLayoutByLogId(8, 89);
-//        LOGGER.info("[--IMPORTANT--] Plugin take over control " + layout.substring(0, 10));
-        saveLayoutByLogId(90, 8, "test");
-
         return xLog;
     }
 
