@@ -30,7 +30,7 @@
 <?link rel="stylesheet" href="../../chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
 <?link rel="stylesheet" href="/css/ap/pd.css" type="text/css" ?>
-<?link rel="stylesheet" href="/js/jquery-ui/jquery-ui.min.css" type="text/css" ?>
+<!--<?link rel="stylesheet" href="/js/jquery-ui/jquery-ui.min.css" type="text/css" ?>-->
 <?script src="../../themes/ap/common/js/index.js"?>
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -46,7 +46,9 @@
     Ap.theme = '${labels.theme}';
   ]]></script>
   <script type="text/javascript" src="/js/jquery.js"></script>
-  <script type="text/javascript" src="/js/jquery-ui/jquery-ui.min.js"></script>
+  <!--<script type="text/javascript" src="/js/jquery-ui/jquery-ui.min.js"></script>-->
+  <script type="text/javascript" src="/js/minisearch/index.js"></script>
+  <script type="text/javascript" src="/js/file-saver/filesaver.js"></script>
   <!-- <script src="/js/pdf.v1.10.100.js"></script> -->
   <!-- <script src="/js/canvas2svg.v1.0.19.js"></script> -->
   <!-- This jsPDF has been modified by renaming the top global jsPDF variable to jsPDF2 to avoid conflicts with jsPDF in ZKCharts -->
@@ -175,8 +177,15 @@
         <button ca:data-t="animate" id="animate" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/>
       </div>
       <div hflex="1" align="right">
-        <n:span>Search node</n:span>
-        <n:input id="ap-pd-search-graph" style="background-color:white;border:none" type="text"/>
+        <!-- Exact single search -->
+        <!--
+          <n:span>Search node</n:span>
+          <n:input id="ap-pd-search-graph" style="background-color:white;border:none" type="text"/>
+        -->
+        <n:div id="ap-pd-search-graph">
+          <n:input type="text"/>
+          <n:div class="ap-pd-search-graph-options" />
+        </n:div>
         <button id="shortcutButton" sclass="ap-icon ap-icon-keyboard">
           <attribute name="onClick">
             <![CDATA[
