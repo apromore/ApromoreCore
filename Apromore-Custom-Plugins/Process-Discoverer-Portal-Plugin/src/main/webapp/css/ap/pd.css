@@ -103,6 +103,7 @@ body {
     height: 32px;
     padding: 3px 8px 0 8px;
     background-color: var(--ap-c-action-bg-normal);
+    overflow: visible;
 }
 
 .ap-pd-action-buttons .ap-icon {
@@ -1130,10 +1131,45 @@ div.ap-pd-drawer-splitter:hover {
 }
 
 #ap-pd-search-graph {
-    background-color:white;
-    border:none;
+    width: 200px;
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+#ap-pd-search-graph input {
+    width: 100%;
+    background-color: white;
+    border: 1px solid white;
     border-radius: 3px;
-    margin: 0 10px 0 4px;
+    padding-left: 3px;
+    margin: 0 10px 0 1px;
+}
+
+#ap-pd-search-graph input:focus {
+    border: 1px solid #5b889b;
+}
+
+.ap-pd-search-graph-options {
+    box-sizing: border-box;
+    background-color: white;
+    border: 1px solid #5b889b;
+    position: fixed;
+    border-radius: 3px;
+    box-shadow: 0 3px 6px 0 rgba(0,0,0,0.16),0 2px 4px 0 rgba(0,0,0,0.24);
+    z-index: 5000;
+}
+
+.ap-pd-search-graph-options > div {
+    font-size: 12px;
+    padding: 3px 6px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.ap-pd-search-graph-options > div:hover {
+    background-color: #dedede;
 }
 
 .ui-widget {

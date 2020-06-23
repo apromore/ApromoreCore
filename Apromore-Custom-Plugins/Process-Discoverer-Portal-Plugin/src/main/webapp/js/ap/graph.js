@@ -28,7 +28,6 @@
   const LAYOUT_BREADTH_FIRST = 3;
   const NAME_PROP = 'oriname';
   const MAX_AUTOFIT_ZOOM = 1;
-  let nodeNames = [];
 
   let SIGNATURE = '/themes/ap/common/img/brand/logo-colour.svg';
 
@@ -159,10 +158,10 @@
     {
       selector: ':selected',
       style: {
-        'border-color': '#bb3a50',
-        'border-width': '4px',
-        'color': '#8e2b3c',
-        'line-color': '#bb3a50',
+        'border-color': '#ff6600',
+        'border-style': 'double',
+        'border-width': '8px',
+        'line-color': '#ff6600',
         'line-style': 'solid',
         'target-arrow-color': '#bb3a50',
       },
@@ -268,35 +267,137 @@
     cy.destroy();
   }
 
-  let prevSelected = null;
+  // Search
+
+  const SEARCH_ID = '#ap-pd-search-graph';
+  const SEARCH_OPTIONS_ID = '#ap-pd-search-graph-options';
+  let nodeNames = [];
+  let prevSelected;
+  let searchResults = [];
+
   function collectNodeNames(source) {
     nodeNames = [];
     source.forEach((el) => {
       let data = el && el.data || {};
-      if(data.id && data.oriname) {
+      if(data.id && data.oriname && data.shape === 'roundrectangle') {
         nodeNames.push({
           label: data.oriname,
           value: data.oriname,
           dataId: data.id,
+          id: data.id,
         })
       }
     });
-    $("#ap-pd-search-graph").autocomplete({
+  }
+
+  function selectNode(nodeId) {
+    if (prevSelected) {
+      cy.getElementById(prevSelected).unselect();
+      prevSelected = null;
+    }
+    if (typeof nodeId !== 'undefined' || nodeId !== null) {
+      prevSelected = nodeId;
+      if (prevSelected) {
+        cy.getElementById(prevSelected).select();
+      }
+    };
+  }
+
+  let selectedNodeIds = [];
+  function selectNodes() {
+    selectedNodeIds.forEach(function (id) {
+      cy.getElementById(id).unselect();
+    });
+
+    selectedNodeIds = [];
+    searchResults.forEach(function (result) {
+      selectedNodeIds.push(result.id);
+      cy.getElementById(result.id).select();
+    });
+  }
+
+  function setupSearchExact(source) {
+    collectNodeNames(source);
+    $(SEARCH_ID).autocomplete({
       source: nodeNames,
       select: function( event, ui ) {
-        if (prevSelected) {
-          cy.getElementById(prevSelected).unselect();
-          prevSelected = null;
-        }
-        if (ui.item) {
-          prevSelected = ui.item.dataId;
-          if (prevSelected) {
-            cy.getElementById(prevSelected).select();
-          }
-
-        };
+        selectNode(ui.item && ui.item.dataId);
       }
     });
+  }
+
+  function setupSearch(source) {
+    collectNodeNames(source);
+    let miniSearch = new MiniSearch({
+      fields: ['label'],
+      storeFields: ['label'],
+      searchOptions: {
+        prefix: true
+      }
+    });
+    const options = $('.ap-pd-search-graph-options');
+    const input = $(`${SEARCH_ID} input`);
+    let inputVal;
+    let { left, top } = input.offset();
+
+    miniSearch.addAll(nodeNames)
+    top += input.outerHeight();
+    options.hide();
+    options.css({ left, top, minWidth: input.outerWidth() });
+
+    input.focus((e) => {
+      if (searchResults.length > 0) {
+        options.show();
+      } else {
+        options.hide();
+      }
+    });
+    // input.blur((e) => {
+    //   options.hide();
+    // });
+    input.keyup((e) => {
+      switch (e.keyCode) {
+        case 13: // Enter
+        case 9:  // Tab
+        case 27: // Esc
+          searchResults = miniSearch.search(input.val());
+          selectNodes();
+          options.hide();
+          break;
+        default:
+          let v = input.val();
+          if (v !== inputVal) {
+            inputVal = v;
+            searchResults = miniSearch.search(inputVal);
+            options.empty();
+            searchResults.forEach(function (result) {
+              options.append(
+                  $("<div></div>")
+                  .attr('data-id', result.id)
+                  .text(result.label)
+                  .click(
+                      function (e) {
+                        input.val($(e.target).text());
+                        searchResults = [
+                          { id: $(e.target).attr('data-id') }
+                        ]
+                        selectNodes();
+                        options.hide();
+                      }
+                  )
+              );
+            });
+            if (searchResults.length > 0) {
+              options.show();
+            } else {
+              options.hide();
+            }
+          }
+          break;
+      }
+    });
+    searchResults = miniSearch.search(input.val());
+    selectNodes();
   }
 
   function loadLog(json, layoutType, retain) {
@@ -311,11 +412,10 @@
     reset();
     init();
     let source = $.parseJSON(json);
-    console.log(source);
 
     cy.add(source);
     layout(layoutType);
-    collectNodeNames(source);
+    setupSearch(source);
 
     if (retain) {
       cy.zoom(zoom);
