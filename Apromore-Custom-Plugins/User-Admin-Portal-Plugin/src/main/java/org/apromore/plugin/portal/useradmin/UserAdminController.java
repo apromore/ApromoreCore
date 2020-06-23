@@ -21,23 +21,30 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;;
+//import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.spring.SpringUtil;
+//import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -49,6 +56,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -72,7 +80,9 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Wire("#lastActivityDatebox") Datebox  lastActivityDatebox;
 
     @Override
-    public void doFinally() throws IOException {
+    public void doFinally() throws Exception {
+        super.doFinally();
+
         ListModelList<User> usersModel = new ListModelList<>(securityService.getAllUsers(), false);
         String userId = portalContext.getCurrentUser().getId();
 
@@ -102,11 +112,39 @@ public class UserAdminController extends SelectorComposer<Window> {
 
         setUser(usersCombobox.getValue());
 
-        getSelf().doModal();
+        // Register ZK event handler
+        EventQueue securityEventQueue = EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true);
+        securityEventQueue.subscribe(new EventListener() {
+            @Override public void onEvent(Event event) {
+                if (getSelf().getDesktop() == null) {
+                    securityEventQueue.unsubscribe(this);
+
+                } else {
+                    groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
+                    groupsModel.setMultiple(true);
+                    groupsListbox.setModel(groupsModel);
+                }
+            }
+        });
+
+        // Register OSGi event handler
+        BundleContext bundleContext = (BundleContext) getSelf().getDesktop().getWebApp().getServletContext().getAttribute("osgi-bundlecontext");
+        String filter = "(" + EventConstants.EVENT_TOPIC + "=" + SecurityService.EVENT_TOPIC + ")";
+        Collection<ServiceReference> forwarders = bundleContext.getServiceReferences(EventHandler.class, filter);
+        if (forwarders.isEmpty()) {
+            Dictionary<String, Object> properties = new Hashtable<>();
+            properties.put(EventConstants.EVENT_TOPIC, SecurityService.EVENT_TOPIC);
+            bundleContext.registerService(EventHandler.class.getName(), new EventHandler() {
+                @Override
+                public final void handleEvent(org.osgi.service.event.Event event) {
+                    securityEventQueue.publish(new Event("onGroupEvent", null, event.getProperty("group.name")));
+                }
+            }, properties);
+        }
     }
 
     @Listen("onChange = #usersCombobox")
-    public void onChangeUsersCombobox(Event event) throws Exception {
+    public void onChangeUsersCombobox() throws Exception {
         boolean canViewUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.VIEW_USERS.getRowGuid());
         if (!canViewUsers) {
             throw new Exception("Cannot view users without permission");
@@ -207,14 +245,17 @@ public class UserAdminController extends SelectorComposer<Window> {
             throw new Exception("Cannot edit groups without permission");
         }
 
-        securityService.createGroup("New group");
+        try {
+            Map arg = new HashMap<>();
+            arg.put("portalContext", portalContext);
+            arg.put("securityService", securityService);
+            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/create-group.zul", getSelf(), arg);
+            window.doModal();
 
-        // Update groupsModel
-        User user = securityService.getUserByName(usersCombobox.getValue());
-        groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
-        groupsModel.setMultiple(true);
-        groupsModel.setSelection(securityService.findGroupsByUser(user));
-        groupsListbox.setModel(groupsModel);
+        } catch(Exception e) {
+            LOGGER.error("Unable to create group creation dialog", e);
+            Messagebox.show("Unable to create group creation dialog");
+        }
     }
 
     @Listen("onClick = #okButton")

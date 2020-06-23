@@ -29,6 +29,7 @@ import org.apromore.model.PermissionType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     private String label = "Manage user permissions";
     private String groupLabel = "Settings";
 
+    @Inject private EventAdmin eventAdmin;
     @Inject private SecurityService securityService;
 
     // PortalPlugin overrides
