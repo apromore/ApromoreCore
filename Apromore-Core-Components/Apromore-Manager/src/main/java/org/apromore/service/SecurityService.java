@@ -47,6 +47,10 @@ public interface SecurityService {
      */
     final String EVENT_TOPIC = "org/apromore/service/SECURITY";
 
+    enum EventType {
+        CREATE_USER, UPDATE_USER, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP
+    }
+
     /**
      * Gets all the users in the system and returns them in Username sort order.
      * @return a List of users in the system.

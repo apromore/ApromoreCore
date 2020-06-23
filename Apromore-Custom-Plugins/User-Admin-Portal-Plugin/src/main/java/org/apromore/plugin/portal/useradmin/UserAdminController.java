@@ -120,8 +120,27 @@ public class UserAdminController extends SelectorComposer<Window> {
                     securityEventQueue.unsubscribe(this);
 
                 } else {
+                    // Skip this update if it doesn't apply to the currently displayed user
+                    Map properties = (Map) event.getData();
+                    String eventUserName = (String) properties.get("user.name");
+                    String userName = usersCombobox.getValue();
+                    if (eventUserName != null && !eventUserName.equals(userName)) {
+                        return;
+                    }
+
+                    User user = securityService.getUserByName(userName);
+
+                    // Update the user panel
+                    if ("UPDATE_USER".equals(properties.get("type"))) {
+                        setUser(userName);
+                    }
+
+                    // Update the group listbox
                     groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
                     groupsModel.setMultiple(true);
+                    if (user != null) {
+                        groupsModel.setSelection(securityService.findGroupsByUser(user));
+                    }
                     groupsListbox.setModel(groupsModel);
                 }
             }
@@ -137,7 +156,11 @@ public class UserAdminController extends SelectorComposer<Window> {
             bundleContext.registerService(EventHandler.class.getName(), new EventHandler() {
                 @Override
                 public final void handleEvent(org.osgi.service.event.Event event) {
-                    securityEventQueue.publish(new Event("onGroupEvent", null, event.getProperty("group.name")));
+                    Map<String, Object> properties = new HashMap<>();
+                    for (String propertyName: event.getPropertyNames()) {
+                        properties.put(propertyName, event.getProperty(propertyName));
+                    }
+                    securityEventQueue.publish(new Event(event.getTopic(), null, properties));
                 }
             }, properties);
         }
@@ -154,8 +177,6 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     private void setUser(final String username) {
-        LOGGER.info("Changed to " + username);
-
         User user = securityService.getUserByName(username);
         if (user == null) {
             // TODO: should clear existing fields
@@ -171,8 +192,8 @@ public class UserAdminController extends SelectorComposer<Window> {
         rolesModel.setSelection(securityService.findRolesByUser(user));
     }
 
-    @Listen("onOK = #firstNameTestbox")
-    public void onOKFirstNameTestbox(KeyEvent event) throws Exception {
+    @Listen("onOK = #firstNameTextbox")
+    public void onOKFirstNameTextbox(KeyEvent event) throws Exception {
         boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
         if (!canEditUsers) {
             throw new Exception("Cannot edit users without permission");

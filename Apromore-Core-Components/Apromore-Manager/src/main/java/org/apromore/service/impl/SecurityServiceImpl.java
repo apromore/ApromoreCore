@@ -142,14 +142,6 @@ public class SecurityServiceImpl implements SecurityService {
         return userRepo.findByUsernameLike(searchString);
     }
 
-    private void postEvent(String action, Group group) {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("action", action);
-        properties.put("group.rowGuid", group.getRowGuid());
-        properties.put("group.name", group.getName());
-        eventAdmin.postEvent(new Event(EVENT_TOPIC, properties));
-    }
-
     @Override
     public Group createGroup(String name) {
         Group group = new Group();
@@ -157,7 +149,7 @@ public class SecurityServiceImpl implements SecurityService {
         group.setType(Group.Type.GROUP);
         Group result = groupRepo.saveAndFlush(group);
 
-        postEvent("create group", result);
+        postEvent(EventType.CREATE_GROUP, null, result);
 
         return result;
     }
@@ -165,14 +157,14 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public Group updateGroup(Group group) {
         Group result = groupRepo.saveAndFlush(group);
-        postEvent("update group", result);
+        postEvent(EventType.UPDATE_GROUP, null, result);
 
         return result;
     }
 
     @Override
     public void deleteGroup(Group group) {
-        postEvent("delete group", group);
+        postEvent(EventType.DELETE_GROUP, null, group);
 
         groupRepo.delete(group);
     }
@@ -302,6 +294,8 @@ public class SecurityServiceImpl implements SecurityService {
         user.getMembership().setUser(user);
         membershipRepo.save(user.getMembership());
 
+        postEvent(EventType.CREATE_USER, user, null);
+
         LOGGER.info("Created user " + user.getUsername());
         return user;
     }
@@ -314,6 +308,8 @@ public class SecurityServiceImpl implements SecurityService {
         groups.addAll(groupRepo.findCompulsoryGroups(user));
         groups.addAll(user.getGroups());
         user.setGroups(groups);
+
+        postEvent(EventType.UPDATE_USER, user, null);
 
         return userRepo.save(user);
     }
@@ -371,12 +367,33 @@ public class SecurityServiceImpl implements SecurityService {
         }
     }
 
-    /* Email the Users Password to them. */
+    /** Email the User's Password to them. */
     private void emailUserPassword(Membership membership, String newPswd) throws MailException {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(membership.getEmail());
         message.setSubject(EMAIL_SUBJECT);
         message.setText(EMAIL_START + newPswd + EMAIL_END);
         mailSender.send(message);
+    }
+
+    /**
+     * Mutator methods publish changes to {@link SecurityService#EVENT_TOPIC}.
+     *
+     * @param type  which more specific mutation occurred, available as the <code>type</code> property on the posted event
+     * @param user  unless <code>null</code>, will add <code>user.name</code> and <code>user.rowGuid</code> properties to the posted event
+     * @param group  unless <code>null</code>, will add <code>group.name</code> and <code>group.rowGuid</code> properties to the posted event
+     */
+    private void postEvent(EventType type, User user, Group group) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("type", type.toString());
+        if (user != null) {
+            properties.put("user.rowGuid", user.getRowGuid());
+            properties.put("user.name", user.getUsername());
+        }
+        if (group != null) {
+            properties.put("group.rowGuid", group.getRowGuid());
+            properties.put("group.name", group.getName());
+        }
+        eventAdmin.postEvent(new Event(EVENT_TOPIC, properties));
     }
 }
