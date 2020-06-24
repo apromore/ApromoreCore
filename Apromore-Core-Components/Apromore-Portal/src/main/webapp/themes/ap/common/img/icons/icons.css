@@ -233,6 +233,11 @@
     width: 26.171484375px !important;
 }
 
+.ap-icon-export-json {
+    background-image: url('export-json.svg') !important;
+    width: 26.1953125px !important;
+}
+
 .ap-icon-export-log {
     background-image: url('export-log.svg') !important;
     width: 26.1953125px !important;

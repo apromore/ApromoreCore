@@ -128,9 +128,8 @@ public class PDController extends BaseController {
     private Button exportBPMN;
     // private Button exportBPMNAnnotatedForBIMP;
 
-
+    private Label logTitle;
     private Window mainWindow;
-
 
     private Label perspectiveSelected;
 
@@ -335,7 +334,9 @@ public class PDController extends BaseController {
     private void initializeControls() {
         try {
             mainWindow = (Window) this.getFellow("win");
+            Label logTitle = (Label) mainWindow.getFellow("logTitle");
             mainWindow.setTitle(contextData.getLogName());
+            logTitle.setValue(contextData.getLogName());
     
             viewSettingsController.initializeControls(contextData);
             graphSettingsController.initializeControls(contextData);
@@ -367,6 +368,8 @@ public class PDController extends BaseController {
             layoutHierarchy.setChecked(userOptions.getLayoutHierarchy());
             layoutDagreTopBottom = (Checkbox) mainWindow.getFellow(LAYOUT_DAGRE_TB);
             layoutDagreTopBottom.setChecked(userOptions.getLayoutDagre());
+
+
         }
         catch (Exception ex) {
             Messagebox.show("An error occurred while initializing UI: " + ex.getMessage());
