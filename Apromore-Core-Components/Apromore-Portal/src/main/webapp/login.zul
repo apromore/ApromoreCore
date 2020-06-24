@@ -128,7 +128,7 @@
                                placeholder="${labels.e.auth.password.hint}"/>
                     </h:div>
                     <h:div class="controls controls-row split">
-                      <h:a class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
+                      <h:a style="display:none;" class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
                         password?
                       </h:a>
                       <h:button class="signin-button button" type="submit" data-t="login">
