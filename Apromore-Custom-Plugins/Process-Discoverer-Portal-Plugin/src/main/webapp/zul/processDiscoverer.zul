@@ -82,6 +82,7 @@
     <caption id="windowcaption" sclass="mainCaption">
       <div id="utilityTools" sclass="ap-pd-tools"/>
     </caption>
+    <label visible="false" sclass="ap-pd-log-title" id="logTitle"></label>
     <button id="caseDetails" sclass="ap-icon ap-icon-table-list" height="26px" visible="false"/>
     <button id="perspectiveDetails" sclass="ap-icon ap-icon-table-list" height="26px" visible="false"/>
     <popup id="shortcutPopup" width="650px">
@@ -161,6 +162,9 @@
                 sclass="ap-icon ap-icon-export-pdf"/>
         <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="${labels.e.pd.downloadPNG.text}"
                 sclass="ap-icon ap-icon-export-image"/>
+        <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="Download JSON"
+                w:onClick="Ap.pd.exportJSON()"
+                sclass="ap-icon ap-icon-export-json"/>
         <n:span class="ap-action-sep"></n:span>
         <checkbox sclass="ap-stateful-button" id="layoutHierarchy"
                   tooltiptext="Layout left-to-right" iconSclass="ap-icon ap-icon-dir-lr"/>
@@ -183,7 +187,7 @@
           <n:input id="ap-pd-search-graph" style="background-color:white;border:none" type="text"/>
         -->
         <n:div id="ap-pd-search-graph">
-          <n:input type="text"/>
+          <n:input type="text" placeholder="Search node" />
           <n:div class="ap-pd-search-graph-options" />
         </n:div>
         <button id="shortcutButton" sclass="ap-icon ap-icon-keyboard">

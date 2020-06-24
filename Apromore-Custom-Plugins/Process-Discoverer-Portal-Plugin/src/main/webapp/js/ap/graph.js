@@ -97,6 +97,7 @@
   };
 
   let container;
+  let sourceJSON;
   let cy = null;
   let vizBridgeId = '$vizBridge';
   let options = {
@@ -412,6 +413,7 @@
     reset();
     init();
     let source = $.parseJSON(json);
+    sourceJSON = source;
 
     cy.add(source);
     layout(layoutType);
@@ -629,6 +631,25 @@
     })
   }
 
+  function saveAsFile(t, f, m) {
+    try {
+      var b = new Blob([t],{type:m});
+      saveAs(b, f);
+    } catch (e) {
+      window.open("data:" + m + "," + encodeURIComponent(t), '_blank','');
+    }
+  }
+
+  function exportJSON(filename) {
+    if (!sourceJSON) { return; }
+    filename = filename || $('.ap-pd-log-title').text();
+    saveAsFile(
+      JSON.stringify(sourceJSON, null, 2),
+      filename + ".json",
+      "application/json;charset=utf-8"
+    );
+  }
+
   function showCaseDetails() {
     let { left, top }  = $('.ap-pd-logstats').offset();
     left -= 700; // width of caseDetail window
@@ -647,6 +668,7 @@
     exportUnfitted,
     exportPDF,
     exportPNG,
+    exportJSON,
     loadLog,
     loadTrace,
     animate,
