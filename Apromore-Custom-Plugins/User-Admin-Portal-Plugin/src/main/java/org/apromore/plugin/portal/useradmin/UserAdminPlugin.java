@@ -24,12 +24,14 @@ package org.apromore.plugin.portal.useradmin;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
 import org.apromore.model.PermissionType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
-import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -44,7 +46,6 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     private String label = "Manage user permissions";
     private String groupLabel = "Settings";
 
-    @Inject private EventAdmin eventAdmin;
     @Inject private SecurityService securityService;
 
     // PortalPlugin overrides
@@ -61,7 +62,18 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
+
         try {
+            // Deny access if the caller isn't an administrator
+            Role adminRole = securityService.findRoleByName("ROLE_ADMIN");
+            User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
+            Set<Role> userRoles = securityService.findRolesByUser(currentUser);
+            if (!userRoles.contains(adminRole)) {
+                Messagebox.show("Only administrator accounts may manage users.");
+                return;
+            }
+
+            // Present the user admin window
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);

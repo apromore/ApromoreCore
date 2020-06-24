@@ -30,7 +30,6 @@
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
         http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-    <reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin"/>
     <reference id="securityService" interface="org.apromore.service.SecurityService"/>
 
     <!-- Create beans for each class annotated with @Component within the package -->
