@@ -33,6 +33,7 @@ public interface Constants {
     public static final String INITIAL_ANNOTATION = "Initial";
     public static final String INITIAL_FORMAT = "IntialFormat";
     public static final String CANONICAL = "Canonical";
+    public static final String NATIVE_TYPE = "BPMN 2.0";
 
     public static final String TRUNK_NAME = "MAIN";
     public static final String TYPE = "type";
