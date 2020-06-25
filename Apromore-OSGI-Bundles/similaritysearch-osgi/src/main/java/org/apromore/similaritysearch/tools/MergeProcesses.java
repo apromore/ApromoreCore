@@ -25,15 +25,17 @@
 
 package org.apromore.similaritysearch.tools;
 
-import org.apromore.cpf.CanonicalProcessType;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.similaritysearch.algorithms.MergeModels;
 import org.apromore.similaritysearch.common.CPFModelParser;
 import org.apromore.similaritysearch.common.IdGeneratorHelper;
 import org.apromore.similaritysearch.graph.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 public class MergeProcesses {
 
@@ -48,18 +50,28 @@ public class MergeProcesses {
      * @param param     the search parameters
      * @return the similarity between processes
      */
-    public static CanonicalProcessType mergeProcesses(ArrayList<CanonicalProcessType> models, boolean removeEnt, String algorithm,
+    public static BPMNDiagram mergeProcesses(Collection<BPMNDiagram> models, boolean removeEnt, String algorithm,
             double threshold, double... param) {
-
+        if (models.isEmpty()) {
+            return BPMNDiagramFactory.newBPMNDiagram("Empty diagram");
+        }
+        else if (models.size() == 1) {
+            return BPMNDiagramFactory.cloneBPMNDiagram(models.iterator().next());
+        }
+        
+        Iterator<BPMNDiagram> diagramIterator = models.iterator();
+        
         IdGeneratorHelper idGenerator = new IdGeneratorHelper();
-        Graph m1 = CPFModelParser.readModel(models.get(0));
-        if(m1.getGraphLabel() == null) m1.name = models.get(0).getName();
+        BPMNDiagram d1 = diagramIterator.next();
+        Graph m1 = CPFModelParser.readModel(d1);
+        if(m1.getGraphLabel() == null) m1.name = d1.getLabel();
         m1.setIdGenerator(idGenerator);
         m1.removeEmptyNodes();
         m1.reorganizeIDs();
 
-        Graph m2 = CPFModelParser.readModel(models.get(1));
-        if(m2.getGraphLabel() == null) m2.name = models.get(1).getName();
+        BPMNDiagram d2 = diagramIterator.next();
+        Graph m2 = CPFModelParser.readModel(d2);
+        if(m2.getGraphLabel() == null) m2.name = d2.getLabel();
         m2.setIdGenerator(idGenerator);
         m2.removeEmptyNodes();
         m2.reorganizeIDs();
@@ -69,17 +81,15 @@ public class MergeProcesses {
 
         Graph merged = MergeModels.mergeModels(m1, m2, idGenerator, removeEnt, algorithm, param);
 
-        if (models.size() > 2) {
-            for (int i = 2; i < models.size(); i++) {
-                Graph m3 = CPFModelParser.readModel(models.get(i));
-                if(m3.getGraphLabel() == null) m3.name = models.get(i).getName();
-                m3.setIdGenerator(idGenerator);
-                m3.removeEmptyNodes();
-                m3.reorganizeIDs();
-                m3.addLabelsToUnNamedEdges();
-
-                merged = MergeModels.mergeModels(merged, m3, idGenerator, removeEnt, algorithm, param);
-            }
+        while (diagramIterator.hasNext()) {
+            BPMNDiagram d3 = diagramIterator.next(); 
+            Graph m3 = CPFModelParser.readModel(d3);
+            if(m3.getGraphLabel() == null) m3.name = d3.getLabel();
+            m3.setIdGenerator(idGenerator);
+            m3.removeEmptyNodes();
+            m3.reorganizeIDs();
+            m3.addLabelsToUnNamedEdges();
+            merged = MergeModels.mergeModels(merged, m3, idGenerator, removeEnt, algorithm, param);
         }
 
         return CPFModelParser.writeModel(merged, idGenerator);

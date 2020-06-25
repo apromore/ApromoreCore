@@ -40,11 +40,19 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom-bpmn-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>   
+                
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
             <version>1.1</version>
         </dependency>
+        
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>similaritysearch-osgi</artifactId>

@@ -25,14 +25,14 @@
 
 package org.apromore.similaritysearch.graph;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apromore.similaritysearch.common.Settings;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apromore.similaritysearch.common.Settings;
 
 
 public class Vertex {
@@ -42,6 +42,76 @@ public class Vertex {
     private HashMap<String, String> annotationMap = new HashMap<String, String>();
     public Set<VertexObjectRef> objectRefs = new HashSet<VertexObjectRef>();
     public Set<VertexResourceRef> resourceRefs = new HashSet<VertexResourceRef>();
+    
+    public enum Type {
+        node,
+        function,
+        gateway,
+        event,
+        state
+    }
+
+    public enum GWType {
+        or,
+        xor,
+        and,
+        place // petri nets
+    }
+
+
+    private String ID;
+    // node type
+    private Type vertexType;
+    // label
+    private String label;
+    private GWType gwType;
+    private ArrayList<Vertex> childNodes = new ArrayList<Vertex>();
+    private ArrayList<Vertex> parentNodes = new ArrayList<Vertex>();
+    boolean isProcessed = false;
+    boolean processedGW = false;
+//  ArrayList<Node> toAddConfigurable = new ArrayList<Node>();
+
+    //  ArrayList<Edge> toAddEdges = new ArrayList<Edge>();
+    Vertex prevConfVertex = null;
+    Edge toAddEdge = null;
+
+    public boolean sourceBefore = false;
+    public boolean sinkBefore = false;
+    Vertex closeGW;
+    private boolean isConfigurable = false;
+
+    boolean labelContributed = false;
+
+    boolean initialGW = false;
+    
+    public Vertex(Type type, String label, String ID) {
+        vertexType = type;
+        this.label = label;
+        this.ID = ID;
+    }
+
+    public Vertex(GWType gwType, String ID) {
+        vertexType = Type.gateway;
+        this.gwType = gwType;
+        this.ID = ID;
+    }
+    
+    public Vertex(String gwTypeString, String ID) {
+        vertexType = Type.gateway;
+        if (gwTypeString.equalsIgnoreCase("xor")) {
+            gwType = GWType.xor;
+        } else if (gwTypeString.equalsIgnoreCase("or")) {
+            gwType = GWType.or;
+        } else if (gwTypeString.equalsIgnoreCase("and")) {
+            gwType = GWType.and;
+        }
+        // for petri nets
+        else if (gwTypeString.equalsIgnoreCase("place")) {
+            gwType = GWType.place;
+        }
+
+        this.ID = ID;
+    }
 
     public HashMap<String, String> getAnnotationMap() {
         return annotationMap;
@@ -84,48 +154,6 @@ public class Vertex {
     public void setGraphics(Graphics graphics) {
         this.graphics = graphics;
     }
-
-    public enum Type {
-        node,
-        function,
-        gateway,
-        event,
-        state
-    }
-
-    public enum GWType {
-        or,
-        xor,
-        and,
-        place // petri nets
-    }
-
-
-    private String ID;
-    // node type
-    private Type vertexType;
-    // label
-    private String label;
-    private GWType gwType;
-    private ArrayList<Vertex> childNodes = new ArrayList<Vertex>();
-    private ArrayList<Vertex> parentNodes = new ArrayList<Vertex>();
-    boolean isProcessed = false;
-    boolean processedGW = false;
-//	ArrayList<Node> toAddConfigurable = new ArrayList<Node>();
-
-    //	ArrayList<Edge> toAddEdges = new ArrayList<Edge>();
-    Vertex prevConfVertex = null;
-    Edge toAddEdge = null;
-
-    public boolean sourceBefore = false;
-    public boolean sinkBefore = false;
-    Vertex closeGW;
-    private boolean isConfigurable = false;
-
-    boolean labelContributed = false;
-
-    boolean initialGW = false;
-
 
     public boolean isInitialGW() {
         return initialGW;
@@ -171,19 +199,6 @@ public class Vertex {
 //			initialGW = false;
 //		}
     }
-
-    public Vertex(Type type, String label, String ID) {
-        vertexType = type;
-        this.label = label;
-        this.ID = ID;
-    }
-
-    public Vertex(GWType gwType, String ID) {
-        vertexType = Type.gateway;
-        this.gwType = gwType;
-        this.ID = ID;
-    }
-
 
     public void addChild(Vertex child) {
         if (!childNodes.contains(child))
@@ -317,23 +332,6 @@ public class Vertex {
 //
 //    }
 
-    public Vertex(String gwTypeString, String ID) {
-        vertexType = Type.gateway;
-        if (gwTypeString.equalsIgnoreCase("xor")) {
-            gwType = GWType.xor;
-        } else if (gwTypeString.equalsIgnoreCase("or")) {
-            gwType = GWType.or;
-        } else if (gwTypeString.equalsIgnoreCase("and")) {
-            gwType = GWType.and;
-        }
-        // for petri nets
-        else if (gwTypeString.equalsIgnoreCase("place")) {
-            gwType = GWType.place;
-        }
-
-        this.ID = ID;
-    }
-
 
     public GWType getGWType() {
         return gwType;
@@ -427,6 +425,7 @@ public class Vertex {
         return this.getID().compareTo(another.getID());
     }
 
+    @Override
     public String toString() {
         if (getType().equals(Type.event)) {
             return "Event(" + getID() + ", " + getLabel() + ")";

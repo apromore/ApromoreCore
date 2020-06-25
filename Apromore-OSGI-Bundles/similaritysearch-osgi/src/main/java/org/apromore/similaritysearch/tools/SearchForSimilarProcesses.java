@@ -25,7 +25,7 @@
 
 package org.apromore.similaritysearch.tools;
 
-import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.similaritysearch.algorithms.FindModelSimilarity;
 import org.apromore.similaritysearch.common.CPFModelParser;
 import org.apromore.similaritysearch.common.IdGeneratorHelper;
@@ -35,14 +35,14 @@ public class SearchForSimilarProcesses {
 
     /**
      * Finds the Processes Similarity.
-     * @param search    the Canonical Process Type
-     * @param d         The Canonical Process Type
+     * @param search    the BPMNDiagram
+     * @param d         The BPMNDiagram
      * @param algorithm the search Algorithm
      * @param param     the search parameters
      * @return the similarity between processes
      */
-    public static double findProcessesSimilarity(CanonicalProcessType search, CanonicalProcessType d, String algorithm, double... param) {
-        if (search.getNet().size() == 0 || d.getNet().size() == 0) {
+    public static double findProcessesSimilarity(BPMNDiagram search, BPMNDiagram dbDiagram, String algorithm, double... param) {
+        if (search.getNodes().size() == 0 || dbDiagram.getNodes().size() == 0) {
             return 0;
         }
 
@@ -50,17 +50,12 @@ public class SearchForSimilarProcesses {
         searchGraph.setIdGenerator(new IdGeneratorHelper());
         searchGraph.removeEmptyNodes();
 
-        double similarity = 0;
-        for (Graph dbGraph : CPFModelParser.readModels(d)) {
-            dbGraph.setIdGenerator(new IdGeneratorHelper());
-            dbGraph.removeEmptyNodes();
+        Graph dbGraph = CPFModelParser.readModel(dbDiagram);
+        dbGraph.setIdGenerator(new IdGeneratorHelper());
+        dbGraph.removeEmptyNodes();
 
-            double netSimilarity = FindModelSimilarity.findProcessSimilarity(searchGraph, dbGraph, algorithm, param);
-            if (netSimilarity > similarity) {
-                similarity = netSimilarity;
-            }
-        }
-        return similarity;
+        double netSimilarity = FindModelSimilarity.findProcessSimilarity(searchGraph, dbGraph, algorithm, param);
+        return netSimilarity;
     }
 
 }

@@ -25,25 +25,31 @@
 
 package org.apromore.plugin.merge.logic.impl;
 
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.common.Constants;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
-import org.apromore.exception.SerializationException;
+import org.apromore.helper.Version;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.merge.logic.MergeService;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
+import org.apromore.processmining.plugins.bpmn.plugins.BpmnLayoutPlugin;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.ToolboxData;
 import org.apromore.similaritysearch.tools.MergeProcesses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,11 +58,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Implementation of the SimilarityService Contract.
- *
- * @author <a href="mailto:raffaele.conforti@unimelb.edu.au">Raffaele Conforti</a>
- */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class MergeServiceImpl extends DefaultParameterAwarePlugin implements MergeService {
@@ -87,49 +88,41 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
     @Transactional(readOnly = false)
     public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
                                              ParametersType parameters, ProcessVersionIdsType ids, final boolean makePublic) throws ExceptionMergeProcess {
-//        List<ProcessModelVersion> models = new ArrayList<>();
-//        for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
-//            models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
-//        }
-//
-//        try {
-//            ToolboxData data = convertModelsToCPT(models);
-//            data = getParametersForMerge(data, algo, parameters);
-//
-//            CanonisedProcess cp = new CanonisedProcess();
-//
-//            cp.setCpt(performMerge(data));
-//            cp.setCpf(new ByteArrayInputStream(canoniserSrv.CPFtoString(cp.getCpt()).getBytes()));
-//
-//            SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
-//            String created = sf.format(new Date());
-//
-//            // This fails as we need to specify a native type and pass in the model.
-//            Version importVersion = new Version(1, 0);
-//
-//            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, importVersion, null, cp, domain, "", created, created, makePublic);
-//
-//            return ui.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
-//                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username, makePublic);
-//
-//        } catch (SerializationException se) {
-//            LOGGER.error("Failed to convert the models into the Canonical Format.", se);
-//        } catch (ImportException | JAXBException ie) {
-//            LOGGER.error("Failed Import the newly merged model.", ie);
-//        }
+        List<ProcessModelVersion> models = new ArrayList<>();
+        for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
+            models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
+        }
+
+        try {
+            ToolboxData data = convertModelsToMergeData(models);
+            data = getParametersForMerge(data, algo, parameters);
+            BPMNDiagram mergeResult = performMerge(data);
+            String processText = BpmnLayoutPlugin.addLayout(mergeResult, "");
+            
+            SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
+            String created = sf.format(new Date());
+            Version importVersion = new Version(1, 0);
+
+            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, importVersion, 
+                    Constants.NATIVE_TYPE, new ByteArrayInputStream(processText.getBytes()), 
+                    "", "", created, created, makePublic);
+
+            return ui.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
+                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username, makePublic);
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to merge process models", e);
+        }
 
         return null;
     }
 
 
-    /* Responsible for getting all the Models and converting them to CPT internal format */
-    private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models) throws SerializationException {
+    private ToolboxData convertModelsToMergeData(List<ProcessModelVersion> models) throws Exception {
         ToolboxData data = new ToolboxData();
-
         for (ProcessModelVersion pmv : models) {
-            //data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
+            data.addModel(pmv, BPMNDiagramFactory.newDiagramFromProcessText(pmv.getNativeDocument().getContent()));
         }
-
         return data;
     }
 
@@ -161,9 +154,8 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
 
 
     /* Does the merge. */
-    private CanonicalProcessType performMerge(ToolboxData data) {
-        ArrayList<CanonicalProcessType> models = new ArrayList<>(data.getModel().values());
-        return MergeProcesses.mergeProcesses(models, data.isRemoveEntanglements(), data.getAlgorithm(),
+    private BPMNDiagram performMerge(ToolboxData data) {
+        return MergeProcesses.mergeProcesses(data.getModel().values(), data.isRemoveEntanglements(), data.getAlgorithm(),
                 data.getModelthreshold(), data.getLabelthreshold(), data.getContextthreshold(), data.getSkipnweight(),
                 data.getSubnweight(), data.getSkipeweight());
     }
