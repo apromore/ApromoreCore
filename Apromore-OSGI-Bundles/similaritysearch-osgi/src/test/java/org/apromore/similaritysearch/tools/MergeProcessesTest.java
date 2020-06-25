@@ -40,7 +40,11 @@ import org.junit.Test;
  *
  */
 public class MergeProcessesTest extends TestDataSetup {
-
+//    public static void main(String[] args) {
+//        MergeProcessesTest test = new MergeProcessesTest();
+//        test.testMergeProcesses_xor_branches();
+//    }
+    
     @Test
     public void testMergeProcesses_two_simple_models() {
         try {
@@ -109,22 +113,17 @@ public class MergeProcessesTest extends TestDataSetup {
         }
     }
     
-    public static void main(String[] args) {
-        MergeProcessesTest test = new MergeProcessesTest();
-        test.testMergeProcesses_xor_branches();
-    }
-    
-    //@Test
-    public void testMergeProcesses_xor_branches() {
+    @Test
+    public void testMergeProcesses_merge_in_middle() {
         try {
-            List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_xor_branch_A(), read_xor_branch_B()});
+            List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_one_task_B(), read_two_tasks_sequence_AB()});
             BPMNDiagram merge = MergeProcesses.mergeProcesses(diagrams, false, "Greedy", 0.6, 0.6, 0.75, 1.0, 1.0, 1.0);
             
             BpmnExportPlugin exporter = new BpmnExportPlugin();
             exporter.export(merge, new File("testMergeProcesses_xor_branches.bpmn"));
             
-            Assert.assertEquals(8, merge.getNodes().size());
-            Assert.assertEquals(10, merge.getEdges().size());
+            Assert.assertEquals(6, merge.getNodes().size());
+            Assert.assertEquals(6, merge.getEdges().size());
             
             BPMNDiagramSupport bpmnSupport = new BPMNDiagramSupport(merge);
             BPMNNode node = bpmnSupport.getStartEvent();
@@ -132,24 +131,19 @@ public class MergeProcessesTest extends TestDataSetup {
             node = bpmnSupport.getTargets(node).iterator().next();
             Assert.assertEquals(true, bpmnSupport.isXORSplitGateway(node));
             
-            BPMNNode nextGateway = null;
             Collection<BPMNNode> nodes = bpmnSupport.getTargets(node);
             node = nodes.iterator().next();
-            Assert.assertEquals(true, node.getLabel().equals("A") || node.getLabel().equals("B") || node.getLabel() == "");
-            if (bpmnSupport.isGateway(node)) nextGateway = node;
-
+            Assert.assertEquals(true, node.getLabel().equals("A") || bpmnSupport.isXORJoinGateway(node));
             node = nodes.iterator().next();
-            Assert.assertEquals(true, node.getLabel().equals("A") || node.getLabel().equals("B") || node.getLabel() == "");
-            if (bpmnSupport.isGateway(node)) nextGateway = node;
+            Assert.assertEquals(true, node.getLabel().equals("A") || bpmnSupport.isXORJoinGateway(node));
             
-            node = nodes.iterator().next();
-            Assert.assertEquals(true, node.getLabel().equals("A") || node.getLabel().equals("B") || node.getLabel() == "");
-            if (bpmnSupport.isGateway(node)) nextGateway = node;
-            
-            
+            if (node.getLabel().equals("A")) {
+                node = bpmnSupport.getTargets(node).iterator().next();
+                Assert.assertEquals(true, bpmnSupport.isXORJoinGateway(node));
+            }
             
             node = bpmnSupport.getTargets(node).iterator().next();
-            Assert.assertEquals(true, bpmnSupport.isXORJoinGateway(node));
+            Assert.assertEquals(true, node.getLabel().equals("B"));
             
             node = bpmnSupport.getTargets(node).iterator().next();
             Assert.assertEquals(true, bpmnSupport.isEndEvent(node));
