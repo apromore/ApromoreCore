@@ -49,7 +49,11 @@ public class TestDataSetup {
     }    
     
     public BPMNDiagram read_two_tasks_sequence_AB() throws Exception {
-        return this.readBPMNDiagram("src/test/data/two_tasks_sequence.bpmn");
+        return this.readBPMNDiagram("src/test/data/two_tasks_sequence_AB.bpmn");
+    }
+    
+    public BPMNDiagram read_two_tasks_sequence_XY() throws Exception {
+        return this.readBPMNDiagram("src/test/data/two_tasks_sequence_XY.bpmn");
     }
     
     public BPMNDiagram read_two_tasks_xor() throws Exception {

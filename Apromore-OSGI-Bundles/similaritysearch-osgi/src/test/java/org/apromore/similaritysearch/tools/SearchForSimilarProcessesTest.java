@@ -38,8 +38,8 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_A();
-            double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, "Greedy", 0.6, 0.75, 
-                                                                                    1.0, 1.0, 1.0);
+            double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
+                                                                    "Greedy", 0.6, 0.75, 1.0, 1.0, 1.0);
             Assert.assertEquals(1.0, searchResult, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
@@ -51,9 +51,22 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_B();
-            double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, "Greedy", 0.6, 0.75, 
-                                                                                    1.0, 1.0, 1.0);
+            double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
+                                                                     "Greedy", 0.6, 0.75, 1.0, 1.0, 1.0);
             Assert.assertEquals(0.5, searchResult, 0.1);
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testFindProcessesSimilarity_different_processes() {
+        try {
+            BPMNDiagram search = read_two_tasks_sequence_AB();
+            BPMNDiagram dbDiagram = read_two_tasks_sequence_XY();
+            double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
+                                                                     "Greedy", 0.6, 0.75, 1.0, 1.0, 1.0);
+            Assert.assertEquals(0.5, searchResult, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
