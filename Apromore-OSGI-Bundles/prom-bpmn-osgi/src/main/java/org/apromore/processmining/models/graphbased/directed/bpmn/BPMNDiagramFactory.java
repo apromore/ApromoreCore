@@ -21,15 +21,25 @@
  */
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
+import java.io.ByteArrayInputStream;
+
+import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
+
 public class BPMNDiagramFactory {
 
 	public static BPMNDiagram newBPMNDiagram(String label) {
 		return new BPMNDiagramImpl(label);
 	}
 
+	public static BPMNDiagram newDiagramFromProcessText(String nativeText) throws Exception {
+        BpmnImportPlugin importer = new BpmnImportPlugin();
+        return importer.importFromStreamToDiagram(new ByteArrayInputStream(nativeText.getBytes()), "");
+    }
+	
 	public static BPMNDiagram cloneBPMNDiagram(BPMNDiagram diagram) {
 		BPMNDiagramImpl newDiagram = new BPMNDiagramImpl(diagram.getLabel());
 		newDiagram.cloneFrom(diagram);
 		return newDiagram;
 	}
+	
 }
