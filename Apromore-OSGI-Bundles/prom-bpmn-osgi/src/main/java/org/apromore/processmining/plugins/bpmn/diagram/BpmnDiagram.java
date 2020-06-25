@@ -22,6 +22,7 @@
 package org.apromore.processmining.plugins.bpmn.diagram;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -41,7 +42,8 @@ public class BpmnDiagram extends BpmnIdName {
 		planes = new HashSet<BpmnDiPlane>();
 	}
 	
-	protected boolean importElements(XmlPullParser xpp, Bpmn bpmn) {
+	@Override
+    protected boolean importElements(XmlPullParser xpp, Bpmn bpmn) {
 		if (super.importElements(xpp, bpmn)) {
 			return true;
 		}
@@ -57,7 +59,8 @@ public class BpmnDiagram extends BpmnIdName {
 		return false;
 	}
 	
-	protected String exportElements() {
+	@Override
+    protected String exportElements() {
 		/*
 		 * Export node child elements.
 		 */
@@ -76,12 +79,17 @@ public class BpmnDiagram extends BpmnIdName {
 		return elements;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return name != null && !name.isEmpty() ? name : "No name";
 	}
 	
 	public void addPlane(BpmnDiPlane plane) {
 		planes.add(plane);
+	}
+	
+	public Collection<BpmnDiPlane> getPlanes() {
+	    return Collections.unmodifiableCollection(planes);
 	}
 	
 	public void unmarshallIsExpanded(Map<String, BPMNNode> id2node) {

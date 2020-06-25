@@ -21,9 +21,8 @@
  */
 package org.apromore.processmining.plugins.bpmn.plugins;
 
-import java.io.ByteArrayInputStream;
-
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 
 /**
@@ -33,9 +32,8 @@ import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
  *
  */
 public class BpmnLayoutPlugin {
-    public String addLayout(String bpmnText, String filename)  throws Exception {
-        BpmnImportPlugin importer = new BpmnImportPlugin();
-        BPMNDiagram d = importer.importFromStreamToDiagram(new ByteArrayInputStream(bpmnText.getBytes()), filename);
+    
+    public static String addLayout(BPMNDiagram d, String filename)  throws Exception {
         BpmnDefinitions.BpmnDefinitionsBuilder def = new BpmnDefinitions.BpmnDefinitionsBuilder(d);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", def);
         String exportedBPMN = definitions.exportElements();
@@ -50,5 +48,10 @@ public class BpmnLayoutPlugin {
                 exportedBPMN +
                 "</definitions>";
         return layoutBpmnText;
+    }
+    
+    public static String addLayout(String bpmnText, String filename)  throws Exception {
+        BPMNDiagram d = BPMNDiagramFactory.newDiagramFromProcessText(bpmnText);
+        return addLayout(d, filename);
     }
 }

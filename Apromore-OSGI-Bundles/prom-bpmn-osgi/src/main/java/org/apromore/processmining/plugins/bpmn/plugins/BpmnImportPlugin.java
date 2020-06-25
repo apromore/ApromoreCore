@@ -57,14 +57,6 @@ public class BpmnImportPlugin {
 		`	 */
 			return null;
 		}
-		/*
-		 * XPDL file has been imported. Now we need to convert the contents to a
-		 * BPMN diagram.
-		 */
-//		BpmnDiagrams diagrams = new BpmnDiagrams();
-//		diagrams.setBpmn(bpmn);
-//		diagrams.setName(filename);
-//		diagrams.addAll(bpmn.getDiagrams());
 		return bpmn;
 	}
 
