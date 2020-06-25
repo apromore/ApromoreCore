@@ -115,8 +115,10 @@
       selector: 'node',
       style: {
         'background-color': 'data(color)',
-        'border-color': 'black',
-        'border-width': 'data(borderwidth)',
+        'border-color': '#cccccc',
+        // 'border-width': 'data(borderwidth)',
+        'border-width': '3px',
+        'border-style': 'solid',
         'color': 'data(textcolor)',
         'content': 'data(name)',
         'font-size': 'data(textsize)',
@@ -157,16 +159,23 @@
       },
     },
     {
+      selector: 'node:selected',
+      style: {
+        'overlay-color': '#f96100',
+        'overlay-padding': '18px',
+        'overlay-opacity': 0.2
+      },
+    },
+    {
       selector: ':selected',
       style: {
-        'border-color': '#ff6600',
-        'border-style': 'double',
-        'border-width': '8px',
-        'line-color': '#ff6600',
+        'border-color': '#f96100',
+        'line-color': '#f96100',
         'line-style': 'solid',
-        'target-arrow-color': '#bb3a50',
+        'target-arrow-color': '#f96100',
       },
-    }];
+    }
+  ];
   let elements = {
     nodes: [],
     edges: [],
@@ -270,8 +279,6 @@
 
   // Search
 
-  const SEARCH_ID = '#ap-pd-search-graph';
-  const SEARCH_OPTIONS_ID = '#ap-pd-search-graph-options';
   let nodeNames = [];
   let prevSelected;
   let searchResults = [];
@@ -317,6 +324,125 @@
     });
   }
 
+  const SEARCH_ID = '#ap-pd-search-graph';
+  const SEARCH_OPTIONS_ID = '#ap-pd-search-graph-options';
+  let searchOptions = $('.ap-pd-search-graph-options');
+  let searchClear = $('#ap-pd-search-graph i:last-child');
+  let searchInput = $(`${SEARCH_ID} input`);
+  let miniSearch;
+
+  document.addEventListener("click", (evt) => {
+    const el = searchOptions[0];
+    const input = searchInput[0];
+    const target = evt.target;
+
+    if (el !== target && input !== target) {
+      updateSelectedNodes();
+    }
+  });
+
+  function updateSelectedNodes () {
+    if (!miniSearch) { return; }
+    searchResults = miniSearch.search(searchInput.val());
+    selectNodes();
+    searchOptions.hide();
+  }
+
+  function resetSearchInput() {
+    searchInput.val('');
+    searchClear.css({ visibility: 'hidden'});
+    searchOptions.hide();
+    searchResults = [];
+    selectNodes();
+  }
+
+  function checkForSearchOptions() {
+    if (searchResults.length > 0) {
+      searchOptions.show();
+    } else {
+      searchOptions.hide();
+    }
+  }
+
+  function setupSearch(source) {
+    // call here in case setupSearch is called earlier
+    searchOptions = $('.ap-pd-search-graph-options');
+    searchClear = $('#ap-pd-search-graph i:last-child');
+    searchInput = $(`${SEARCH_ID} input`);
+
+    collectNodeNames(source);
+    miniSearch = new MiniSearch({
+      fields: ['label'],
+      storeFields: ['label'],
+      searchOptions: {
+        prefix: true
+      }
+    });
+    let inputVal;
+    let { left, top } = searchInput.offset();
+
+    miniSearch.addAll(nodeNames)
+    top += searchInput.outerHeight();
+    searchOptions.css({ left, top, minWidth: searchInput.outerWidth() });
+    searchOptions.hide();
+    searchInput.unbind();
+    searchClear.unbind();
+    searchClear.click(() => {
+      resetSearchInput();
+    });
+    searchResults = miniSearch.search(searchInput.val());
+    selectNodes();
+
+    searchInput.focus((e) => {
+      checkForSearchOptions();
+    });
+    // searchInput.blur((e) => {
+    //   searchOptions.hide();
+    // });
+    searchInput.keyup((e) => {
+      switch (e.keyCode) {
+        case 13: // Enter
+        case 9:  // Tab
+        case 27: // Esc
+          updateSelectedNodes();
+          break;
+        default:
+          let v = searchInput.val();
+          if (v !== inputVal) {
+            inputVal = v;
+            if (inputVal.length > 0) {
+              searchClear.css({ visibility: 'visible'});
+            } else {
+              searchClear.css({ visibility: 'hidden'});
+            }
+            searchResults = miniSearch.search(inputVal);
+            searchOptions.empty();
+            searchResults.forEach(function (result) {
+              searchOptions.append(
+                  $("<div></div>")
+                  .attr('data-id', result.id)
+                  .text(result.label)
+                  .click(
+                      function (e) {
+                        searchInput.val($(e.target).text());
+                        searchResults = [
+                          { id: $(e.target).attr('data-id') }
+                        ]
+                        selectNodes();
+                        searchOptions.hide();
+                      }
+                  )
+              );
+            });
+            checkForSearchOptions();
+          }
+          break;
+      }
+    });
+    searchResults = miniSearch.search(searchInput.val());
+    selectNodes();
+  }
+
   function setupSearchExact(source) {
     collectNodeNames(source);
     $(SEARCH_ID).autocomplete({
@@ -325,80 +451,6 @@
         selectNode(ui.item && ui.item.dataId);
       }
     });
-  }
-
-  function setupSearch(source) {
-    collectNodeNames(source);
-    let miniSearch = new MiniSearch({
-      fields: ['label'],
-      storeFields: ['label'],
-      searchOptions: {
-        prefix: true
-      }
-    });
-    const options = $('.ap-pd-search-graph-options');
-    const input = $(`${SEARCH_ID} input`);
-    let inputVal;
-    let { left, top } = input.offset();
-
-    miniSearch.addAll(nodeNames)
-    top += input.outerHeight();
-    options.hide();
-    options.css({ left, top, minWidth: input.outerWidth() });
-
-    input.focus((e) => {
-      if (searchResults.length > 0) {
-        options.show();
-      } else {
-        options.hide();
-      }
-    });
-    // input.blur((e) => {
-    //   options.hide();
-    // });
-    input.keyup((e) => {
-      switch (e.keyCode) {
-        case 13: // Enter
-        case 9:  // Tab
-        case 27: // Esc
-          searchResults = miniSearch.search(input.val());
-          selectNodes();
-          options.hide();
-          break;
-        default:
-          let v = input.val();
-          if (v !== inputVal) {
-            inputVal = v;
-            searchResults = miniSearch.search(inputVal);
-            options.empty();
-            searchResults.forEach(function (result) {
-              options.append(
-                  $("<div></div>")
-                  .attr('data-id', result.id)
-                  .text(result.label)
-                  .click(
-                      function (e) {
-                        input.val($(e.target).text());
-                        searchResults = [
-                          { id: $(e.target).attr('data-id') }
-                        ]
-                        selectNodes();
-                        options.hide();
-                      }
-                  )
-              );
-            });
-            if (searchResults.length > 0) {
-              options.show();
-            } else {
-              options.hide();
-            }
-          }
-          break;
-      }
-    });
-    searchResults = miniSearch.search(input.val());
-    selectNodes();
   }
 
   function loadLog(json, layoutType, retain) {
@@ -440,8 +492,10 @@
     isTraceMode = true;
     reset();
     init();
-    cy.add($.parseJSON(json));
+    const source = $.parseJSON(json);
+    cy.add(source);
     layout(LAYOUT_MANUAL_BEZIER);
+    setupSearch(source);
     fit(1);
   }
 
@@ -644,9 +698,9 @@
     if (!sourceJSON) { return; }
     filename = filename || $('.ap-pd-log-title').text();
     saveAsFile(
-      JSON.stringify(sourceJSON, null, 2),
-      filename + ".json",
-      "application/json;charset=utf-8"
+        JSON.stringify(sourceJSON, null, 2),
+        filename + ".json",
+        "application/json;charset=utf-8"
     );
   }
 

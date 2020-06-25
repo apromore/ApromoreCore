@@ -186,10 +186,16 @@
           <n:span>Search node</n:span>
           <n:input id="ap-pd-search-graph" style="background-color:white;border:none" type="text"/>
         -->
-        <n:div id="ap-pd-search-graph">
-          <n:input type="text" placeholder="Search node" />
-          <n:div class="ap-pd-search-graph-options" />
+        <n:div id="ap-pd-search-graph-wrapper">
+          <n:div id="ap-pd-search-graph">
+            <n:i class="z-icon-search" />
+            <n:input type="text" placeholder="Search node" />
+            <n:span>
+              <n:i class="z-icon-times-circle" />
+            </n:span>
+          </n:div>
         </n:div>
+        <n:div class="ap-pd-search-graph-options" />
         <button id="shortcutButton" sclass="ap-icon ap-icon-keyboard">
           <attribute name="onClick">
             <![CDATA[
