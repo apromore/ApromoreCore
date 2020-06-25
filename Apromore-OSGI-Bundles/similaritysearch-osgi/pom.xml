@@ -69,7 +69,7 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom-bpmn-osgi</artifactId>
             <version>1.0</version>
-        </dependency>      
+        </dependency>
          
         <dependency>
             <groupId>org.slf4j</groupId>

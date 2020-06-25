@@ -172,25 +172,25 @@ public class CPFModelParser {
         for (Vertex v : g.getVertices()) {
             BPMNNode node = null;
             if (v.getType().equals(Vertex.Type.event)) {
-                node = toReturn.addEvent(v.getLabel(), getEventType(v), EventTrigger.NONE, EventUse.CATCH, false, null);
+                node = toReturn.addEvent("", getEventType(v), EventTrigger.NONE, EventUse.THROW, true, null);
             } else if (v.getType().equals(Vertex.Type.function)) {
                 node = toReturn.addActivity(v.getLabel(), false, false, false, false, false);
             } else if (v.getType().equals(Vertex.Type.gateway)) {
                 if (v.getParents().size() > 1) {
                     if (v.getGWType().equals(GWType.and)) {
-                        node = toReturn.addGateway(v.getLabel(), GatewayType.DATABASED);
+                        node = toReturn.addGateway("", GatewayType.DATABASED);
                     } else if (v.getGWType().equals(GWType.or)) {
-                        node = toReturn.addGateway(v.getLabel(), GatewayType.DATABASED);
+                        node = toReturn.addGateway("", GatewayType.DATABASED);
                     } else if (v.getGWType().equals(GWType.xor)) {
-                        node = toReturn.addGateway(v.getLabel(), GatewayType.DATABASED);
+                        node = toReturn.addGateway("", GatewayType.DATABASED);
                     }
                 } else if (v.getChildren().size() > 1) {
                     if (v.getGWType().equals(GWType.and)) {
-                        node = toReturn.addGateway(v.getLabel(), GatewayType.DATABASED);
+                        node = toReturn.addGateway("", GatewayType.DATABASED);
                     } else if (v.getGWType().equals(GWType.or)) {
-                        node = toReturn.addGateway(v.getLabel(), GatewayType.DATABASED);
+                        node = toReturn.addGateway("", GatewayType.DATABASED);
                     } else if (v.getGWType().equals(GWType.xor)) {
-                        node = toReturn.addGateway(v.getLabel(), GatewayType.DATABASED);
+                        node = toReturn.addGateway("", GatewayType.DATABASED);
                     }
                 }
             }

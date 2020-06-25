@@ -75,4 +75,12 @@ public class TestDataSetup {
     public BPMNDiagram read_three_tasks_sequence_xor() throws Exception {
         return this.readBPMNDiagram("src/test/data/three_tasks_sequence_xor.bpmn");
     }
+    
+    public BPMNDiagram read_xor_branch_A() throws Exception {
+        return this.readBPMNDiagram("src/test/data/xor_branch_A.bpmn");
+    }
+    
+    public BPMNDiagram read_xor_branch_B() throws Exception {
+        return this.readBPMNDiagram("src/test/data/xor_branch_B.bpmn");
+    }
 }
