@@ -89,6 +89,7 @@ public class CPFModelParser {
                 boolean initialGW = true;
                 Vertex v = new Vertex(bpmnSupport.isXORGateway(n) ? "xor" : (bpmnSupport.isANDGateway(n) ? "and" : "or"), 
                                         n.getId().toString());
+                v.setLabel("");
                 // this is initial gateway
                 // TODO if we don't have graph that is already merged, then
                 // set all gateways to initials
@@ -101,7 +102,7 @@ public class CPFModelParser {
                 Vertex v = new Vertex(Type.function, n.getLabel(), n.getId().toString());
                 epcGraph.addVertex(v);
             } else if (bpmnSupport.isEvent(n)) {
-                Vertex v = new Vertex(Type.event, n.getLabel(), n.getId().toString());
+                Vertex v = new Vertex(Type.event, "", n.getId().toString());
                 if (bpmnSupport.isStartEvent(n)) {
                     v.objectRefs.add(new VertexObjectRef(false, v.getID(), Boolean.TRUE, 
                                                         VertexObjectRef.InputOutput.Input, 
