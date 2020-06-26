@@ -110,20 +110,42 @@
     zoom: 1,
     zoomingEnabled: true,
   };
+  // Cut text in the server side
+  // const cutText = (text) => {
+  //   if (text.length > 60) {
+  //     return text.substring(0, 60) + '...';
+  //   }
+  //   return text;
+  // }
+  const calcFontSize = (text) => {
+    let len = text.length;
+    if (len > 40) {
+      return 10;
+    } else if (len > 30){
+      return 12;
+    } else if (len > 15) {
+      return 14;
+    } else {
+      return 16;
+    }
+  }
   let style = [
     {
       selector: 'node',
       style: {
         'background-color': 'data(color)',
-        'border-color': '#cccccc',
+        'border-color': 'black',
         // 'border-width': 'data(borderwidth)',
-        'border-width': '3px',
+        'border-width': '2px',
         'border-style': 'solid',
         'color': 'data(textcolor)',
         'content': 'data(name)',
-        'font-size': 'data(textsize)',
+        'font-size': function( ele ) { // 'data(textsize)',
+          let fontSize = calcFontSize(ele.data('oriname'));
+          return fontSize + 'px';
+        },
         'height': 'data(height)',
-        'padding': 0,
+        'padding': '5px',
         'shape': 'data(shape)',
         'text-border-width': 0,
         'text-max-width': 'data(textwidth)',
@@ -277,182 +299,6 @@
     cy.destroy();
   }
 
-  // Search
-
-  let nodeNames = [];
-  let prevSelected;
-  let searchResults = [];
-
-  function collectNodeNames(source) {
-    nodeNames = [];
-    source.forEach((el) => {
-      let data = el && el.data || {};
-      if(data.id && data.oriname && data.shape === 'roundrectangle') {
-        nodeNames.push({
-          label: data.oriname,
-          value: data.oriname,
-          dataId: data.id,
-          id: data.id,
-        })
-      }
-    });
-  }
-
-  function selectNode(nodeId) {
-    if (prevSelected) {
-      cy.getElementById(prevSelected).unselect();
-      prevSelected = null;
-    }
-    if (typeof nodeId !== 'undefined' || nodeId !== null) {
-      prevSelected = nodeId;
-      if (prevSelected) {
-        cy.getElementById(prevSelected).select();
-      }
-    };
-  }
-
-  let selectedNodeIds = [];
-  function selectNodes() {
-    selectedNodeIds.forEach(function (id) {
-      cy.getElementById(id).unselect();
-    });
-
-    selectedNodeIds = [];
-    searchResults.forEach(function (result) {
-      selectedNodeIds.push(result.id);
-      cy.getElementById(result.id).select();
-    });
-  }
-
-  const SEARCH_ID = '#ap-pd-search-graph';
-  const SEARCH_OPTIONS_ID = '#ap-pd-search-graph-options';
-  let searchOptions = $('.ap-pd-search-graph-options');
-  let searchClear = $('#ap-pd-search-graph i:last-child');
-  let searchInput = $(`${SEARCH_ID} input`);
-  let miniSearch;
-
-  document.addEventListener("click", (evt) => {
-    const el = searchOptions[0];
-    const input = searchInput[0];
-    const target = evt.target;
-
-    if (el !== target && input !== target) {
-      updateSelectedNodes();
-    }
-  });
-
-  function updateSelectedNodes () {
-    if (!miniSearch) { return; }
-    searchResults = miniSearch.search(searchInput.val());
-    selectNodes();
-    searchOptions.hide();
-  }
-
-  function resetSearchInput() {
-    searchInput.val('');
-    searchClear.css({ visibility: 'hidden'});
-    searchOptions.hide();
-    searchResults = [];
-    selectNodes();
-  }
-
-  function checkForSearchOptions() {
-    if (searchResults.length > 0) {
-      searchOptions.show();
-    } else {
-      searchOptions.hide();
-    }
-  }
-
-  function setupSearch(source) {
-    // call here in case setupSearch is called earlier
-    searchOptions = $('.ap-pd-search-graph-options');
-    searchClear = $('#ap-pd-search-graph i:last-child');
-    searchInput = $(`${SEARCH_ID} input`);
-
-    collectNodeNames(source);
-    miniSearch = new MiniSearch({
-      fields: ['label'],
-      storeFields: ['label'],
-      searchOptions: {
-        prefix: true
-      }
-    });
-    let inputVal;
-    let { left, top } = searchInput.offset();
-
-    miniSearch.addAll(nodeNames)
-    top += searchInput.outerHeight();
-    searchOptions.css({ left, top, minWidth: searchInput.outerWidth() });
-    searchOptions.hide();
-    searchInput.unbind();
-    searchClear.unbind();
-    searchClear.click(() => {
-      resetSearchInput();
-    });
-    searchResults = miniSearch.search(searchInput.val());
-    selectNodes();
-
-    searchInput.focus((e) => {
-      checkForSearchOptions();
-    });
-    // searchInput.blur((e) => {
-    //   searchOptions.hide();
-    // });
-    searchInput.keyup((e) => {
-      switch (e.keyCode) {
-        case 13: // Enter
-        case 9:  // Tab
-        case 27: // Esc
-          updateSelectedNodes();
-          break;
-        default:
-          let v = searchInput.val();
-          if (v !== inputVal) {
-            inputVal = v;
-            if (inputVal.length > 0) {
-              searchClear.css({ visibility: 'visible'});
-            } else {
-              searchClear.css({ visibility: 'hidden'});
-            }
-            searchResults = miniSearch.search(inputVal);
-            searchOptions.empty();
-            searchResults.forEach(function (result) {
-              searchOptions.append(
-                  $("<div></div>")
-                  .attr('data-id', result.id)
-                  .text(result.label)
-                  .click(
-                      function (e) {
-                        searchInput.val($(e.target).text());
-                        searchResults = [
-                          { id: $(e.target).attr('data-id') }
-                        ]
-                        selectNodes();
-                        searchOptions.hide();
-                      }
-                  )
-              );
-            });
-            checkForSearchOptions();
-          }
-          break;
-      }
-    });
-    searchResults = miniSearch.search(searchInput.val());
-    selectNodes();
-  }
-
-  function setupSearchExact(source) {
-    collectNodeNames(source);
-    $(SEARCH_ID).autocomplete({
-      source: nodeNames,
-      select: function( event, ui ) {
-        selectNode(ui.item && ui.item.dataId);
-      }
-    });
-  }
-
   function loadLog(json, layoutType, retain) {
     currentLayout = layoutType;
 
@@ -469,7 +315,7 @@
 
     cy.add(source);
     layout(layoutType);
-    setupSearch(source);
+    Ap.pd.setupSearch(source);
 
     if (retain) {
       cy.zoom(zoom);
@@ -495,7 +341,7 @@
     const source = $.parseJSON(json);
     cy.add(source);
     layout(LAYOUT_MANUAL_BEZIER);
-    setupSearch(source);
+    Ap.pd.setupSearch(source);
     fit(1);
   }
 
