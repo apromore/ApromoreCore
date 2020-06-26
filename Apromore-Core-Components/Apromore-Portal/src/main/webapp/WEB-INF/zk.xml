@@ -390,6 +390,10 @@
             <description>[Optional] Monitor the statistic</description>
             <listener-class>org.zkoss.zk.ui.util.Statistic</listener-class>
     </listener>
+    
+    <listener>
+            <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
+    </listener>    
 
     <!-- Configure the error page
     <error-page>

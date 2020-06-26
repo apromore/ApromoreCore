@@ -29,6 +29,10 @@
     </preference>
 
     <listener>
+            <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
+    </listener>
+
+    <listener>
             <listener-class>org.apromore.plugin.portal.processdiscoverer.PDDesktopCleaner</listener-class>
     </listener>
 </zk>

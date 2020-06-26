@@ -52,6 +52,10 @@
 		<name>org.zkoss.zk.WPD.cache</name>
 		<value>false</value>
 	</library-property>
+    
+    <listener>
+            <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
+    </listener>    
 
 
     <!-- Turn on if you want to cache by etag for dynamic resource.

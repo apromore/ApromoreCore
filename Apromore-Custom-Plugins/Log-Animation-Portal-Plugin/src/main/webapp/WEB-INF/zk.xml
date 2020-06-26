@@ -27,6 +27,10 @@
         <name>org.zkoss.zk.ui.WebApp.name</name>
         <value>Apromore</value>
     </preference>
+    
+    <listener>
+            <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
+    </listener>
 
     <listener>
         <listener-class>org.apromore.plugin.portal.loganimation.LogAnimationCleaner</listener-class>
