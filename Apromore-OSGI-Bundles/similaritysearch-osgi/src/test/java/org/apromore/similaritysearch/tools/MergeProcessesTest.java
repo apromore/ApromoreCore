@@ -30,6 +30,8 @@ import java.util.List;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramSupport;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.apromore.similaritysearch.common.CPFModelParser;
+import org.apromore.similaritysearch.common.algos.GraphEditDistanceGreedy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -145,6 +147,23 @@ public class MergeProcessesTest extends TestDataSetup {
             
             node = bpmnSupport.getTargets(node).iterator().next();
             Assert.assertEquals(true, bpmnSupport.isEndEvent(node));
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
+    
+    
+    //Trying comparing models but it is not working
+    //@Test
+    public void testMergeProcesses_merge_two_task_sequences_crossing() {
+        try {
+            List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_two_tasks_sequence_AB(), 
+                                                                        read_two_tasks_sequence_BA()});
+            BPMNDiagram merge = MergeProcesses.mergeProcesses(diagrams, false, "Greedy", 0.6, 0.6, 0.75, 1.0, 1.0, 1.0);
+            BPMNDiagram expected = this.readBPMNDiagram("src/test/data/merge_two_sequences_crossing.bpmn");
+            GraphEditDistanceGreedy differ = new GraphEditDistanceGreedy();
+            double ged = differ.computeGED(CPFModelParser.readModel(merge), CPFModelParser.readModel(expected));
+            Assert.assertEquals(0.0, ged, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
