@@ -32,7 +32,7 @@ import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 public class TestDataSetup {
     private BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
     
-    private BPMNDiagram readBPMNDiagram(String fullFilePath) throws FileNotFoundException, Exception {
+    protected BPMNDiagram readBPMNDiagram(String fullFilePath) throws FileNotFoundException, Exception {
         return bpmnImport.importFromStreamToDiagram(new FileInputStream(new File(fullFilePath)), fullFilePath);
     }
     
@@ -50,6 +50,10 @@ public class TestDataSetup {
     
     public BPMNDiagram read_two_tasks_sequence_AB() throws Exception {
         return this.readBPMNDiagram("src/test/data/two_tasks_sequence_AB.bpmn");
+    }
+    
+    public BPMNDiagram read_two_tasks_sequence_BA() throws Exception {
+        return this.readBPMNDiagram("src/test/data/two_tasks_sequence_BA.bpmn");
     }
     
     public BPMNDiagram read_two_tasks_sequence_XY() throws Exception {
