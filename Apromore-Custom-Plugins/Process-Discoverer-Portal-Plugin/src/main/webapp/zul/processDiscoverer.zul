@@ -63,6 +63,7 @@
   <script src="/js/cytoscape-undo-redo.js"></script>
   <script src="/js/cytoscape-edge-bend-editing.js"></script>
   <script src="/js/ap/moment.min.js"></script>
+  <script src="/js/ap/search.js"></script>
   <script src="/js/ap/graph.js"></script>
   <script src="/js/ap/pd.js"></script>
 

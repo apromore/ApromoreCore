@@ -1199,7 +1199,8 @@ div.ap-pd-drawer-splitter:hover {
     text-align: left;
 }
 
-.ap-pd-search-graph-options > div:hover {
+.ap-pd-search-graph-options > div:hover,
+.ap-pd-search-graph-options > div.selected {
     background-color: #dedede;
 }
 

@@ -30,6 +30,17 @@ public class StringFormatter {
     	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
     }
 
+    public String fixCutName(String name, int len) {
+        if (len <= 0) {
+            len = MAXLEN;
+        }
+        if (name.length() > len) {
+            name = name.substring(0, len);
+            name += "...";
+        }
+        return name;
+    }
+
     public String shortenName(String name, int len) {
         boolean needEllipsis = false;
         if (len <= 0) {
