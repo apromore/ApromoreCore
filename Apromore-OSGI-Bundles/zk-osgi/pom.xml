@@ -56,12 +56,9 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.zkoss.*
+                            org.zkoss.*,
+                            org.apromore.zk
                         </Export-Package>
-                        <DynamicImport-Package>
-                            org.apromore.plugin.portal.*,
-                            zul.*
-                        </DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
