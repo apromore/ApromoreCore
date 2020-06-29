@@ -32,7 +32,7 @@
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:h="http://www.w3.org/1999/xhtml">
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/import-logs-from-csv-files/" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/documentation/features/upload-a-file/" target="_blank" />
     </caption>
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">

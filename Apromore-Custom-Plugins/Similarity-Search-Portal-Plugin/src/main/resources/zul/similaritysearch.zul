@@ -24,8 +24,11 @@
   #L%
   -->
 <?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
-
-<window width="780px" closable="false" position="center" title="Search for similar processes" sclass="ap-simsearch">
+<zk xmlns:w="client" xmlns:ca="client/attribute" xmlns:n="http://www.w3.org/1999/xhtml">
+<window width="780px" closable="false" position="center" title="Search similar models" sclass="ap-simsearch">
+    <caption>
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/documentation/features/search-similar-models/" target="_blank" />
+    </caption>
     <vlayout width="100%" spacing="0">
         <hbox width="100%" widths="40%,60%" vflex="1" spacing="0">
             <borderlayout vflex="true" width="100%">
@@ -107,3 +110,4 @@
         </grid>
     </vlayout>
 </window>
+</zk>
