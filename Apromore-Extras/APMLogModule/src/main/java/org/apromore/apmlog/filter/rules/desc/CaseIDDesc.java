@@ -92,12 +92,12 @@ public class CaseIDDesc {
         List<Number> allVals;
 
         if (!hasDecimal) {
-            List<Integer> allIntVals = new ArrayList<>();
+            List<Long> allLongVals = new ArrayList<>();
             for (RuleValue rv : ruleValues) {
-                allIntVals.add(Integer.valueOf(rv.getStringValue()));
+                allLongVals.add(Long.valueOf(rv.getStringValue()));
             }
-            Collections.sort(allIntVals);
-            allVals = new ArrayList<>(allIntVals);
+            Collections.sort(allLongVals);
+            allVals = new ArrayList<>(allLongVals);
         } else {
             List<Double> allDoubleVals = new ArrayList<>();
             for (RuleValue rv : ruleValues) {
