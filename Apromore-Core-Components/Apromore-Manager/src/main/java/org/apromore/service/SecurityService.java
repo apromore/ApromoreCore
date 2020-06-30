@@ -48,7 +48,7 @@ public interface SecurityService {
     final String EVENT_TOPIC = "org/apromore/service/SECURITY";
 
     enum EventType {
-        CREATE_USER, UPDATE_USER, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP
+        CREATE_USER, UPDATE_USER, DELETE_USER, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP
     }
 
     /**
@@ -79,13 +79,13 @@ public interface SecurityService {
     Group createGroup(String name);
 
     /**
-     * @param group an existing group, with modifications
+     * @param group  an existing group, with modifications
      * @return the updated group
      */
     Group updateGroup(Group group);
 
     /**
-     * @param group an existing group
+     * @param group  an existing group
      */
     void deleteGroup(Group group);
 
@@ -167,6 +167,11 @@ public interface SecurityService {
      * @return the updated user
      */
     User updateUser(User user);
+
+    /**
+     * @param user  an existing user
+     */
+    void deleteUser(User user);
 
     /**
      * Checks whether user has specific permission.

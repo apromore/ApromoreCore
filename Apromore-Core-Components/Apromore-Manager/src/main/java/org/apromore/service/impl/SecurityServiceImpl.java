@@ -143,6 +143,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Group createGroup(String name) {
         Group group = new Group();
         group.setName(name);
@@ -155,6 +156,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Group updateGroup(Group group) {
         Group result = groupRepo.saveAndFlush(group);
         postEvent(EventType.UPDATE_GROUP, null, result);
@@ -163,6 +165,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void deleteGroup(Group group) {
         postEvent(EventType.DELETE_GROUP, null, group);
 
@@ -250,6 +253,7 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public User createUser(User user) {
         LOGGER.info("Creating user " + user.getUsername());
 
@@ -270,6 +274,8 @@ public class SecurityServiceImpl implements SecurityService {
         user.setLastActivityDate(null);  // null indicates "never connected"
         user.setRowGuid(UUID.randomUUID().toString());
         user.setGroup(group);
+
+        user.getMembership().setDateCreated(user.getDateCreated());
 
         // A new user is in the USER role
         Role existingRole = roleRepo.findByName(ROLE_USER);
@@ -301,6 +307,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public User updateUser(User user) {
 
         // A user can always access their personal group and the public group
@@ -314,11 +321,20 @@ public class SecurityServiceImpl implements SecurityService {
         return userRepo.save(user);
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteUser(User user) {
+        postEvent(EventType.DELETE_USER, user, null);
+
+        groupRepo.delete(user.getGroup());
+    }
+
     /**
      * @see org.apromore.service.SecurityService#resetUserPassword(String, String)
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean resetUserPassword(String username, String newPassword) {
 
         User user = userRepo.findByUsername(username);
@@ -344,6 +360,7 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean changeUserPassword(String username, String oldPassword, String newPassword) {
 
         User user = userRepo.findByUsername(username);

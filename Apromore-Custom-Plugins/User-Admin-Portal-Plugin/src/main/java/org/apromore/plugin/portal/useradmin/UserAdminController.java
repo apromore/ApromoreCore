@@ -76,6 +76,8 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Wire("#groupsListbox")       Listbox  groupsListbox;
     @Wire("#rolesListbox")        Listbox  rolesListbox;
     @Wire("#newGroupButton")      Button   newGroupButton;
+    @Wire("#newUserButton")       Button   newUserButton;
+    @Wire("#deleteUserButton")    Button   deleteUserButton;
     @Wire("#dateCreatedDatebox")  Datebox  dateCreatedDatebox;
     @Wire("#lastActivityDatebox") Datebox  lastActivityDatebox;
 
@@ -120,8 +122,16 @@ public class UserAdminController extends SelectorComposer<Window> {
                     securityEventQueue.unsubscribe(this);
 
                 } else {
-                    // Skip this update if it doesn't apply to the currently displayed user
                     Map properties = (Map) event.getData();
+
+                    // Update the user combobox
+                    if (((String) properties.get("type")).endsWith("_USER")) {
+                        ListModelList<User> usersModel = new ListModelList<>(securityService.getAllUsers(), false);
+                        usersCombobox.setModel(usersModel);
+                        usersCombobox.setValue(portalContext.getCurrentUser().getUsername());
+                    }
+
+                    // Skip this update if it doesn't apply to the currently displayed user
                     String eventUserName = (String) properties.get("user.name");
                     String userName = usersCombobox.getValue();
                     if (eventUserName != null && !eventUserName.equals(userName)) {
@@ -277,6 +287,38 @@ public class UserAdminController extends SelectorComposer<Window> {
             LOGGER.error("Unable to create group creation dialog", e);
             Messagebox.show("Unable to create group creation dialog");
         }
+    }
+
+    @Listen("onClick = #newUserButton")
+    public void onClickNewUserButton() throws Exception {
+        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
+        if (!canEditUsers) {
+            throw new Exception("Cannot edit users without permission");
+        }
+
+        try {
+            Map arg = new HashMap<>();
+            arg.put("portalContext", portalContext);
+            arg.put("securityService", securityService);
+            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/create-user.zul", getSelf(), arg);
+            window.doModal();
+
+        } catch(Exception e) {
+            LOGGER.error("Unable to create user creation dialog", e);
+            Messagebox.show("Unable to create user creation dialog");
+        }
+    }
+
+    @Listen("onClick = #deleteUserButton")
+    public void onClickDeleteUserButton() throws Exception {
+        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
+        if (!canEditUsers) {
+            throw new Exception("Cannot edit users without permission");
+        }
+
+        User selectedUser = securityService.getUserByName(usersCombobox.getValue());
+        LOGGER.info("Deleting user " + selectedUser.getUsername());
+        securityService.deleteUser(selectedUser);
     }
 
     @Listen("onClick = #okButton")

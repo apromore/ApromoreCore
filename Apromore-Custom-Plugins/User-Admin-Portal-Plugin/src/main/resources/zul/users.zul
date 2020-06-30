@@ -36,7 +36,7 @@
                             <comboitem label="${each.username}"/>
                         </template>
                     </combobox>
-                    <cell rowspan="3" valign="top">
+                    <cell rowspan="4" valign="top">
                         <listbox id="groupsListbox" checkmark="true">
                             <template name="model">
                                 <listitem>
@@ -47,7 +47,7 @@
                             </template>
                         </listbox>
                     </cell>
-                    <cell rowspan="4" valign="top">
+                    <cell rowspan="5" valign="top">
                         <listbox id="rolesListbox" checkmark="true">
                             <template name="model">
                                 <listitem>
@@ -71,6 +71,13 @@
                 <row>
                     <label value="Last activity"/>
                     <datebox id="lastActivityDatebox" readonly="true"/>
+                </row>
+                <row>
+                    <label/>
+                    <div align="center">
+                        <button id="newUserButton" label="New user"/>
+                        <button id="deleteUserButton" label="Delete user"/>
+                    </div>
                     <button id="newGroupButton" label="New group"/>
                 </row>
             </rows>
