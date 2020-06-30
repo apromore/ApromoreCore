@@ -73,12 +73,12 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
 		if(params.getPrimaryType() == MeasureType.DURATION) {
     		// No empty line if dual info
         	if (!params.getSecondary()) {
-        		jsonData.put("name", node_displayname + "\\n\\n" + 
+        		jsonData.put("name", node_displayname + "\\n\\n" +
         				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
         	}
         	else {
         		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + 
+        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + ", " +
         				visSettings.getDecimalFormatter().format(abs.getNodeSecondaryWeight(node)));
         	}
         }
@@ -90,7 +90,7 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
         	}
         	else {
         		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getDecimalFormatter().format(abs.getNodePrimaryWeight(node)) + "\\n" + 
+        				visSettings.getDecimalFormatter().format(abs.getNodePrimaryWeight(node)) + ", " +
         				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
         	}
         }

@@ -120,11 +120,9 @@
   const calcFontSize = (text) => {
     let len = text.length;
     if (len > 40) {
-      return 10;
-    } else if (len > 30){
-      return 12;
-    } else if (len > 15) {
       return 14;
+    } else if (len > 20){
+      return 15;
     } else {
       return 16;
     }
@@ -136,7 +134,7 @@
         'background-color': 'data(color)',
         'border-color': 'black',
         // 'border-width': 'data(borderwidth)',
-        'border-width': '2px',
+        'border-width': '1px',
         'border-style': 'solid',
         'color': 'data(textcolor)',
         'content': 'data(name)',
@@ -144,7 +142,13 @@
           let fontSize = calcFontSize(ele.data('oriname'));
           return fontSize + 'px';
         },
-        'height': 'data(height)',
+        'height':  function( ele ) { // 'data(height)',
+          let oriHeight = ele.data('height');
+          if (oriHeight === '70px') {
+            return '80px'
+          }
+          return oriHeight;
+        },
         'padding': '5px',
         'shape': 'data(shape)',
         'text-border-width': 0,
@@ -183,6 +187,7 @@
     {
       selector: 'node:selected',
       style: {
+        'border-width': '2px',
         'overlay-color': '#f96100',
         'overlay-padding': '18px',
         'overlay-opacity': 0.2

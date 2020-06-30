@@ -78,10 +78,10 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         jsonData.put("color", visSettings.getColorSettings().getEdgeColor(element, visContext, visSettings));
         jsonData.put("label", "");
         if (params.getPrimaryType() == MeasureType.DURATION) {
-        	jsonData.put("label", visSettings.getTimeConverter().convertMilliseconds(primaryWeight+"") + ((params.getSecondary()) ? "\\n" + 
+        	jsonData.put("label", visSettings.getTimeConverter().convertMilliseconds(primaryWeight+"") + ((params.getSecondary()) ? "\\n" +
         				visSettings.getDecimalFormatter().format(Double.parseDouble(secondaryWeight+"")) : ""));
         }else {
-            jsonData.put("label", visSettings.getDecimalFormatter().format(primaryWeight) + ((params.getSecondary()) ? "\\n" + 
+            jsonData.put("label", visSettings.getDecimalFormatter().format(primaryWeight) + ((params.getSecondary()) ? "\\n" +
             			visSettings.getTimeConverter().convertMilliseconds(secondaryWeight+"") : ""));
         }
         
