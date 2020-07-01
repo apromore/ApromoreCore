@@ -37,7 +37,7 @@ and CreateProcessController.java for creating process purpose.
                 <rows>
                     <row>
                         <label value="Log name" width="100%"/>
-                        <textbox id="nameTextbox" width="100%" constraint="/^[a-zA-Z0-9 \u005B\u005D\\._\\-\\(\\)]{1,}$/: Invalid filename" />
+                        <textbox id="nameTextbox" width="100%" constraint="${labels.e.common.nameConstraint.text}" />
                     </row>
                     <row id="makePublic" visible="${labels.publish.enable}">
                         <label value="Make log Public"/>
