@@ -39,7 +39,7 @@
             <rows>
                 <row spans="1,2">
                     <label value="Model name" width="100%"/>
-                    <textbox width="100%" constraint="/^[a-zA-Z0-9 \u005B\u005D\\._\\-\\(\\)]{1,}$/: Invalid filename" />
+                    <textbox width="100%" constraint="${labels.e.common.nameConstraint.text}" />
                 </row>
                 <row spans="1,2" visible="false">
                     <label value="Initial version number" width="100%" />
