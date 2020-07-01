@@ -118,8 +118,11 @@
                                 </textbox>
                             </span>
                         </div>
-                        <div width="240px" style="text-align: right;">
+                        <div width="440px" style="text-align: right;">
                             <button id="toXESButton" label="${mainWindow$composer.labels.toXESButton_label}" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;padding-left:2px;" width="120px"  />
+                            <button id="matchedMapping" label="matchedMapping"
+                                    iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true"
+                                    style="position:relative;padding-left:2px;" width="120px"  />
                             <button id="toPublicXESButton" label="${mainWindow$composer.labels.toPublicXESButton_label}" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" visible="false" style="position:relative;padding-left:2px;" width="120px"  />
                             <button id="cancelButton" label="${mainWindow$composer.labels.cancelButton_label}" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;padding-left:2px;" width="100px"  />
                         </div>

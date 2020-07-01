@@ -106,6 +106,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private @Wire("#mainWindow")        Window window;
     private @Wire("#toXESButton")       Button toXESButton;
     private @Wire("#toPublicXESButton") Button toPublicXESButton;
+    private @Wire("#matchedMapping") Button matchedMapping;
 
     private LogSample sample;
 
@@ -136,15 +137,33 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             if (csvReader != null) {
                 this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
                 if (sample != null) {
+
+                    //TODO:
+
                     setUpUI();
                     toXESButton.setDisabled(false);
                     toPublicXESButton.setDisabled(false);
+                    matchedMapping.setDisabled(false);
+
+                    //Attempt 2
+                    handleMatchedMapping();
+
                 }
             }
 
         } catch (Exception e) {
             Messagebox.show(getLabels().getString("failed_to_read_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
         }
+    }
+
+//    @Listen("onClick = button#matchedMapping")
+    //Create a dialog to ask for user option regarding matched schema mapping
+    private void handleMatchedMapping() throws IOException {
+
+        Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
+                "/matchedMapping.zul", null, null);
+        matchedMappingPopUp.doModal();
+
     }
 
     @Listen("onClick = #cancelButton")

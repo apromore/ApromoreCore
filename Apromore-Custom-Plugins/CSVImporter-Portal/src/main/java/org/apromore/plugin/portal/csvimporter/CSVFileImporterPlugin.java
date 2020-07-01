@@ -62,12 +62,23 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
         arg.put("csvImporterLogic", csvImporterLogic);
         arg.put("media", media);
 
+        //TODO: create a dialog to provide options to user: “An existing mapping is applicable to this log. Would you
+        // like to use it?” and shows an example with the first 5 rows as a table inside the window.
+        // 1. Yes -> import directly
+        // 2. Edit -> go to importer view and load the existing mapping (the latest one)
+        // 3. No -> Import as a new process -> go to importer view and load guessed mapping
+
         // Create a CSV importer view
         String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
             window.doModal();
+
+            // Attempt 1: try to create a popup window on top of csvImporter window here.
+            Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
+                    "/matchedMapping.zul", window, null);
+            matchedMappingPopUp.doModal();
 
         } catch (IOException e) {
             LOGGER.error("Unable to create window", e);
