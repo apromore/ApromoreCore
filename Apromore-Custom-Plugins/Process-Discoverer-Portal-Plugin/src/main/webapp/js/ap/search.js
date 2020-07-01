@@ -165,7 +165,7 @@
     searchClear.click(() => {
       resetSearchInput();
     });
-      
+
     searchInput.focus((e) => {
       checkForSearchOptions();
     });
@@ -182,6 +182,7 @@
           highlightOption(1);
           e.preventDefault();
           break;
+        case 9:  // Tab
         case 13: // Enter
           if (currentOptionIndex !== null) {
             let target = $(`${SEARCH_OPTIONS} > div[data-index=${currentOptionIndex}]`);
@@ -190,9 +191,8 @@
             updateSelectedNodes();
           }
           break;
-        case 9:  // Tab
         case 27: // Esc
-          updateSelectedNodes();
+          resetSearchInput();
           break;
         default:
           let v = searchInput.val();
@@ -208,16 +208,16 @@
             currentOptionIndex = null;
             searchResults.forEach(function (result, index) {
               searchOptions.append(
-                $("<div></div>")
-                .attr('data-id', result.id)
-                .attr('data-index', index)
-                .text(result.label)
-                .click(
-                  function (e) {
-                    currentOptionIndex = index;
-                    forceSelect(e.target);
-                  }
-                )
+                  $("<div></div>")
+                  .attr('data-id', result.id)
+                  .attr('data-index', index)
+                  .text(result.label)
+                  .click(
+                      function (e) {
+                        currentOptionIndex = index;
+                        forceSelect(e.target);
+                      }
+                  )
               );
             });
             checkForSearchOptions();
