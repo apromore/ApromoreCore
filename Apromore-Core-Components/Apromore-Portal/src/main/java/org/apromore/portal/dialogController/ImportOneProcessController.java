@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apromore.model.ImportProcessResultType;
@@ -60,6 +62,7 @@ import org.zkoss.zul.Window;
 
 public class ImportOneProcessController extends BaseController {
 
+    private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]\\._\\+\\-\\(\\)]+";
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportOneProcessController.class);
 
     private final MainController mainC;
@@ -101,7 +104,7 @@ public class ImportOneProcessController extends BaseController {
         this.mainC = mainC;
         this.username = UserSessionManager.getCurrentUser().getUsername();
         this.fileName = fileName;
-        this.processName = processName;
+        this.processName = normalizeFilename(processName);
         this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
         this.nativeType = nativeType;
         this.isPublic = isPublic;
@@ -293,6 +296,25 @@ public class ImportOneProcessController extends BaseController {
 
     private void updateOwner(final String owner) {
         this.defaultOwner.setValue(owner);
+    }
+
+    private String normalizeFilename(String name) {
+        String normalized = "";
+        try {
+            Pattern pattern = Pattern.compile(FILENAME_CONSTRAINT);
+            Matcher matcher = pattern.matcher(name);
+
+            while (matcher.find()) {
+                normalized += matcher.group();
+            }
+        } catch (Exception e) {
+            // ignore exception
+        } finally{
+            if (normalized.length() == 0) {
+                normalized = "Untitled";
+            }
+        }
+        return normalized;
     }
 
     private void reset() {
