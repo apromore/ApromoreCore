@@ -139,8 +139,11 @@
         'color': 'data(textcolor)',
         'content': 'data(name)',
         'font-size': function( ele ) { // 'data(textsize)',
-          let fontSize = calcFontSize(ele.data('oriname'));
-          return fontSize + 'px';
+          if (ele.data('shape') === 'roundrectangle') {
+            let fontSize = calcFontSize(ele.data('oriname'));
+            return fontSize + 'px';
+          }
+          return ele.data('textsize');
         },
         'height':  function( ele ) { // 'data(height)',
           let oriHeight = ele.data('height');
