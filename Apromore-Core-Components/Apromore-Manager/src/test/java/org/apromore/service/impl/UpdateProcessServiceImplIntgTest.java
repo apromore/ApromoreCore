@@ -59,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
+@Ignore
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})

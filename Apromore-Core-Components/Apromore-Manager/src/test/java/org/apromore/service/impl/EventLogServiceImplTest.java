@@ -22,8 +22,37 @@
 
 package org.apromore.service.impl;
 
+import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
+import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
+
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.*;
+import org.apromore.dao.DashboardLayoutRepository;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
@@ -33,7 +62,12 @@ import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XAttributable;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
@@ -47,23 +81,6 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
-import static org.easymock.EasyMock.expect;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.*;
 
 public class EventLogServiceImplTest {
 

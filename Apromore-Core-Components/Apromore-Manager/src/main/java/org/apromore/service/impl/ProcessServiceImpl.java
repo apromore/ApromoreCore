@@ -67,7 +67,6 @@ import org.apromore.graph.canonical.Canonical;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
-import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
@@ -104,9 +103,6 @@ public class ProcessServiceImpl implements ProcessService {
     private FormatService formatSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
-
-    @javax.annotation.Resource
-    private Set<ProcessPlugin> processPlugins;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -194,8 +190,6 @@ public class ProcessServiceImpl implements ProcessService {
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
-            notifyProcessPlugins(pmv);  // Notify process plugin providers
-
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
@@ -205,30 +199,6 @@ public class ProcessServiceImpl implements ProcessService {
         return pmv;
     }
 
-    /**
-     * Call the {@link ProcessPlugin#processChanged} method of each of the {@link #processPlugins}.
-     *
-     * Checked exceptions from the plugins are logged, but otherwise disregarded.
-     *
-     * @param pmv  the changed process model version
-     */
-    private void notifyProcessPlugins(ProcessModelVersion pmv) {
-        LOGGER.debug("Notifying " + processPlugins.size() + " process plugins of change in " + pmv);
-        for (ProcessPlugin processPlugin: processPlugins) {
-            LOGGER.info("Notifying process plugin " + processPlugin);
-            try {
-                int id = pmv.getProcessBranch().getProcess().getId();
-                String branch = pmv.getProcessBranch().getBranchName();
-                Version version = new Version(pmv.getVersionNumber());
-                processPlugin.processChanged(id, branch, version);
-            } catch (ProcessPlugin.ProcessChangedException e) {
-                LOGGER.warn("Process plugin " + processPlugin + " failed to change process", e);
-            } catch (Throwable e) {
-                LOGGER.error("Failed to notify process plugin", e);
-            }
-        }
-    }
-    
     /**
      * Update an existing process model version
      */
@@ -257,7 +227,6 @@ public class ProcessServiceImpl implements ProcessService {
                     pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
                     pmv.getNativeDocument().setLastUpdateDate(now);
                     processModelVersionRepo.save(pmv);
-                    notifyProcessPlugins(pmv); 
                     LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                     return pmv;
 
@@ -314,7 +283,6 @@ public class ProcessServiceImpl implements ProcessService {
                     else {
                         pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null, null);
                         formatSrv.storeNative(processName, pmv, now, now, user, nativeType, newVersion.toString(), nativeStream);
-                        notifyProcessPlugins(pmv); 
                         LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                         return pmv;
                     }
@@ -368,7 +336,6 @@ public class ProcessServiceImpl implements ProcessService {
 
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
-            // Work out if we are looking at the original format or native format for this model.
             if (isRequestForNativeFormat(processId, branch, version, format)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(
                         nativeRepo.getNative(processId, branch, version.toString(), format).getContent(), "text/xml")));
@@ -499,7 +466,6 @@ public class ProcessServiceImpl implements ProcessService {
                     throw new UpdateProcessException("Unable to modify " + process.getName(), e);
                 }
 
-                notifyProcessPlugins(pvid);
             }
         }
     }

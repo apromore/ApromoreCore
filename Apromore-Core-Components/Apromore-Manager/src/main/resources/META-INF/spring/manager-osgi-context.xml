@@ -33,11 +33,6 @@
 
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
     <osgi:reference id="apmLogService" interface="org.apromore.apmlog.APMLogService"/>
-    <osgi:set id="processPlugins" interface="org.apromore.plugin.process.ProcessPlugin" availability="optional">
-        <osgi:reference-listener bind-method="onProcessPluginBind" unbind-method="onProcessPluginUnbind">
-            <beans:bean class="org.apromore.service.impl.ProcessPluginListener"/>
-        </osgi:reference-listener>
-    </osgi:set>
 
     <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
     <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>

@@ -24,18 +24,24 @@
 
 package org.apromore.service.impl;
 
-import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import javax.activation.DataHandler;
+
+import org.apromore.TestData;
 import org.apromore.common.ConfigBean;
+import org.apromore.common.Constants;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
@@ -49,133 +55,204 @@ import org.apromore.service.LockService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.easymock.EasyMockSupport;
+import org.eclipse.persistence.internal.oxm.ByteArrayDataSource;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-/**
- * Unit test the UserService Implementation.
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
- */
-public class ProcessServiceImplUnitTest {
+import com.google.common.io.CharStreams;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+import junit.framework.Assert;
+
+public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
     private ProcessServiceImpl service;
+    private UserService usrSrv;
+    private FormatService fmtSrv;
+    private UserInterfaceHelper ui;
+    private WorkspaceService workspaceSrv;
+    private LockService lockSrv;
+    private ConfigBean config;
 
-    private NativeRepository natDao;
-    private ProcessModelVersionRepository pmvDao;
+    private ProcessRepository processRepo;
+    private NativeRepository nativeRepo;
+    private ProcessModelVersionRepository processModelVersionRepo;
+    private ProcessBranchRepository processBranchRepo;
+    private GroupRepository groupRepo;
+    private GroupProcessRepository groupProcessRepo;
 
     @Before
     public final void setUp() throws Exception {
-        natDao = createMock(NativeRepository.class);
-        GroupRepository grpDao = createMock(GroupRepository.class);
-        GroupProcessRepository grpProcDao = createMock(GroupProcessRepository.class);
-        ProcessBranchRepository branchDao = createMock(ProcessBranchRepository.class);
-        ProcessRepository proDao = createMock(ProcessRepository.class);
-        pmvDao = createMock(ProcessModelVersionRepository.class);
-        UserService usrSrv = createMock(UserService.class);
-        FormatService fmtSrv = createMock(FormatService.class);
-        LockService lSrv = createMock(LockService.class);
-        UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
-        WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
-        ConfigBean config = new ConfigBean();
+        //nativeRepo = createMock(NativeRepository.class);
+        groupRepo = createMock(GroupRepository.class);
+        groupProcessRepo = createMock(GroupProcessRepository.class);
+        processBranchRepo = createMock(ProcessBranchRepository.class);
+        processRepo = createMock(ProcessRepository.class);
+        processModelVersionRepo = createMock(ProcessModelVersionRepository.class);
+        nativeRepo = createMock(NativeRepository.class);
+        usrSrv = createMock(UserService.class);
+        fmtSrv = createMock(FormatService.class);
+        ui = createMock(UserInterfaceHelper.class);
+        workspaceSrv = createMock(WorkspaceService.class);
+        lockSrv = createMock(LockService.class);
+        config = new ConfigBean();
 
-        service = new ProcessServiceImpl(natDao, grpDao, branchDao, proDao, pmvDao, grpProcDao, lSrv, usrSrv, fmtSrv, ui, workspaceSrv, config);
+        service = new ProcessServiceImpl(nativeRepo, groupRepo, processBranchRepo, processRepo, processModelVersionRepo, groupProcessRepo, lockSrv, 
+                                        usrSrv, fmtSrv, ui, workspaceSrv, config);
+    }
+    
+    @Test
+    public void testImportProcess_createNew() throws Exception {
+        //Test data setup
+        Folder folder = createFolder();
+        User user = createUser();
+        Version version = createVersion();
+        NativeType nativeType = createNativeType();
+        Native nativeDoc = createNative(nativeType);
+        
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv = createPMV(branch, nativeDoc, version);
+
+        //Parameter setup
+        String userName = user.getUsername();
+        String createDate = pmv.getCreateDate();
+        String lastUpdateDate = pmv.getLastUpdateDate();
+        String processName = process.getName();
+        String domainName = process.getDomain();
+        InputStream nativeStream = (new DataHandler(new ByteArrayDataSource(nativeDoc.getContent().getBytes(), "text/xml")))
+                                    .getInputStream();
+        String nativeTypeS = nativeType.getNatType();
+        Integer folderId = folder.getId();
+        
+        
+        //MOCK RECORDING
+        
+        //Insert process
+        expect(usrSrv.findUserByLogin(userName)).andReturn(user);
+        expect(fmtSrv.findNativeType(nativeTypeS)).andReturn(nativeType);
+        expect(workspaceSrv.getFolder((Integer) anyObject())).andReturn(folder);
+        expect(processRepo.save((Process) anyObject())).andReturn(process);
+        expect(processRepo.saveAndFlush((Process) anyObject())).andReturn(process);
+        
+        //Insert branch
+        expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch);
+        
+        //Insert process model version
+        expect(processModelVersionRepo.save((ProcessModelVersion) anyObject())).andReturn(pmv);
+        
+        //Store native
+        //expect(nativeRepo.save((Native) anyObject())).andReturn(createMock(Native.class));
+        fmtSrv.storeNative(processName, pmv, createDate, lastUpdateDate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
+        
+        workspaceSrv.addProcessToFolder(process.getId(), folder.getId());
+
+        replayAll();
+
+        // MOCK CALL AND VERIFY
+        ProcessModelVersion pmvResult = service.importProcess(userName, folderId, processName, version, nativeType.getNatType(), 
+                                                nativeStream, domainName, "", createDate, lastUpdateDate, false);
+        verifyAll();
+
+        // VERIFY RESULT AGAINST TEST DATA
+        Assert.assertEquals(pmvResult.getProcessBranch().getProcess().getName(), pmv.getProcessBranch().getProcess().getName());
+        Assert.assertEquals(pmvResult.getProcessBranch().getBranchName(), pmv.getProcessBranch().getBranchName());        
+        Assert.assertEquals(pmvResult.getNativeType().getNatType(), pmv.getNativeType().getNatType());
+        Assert.assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
+        Assert.assertEquals(pmvResult.getNativeDocument().getContent(), pmv.getNativeDocument().getContent());
+        Assert.assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
+        Assert.assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
     }
 
     @Test
-    public void testExportFormatGetAnnotation() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "processName";
-        String format = "EPML 2.0";
-        String subStr = "MN";
-        Version versionNumber = new Version(1,0);
+    public void testExportFormat() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        User user = createUser();
+        Version version = createVersion();
+        NativeType nativeType = createNativeType();
+        Native nativeDoc = createNative(nativeType);
+        
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv = createPMV(branch, nativeDoc, version);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String processName = process.getName();
+        String branchName = branch.getBranchName();
+        String versionNumber = version.toString();
+        String nativeTypeS = nativeType.getNatType();
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber)).andReturn(pmv);
+        expect(nativeRepo.getNative(processId, branchName, versionNumber, nativeTypeS)).andReturn(nativeDoc);
+        
+        // Mock call and verify
+        replayAll();
+        ExportFormatResultType exportResult = service.exportProcess(processName, processId, branchName, version, nativeTypeS);
+        verifyAll();
 
-        NativeType natType = new NativeType();
-        natType.setNatType("EPML 2.0");
-
-        Native nat = new Native();
-        nat.setContent("<xml/>");
-
-        org.apromore.dao.model.Process process = new org.apromore.dao.model.Process();
-        process.setId(processId);
-        process.setNativeType(natType);
-
-        ProcessBranch branch = new ProcessBranch();
-        branch.setId(processId);
-        branch.setBranchName(name);
-        branch.setProcess(process);
-
-        ProcessModelVersion pmv = new ProcessModelVersion();
-        pmv.setId(processId);
-        pmv.setNativeType(natType);
-        pmv.setProcessBranch(branch);
-
-        expect(pmvDao.getProcessModelVersion(processId, version, versionNumber.toString())).andReturn(pmv);
-        expect(natDao.getNative(processId, version, versionNumber.toString(), format)).andReturn(nat);
-
-        replay(pmvDao, natDao);
-
-        ExportFormatResultType data = service.exportProcess(name, processId, version, versionNumber, format);
-
-        verify(pmvDao, natDao);
-
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
+        // Verify result against test data
+        String exportResultText = CharStreams.toString(new InputStreamReader(exportResult.getNative().getInputStream()));
+        Assert.assertEquals(nativeDoc.getContent(), exportResultText);
     }
 
-    @Test
-    public void testImportProcess() throws Exception {
-        String username = "bubba";
-        String processName = "TestProcess";
-        String cpfURI = "112321234";
-        String version = "1.2";
-        String natType = "XPDL 2.1";
-        String domain = "Airport";
-        String created = "12/12/2011";
-        String lastUpdate = "12/12/2011";
-
-//        DataHandler stream = new DataHandler(new ByteArrayDataSource(TestData.XPDL.getBytes(), "text/xml"));
-//        User user = new User();
-//        user.setUsername(username);
-//
-//        NativeType nativeType = new NativeType();
-//        nativeType.setNatType(natType);
-//
-//        expect(usrSrv.findUser(username)).andReturn(user);
-//        expect(fmtSrv.findNativeType(natType)).andReturn(nativeType);
-//        proDao.save((Process) anyObject());
-//        expectLastCall().atLeastOnce();
-//        canDao.save((Canonical) anyObject());
-//        expectLastCall().atLeastOnce();
-//        natDao.save((Native) anyObject());
-//        expectLastCall().atLeastOnce();
-//        annDao.save((Annotation) anyObject());
-//        expectLastCall().atLeastOnce();
-//
-//        replayAll();
-//
-//        ProcessSummaryType procSum = service.importProcess(username, processName, cpfURI, version, natType, stream, domain, "", created, lastUpdate);
-//
-//        verifyAll();
-//
-//        assertThat(procSum, notNullValue());
-    }
-
-
-    private Process createProcess() {
+    private Process createProcess(User user, NativeType natType, Folder folder) {
         Process process = new Process();
-        //process.setProcessId(1234);
+        process.setId(1234);
+        process.setFolder(folder);
+        process.setCreateDate("1.1.2020");
         process.setDomain("domain");
-        process.setName("name");
-        process.setUser(createUser());
-        process.setNativeType(createNativeType());
+        process.setName("ProcessName");
+        process.setUser(user);
+        process.setNativeType(natType);
         return process;
+    }
+    
+    private ProcessBranch createBranch(Process process) {
+        ProcessBranch branch = new ProcessBranch();
+        branch.setId(1234);
+        branch.setBranchName("BranchName");
+        branch.setProcess(process);
+        branch.setCreateDate("1.1.2020");
+        branch.setLastUpdateDate("1.1.2020");
+        return branch;
+    }
+    
+    private ProcessModelVersion createPMV(ProcessBranch branch, Native nativeDoc, Version version) {
+        ProcessModelVersion pmv = new ProcessModelVersion();
+        pmv.setId(123);
+        pmv.setCreateDate("1.1.2020");
+        pmv.setLastUpdateDate("1.1.2020");
+        pmv.setProcessBranch(branch);
+        pmv.setLastUpdateDate("");
+        pmv.setNativeType(nativeDoc.getNativeType());
+        pmv.setNativeDocument(nativeDoc);
+        pmv.setVersionNumber(version.toString());
+        pmv.setOriginalId("123");
+        pmv.setNumEdges(0);
+        pmv.setNumVertices(0);
+        return pmv;
+    }
+    
+    private Folder createFolder() {
+        Folder folder = new Folder();
+        folder.setId(0);
+        return folder;
+    }
+    
+    private Version createVersion() {
+        Version version = new Version("1.0.0");
+        return version;
+    }
+    
+    private Native createNative(NativeType nativeType) {
+        Native nat = new Native();
+        nat.setNativeType(nativeType);
+        nat.setContent(TestData.XPDL);
+        nat.setLastUpdateDate("1.1.2020");
+        return nat;
     }
 
     private NativeType createNativeType() {
@@ -187,19 +264,11 @@ public class ProcessServiceImplUnitTest {
 
     private User createUser() {
         User usr = new User();
-//        usr.setFirstname("first");
-//        usr.setLastname("last");
-//        usr.setEmail("fl@domain.com");
-//        usr.setUsername("user");
-//        usr.setPasswd("pass");
+        usr.setFirstName("first");
+        usr.setLastName("last");
+        usr.setUsername("user");
         return usr;
     }
 
-    private Native createNative() {
-        Native nat = new Native();
-        //nat.setUri(1234);
-        nat.setNativeType(createNativeType());
-        return nat;
-    }
 
 }

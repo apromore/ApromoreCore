@@ -45,11 +45,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Unit test the UserService Implementation.
- *
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
- */
 @Ignore
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
@@ -82,62 +77,6 @@ public class ExportProcessServiceImplIntgTest {
 
         ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), version, epmlNativeType);
         DataHandler endStream = result.getNative();
-
-//        assertThat(startCPT.getNet().size(), equalTo(endCPT.getNet().size()));
-//        assertThat(startCPT.getResourceType().size(), equalTo(endCPT.getResourceType().size()));
-//        assertThat(startCPT.getNet().get(0).getNode().size(), equalTo(endCPT.getNet().get(0).getNode().size()));
-//        assertThat(startCPT.getNet().get(0).getEdge().size(), equalTo(endCPT.getNet().get(0).getEdge().size()));
-//        assertThat(startCPT.getNet().get(0).getObject().size(), equalTo(endCPT.getNet().get(0).getObject().size()));
-
-        LOGGER.debug(StreamUtil.convertStreamToString(endStream));
-    }
-
-    @Test
-    public void testExportProcessWithJoinAndSplitInEPML() throws Exception {
-        String name = "Test EPML 2";
-
-        DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
-//        CanonisedProcess startCP = cSrv.canonise(epmlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, epmlNativeType, startStream.getInputStream(), domain, "", created, lastUpdate, true);
-
-        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), version, epmlNativeType);
-        DataHandler endStream = result.getNative();
-//        CanonisedProcess endCP = cSrv.canonise(epmlNativeType, endStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-
-//        CanonicalProcessType startCPT = startCP.getCpt();
-//        CanonicalProcessType endCPT = endCP.getCpt();
-//        assertThat(startCPT.getNet().size(), equalTo(endCPT.getNet().size()));
-//        assertThat(startCPT.getResourceType().size(), equalTo(endCPT.getResourceType().size()));
-//        assertThat(startCPT.getNet().get(0).getNode().size(), equalTo(endCPT.getNet().get(0).getNode().size()));
-//        assertThat(startCPT.getNet().get(0).getEdge().size(), equalTo(endCPT.getNet().get(0).getEdge().size()));
-//        assertThat(startCPT.getNet().get(0).getObject().size(), equalTo(endCPT.getNet().get(0).getObject().size()));
-
-        LOGGER.debug(StreamUtil.convertStreamToString(endStream));
-    }
-
-    @Test
-    public void testExportProcessWithObjectsResourcesInXPDL() throws Exception {
-        String name = "Test XPDL 3";
-
-        DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
-        String xpdlNativeType = "XPDL 2.2";
-//        CanonisedProcess startCP = cSrv.canonise(xpdlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, xpdlNativeType, startStream.getInputStream(), domain, "", created, lastUpdate, true);
-
-        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), version, xpdlNativeType);
-        DataHandler endStream = result.getNative();
-
-        // TODO: De-canonisations doesn't produce the same as input.
-
-//        CanonisedProcess endCP = cSrv.canonise(xpdlNativeType, endStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-//        CanonicalProcessType startCPT = startCP.getCpt();
-//        CanonicalProcessType endCPT = endCP.getCpt();
-//        assertThat(startCPT.getNet().size(), equalTo(endCPT.getNet().size()));
-//        assertThat(startCPT.getResourceType().size(), equalTo(endCPT.getResourceType().size()));
-//        assertThat(startCPT.getNet().get(0).getNode().size(), equalTo(endCPT.getNet().get(0).getNode().size()));
-//        assertThat(startCPT.getNet().get(0).getEdge().size(), equalTo(endCPT.getNet().get(0).getEdge().size()));
-//        assertThat(startCPT.getNet().get(0).getObject().size(), equalTo(endCPT.getNet().get(0).getObject().size()));
-
         LOGGER.debug(StreamUtil.convertStreamToString(endStream));
     }
 
