@@ -55,6 +55,10 @@
 
                             *
                         </Import-Package>
+                        <DynamicImport-Package>
+                            org.apromore.plugin.portal.*,
+                            zul.*
+                        </DynamicImport-Package>                        
                         <Export-Package>
                             org.zkoss.*,
                             org.apromore.zk
