@@ -19,8 +19,12 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<window width="50%" position="center" title="Create User" apply="org.apromore.plugin.portal.useradmin.CreateUserController">
+<window width="40%" position="center" title="Create User" apply="org.apromore.plugin.portal.useradmin.CreateUserController">
     <grid>
+        <columns>
+                <column hflex="1"/>
+                <column hflex="2"/>
+        </columns>
         <rows>
             <row>
                 <label value="Username"/>
@@ -39,7 +43,7 @@
             </row>
             <row>
                 <label value="Password"/>
-                <textbox id="passwordTextbox" placeholder="Enter password"/>
+                <textbox id="passwordTextbox" placeholder="Enter password" type="password"/>
             </row>
         </rows>
     </grid>
