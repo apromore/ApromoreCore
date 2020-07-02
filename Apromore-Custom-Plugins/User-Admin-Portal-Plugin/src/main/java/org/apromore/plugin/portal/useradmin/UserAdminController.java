@@ -64,6 +64,7 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
+    User selectedUser;
     ListModelList<Group> groupsModel;
     ListModelList<Role> rolesModel;
 
@@ -81,38 +82,47 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Wire("#dateCreatedDatebox")  Datebox  dateCreatedDatebox;
     @Wire("#lastActivityDatebox") Datebox  lastActivityDatebox;
 
+    /**
+     * Test whether the current user has a permission.
+     *
+     * @param permission  any permission
+     * @return whether the authenticated user has the <var>permission</var>
+     */
+    private boolean hasPermission(Permissions permission) {
+        return securityService.hasAccess(portalContext.getCurrentUser().getId(), permission.getRowGuid());
+    }
+
     @Override
     public void doFinally() throws Exception {
         super.doFinally();
 
         ListModelList<User> usersModel = new ListModelList<>(securityService.getAllUsers(), false);
-        String userId = portalContext.getCurrentUser().getId();
 
-        boolean canViewUsers = securityService.hasAccess(userId, Permissions.VIEW_USERS.getRowGuid());
+        boolean canViewUsers = hasPermission(Permissions.VIEW_USERS);
         usersCombobox.setButtonVisible(canViewUsers);
         usersCombobox.setDisabled(!canViewUsers);
         usersCombobox.setModel(usersModel);
         usersCombobox.setReadonly(!canViewUsers);
-        usersCombobox.setValue(portalContext.getCurrentUser().getUsername());
 
-        boolean canEditUsers = securityService.hasAccess(userId, Permissions.EDIT_USERS.getRowGuid());
+        boolean canEditUsers = hasPermission(Permissions.EDIT_USERS);
         firstNameTextbox.setReadonly(!canEditUsers);
         lastNameTextbox.setReadonly(!canEditUsers);
 
-        boolean canEditGroups = securityService.hasAccess(userId, Permissions.EDIT_GROUPS.getRowGuid());
+        boolean canEditGroups = hasPermission(Permissions.EDIT_GROUPS);
         newGroupButton.setVisible(canEditGroups);
         groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
         groupsModel.setMultiple(true);
         groupsListbox.setModel(groupsModel);
         groupsListbox.setNonselectableTags(canEditGroups ? null : "*");
 
-        boolean canEditRoles = securityService.hasAccess(userId, Permissions.EDIT_ROLES.getRowGuid());
+        boolean canEditRoles = hasPermission(Permissions.EDIT_ROLES);
         rolesModel = new ListModelList<>(securityService.getAllRoles(), false);
         rolesModel.setMultiple(true);
         rolesListbox.setModel(rolesModel);
         rolesListbox.setNonselectableTags(canEditRoles ? null : "*");
 
-        setUser(usersCombobox.getValue());
+        selectedUser = securityService.getUserByName(portalContext.getCurrentUser().getUsername());
+        setUser(selectedUser);
 
         // Register ZK event handler
         EventQueue securityEventQueue = EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true);
@@ -128,28 +138,25 @@ public class UserAdminController extends SelectorComposer<Window> {
                     if (((String) properties.get("type")).endsWith("_USER")) {
                         ListModelList<User> usersModel = new ListModelList<>(securityService.getAllUsers(), false);
                         usersCombobox.setModel(usersModel);
-                        usersCombobox.setValue(portalContext.getCurrentUser().getUsername());
+                        usersCombobox.setValue(selectedUser.getUsername());
                     }
 
                     // Skip this update if it doesn't apply to the currently displayed user
                     String eventUserName = (String) properties.get("user.name");
-                    String userName = usersCombobox.getValue();
-                    if (eventUserName != null && !eventUserName.equals(userName)) {
+                    if (eventUserName != null && !eventUserName.equals(selectedUser.getUsername())) {
                         return;
                     }
 
-                    User user = securityService.getUserByName(userName);
-
                     // Update the user panel
                     if ("UPDATE_USER".equals(properties.get("type"))) {
-                        setUser(userName);
+                        setUser(selectedUser);
                     }
 
                     // Update the group listbox
                     groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
                     groupsModel.setMultiple(true);
-                    if (user != null) {
-                        groupsModel.setSelection(securityService.findGroupsByUser(user));
+                    if (selectedUser != null) {
+                        groupsModel.setSelection(securityService.findGroupsByUser(selectedUser));
                     }
                     groupsListbox.setModel(groupsModel);
                 }
@@ -176,23 +183,8 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
     }
 
-    @Listen("onChange = #usersCombobox")
-    public void onChangeUsersCombobox() throws Exception {
-        boolean canViewUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.VIEW_USERS.getRowGuid());
-        if (!canViewUsers) {
-            throw new Exception("Cannot view users without permission");
-        }
-
-        setUser(usersCombobox.getValue());
-    }
-
-    private void setUser(final String username) {
-        User user = securityService.getUserByName(username);
-        if (user == null) {
-            // TODO: should clear existing fields
-            return;
-        }
-
+    private void setUser(final User user) {
+        usersCombobox.setValue(user.getUsername());
         firstNameTextbox.setValue(user.getFirstName());
         lastNameTextbox.setValue(user.getLastName());
         dateCreatedDatebox.setValue(user.getDateCreated());
@@ -202,34 +194,39 @@ public class UserAdminController extends SelectorComposer<Window> {
         rolesModel.setSelection(securityService.findRolesByUser(user));
     }
 
+    @Listen("onChange = #usersCombobox")
+    public void onChangeUsersCombobox() throws Exception {
+        if (!hasPermission(Permissions.VIEW_USERS)) {
+            throw new Exception("Cannot view users without permission");
+        }
+
+        selectedUser = securityService.getUserByName(usersCombobox.getValue());
+        setUser(selectedUser);
+    }
+
     @Listen("onOK = #firstNameTextbox")
     public void onOKFirstNameTextbox(KeyEvent event) throws Exception {
-        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
-        if (!canEditUsers) {
+        if (!hasPermission(Permissions.EDIT_USERS)) {
             throw new Exception("Cannot edit users without permission");
         }
 
-        User user = securityService.getUserByName(portalContext.getCurrentUser().getUsername());
-        user.setFirstName(firstNameTextbox.getValue());
-        securityService.updateUser(user);
+        selectedUser.setFirstName(firstNameTextbox.getValue());
+        securityService.updateUser(selectedUser);
     }
 
     @Listen("onOK = #lastNameTextbox")
     public void onOKLastNameTextbox(KeyEvent event) throws Exception {
-        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
-        if (!canEditUsers) {
+        if (!hasPermission(Permissions.EDIT_USERS)) {
             throw new Exception("Cannot edit users without permission");
         }
 
-        User user = securityService.getUserByName(portalContext.getCurrentUser().getUsername());
-        user.setLastName(lastNameTextbox.getValue());
-        securityService.updateUser(user);
+        selectedUser.setLastName(lastNameTextbox.getValue());
+        securityService.updateUser(selectedUser);
     }
 
     @Listen("onOK = #groupsListbox")
     public void onOKGroupsListbox(KeyEvent event) throws Exception {
-        boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
-        if (!canEditGroups) {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
             throw new Exception("Cannot edit groups without permission");
         }
 
@@ -247,32 +244,29 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Listen("onSelect = #groupsListbox")
     public void onSelectGroupsListbox(SelectEvent event) throws Exception {
-        boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
-        if (!canEditGroups) {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            groupsListbox.setSelectedItems(event.getPreviousSelectedItems());
             throw new Exception("Cannot edit groups without permission");
         }
 
-        User user = securityService.getUserByName(usersCombobox.getValue());
-        user.setGroups(event.getSelectedObjects());
-        securityService.updateUser(user);
+        selectedUser.setGroups(event.getSelectedObjects());
+        securityService.updateUser(selectedUser);
     }
 
     @Listen("onSelect = #rolesListbox")
     public void onSelectRolesListbox(SelectEvent event) throws Exception {
-        boolean canEditRoles = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_ROLES.getRowGuid());
-        if (!canEditRoles) {
+        if (!hasPermission(Permissions.EDIT_ROLES)) {
+            rolesListbox.setSelectedItems(event.getPreviousSelectedItems());
             throw new Exception("Cannot edit roles without permission");
         }
 
-        User user = securityService.getUserByName(usersCombobox.getValue());
-        user.setRoles(event.getSelectedObjects());
-        securityService.updateUser(user);
+        selectedUser.setRoles(event.getSelectedObjects());
+        securityService.updateUser(selectedUser);
     }
 
     @Listen("onClick = #newGroupButton")
     public void onClickNewGroupButton() throws Exception {
-        boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
-        if (!canEditGroups) {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
             throw new Exception("Cannot edit groups without permission");
         }
 
@@ -291,8 +285,7 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Listen("onClick = #newUserButton")
     public void onClickNewUserButton() throws Exception {
-        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
-        if (!canEditUsers) {
+        if (!hasPermission(Permissions.EDIT_USERS)) {
             throw new Exception("Cannot edit users without permission");
         }
 
@@ -311,14 +304,20 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Listen("onClick = #deleteUserButton")
     public void onClickDeleteUserButton() throws Exception {
-        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
-        if (!canEditUsers) {
+        if (!hasPermission(Permissions.EDIT_USERS)) {
             throw new Exception("Cannot edit users without permission");
         }
 
-        User selectedUser = securityService.getUserByName(usersCombobox.getValue());
+        if (selectedUser.getUsername().equals(portalContext.getCurrentUser().getUsername())) {
+            throw new Exception("Cannot delete yourself");
+        }
+
         LOGGER.info("Deleting user " + selectedUser.getUsername());
         securityService.deleteUser(selectedUser);
+
+        // Since we just deleted the selected user, select the current user instead
+        selectedUser = securityService.getUserByName(portalContext.getCurrentUser().getUsername());
+        setUser(selectedUser);
     }
 
     @Listen("onClick = #okButton")
