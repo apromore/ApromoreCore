@@ -31,6 +31,10 @@ public interface DashboardLayoutRepository extends JpaRepository<DashboardLayout
         DashboardLayoutRepositoryCustom{
 
     @Query("SELECT d.layout FROM DashboardLayout d WHERE d.userId = ?1 AND d.logId = ?2")
-    String findByUserIdAndLogId(Integer userId, Integer logId);
+    String findByUserIdAndLogId(String userId, Integer logId);
+
+    //TODO fix how to get latest one?
+    @Query("SELECT DISTINCT d.layout FROM DashboardLayout d WHERE d.userId = ?1")
+    String findByUserId(String userId);
 
 }

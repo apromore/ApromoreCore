@@ -353,6 +353,7 @@ public class ImportController extends BaseController {
         // Check whether any of the pluggable file importers can handle this file
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
+                //TODO isMatchedMapping NOT HERE, separate concern
                 fileImporterPlugin.importFile(importedMedia, isPublicCheckbox.isChecked());
                 return;
             }

@@ -148,7 +148,9 @@ public interface EventLogService {
      * @param userId
      * @return
      */
-    String getLayoutByLogId(Integer logId, Integer userId);
+    String getLayoutByLogId(Integer logId, String userId);
 
-    void saveLayoutByLogId(Integer logId, Integer userId, String layout);
+    String getLayoutByUserId(String userId);
+
+    void saveLayoutByLogId(Integer logId, String userId, String layout);
 }

@@ -614,13 +614,21 @@ public class EventLogServiceImpl implements EventLogService {
         return logRepo.getAggregatedLog(log);
     }
 
-    public String getLayoutByLogId(Integer userId, Integer logId) {
-        //TODO
+    @Override
+    public String getLayoutByLogId(Integer logId, String userId) {
         String layout = dashboardLayoutRepository.findByUserIdAndLogId(userId, logId);
         return layout;
     }
 
-    public void saveLayoutByLogId(Integer logId, Integer userId, String layout){
+    @Override
+    public String getLayoutByUserId(String userId) {
+        String layout = dashboardLayoutRepository.findByUserId(userId);
+        return layout;
+    }
+
+
+    @Override
+    public void saveLayoutByLogId(Integer logId, String userId, String layout){
         dashboardLayoutRepository.saveLayoutByLogId(userId, logId, layout);
     }
 

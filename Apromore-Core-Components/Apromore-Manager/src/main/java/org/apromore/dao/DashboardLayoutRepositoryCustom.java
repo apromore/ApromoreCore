@@ -23,6 +23,6 @@ package org.apromore.dao;
 
 public interface DashboardLayoutRepositoryCustom {
 
-    void saveLayoutByLogId(Integer userId, Integer logId, String layout);
+    void saveLayoutByLogId(String userId, Integer logId, String layout);
 
 }

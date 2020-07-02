@@ -53,6 +53,8 @@ import org.apromore.service.csvimporter.LogSample;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.JSONValue;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
@@ -98,6 +100,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     // Fields injected from the ZK execution
     private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
     private Media media = (Media) Executions.getCurrent().getArg().get("media");
+    private LogSample retrivedSample = (LogSample) Executions.getCurrent().getArg().get("sample");
 
     // Fields injected from the ZK session
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
@@ -140,13 +143,16 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
                     //TODO:
 
+                    //Attempt 2
+                    Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
+                            "/matchedMapping.zul", null, null);
+                    matchedMappingPopUp.doModal();
+
                     setUpUI();
                     toXESButton.setDisabled(false);
                     toPublicXESButton.setDisabled(false);
                     matchedMapping.setDisabled(false);
 
-                    //Attempt 2
-                    handleMatchedMapping();
 
                 }
             }
@@ -163,7 +169,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
                 "/matchedMapping.zul", null, null);
         matchedMappingPopUp.doModal();
-
     }
 
     @Listen("onClick = #cancelButton")
@@ -211,6 +216,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK, Messagebox.ERROR);
         } else {
             try {
+                //TODO: persist mapping
+                storeMappingAsJSON(media, sample);
+
                 CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
                 if (reader != null) {
                     LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
@@ -227,6 +235,19 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 e.printStackTrace();
             }
         }
+    }
+
+    private String storeMappingAsJSON(Media media, LogSample logSample) {
+
+        JSONObject jsonData;
+        String userId = portalContext.getCurrentUser().getId();
+
+        String sampleJSON = JSONValue.toJSONString(logSample);
+        //TODO: fix logId
+        eventLogService.saveLayoutByLogId(90, userId, sampleJSON);
+
+
+        return null;
     }
 
     public ResourceBundle getLabels() {

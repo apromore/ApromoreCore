@@ -23,24 +23,30 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
+import org.apromore.plugin.portal.FileImporterPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
+import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Window;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.apromore.plugin.portal.FileImporterPlugin;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zul.Window;
 
 public class CSVFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVFileImporterPlugin.class);
+
+    // Fields injected from Spring beans/OSGi services
+//    private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
+    @Inject private EventLogService eventLogService;
 
     private CSVImporterLogic csvImporterLogic;
 
@@ -57,10 +63,63 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
     @Override
     public void importFile(Media media, boolean isLogPublic) {
 
-        // Configure the arguments to pass to the CSV importer view
-        Map arg = new HashMap<>();
-        arg.put("csvImporterLogic", csvImporterLogic);
-        arg.put("media", media);
+        //TODO: find matches mapping
+
+//        LogSample sample = null;
+////
+//        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+//
+//        String userId = portalContext.getCurrentUser().getId();
+//
+//        String mappingJSON = eventLogService.getLayoutByUserId(userId);
+//
+//        Map arg = new HashMap<>();
+//
+//        if (mappingJSON != null) {
+//
+//            sample = (LogSample) JSONValue.parse(mappingJSON);
+//            List<String> sampleHeader = sample.getHeader();
+//
+//            List<String> header = new ArrayList<>();
+//
+//            String fileEncoding = "UTF-8";
+//            CSVFileReader csvFileReader = new CSVFileReader();
+//            CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
+//            try {
+//                header = Arrays.asList(csvReader.readNext());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            // Configure the arguments to pass to the CSV importer view
+//
+//            arg.put("csvImporterLogic", csvImporterLogic);
+//            arg.put("media", media);
+//            arg.put("sample", sample);
+//
+//            if(sampleHeader != null && sampleHeader.equals(header)) {
+//
+//                // Attempt 1: try to create a popup window on top of csvImporter window here.
+//                try {
+////                    Window matchedMappingPopUp =
+////                            (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
+////                            "/matchedMapping.zul", null, null);
+////                    matchedMappingPopUp.doModal();
+//
+//                    // Create a CSV importer view
+//                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "/org/apromore/plugin/portal/csvimporter/csvimporter.zul", null, arg);
+//                    window.doModal();
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//            }
+
+//        }
+
+
 
         //TODO: create a dialog to provide options to user: “An existing mapping is applicable to this log. Would you
         // like to use it?” and shows an example with the first 5 rows as a table inside the window.
@@ -69,16 +128,18 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
         // 3. No -> Import as a new process -> go to importer view and load guessed mapping
 
         // Create a CSV importer view
+
+        Map arg = new HashMap<>();
+
+        arg.put("csvImporterLogic", csvImporterLogic);
+        arg.put("media", media);
+
         String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
-        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         try {
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
             window.doModal();
 
-            // Attempt 1: try to create a popup window on top of csvImporter window here.
-            Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
-                    "/matchedMapping.zul", window, null);
-            matchedMappingPopUp.doModal();
 
         } catch (IOException e) {
             LOGGER.error("Unable to create window", e);

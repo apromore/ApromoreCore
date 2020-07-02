@@ -410,13 +410,13 @@ public class EventLogServiceImplTest {
 
     @Test
     public void getLayoutByLogId() {
-        Integer userId = 1;
+        String userId = "75f4a46a-bd32-4fbb-ba7a-c50d06414fac";
         Integer logId = 1;
         String reallyLongString = "a really long String";
         expect(dashboardLayoutRepository.findByUserIdAndLogId(userId, logId)).andReturn(reallyLongString);
         replay(dashboardLayoutRepository);
 
-        String result = eventLogService.getLayoutByLogId(userId, logId);
+        String result = eventLogService.getLayoutByLogId(logId, userId);
         verify(dashboardLayoutRepository);
         assertThat(result, equalTo(reallyLongString));
     }

@@ -40,7 +40,7 @@ public class DashboardLayoutRepositoryCustomImpl implements org.apromore.dao.Das
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public void saveLayoutByLogId(Integer userId, Integer logId, String layout) {
+    public void saveLayoutByLogId(String userId, Integer logId, String layout) {
 
         if (null != userId && null != logId) {
             String sql = "INSERT INTO dashboard_layout (userId, logId, layout) VALUES (?,?,?)";

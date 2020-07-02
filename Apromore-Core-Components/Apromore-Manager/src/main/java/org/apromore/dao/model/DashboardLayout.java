@@ -42,7 +42,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class DashboardLayout implements Serializable {
 
   private Integer id;
-  private Integer userId;
+  private String userId;
   private Integer logId;
   private String layout;
 
@@ -63,11 +63,11 @@ public class DashboardLayout implements Serializable {
   }
 
   @Column(name = "userId")
-  public Integer getUserId() {
+  public String getUserId() {
     return userId;
   }
 
-  public void setUserId(Integer userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
 
