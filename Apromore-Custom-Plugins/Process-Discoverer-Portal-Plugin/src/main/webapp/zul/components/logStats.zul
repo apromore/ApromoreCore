@@ -112,6 +112,7 @@
           </button>
           <label sclass="title"
                  id="perspectiveSelected"
+                 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                  value="Activities" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabAttribute')" >
           </label>
         </n:div>

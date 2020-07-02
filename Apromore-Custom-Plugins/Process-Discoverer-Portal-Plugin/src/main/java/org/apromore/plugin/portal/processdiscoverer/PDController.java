@@ -694,7 +694,7 @@ public class PDController extends BaseController {
     public void setPerspective(String value, String label) throws Exception {
         if (!value.equals(userOptions.getMainAttributeKey())) {
             perspectiveSelected.setValue(label);
-            perspectiveSelected.setClientAttribute("title", label);
+            perspectiveSelected.setTooltiptext(label);
             animate.setDisabled(!value.equals(configData.getDefaultAttribute()));
             userOptions.setMainAttributeKey(value);
             logData.setMainAttribute(value);
