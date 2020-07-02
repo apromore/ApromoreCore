@@ -62,7 +62,6 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Bundle>
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
