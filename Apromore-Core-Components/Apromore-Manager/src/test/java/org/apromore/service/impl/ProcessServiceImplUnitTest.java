@@ -29,6 +29,7 @@ import static org.easymock.EasyMock.expect;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +66,7 @@ import org.apromore.service.LockService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.model.ProcessData;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
 import org.eclipse.persistence.internal.oxm.ByteArrayDataSource;
@@ -126,7 +128,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         User user = createUser(group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -187,7 +189,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         User user = createUser(group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -218,7 +220,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         User user = createUser(group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -284,7 +286,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         User user = createUser(group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -327,7 +329,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.1");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -375,7 +377,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.1");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -411,7 +413,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -451,7 +453,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -479,6 +481,49 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         // Verify mock and result
         verifyAll();
     }
+    
+    @Test
+    public void testUpdateProcessModelVersion_MainPath() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser(group, createSet(group), createSet(role));
+        Version existingVersion = createVersion("1.0");
+        NativeType nativeType = createNativeType();
+        Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
+        Native newNativeDoc = createNative(nativeType, TestData.XPDL2);
+        
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion existingPMV = createPMV(branch, existingNativeDoc, existingVersion);
+        ProcessModelVersion newPMV = createPMV(branch, newNativeDoc, existingVersion);
+        GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String branchName = branch.getBranchName();
+        String existingVersionNumber = existingVersion.toString();
+        InputStream newNativeStream = (new DataHandler(new ByteArrayDataSource(newNativeDoc.getContent().getBytes(), "text/xml")))
+                .getInputStream();
+        
+        // Mock Recording
+        expect(processRepo.findOne(processId)).andReturn(process);
+        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
+                                                    Arrays.asList(new GroupProcess[] {groupProcess}));
+        expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, existingVersionNumber))
+                                                    .andReturn(existingPMV);
+        expect(processModelVersionRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(newPMV);
+        replayAll();
+        
+        // Mock Call
+        ProcessModelVersion resultPMV = processService.updateProcessModelVersion(processId, branchName, existingVersion, 
+                                                    user, "", nativeType, newNativeStream);
+        
+        // Verify mock and result
+        verifyAll();
+        Assert.assertEquals(resultPMV.getNativeDocument().getContent(), newNativeDoc.getContent());
+    }
 
     @Test
     public void testExportProcess() throws Exception {
@@ -489,7 +534,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         User user = createUser(group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
-        Native nativeDoc = createNative(nativeType);
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
         
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
@@ -516,6 +561,90 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         Assert.assertEquals(nativeDoc.getContent(), exportResultText);
     }
     
+    
+    @Test
+    public void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser(group, createSet(group), createSet(role));
+        Version version10 = createVersion("1.0");
+        Version version11 = createVersion("1.1");
+        NativeType nativeType = createNativeType();
+        Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
+        Native newNativeDoc = createNative(nativeType, TestData.XPDL2);
+        
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv10 = createPMV(branch, existingNativeDoc, version10); // to delete
+        ProcessModelVersion pmv11 = createPMV(branch, newNativeDoc, version11);
+        addProcessModelVersions(branch, pmv10, pmv11);
+        GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String versionToDelete = version10.toString();
+        ProcessData processDataToDelete = new ProcessData(processId, version10);
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, versionToDelete)).andReturn(pmv10);
+        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
+                                                    Arrays.asList(new GroupProcess[] {groupProcess}));
+        expect(processBranchRepo.save((ProcessBranch)EasyMock.anyObject())).andReturn(branch);
+        processModelVersionRepo.delete(pmv10);
+        replayAll();
+        
+        // Mock Call
+        processService.deleteProcessModel(Arrays.asList(new ProcessData[] {processDataToDelete}), user);
+        
+        // Verify mock and result
+        verifyAll();
+        Assert.assertEquals(1, branch.getProcessModelVersions().size());
+        Assert.assertEquals(pmv11, branch.getProcessModelVersions().get(0));
+    }
+    
+    
+    @Test
+    public void testDeleteProcessModel_BranchHasOnlyOnePMV() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser(group, createSet(group), createSet(role));
+        Version version10 = createVersion("1.0");
+        NativeType nativeType = createNativeType();
+        Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
+        
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv10 = createPMV(branch, existingNativeDoc, version10); // to delete
+        addProcessModelVersions(branch, pmv10);
+        GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String versionToDelete = version10.toString();
+        ProcessData processDataToDelete = new ProcessData(processId, version10);
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, versionToDelete)).andReturn(pmv10);
+        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
+                                                    Arrays.asList(new GroupProcess[] {groupProcess}));
+        processRepo.delete(process);
+        replayAll();
+        
+        // Mock Call
+        processService.deleteProcessModel(Arrays.asList(new ProcessData[] {processDataToDelete}), user);
+        
+        // Verify mock only (assume that JPA has done all database work properly)
+        verifyAll();
+    }
+    
+    
+    
+    ///////////////////////////////// DATA METHODS ////////////////////////////////////////
+    
     private Process createProcess(User user, NativeType natType, Folder folder) {
         Process process = new Process();
         process.setId(1234);
@@ -536,6 +665,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         branch.setCreateDate("1.1.2020");
         branch.setLastUpdateDate("1.1.2020");
         return branch;
+    }
+    
+    private void addProcessModelVersions(ProcessBranch branch, ProcessModelVersion...pmvs) {
+        if (pmvs != null && pmvs.length > 0) {
+            branch.setProcessModelVersions(new ArrayList<>(Arrays.asList(pmvs)));
+        }
     }
     
     private ProcessModelVersion createPMV(ProcessBranch branch, Native nativeDoc, Version version) {
@@ -566,10 +701,10 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         return version;
     }
     
-    private Native createNative(NativeType nativeType) {
+    private Native createNative(NativeType nativeType, String nativeContent) {
         Native nat = new Native();
         nat.setNativeType(nativeType);
-        nat.setContent(TestData.XPDL);
+        nat.setContent(nativeContent);
         nat.setLastUpdateDate("1.1.2020");
         return nat;
     }
