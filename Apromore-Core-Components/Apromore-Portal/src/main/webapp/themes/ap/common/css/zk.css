@@ -862,3 +862,10 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     padding: 5px 20px 4px 34px;
     border: none;
 }
+
+.z-toolbarbutton-content>img, .z-toolbarbutton-content>i {
+    margin-right: 2px;
+    max-height: 22px;
+    max-width: 22px;
+    font-size: 16px;
+}
