@@ -360,7 +360,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
-            final Version preVersion, final Version newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException {
+            final Version preVersion, final Version newVersion, final String ranking, final boolean tobePublic) throws UpdateProcessException {
         LOGGER.debug("Executing operation update process meta data.");
 
         try {
@@ -377,26 +377,20 @@ public class ProcessServiceImpl implements ProcessService {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
-
             } else {
                 Set<GroupProcess> groupProcesses = process.getGroupProcesses();
                 Set<GroupProcess> publicGroupProcesses = filterPublicGroupProcesses(groupProcesses);
+                boolean isCurrentPublic = !publicGroupProcesses.isEmpty();
 
-                if (publicGroupProcesses.isEmpty() && isPublic) {
+                if (!isCurrentPublic && tobePublic) {
                     groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
                     process.setGroupProcesses(groupProcesses);
+                    workspaceSrv.createPublicStatusForUsers(process);
 
-                } else if (!publicGroupProcesses.isEmpty() && !isPublic) {
+                } else if (isCurrentPublic && !tobePublic) {
                     groupProcesses.removeAll(publicGroupProcesses);
                     process.setGroupProcesses(groupProcesses);
-                }
-
-                if (isPublic != !publicGroupProcesses.isEmpty()) {
-                    if (isPublic) {
-                        workspaceSrv.createPublicStatusForUsers(process);
-                    } else {
-                        workspaceSrv.removePublicStatusForUsers(process);
-                    }
+                    workspaceSrv.removePublicStatusForUsers(process);
                 }
             }
 
