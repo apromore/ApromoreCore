@@ -317,9 +317,10 @@ public class SecurityServiceImpl implements SecurityService {
         groups.addAll(user.getGroups());
         user.setGroups(groups);
 
-        postEvent(EventType.UPDATE_USER, user, null);
+        User result = userRepo.save(user);
+        postEvent(EventType.UPDATE_USER, result, null);
 
-        return userRepo.save(user);
+        return result;
     }
 
     @Override

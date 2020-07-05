@@ -149,6 +149,7 @@ public class UserAdminController extends SelectorComposer<Window> {
 
                     // Update the user panel
                     if ("UPDATE_USER".equals(properties.get("type"))) {
+                        selectedUser = securityService.getUserByName(selectedUser.getUsername());
                         setUser(selectedUser);
                     }
 
