@@ -123,9 +123,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testImportProcess_MainPath() throws Exception {
         //Test data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
         Native nativeDoc = createNative(nativeType, TestData.XPDL);
@@ -184,9 +184,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testImportProcess_EmptyNativeContent() throws Exception {
         //Test data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
         Native nativeDoc = createNative(nativeType, TestData.XPDL);
@@ -214,10 +214,10 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testImportProcess_MakeModelPublic() throws Exception {
         //Test data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
-        Group publicGroup = createGroup(Group.Type.PUBLIC);
+        Group group = createGroup(1, Group.Type.GROUP);
+        Group publicGroup = createGroup(2, Group.Type.PUBLIC);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
         Native nativeDoc = createNative(nativeType, TestData.XPDL);
@@ -280,10 +280,10 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testImportProcess_NotFoundUsername() throws Exception {
         //Test data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
-        Group publicGroup = createGroup(Group.Type.PUBLIC);
+        Group group = createGroup(1, Group.Type.GROUP);
+        Group publicGroup = createGroup(2, Group.Type.PUBLIC);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
         Native nativeDoc = createNative(nativeType, TestData.XPDL);
@@ -323,9 +323,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testCreateProcessModelVersion_MainPath() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.1");
         NativeType nativeType = createNativeType();
@@ -371,9 +371,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testCreateProcessModelVersion_NoWriteAccess() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.1");
         NativeType nativeType = createNativeType();
@@ -407,9 +407,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testCreateProcessModelVersion_VersionConflict() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.0");
         NativeType nativeType = createNativeType();
@@ -447,9 +447,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testCreateProcessModelVersion_NotFoundExistingVersion() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version existingVersion = createVersion("1.0");
         Version newVersion = createVersion("1.0");
         NativeType nativeType = createNativeType();
@@ -486,9 +486,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testUpdateProcessModelVersion_MainPath() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version existingVersion = createVersion("1.0");
         NativeType nativeType = createNativeType();
         Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
@@ -524,14 +524,224 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         verifyAll();
         Assert.assertEquals(resultPMV.getNativeDocument().getContent(), newNativeDoc.getContent());
     }
+    
+    
+    @Test
+    public void testUpdateProcessMetadata_CurrentPublic_TobeMadePublic() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(1, Group.Type.GROUP);
+        Group publicGroup = createGroup(2, Group.Type.PUBLIC);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        Version existingVersion = createVersion("1.0");
+        Version newVersion = createVersion("1.1");
+        NativeType nativeType = createNativeType();
+        Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
+        
+        Process process = createProcess(user, nativeType, folder);
+        process.getGroupProcesses().add(createGroupProcess(group, process, true, true, true));
+        process.getGroupProcesses().add(createGroupProcess(publicGroup, process, true, true, true));
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv = createPMV(branch, existingNativeDoc, existingVersion);
+        branch.setCurrentProcessModelVersion(pmv);
+        branch.getProcessModelVersions().add(pmv);
+        process.getProcessBranches().add(branch);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String existingVersionNumber = existingVersion.toString();
+        
+        String newProcessName = "NEW PROCESS NAME";
+        String newProcessDomain = "NEW DOMAIN";
+        String newProcessRanking = "NEW RANKING";
+        String newProcessVersion = newVersion.toString();
+        boolean newProcessPublicStatus = true;
+        User newUser = createUser("userName2", group, createSet(group), createSet(role));
+        String newUserName = newUser.getUsername();
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber)).andReturn(pmv);
+        expect(processRepo.findOne(processId)).andReturn(process);
+        expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
+        expect(groupRepo.findPublicGroup()).andStubReturn(publicGroup);
+
+        expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(process);
+        expect(processModelVersionRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(pmv);
+        expect(processBranchRepo.save((ProcessBranch)EasyMock.anyObject())).andReturn(branch);
+        
+        replayAll();
+        
+        // Mock Call
+        processService.updateProcessMetaData(processId, newProcessName, newProcessDomain, newUserName, 
+        									existingVersion, newVersion, newProcessRanking, newProcessPublicStatus);
+        
+        // Verify mock and result
+        verifyAll();
+        Assert.assertEquals(newProcessName, process.getName());
+        Assert.assertEquals(newProcessDomain, process.getDomain());
+        Assert.assertEquals(newProcessRanking, process.getRanking());
+        Assert.assertEquals(newUser, process.getUser());
+        Assert.assertEquals(newProcessVersion, pmv.getVersionNumber());
+        Assert.assertEquals(branch.getCurrentProcessModelVersion(), pmv);
+        boolean processHasPublicGroup = false;
+        for (GroupProcess gp : process.getGroupProcesses()) {
+        	if (gp.getGroup().getType() == Group.Type.PUBLIC) {
+        		processHasPublicGroup = true;
+        		break;
+        	}
+        }
+        Assert.assertEquals(true, processHasPublicGroup);
+    }
+    
+    
+    @Test
+    public void testUpdateProcessMetadata_CurrentNonPublic_TobeMadePublic() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(1, Group.Type.GROUP);
+        Group publicGroup = createGroup(2, Group.Type.PUBLIC);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        Version existingVersion = createVersion("1.0");
+        Version newVersion = createVersion("1.1");
+        NativeType nativeType = createNativeType();
+        Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
+        
+        Process process = createProcess(user, nativeType, folder);
+        process.getGroupProcesses().add(createGroupProcess(group, process, true, true, true)); 
+        process.getGroupProcesses().add(createGroupProcess(publicGroup, process, true, true, true)); // public process
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv = createPMV(branch, existingNativeDoc, existingVersion);
+        branch.setCurrentProcessModelVersion(pmv);
+        branch.getProcessModelVersions().add(pmv);
+        process.getProcessBranches().add(branch);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String existingVersionNumber = existingVersion.toString();
+        
+        String newProcessName = "NEW PROCESS NAME";
+        String newProcessDomain = "NEW DOMAIN";
+        String newProcessRanking = "NEW RANKING";
+        String newProcessVersion = newVersion.toString();
+        boolean newProcessPublicStatus = false; //made non-public
+        User newUser = createUser("userName2", group, createSet(group), createSet(role));
+        String newUserName = newUser.getUsername();
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber)).andReturn(pmv);
+        expect(processRepo.findOne(processId)).andReturn(process);
+        expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
+        expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
+        expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
+
+        expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(process);
+        expect(processModelVersionRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(pmv);
+        expect(processBranchRepo.save((ProcessBranch)EasyMock.anyObject())).andReturn(branch);
+        workspaceSrv.removePublicStatusForUsers(process);
+        
+        replayAll();
+        
+        // Mock Call
+        processService.updateProcessMetaData(processId, newProcessName, newProcessDomain, newUserName, 
+        									existingVersion, newVersion, newProcessRanking, newProcessPublicStatus);
+        
+        // Verify mock and result
+        verifyAll();
+        Assert.assertEquals(newProcessName, process.getName());
+        Assert.assertEquals(newProcessDomain, process.getDomain());
+        Assert.assertEquals(newProcessRanking, process.getRanking());
+        Assert.assertEquals(newUser, process.getUser());
+        Assert.assertEquals(newProcessVersion, pmv.getVersionNumber());
+        Assert.assertEquals(branch.getCurrentProcessModelVersion(), pmv);
+        boolean processHasPublicGroup = false;
+        for (GroupProcess gp : process.getGroupProcesses()) {
+        	if (gp.getGroup().getType() == Group.Type.PUBLIC) {
+        		processHasPublicGroup = true;
+        		break;
+        	}
+        }
+        Assert.assertEquals(false, processHasPublicGroup);
+    }
+    
+    
+    @Test
+    public void testUpdateProcessMetadata_CurrentPublic_TobeMadeNonPublic() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(1, Group.Type.GROUP);
+        Group publicGroup = createGroup(2, Group.Type.PUBLIC);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        Version existingVersion = createVersion("1.0");
+        Version newVersion = createVersion("1.1");
+        NativeType nativeType = createNativeType();
+        Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
+        
+        Process process = createProcess(user, nativeType, folder);
+        process.getGroupProcesses().add(createGroupProcess(group, process, true, true, true)); // No public process
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv = createPMV(branch, existingNativeDoc, existingVersion);
+        branch.setCurrentProcessModelVersion(pmv);
+        branch.getProcessModelVersions().add(pmv);
+        process.getProcessBranches().add(branch);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String existingVersionNumber = existingVersion.toString();
+        
+        String newProcessName = "NEW PROCESS NAME";
+        String newProcessDomain = "NEW DOMAIN";
+        String newProcessRanking = "NEW RANKING";
+        String newProcessVersion = newVersion.toString();
+        boolean newProcessPublicStatus = true;
+        User newUser = createUser("userName2", group, createSet(group), createSet(role));
+        String newUserName = newUser.getUsername();
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber)).andReturn(pmv);
+        expect(processRepo.findOne(processId)).andReturn(process);
+        expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
+        expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
+        expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
+
+        expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(process);
+        expect(processModelVersionRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(pmv);
+        expect(processBranchRepo.save((ProcessBranch)EasyMock.anyObject())).andReturn(branch);
+        workspaceSrv.createPublicStatusForUsers(process);
+        
+        replayAll();
+        
+        // Mock Call
+        processService.updateProcessMetaData(processId, newProcessName, newProcessDomain, newUserName, 
+        									existingVersion, newVersion, newProcessRanking, newProcessPublicStatus);
+        
+        // Verify mock and result
+        verifyAll();
+        Assert.assertEquals(newProcessName, process.getName());
+        Assert.assertEquals(newProcessDomain, process.getDomain());
+        Assert.assertEquals(newProcessRanking, process.getRanking());
+        Assert.assertEquals(newUser, process.getUser());
+        Assert.assertEquals(newProcessVersion, pmv.getVersionNumber());
+        Assert.assertEquals(branch.getCurrentProcessModelVersion(), pmv);
+        boolean processHasPublicGroup = false;
+        for (GroupProcess gp : process.getGroupProcesses()) {
+        	if (gp.getGroup().getType() == Group.Type.PUBLIC) {
+        		processHasPublicGroup = true;
+        		break;
+        	}
+        }
+        Assert.assertEquals(true, processHasPublicGroup);
+    }
 
     @Test
     public void testExportProcess() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version = createVersion("1.0.0");
         NativeType nativeType = createNativeType();
         Native nativeDoc = createNative(nativeType, TestData.XPDL);
@@ -563,12 +773,48 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     
     
     @Test
+    public void testGetBPMNRepresentation() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(123, Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        Version version = createVersion("1.0.0");
+        NativeType nativeType = createNativeType();
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
+        
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        ProcessModelVersion pmv = createPMV(branch, nativeDoc, version);
+        
+        // Parameter setup
+        Integer processId = process.getId();
+        String processName = process.getName();
+        String branchName = branch.getBranchName();
+        String versionNumber = version.toString();
+        String nativeTypeS = nativeType.getNatType();
+        
+        // Mock Recording
+        expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber)).andReturn(pmv);
+        expect(nativeRepo.getNative(processId, branchName, versionNumber, nativeTypeS)).andReturn(nativeDoc);
+        replayAll();
+        
+        // Mock call
+        String bpmnResult = processService.getBPMNRepresentation(processName, processId, branchName, version);
+        
+        // Verify mock and result
+        verifyAll();
+        Assert.assertEquals(nativeDoc.getContent(), bpmnResult);
+    }
+    
+    
+    @Test
     public void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version10 = createVersion("1.0");
         Version version11 = createVersion("1.1");
         NativeType nativeType = createNativeType();
@@ -609,9 +855,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     public void testDeleteProcessModel_BranchHasOnlyOnePMV() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
-        Group group = createGroup(Group.Type.GROUP);
+        Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
-        User user = createUser(group, createSet(group), createSet(role));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
         Version version10 = createVersion("1.0");
         NativeType nativeType = createNativeType();
         Native existingNativeDoc = createNative(nativeType, TestData.XPDL);
@@ -640,6 +886,8 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         // Verify mock only (assume that JPA has done all database work properly)
         verifyAll();
     }
+    
+    
     
     
     
@@ -712,17 +960,17 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     private NativeType createNativeType() {
         NativeType nat = new NativeType();
         nat.setExtension("ext");
-        nat.setNatType("nat");
+        nat.setNatType("BPMN 2.0");
         nat.setExtension("bpmn");
         return nat;
     }
 
-    private User createUser(Group group, Set<Group> groups, Set<Role> roles) {
+    private User createUser(String userName, Group group, Set<Group> groups, Set<Role> roles) {
         User user = new User();
         user.setId(123);
         user.setFirstName("FirstName");
         user.setLastName("LastName");
-        user.setUsername("userName");
+        user.setUsername(userName);
         user.setOrganization("Apromore");
         user.setCountry("Australia");
         user.setSubscription("UserSubscription");
@@ -753,11 +1001,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         return role;
     }
     
-    private Group createGroup(Group.Type groupType) {
+    private Group createGroup(Integer groupId, Group.Type groupType) {
         Group group = new Group();
         group.setRowGuid("groupGUID");
         group.setName("GroupName");
-        group.setId(123);
+        group.setId(groupId);
         group.setType(groupType);
         return group;
     }
