@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -32,7 +33,10 @@ import java.util.Set;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummariesType;
 import org.apromore.model.SummaryType;
@@ -45,6 +49,7 @@ import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
+import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.exception.DialogException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,14 +92,18 @@ public abstract class BaseListboxController extends BaseController {
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
-    private ArrayList<LogSummaryType> sourceLogs = null;
-    private ArrayList<FolderType> sourceFolders = null;
+    private ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
+    private ArrayList<FolderType> sourceFolders = new ArrayList<>();
+    private ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
+
+    private CopyAndPasteController copyAndPasteController;
 
     public BaseListboxController(MainController mainController, String componentId, ListitemRenderer itemRenderer) {
         super();
         setHflex("100%");
         setVflex("100%");
 
+        this.copyAndPasteController = new CopyAndPasteController(mainController, UserSessionManager.getCurrentUser());
         this.mainController = mainController;
         this.portalContext = new PluginPortalContext(mainController);
         listBox = createListbox(componentId);
@@ -337,52 +346,14 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     private void copy() {
-        sourceLogs = getSelectedLogs();
-        sourceFolders = getSelectedFolders();
-        if (sourceLogs == null || sourceLogs.isEmpty()) {
-            Messagebox.show("Please select at least one log.", "Copy Log", Messagebox.OK, Messagebox.ERROR);
-        } else {
-            Messagebox.show(sourceLogs.size() + " log(s) has been selected for copying.", "Copy Log", Messagebox.OK, Messagebox.INFORMATION);
-        }
+        copyAndPasteController.copy(getSelection());
     }
 
     private void paste() throws Exception {
-        if (sourceLogs == null || sourceLogs.isEmpty()) {
-            Messagebox.show("Please select a log and click Copy.", "Copy Log", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
-        cloneLogs(targetFolderId);
+        copyAndPasteController.paste(targetFolderId);
         refreshContent();
-    }
-
-    private void cloneLogs(Integer targetFolderId) throws Exception {
-        if (sourceLogs != null && !sourceLogs.isEmpty() && targetFolderId != null) {
-            String username = UserSessionManager.getCurrentUser().getUsername();
-            String domain = "";
-            String created = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-            for (LogSummaryType log : sourceLogs) {
-                String logName = log.getName();
-                Integer sourceLogId = log.getId();
-                mainController.getEventLogService().cloneLog(username, targetFolderId, logName, sourceLogId, domain, created, false);
-            }
-        } else {
-            LOGGER.error("No folder is selected");
-        }
-    }
-
-    private ArrayList<LogSummaryType> getSelectedLogs() {
-        ArrayList<LogSummaryType> itemList = new ArrayList<>();
-        if (this instanceof ProcessListboxController) {
-            Set<Object> selectedItem = getListModel().getSelection();
-            for (Object obj : selectedItem) {
-                if (obj instanceof LogSummaryType) {
-                    itemList.add((LogSummaryType) obj);
-                }
-            }
-        }
-        return itemList;
     }
 
     private ArrayList<FolderType> getSelectedFolders() {
@@ -396,6 +367,10 @@ public abstract class BaseListboxController extends BaseController {
             }
         }
         return folderList;
+    }
+
+    public Set<Object> getSelection() {
+        return getListModel().getSelection();
     }
 
     /* Show the message tailored to deleting one or more folders. */
@@ -462,8 +437,6 @@ public abstract class BaseListboxController extends BaseController {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
-
-
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {
