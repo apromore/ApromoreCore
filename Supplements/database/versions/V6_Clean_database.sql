@@ -28,3 +28,4 @@ DROP TABLE IF EXISTS apromore.resource_ref;
 DROP TABLE IF EXISTS apromore.resource_ref_attribute;
 DROP TABLE IF EXISTS apromore.resource_specialisations;
 DROP TABLE IF EXISTS apromore.statistic;
+SET foreign_key_checks = 1;
