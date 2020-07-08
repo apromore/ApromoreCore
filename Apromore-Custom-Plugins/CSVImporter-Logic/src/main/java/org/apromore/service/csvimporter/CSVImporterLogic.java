@@ -56,4 +56,11 @@ public interface CSVImporterLogic {
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
     LogModel prepareXesModel(CSVReader reader, LogSample sample) throws Exception;
+
+    /**
+     * Check if row limit is exceeded (for trial)
+     *
+     * @return boolean
+     */
+    boolean isRowLimitExceeded();
 }
