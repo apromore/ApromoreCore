@@ -36,6 +36,7 @@
     
     <target name="copy-virgo" depends="clean-virgo, setup-virgo, create-repository-dirs, copy-core">
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <file file="target/classes/META-INF/git.properties"/>
             <file file="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
         </copy>
     </target>
