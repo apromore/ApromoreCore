@@ -27,6 +27,9 @@ package org.apromore.dao.model;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -116,5 +119,15 @@ public class Native implements Serializable {
         this.processModelVersion = newProcessModelVersion;
     }
 
+    @Override
+    public Native clone() {
+        Native nat = new Native();
+        nat.setContent(this.getContent());
+        nat.setNativeType(this.getNativeType());
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        nat.setLastUpdateDate(now);
+        return nat;
+    }
 
 }

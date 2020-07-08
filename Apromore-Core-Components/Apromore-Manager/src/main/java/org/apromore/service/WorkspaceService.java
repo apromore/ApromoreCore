@@ -27,8 +27,13 @@ package org.apromore.service;
 import java.util.List;
 
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -99,4 +104,16 @@ public interface WorkspaceService {
      * @param process the process model we are restricting access to.
      */
     void removePublicStatusForUsers(final Process process);
+    
+    Log copyLog(Integer logId, Integer targetFolderId, String userName, boolean isPublic) throws Exception;
+    
+    Log moveLog(Integer logId, Integer newFolderId) throws Exception;
+    
+    Process copyProcess(Integer processId, List<Integer> pmvIDs, Integer newFolderId, String userName, boolean isPublic) throws Exception;
+    
+    Process moveProcess(Integer processId, Integer newFolderId) throws Exception;
+    
+    Folder copyFolder(Integer folderId, Integer sourceFolderId, Integer targetFolderId) throws Exception;
+    
+    Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
 }

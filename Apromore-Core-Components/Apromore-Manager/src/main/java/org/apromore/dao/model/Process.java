@@ -26,6 +26,15 @@ package org.apromore.dao.model;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,11 +46,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -188,5 +192,22 @@ public class Process implements Serializable {
 
     public void setGroupProcesses(Set<GroupProcess> newGroupProcesses) {
         this.groupProcesses = newGroupProcesses;
+    }
+    
+    @Override
+    public Process clone() {
+        Process newProcess = new Process();
+        newProcess.setName(this.getName());
+        newProcess.setNativeType(this.getNativeType());
+        newProcess.setProcessBranches(this.getProcessBranches());
+        newProcess.setRanking(this.getRanking());
+        newProcess.setUser(this.getUser());
+        newProcess.setFolder(this.getFolder());
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        newProcess.setCreateDate(now);
+        
+        return newProcess;
     }
 }

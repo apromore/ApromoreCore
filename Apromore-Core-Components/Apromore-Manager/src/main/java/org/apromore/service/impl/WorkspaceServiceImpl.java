@@ -24,28 +24,57 @@
 
 package org.apromore.service.impl;
 
-import org.apromore.dao.*;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+
+import org.apache.commons.io.FileUtils;
+import org.apromore.common.ConfigBean;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.UserRepository;
+import org.apromore.dao.WorkspaceRepository;
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelAttribute;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Workspace;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.service.WorkspaceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Implementation of the SecurityService Contract.
@@ -55,10 +84,11 @@ import java.util.logging.Logger;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
-    static private Logger LOGGER = Logger.getLogger(WorkspaceServiceImpl.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceServiceImpl.class);
 
     private WorkspaceRepository workspaceRepo;
     private ProcessRepository processRepo;
+    private ProcessModelVersionRepository pmvRepo;
     private LogRepository logRepo;
     private FolderRepository folderRepo;
     private UserRepository userRepo;
@@ -66,6 +96,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupFolderRepository groupFolderRepo;
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
+    
+    @Resource
+    private ConfigBean config;
 
 
     /**
@@ -79,6 +112,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository,
                                 final UserRepository userRepository,
                                 final ProcessRepository processRepository,
+                                final ProcessModelVersionRepository pmvRepository,
                                 final LogRepository logRepository,
                                 final FolderRepository folderRepository,
                                 final GroupRepository groupRepository,
@@ -89,6 +123,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
         processRepo = processRepository;
+        pmvRepo = pmvRepository;
         logRepo = logRepository;
         folderRepo = folderRepository;
         groupRepo = groupRepository;
@@ -360,7 +395,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
             processRepo.save(process);
         } else {
-            LOGGER.warning("Missing folderID "+folderId+" Missing processID "+processId);
+            LOGGER.warn("Missing folderID "+folderId+" Missing processID "+processId);
         }
     }
 
@@ -383,7 +418,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public void removePublicStatusForUsers(final Process process) {
         Group publicGroup = groupRepo.findPublicGroup();
         if (publicGroup == null) {
-            LOGGER.warning("No public group in repository");
+            LOGGER.warn("No public group in repository");
         } else {
             Set<GroupProcess> freshGroupProcesses = new HashSet<>();
             for (GroupProcess groupProcess: process.getGroupProcesses()) {
@@ -393,6 +428,160 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             }
             process.setGroupProcesses(freshGroupProcesses);
         }
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public Log copyLog(Integer logId, Integer newFolderId, String userName, boolean isPublic) throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        Log currentLog = logRepo.findUniqueByID(logId);
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        User newUser = userRepo.findByUsername(userName);
+        
+        Log newLog = new Log();
+        newLog.setName(currentLog.getName());
+        newLog.setDomain(currentLog.getDomain());
+        newLog.setRanking(currentLog.getRanking());
+        newLog.setFilePath(currentLog.getFilePath());
+        newLog.setUser(currentLog.getUser());
+        newLog.setFolder(newFolder);
+        newLog.setCreateDate(now);
+        
+        // Set access group
+        Set<GroupLog> groupLogs = newLog.getGroupLogs();
+        groupLogs.add(new GroupLog(newUser.getGroup(), newLog, true, true, true));
+        if (isPublic) {
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+            } else {
+                groupLogs.add(new GroupLog(publicGroup, newLog, true, true, false));
+            }
+        }
+        newLog.setGroupLogs(groupLogs);
+        
+        // Copy file
+        final String currentFilename = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
+        File currentFile = new File(config.getLogsDir()+ "/" + currentFilename);
+        
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String newPathId = simpleDateFormat.format(new Date());
+        final String newFilename = currentLog.getFilePath() + "_" + newPathId + ".xes.gz";
+        File newFile = new File(config.getLogsDir()+ "/" + newFilename);
+        newLog.setFilePath(newPathId);
+        
+        FileUtils.copyFile(currentFile, newFile);
+        
+        // Persist
+        try {
+            logRepo.save(newLog);      
+        }
+        catch (Exception e) {
+            newFile.delete();
+        }
+
+        return newLog;
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public Log moveLog(Integer logId, Integer newFolderId) throws Exception {
+        Log log = logRepo.findUniqueByID(logId);
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        log.setFolder(newFolder);
+        
+        logRepo.save(log);        
+        return log;
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public Process copyProcess(Integer processId, List<Integer> pmvIDs, Integer newFolderId, String userName, boolean isPublic) throws Exception {
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        User newUser = userRepo.findByUsername(userName);
+        
+        Process process = processRepo.findUniqueByID(processId);
+        Process newProcess = process.clone();
+        
+        ProcessBranch branch = process.getProcessBranches().get(0);
+        ProcessBranch newBranch = branch.clone();
+        
+        List<ProcessModelVersion> newPMVList = this.selectNewPMVs(pmvIDs, newBranch);
+        
+        if (newPMVList.isEmpty()) {
+            throw new Exception("No process model versions were found from the list of ids " + pmvIDs.toString());
+        }
+        
+        newBranch.setProcess(newProcess);
+        newBranch.setProcessModelVersions(newPMVList);
+        
+        newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[] {newBranch}));
+        newProcess.setUser(newUser);
+        newProcess.setFolder(newFolder);
+        
+        // Set access group
+        Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
+        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), true, true, true));
+        if (isPublic) {
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+            } else {
+                groupProcesses.add(new GroupProcess(newProcess, publicGroup, true, true, false));
+            }
+        }
+        newProcess.setGroupProcesses(groupProcesses);
+        
+        processRepo.save(newProcess);
+        
+        return newProcess;
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public Process moveProcess(Integer processId, Integer newFolderId) throws Exception {
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        Process process = processRepo.findUniqueByID(processId);
+        process.setFolder(newFolder);
+        processRepo.save(process);
+        
+        return process;
+    }
+    
+    private List<ProcessModelVersion> selectNewPMVs(List<Integer> pmvIDs, ProcessBranch branch) throws Exception {
+        List<ProcessModelVersion> pmvs = new ArrayList<>();
+        for (Integer pmvId : pmvIDs) {
+            ProcessModelVersion pmv = pmvRepo.findOne(pmvId);
+            if (pmv == null) {
+                throw new Exception("Cannot find process model version with id=" + pmvId);
+            }
+            else {
+                ProcessModelVersion newPMV = pmv.clone();
+                newPMV.setNativeDocument(pmv.getNativeDocument().clone());
+                newPMV.setProcessBranch(branch);
+                newPMV.getProcessModelAttributes().clear();
+                for (ProcessModelAttribute pma : pmv.getProcessModelAttributes()) {
+                    newPMV.getProcessModelAttributes().add(pma.clone());
+                }
+                newPMV.setProcessBranch(branch);
+            }
+        }
+        return pmvs;
+    }
+    
+    @Override
+    public Folder copyFolder(Integer folderId, Integer sourceFolderId, Integer targetFolderId) throws Exception {
+        return null;
+    }
+    
+    @Override
+    public Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception {
+        Folder folder = folderRepo.findUniqueByID(folderId);
+        Folder newParentFolder = folderRepo.findUniqueByID(newParentFolderId);
+        folder.setParentFolder(newParentFolder);
+        folderRepo.save(folder);
+        return folder;
     }
 
     /* Save the Sub Folder Permissions. */
