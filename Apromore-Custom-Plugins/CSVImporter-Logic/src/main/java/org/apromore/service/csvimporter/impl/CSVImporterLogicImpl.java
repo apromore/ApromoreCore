@@ -54,6 +54,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     boolean preferMonthFirstChanged;
     private List<LogErrorReport> logErrorReport;
     private boolean validRow;
+    private boolean rowLimitExceeded = false;
 
     @Override
     public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws Exception {
@@ -77,6 +78,8 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         List<LogEventModel> logData = new ArrayList<>();
         String errorMessage = "Field is empty or has a null value!";
+
+        rowLimitExceeded = false;
 
         while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) { // new row, new event.
             validRow = true;
@@ -173,8 +176,15 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             logData.add(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
         }
 
+        if (!isValidLineCount(lineIndex - 1)) {
+            rowLimitExceeded = true;
+        }
         return new LogModelImpl(sortTraces(logData), logErrorReport);
 
+    }
+
+    public boolean isRowLimitExceeded() {
+        return rowLimitExceeded;
     }
 
     public boolean isValidLineCount(int lineCount) {
