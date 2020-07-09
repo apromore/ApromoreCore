@@ -133,6 +133,8 @@
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
             <fileset refid="fileset-repo-text"/>
         </copy>
+
+        <copy file="${core-dir}/target/classes/META-INF/git.properties" tofile="${core-dir-virgo}/repository/usr/git-core.properties" overwrite="true" />
     </target>
 
     <!-- Virgo Related -->
