@@ -32,4 +32,6 @@ public interface LogModel {
     List<LogErrorReport> getLogErrorReport();
 
     XLog getXLog();
+
+    boolean isRowLimitExceeded();
 }

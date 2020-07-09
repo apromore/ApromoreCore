@@ -57,10 +57,4 @@ public interface CSVImporterLogic {
      */
     LogModel prepareXesModel(CSVReader reader, LogSample sample) throws Exception;
 
-    /**
-     * Check if row limit is exceeded (for trial)
-     *
-     * @return boolean
-     */
-    boolean isRowLimitExceeded();
 }
