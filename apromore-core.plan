@@ -5,6 +5,7 @@
     
     <artifact type="configuration" name="site" version="0" />
     <artifact type="configuration" name="git" version="0" />
+    <artifact type="configuration" name="git-core" version="0" />
     
     <!-- OSGi Libraries -->
     <artifact type="bundle" name="org.apromore.eclipse-collections-osgi" version="[1.0.0, 2)"/>
