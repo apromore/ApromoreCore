@@ -32,10 +32,12 @@ class LogModelImpl implements LogModel {
 
     private List<LogEventModel> rows;
     private List<LogErrorReport> logErrorReport;
+    private boolean rowLimitExceeded = false;
 
-    LogModelImpl(List<LogEventModel> rows, List<LogErrorReport> logErrorReportImpl) {
+    LogModelImpl(List<LogEventModel> rows, List<LogErrorReport> logErrorReportImpl, boolean rowLimitExceeded) {
         this.rows = rows;
         this.logErrorReport = logErrorReportImpl;
+        this.rowLimitExceeded = rowLimitExceeded;
     }
 
     @Override
@@ -52,4 +54,7 @@ class LogModelImpl implements LogModel {
     public XLog getXLog() {
         return new CreateXLog().generateXLog(rows);
     }
+
+    @Override
+    boolean isRowLimitExceeded() { return rowLimitExceeded; }
 }
