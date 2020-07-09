@@ -113,7 +113,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private Button[] formatBtns;
     private Span[] parsedIcons;
     private List<Listbox> dropDownLists;
-    private boolean isRowLimitExceeded = false;
 
     @Override
     public void doFinally() throws Exception {
@@ -196,7 +195,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
                 if (reader != null) {
                     LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
-                    isRowLimitExceeded = csvImporterLogic.isRowLimitExceeded();
                     List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
                     if (errorReport.isEmpty()) {
@@ -838,7 +836,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             );
 
             String successMessage;
-            if (isRowLimitExceeded) {
+            if (xesModel.isRowLimitExceeded()) {
                 successMessage = MessageFormat.format(getLabels().getString("limit_reached"), xesModel.getRowsCount());
             } else {
                 successMessage = MessageFormat.format(getLabels().getString("successful_upload"), xesModel.getRowsCount());
