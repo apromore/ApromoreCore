@@ -8,6 +8,7 @@
 
     <import file="build-core.xml" as="core"/>
     
+    <filter token="about-portal.bundle" value="org.apromore.plugin.about-portal-plugin"/>
     <filter token="csvimporter-logic.bundle" value="org.apromore.csvimporter-logic"/>
     <filter token="version.edition" value="Apromore Core"/>
     
