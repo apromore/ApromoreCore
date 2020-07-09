@@ -56,5 +56,5 @@ class LogModelImpl implements LogModel {
     }
 
     @Override
-    boolean isRowLimitExceeded() { return rowLimitExceeded; }
+    public boolean isRowLimitExceeded() { return rowLimitExceeded; }
 }
