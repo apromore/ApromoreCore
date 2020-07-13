@@ -81,6 +81,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button refreshB;
     private final Button btnUpload;
     private final Button btnDownload;
+    private final Button btnCut;
     private final Button btnCopy;
     private final Button btnPaste;
     private final Button btnAddFolder;
@@ -113,6 +114,7 @@ public abstract class BaseListboxController extends BaseController {
         refreshB = (Button) mainController.getFellow("refreshB");
         btnUpload = (Button) mainController.getFellow("btnUpload");
         btnDownload = (Button) mainController.getFellow("btnDownload");
+        btnCut = (Button) mainController.getFellow("btnCut");
         btnCopy = (Button) mainController.getFellow("btnCopy");
         btnPaste = (Button) mainController.getFellow("btnPaste");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
@@ -162,6 +164,13 @@ public abstract class BaseListboxController extends BaseController {
             @Override
             public void onEvent(Event event) throws Exception {
                 exportFile();
+            }
+        });
+
+        this.btnCut.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                cut();
             }
         });
 
@@ -345,6 +354,10 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    private void cut() {
+        copyAndPasteController.cut(getSelection());
+    }
+
     private void copy() {
         copyAndPasteController.copy(getSelection());
     }
@@ -352,7 +365,11 @@ public abstract class BaseListboxController extends BaseController {
     private void paste() throws Exception {
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
-        copyAndPasteController.paste(targetFolderId);
+        try {
+            copyAndPasteController.paste(targetFolderId);
+        } catch (Exception e) {
+            Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK, Messagebox.ERROR);
+        }
         refreshContent();
     }
 

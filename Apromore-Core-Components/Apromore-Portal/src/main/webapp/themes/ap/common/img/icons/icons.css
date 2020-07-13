@@ -183,6 +183,11 @@
     width: 23.5px !important;
 }
 
+.ap-icon-cut {
+    background-image: url('cut.svg') !important;
+    width: 23.5px !important;
+}
+
 .ap-icon-dir-lr {
     background-image: url('dir-lr.svg') !important;
     width: 28.5px !important;
