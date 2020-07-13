@@ -41,7 +41,7 @@ import org.springframework.stereotype.Repository;
  * @see org.apromore.dao.model.ProcessModelVersion
  */
 @Repository
-public interface ProcessModelVersionRepository extends JpaRepository<ProcessModelVersion, Integer>, ProcessModelVersionRepositoryCustom {
+public interface ProcessModelVersionRepository extends JpaRepository<ProcessModelVersion, Integer> {
 
     /**
      * Find the process model version for the process id branch and version.
