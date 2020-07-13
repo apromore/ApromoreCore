@@ -448,6 +448,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         
         // Set access group
         Set<GroupLog> groupLogs = newLog.getGroupLogs();
+        groupLogs.clear();
         groupLogs.add(new GroupLog(newUser.getGroup(), newLog, true, true, true));
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
@@ -478,6 +479,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         return newLog;
     }
+    
     
     @Override
     @Transactional(readOnly = false)

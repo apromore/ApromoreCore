@@ -147,6 +147,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Assert.assertEquals(newLog.getFolder(), copyLog.getFolder());
         Assert.assertEquals(newLog.getUser(), copyLog.getUser());
         Assert.assertEquals(newLog.getName(), copyLog.getName());
+        Assert.assertEquals(user.getGroup(), copyLog.getGroupLogs().iterator().next().getGroup());
     }
     
     @Test
@@ -231,6 +232,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Assert.assertEquals(pmv1.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getNativeDocument().getContent());
         Assert.assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
         Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
+        Assert.assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
     }
     
     @Test
@@ -286,6 +288,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Assert.assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
         Assert.assertEquals(pmv3.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(2).getNativeDocument().getContent());
         Assert.assertEquals("1.2", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
+        Assert.assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
     }
     
     @Test
