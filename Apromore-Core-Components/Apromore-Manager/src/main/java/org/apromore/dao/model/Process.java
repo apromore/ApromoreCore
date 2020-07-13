@@ -199,10 +199,15 @@ public class Process implements Serializable {
         Process newProcess = new Process();
         newProcess.setName(this.getName());
         newProcess.setNativeType(this.getNativeType());
-        newProcess.setProcessBranches(this.getProcessBranches());
+        List<ProcessBranch> newBranches = new ArrayList<>();
+        for (ProcessBranch branch : this.getProcessBranches()) {
+            newBranches.add(branch.clone());
+        }
+        newProcess.setProcessBranches(newBranches); 
         newProcess.setRanking(this.getRanking());
         newProcess.setUser(this.getUser());
         newProcess.setFolder(this.getFolder());
+        newProcess.setGroupProcesses(new HashSet<>(this.getGroupProcesses()));
         
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());

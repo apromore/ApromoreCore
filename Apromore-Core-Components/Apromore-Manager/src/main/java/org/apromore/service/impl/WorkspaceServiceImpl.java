@@ -24,7 +24,6 @@
 
 package org.apromore.service.impl;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
@@ -66,6 +64,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.service.EventLogFileService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,10 +75,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Implementation of the SecurityService Contract.
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
- */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
@@ -96,6 +91,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupFolderRepository groupFolderRepo;
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
+    private EventLogFileService logFileService;
     
     @Resource
     private ConfigBean config;
@@ -118,7 +114,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final GroupRepository groupRepository,
                                 final GroupFolderRepository groupFolderRepository,
                                 final GroupProcessRepository groupProcessRepository,
-                                final GroupLogRepository groupLogRepository) {
+                                final GroupLogRepository groupLogRepository,
+                                final EventLogFileService eventLogFileService) {
 
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
@@ -130,6 +127,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupFolderRepo = groupFolderRepository;
         groupProcessRepo = groupProcessRepository;
         groupLogRepo = groupLogRepository;
+        logFileService = eventLogFileService;
     }
 
 
@@ -462,23 +460,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         newLog.setGroupLogs(groupLogs);
         
         // Copy file
-        final String currentFilename = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
-        File currentFile = new File(config.getLogsDir()+ "/" + currentFilename);
-        
+        final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String newPathId = simpleDateFormat.format(new Date());
-        final String newFilename = currentLog.getFilePath() + "_" + newPathId + ".xes.gz";
-        File newFile = new File(config.getLogsDir()+ "/" + newFilename);
-        newLog.setFilePath(newPathId);
+        String newFileNameCode = simpleDateFormat.format(new Date());
+        final String newFileFullName = newFileNameCode + "_" + newLog.getName() + ".xes.gz";
+        newLog.setFilePath(newFileNameCode);
         
-        FileUtils.copyFile(currentFile, newFile);
+        logFileService.copyFile(currentFileFullName, newFileFullName);
         
         // Persist
         try {
             logRepo.save(newLog);      
         }
         catch (Exception e) {
-            newFile.delete();
+            logFileService.deleteFileIfExist(newFileFullName);
         }
 
         return newLog;
@@ -490,14 +485,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Log log = logRepo.findUniqueByID(logId);
         Folder newFolder = folderRepo.findUniqueByID(newFolderId);
         log.setFolder(newFolder);
-        
         logRepo.save(log);        
         return log;
     }
     
     @Override
     @Transactional(readOnly = false)
-    public Process copyProcess(Integer processId, List<Integer> pmvIDs, Integer newFolderId, String userName, boolean isPublic) throws Exception {
+    public Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId, String userName, boolean isPublic) throws Exception {
         Folder newFolder = folderRepo.findUniqueByID(newFolderId);
         User newUser = userRepo.findByUsername(userName);
         
@@ -507,21 +501,71 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         ProcessBranch branch = process.getProcessBranches().get(0);
         ProcessBranch newBranch = branch.clone();
         
-        List<ProcessModelVersion> newPMVList = this.selectNewPMVs(pmvIDs, newBranch);
-        
+        List<ProcessModelVersion> newPMVList = this.createNewPMVs(process.getId(), pmvVersions, branch);
         if (newPMVList.isEmpty()) {
-            throw new Exception("No process model versions were found from the list of ids " + pmvIDs.toString());
+            throw new Exception("No process model versions were found for processId=" + process.getId() + 
+                                "and versions=" + pmvVersions.toString());
         }
         
         newBranch.setProcess(newProcess);
         newBranch.setProcessModelVersions(newPMVList);
+        newBranch.setCurrentProcessModelVersion(newPMVList.get(newPMVList.size()-1));
         
+        newProcess.getProcessBranches().clear();
         newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[] {newBranch}));
         newProcess.setUser(newUser);
         newProcess.setFolder(newFolder);
         
         // Set access group
         Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
+        groupProcesses.clear();
+        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), true, true, true));
+        if (isPublic) {
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+            } else {
+                groupProcesses.add(new GroupProcess(newProcess, publicGroup, true, true, false));
+            }
+        }
+        newProcess.setGroupProcesses(groupProcesses);
+        
+        processRepo.save(newProcess);
+        
+        return newProcess;
+    }
+    
+    
+    @Override
+    @Transactional(readOnly = false)
+    public Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic) throws Exception {
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        User newUser = userRepo.findByUsername(userName);
+        
+        Process process = processRepo.findUniqueByID(processId);
+        Process newProcess = process.clone();
+        
+        ProcessBranch branch = process.getProcessBranches().get(0);
+        ProcessBranch newBranch = branch.clone();
+        
+        List<String> pmvVersions = new ArrayList<>();
+        for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+            pmvVersions.add(pmv.getVersionNumber());
+        }
+        List<ProcessModelVersion> newPMVList = createNewPMVs(processId, pmvVersions, branch);
+        
+        newBranch.setProcess(newProcess);
+        newBranch.setProcessModelVersions(newPMVList);
+        newBranch.setCurrentProcessModelVersion(newPMVList.get(newPMVList.size()-1));
+        
+        newProcess.getProcessBranches().clear();
+        newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[] {newBranch}));
+        newProcess.setUser(newUser);
+        newProcess.setFolder(newFolder);
+        
+        // Set access group
+        Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
+        groupProcesses.clear();
         groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), true, true, true));
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
@@ -549,22 +593,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return process;
     }
     
-    private List<ProcessModelVersion> selectNewPMVs(List<Integer> pmvIDs, ProcessBranch branch) throws Exception {
+    private List<ProcessModelVersion> createNewPMVs(Integer processId, List<String> pmvVersions, ProcessBranch branch) throws Exception {
         List<ProcessModelVersion> pmvs = new ArrayList<>();
-        for (Integer pmvId : pmvIDs) {
-            ProcessModelVersion pmv = pmvRepo.findOne(pmvId);
-            if (pmv == null) {
-                throw new Exception("Cannot find process model version with id=" + pmvId);
-            }
-            else {
+        for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+            if (pmvVersions.contains(pmv.getVersionNumber())) {
                 ProcessModelVersion newPMV = pmv.clone();
                 newPMV.setNativeDocument(pmv.getNativeDocument().clone());
-                newPMV.setProcessBranch(branch);
                 newPMV.getProcessModelAttributes().clear();
                 for (ProcessModelAttribute pma : pmv.getProcessModelAttributes()) {
                     newPMV.getProcessModelAttributes().add(pma.clone());
                 }
-                newPMV.setProcessBranch(branch);
+                pmvs.add(newPMV);
             }
         }
         return pmvs;

@@ -64,7 +64,7 @@ public class ProcessBranch implements Serializable {
 
     private Process process;
     private ProcessModelVersion currentProcessModelVersion;
-    private ProcessModelVersion sourceProcessModelVersion;
+    private ProcessModelVersion sourceProcessModelVersion; //not used
     private List<ProcessModelVersion> processModelVersions = new ArrayList<>();
 
 
@@ -136,12 +136,14 @@ public class ProcessBranch implements Serializable {
         this.currentProcessModelVersion = newCurrentProcessModelVersion;
     }
 
+    //Unused
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sourceProcessModelVersion")
     public ProcessModelVersion getSourceProcessModelVersion() {
         return this.sourceProcessModelVersion;
     }
 
+    //Unused
     public void setSourceProcessModelVersion(final ProcessModelVersion newSourceProcessModelVersion) {
         this.sourceProcessModelVersion = newSourceProcessModelVersion;
     }

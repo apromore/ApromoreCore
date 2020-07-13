@@ -24,16 +24,29 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -161,6 +174,23 @@ public class Log implements Serializable {
 
     public void setGroupLogs(Set<GroupLog> newGroupLogs) {
         this.groupLogs = newGroupLogs;
+    }
+    
+    @Override
+    public Log clone() {
+        Log newLog = new Log();
+        newLog.setName(this.getName());
+        newLog.setDomain(this.getDomain());
+        newLog.setRanking(this.getRanking());
+        newLog.setFilePath(this.getFilePath());
+        newLog.setUser(this.getUser());
+        newLog.setFolder(this.getFolder());
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        newLog.setCreateDate(now);
+        
+        return newLog;
     }
 
 }
