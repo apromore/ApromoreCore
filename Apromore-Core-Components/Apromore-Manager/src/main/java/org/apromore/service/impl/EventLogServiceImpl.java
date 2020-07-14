@@ -615,14 +615,14 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
-    public String getLayoutByLogId(Integer logId, String userId) {
-        String layout = dashboardLayoutRepository.findByUserIdAndLogId(userId, logId);
+    public List<String> getLayoutByLogId(Integer logId, String userId) {
+        List<String> layout = dashboardLayoutRepository.findByUserIdAndLogId(userId, logId);
         return layout;
     }
 
     @Override
-    public String getLayoutByUserId(String userId) {
-        String layout = dashboardLayoutRepository.findByUserId(userId);
+    public List<String> getLayoutByUserId(String userId) {
+        List<String> layout = dashboardLayoutRepository.findByUserId(userId);
         return layout;
     }
 

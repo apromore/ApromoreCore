@@ -25,34 +25,15 @@ package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.InvalidCSVException;
-import org.apromore.service.csvimporter.LogErrorReport;
-import org.apromore.service.csvimporter.LogModel;
-import org.apromore.service.csvimporter.LogSample;
+import org.apromore.service.csvimporter.*;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.Locales;
@@ -67,25 +48,12 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.SpringUtil;
-import org.zkoss.zul.A;
-import org.zkoss.zul.Auxhead;
-import org.zkoss.zul.Auxheader;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Popup;
-import org.zkoss.zul.Span;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import javax.xml.datatype.DatatypeFactory;
+import java.io.*;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * Controller for <code>csvimporter.zul</code>.
@@ -100,7 +68,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     // Fields injected from the ZK execution
     private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
     private Media media = (Media) Executions.getCurrent().getArg().get("media");
-    private LogSample retrivedSample = (LogSample) Executions.getCurrent().getArg().get("sample");
+    private JSONObject mappingJSON = (JSONObject) Executions.getCurrent().getArg().get("mappingJSON");
 
     // Fields injected from the ZK session
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
@@ -130,6 +98,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             setEncoding.addEventListener("onSelect", event -> {
                         CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
                         if (csvReader != null) {
+                            // If user loaded stored mapping, and then changed encoding, importer will load guessed mapping.
                             this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
                             if (sample != null) setUpUI();
                         }
@@ -138,21 +107,91 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
             if (csvReader != null) {
-                this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
+
+                LogSample tempSample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
+
+                if (mappingJSON != null) {
+//        jsonMapping.put("header", logSample.getHeader());
+//        jsonMapping.put("caseIdPos", logSample.getCaseIdPos());
+//        jsonMapping.put("activityPos", logSample.getActivityPos());
+//        jsonMapping.put("endTimestampPos", logSample.getEndTimestampPos());
+//        jsonMapping.put("startTimestampPos", logSample.getStartTimestampPos());
+//        jsonMapping.put("resourcePos", logSample.getResourcePos());
+//        jsonMapping.put("caseAttributesPos", logSample.getCaseAttributesPos());
+//        jsonMapping.put("eventAttributesPos", logSample.getEventAttributesPos());
+//        jsonMapping.put("otherTimestamps", logSample.getOtherTimestamps());
+//        jsonMapping.put("ignoredPos", logSample.getIgnoredPos());
+//        jsonMapping.put("endTimestampFormat", logSample.getEndTimestampFormat());
+//        jsonMapping.put("startTimestampFormat", logSample.getStartTimestampFormat());
+
+
+                    tempSample.setCaseIdPos((Integer) mappingJSON.get("caseIdPos"));
+                    tempSample.setActivityPos((Integer) mappingJSON.get("activityPos"));
+                    tempSample.setEndTimestampFormat((String) mappingJSON.get("endTimestampFormat"));
+                    tempSample.setEndTimestampPos((Integer) mappingJSON.get("endTimestampPos"));
+                    tempSample.setStartTimestampFormat((String) mappingJSON.get("startTimestampFormat"));
+                    tempSample.setStartTimestampPos((Integer) mappingJSON.get("startTimestampPos"));
+                    tempSample.setResourcePos((Integer) mappingJSON.get("resourcePos"));
+//                    tempSample.getHeader().addAll((List<String>) mappingJSON.get("header"));
+                    tempSample.getEventAttributesPos().clear();
+                    tempSample.getEventAttributesPos().addAll((List<Integer>) mappingJSON.get(
+                            "eventAttributesPos"));
+                    tempSample.getCaseAttributesPos().clear();
+                    tempSample.getCaseAttributesPos().addAll((List<Integer>) mappingJSON.get("caseAttributesPos"));
+                    tempSample.getIgnoredPos().clear();
+                    tempSample.getIgnoredPos().addAll((List<Integer>) mappingJSON.get("ignoredPos"));
+//                    tempSample.getLines().addAll((List<List<String>>) mappingJSON.get("ignoredPos"));
+
+
+                    Object otherTimestamps = mappingJSON.get("otherTimestamps");
+//                    Map<Integer, String> otherTimestampsObject  = (Map<Integer, String>) JSONValue.parse(mappingJSON.get("otherTimestamps").toString()) ;
+//                    Object otherTimestampsObject = JSONValue.parse(mappingJSON.get(
+//                            "otherTimestamps").toString());
+
+
+                    Map<Integer, String> otherTimestampsMap = (Map<Integer, String>) otherTimestamps;
+
+                    Map<Integer, String> otherTimestampsMap2 = new HashMap<>();
+//                    otherTimestampsMap2.putAll(otherTimestampsMap);
+
+                    Iterator it=otherTimestampsMap.entrySet().iterator();
+                    while(it.hasNext()) {
+                        Map.Entry entry=(Map.Entry)it.next();
+                        Object key=entry.getKey();
+                        if(key!=null) {
+                            otherTimestampsMap2.put(Integer.parseInt(key.toString()), otherTimestampsMap.get(key));
+                        }
+                    }
+
+//                    ObjectMapper mapper = new ObjectMapper();
+//                    otherTimestampsMap = mapper.readValue(mappingJSON.get("otherTimestamps").toString(), Map.class);
+
+//                    for (int i = 0; i < otherTimestamps.size(); i++) {
+//                        String format = otherTimestamps.get(i);
+//                                jsoncargo.getJsonObject(i).getString("type");
+//                        Integer postion = jsoncargo.getJsonObject(i).getInt("amount");
+//                        otherTimestampsMap.put(type, amount);
+//                    }
+
+                    tempSample.getOtherTimestamps().clear();
+                    tempSample.getOtherTimestamps().putAll(otherTimestampsMap2);
+
+
+                }
+
+                this.sample = tempSample;
+
                 if (sample != null) {
 
                     //TODO:
 
                     //Attempt 2
-                    Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
-                            "/matchedMapping.zul", null, null);
-                    matchedMappingPopUp.doModal();
+//                    handleMatchedMapping();
 
                     setUpUI();
                     toXESButton.setDisabled(false);
                     toPublicXESButton.setDisabled(false);
                     matchedMapping.setDisabled(false);
-
 
                 }
             }
@@ -239,12 +278,36 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private String storeMappingAsJSON(Media media, LogSample logSample) {
 
-        JSONObject jsonData;
         String userId = portalContext.getCurrentUser().getId();
 
-        String sampleJSON = JSONValue.toJSONString(logSample);
+        String jsonStr = null;
+
+//        JSONObject jsonMapping = new JSONObject();
+//
+//        jsonMapping.put("header", logSample.getHeader());
+//        jsonMapping.put("caseIdPos", logSample.getCaseIdPos());
+//        jsonMapping.put("activityPos", logSample.getActivityPos());
+//        jsonMapping.put("endTimestampPos", logSample.getEndTimestampPos());
+//        jsonMapping.put("startTimestampPos", logSample.getStartTimestampPos());
+//        jsonMapping.put("resourcePos", logSample.getResourcePos());
+//        jsonMapping.put("caseAttributesPos", logSample.getCaseAttributesPos());
+//        jsonMapping.put("eventAttributesPos", logSample.getEventAttributesPos());
+//        jsonMapping.put("otherTimestamps", logSample.getOtherTimestamps());
+//        jsonMapping.put("ignoredPos", logSample.getIgnoredPos());
+//        jsonMapping.put("endTimestampFormat", logSample.getEndTimestampFormat());
+//        jsonMapping.put("startTimestampFormat", logSample.getStartTimestampFormat());
+
+
+        // Creating Object of ObjectMapper define in Jakson Api
+        ObjectMapper Obj = new ObjectMapper();
+        try {
+            jsonStr = Obj.writeValueAsString(logSample);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //TODO: fix logId
-        eventLogService.saveLayoutByLogId(90, userId, sampleJSON);
+        eventLogService.saveLayoutByLogId(90, userId, jsonStr);
 
 
         return null;
@@ -490,7 +553,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
                         (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
                         (myItem.getKey().equals(startTimestampLabel) && sample.getStartTimestampPos() == pos) ||
-                        (myItem.getKey().equals(otherTimestampLabel) && sample.getOtherTimestamps().containsKey(pos)) ||
+                        (myItem.getKey().equals(otherTimestampLabel) && ((Map<Integer, String>) sample.getOtherTimestamps()).containsKey(pos)) ||
                         (myItem.getKey().equals(resourceLabel) && sample.getResourcePos() == pos) ||
                         (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||

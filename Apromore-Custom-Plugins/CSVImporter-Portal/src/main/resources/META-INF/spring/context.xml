@@ -37,6 +37,7 @@
   <service interface="org.apromore.plugin.portal.FileImporterPlugin">
     <beans:bean class="org.apromore.plugin.portal.csvimporter.CSVFileImporterPlugin">
       <beans:property name="csvImporterLogic" ref="csvImporterLogic"/>
+      <beans:property name="eventLogService" ref="eventLogService"/>
     </beans:bean>
   </service>
 

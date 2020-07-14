@@ -23,22 +23,24 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
+import com.opencsv.CSVReader;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CSVFileImporterPlugin implements FileImporterPlugin {
 
@@ -46,13 +48,19 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
 
     // Fields injected from Spring beans/OSGi services
 //    private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
-    @Inject private EventLogService eventLogService;
+//    @Inject private EventLogService eventLogService;
 
     private CSVImporterLogic csvImporterLogic;
+    private EventLogService eventLogService;
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         LOGGER.info("Injected CSV importer logic {}", newCSVImporterLogic);
         this.csvImporterLogic = newCSVImporterLogic;
+    }
+
+    public void setEventLogService(EventLogService newEventLogService) {
+        LOGGER.info("Injected CSV importer logic {}", newEventLogService);
+        this.eventLogService = newEventLogService;
     }
 
     @Override
@@ -65,59 +73,108 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
 
         //TODO: find matches mapping
 
-//        LogSample sample = null;
-////
-//        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-//
-//        String userId = portalContext.getCurrentUser().getId();
-//
-//        String mappingJSON = eventLogService.getLayoutByUserId(userId);
-//
-//        Map arg = new HashMap<>();
-//
-//        if (mappingJSON != null) {
-//
-//            sample = (LogSample) JSONValue.parse(mappingJSON);
-//            List<String> sampleHeader = sample.getHeader();
-//
-//            List<String> header = new ArrayList<>();
-//
-//            String fileEncoding = "UTF-8";
-//            CSVFileReader csvFileReader = new CSVFileReader();
-//            CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
-//            try {
-//                header = Arrays.asList(csvReader.readNext());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            // Configure the arguments to pass to the CSV importer view
-//
-//            arg.put("csvImporterLogic", csvImporterLogic);
-//            arg.put("media", media);
-//            arg.put("sample", sample);
-//
-//            if(sampleHeader != null && sampleHeader.equals(header)) {
-//
-//                // Attempt 1: try to create a popup window on top of csvImporter window here.
-//                try {
-////                    Window matchedMappingPopUp =
-////                            (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
-////                            "/matchedMapping.zul", null, null);
-////                    matchedMappingPopUp.doModal();
-//
-//                    // Create a CSV importer view
-//                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "/org/apromore/plugin/portal/csvimporter/csvimporter.zul", null, arg);
-//                    window.doModal();
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//            }
 
-//        }
+        // Create a CSV importer view
+        String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
+
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+
+        String userId = portalContext.getCurrentUser().getId();
+
+        List<String> mappingJSONList = eventLogService.getLayoutByUserId(userId);
+
+        // Configure the arguments to pass to the CSV importer view
+        Map arg = new HashMap<>();
+        arg.put("csvImporterLogic", csvImporterLogic);
+        arg.put("media", media);
+
+        List<String> header = new ArrayList<>();
+        String fileEncoding = "UTF-8";
+
+        // Creating Object of ObjectMapper define in Jakson Api
+        ObjectMapper Obj = new ObjectMapper();
+        JsonFactory jsonF = new JsonFactory();
+
+        CSVFileReader csvFileReader = new CSVFileReader();
+        CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
+        try {
+            header = Arrays.asList(csvReader.readNext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (mappingJSONList.size() > 0) {
+
+            for (int i = mappingJSONList.size() - 1; i >= 0; i--) {
+                System.out.println(mappingJSONList.get(i));
+
+                JSONObject jsonObject = (JSONObject) JSONValue.parse(mappingJSONList.get(i));
+
+                JSONValue.parse(jsonObject.get("header").toString());
+
+                List<String> sampleHeader = (List<String>) jsonObject.get("header");
+
+                if (sampleHeader != null && sampleHeader.equals(header)) {
+
+                    // Attempt 1: try to create a popup window on top of csvImporter window here.
+                    try {
+                        Window matchedMappingPopUp =
+                                (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
+                                        "/matchedMapping.zul", null, null);
+                        matchedMappingPopUp.doModal();
+
+                        Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
+                                "uploadWithMatchedMapping");
+                        Button uploadAsNewBtn = (Button) matchedMappingPopUp.getFellow(
+                                "uploadAsNew");
+                        uploadWithMatchedMappingBtn.addEventListener("onClick", event -> {
+                                    LOGGER.info("################## BUTTON uploadWithMatchedMappingBtn CLICKED " +
+                                            "***************");
+                                    arg.put("mappingJSON", jsonObject);
+                                    matchedMappingPopUp.detach();
+                                    Window window =
+                                            (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
+                                    window.doModal();
+                                }
+                        );
+                        uploadAsNewBtn.addEventListener("onClick", event -> {
+                                    LOGGER.info("################## BUTTON uploadAsNewBtn CLICKED ***************");
+                                    arg.put("mappingJSON", null);
+                                    matchedMappingPopUp.detach();
+                                    Window window =
+                                            (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
+                                    window.doModal();
+                                }
+                        );
+                        // only match the last mapping if there are multiple
+                        break;
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else { // can't find match in JSONList
+                    arg.put("mappingJSON", null);
+                    Window window = null;
+                    try {
+                        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul,
+                                null, arg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    window.doModal();
+                }
+            }
+        } else { // this user doesn't have mapping stored
+            arg.put("mappingJSON", null);
+            Window window = null;
+            try {
+                window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul,
+                        null, arg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            window.doModal();
+        }
 
 
 
@@ -127,22 +184,18 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
         // 2. Edit -> go to importer view and load the existing mapping (the latest one)
         // 3. No -> Import as a new process -> go to importer view and load guessed mapping
 
+
+
+
         // Create a CSV importer view
-
-        Map arg = new HashMap<>();
-
-        arg.put("csvImporterLogic", csvImporterLogic);
-        arg.put("media", media);
-
-        String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
-        try {
-        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
-            window.doModal();
-
-
-        } catch (IOException e) {
-            LOGGER.error("Unable to create window", e);
-        }
+//        try {
+////        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+//            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
+//            window.doModal();
+//
+//
+//        } catch (IOException e) {
+//            LOGGER.error("Unable to create window", e);
+//        }
     }
 }

@@ -26,15 +26,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DashboardLayoutRepository extends JpaRepository<DashboardLayout, Integer>,
         DashboardLayoutRepositoryCustom{
 
     @Query("SELECT d.layout FROM DashboardLayout d WHERE d.userId = ?1 AND d.logId = ?2")
-    String findByUserIdAndLogId(String userId, Integer logId);
+    List<String> findByUserIdAndLogId(String userId, Integer logId);
 
     //TODO fix how to get latest one?
     @Query("SELECT DISTINCT d.layout FROM DashboardLayout d WHERE d.userId = ?1")
-    String findByUserId(String userId);
+    List<String> findByUserId(String userId);
 
 }
