@@ -62,8 +62,8 @@ public class EventLogFileServiceImpl implements EventLogFileService  {
     // Only work for "xes.gz" extension
     @Override
     public void copyFile(String sourceFileName, String targetFileName) throws Exception {
-        File currentFile = new File(directoryPath + "/" + sourceFileName + ".xes.gz");
-        File newFile = new File(directoryPath + "/" + targetFileName + ".xes.gz");
+        File currentFile = new File(directoryPath + "/" + sourceFileName);
+        File newFile = new File(directoryPath + "/" + targetFileName);
         FileUtils.copyFile(currentFile, newFile);
     }
     
