@@ -503,7 +503,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         ProcessBranch branch = process.getProcessBranches().get(0);
         ProcessBranch newBranch = branch.clone();
         
-        List<ProcessModelVersion> newPMVList = this.createNewPMVs(process.getId(), pmvVersions, branch);
+        List<ProcessModelVersion> newPMVList = this.createNewPMVs(process.getId(), pmvVersions, branch, newBranch);
         if (newPMVList.isEmpty()) {
             throw new Exception("No process model versions were found for processId=" + process.getId() + 
                                 "and versions=" + pmvVersions.toString());
@@ -533,6 +533,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         newProcess.setGroupProcesses(groupProcesses);
         
         processRepo.save(newProcess);
+        for (ProcessModelVersion pmv : newPMVList) {
+            pmvRepo.save(pmv);
+        }
         
         return newProcess;
     }
@@ -541,47 +544,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic) throws Exception {
-        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
-        User newUser = userRepo.findByUsername(userName);
-        
         Process process = processRepo.findUniqueByID(processId);
-        Process newProcess = process.clone();
-        
         ProcessBranch branch = process.getProcessBranches().get(0);
-        ProcessBranch newBranch = branch.clone();
-        
         List<String> pmvVersions = new ArrayList<>();
         for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
             pmvVersions.add(pmv.getVersionNumber());
         }
-        List<ProcessModelVersion> newPMVList = createNewPMVs(processId, pmvVersions, branch);
         
-        newBranch.setProcess(newProcess);
-        newBranch.setProcessModelVersions(newPMVList);
-        newBranch.setCurrentProcessModelVersion(newPMVList.get(newPMVList.size()-1));
-        
-        newProcess.getProcessBranches().clear();
-        newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[] {newBranch}));
-        newProcess.setUser(newUser);
-        newProcess.setFolder(newFolder);
-        
-        // Set access group
-        Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
-        groupProcesses.clear();
-        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), true, true, true));
-        if (isPublic) {
-            Group publicGroup = groupRepo.findPublicGroup();
-            if (publicGroup == null) {
-                LOGGER.warn("No public group present in repository");
-            } else {
-                groupProcesses.add(new GroupProcess(newProcess, publicGroup, true, true, false));
-            }
-        }
-        newProcess.setGroupProcesses(groupProcesses);
-        
-        processRepo.save(newProcess);
-        
-        return newProcess;
+        return copyProcessVersions(processId, pmvVersions, newFolderId, userName, isPublic);
     }
     
     @Override
@@ -595,11 +565,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return process;
     }
     
-    private List<ProcessModelVersion> createNewPMVs(Integer processId, List<String> pmvVersions, ProcessBranch branch) throws Exception {
+    private List<ProcessModelVersion> createNewPMVs(Integer processId, List<String> pmvVersions, 
+                                                    ProcessBranch oldBranch, ProcessBranch newBranch) throws Exception {
         List<ProcessModelVersion> pmvs = new ArrayList<>();
-        for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+        for (ProcessModelVersion pmv : oldBranch.getProcessModelVersions()) {
             if (pmvVersions.contains(pmv.getVersionNumber())) {
                 ProcessModelVersion newPMV = pmv.clone();
+                newPMV.setProcessBranch(newBranch);
                 newPMV.setNativeDocument(pmv.getNativeDocument().clone());
                 newPMV.getProcessModelAttributes().clear();
                 for (ProcessModelAttribute pma : pmv.getProcessModelAttributes()) {

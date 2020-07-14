@@ -181,7 +181,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     
     
     @Test
-    public void testCopyProcessModelVersions() throws Exception {
+    public void testCopyProcessVersions() throws Exception {
         // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -214,6 +214,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         expect(userRepo.findByUsername(userName)).andReturn(user);
         expect(processRepo.findUniqueByID(processId)).andReturn(process);
         expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(null); //ignore return value
+        expect(pmvRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(null).anyTimes(); //ignore return value
         replayAll();
         
         // Mock call
@@ -226,17 +227,23 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Assert.assertEquals(process.getName(), copyProcess.getName());
         Assert.assertEquals(1, copyProcess.getProcessBranches().size());
         Assert.assertEquals(process.getProcessBranches().get(0).getBranchName(), copyProcess.getProcessBranches().get(0).getBranchName());
+        Assert.assertEquals(copyProcess, copyProcess.getProcessBranches().get(0).getProcess());
+
         Assert.assertEquals(2, copyProcess.getProcessBranches().get(0).getProcessModelVersions().size());
         Assert.assertEquals("1.0", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getVersionNumber());
         Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getVersionNumber());
+        Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
+        
         Assert.assertEquals(pmv1.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getNativeDocument().getContent());
         Assert.assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
-        Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
+        Assert.assertEquals(copyProcess.getProcessBranches().get(0), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getProcessBranch());
+        Assert.assertEquals(copyProcess.getProcessBranches().get(0), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getProcessBranch());
+        
         Assert.assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
     }
     
     @Test
-    public void testCopyProcessModel() throws Exception {
+    public void testCopyProcess() throws Exception {
         // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -264,10 +271,11 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         boolean madePublic = false;
         
         // Mock recording
+        expect(processRepo.findUniqueByID(processId)).andReturn(process).anyTimes();
         expect(folderRepo.findUniqueByID(targetFolderId)).andReturn(targetFolder);
         expect(userRepo.findByUsername(userName)).andReturn(user);
-        expect(processRepo.findUniqueByID(processId)).andReturn(process);
         expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(null); //ignore return value
+        expect(pmvRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(null).anyTimes(); //ignore return value
         replayAll();
         
         // Mock call
@@ -292,7 +300,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
     
     @Test
-    public void testMoveProcessModel() throws Exception {
+    public void testMoveProcess() throws Exception {
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
         User user = createUser("userName1", group, createSet(group), createSet(role));

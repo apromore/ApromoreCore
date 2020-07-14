@@ -278,7 +278,7 @@ public class ProcessModelVersion implements Serializable {
         pmv.setProcessBranch(this.getProcessBranch());
         pmv.setProcessModelAttributes(this.getProcessModelAttributes());
         pmv.setVersionNumber(this.getVersionNumber());
-        pmv.setOriginalId(this.getOriginalId());
+        pmv.setOriginalId(null);
         pmv.setNativeType(this.getNativeType());
         pmv.setNativeDocument(this.getNativeDocument());
         pmv.setLockStatus(Constants.NO_LOCK);
