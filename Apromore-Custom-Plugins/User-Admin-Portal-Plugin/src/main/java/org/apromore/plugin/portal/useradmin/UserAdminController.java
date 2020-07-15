@@ -26,6 +26,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -40,6 +41,7 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -60,13 +62,25 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import org.apromore.plugin.portal.useradmin.listbox.*;
+
 public class UserAdminController extends SelectorComposer<Window> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
+    User currentUser;
     User selectedUser;
     ListModelList<Group> groupsModel;
     ListModelList<Role> rolesModel;
+    ListModelList<User> usersModel;
+
+    UsersListbox searchableUsersListbox;
+    GroupsListbox searchableGroupsListbox;
+
+    boolean canViewUsers;
+    boolean canEditUsers;
+    boolean canEditGroups;
+    boolean canEditRoles;
 
     private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
     private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
@@ -74,6 +88,7 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Wire("#usersCombobox")       Combobox usersCombobox;
     @Wire("#firstNameTextbox")    Textbox  firstNameTextbox;
     @Wire("#lastNameTextbox")     Textbox  lastNameTextbox;
+    @Wire("#usersListbox")        Listbox  usersListbox;
     @Wire("#groupsListbox")       Listbox  groupsListbox;
     @Wire("#rolesListbox")        Listbox  rolesListbox;
     @Wire("#newGroupButton")      Button   newGroupButton;
@@ -93,36 +108,44 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     @Override
-    public void doFinally() throws Exception {
-        super.doFinally();
+    public void doAfterCompose(Window win) throws Exception {
+        super.doAfterCompose(win);
 
-        ListModelList<User> usersModel = new ListModelList<>(securityService.getAllUsers(), false);
+        currentUser = securityService.getUserByName(portalContext.getCurrentUser().getUsername());
 
-        boolean canViewUsers = hasPermission(Permissions.VIEW_USERS);
+        canViewUsers = hasPermission(Permissions.VIEW_USERS);
+        canEditUsers = hasPermission(Permissions.EDIT_USERS);
+        canEditGroups = hasPermission(Permissions.EDIT_GROUPS);
+        canEditRoles = hasPermission(Permissions.EDIT_ROLES);
+
+        rolesModel = new ListModelList<>(securityService.getAllRoles(), false);
+        usersModel = new ListModelList<>(securityService.getAllUsers(), false);
+        groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
+
+        rolesModel.setMultiple(true);
+        usersModel.setMultiple(true);
+        groupsModel.setMultiple(true);
+
+        searchableUsersListbox = new UsersListbox(usersListbox, usersModel);
+        searchableGroupsListbox = new GroupsListbox(groupsListbox, groupsModel);
+
         usersCombobox.setButtonVisible(canViewUsers);
         usersCombobox.setDisabled(!canViewUsers);
         usersCombobox.setModel(usersModel);
         usersCombobox.setReadonly(!canViewUsers);
 
-        boolean canEditUsers = hasPermission(Permissions.EDIT_USERS);
         firstNameTextbox.setReadonly(!canEditUsers);
         lastNameTextbox.setReadonly(!canEditUsers);
 
-        boolean canEditGroups = hasPermission(Permissions.EDIT_GROUPS);
         newGroupButton.setVisible(canEditGroups);
-        groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
-        groupsModel.setMultiple(true);
-        groupsListbox.setModel(groupsModel);
+
+        // groupsListbox.setModel(groupsModel);
         groupsListbox.setNonselectableTags(canEditGroups ? null : "*");
 
-        boolean canEditRoles = hasPermission(Permissions.EDIT_ROLES);
-        rolesModel = new ListModelList<>(securityService.getAllRoles(), false);
-        rolesModel.setMultiple(true);
         rolesListbox.setModel(rolesModel);
         rolesListbox.setNonselectableTags(canEditRoles ? null : "*");
 
-        selectedUser = securityService.getUserByName(portalContext.getCurrentUser().getUsername());
-        setUser(selectedUser);
+        setUser(currentUser);
 
         // Register ZK event handler
         EventQueue securityEventQueue = EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true);
@@ -193,6 +216,17 @@ public class UserAdminController extends SelectorComposer<Window> {
 
         groupsModel.setSelection(securityService.findGroupsByUser(user));
         rolesModel.setSelection(securityService.findRolesByUser(user));
+    }
+
+    @Listen("onSelect = #usersListbox")
+    public void onSelectUsersListbox(SelectEvent event) throws Exception {
+        if (!hasPermission(Permissions.VIEW_USERS)) {
+            throw new Exception("Cannot view users without permission");
+        }
+        Set<User> selectedUsers = event.getSelectedItems();
+        Set<User> unselectedUsers = event.getUnselectedItems();
+        // selectedUser = securityService.getUserByName();
+        // setUser(selectedUser);
     }
 
     @Listen("onChange = #usersCombobox")

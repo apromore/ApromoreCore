@@ -19,71 +19,18 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<window width="70%" position="center" title="Users" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
-    <vbox>
-        <grid>
-            <columns>
-                <column hflex="1"/>
-                <column hflex="3"/>
-                <column label="Groups" hflex="2"/>
-                <column label="Roles" hflex="2"/>
-            </columns>
-            <rows>
-                <row>
-                    <label value="User"/>
-                    <combobox id="usersCombobox">
-                        <template name="model">
-                            <comboitem label="${each.username}"/>
-                        </template>
-                    </combobox>
-                    <cell rowspan="4" valign="top">
-                        <listbox id="groupsListbox" checkmark="true">
-                            <template name="model">
-                                <listitem>
-                                    <listcell>
-                                        <textbox id="${each.rowGuid}" value="${each.name}" submitByEnter="true"/>
-                                    </listcell>
-                                </listitem>
-                            </template>
-                        </listbox>
-                    </cell>
-                    <cell rowspan="5" valign="top">
-                        <listbox id="rolesListbox" checkmark="true">
-                            <template name="model">
-                                <listitem>
-                                    <listcell label="${each.name}"/>
-                                </listitem>
-                            </template>
-                        </listbox>
-                    </cell>
-                </row>
-                <row>
-                    <label value="Name"/>
-                    <hbox>
-                        <textbox id="firstNameTextbox" placeholder="First"/>
-                        <textbox id="lastNameTextbox" placeholder="Last"/>
-                    </hbox>
-                </row>
-                <row>
-                    <label value="Date created"/>
-                    <datebox id="dateCreatedDatebox" readonly="true"/>
-                </row>
-                <row>
-                    <label value="Last activity"/>
-                    <datebox id="lastActivityDatebox" readonly="true"/>
-                </row>
-                <row>
-                    <label/>
-                    <div align="center">
-                        <button id="newUserButton" label="New user"/>
-                        <button id="deleteUserButton" label="Delete user"/>
-                    </div>
-                    <button id="newGroupButton" label="New group"/>
-                </row>
-            </rows>
-        </grid>
-        <div align="center">
-            <button id="okButton" label="OK" image="img/ok.png"/>
-        </div>
-    </vbox>
-</window>
+<div xmlns:h="http://www.w3.org/1999/xhtml"
+     xmlns:ca="client/attribute">
+<listbox id="userListbox" vflex="1" hflex="1">
+  <listhead>
+    <listheader label="Username" />
+    <listheader label="Created on" />
+  </listhead>
+  <template name="model">
+    <listitem>
+      <listcell label="${each.username}"/>
+      <listcell label="${c:formatDate(each.dateCreated, 'yyyy-MMM-dd')}" />
+    </listitem>
+  </template>
+</listbox>
+</div>
