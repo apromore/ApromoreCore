@@ -227,7 +227,7 @@ public class CopyAndPasteController extends BaseController {
             Messagebox.show("Please select at least one item.", "Copy", Messagebox.OK, Messagebox.ERROR);
         } else {
             Messagebox.show(getSelectedItemsSize() +
-                    " item(s) has been selected for copying.", "Copy", Messagebox.OK, Messagebox.INFORMATION);
+                    " item(s) has been selected to be moved.", "Copy", Messagebox.OK, Messagebox.INFORMATION);
         }
     }
 
@@ -238,14 +238,14 @@ public class CopyAndPasteController extends BaseController {
             Messagebox.show("Please select at least one item.", "Copy", Messagebox.OK, Messagebox.ERROR);
         } else {
             Messagebox.show(getSelectedItemsSize() +
-                    " item(s) has been selected for copying.", "Copy", Messagebox.OK, Messagebox.INFORMATION);
+                    " item(s) has been selected to be copied.", "Copy", Messagebox.OK, Messagebox.INFORMATION);
         }
     }
 
     public void paste(Integer targetFolderId) throws Exception {
         selectedTargetFolderId = targetFolderId;
         if (selectedItems.isEmpty()) {
-            Messagebox.show("No item has been copied", "Copy", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("No item has been moved or copied", "Copy", Messagebox.OK, Messagebox.ERROR);
             return;
         }
         if (isCut) {
