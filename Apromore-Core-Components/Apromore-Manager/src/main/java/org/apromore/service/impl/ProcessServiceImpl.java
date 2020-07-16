@@ -63,7 +63,6 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
-import org.apromore.graph.canonical.Canonical;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.SummariesType;
@@ -281,7 +280,7 @@ public class ProcessServiceImpl implements ProcessService {
                         throw new RepositoryException(message);
                     }
                     else {
-                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null, null);
+                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null);
                         formatSrv.storeNative(processName, pmv, now, now, user, nativeType, newVersion.toString(), nativeStream);
                         LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                         return pmv;
@@ -554,7 +553,7 @@ public class ProcessServiceImpl implements ProcessService {
             final String created, final String lastUpdated, NativeType nativeType) throws ImportException {
         ProcessModelVersion pmv;
         ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
-        pmv = createProcessModelVersion(branch, version, nativeType, null, null);
+        pmv = createProcessModelVersion(branch, version, nativeType, null);
         return pmv;
     }
 
@@ -641,8 +640,8 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, NativeType nativeType,
-            final Canonical proModGrap, final String netId) {
+    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, 
+            NativeType nativeType, final String netId) {
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
 
