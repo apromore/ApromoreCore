@@ -59,7 +59,8 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
     	
     	String node_displayname = node_oriname.trim();
     	int fontSize;
-    	node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
+    	node_displayname = node_displayname.replace('_', ' ');
+		node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
     	node_displayname = visSettings.getStringFormatter().fixCutName(node_displayname, 0);
 
 		if (node_displayname.length() > 25) {
