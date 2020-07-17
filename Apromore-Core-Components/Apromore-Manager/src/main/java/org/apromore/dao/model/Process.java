@@ -205,6 +205,7 @@ public class Process implements Serializable {
         }
         newProcess.setProcessBranches(newBranches); 
         newProcess.setRanking(this.getRanking());
+        newProcess.setDomain(this.getDomain());
         newProcess.setUser(this.getUser());
         newProcess.setFolder(this.getFolder());
         newProcess.setGroupProcesses(new HashSet<>(this.getGroupProcesses()));
