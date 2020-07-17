@@ -38,6 +38,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
+import org.apromore.portal.dialogController.BaseListboxController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -63,9 +64,11 @@ public class MenuController extends Menubar {
     private Menubar menuB;
     private Menubar userMenu;
     private Menuitem aboutMenuitem;
+    private Menuitem targetMenuitem;
     private PortalContext portalContext;
 
     public MenuController(final MainController mainController) throws ExceptionFormats {
+        MenuController me = this;
         this.mainC = mainController;
         this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
@@ -123,6 +126,9 @@ public class MenuController extends Menubar {
                     aboutMenuitem = menuitem;
                     continue;
                 }
+                if ("Create folder".equals(menuitem.getLabel())) {
+                    targetMenuitem = menuitem;
+                }
 
                 // Insert the menu item into the appropriate position within the menu
                 // (As configured in site.properties in the case of the File menu, alphabetically otherwise)
@@ -166,6 +172,51 @@ public class MenuController extends Menubar {
                         this.userMenu.appendChild(menu);
                     } catch (Exception e) {
                         LOGGER.warn("Unable to set Account menu to current user name", e);
+                    }
+                } else if ("File".equals(menu.getLabel())) {
+                    try {
+                        Menupopup fileMenupopup = menu.getMenupopup();
+
+                        Menuseparator sep = new Menuseparator();
+                        fileMenupopup.insertBefore(sep, targetMenuitem);
+
+                        Menuitem item = new Menuitem();
+                        item.setLabel("Cut");
+                        item.setImage("/themes/ap/common/img/icons/cut.svg");
+                        item.addEventListener("onClick", new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                me.mainC.geBaseListboxController().cut();
+                            }
+                        });
+                        fileMenupopup.insertBefore(item, targetMenuitem);
+
+                        item = new Menuitem();
+                        item.setLabel("Copy");
+                        item.setImage("/themes/ap/common/img/icons/copy.svg");
+                        item.addEventListener("onClick", new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                me.mainC.geBaseListboxController().copy();
+                            }
+                        });
+                        fileMenupopup.insertBefore(item, targetMenuitem);
+
+                        item = new Menuitem();
+                        item.setLabel("Paste");
+                        item.setImage("/themes/ap/common/img/icons/paste.svg");
+                        item.addEventListener("onClick", new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                me.mainC.geBaseListboxController().paste();
+                            }
+                        });
+                        fileMenupopup.insertBefore(item, targetMenuitem);
+
+                        sep = new Menuseparator();
+                        fileMenupopup.insertBefore(sep, targetMenuitem);
+
+                    } catch (Exception e) {
                     }
                 }
             }

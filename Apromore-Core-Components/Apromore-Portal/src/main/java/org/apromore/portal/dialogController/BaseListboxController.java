@@ -354,15 +354,15 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
-    private void cut() {
+    public void cut() {
         copyAndPasteController.cut(getSelection());
     }
 
-    private void copy() {
+    public void copy() {
         copyAndPasteController.copy(getSelection());
     }
 
-    private void paste() throws Exception {
+    public void paste() throws Exception {
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
         try {

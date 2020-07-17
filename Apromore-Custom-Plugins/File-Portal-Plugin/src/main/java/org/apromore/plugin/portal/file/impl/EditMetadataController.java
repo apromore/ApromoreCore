@@ -25,6 +25,7 @@
 package org.apromore.plugin.portal.file.impl;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
@@ -167,7 +168,8 @@ public class EditMetadataController extends BaseController {
         Button cancelAllB = (Button) cancelB.getNextSibling();
         Button resetB = (Button) cancelAllB.getNextSibling();
 
-        List<String> domains = mainC.getDomains();
+        // List<String> domains = mainC.getDomains();
+        List<String> domains = new ArrayList<>();
         this.domainCB = new SelectDynamicListController(domains);
         this.domainCB.setReference(domains);
         this.domainCB.setAutodrop(true);
