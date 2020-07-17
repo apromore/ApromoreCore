@@ -869,3 +869,12 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     max-width: 22px;
     font-size: 16px;
 }
+
+.z-menuseparator {
+    border-bottom-width: 1px !important;
+    width: 100% !important;
+}
+
+.z-menuitem-image {
+    max-height: 18px;
+}

@@ -42,6 +42,7 @@ import org.apromore.service.WorkspaceService;
 
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zk.ui.util.Clients;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -220,14 +221,17 @@ public class CopyAndPasteController extends BaseController {
         }
     }
 
+    private void info(String message) {
+        Clients.evalJavaScript("Ap.common.notify('" + message + "');");
+    }
+
     public void cut(Set<Object> selections) {
         isCut = true;
         updateSelectedItems(selections);
         if (selectedItems.isEmpty()) {
             Messagebox.show("Please select at least one item.", "Copy", Messagebox.OK, Messagebox.ERROR);
         } else {
-            Messagebox.show(getSelectedItemsSize() +
-                    " item(s) has been selected to be moved.", "Copy", Messagebox.OK, Messagebox.INFORMATION);
+            info(getSelectedItemsSize() + " item(s) has been selected to be moved.");
         }
     }
 
@@ -237,8 +241,7 @@ public class CopyAndPasteController extends BaseController {
         if (selectedItems.isEmpty()) {
             Messagebox.show("Please select at least one item.", "Copy", Messagebox.OK, Messagebox.ERROR);
         } else {
-            Messagebox.show(getSelectedItemsSize() +
-                    " item(s) has been selected to be copied.", "Copy", Messagebox.OK, Messagebox.INFORMATION);
+            info(getSelectedItemsSize() + " item(s) has been selected to be copied.");
         }
     }
 
