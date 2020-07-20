@@ -35,6 +35,7 @@ import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -77,7 +78,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/users.zul", null, arg);
+            Window window = (Window) Executions.getCurrent().createComponents("users.zul", null, arg);
             window.doModal();
 
         } catch(Exception e) {

@@ -24,9 +24,9 @@
 
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="WebApp_ID"
-         version="2.5">
+         version="3.0">
 
   <display-name>Apromore-Portal</display-name>
 
@@ -81,6 +81,10 @@
     <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>resource</servlet-name>
+    <servlet-class>org.apromore.portal.servlet.ResourceServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>ws</servlet-name>
     <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
     <init-param>
@@ -113,6 +117,10 @@
   <servlet-mapping>
     <servlet-name>auEngine</servlet-name>
     <url-pattern>/zkau/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>resource</servlet-name>
+    <url-pattern>/</url-pattern>  <!-- override the "default" servlet -->
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ws</servlet-name>

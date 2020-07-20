@@ -45,21 +45,19 @@
             <groupId>javax.inject</groupId>
             <artifactId>com.springsource.javax.inject</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.opencsv</groupId>-->
-            <!--<artifactId>opencsv</artifactId>-->
-            <!--<version>4.0</version>-->
-        <!--</dependency>-->
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
             <version>2.27</version>
         </dependency>
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>csvimporter-logic</artifactId>
             <version>1.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
@@ -83,14 +81,17 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zul</artifactId>

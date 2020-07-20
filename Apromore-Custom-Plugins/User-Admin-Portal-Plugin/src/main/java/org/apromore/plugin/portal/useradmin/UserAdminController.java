@@ -275,7 +275,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/create-group.zul", getSelf(), arg);
+            Window window = (Window) Executions.getCurrent().createComponents("create-group.zul", getSelf(), arg);
             window.doModal();
 
         } catch(Exception e) {
@@ -294,7 +294,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/create-user.zul", getSelf(), arg);
+            Window window = (Window) Executions.getCurrent().createComponents("create-user.zul", getSelf(), arg);
             window.doModal();
 
         } catch(Exception e) {
