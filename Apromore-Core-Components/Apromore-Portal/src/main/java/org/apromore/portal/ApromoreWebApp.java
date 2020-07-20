@@ -61,7 +61,7 @@ public class ApromoreWebApp extends SimpleWebApp {
                     for (WebContentService webContentService: getWebContentServices()) {
                         
                         if (webContentService.hasResource(path)) {
-                            log("Got page definition for " + path + "from " + webContentService);
+                            log("Got page definition for " + path + " from " + webContentService);
                             try (InputStream in = webContentService.getResourceAsStream(path)) {
                                 if (in != null) {
                                     pageDefinition = PageDefinitions.getPageDefinitionDirectly(
