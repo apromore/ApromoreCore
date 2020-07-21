@@ -26,8 +26,8 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.model.DomainsType;
-import org.apromore.model.NativeTypesType;
+import org.apromore.portal.model.DomainsType;
+import org.apromore.portal.model.NativeTypesType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;

@@ -27,11 +27,11 @@ package org.apromore.portal.dialogController.dto;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.deckfour.xes.model.XLog;
 
 /**

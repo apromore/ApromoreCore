@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.dao.model.SearchHistory;
-import org.apromore.model.SearchHistoriesType;
+import org.apromore.portal.model.SearchHistoriesType;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.

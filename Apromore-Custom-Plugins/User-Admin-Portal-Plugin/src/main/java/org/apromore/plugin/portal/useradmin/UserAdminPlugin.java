@@ -28,7 +28,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.model.PermissionType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;

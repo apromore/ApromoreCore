@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
-import org.apromore.model.ExportFormatResultType;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.ProcessService;
 import org.apromore.util.StreamUtil;
 import org.junit.Ignore;

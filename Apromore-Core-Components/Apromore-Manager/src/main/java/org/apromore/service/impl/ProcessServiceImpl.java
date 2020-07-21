@@ -25,7 +25,6 @@ package org.apromore.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -63,9 +62,8 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
-import org.apromore.helper.Version;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.SummariesType;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
@@ -73,7 +71,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
-import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,27 +130,6 @@ public class ProcessServiceImpl implements ProcessService {
         this.formatSrv = formatSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
-    }
-
-    /**
-     * @see org.apromore.service.ProcessService#readProcessSummaries(Integer, String)
-     *      {@inheritDoc}
-     */
-    @Override
-    public SummariesType readProcessSummaries(final Integer folderId, final String userRowGuid, final String searchExpression) {
-        SummariesType processSummaries = null;
-
-        try {
-            processSummaries = ui.buildProcessSummaryList(folderId, userRowGuid,
-                SearchExpressionBuilder.buildSearchConditions(searchExpression, "p", "processId", "process"),  // processes
-                SearchExpressionBuilder.buildSearchConditions(searchExpression, "l", "logId",     "log"),      // logs
-                SearchExpressionBuilder.buildSearchConditions(searchExpression, "f", "folderId",  "folder"));  // folders
-
-        } catch (UnsupportedEncodingException usee) {
-            LOGGER.error("Failed to get Process Summaries: " + usee.toString());
-        }
-
-        return processSummaries;
     }
 
 

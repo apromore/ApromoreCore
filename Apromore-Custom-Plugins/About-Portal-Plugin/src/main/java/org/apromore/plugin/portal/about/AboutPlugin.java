@@ -24,7 +24,7 @@ package org.apromore.plugin.portal.about;
 
 import java.util.*;
 
-import org.apromore.model.PluginInfo;
+import org.apromore.portal.model.PluginInfo;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.ConfigBean;

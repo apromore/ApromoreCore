@@ -47,7 +47,7 @@
 
     <!-- Manager -->
     <artifact type="bundle" name="org.apromore.manager" version="[1.1.0, 2)" />
-    <artifact type="bundle" name="org.apromore.manager-ws-model" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.portal-model" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-client" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-security" version="[1.1.0, 2)"/>
     

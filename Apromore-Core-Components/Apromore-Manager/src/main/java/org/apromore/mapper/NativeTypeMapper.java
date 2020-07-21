@@ -25,8 +25,8 @@
 package org.apromore.mapper;
 
 import org.apromore.dao.model.NativeType;
-import org.apromore.model.FormatType;
-import org.apromore.model.NativeTypesType;
+import org.apromore.portal.model.FormatType;
+import org.apromore.portal.model.NativeTypesType;
 
 import java.util.List;
 

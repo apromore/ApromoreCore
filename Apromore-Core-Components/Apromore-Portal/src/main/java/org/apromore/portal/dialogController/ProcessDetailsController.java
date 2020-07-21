@@ -25,9 +25,9 @@
 package org.apromore.portal.dialogController;
 
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.model.NativeTypesType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;

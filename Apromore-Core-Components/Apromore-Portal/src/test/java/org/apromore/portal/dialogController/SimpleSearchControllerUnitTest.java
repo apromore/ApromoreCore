@@ -24,8 +24,10 @@ package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apromore.model.SearchHistoriesType;
+
 import static org.junit.Assert.assertEquals;
+
+import org.apromore.portal.model.SearchHistoriesType;
 import org.junit.Ignore;
 import org.junit.Test;
 

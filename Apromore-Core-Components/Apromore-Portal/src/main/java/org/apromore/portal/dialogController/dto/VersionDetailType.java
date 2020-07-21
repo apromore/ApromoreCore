@@ -24,8 +24,8 @@
 
 package org.apromore.portal.dialogController.dto;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 
 /**
  * Created by cameron on 23/01/2014.

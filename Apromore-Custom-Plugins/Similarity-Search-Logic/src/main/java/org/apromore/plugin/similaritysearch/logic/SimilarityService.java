@@ -25,8 +25,8 @@
 package org.apromore.plugin.similaritysearch.logic;
 
 import org.apromore.exception.ExceptionSearchForSimilar;
-import org.apromore.model.ParametersType;
-import org.apromore.model.SummariesType;
+import org.apromore.portal.model.ParametersType;
+import org.apromore.portal.model.SummariesType;
 
 /**
  * Interface for the Similarity Service. Defines all the methods that will do the majority of the work for

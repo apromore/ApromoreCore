@@ -26,19 +26,19 @@ package org.apromore.portal.common;
 
 import java.util.List;
 
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
+import org.apromore.portal.dialogController.DetailsTabController;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.Detail;
+import org.apromore.portal.model.ResultPQL;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.*;
-
-import org.apromore.model.*;
-import org.apromore.model.Detail;
-import org.apromore.plugin.portal.MainControllerInterface;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
-import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.dialogController.DetailsTabController;
-import org.apromore.portal.dialogController.MainController;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Tabpanel;
 
 /**
  * Created by corno on 17/07/2014.
@@ -90,11 +90,13 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
 
         Listheader idListHeader = builtChild("1", "ID", null, "auto", "3em");
         idListHeader.setSortAscending(new java.util.Comparator<TabListitem>() {
+            @Override
             public int compare(TabListitem o1, TabListitem o2) {
                 return o1.getProcessSummaryType().getId().intValue() - o2.getProcessSummaryType().getId().intValue();
             }
 	});
         idListHeader.setSortDescending(new java.util.Comparator<TabListitem>() {
+            @Override
             public int compare(TabListitem o1, TabListitem o2) {
                 return o2.getProcessSummaryType().getId().intValue() - o1.getProcessSummaryType().getId().intValue();
             }
@@ -143,12 +145,14 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
         return header;
     }
 
+    @Override
     public int hashCode(){
         int x = userID.hashCode();
         int y = (tabpanel == null) ? 1 : tabpanel.hashCode();
         return x * y;
     }
 
+    @Override
     public boolean equals(Object o){
         if(o==null || ! (o instanceof TabQuery))
             return false;

@@ -24,9 +24,10 @@
 
 package org.apromore.portal.util;
 
-import org.apromore.model.*;
 import java.io.Serializable;
 import java.util.Comparator;
+
+import org.apromore.portal.model.*;
 
 public class SummaryComparator implements Comparator<Object>, Serializable {
 

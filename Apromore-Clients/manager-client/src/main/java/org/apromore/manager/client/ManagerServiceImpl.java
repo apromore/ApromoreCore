@@ -23,6 +23,7 @@
 package org.apromore.manager.client;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,38 +45,36 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
-import org.apromore.helper.PluginHelper;
-import org.apromore.helper.Version;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.GroupMapper;
 import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ExportLogResultType;
-import org.apromore.model.FolderType;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.GroupType;
-import org.apromore.model.ImportLogResultType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.DomainsType;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.ExportLogResultType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.GroupAccessType;
+import org.apromore.portal.model.GroupType;
+import org.apromore.portal.model.ImportLogResultType;
+import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.NativeTypesType;
+import org.apromore.portal.model.PluginInfo;
+import org.apromore.portal.model.PluginInfoResult;
+import org.apromore.portal.model.PluginMessages;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SearchHistoriesType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.UsernamesType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.FormatService;
@@ -86,6 +85,9 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
+import org.apromore.service.search.SearchExpressionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -105,6 +107,8 @@ public class ManagerServiceImpl implements ManagerService {
     @Inject private UserInterfaceHelper uiHelper;
 
     private boolean isGEDMatrixReady = true;
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceImpl.class);
 
 
     // Implementation of ManagerService
@@ -326,7 +330,19 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria) {
-        return procSrv.readProcessSummaries(folderId, userRowGuid, searchCriteria);
+        SummariesType processSummaries = null;
+
+        try {
+            processSummaries = uiHelper.buildProcessSummaryList(folderId, userRowGuid,
+                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "p", "processId", "process"),  // processes
+                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "l", "logId",     "log"),      // logs
+                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "f", "folderId",  "folder"));  // folders
+
+        } catch (UnsupportedEncodingException usee) {
+            LOGGER.error("Failed to get Process Summaries: " + usee.toString());
+        }
+
+        return processSummaries;
     }
 
     /**
@@ -449,7 +465,6 @@ public class ManagerServiceImpl implements ManagerService {
     public ProcessSummaryType createNewEmptyProcess(String username) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
-        AnnotationsType annType = new AnnotationsType();
 
         proType.setId(0);
         proType.setName("Untitled");
@@ -470,10 +485,6 @@ public class ManagerServiceImpl implements ManagerService {
         verType.setRanking("");
         verType.setEmpty(false);
 
-        annType.setNativeType("BPMN 2.0");
-        annType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
-        verType.getAnnotations().add(annType);
-        
         proType.getVersionSummaries().clear();
         proType.getVersionSummaries().add(verType);
         

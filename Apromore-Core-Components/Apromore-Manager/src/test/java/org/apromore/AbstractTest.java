@@ -43,7 +43,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
-import org.apromore.helper.Version;
+import org.apromore.portal.helper.Version;
 import org.easymock.EasyMockSupport;
 
 public class AbstractTest extends EasyMockSupport {

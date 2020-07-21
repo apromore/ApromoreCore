@@ -25,20 +25,16 @@
 package org.apromore.portal.dialogController.renderer;
 
 import java.util.HashSet;
-import java.util.List;
 
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -64,8 +60,6 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
     private void renderVersionSummary(final Listitem listItem, final VersionDetailType data) {
         listItem.appendChild(renderVersionVersion(data.getVersion()));
         listItem.appendChild(renderVersionLastUpdate(data.getVersion()));
-        listItem.appendChild(renderVersionName(data.getVersion()));
-        listItem.appendChild(renderVersionAnnotations(data.getVersion()));
 
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
@@ -89,30 +83,6 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         return wrapIntoListCell(new Label(version.getVersionNumber()));
     }
 
-    private Component renderVersionAnnotations(VersionSummaryType version) {
-        Listbox annotationLB = new Listbox();
-        Listitem annotationsI = new Listitem();
-        annotationLB.setMold("select");
-        annotationLB.setRows(1);
-        annotationLB.setWidth("100%");
-        annotationLB.setStyle(Constants.UNSELECTED_VERSION);
-        if (version.getAnnotations().size() > 0) {
-            for (int i = 0; i < version.getAnnotations().size(); i++) {
-                String language = version.getAnnotations().get(i).getNativeType();
-                for (int k = 0; k < version.getAnnotations().get(i).getAnnotationName().size(); k++) {
-                    annotationLB.appendChild(annotationsI);
-                    annotationsI.setLabel(version.getAnnotations().get(i).getAnnotationName().get(k) + " (" + language + ")");
-                }
-            }
-            annotationLB.selectItem(annotationLB.getItemAtIndex(version.getAnnotations().size() - 1));
-        } else {
-            annotationLB.appendChild(annotationsI);
-            annotationsI.setLabel("N/A");
-            annotationLB.selectItem(annotationLB.getItemAtIndex(0));
-        }
-        return wrapIntoListCell(annotationLB);
-    }
-
     private Component renderVersionLastUpdate(VersionSummaryType version) {
         if (version.getLastUpdate() == null || version.getLastUpdate().isEmpty()) {
             return wrapIntoListCell(new Label(version.getCreationDate()));
@@ -121,20 +91,10 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         }
     }
 
-    private Component renderVersionName(VersionSummaryType version) {
-        return wrapIntoListCell(new Label(version.getName()));
-    }
-
     private Listcell wrapIntoListCell(Component cp) {
         Listcell lc = new Listcell();
         lc.appendChild(cp);
         return lc;
     }
 
-    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
-        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
-            return annotations.get(annotations.size() - 1);
-        }
-        return null;
-    }
 }

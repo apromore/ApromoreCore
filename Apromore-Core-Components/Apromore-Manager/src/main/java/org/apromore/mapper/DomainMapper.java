@@ -24,9 +24,9 @@
 
 package org.apromore.mapper;
 
-import org.apromore.model.DomainsType;
-
 import java.util.List;
+
+import org.apromore.portal.model.DomainsType;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.

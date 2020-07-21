@@ -25,8 +25,6 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.*;
-import org.apromore.model.Detail;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.SessionTab;
@@ -35,6 +33,7 @@ import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.model.*;
 import org.zkoss.zul.*;
 import org.zkoss.util.resource.Labels;
 

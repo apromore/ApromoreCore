@@ -40,7 +40,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
+            <artifactId>portal-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>

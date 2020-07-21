@@ -40,11 +40,11 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.MembershipType;
-import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.MembershipType;
+import org.apromore.portal.model.UserType;
 import org.apromore.security.ApromoreWebAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

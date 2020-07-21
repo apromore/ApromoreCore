@@ -34,16 +34,16 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apromore.model.ParameterType;
-import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdType;
-import org.apromore.model.ProcessVersionIdsType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.model.ParameterType;
+import org.apromore.portal.model.ParametersType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.ProcessVersionIdType;
+import org.apromore.portal.model.ProcessVersionIdsType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.DomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

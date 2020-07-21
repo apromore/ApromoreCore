@@ -96,10 +96,9 @@
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
         <!-- Clients that we can distribute -->
-        <module>Apromore-Clients/manager-ws-model</module>
+        <module>Apromore-Clients/portal-model</module>
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/manager-security</module>
-        <module>Apromore-Clients/portal-client</module>
         
         <!-- Extras -->
         <module>Apromore-Extras/OpenXES</module>
@@ -148,7 +147,6 @@
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
         <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
         <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
-        <portal-client.version>1.1</portal-client.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <httpcomponents.version>4.2.1</httpcomponents.version>
@@ -515,7 +513,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
-                <artifactId>manager-ws-model</artifactId>
+                <artifactId>portal-model</artifactId>
                 <version>${manager-client.version}</version>
             </dependency>
             <dependency>
@@ -532,11 +530,6 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>filestore-client</artifactId>
                 <version>${filestore-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>portal-client</artifactId>
-                <version>${portal-client.version}</version>
             </dependency>
 
             <!--  Core Plugins -->

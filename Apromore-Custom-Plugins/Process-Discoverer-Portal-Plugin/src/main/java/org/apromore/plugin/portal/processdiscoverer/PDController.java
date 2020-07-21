@@ -33,8 +33,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
@@ -56,6 +54,8 @@ import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;

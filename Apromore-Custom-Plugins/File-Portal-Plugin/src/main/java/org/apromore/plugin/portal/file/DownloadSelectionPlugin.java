@@ -32,17 +32,17 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ExportLogResultType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.ExportLogResultType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.XLog;

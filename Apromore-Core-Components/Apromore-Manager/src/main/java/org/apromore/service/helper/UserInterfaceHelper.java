@@ -28,10 +28,10 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionsType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.ProcessVersionsType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
 
 /**
  * UI Helper Interface. Kinda a hack, need to re-look at this.

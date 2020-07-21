@@ -35,10 +35,10 @@ import java.io.InputStream;
 import javax.inject.Inject;
 
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
 import org.apromore.service.ProcessService;
 import org.junit.Before;
 import org.junit.Ignore;

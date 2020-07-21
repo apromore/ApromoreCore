@@ -34,13 +34,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.PluginInfo;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.PluginInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;

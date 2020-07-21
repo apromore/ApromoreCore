@@ -27,18 +27,17 @@ package org.apromore.portal.dialogController.renderer;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.FolderSummaryType;
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderSummaryType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.DateTimeNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -433,14 +432,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
             }
         }
         return result;
-    }
-
-
-    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
-        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
-            return annotations.get(annotations.size() - 1);
-        }
-        return null;
     }
 
 }
