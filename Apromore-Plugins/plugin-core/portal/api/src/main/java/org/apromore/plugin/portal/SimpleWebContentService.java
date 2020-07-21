@@ -29,6 +29,24 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A generic implementation of {@link WebContentService}.
+ *
+ * Serves any file in the component's src/main/resource directory as the corresponding URL.
+ * E.g. src/main/resource/test.zul is accessible as http://localhost:9000/test.zul.
+ * Resources ending in .class or within the META-INF or WEB-INF directories are excluded.
+ *
+ * A component can employ it by configuring a bean in its Spring context and exporting it as an OSGi service.
+ * The bean must be passed an arbitrary object from one of the bundle's packages in order to set the classloader.
+ * An example Spring configuration:
+ * <pre>
+ * <osgi:service interface="org.apromore.plugin.portal.WebContentService">
+ *   <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
+ *     <beans:constructor-arg type="Object" ref="anyBeanFromAPackageDefinedByThisComponent"/>
+ *   </beans:bean>
+ * </osgi:service>
+ * </pre>
+ */
 public class SimpleWebContentService implements WebContentService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SimpleWebContentService.class);
