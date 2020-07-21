@@ -67,13 +67,13 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         // Create a CSV importer view
         switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
         case "page":  // create the view in its own page
-            Executions.getCurrent().sendRedirect("/csvimporter.zul", "_blank");
+            Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
             break;
 
         case "modal": default:  // create the view in a modal popup within the current page
             PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
             try {
-                Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "csvimporter.zul", null, arg);
+                Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
                 window.doModal();
 
             } catch (IOException e) {
