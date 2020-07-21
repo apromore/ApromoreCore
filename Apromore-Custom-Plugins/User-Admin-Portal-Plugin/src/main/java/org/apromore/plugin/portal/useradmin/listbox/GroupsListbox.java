@@ -32,6 +32,7 @@ import org.apromore.dao.model.Group;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModelList;
 
+import java.util.Set;
 
 public class GroupsListbox extends SearchableListbox {
 
@@ -44,4 +45,8 @@ public class GroupsListbox extends SearchableListbox {
         return ((Group)this.getSourceListmodel().get(index)).getName().toLowerCase();
     }
 
+    @Override
+    public Set<Group> getSelection() {
+        return (Set<Group>)getListmodel().getSelection();
+    }
 }

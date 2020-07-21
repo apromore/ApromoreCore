@@ -19,3 +19,43 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+.ap-usrmgt-win .z-tabpanel {
+    padding: 0;
+}
+
+.ap-usrmgt-win .ap-mini-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.ap-usrmgt-win .ap-listheader-search input[type="checkbox"] {
+    display: none;
+}
+
+.ap-usrmgt-win .z-listheader-checkable {
+    position:absolute;
+    top: 5px;
+    left: 8px;
+}
+
+.ap-usrmgt-detail {
+    background-color: var(--ap-c-grey-minor);
+    padding: 8px 10px;
+}
+
+.ap-usrmgt-detail .z-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: black;
+}
+
+.ap-form-sublist .z-label {
+    font-weight: normal !important;
+    color: white !important;
+}
+
+.ap-form-sublist table td:first-child .z-listcell-content {
+    text-align: left !important;
+}

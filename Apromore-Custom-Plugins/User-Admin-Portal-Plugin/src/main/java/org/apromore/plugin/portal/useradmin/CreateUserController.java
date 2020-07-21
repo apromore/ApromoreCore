@@ -48,7 +48,7 @@ public class CreateUserController extends SelectorComposer<Window> {
     @Wire("#emailTextbox")     Textbox emailTextbox;
     @Wire("#passwordTextbox")  Textbox passwordTextbox;
 
-    @Listen("onClick = #createButton")
+    @Listen("onClick = #createBtn")
     public void onClickCreateButton() throws Exception {
         boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
         if (!canEditUsers) {
@@ -75,7 +75,7 @@ public class CreateUserController extends SelectorComposer<Window> {
         }
     }
 
-    @Listen("onClick = #cancelButton")
+    @Listen("onClick = #cancelBtn")
     public void onClickCancelButton() {
         getSelf().detach();
     }

@@ -62,7 +62,7 @@ public class SearchableListbox {
 
         // These selector must be custom and defined via sclass
         this.listheader = (Listheader)listbox.query(".z-listheader");
-        // this.selectAll = (Checkbox)listbox.query(".ap-listbox-selectall-checkbox");
+        this.listheader.setSort("auto");
         this.searchToggle = (Checkbox)listbox.query(".ap-listbox-search-toggle");
         this.searchInput = (Textbox)listbox.query(".ap-listbox-search-input");
         this.searchBtn = (Button)listbox.query(".ap-listbox-search-btn");
@@ -154,7 +154,6 @@ public class SearchableListbox {
         } else {
             searchCount.setValue("(" + listmodel.size() + " / " + sourceListmodel.size() + ")");
         }
-        listheader = (Listheader)listbox.query(".ap-listheader");
         listheader.setLabel("(" + listbox.getSelectedCount() + " / " + listbox.getItemCount() + ")");
     }
 
@@ -176,10 +175,23 @@ public class SearchableListbox {
         return "" + index;
     }
 
+    public void setSourceListmodel(ListModelList sourceListmodel) {
+        this.sourceListmodel = sourceListmodel;
+    }
+
+    public ListModelList getListmodel() {
+        return this.listmodel;
+    }
+
     private void initData() {
+        listmodel.clear();
         for (int i = 0; i < sourceListmodel.size(); i++) {
             listmodel.add(sourceListmodel.get(i));
         }
+    }
+
+    public Set getSelection () {
+        return listmodel.getSelection();
     }
 
     public void selectAll() {
@@ -197,7 +209,6 @@ public class SearchableListbox {
 
     public void showSearchDrawer(boolean visible) {
         Auxhead auxhead = (Auxhead)listbox.query(".ap-auxhead");
-        // ((Auxhead)listbox.getHeads().toArray()[1])
         auxhead.setVisible(visible);
     }
 

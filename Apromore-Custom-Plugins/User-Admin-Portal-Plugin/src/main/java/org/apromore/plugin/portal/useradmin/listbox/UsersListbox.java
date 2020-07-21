@@ -32,6 +32,7 @@ import org.apromore.dao.model.User;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModelList;
 
+import java.util.Set;
 
 public class UsersListbox extends SearchableListbox {
 
@@ -44,4 +45,8 @@ public class UsersListbox extends SearchableListbox {
         return ((User)this.getSourceListmodel().get(index)).getUsername().toLowerCase();
     }
 
+    @Override
+    public Set<User> getSelection() {
+        return (Set<User>)getListmodel().getSelection();
+    }
 }

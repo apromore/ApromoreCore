@@ -78,7 +78,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) Executions.getCurrent().createComponents("zul/index.zul", null, arg);
+            Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/index.zul", null, arg);
             window.doModal();
 
         } catch(Exception e) {
