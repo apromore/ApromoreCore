@@ -24,9 +24,8 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.SummaryType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.SummaryType;
 import org.zkoss.zul.DefaultTreeNode;
 
 /**

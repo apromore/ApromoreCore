@@ -33,15 +33,6 @@ import java.util.Set;
 
 import javax.xml.datatype.DatatypeFactory;
 
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
@@ -51,6 +42,15 @@ import org.apromore.portal.dialogController.workspaceOptions.AddFolderController
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;

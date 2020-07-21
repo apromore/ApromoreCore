@@ -24,7 +24,7 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.Detail;
+import org.apromore.portal.model.Detail;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;

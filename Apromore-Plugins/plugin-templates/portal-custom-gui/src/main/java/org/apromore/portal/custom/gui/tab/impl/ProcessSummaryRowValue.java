@@ -24,8 +24,8 @@
 
 package org.apromore.portal.custom.gui.tab.impl;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 13/04/2016.

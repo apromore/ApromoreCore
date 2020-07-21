@@ -24,7 +24,7 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.model.FolderType;
+import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;

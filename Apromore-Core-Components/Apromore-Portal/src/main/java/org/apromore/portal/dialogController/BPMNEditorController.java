@@ -30,16 +30,16 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.PluginMessages;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

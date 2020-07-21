@@ -24,9 +24,9 @@
 
 package org.apromore.plugin.portal;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.UserType;
 
 /**
  * Communication interface that provides access to the Apromore portal

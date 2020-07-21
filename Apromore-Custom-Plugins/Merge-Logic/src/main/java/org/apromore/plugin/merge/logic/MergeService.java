@@ -26,9 +26,9 @@
 package org.apromore.plugin.merge.logic;
 
 import org.apromore.exception.ExceptionMergeProcess;
-import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdsType;
+import org.apromore.portal.model.ParametersType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.ProcessVersionIdsType;
 
 /**
  * Interface for the Merge Service. Defines all the methods that will do the majority of the work for

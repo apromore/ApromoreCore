@@ -26,9 +26,9 @@ package org.apromore.mapper;
 
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
+import org.apromore.portal.model.SearchHistoriesType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.UsernamesType;
 import org.apromore.service.SecurityService;
 import org.junit.Before;
 import org.junit.Test;

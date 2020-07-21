@@ -26,13 +26,13 @@ package org.apromore.portal.custom.gui.plugin;
 
 import java.util.HashSet;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.ProcessSummaryRowValue;
 import org.apromore.portal.custom.gui.tab.impl.TabItem;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 2/05/2016.

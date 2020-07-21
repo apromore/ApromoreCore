@@ -32,7 +32,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apromore.common.ConfigBean;
-import org.apromore.common.Constants;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -48,15 +47,14 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.FolderSummaryType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionType;
-import org.apromore.model.ProcessVersionsType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.FolderSummaryType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.ProcessVersionType;
+import org.apromore.portal.model.ProcessVersionsType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +124,6 @@ public class UIHelper implements UserInterfaceHelper {
             String domain, String created, String lastUpdate, String username, boolean isPublic) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
-        AnnotationsType annType = new AnnotationsType();
 
         proType.setId(process.getId());
         proType.setName(process.getName());
@@ -144,12 +141,6 @@ public class UIHelper implements UserInterfaceHelper {
         verType.setRanking(process.getRanking());
         verType.setEmpty(false);
 
-        if (nativeType != null && !nativeType.equals("")) {
-            annType.setNativeType(nativeType);
-            annType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
-            verType.getAnnotations().add(annType);
-        }
-
         proType.getVersionSummaries().clear();
         proType.getVersionSummaries().add(verType);
 
@@ -159,7 +150,7 @@ public class UIHelper implements UserInterfaceHelper {
 
     /**
      * Used for the Search on the Main Screen Page
-     * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.model.ProcessVersionsType)
+     * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.portal.model.ProcessVersionsType)
      * {@inheritDoc}
      */
     @Override
@@ -194,7 +185,7 @@ public class UIHelper implements UserInterfaceHelper {
 
     /**
      * Used by get the list of processes for  user (main page).
-     * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, org.apromore.model.ProcessVersionsType)
+     * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, org.apromore.portal.model.ProcessVersionsType)
      * {@inheritDoc}
      */
     @Override

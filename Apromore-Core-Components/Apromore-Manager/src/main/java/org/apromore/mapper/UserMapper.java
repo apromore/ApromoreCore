@@ -35,7 +35,7 @@ import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
-import org.apromore.model.*;
+import org.apromore.portal.model.*;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;

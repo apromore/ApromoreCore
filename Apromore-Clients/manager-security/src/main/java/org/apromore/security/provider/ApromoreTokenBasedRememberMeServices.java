@@ -26,7 +26,11 @@ package org.apromore.security.provider;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apromore.model.*;
+import org.apromore.portal.model.MembershipType;
+import org.apromore.portal.model.PermissionType;
+import org.apromore.portal.model.RoleType;
+import org.apromore.portal.model.SearchHistoriesType;
+import org.apromore.portal.model.UserType;
 import org.apromore.security.model.ApromorePermissionDetails;
 import org.apromore.security.model.ApromoreRoleDetails;
 import org.apromore.security.model.ApromoreSearchHistoryDetails;

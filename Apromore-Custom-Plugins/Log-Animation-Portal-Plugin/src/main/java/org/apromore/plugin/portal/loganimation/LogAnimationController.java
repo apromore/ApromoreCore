@@ -30,12 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// Local packages
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.property.RequestParameterType;
@@ -44,6 +38,11 @@ import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.PluginMessages;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.loganimation.LogAnimationService;
 import org.slf4j.Logger;

@@ -28,7 +28,7 @@ package org.apromore.portal.dialogController;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.apromore.model.*;
+
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.SessionTab;
@@ -43,6 +43,7 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.model.*;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

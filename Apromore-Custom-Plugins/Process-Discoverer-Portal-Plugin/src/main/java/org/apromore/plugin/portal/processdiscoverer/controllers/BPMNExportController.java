@@ -29,11 +29,11 @@ import java.util.Map;
 
 import javax.xml.datatype.DatatypeFactory;
 
-import org.apromore.helper.Version;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.portal.helper.Version;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;

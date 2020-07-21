@@ -29,12 +29,10 @@ import java.util.Locale;
 // Third party
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listheader;
-
-// First party
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.ParameterAwarePlugin;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
 
 /**
  * Plug-in interface for an extra column in the Portal's process summary list.

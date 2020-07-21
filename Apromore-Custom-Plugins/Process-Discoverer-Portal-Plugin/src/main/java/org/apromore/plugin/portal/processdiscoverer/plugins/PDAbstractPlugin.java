@@ -29,11 +29,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDCustomFactory;
@@ -41,6 +36,11 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zul.Messagebox;
 
 public class PDAbstractPlugin extends DefaultPortalPlugin {

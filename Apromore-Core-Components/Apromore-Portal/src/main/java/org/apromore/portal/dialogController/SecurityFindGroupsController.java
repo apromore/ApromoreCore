@@ -29,10 +29,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apromore.model.GroupType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.GroupType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

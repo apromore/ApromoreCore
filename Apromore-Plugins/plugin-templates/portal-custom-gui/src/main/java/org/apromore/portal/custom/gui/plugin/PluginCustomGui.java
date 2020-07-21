@@ -24,13 +24,13 @@
 
 package org.apromore.portal.custom.gui.plugin;
 
-import org.apromore.model.*;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.*;
+import org.apromore.portal.model.*;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanel;

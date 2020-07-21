@@ -59,7 +59,7 @@
                             org.springframework.security.web;version="[3.1.0,4.0)",
                             org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.apromore.manager-security;version="[1.1,1.1]",
-                            org.apromore.manager-ws-model;version="[1.1,1.1]"
+                            org.apromore.portal-model;version="[1.1,1.1]"
                         </Import-Bundle>
                         <Import-Package>
                             org.deckfour.xes.*;version="2.27",
@@ -106,6 +106,7 @@
                             org.apromore.service,
                             org.apromore.service.helper,
                             org.apromore.service.model,
+                            org.apromore.service.search,
                             org.apromore.util
                         </Export-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
@@ -170,7 +171,7 @@
         <!-- Clients -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
+            <artifactId>portal-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>

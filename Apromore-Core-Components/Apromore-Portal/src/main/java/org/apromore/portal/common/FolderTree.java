@@ -25,11 +25,11 @@
 package org.apromore.portal.common;
 
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
 
 import java.util.HashSet;
 import java.util.List;

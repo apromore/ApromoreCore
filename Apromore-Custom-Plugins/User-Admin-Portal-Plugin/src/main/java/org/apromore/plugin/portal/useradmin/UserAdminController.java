@@ -29,7 +29,7 @@ import java.util.Map;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.model.UserType;
+import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
 import org.osgi.framework.BundleContext;

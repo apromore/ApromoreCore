@@ -26,7 +26,7 @@ package org.apromore.security;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apromore.model.UserType;
+import org.apromore.portal.model.UserType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 

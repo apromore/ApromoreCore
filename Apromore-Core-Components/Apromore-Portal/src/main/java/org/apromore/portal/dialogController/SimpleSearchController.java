@@ -30,12 +30,12 @@ import java.util.Comparator;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SearchHistoriesType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionDao;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.SearchHistoriesType;
+import org.apromore.portal.model.SummariesType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;

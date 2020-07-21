@@ -35,9 +35,8 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
-import org.apromore.helper.Version;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.SummariesType;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.model.ProcessData;
 
 /**
@@ -47,16 +46,6 @@ import org.apromore.service.model.ProcessData;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public interface ProcessService {
-
-    /**
-     * Loads all the process Summaries. It will either get all or use the keywords parameter
-     * to load a subset of the processes.
-     * @param folderId the folder we are currently in.
-     * @param searchExpression the search expression to limit the search.
-     * @return The ProcessSummariesType used for Webservices.
-     */
-    SummariesType readProcessSummaries(final Integer folderId, final String userRowGuid, final String searchExpression);
-
     /**
      * Import a Process.
      *

@@ -43,14 +43,14 @@ import java.util.Set;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.apromore.helper.PluginHelper;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.PluginParameter;
-import org.apromore.model.PluginParameters;
+import org.apromore.manager.client.PluginHelper;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.model.PluginMessages;
+import org.apromore.portal.model.PluginParameter;
+import org.apromore.portal.model.PluginParameters;
 import org.junit.Test;
 
 public class PluginHelperUnitTest {

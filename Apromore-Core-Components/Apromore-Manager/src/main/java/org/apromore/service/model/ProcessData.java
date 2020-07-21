@@ -24,7 +24,7 @@
 
 package org.apromore.service.model;
 
-import org.apromore.helper.Version;
+import org.apromore.portal.helper.Version;
 
 /**
  * @author Chathura Ekanayake

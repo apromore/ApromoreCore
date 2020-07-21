@@ -27,8 +27,8 @@ package org.apromore.service;
 import org.apromore.apmlog.APMLog;
 import org.apromore.dao.model.*;
 import org.apromore.exception.*;
-import org.apromore.model.ExportLogResultType;
-import org.apromore.model.SummariesType;
+import org.apromore.portal.model.ExportLogResultType;
+import org.apromore.portal.model.SummariesType;
 import org.apromore.util.StatType;
 import org.deckfour.xes.model.XLog;
 

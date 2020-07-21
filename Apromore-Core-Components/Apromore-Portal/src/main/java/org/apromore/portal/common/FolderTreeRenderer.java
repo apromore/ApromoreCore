@@ -27,8 +27,8 @@ package org.apromore.portal.common;
 import java.util.Collections;
 import java.util.List;
 
-import org.apromore.model.FolderType;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;

@@ -23,11 +23,12 @@
 package org.apromore.plugin.portal.account;
 
 import java.util.*;
+
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.PluginInfo;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.ConfigBean;
+import org.apromore.portal.model.PluginInfo;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

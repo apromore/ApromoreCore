@@ -33,26 +33,26 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.DomainsType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ExportLogResultType;
-import org.apromore.model.FolderType;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.GroupType;
-import org.apromore.model.ImportLogResultType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.model.DomainsType;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.ExportLogResultType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.GroupAccessType;
+import org.apromore.portal.model.GroupType;
+import org.apromore.portal.model.ImportLogResultType;
+import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.NativeTypesType;
+import org.apromore.portal.model.PluginInfo;
+import org.apromore.portal.model.PluginInfoResult;
+import org.apromore.portal.model.PluginMessages;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SearchHistoriesType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.UsernamesType;
+import org.apromore.portal.model.VersionSummaryType;
 
 /**
  * Manager interface.

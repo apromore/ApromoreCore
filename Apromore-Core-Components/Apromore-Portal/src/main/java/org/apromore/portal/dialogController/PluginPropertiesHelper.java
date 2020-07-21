@@ -33,12 +33,12 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.manager.client.ManagerService;
-import org.apromore.helper.PluginHelper;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginParameter;
-import org.apromore.model.PluginParameters;
+import org.apromore.manager.client.PluginHelper;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.model.PluginInfo;
+import org.apromore.portal.model.PluginInfoResult;
+import org.apromore.portal.model.PluginParameter;
+import org.apromore.portal.model.PluginParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;

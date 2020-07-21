@@ -27,10 +27,10 @@ package org.apromore.portal.dialogController;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.DateTimeNormalizer;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
