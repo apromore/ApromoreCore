@@ -221,17 +221,17 @@ public class CopyAndPasteController extends BaseController {
         }
     }
 
-    private void info(String message) {
-        Clients.evalJavaScript("Ap.common.notify('" + message + "');");
+    private void notify(String message, String type) {
+        Clients.evalJavaScript("Ap.common.notify('" + message + "','" + type + "');");
     }
 
     public void cut(Set<Object> selections) {
         isCut = true;
         updateSelectedItems(selections);
         if (selectedItems.isEmpty()) {
-            Messagebox.show("Please select at least one item.", "Copy", Messagebox.OK, Messagebox.ERROR);
+            notify("Select at least one item.", "error");
         } else {
-            info(getSelectedItemsSize() + " item(s) has been selected to be moved.");
+            notify(getSelectedItemsSize() + " item(s) have been selected to be moved", "info");
         }
     }
 
@@ -239,16 +239,16 @@ public class CopyAndPasteController extends BaseController {
         isCut = false;
         updateSelectedItems(selections);
         if (selectedItems.isEmpty()) {
-            Messagebox.show("Please select at least one item.", "Copy", Messagebox.OK, Messagebox.ERROR);
+            notify("Select at least one item.", "error");
         } else {
-            info(getSelectedItemsSize() + " item(s) has been selected to be copied.");
+            notify(getSelectedItemsSize() + " item(s) have been selected to be copied", "info");
         }
     }
 
     public void paste(Integer targetFolderId) throws Exception {
         selectedTargetFolderId = targetFolderId;
         if (selectedItems.isEmpty()) {
-            Messagebox.show("No item has been moved or copied", "Copy", Messagebox.OK, Messagebox.ERROR);
+            notify("Select at least one item and press Cut or Copy first", "error");
             return;
         }
         if (isCut) {
