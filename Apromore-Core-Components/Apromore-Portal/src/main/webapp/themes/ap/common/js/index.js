@@ -9,7 +9,7 @@ window.Ap = window.Ap || {
 }
 
 Ap.common.notify = (message, type) => {
-    type = type || 'info';
+    type = type || 'error';
     let notification = $(`<div class="ap-notification ap-notification-${type}">${message}</div>`);
     let close = $('<span class="ap-notification-close"></span>')
     close.appendTo(notification);
