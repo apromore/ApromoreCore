@@ -70,9 +70,10 @@ public abstract class BaseListboxController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseListboxController.class);
 
     private static final String ALERT = "Alert";
-    private static final String FOLDER_DELETE = "Are you sure you want to delete selected Folder(s) and all it's contents?";
-    private static final String PROCESS_DELETE = "Are you sure you want to delete selected Process(es)? If no version has been select the latest version will be removed.";
-    private static final String FOLDER_PROCESS_DELETE = "Are you sure you want to delete selected Folders and Processes?";
+    private static final String FOLDER_DELETE = "Are you sure you want to delete selected folder(s) and all it's contents?";
+    private static final String LOG_DELETE = "Are you sure you want to delete selected log(s)?";
+    private static final String PROCESS_DELETE = "Are you sure you want to delete the selected process model(s)? If no version has been selected, the latest version will be removed.";
+    private static final String MIXED_DELETE = "Are you sure you want to delete the selected file(s)? For a process model, if no version has been selected, the latest version will be removed.";
 
     private final Listbox listBox;
 
@@ -341,13 +342,19 @@ public abstract class BaseListboxController extends BaseController {
         ArrayList<FolderType> folders = getSelectedFolders();
         Map<SummaryType, List<VersionSummaryType>> elements =  getMainController().getSelectedElementsAndVersions();
 
-        if (doesSelectionContainFoldersAndElements(folders, elements)) {
+        if (doesSelectionContainFoldersAndElements(folders, elements)) { // mixed
             showMessageFoldersAndElementsDelete(getMainController(), folders);
         } else {
-            if (folders != null && !folders.isEmpty()) {
+            if (folders != null && !folders.isEmpty()) { // folder only
                 showMessageFolderDelete(getMainController(), folders);
-            } else if (elements != null && !elements.isEmpty()) {
-                showMessageProcessesDelete(getMainController());
+            } else if (elements != null && !elements.isEmpty()) { // processes and logs
+                if (getSelectedProcesses().size() == 0) { // log only
+                    showMessageLogsDelete(getMainController());
+                } else if (getSelectedLogs().size() == 0) { // process only
+                    showMessageProcessesDelete(getMainController());
+                } else { // mixed log(s) and process(es)
+                    showMessageElementsDelete(getMainController());
+                }
             } else {
                 LOGGER.error("Nothing selected to delete?");
             }
@@ -386,13 +393,75 @@ public abstract class BaseListboxController extends BaseController {
         return folderList;
     }
 
+    private ArrayList<LogSummaryType> getSelectedLogs() {
+        ArrayList<LogSummaryType> logList = new ArrayList<>();
+        if (this instanceof ProcessListboxController) {
+            Set<Object> selectedItem = getListModel().getSelection();
+            for (Object obj : selectedItem) {
+                if (obj instanceof LogSummaryType) {
+                    logList.add((LogSummaryType) obj);
+                }
+            }
+        }
+        return logList;
+    }
+
+    private ArrayList<ProcessSummaryType> getSelectedProcesses() {
+        ArrayList<ProcessSummaryType> processList = new ArrayList<>();
+        if (this instanceof ProcessListboxController) {
+            Set<Object> selectedItem = getListModel().getSelection();
+            for (Object obj : selectedItem) {
+                if (obj instanceof ProcessSummaryType) {
+                    processList.add((ProcessSummaryType) obj);
+                }
+            }
+        }
+        return processList;
+    }
+
     public Set<Object> getSelection() {
         return getListModel().getSelection();
     }
 
-    /* Show the message tailored to deleting one or more folders. */
+    /* Show the message tailored to deleting process model. */
     private void showMessageProcessesDelete(final MainController mainController) throws Exception {
         Messagebox.show(PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                    case Messagebox.YES:
+                        deleteElements(mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
+                        break;
+                    case Messagebox.NO:
+                        break;
+                }
+            }
+        });
+    }
+
+    /* Show the message tailored to deleting log model. */
+    private void showMessageLogsDelete(final MainController mainController) throws Exception {
+        Messagebox.show(LOG_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                    case Messagebox.YES:
+                        deleteElements(mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
+                        break;
+                    case Messagebox.NO:
+                        break;
+                }
+            }
+        });
+    }
+
+    /* Show a message tailored to deleting a combo of folders and processes */
+    private void showMessageElementsDelete(final MainController mainController) throws Exception {
+        Messagebox.show(MIXED_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
@@ -428,7 +497,7 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Show a message tailored to deleting a combo of folders and processes */
     private void showMessageFoldersAndElementsDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
-        Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+        Messagebox.show(MIXED_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
