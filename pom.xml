@@ -54,12 +54,7 @@
         <module>Apromore-OSGI-Bundles/prom-models-osgi</module>
         <module>Apromore-OSGI-Bundles/prom-widgets-osgi</module>
         <module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>
-        
-        <!-- Schemas -->
-        <module>Apromore-Schema/anf-schema</module>
-        <module>Apromore-Schema/bpmn-schema</module>
-        <module>Apromore-Schema/cpf-schema</module>        
-        
+                
         <!-- Core Components -->
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
@@ -76,7 +71,6 @@
         <module>Apromore-Custom-Plugins/About-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
-        <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
@@ -114,16 +108,6 @@
         <module>Apromore-Assembly/Portal-Assembly</module>
         <module>Apromore-Assembly/Custom-Plugins-Assembly</module>
 
-        <!-- Command line tools -->
-        <!--<module>Apromore-Extras/bpmncmap</module>-->
-        <!--<module>Supplements/cpfImporter</module>-->
-        <!--<module>Supplements/bpmn2cpf</module>-->
-        <!--<module>Supplements/cpf2bpmn</module>-->
-        <!--<module>Supplements/cpf2epml</module>-->
-        <!--<module>Supplements/cpf2pnml</module>-->
-        <!--<module>Supplements/epml2cpf</module>-->
-        <!--<module>Supplements/pnml2cpf</module>-->
-
     </modules>
 
     <properties>
@@ -144,8 +128,6 @@
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.plugin.custom.gui.version>1.1.0</apromore.plugin.custom.gui.version>
-        <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
-        <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
         <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
@@ -532,13 +514,6 @@
                 <version>${filestore-client.version}</version>
             </dependency>
 
-            <!--  Core Plugins -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>plugin-graph</artifactId>
-                <version>${apromore.plugin.version}</version>
-            </dependency>
-
             <!-- Plugin API -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
@@ -552,36 +527,6 @@
             </dependency>
 
             <!-- Specialised Manager Plugin APIs -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-api</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-api-provider</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-api</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-api-provider</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>deployment-api</artifactId>
-                <version>${apromore.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>deployment-api-provider</artifactId>
-                <version>${apromore.plugin.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>event-log-plugin-api</artifactId>
@@ -622,32 +567,6 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>editor-plugin-api</artifactId>
                 <version>${apromore.plugin.version}</version>
-            </dependency>
-
-            <!-- Canonisers -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-bpmn</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-
-            <!-- Schema -->
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>anf-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>bpmn-schema</artifactId>
-                <version>${apromore.schema.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>cpf-schema</artifactId>
-                <version>${apromore.schema.version}</version>
             </dependency>
 
             <!-- Logging -->

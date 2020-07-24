@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramSupport;
@@ -53,9 +52,9 @@ import org.apromore.similaritysearch.graph.VertexObjectRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CPFModelParser {
+public class ModelParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPFModelParser.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelParser.class.getName());
 
     public static Graph readModel(BPMNDiagram mainNet) {
         Graph epcGraph = new Graph();
@@ -116,15 +115,6 @@ public class CPFModelParser {
                 epcGraph.addVertex(v);
             }
         }
-    }
-
-    private static String getFromAnnotations(String typeRef, List<TypeAttribute> attributes) {
-        for (TypeAttribute a : attributes) {
-            if (a.getName().equals(typeRef)) {
-                return a.getValue();
-            }
-        }
-        return "";
     }
 
     private static void addEdges(BPMNDiagram mainNet, Graph epcGraph) {
