@@ -27,7 +27,7 @@
 <?component name="logStats" macroURI="components/logStats.zul" ?>
 <?component name="timeStats" macroURI="components/timeStats.zul" ?>
 <?link rel="shortcut icon" href="../../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
-<?link rel="stylesheet" href="../../chiaroscuro.css" type="text/css" ?>
+<?link rel="stylesheet" href="../../css/chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
 <?link rel="stylesheet" href="/css/ap/pd.css" type="text/css" ?>
 <!--<?link rel="stylesheet" href="/js/jquery-ui/jquery-ui.min.css" type="text/css" ?>-->
