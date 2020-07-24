@@ -13,7 +13,7 @@
         <relativePath>../../Apromore-Plugins/</relativePath>
     </parent>
 
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <artifactId>apromore-bpmneditor</artifactId>
     <name>Apromore BPMN Editor</name>
     <description>Some description</description>
@@ -41,10 +41,10 @@
                     <aggregations>
                         <aggregation>
                             <insertNewLine>false</insertNewLine>
-                            <output>${basedir}/target/apromore-bpmneditor-${project.version}/editor/apromore-editor.js</output>
+                            <output>${basedir}/target/apromore-bpmneditor-${project.version}/bpmneditor/editor/apromore-editor.js</output>
                             <inputDir>${basedir}/src/main</inputDir>
                             <includes>
-                                <include>../../target/classes/site.properties.js</include>
+                                <include>site.properties.js</include>
 								<include>scripts/clazz.js</include>
                                 <include>scripts/utils.js</include>
 								<include>scripts/logger.js</include>
@@ -61,8 +61,8 @@
                     </includes>
                     <jswarn>false</jswarn>
                     <nosuffix>false</nosuffix>
-                    <sourceDirectory>${basedir}/target/apromore-bpmneditor-${project.version}/editor</sourceDirectory>
-                    <outputDirectory>${basedir}/target/apromore-bpmneditor-${project.version}/editor</outputDirectory>
+                    <sourceDirectory>${basedir}/target/apromore-bpmneditor-${project.version}/bpmneditor/editor</sourceDirectory>
+                    <outputDirectory>${basedir}/target/apromore-bpmneditor-${project.version}/bpmneditor/editor</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -103,23 +103,10 @@
 							org.apromore.editor.server,
                             *
                         </Import-Package>
-                        <Web-ContextPath>bpmneditor</Web-ContextPath>
                     </instructions>
                 </configuration>
             </plugin>
-			
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <packagingExcludes>%regex[WEB-INF/lib/(?!jbpt-bpm).*jar]</packagingExcludes>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-            
+
         </plugins>
         
         <resources>
@@ -127,11 +114,7 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>src/main</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>site.properties.js</include>
-                </includes>
+                <directory>${basedir}/target/apromore-bpmneditor-${project.version}</directory>
             </resource>
         </resources>
     </build>
