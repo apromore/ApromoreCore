@@ -56,6 +56,8 @@ public class SimpleWebContentService implements WebContentService {
      */
     private final ClassLoader classLoader;
 
+    private final String name;
+
     /**
      * Paths matching the given pattern will never be exposed by this service.
      */
@@ -66,6 +68,11 @@ public class SimpleWebContentService implements WebContentService {
      */
     public SimpleWebContentService(Object object) {
         classLoader = object.getClass().getClassLoader();
+        name = object.getClass().getName();
+    }
+
+    public String toString() {
+        return super.toString() + "(" + name + ")";
     }
 
     // Implementation of RouteService
