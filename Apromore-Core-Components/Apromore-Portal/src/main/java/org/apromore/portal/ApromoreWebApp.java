@@ -75,6 +75,8 @@ public class ApromoreWebApp extends SimpleWebApp {
                             }
 
                             break;
+                        } else {
+                            log("Unable to get page definition for " + path + " from " + webContentService);
                         }
                     }
                 } else {
