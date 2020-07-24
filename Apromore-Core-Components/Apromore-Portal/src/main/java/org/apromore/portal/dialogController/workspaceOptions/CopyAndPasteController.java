@@ -84,6 +84,28 @@ public class CopyAndPasteController extends BaseController {
         workspaceService = (WorkspaceService) SpringUtil.getBean("workspaceService");
     }
 
+    public boolean isInside(Integer folderId, Integer targetFolderId, int level) {
+        if (targetFolderId.equals(folderId)) {
+            return true;
+        }
+
+        if (level > MAX_RECURSIVE) {
+            return true;
+        }
+        List<FolderType> subFolders = getSubFolders(folderId);
+        for(FolderType subFolder: subFolders) {
+            Integer subFolderId = subFolder.getId();
+            if (targetFolderId.equals(subFolderId)) {
+                return true;
+            }
+            boolean result = isInside(subFolderId, targetFolderId, level + 1);
+            if (result) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<FolderType> getSubFolders(Integer folderId) {
         return getService().getSubFolders(userId, folderId == null ? 0 : folderId);
     }
@@ -200,7 +222,12 @@ public class CopyAndPasteController extends BaseController {
     public void cloneSelectedItems() throws Exception {
         for (Object obj : selectedItems) {
             if (obj instanceof FolderType) {
-                cloneFolder((FolderType) obj, selectedTargetFolderId, 0);
+                FolderType folder = (FolderType) obj;
+                if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
+                    notify("A folder can't be copied into its subfolder", "error");
+                } else {
+                    cloneFolder(folder, selectedTargetFolderId, 0);
+                }
             } else if (obj instanceof LogSummaryType) {
                 cloneLog((LogSummaryType) obj, selectedTargetFolderId);
             } else if (obj instanceof ProcessSummaryType) {
@@ -212,7 +239,12 @@ public class CopyAndPasteController extends BaseController {
     public void moveSelectedItems() throws Exception {
         for (Object obj : selectedItems) {
             if (obj instanceof FolderType) {
-                moveFolder((FolderType) obj, selectedTargetFolderId, 0);
+                FolderType folder = (FolderType) obj;
+                if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
+                    notify("A folder can't be moved into its subfolder", "error");
+                } else {
+                    moveFolder(folder, selectedTargetFolderId, 0);
+                }
             } else if (obj instanceof LogSummaryType) {
                 moveLog((LogSummaryType) obj, selectedTargetFolderId);
             } else if (obj instanceof ProcessSummaryType) {
