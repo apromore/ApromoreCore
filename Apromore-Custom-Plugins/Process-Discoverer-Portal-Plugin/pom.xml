@@ -57,6 +57,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
+                            org.apromore.plugin.portal.processdiscoverer,
                             org.apromore.plugin.portal.processdiscoverer.plugins,
                             org.apromore.plugin.portal.processdiscoverer.servlets
                         </Export-Package>

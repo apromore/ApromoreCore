@@ -62,8 +62,8 @@
     <osgi:service ref="frequencyPlugin" interface="org.apromore.plugin.portal.PortalPlugin" />
 
     <!-- Exposes the component's resources as web content -->
-    <service interface="org.apromore.plugin.portal.WebContentService">
+    <osgi:service interface="org.apromore.plugin.portal.WebContentService">
         <beans:bean class="org.apromore.plugin.portal.processdiscoverer.PDWebContentService"/>
-    </service>
+    </osgi:service>
 
 </beans:beans>
