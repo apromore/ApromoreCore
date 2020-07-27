@@ -180,7 +180,7 @@
                 <include name="pickup/*.par"/>
                 <include name="pickup/*.plan"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
-               <!-- <exclude name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/> -->
+                <include name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
             </fileset>
         </delete>
     </target>
