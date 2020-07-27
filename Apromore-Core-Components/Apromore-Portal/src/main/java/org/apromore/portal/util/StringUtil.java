@@ -22,7 +22,6 @@
 
 package org.apromore.portal.util;
 
-import java.text.NumberFormat;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.regex.Matcher;

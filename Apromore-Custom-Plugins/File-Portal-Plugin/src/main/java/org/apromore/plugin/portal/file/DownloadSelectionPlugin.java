@@ -126,25 +126,6 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
     protected void exportProcessModel(MainController mainC, PortalContext portalContext) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
         mainC.eraseMessage();
 
-//        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
-//        for(Tab tab : tabs){
-//            if(tab.isSelected() && tab instanceof TabQuery){
-//                TabQuery tabQuery=(TabQuery)tab;
-//                List<Listitem> items=tabQuery.getListBox().getItems();
-//                HashMap<SummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
-//                for(Listitem item : items){
-//                    if(item.isSelected() && item instanceof TabListitem){
-//                        TabListitem tabItem=(TabListitem)item;
-//                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
-//                    }
-//                }
-//                if(processVersion.keySet().size()>0){
-//                    new ExportListNativeController(mainC, null, processVersion);
-//                    return;
-//                }
-//            }
-//        }
-
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
         if (selectedProcessVersions.size() == 1) {
             //new ExportListNativeController(mainC, null, selectedProcessVersions);
