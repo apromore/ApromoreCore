@@ -27,7 +27,7 @@
 <!-- as many instances of this window might be created at once, components are
 	not given an id, instead, there are retrieve by their position by controller 
 	importOneProcessWindow -->
-<window position="center" title="Import process model" visible="true" mode="modal"
+<window position="center" title="Upload model" visible="true" mode="modal"
         sizable="true" width="600px">
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
