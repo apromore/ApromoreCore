@@ -157,6 +157,7 @@
             </fileset>
         </copy>
         <delete file="${core-dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
+        <delete file="${core-dir-virgo}/pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar" />
         <chmod file="${core-dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
