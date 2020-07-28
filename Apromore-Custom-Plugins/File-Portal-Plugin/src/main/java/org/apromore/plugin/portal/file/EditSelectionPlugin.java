@@ -64,28 +64,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
     public void execute(PortalContext portalContext) {
         try {
             MainController mainC = (MainController) portalContext.getMainController();
-
             mainC.eraseMessage();
-
-//            List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
-//
-//            for(Tab tab : tabs){
-//                if(tab.isSelected() && tab instanceof TabQuery){
-//
-//                    TabQuery tabQuery=(TabQuery)tab;
-//                    List<Listitem> items=tabQuery.getListBox().getItems();
-//
-//                    for(Listitem item : items){
-//                        if(item.isSelected() && item instanceof TabListitem){
-//                            TabListitem tabItem=(TabListitem)item;
-//                            HashMap<SummaryType, List<VersionSummaryType>> processVersion = new HashMap<>();
-//                            processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
-//                            new EditListProcessesController2(mainC, null, processVersion);
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
             
             Map<SummaryType, List<VersionSummaryType>> selectedProcesses = mainC.getSelectedElementsAndVersions();
             if (selectedProcesses.isEmpty()) {

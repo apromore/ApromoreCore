@@ -22,7 +22,7 @@
   -->
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
-<window id="importWindow" position="center" title="Import process models or logs"
+<window id="importWindow" position="center" title="Upload model or log"
         visible="true" sizable="true" width="600px"
         sclass="ap-importer-chooser"
         closable="true"

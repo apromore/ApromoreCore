@@ -30,7 +30,7 @@ import java.util.List;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramSupport;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.apromore.similaritysearch.common.CPFModelParser;
+import org.apromore.similaritysearch.common.ModelParser;
 import org.apromore.similaritysearch.common.algos.GraphEditDistanceGreedy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -162,7 +162,7 @@ public class MergeProcessesTest extends TestDataSetup {
             BPMNDiagram merge = MergeProcesses.mergeProcesses(diagrams, false, "Greedy", 0.6, 0.6, 0.75, 1.0, 1.0, 1.0);
             BPMNDiagram expected = this.readBPMNDiagram("src/test/data/merge_two_sequences_crossing.bpmn");
             GraphEditDistanceGreedy differ = new GraphEditDistanceGreedy();
-            double ged = differ.computeGED(CPFModelParser.readModel(merge), CPFModelParser.readModel(expected));
+            double ged = differ.computeGED(ModelParser.readModel(merge), ModelParser.readModel(expected));
             Assert.assertEquals(0.0, ged, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());

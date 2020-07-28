@@ -77,13 +77,13 @@
         </dependency>
         
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>        
         
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-graph</artifactId>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
         
         <dependency>

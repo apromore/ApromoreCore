@@ -27,8 +27,8 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import org.apromore.plugin.portal.FileImporterPlugin;
-import org.apromore.plugin.portal.PortalContext;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zkoss.util.media.Media;

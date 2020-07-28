@@ -92,7 +92,6 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.annotation.provider,
                             org.apromore.common,
                             org.apromore.dao,
                             org.apromore.dao.dataObject,
@@ -178,28 +177,10 @@
             <artifactId>manager-security</artifactId>
         </dependency>
 
-        <!-- Core Plugins -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-graph</artifactId>
-        </dependency>
-
         <!-- Plugin API -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -208,16 +189,6 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>process-plugin-api</artifactId>
-        </dependency>
-
-        <!-- Schema -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>anf-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>cpf-schema</artifactId>
         </dependency>
 
         <!-- Blueprint OSGi -->
@@ -489,21 +460,6 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
 
