@@ -47,7 +47,7 @@ public class InputDialog {
                                 String valuePattern,
                                 String allowedValues, 
                                 EventListener<Event> returnValueHander) {
-        Window win = (Window) Executions.createComponents("/zul/inputDialog.zul", null, null);
+        Window win = (Window) Executions.createComponents("inputDialog.zul", null, null);
         Window dialog = (Window) win.getFellow("inputDialog");
         dialog.setTitle(title);
         Label labelMessage = (Label)dialog.getFellow("labelMessage"); 

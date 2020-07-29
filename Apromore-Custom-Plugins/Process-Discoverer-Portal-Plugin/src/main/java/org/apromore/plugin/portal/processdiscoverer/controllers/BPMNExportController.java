@@ -150,9 +150,8 @@ public class BPMNExportController extends AbstractController {
     
     @Override
     public void onEvent(Event event) throws Exception {
-        //window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "/zul/mineAndSave.zul", null, null);
     	if (this.showProgressBar) {
-	    	window = (Window) Executions.createComponents("/zul/mineAndSave.zul", null, null);
+	    	window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
 	        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
 	            @Override
                 public void onEvent(Event event) throws Exception {
