@@ -27,7 +27,7 @@
 <!-- as many instances of this window might be created at once, components are
 	not given an id, instead, there are retrieve by their position by controller 
 	importOneProcessWindow -->
-<window position="center" title="Import process model" visible="true" mode="modal"
+<window position="center" title="Upload model" visible="true" mode="modal"
         sizable="true" width="600px">
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
@@ -41,58 +41,10 @@
                     <label value="Model name" width="100%"/>
                     <textbox width="100%" constraint="${labels.e.common.nameConstraint.text}" />
                 </row>
-                <row spans="1,2" visible="false">
-                    <label value="Initial version number" width="100%" />
-                    <textbox width="100%" />
-                </row>
-                <row spans="1,1,1" visible="false">
-                    <label value="Owner*" width="100%"/>
-                    <label width="100%" tooltiptext="default value"/>
-                </row>
-                <row spans="1,2" visible="false">
-                    <label value="Creation date*" width="100%"/>
-                    <textbox width="100%"/>
-                </row>
-                <row spans="1,2" visible="false">
-                    <label value="Last update" width="100%" tooltiptext="optional"/>
-                    <textbox width="100%"/>
-                </row>
-                <row spans="1,2" visible="false">
-                    <label value="Documentation" width="100%" tooltiptext="optional"/>
-                    <textbox width="100%" rows="4"/>
-                </row>
-                <row spans="1,2" visible="false">
-                    <label value="Domain" width="100%" tooltiptext="optional"/>
-                </row>
-                <row spans="1,2" id="canoniserSelectionRow" visible="false">
-                    <label value="Canoniser" width="100%" tooltiptext="Canoniser used for this Process" />
-                </row>
-                <row spans="3" visible="false">
-                    <groupbox width="100%" >
-                        <attribute name="onOpen"><![CDATA[
-                            arrow.setSclass("open-" + self.isOpen());
-                            ]]></attribute>
-                        <caption>
-                            <div id="arrow" class="open-true">Canoniser parameters</div>
-                        </caption>
-                        <grid id="canoniserPropertiesGrid" width="90%">
-                            <columns>
-                                <column width="50%"></column>
-                                <column width="50%"></column>
-                            </columns>
-                        </grid>
-                    </groupbox>
-                </row>
-                <row spans="3" visible="false">
-                    <label value="*: mandatory fields." />
-                </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div id="div" align="center">
                         <button label="OK" iconSclass="z-icon-check-circle"></button>
-                        <button label="OK for all" iconSclass="z-icon-check-circle" tooltiptext="Default values for process and version name, and given value for domain will apply for all remaining process models to import."></button>
                         <button label="Cancel" iconSclass="z-icon-times-circle"></button>
-                        <button label="Cancel all" iconSclass="z-icon-times-circle" tooltiptext="Cancel import of all remaining process models."></button>
-                        <button label="Reset" iconSclass="z-icon-undo"></button>
                     </div>
                 </row>
             </rows>

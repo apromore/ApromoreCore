@@ -35,64 +35,11 @@
             <artifactId>apromore-manager</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager-ws</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
--->
-        <!--
-            Extra Dependencies on just the 'classes' of Manager-WS to pull in transitive dependencies.
-            The JAR itself needs to be excluded manually.
-        -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager-ws</artifactId>
-            <version>${project.version}</version>
-            <classifier>classes</classifier>
-        </dependency>
--->
-
-        <!-- Schema's, these are independant of the Manager, but needed by our plan -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>anf-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>cpf-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
 
         <!-- Plugin Provider, these are independent of the Apromore Manager, but needed by our plan -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api-provider</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api-provider</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api-provider</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -129,7 +76,7 @@
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
-                        <phase>process-sources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>

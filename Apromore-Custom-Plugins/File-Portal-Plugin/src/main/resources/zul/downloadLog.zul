@@ -21,7 +21,7 @@
   #L%
   -->
 <window
-    id="modalDialog" visible="false" title="Download Process Log" border="normal"
+    id="modalDialog" visible="false" title="Download log" border="normal"
     position="center,center" closable="true" draggable="false" droppable="false"
     width="500px">
     <vbox height="100%" spacing="0">

@@ -69,7 +69,7 @@
 
     <!--<script type="text/javascript" src="js/go.js"></script>-->
 
-    <style src="chiaroscuro.css"></style>
+    <style src="css/chiaroscuro.css"></style>
     <style>
         /* must be embedded here */
         .ap-portal .z-north-body,
@@ -157,7 +157,7 @@
     </style>
 
     <style> body { padding: 0} </style>
-    <style src="astyle.css"/>
+    <style src="css/astyle.css"/>
     <style>
         .ap-portal-menu-buttons button {
             background: transparent;

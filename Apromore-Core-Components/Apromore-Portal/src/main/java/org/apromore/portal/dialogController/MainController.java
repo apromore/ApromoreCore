@@ -48,7 +48,6 @@ import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
@@ -59,7 +58,6 @@ import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.helper.Version;
-import org.apromore.portal.model.Detail;
 import org.apromore.portal.model.DomainsType;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.FolderType;
@@ -68,7 +66,6 @@ import org.apromore.portal.model.NativeTypesType;
 import org.apromore.portal.model.PluginMessage;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.ResultPQL;
 import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
@@ -823,12 +820,6 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void setBuildDate(final String newBuildDate) {
         buildDate = newBuildDate;
-    }
-
-    public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
-        TabQuery newTab = new TabQuery(nameQuery, userID, details, query, results, portalContext);
-        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab, true);
-        updateTabs(userID);
     }
 
     private void updateTabs(String userId){

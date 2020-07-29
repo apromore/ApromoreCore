@@ -25,27 +25,22 @@
 
 package org.apromore.util;
 
-import org.apromore.TestData;
-import org.junit.Test;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+
+import org.junit.Test;
 
 /**
  * Unit test the Stream Util.
@@ -124,35 +119,4 @@ public class StreamUtilUnitTest {
         assertThat(result, equalTo(""));
     }
 
-    @Test
-    public void testCopyParam2ANF() throws Exception {
-        String name = "bob2";
-
-        InputStream stream = new ByteArrayInputStream(TestData.ANF.getBytes());
-        InputStream stream2 = StreamUtil.copyParam2ANF(stream, name);
-        String result = StreamUtil.convertStreamToString(stream2);
-
-        assertThat(result, containsString(name));
-    }
-
-    @Test
-    public void testCopyParam2CPF() throws Exception {
-        Integer uri = 12345;
-        String name = "bob2";
-        String version = "999.9";
-        String username = "Osama";
-        String created = "12/12/2012";
-        String updated = "12/12/2012";
-        InputStream stream = new ByteArrayInputStream(TestData.CPF.getBytes());
-
-        InputStream stream2 = StreamUtil.copyParam2CPF(stream, uri, name, version, username, created, updated);
-        String result = StreamUtil.convertStreamToString(stream2);
-
-        assertThat(result, containsString(String.valueOf(uri)));
-        assertThat(result, containsString(name));
-        assertThat(result, containsString(version));
-        assertThat(result, containsString(username));
-        assertThat(result, containsString(created));
-        assertThat(result, containsString(updated));
-    }
 }

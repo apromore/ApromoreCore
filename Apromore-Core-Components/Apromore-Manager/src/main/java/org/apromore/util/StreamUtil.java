@@ -26,22 +26,13 @@
 
 package org.apromore.util;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+
 import org.apache.commons.io.IOUtils;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.common.Constants;
-import org.apromore.cpf.CanonicalProcessType;
 
 /**
  * Helps with debugging and seeing the data travel between services.
@@ -88,71 +79,6 @@ public class StreamUtil {
         } catch (IOException e) {
             return "error in readin the DataSource: " + e.toString();
         }
-    }
-
-
-    /**
-     * Return an inputstream which is the result of writing parameters in anf_xml.
-     *
-     * @return The modified input stream.
-     * @throws javax.xml.bind.JAXBException if it fails
-     */
-    @SuppressWarnings("unchecked")
-    public static InputStream copyParam2ANF(final InputStream anf_xml, final String name) throws JAXBException {
-        InputStream res;
-
-        JAXBContext jc = JAXBContext.newInstance(ANF_URI, org.apromore.anf.ObjectFactory.class.getClassLoader());
-        Unmarshaller u = jc.createUnmarshaller();
-
-        JAXBElement<AnnotationsType> rootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_xml);
-        AnnotationsType annotations = rootElement.getValue();
-        annotations.setName(name);
-
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        ByteArrayOutputStream xml = new ByteArrayOutputStream();
-        m.marshal(rootElement, xml);
-        res = new ByteArrayInputStream(xml.toByteArray());
-
-        return res;
-    }
-
-    /**
-     * Return an input stream which is cpf_xml where attributes are set to parameter values
-     *
-     * @param cpf_xml      the cpf xml
-     * @param cpf_uri      the cpf id for the DB
-     * @param processName  the process name
-     * @param version      the process version
-     * @param username     the user doing the change
-     * @param creationDate the date created
-     * @param lastUpdate   the updated date
-     * @return The modified input stream.
-     * @throws javax.xml.bind.JAXBException if it fails
-     */
-    @SuppressWarnings("unchecked")
-    public static InputStream copyParam2CPF(final InputStream cpf_xml, final Integer cpf_uri, final String processName, final String version, final String username,
-            final String creationDate, final String lastUpdate) throws JAXBException {
-        InputStream res;
-
-        JAXBContext jc = JAXBContext.newInstance(CPF_URI, org.apromore.cpf.ObjectFactory.class.getClassLoader());
-        Unmarshaller u = jc.createUnmarshaller();
-
-        JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf_xml);
-        CanonicalProcessType cpf = rootElement.getValue();
-        cpf.setAuthor(username);
-        cpf.setName(processName);
-        cpf.setVersion(version);
-        cpf.setCreationDate(creationDate);
-        cpf.setModificationDate(lastUpdate);
-        cpf.setUri(String.valueOf(cpf_uri));
-
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        ByteArrayOutputStream xml = new ByteArrayOutputStream();
-        m.marshal(rootElement, xml);
-        res = new ByteArrayInputStream(xml.toByteArray());
-        return res;
     }
 
     /**
