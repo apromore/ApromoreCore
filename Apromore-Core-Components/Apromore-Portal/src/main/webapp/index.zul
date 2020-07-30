@@ -213,6 +213,9 @@
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
+                            <button id="btnListView" sclass="ap-icon ap-icon-list" ca:data-t="listView" tooltiptext="List view"/>
+                            <button id="btnTileView" sclass="ap-icon ap-icon-tiles" ca:data-t="tileView" tooltiptext="Tile view"/>
+                            <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.e.portal.security.hint}"/>
                         </hbox>
