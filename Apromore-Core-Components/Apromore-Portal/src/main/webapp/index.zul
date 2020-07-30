@@ -48,27 +48,7 @@
     xmlns:x="xhtml" xmlns:zk="zk">
 
     <style src="css/cytoscape-context-menus.css"/>
-
     <script type="text/javascript" src="js/jquery.js"></script>
-    <script src="js/pdf.v1.10.100.js"></script>
-    <script src="js/jspdf.v1.4.1.debug.js"></script>
-    <script src="js/canvas2svg.v1.0.19.js"></script>
-    <script src="js/cytoscape.v3.2.18.min.js"></script>
-    <script src="js/cytoscape-edgehandles.v3.2.4.js"></script>
-    <script src="js/cytoscape-svg-convertor.js"></script>
-    <script src="js/klay.v0.4.1.js"></script>
-    <script src="js/cytoscape-klay.v3.1.1.js"></script>
-    <script src="js/dagre.v0.8.2.min.js"></script>
-    <script src="js/cytoscape-dagre.v2.2.2.js"></script>
-    <script src="js/cola.v3.3.8.min.js"></script>
-    <script src="js/cytoscape-cola.v2.2.3.js"></script>
-    <script src="js/cytoscape-cose-bilkent.v4.0.0.js"></script>
-    <script src="js/cytoscape-edge-bend-editing.v1.6.0.js"></script>
-    <script src="js/cytoscape-undo-redo.js"></script>
-    <script src="js/cytoscape-context-menus.v3.0.6.js"></script>
-
-    <!--<script type="text/javascript" src="js/go.js"></script>-->
-
     <style src="css/chiaroscuro.css"></style>
     <style>
         /* must be embedded here */

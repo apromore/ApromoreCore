@@ -80,7 +80,7 @@ public class CaseDetailsController extends DataListController {
 
     @Override
     public void onEvent(Event event) throws Exception {
-        caseDetailsWindow = (Window) Executions.createComponents("/zul/caseDetails.zul", null, null);
+        caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
         caseDetailsWindow.setTitle("Cases");
 
         caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
