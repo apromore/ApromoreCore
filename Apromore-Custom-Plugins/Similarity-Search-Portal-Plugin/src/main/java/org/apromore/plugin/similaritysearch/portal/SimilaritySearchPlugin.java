@@ -77,7 +77,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analyze";
+        return "Redesign";
     }
 
     @Override
