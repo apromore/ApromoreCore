@@ -23,30 +23,36 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
+import org.apromore.plugin.portal.FileImporterPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.csvimporter.services.impl.SampleLogGenerator;
+import org.apromore.service.csvimporter.io.LogReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Window;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.apromore.plugin.portal.FileImporterPlugin;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zul.Window;
 
 public class CSVFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVFileImporterPlugin.class);
 
-    private CSVImporterLogic csvImporterLogic;
+    private LogReader logReader;
+    private SampleLogGenerator SampleLogGenerator;
 
-    public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
-        LOGGER.info("Injected CSV importer logic {}", newCSVImporterLogic);
-        this.csvImporterLogic = newCSVImporterLogic;
+    public void setLogReader(LogReader newLogReader) {
+        LOGGER.info("Injected CSV importer logic {}", newLogReader);
+        this.logReader = newLogReader;
+    }
+
+    public void setSampleLogGenerator(SampleLogGenerator sampleLogGenerator) {
+        this.SampleLogGenerator = sampleLogGenerator;
     }
 
     @Override
@@ -59,7 +65,8 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
 
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
-        arg.put("csvImporterLogic", csvImporterLogic);
+        arg.put("logReader", logReader);
+        arg.put("SampleLogGenerator", SampleLogGenerator);
         arg.put("media", media);
 
         // Create a CSV importer view

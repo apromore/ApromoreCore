@@ -25,7 +25,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180ParserBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import org.apromore.service.csvimporter.InvalidCSVException;
+import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.Messagebox;
 

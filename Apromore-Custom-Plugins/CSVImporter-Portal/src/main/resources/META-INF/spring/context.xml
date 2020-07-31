@@ -31,12 +31,14 @@
                       http://www.eclipse.org/gemini/blueprint/schema/blueprint
                       http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
 
-  <reference id="csvImporterLogic" interface="org.apromore.service.csvimporter.CSVImporterLogic"/>
+  <reference id="csvImporterLogic" interface="org.apromore.service.csvimporter.io.LogReader"/>
+  <reference id="SampleLogReader" interface="org.apromore.service.csvimporter.services.impl.SampleLogGenerator"/>
   <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
   <service interface="org.apromore.plugin.portal.FileImporterPlugin">
     <beans:bean class="org.apromore.plugin.portal.csvimporter.CSVFileImporterPlugin">
       <beans:property name="csvImporterLogic" ref="csvImporterLogic"/>
+      <beans:property name="SampleLogReader" ref="SampleLogReader"/>
     </beans:bean>
   </service>
 

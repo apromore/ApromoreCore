@@ -25,31 +25,15 @@ package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.InvalidCSVException;
-import org.apromore.service.csvimporter.LogErrorReport;
-import org.apromore.service.csvimporter.LogModel;
-import org.apromore.service.csvimporter.LogSample;
+import org.apromore.service.csvimporter.model.LogErrorReport;
+import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.services.impl.SampleLogGenerator;
+import org.apromore.service.csvimporter.io.LogReader;
+import org.apromore.service.csvimporter.model.LogModel;
+import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,25 +49,12 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.SpringUtil;
-import org.zkoss.zul.A;
-import org.zkoss.zul.Auxhead;
-import org.zkoss.zul.Auxheader;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Popup;
-import org.zkoss.zul.Span;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import javax.xml.datatype.DatatypeFactory;
+import java.io.*;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * Controller for <code>csvimporter.zul</code>.
@@ -96,7 +67,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
 
     // Fields injected from the ZK execution
-    private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
+    private LogReader logReader = (LogReader) Executions.getCurrent().getArg().get("logReader");
+    private SampleLogGenerator SampleLogGenerator = (SampleLogGenerator) Executions.getCurrent().getArg().get("SampleLogGenerator");
     private Media media = (Media) Executions.getCurrent().getArg().get("media");
 
     // Fields injected from the ZK session
@@ -126,7 +98,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             setEncoding.addEventListener("onSelect", event -> {
                         CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
                         if (csvReader != null) {
-                            this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
+                            this.sample = SampleLogGenerator.generateSampleLog(csvReader, logSampleSize);
                             if (sample != null) setUpUI();
                         }
                     }
@@ -134,7 +106,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
             if (csvReader != null) {
-                this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
+                this.sample = SampleLogGenerator.generateSampleLog(csvReader, logSampleSize);
                 if (sample != null) {
                     setUpUI();
                     toXESButton.setDisabled(false);
@@ -194,7 +166,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             try {
                 CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
                 if (reader != null) {
-                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
+                    LogModel xesModel = logReader.readLogs(reader, sample);
                     List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
                     if (errorReport.isEmpty()) {
@@ -745,7 +717,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         }
 
                         CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                        saveXLog(csvImporterLogic.prepareXesModel(reader, sample), isPublic);
+                        saveXLog(logReader.readLogs(reader, sample), isPublic);
                     }
             );
         }

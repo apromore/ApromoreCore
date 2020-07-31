@@ -33,31 +33,63 @@
                         <Import-Package>
 
                             org.deckfour.xes.*;version="2.27",
-<!--
-                            org.springframework.beans.factory.aspectj,
-                            javax.inject,
-                            org.springframework.stereotype,
--->
+                            <!--
+                                                        org.springframework.beans.factory.aspectj,
+                                                        javax.inject,
+                                                        org.springframework.stereotype,
+                            -->
                             *
                         </Import-Package>
                         <Export-Package>
                             org.apromore.service.csvimporter,
-                            org.apromore.service.csvimporter.impl.dateparser
+                            org.apromore.service.csvimporter.dateparser
                         </Export-Package>
                     </instructions>
                 </configuration>
+            </plugin>
+            <!--
+            Ignore enforcer fail
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <executions>
+                    <execution>
+                        <id>enforce-banned-dependencies</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.apache.maven</exclude>
+                                        <exclude>org.apache.maven:badArtifact</exclude>
+                                        <exclude>*:badArtifact</exclude>
+                                    </excludes>
+                                    <includes>
+                                        <!--only 1.0 of badArtifact is allowed-->
+                                        <include>org.apache.maven:badArtifact:1.0</include>
+                                    </includes>
+                                </bannedDependencies>
+                            </rules>
+                            <fail>false</fail>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>${manager-client.version}</version>
-        </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>org.apromore</groupId>
+                    <artifactId>apromore-manager</artifactId>
+                    <version>${manager-client.version}</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -87,12 +119,12 @@
             </exclusions>
             <version>4.0</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-        </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.context</artifactId>
+                </dependency>
+        -->
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -115,6 +147,21 @@
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
         </dependency>
     </dependencies>
 </project>
