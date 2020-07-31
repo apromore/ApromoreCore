@@ -37,5 +37,12 @@
 
     <!-- Exposes the component as OSGi service -->
     <service ref="userAdminPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+
+    <!-- Web content -->
+    <service interface="org.apromore.plugin.portal.WebContentService">
+      <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
+        <beans:constructor-arg type="Object" ref="userAdminPlugin"/>
+      </beans:bean>
+    </service>
 	
 </beans:beans>

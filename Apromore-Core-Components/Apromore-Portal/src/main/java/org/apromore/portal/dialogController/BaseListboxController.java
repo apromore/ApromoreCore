@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 
 import javax.xml.datatype.DatatypeFactory;
 
@@ -90,6 +91,8 @@ public abstract class BaseListboxController extends BaseController {
     //private final Button btnGEDFolder;
     private final Button btnRenameFolder;
     private final Button btnRemoveFolder;
+    private final Button btnListView;
+    private final Button btnTileView;
     private final Button btnSecurity;
 
     private PortalContext portalContext;
@@ -123,6 +126,8 @@ public abstract class BaseListboxController extends BaseController {
         //btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
         btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
         btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
+        btnListView = (Button) mainController.getFellow("btnListView");
+        btnTileView = (Button) mainController.getFellow("btnTileView");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
 
         attachEvents();
@@ -225,12 +230,40 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        this.btnListView.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setTileView(false);
+            }
+        });
+
+        this.btnTileView.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setTileView(true);
+            }
+        });
+
+
         this.btnSecurity.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 security();
             }
         });
+    }
+
+    public void setTileView(boolean tileOn) {
+        String sclass = Objects.requireNonNull(this.listBox.getSclass(), "");
+        if (tileOn) {
+            if (!sclass.contains("ap-tiles-view")) {
+                this.listBox.setSclass(sclass.trim() + " ap-tiles-view");
+            }
+        } else {
+            if (sclass.contains("ap-tiles-view")) {
+                this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
+            }
+        }
     }
 
     /**

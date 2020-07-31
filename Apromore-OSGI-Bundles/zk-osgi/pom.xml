@@ -57,6 +57,7 @@
                         </Import-Package>
                         <DynamicImport-Package>
                             org.apromore.plugin.portal.*,
+                            dashboard,
                             zul.*
                         </DynamicImport-Package>                        
                         <Export-Package>

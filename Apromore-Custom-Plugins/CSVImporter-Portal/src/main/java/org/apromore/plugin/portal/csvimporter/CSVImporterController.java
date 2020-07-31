@@ -2,23 +2,22 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 3 of the
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
- * "Apromore" is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program.
- * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
  */
 
 package org.apromore.plugin.portal.csvimporter;
@@ -63,15 +62,22 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
 
+    /** Attribute of the ZK session containing this controller's arguments. */
+    static final String SESSION_ATTRIBUTE_KEY = "csvimport";
+
     // Fields injected from Spring beans/OSGi services
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
 
+    /* This is the better way to pass parameters, but it only works when opening the ZUL within the same browser window.
     // Fields injected from the ZK execution
     private LogReader logReader = (LogReader) Executions.getCurrent().getArg().get("logReader");
     private SampleLogGenerator SampleLogGenerator = (SampleLogGenerator) Executions.getCurrent().getArg().get("SampleLogGenerator");
     private Media media = (Media) Executions.getCurrent().getArg().get("media");
+    */
 
     // Fields injected from the ZK session
+    private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("csvImporterLogic");
+    private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
 
     // Fields injected from csvimporter.zul

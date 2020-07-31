@@ -62,6 +62,8 @@ import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -97,6 +99,8 @@ import org.zkoss.zul.Window;
  * and Process Visualizer will be called to clean up themselves.
  */
 public class PDController extends BaseController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
 
     ///////////////////// LOCAL CONSTANTS /////////////////////////////
 
@@ -207,12 +211,12 @@ public class PDController extends BaseController {
     // because of system crashes or modules crashed/undeployed
     private boolean prepareSystemServices() {
         //canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
-        domainService = (DomainService) beanFactory.getBean("domainService");
-        processService = (ProcessService) beanFactory.getBean("processService");
-        eventLogService = (EventLogService) beanFactory.getBean("eventLogService");
-        logAnimationPluginInterface = (LogAnimationPluginInterface) beanFactory.getBean("logAnimationPlugin");
-        logFilterPlugin = (LogFilterPlugin) beanFactory.getBean("logFilterPlugin");
-        
+        domainService = (DomainService) Sessions.getCurrent().getAttribute("domainService"); //beanFactory.getBean("domainService");
+        processService = (ProcessService) Sessions.getCurrent().getAttribute("processService"); //beanFactory.getBean("processService");
+        eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService"); //beanFactory.getBean("eventLogService");
+        logAnimationPluginInterface = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPlugin"); //beanFactory.getBean("logAnimationPlugin");
+        logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
+
         if (domainService == null || processService == null ||
                 eventLogService == null || logAnimationPluginInterface == null ||
                 logFilterPlugin == null) {
@@ -310,6 +314,7 @@ public class PDController extends BaseController {
         }
         catch (Exception ex) {
             Messagebox.show("Error occurred while initializing: " + ex.getMessage());
+            LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
         }
     }
 

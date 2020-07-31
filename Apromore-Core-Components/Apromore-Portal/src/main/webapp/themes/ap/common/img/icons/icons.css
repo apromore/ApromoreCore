@@ -363,6 +363,17 @@
     width: 28.5390625px !important;
 }
 
+.ap-icon-line-chart {
+    background-image: url('line-chart.svg') !important;
+    width: 26px !important;
+}
+
+
+.ap-icon-list {
+    background-image: url('list.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-log {
     background-image: url('log.svg') !important;
     width: 26px !important;
@@ -550,6 +561,11 @@
 
 .ap-icon-tally {
     background-image: url('tally.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-tiles {
+    background-image: url('tiles.svg') !important;
     width: 26px !important;
 }
 

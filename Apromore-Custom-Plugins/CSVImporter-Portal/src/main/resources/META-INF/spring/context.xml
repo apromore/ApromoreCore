@@ -31,14 +31,21 @@
                       http://www.eclipse.org/gemini/blueprint/schema/blueprint
                       http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
 
-  <reference id="csvImporterLogic" interface="org.apromore.service.csvimporter.io.LogReader"/>
-  <reference id="SampleLogReader" interface="org.apromore.service.csvimporter.services.impl.SampleLogGenerator"/>
+  <reference id="logReader" interface="org.apromore.service.csvimporter.io.LogReader"/>
+  <reference id="sampleLogGenerator" interface="org.apromore.service.csvimporter.services.impl.SampleLogGenerator"/>
   <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
-  <service interface="org.apromore.plugin.portal.FileImporterPlugin">
-    <beans:bean class="org.apromore.plugin.portal.csvimporter.CSVFileImporterPlugin">
-      <beans:property name="csvImporterLogic" ref="csvImporterLogic"/>
-      <beans:property name="SampleLogReader" ref="SampleLogReader"/>
+  <beans:bean id="fileImporterPlugin" class="org.apromore.plugin.portal.csvimporter.CSVImporterFileImporterPlugin">
+    <beans:property name="logReader" ref="logReader"/>
+    <beans:property name="sampleLogGenerator" ref="sampleLogGenerator"/>
+  </beans:bean>
+
+  <service interface="org.apromore.plugin.portal.FileImporterPlugin" ref="fileImporterPlugin"/>
+
+  <service interface="org.apromore.plugin.portal.WebContentService">
+    <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
+      <beans:constructor-arg type="Object" ref="fileImporterPlugin"/>
+
     </beans:bean>
   </service>
 

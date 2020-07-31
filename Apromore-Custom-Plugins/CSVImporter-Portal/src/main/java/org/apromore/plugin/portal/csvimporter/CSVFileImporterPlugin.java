@@ -44,7 +44,7 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CSVFileImporterPlugin.class);
 
     private LogReader logReader;
-    private SampleLogGenerator SampleLogGenerator;
+    private SampleLogGenerator sampleLogGenerator;
 
     public void setLogReader(LogReader newLogReader) {
         LOGGER.info("Injected CSV importer logic {}", newLogReader);
@@ -52,7 +52,7 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
     }
 
     public void setSampleLogGenerator(SampleLogGenerator sampleLogGenerator) {
-        this.SampleLogGenerator = sampleLogGenerator;
+        this.sampleLogGenerator = sampleLogGenerator;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
         arg.put("logReader", logReader);
-        arg.put("SampleLogGenerator", SampleLogGenerator);
+        arg.put("sampleLogGenerator", sampleLogGenerator);
         arg.put("media", media);
 
         // Create a CSV importer view

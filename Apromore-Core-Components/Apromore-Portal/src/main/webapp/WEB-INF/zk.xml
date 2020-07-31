@@ -54,6 +54,7 @@
     <label-location>/WEB-INF/ui.properties</label-location>
     <label-location>/WEB-INF/brand.properties</label-location>
     <label-location>/WEB-INF/msg.properties</label-location>
+    <web-app-class>org.apromore.portal.ApromoreWebApp</web-app-class>
   </system-config>
 
   <library-property>

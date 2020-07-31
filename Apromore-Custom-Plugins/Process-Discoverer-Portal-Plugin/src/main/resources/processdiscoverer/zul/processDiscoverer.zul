@@ -29,8 +29,7 @@
 <?link rel="shortcut icon" href="../../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <?link rel="stylesheet" href="../../css/chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
-<?link rel="stylesheet" href="/css/ap/pd.css" type="text/css" ?>
-<!--<?link rel="stylesheet" href="/js/jquery-ui/jquery-ui.min.css" type="text/css" ?>-->
+<?link rel="stylesheet" href="/processdiscoverer/css/ap/pd.css" type="text/css" ?>
 <?script src="../../themes/ap/common/js/index.js"?>
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -40,32 +39,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-  <style src="/css/tippy.v4.0.1.css"/>
-  <!--<style src="/css/ap/triage.css"/>-->
+  <style src="/processdiscoverer/css/tippy.v4.0.1.css"/>
   <script><![CDATA[
     Ap.theme = '${labels.theme}';
   ]]></script>
-  <script type="text/javascript" src="/js/jquery.js"></script>
-  <!--<script type="text/javascript" src="/js/jquery-ui/jquery-ui.min.js"></script>-->
-  <script type="text/javascript" src="/js/minisearch/index.js"></script>
-  <script type="text/javascript" src="/js/file-saver/filesaver.js"></script>
-  <!-- <script src="/js/pdf.v1.10.100.js"></script> -->
-  <!-- <script src="/js/canvas2svg.v1.0.19.js"></script> -->
-  <!-- This jsPDF has been modified by renaming the top global jsPDF variable to jsPDF2 to avoid conflicts with jsPDF in ZKCharts -->
-  <script src="/js/jspdf.v1.4.1.debug.js"></script>
-  <script src="/js/cytoscape.v3.2.18.min.js"></script>
-  <script src="/js/cytoscape-svg-convertor.js"></script>
-  <script src="/js/dagre.v0.8.2.min.js"></script>
-  <script src="/js/cytoscape-dagre.v2.2.2.js"></script>
-  <script src="/js/popper.v1.14.7.min.js"></script>
-  <script src="/js/cytoscape-popper.v1.0.4.js"></script>
-  <script src="/js/tippy.v4.0.1.min.js"></script>
-  <script src="/js/cytoscape-undo-redo.js"></script>
-  <script src="/js/cytoscape-edge-bend-editing.js"></script>
-  <script src="/js/ap/moment.min.js"></script>
-  <script src="/js/ap/search.js"></script>
-  <script src="/js/ap/graph.js"></script>
-  <script src="/js/ap/pd.js"></script>
+  <script type="text/javascript" src="/processdiscoverer/js/jquery.js"></script>
+  <script type="text/javascript" src="/processdiscoverer/js/minisearch/index.js"></script>
+  <script type="text/javascript" src="/processdiscoverer/js/file-saver/filesaver.js"></script>
+  <script src="/processdiscoverer/js/jspdf.v1.4.1.debug.js"></script>
+  <script src="/processdiscoverer/js/cytoscape.v3.2.18.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-svg-convertor.js"></script>
+  <script src="/processdiscoverer/js/dagre.v0.8.2.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-dagre.v2.2.2.js"></script>
+  <script src="/processdiscoverer/js/popper.v1.14.7.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-popper.v1.0.4.js"></script>
+  <script src="/processdiscoverer/js/tippy.v4.0.1.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-undo-redo.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-edge-bend-editing.js"></script>
+  <script src="/processdiscoverer/js/ap/moment.min.js"></script>
+  <script src="/processdiscoverer/js/ap/search.js"></script>
+  <script src="/processdiscoverer/js/ap/graph.js"></script>
+  <script src="/processdiscoverer/js/ap/pd.js"></script>
 
   <h:div class="ap-header">
     <h:a href="/">

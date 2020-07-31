@@ -19,28 +19,31 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+package org.apromore.plugin.portal;
 
-package org.apromore.plugin.portal.processdiscoverer.servlets;
-
-// Java 2 Standard Edition
-import java.io.IOException;
-
-// Java 2 Enterprise Edition
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+import java.io.InputStream;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
- * Kludge to redirect ZK into loading its static content from the existing versions in the portal.
- *
- * @author <a href=mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
+ * An OSGi service which selectively serves web content.
  */
-public class RedirectionServlet extends HttpServlet {
+public interface WebContentService {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        response.setHeader("Location", "/zkau/web" + request.getPathInfo());
-    }
+    /**
+     * MIME type for ZUML files.
+     */
+    public final String ZUML_MIME_TYPE = "text/vnd.potix-zuml+xml";
+
+    /**
+     * @param path  a candidate servlet path
+     * @return whether the <var>path</var> is a resource this service handles
+     */
+    boolean hasResource(String path);
+
+    /**
+     * @param path  a servlet path that's been accepted by {@link #hasResource}
+     * @return a stream containing the resource content
+     */
+    InputStream getResourceAsStream(String path);
 }
