@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,23 +22,24 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
-import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.services.impl.SampleLogGenerator;
-import org.apromore.service.csvimporter.io.LogReader;
 import org.apromore.service.csvimporter.model.LogModel;
+import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.services.ConvertToParquetFactory;
+import org.apromore.service.csvimporter.services.ParquetExporter;
+import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
+import org.apromore.service.csvimporter.services.SampleLogGenerator;
+import org.apromore.service.csvimporter.services.legecy.LogReader;
 import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -62,7 +63,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
 
-    /** Attribute of the ZK session containing this controller's arguments. */
+    /**
+     * Attribute of the ZK session containing this controller's arguments.
+     */
     static final String SESSION_ATTRIBUTE_KEY = "csvimport";
 
     // Fields injected from Spring beans/OSGi services
@@ -76,14 +79,18 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     */
 
     // Fields injected from the ZK session
-    private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("csvImporterLogic");
+    private ParquetFactoryProvider parquetFactoryProvider = (ParquetFactoryProvider) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("parquetFactoryProvider");
+    private LogReader logReader = (LogReader) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("logReader");
     private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
 
     // Fields injected from csvimporter.zul
-    private @Wire("#mainWindow")        Window window;
-    private @Wire("#toXESButton")       Button toXESButton;
-    private @Wire("#toPublicXESButton") Button toPublicXESButton;
+    private @Wire("#mainWindow")
+    Window window;
+    private @Wire("#toXESButton")
+    Button toXESButton;
+    private @Wire("#toPublicXESButton")
+    Button toPublicXESButton;
 
     private LogSample sample;
 
@@ -92,32 +99,36 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private Span[] parsedIcons;
     private List<Listbox> dropDownLists;
 
+    ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory("csv");
+    SampleLogGenerator sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
+    ParquetExporter parquetExporter = convertToParquetFactory.createParquetExporter();
+
     @Override
     public void doFinally() throws Exception {
         super.doFinally();
 
+
         // Populate the window
-        CSVFileReader CSVReader = new CSVFileReader();
+//        CSVFileReader CSVReader = new CSVFileReader();
         try {
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
             setEncoding.addEventListener("onSelect", event -> {
-                        CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
-                        if (csvReader != null) {
-                            this.sample = SampleLogGenerator.generateSampleLog(csvReader, logSampleSize);
-                            if (sample != null) setUpUI();
-                        }
+//                        CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
+//                        if (csvReader != null) {
+                        this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+                        if (sample != null) setUpUI();
+//                        }
                     }
             );
 
-            CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
-            if (csvReader != null) {
-                this.sample = SampleLogGenerator.generateSampleLog(csvReader, logSampleSize);
-                if (sample != null) {
-                    setUpUI();
-                    toXESButton.setDisabled(false);
-                    toPublicXESButton.setDisabled(false);
-                }
+//            CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
+
+            this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+            if (sample != null) {
+                setUpUI();
+                toXESButton.setDisabled(false);
+                toPublicXESButton.setDisabled(false);
             }
 
         } catch (Exception e) {
@@ -170,9 +181,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK, Messagebox.ERROR);
         } else {
             try {
-                CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                if (reader != null) {
-                    LogModel xesModel = logReader.readLogs(reader, sample);
+//                CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
+//                if (reader != null) {
+                LogModel xesModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding());
+
+                if (xesModel != null) {
+
                     List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
                     if (errorReport.isEmpty()) {
@@ -181,6 +195,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         handleInvalidData(xesModel, isLogPublic);
                     }
                 }
+//                }
             } catch (Exception e) {
                 Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
@@ -400,15 +415,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         List<Listbox> menuDropDownLists = new ArrayList<>();
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<>();
 
-        menuItems.put(caseIdLabel,         getLabels().getString("case_id"));
-        menuItems.put(activityLabel,       getLabels().getString("activity"));
-        menuItems.put(endTimestampLabel,   getLabels().getString("end_timestamp"));
+        menuItems.put(caseIdLabel, getLabels().getString("case_id"));
+        menuItems.put(activityLabel, getLabels().getString("activity"));
+        menuItems.put(endTimestampLabel, getLabels().getString("end_timestamp"));
         menuItems.put(startTimestampLabel, getLabels().getString("start_timestamp"));
         menuItems.put(otherTimestampLabel, getLabels().getString("other_timestamp"));
-        menuItems.put(resourceLabel,       getLabels().getString("resource"));
-        menuItems.put(caseAttributeLabel,  getLabels().getString("case_attribute"));
+        menuItems.put(resourceLabel, getLabels().getString("resource"));
+        menuItems.put(caseAttributeLabel, getLabels().getString("case_attribute"));
         menuItems.put(eventAttributeLabel, getLabels().getString("event_attribute"));
-        menuItems.put(ignoreLabel,         getLabels().getString("ignore_attribute"));
+        menuItems.put(ignoreLabel, getLabels().getString("ignore_attribute"));
 
 
         for (int pos = 0; pos < sample.getHeader().size(); pos++) {
@@ -425,15 +440,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
                 if ((box.getSelectedItem() == null) && (
                         (myItem.getKey().equals(caseIdLabel) && sample.getCaseIdPos() == pos) ||
-                        (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
-                        (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
+                                (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
+                                (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
                         (myItem.getKey().equals(startTimestampLabel) && sample.getStartTimestampPos() == pos) ||
                         (myItem.getKey().equals(otherTimestampLabel) && sample.getOtherTimestamps().containsKey(pos)) ||
                         (myItem.getKey().equals(resourceLabel) && sample.getResourcePos() == pos) ||
                         (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(ignoreLabel) && sample.getIgnoredPos().contains(pos))
-                ) {
+                        ) {
                     item.setSelected(true);
                 }
                 box.appendChild(item);
@@ -722,8 +737,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             sample.getIgnoredPos().add(pos);
                         }
 
-                        CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                        saveXLog(logReader.readLogs(reader, sample), isPublic);
+//                        CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
+                        saveXLog(logReader.readLogs(getInputSream(media), sample, getFileEncoding()), isPublic);
                     }
             );
         }
@@ -819,7 +834,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             } else {
                 successMessage = MessageFormat.format(getLabels().getString("successful_upload"), xesModel.getRowsCount());
             }
-            Messagebox.show(successMessage, new Messagebox.Button[] {Messagebox.Button.OK}, event -> close());
+            Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
             portalContext.refreshContent();
 
         } catch (InvalidCSVException e) {
@@ -827,5 +842,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         } catch (Exception e) {
             Messagebox.show(getLabels().getString("failed_to_write_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
+    }
+
+    private InputStream getInputSream(Media media) {
+        return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
 }

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services.impl;
+package org.apromore.service.csvimporter.services.legecy;
 
 import org.apromore.service.csvimporter.model.LogEventModel;
 import org.deckfour.xes.extension.std.XConceptExtension;

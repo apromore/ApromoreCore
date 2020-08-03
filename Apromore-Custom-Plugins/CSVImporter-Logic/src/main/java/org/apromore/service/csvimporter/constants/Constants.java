@@ -23,6 +23,9 @@
 package org.apromore.service.csvimporter.constants;
 
 public interface Constants {
+
+    char[] supportedSeparators = {',','|',';','\t'};
+
     String possibleCaseId = "^((case)|(.*(case|service|event)(\\s|-|_)?(id)).*)$";
     String possibleActivity = "^((activity|operation)(.*)|event)$";
     String possibleResource = "^(resource|agent|employee|group)$";
@@ -30,4 +33,8 @@ public interface Constants {
     String possibleStartTimestamp = "^(.*start.*)$";
     String possibleOtherTimestamp = "^(.*(date|time).*)$";
     String timestampPattern = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2}.*)$";
+
+
+    String CSV_FILE_EXTENTION = "csv";
+    String PARQUET_FILE_EXTENTION = "parquet";
 }

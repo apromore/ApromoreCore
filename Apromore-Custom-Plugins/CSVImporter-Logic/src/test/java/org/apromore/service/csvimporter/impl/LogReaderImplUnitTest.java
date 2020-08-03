@@ -22,16 +22,13 @@
 
 package org.apromore.service.csvimporter.impl;
 
-import com.google.common.io.ByteStreams;
-import org.apromore.service.csvimporter.io.LogReader;
-import org.apromore.service.csvimporter.io.LogReaderImpl;
-import org.apromore.service.csvimporter.model.LogModel;
+import org.apromore.service.csvimporter.services.legecy.LogReader;
+import org.apromore.service.csvimporter.services.legecy.LogReaderImpl;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ConvertToParquetFactory;
-import org.apromore.service.csvimporter.services.CsvFactory;
-import org.apromore.service.csvimporter.services.impl.CSVSampleLogGenerator;
-import org.apromore.service.csvimporter.services.impl.ParquetExporter;
-import org.apromore.service.csvimporter.services.impl.SampleLogGenerator;
+import org.apromore.service.csvimporter.services.ParquetExporter;
+import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
+import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.junit.Test;
@@ -39,15 +36,11 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.TimeZone;
 
-import static junit.framework.Assert.assertEquals;
-import static org.apromore.service.csvimporter.io.CSVFileReader.csvFileReader;
 import static org.apromore.service.csvimporter.services.ParquetFactoryProvider.getParquetFactory;
-import static org.junit.Assert.assertNotNull;
 
 
 public class LogReaderImplUnitTest {
@@ -80,19 +73,17 @@ public class LogReaderImplUnitTest {
 
 
     /**
-     * Test {@link LogReader.prepareXesModel} to convert to parquet.
+     * Test {@link } to convert to parquet.
      */
     @Test
     public void testConvertToParquet() throws Exception {
 
-
-        SampleLogGenerator csvSampleLogGenerator = new CSVSampleLogGenerator();
-        System.out.println("\n************************************\ntest1 - Valid csv test ");\
+        System.out.println("\n************************************\ntest1 - Valid csv test ");
 
         File testFile = new File("test1-valid.csv");
 
-
-        ConvertToParquetFactory convertToParquetFactory = getParquetFactory("csv");
+        ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
+        ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory("csv");
 
         SampleLogGenerator sampleLogGenerator =  convertToParquetFactory.createSampleLogGenerator();
         ParquetExporter parquetExporter = convertToParquetFactory.createParquetExporter();

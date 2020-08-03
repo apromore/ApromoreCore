@@ -25,8 +25,8 @@ package org.apromore.plugin.portal.csvimporter;
 
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.csvimporter.services.impl.SampleLogGenerator;
-import org.apromore.service.csvimporter.io.LogReader;
+import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
+import org.apromore.service.csvimporter.services.legecy.LogReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.Media;
@@ -43,16 +43,23 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVFileImporterPlugin.class);
 
-    private LogReader logReader;
-    private SampleLogGenerator sampleLogGenerator;
+    ParquetFactoryProvider parquetFactoryProvider;
+    LogReader logReader;
 
-    public void setLogReader(LogReader newLogReader) {
-        LOGGER.info("Injected CSV importer logic {}", newLogReader);
-        this.logReader = newLogReader;
+    public ParquetFactoryProvider getParquetFactoryProvider() {
+        return parquetFactoryProvider;
     }
 
-    public void setSampleLogGenerator(SampleLogGenerator sampleLogGenerator) {
-        this.sampleLogGenerator = sampleLogGenerator;
+    public void setParquetFactoryProvider(ParquetFactoryProvider parquetFactoryProvider) {
+        this.parquetFactoryProvider = parquetFactoryProvider;
+    }
+
+    public LogReader getLogReader() {
+        return logReader;
+    }
+
+    public void setLogReader(LogReader logReader) {
+        this.logReader = logReader;
     }
 
     @Override
@@ -65,8 +72,8 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
 
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
+        arg.put("parquetFactoryProvider", parquetFactoryProvider);
         arg.put("logReader", logReader);
-        arg.put("sampleLogGenerator", sampleLogGenerator);
         arg.put("media", media);
 
         // Create a CSV importer view

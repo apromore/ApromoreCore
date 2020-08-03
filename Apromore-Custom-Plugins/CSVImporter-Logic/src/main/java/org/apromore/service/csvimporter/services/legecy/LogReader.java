@@ -20,13 +20,14 @@
  * #L%
  */
 
-package org.apromore.service.csvimporter.io;
+package org.apromore.service.csvimporter.services.legecy;
 
 import com.opencsv.CSVReader;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Service which converts event logs in CSV format to XES format.
@@ -42,10 +43,10 @@ public interface LogReader {
     /**
      * Process an entire CSV document using a given header configuration.
      *
-     * @param reader a source of CSV data; this must be open to the beginning of the data so that the header may be read
+//     * @param reader a source of CSV data; this must be open to the beginning of the data so that the header may be read
      * @param sample header configuration
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogModel readLogs(CSVReader reader, LogSample sample) throws Exception;
+    LogModel readLogs(InputStream in, LogSample sample, String charset) throws Exception;
 
 }

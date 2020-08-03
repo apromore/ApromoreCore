@@ -19,12 +19,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services.impl;
+package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.model.LogSample;
 
-import java.io.File;
+import java.io.InputStream;
 
 public interface SampleLogGenerator {
-     LogSample generateSampleLog(File importedFile, int sampleSize) throws Exception;
+     LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception;
 }

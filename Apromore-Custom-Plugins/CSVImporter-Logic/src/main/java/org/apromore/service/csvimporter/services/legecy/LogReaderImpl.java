@@ -19,14 +19,16 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.io;
+package org.apromore.service.csvimporter.services.legecy;
 
 import com.opencsv.CSVReader;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.dateparser.Parse;
+import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.*;
 import org.apromore.service.csvimporter.utilities.NameComparator;
 
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -40,7 +42,11 @@ public class LogReaderImpl implements LogReader, Constants {
     private boolean validRow;
 
     @Override
-    public LogModel readLogs(CSVReader reader, LogSample sample) throws Exception {
+    public LogModel readLogs(InputStream in, LogSample sample, String charset) throws Exception {
+        CSVReader reader = new CSVFileReader().newCSVReader(in, charset);
+        if (reader == null)
+            return null;
+
         sample.validateSample();
 
         logErrorReport = new ArrayList<>();
@@ -124,7 +130,7 @@ public class LogReaderImpl implements LogReader, Constants {
 
             // If PreferMonthFirst changed to True, we have to start over.
             if (!preferMonthFirst && preferMonthFirstChanged) {
-                readLogs(reader, sample);
+                readLogs(in, sample, charset);
             }
 
 

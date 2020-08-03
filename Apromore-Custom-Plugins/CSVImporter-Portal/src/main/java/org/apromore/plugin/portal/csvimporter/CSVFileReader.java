@@ -29,17 +29,19 @@ import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.Messagebox;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 
 public class CSVFileReader {
 
     CSVReader newCSVReader(Media media, String charset) {
         try{
+            
             // Guess at ethe separator character
             Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
+
+//            InputStream in = media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData()) ;
+
+
             BufferedReader brReader = new BufferedReader(reader);
             String firstLine = brReader.readLine();
             if (firstLine == null || firstLine.isEmpty()) {

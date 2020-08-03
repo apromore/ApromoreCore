@@ -34,8 +34,8 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <osgi:service interface="org.apromore.service.csvimporter.io.LogReader">
-        <bean class="org.apromore.service.csvimporter.io.LogReaderImpl"/>
+    <osgi:service interface="org.apromore.service.csvimporter.services.legecy.LogReader">
+        <bean class="org.apromore.service.csvimporter.services.legecy.LogReaderImpl"/>
     </osgi:service>
 
 </beans>

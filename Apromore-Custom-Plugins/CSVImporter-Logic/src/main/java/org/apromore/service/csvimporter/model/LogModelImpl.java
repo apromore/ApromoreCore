@@ -22,7 +22,7 @@
 
 package org.apromore.service.csvimporter.model;
 
-import org.apromore.service.csvimporter.services.impl.CreateXLog;
+import org.apromore.service.csvimporter.services.legecy.CreateXLog;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class LogModelImpl implements LogModel {
     private List<LogErrorReport> logErrorReport;
     private boolean rowLimitExceeded = false;
 
-    LogModelImpl(List<LogEventModel> rows, List<LogErrorReport> logErrorReportImpl, boolean rowLimitExceeded) {
+    public LogModelImpl(List<LogEventModel> rows, List<LogErrorReport> logErrorReportImpl, boolean rowLimitExceeded) {
         this.rows = rows;
         this.logErrorReport = logErrorReportImpl;
         this.rowLimitExceeded = rowLimitExceeded;
