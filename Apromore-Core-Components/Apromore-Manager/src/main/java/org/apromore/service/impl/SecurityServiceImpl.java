@@ -159,6 +159,9 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     @Transactional(readOnly = false)
     public Group updateGroup(Group group) {
+        if (group.getType() != Group.Type.GROUP) {
+            throw new IllegalArgumentException("Group " + group.getName() + " cannot be modified");
+        }
         Group result = groupRepo.saveAndFlush(group);
         postEvent(EventType.UPDATE_GROUP, null, result);
 
@@ -176,6 +179,11 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public List<Group> findElectiveGroups() {
         return groupRepo.findElectiveGroups();
+    }
+
+    @Override
+    public Group getGroupByName(String name) {
+        return groupRepo.findByName(name);
     }
 
     @Override

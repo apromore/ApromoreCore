@@ -36,9 +36,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -76,6 +81,7 @@ public class Group implements Serializable {
     private String rowGuid = UUID.randomUUID().toString();
     private String name;
     private Type type;
+    private Set<User> users = new HashSet<>();
 
     /**
      * Default Constructor.
@@ -156,10 +162,30 @@ public class Group implements Serializable {
     }
 
     /**
-     * @param newName  the new name for the group
+     * @param newName  the new type for the group
      */
     public void setType(final Type newType) {
         this.type = newType;
+    }
+
+
+    /**
+     * @return all the users who are a member of this access control group
+     */
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_group",
+        joinColumns        = @JoinColumn(name = "groupId",  referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"))
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    /**
+     * @param newUsers  the updated set of users belonging to this group
+     * @throws IllegalArgumentException if this group isn't of type {@link Type.GROUP}
+     */
+    public void setUsers(final Set<User> newUsers) {
+        this.users = newUsers;
     }
 
 

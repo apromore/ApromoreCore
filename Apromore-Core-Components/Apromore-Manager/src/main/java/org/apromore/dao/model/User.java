@@ -306,7 +306,6 @@ public class User implements Serializable {
         this.membership = newMembership;
     }
 
-
     /**
      * Getter for the role collection.
      * @return Returns the roles.
