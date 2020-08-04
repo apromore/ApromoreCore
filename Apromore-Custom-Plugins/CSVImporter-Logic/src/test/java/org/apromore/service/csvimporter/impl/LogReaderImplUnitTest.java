@@ -35,12 +35,12 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.TimeZone;
 
-import static org.apromore.service.csvimporter.services.ParquetFactoryProvider.getParquetFactory;
 
 
 public class LogReaderImplUnitTest {
@@ -80,7 +80,7 @@ public class LogReaderImplUnitTest {
 
         System.out.println("\n************************************\ntest1 - Valid csv test ");
 
-        File testFile = new File("test1-valid.csv");
+        File testFile = new File("/Users/own_strong/Dev/Apromore-prod/7.17/ApromoreEE/ApromoreCore/Apromore-Custom-Plugins/CSVImporter-Logic/src/test/resources/test1-valid.csv");
 
         ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
         ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory("csv");
@@ -88,8 +88,8 @@ public class LogReaderImplUnitTest {
         SampleLogGenerator sampleLogGenerator =  convertToParquetFactory.createSampleLogGenerator();
         ParquetExporter parquetExporter = convertToParquetFactory.createParquetExporter();
 
-        LogSample sample = sampleLogGenerator.generateSampleLog(testFile, 100);
-        parquetExporter.generateParqeuetFile(testFile, sample,new File("/" + testFile.getName()+".parquet"));
+        LogSample sample = sampleLogGenerator.generateSampleLog(new FileInputStream(testFile), 100, "");
+        parquetExporter.generateParqeuetFile(new FileInputStream(testFile), sample,new File("/" + testFile.getName()+".parquet"));
 
 
         System.out.println("\n************************************************************************\n");

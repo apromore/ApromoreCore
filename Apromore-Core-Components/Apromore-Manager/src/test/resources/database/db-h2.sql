@@ -1,15 +1,5 @@
 CREATE USER apromore PASSWORD 'MAcri' ADMIN
 ;
-CREATE TABLE annotation
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   nativeId int,
-   processModelVersionId int,
-   name varchar(40),
-   content longtext,
-   lastUpdateDate varchar(40)
-)
-;
 CREATE TABLE batch_job_execution
 (
    job_execution_id bigint PRIMARY KEY NOT NULL,
@@ -94,67 +84,12 @@ CREATE TABLE batch_step_execution_seq
    id bigint NOT NULL
 )
 ;
-CREATE TABLE cancel_nodes
-(
-   nodeId int NOT NULL,
-   cancelNodeId int NOT NULL,
-   PRIMARY KEY (nodeId,cancelNodeId)
-)
-;
-CREATE TABLE canonical
+CREATE TABLE dashboard_layout
 (
    id int auto_increment PRIMARY KEY NOT NULL,
-   content longtext,
-   lastUpdateDate varchar(40)
-)
-;
-CREATE TABLE cluster
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   size int,
-   avg_fragment_size real,
-   medoid_id varchar(40),
-   benifit_cost_ratio double,
-   std_effort double,
-   refactoring_gain int
-)
-;
-CREATE TABLE cluster_assignment
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   clusterId int NOT NULL,
-   fragmentVersionId int NOT NULL,
-   clone_id varchar(40),
-   maximal bit,
-   core_object_nb int
-)
-;
-CREATE TABLE edge
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(256),
-   sourceNodeId int,
-   targetNodeId int,
-   cancelNodeId int,
-   originalId varchar(200),
-   conditionExpressionId int,
-   def bit DEFAULT 0
-)
-;
-CREATE TABLE edge_attribute
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   edgeId int,
-   name varchar(255),
-   value longtext,
-   any longtext
-)
-;
-CREATE TABLE edge_mapping
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   fragmentVersionId int,
-   edgeId int
+   userId int NOT NULL,
+   logId int NOT NULL,
+   layout mediumtext,
 )
 ;
 CREATE TABLE edit_session
@@ -174,17 +109,6 @@ CREATE TABLE edit_session
    remove_fake_events bit,
    createDate varchar(40),
    lastUpdateDate varchar(40)
-)
-;
-CREATE TABLE expression
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   inputNodeId int,
-   outputNodeId int,
-   description varchar(255),
-   language varchar(255),
-   expression text,
-   returnType varchar(255)
 )
 ;
 CREATE TABLE folder
@@ -213,45 +137,6 @@ CREATE TABLE folder_subfolder
    parentId int NOT NULL,
    childId int NOT NULL,
    PRIMARY KEY (parentId,childId)
-)
-;
-CREATE TABLE fragment
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   propagation_policy int
-)
-;
-CREATE TABLE fragment_distance
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   fragmentVersionId1 int NOT NULL,
-   fragmentVersionId2 int NOT NULL,
-   ged double
-)
-;
-CREATE TABLE fragment_version
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(40),
-   fragmentId int,
-   clusterId int,
-   entryNodeId int,
-   exitNodeId int,
-   child_mapping_code text,
-   derived_from_fragment int,
-   lock_status int,
-   lock_count int,
-   fragment_size int,
-   fragment_type varchar(10),
-   newest_neighbor varchar(40)
-)
-;
-CREATE TABLE fragment_version_dag
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   fragmentVersionId int,
-   childFragmentVersionId int,
-   pocketId varchar(40)
 )
 ;
 CREATE TABLE "group"
@@ -331,83 +216,6 @@ CREATE TABLE native_type
    extension varchar(10)
 )
 ;
-CREATE TABLE node
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(256),
-   subVersionId int,
-   originalId varchar(200),
-   netId varchar(200),
-   name text,
-   graphType varchar(50),
-   nodeType varchar(50),
-   configuration bit DEFAULT 0,
-   teamWork bit DEFAULT 0,
-   allocation varchar(40),
-   resourceDataExpressionId int,
-   resourceRunExpressionId int,
-   timerExpressionId int,
-   timeDate timestamp,
-   timeDuration varchar(100),
-   messageDirection varchar(10)
-)
-;
-CREATE TABLE node_attribute
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   nodeId int,
-   name varchar(255),
-   value longtext,
-   any longtext
-)
-;
-CREATE TABLE node_mapping
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   fragmentVersionId int,
-   nodeId int
-)
-;
-CREATE TABLE object
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   processModelVersionId int NOT NULL,
-   uri varchar(40),
-   netId varchar(40),
-   name varchar(255),
-   configurable bit DEFAULT 0 NOT NULL,
-   type varchar(30),
-   softType varchar(255)
-)
-;
-CREATE TABLE object_attribute
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   objectId int,
-   name varchar(255),
-   value longtext,
-   any longtext
-)
-;
-CREATE TABLE object_ref
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   objectId int,
-   nodeId int,
-   optional bit DEFAULT 0 NOT NULL,
-   consumed bit DEFAULT 0 NOT NULL,
-   type varchar(30)
-)
-;
-CREATE TABLE object_ref_attribute
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   objectRefId int,
-   name varchar(255),
-   value longtext,
-   any longtext
-)
-;
 CREATE TABLE permission
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -450,13 +258,6 @@ CREATE TABLE process_branch
    currentProcessModelVersion int
 )
 ;
-CREATE TABLE process_fragment_map
-(
-   processModelVersionId int NOT NULL,
-   fragmentVersionId int NOT NULL,
-   PRIMARY KEY (processModelVersionId,fragmentVersionId)
-)
-;
 CREATE TABLE process_model_attribute
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -484,51 +285,6 @@ CREATE TABLE process_model_version
    lastUpdateDate varchar(40)
 )
 ;
-CREATE TABLE resource
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   processModelVersionId int,
-   uri varchar(40),
-   originalId varchar(40),
-   name varchar(255),
-   configurable bit DEFAULT 0 NOT NULL,
-   type varchar(30),
-   typeName varchar(255)
-)
-;
-CREATE TABLE resource_attribute
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   resourceId int,
-   name varchar(255),
-   value longtext,
-   any longtext
-)
-;
-CREATE TABLE resource_ref
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   resourceId int,
-   nodeId int,
-   qualifier varchar(255)
-)
-;
-CREATE TABLE resource_ref_attribute
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   resourceRefId int,
-   name varchar(255),
-   value longtext,
-   any longtext
-)
-;
-CREATE TABLE resource_specialisations
-(
-   resourceId int NOT NULL,
-   specialisationId int NOT NULL,
-   PRIMARY KEY (resourceId,specialisationId)
-)
-;
 CREATE TABLE role
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -552,15 +308,6 @@ CREATE TABLE search_history
    search varchar(200)
 )
 ;
-CREATE TABLE statistic (
-  count bigint(20) auto_increment PRIMARY KEY NOT NULL,
-  id varbinary(16) NOT NULL,
-  logid int(11) DEFAULT NULL,
-  pid varbinary(16) DEFAULT NULL,
-  stat_key varchar(1023) DEFAULT NULL,
-  stat_value varchar(1023) DEFAULT NULL
-);
-CREATE INDEX idx_logid ON statistic(logid);
 CREATE TABLE user
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -606,28 +353,6 @@ CREATE TABLE workspace
    userId int NOT NULL,
    date_created timestamp NOT NULL
 )
-;
-ALTER TABLE annotation
-ADD CONSTRAINT fk_annotation2
-FOREIGN KEY (processModelVersionId)
-REFERENCES process_model_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE annotation
-ADD CONSTRAINT fk_annotation1
-FOREIGN KEY (nativeId)
-REFERENCES native(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_annotation ON annotation(id)
-;
-CREATE INDEX fk_annotation1 ON annotation(nativeId)
-;
-CREATE UNIQUE INDEX un_annotation ON annotation
-(
-  processModelVersionId,
-  name
-)
-;
-CREATE INDEX idx_annotation_name ON annotation(name)
 ;
 ALTER TABLE batch_job_execution
 ADD CONSTRAINT job_instance_execution_fk
@@ -690,114 +415,22 @@ REFERENCES batch_step_execution(step_execution_id)
 ;
 CREATE UNIQUE INDEX id_primary_batch_step_execution_context ON batch_step_execution_context(step_execution_id)
 ;
-ALTER TABLE cancel_nodes
-ADD CONSTRAINT fk_cancel_child
-FOREIGN KEY (cancelNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
+
+ALTER TABLE dashboard_layout
+ADD CONSTRAINT dashboard_layout_ibfk_1
+FOREIGN KEY (userId)
+REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 ;
-ALTER TABLE cancel_nodes
-ADD CONSTRAINT fk_cancel_parent
-FOREIGN KEY (nodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
+ALTER TABLE dashboard_layout
+ADD CONSTRAINT dashboard_layout_ibfk_2
+FOREIGN KEY (logId)
+REFERENCES log(id) ON DELETE CASCADE ON UPDATE CASCADE
 ;
-CREATE UNIQUE INDEX id_primary_cancel_nodes ON cancel_nodes
-(
-  nodeId,
-  cancelNodeId
-)
+CREATE UNIQUE INDEX un_dashboard_layout_userId ON dashboard_layout(userId)
 ;
-CREATE INDEX fk_cancel_child ON cancel_nodes(cancelNodeId)
+CREATE UNIQUE INDEX un_dashboard_layout_logId ON dashboard_layout(logId)
 ;
-CREATE UNIQUE INDEX id_primary_canonical ON canonical(id)
-;
-CREATE UNIQUE INDEX id_primary_cluster ON cluster(id)
-;
-CREATE INDEX idx_cluster ON cluster
-(
-  size,
-  avg_fragment_size,
-  benifit_cost_ratio
-)
-;
-ALTER TABLE cluster_assignment
-ADD CONSTRAINT fk_cluster_assignment
-FOREIGN KEY (clusterId)
-REFERENCES cluster(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE cluster_assignment
-ADD CONSTRAINT fk_frag_version_assignment
-FOREIGN KEY (fragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_cluster_assignment ON cluster_assignment(id)
-;
-CREATE INDEX fk_cluster_assignment ON cluster_assignment(clusterId)
-;
-CREATE UNIQUE INDEX un_cluster_assignments ON cluster_assignment
-(
-  fragmentVersionId,
-  clusterId
-)
-;
-ALTER TABLE edge
-ADD CONSTRAINT fk_target_node
-FOREIGN KEY (targetNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE edge
-ADD CONSTRAINT fk_source_node
-FOREIGN KEY (sourceNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE edge
-ADD CONSTRAINT fk_cond_expr
-FOREIGN KEY (conditionExpressionId)
-REFERENCES expression(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE edge
-ADD CONSTRAINT fk_cancel_node
-FOREIGN KEY (cancelNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_edge ON edge(id)
-;
-CREATE INDEX fk_cancel_node ON edge(cancelNodeId)
-;
-CREATE INDEX fk_target_node ON edge(targetNodeId)
-;
-CREATE INDEX fk_source_node ON edge(sourceNodeId)
-;
-CREATE INDEX fk_cond_expr ON edge(conditionExpressionId)
-;
-ALTER TABLE edge_attribute
-ADD CONSTRAINT fk_edge_attributes
-FOREIGN KEY (edgeId)
-REFERENCES edge(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_edge_attribute ON edge_attribute(id)
-;
-CREATE INDEX fk_edge_attributes ON edge_attribute(edgeId)
-;
-ALTER TABLE edge_mapping
-ADD CONSTRAINT fk_em_edge
-FOREIGN KEY (edgeId)
-REFERENCES edge(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE edge_mapping
-ADD CONSTRAINT fk_em_fragment_version
-FOREIGN KEY (fragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX fk_em_edge ON edge_mapping(edgeId)
-;
-CREATE UNIQUE INDEX id_primary_edge_mapping ON edge_mapping(id)
-;
-CREATE UNIQUE INDEX un_edge_mapping ON edge_mapping
-(
-  fragmentVersionId,
-  edgeId
-)
-;
+
 ALTER TABLE edit_session
 ADD CONSTRAINT fk_edit_session
 FOREIGN KEY (processModelVersionId)
@@ -827,22 +460,6 @@ CREATE INDEX fk_edit_session_folder ON edit_session(folderId)
 CREATE UNIQUE INDEX id_primary_edit_session ON edit_session(id)
 ;
 CREATE INDEX fk_edit_session1 ON edit_session(userId)
-;
-ALTER TABLE expression
-ADD CONSTRAINT fk_node_outexpr
-FOREIGN KEY (outputNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE expression
-ADD CONSTRAINT fk_node_inexpr
-FOREIGN KEY (inputNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_expression ON expression(id)
-;
-CREATE INDEX fk_node_inexpr ON expression(inputNodeId)
-;
-CREATE INDEX fk_node_outexpr ON expression(outputNodeId)
 ;
 ALTER TABLE folder
 ADD CONSTRAINT folder_folder
@@ -914,87 +531,6 @@ CREATE INDEX folder_subfolder_child ON folder_subfolder(childId)
 ;
 CREATE INDEX folder_subfolder_parent ON folder_subfolder(parentId)
 ;
-CREATE UNIQUE INDEX id_primary_fragment ON fragment(id)
-;
-ALTER TABLE fragment_distance
-ADD CONSTRAINT fk_frag_version_2
-FOREIGN KEY (fragmentVersionId2)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE fragment_distance
-ADD CONSTRAINT fk_frag_version_1
-FOREIGN KEY (fragmentVersionId1)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX idx_fragment_distance ON fragment_distance(ged)
-;
-CREATE UNIQUE INDEX id_primary_fragment_distance ON fragment_distance(id)
-;
-CREATE INDEX fk_frag_version_2 ON fragment_distance(fragmentVersionId2)
-;
-CREATE UNIQUE INDEX un_geds ON fragment_distance
-(
-  fragmentVersionId1,
-  fragmentVersionId2
-)
-;
-ALTER TABLE fragment_version
-ADD CONSTRAINT fk_fragments_version
-FOREIGN KEY (fragmentId)
-REFERENCES fragment(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE fragment_version
-ADD CONSTRAINT fk_cluster_version
-FOREIGN KEY (clusterId)
-REFERENCES cluster(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE fragment_version
-ADD CONSTRAINT fk_entry_node
-FOREIGN KEY (entryNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE fragment_version
-ADD CONSTRAINT fk_exit_node
-FOREIGN KEY (exitNodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX fk_cluster_version ON fragment_version(clusterId)
-;
-CREATE INDEX fk_fragments_version ON fragment_version(fragmentId)
-;
-CREATE UNIQUE INDEX id_primary_fragment_version ON fragment_version(id)
-;
-CREATE INDEX idx_fv_lock ON fragment_version(lock_status)
-;
-CREATE INDEX idx_fv_sizetype ON fragment_version
-(
-  fragment_size,
-  fragment_type
-)
-;
-ALTER TABLE fragment_version_dag
-ADD CONSTRAINT fk_fragment_version_dag
-FOREIGN KEY (fragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE fragment_version_dag
-ADD CONSTRAINT fk_child_fragment_version_dag
-FOREIGN KEY (childFragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX fk_child_fragment_version_dag ON fragment_version_dag(childFragmentVersionId)
-;
-CREATE UNIQUE INDEX un_fragment_version_dag ON fragment_version_dag
-(
-  fragmentVersionId,
-  childFragmentVersionId,
-  pocketId
-)
-;
-CREATE UNIQUE INDEX id_primary_fragment_version_dag ON fragment_version_dag(id)
-;
-CREATE INDEX idx_fvd_pocket ON fragment_version_dag(pocketId)
-;
 ALTER TABLE membership
 ADD CONSTRAINT FK_users
 FOREIGN KEY (userId)
@@ -1022,108 +558,6 @@ CREATE INDEX idx_native_type ON native_type
   nat_type,
   extension
 )
-;
-ALTER TABLE node
-ADD CONSTRAINT fk_node_timer_expr
-FOREIGN KEY (timerExpressionId)
-REFERENCES expression(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE node
-ADD CONSTRAINT fk_node_run_expr
-FOREIGN KEY (resourceRunExpressionId)
-REFERENCES expression(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE node
-ADD CONSTRAINT fk_node_data_expr
-FOREIGN KEY (resourceDataExpressionId)
-REFERENCES expression(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE node
-ADD CONSTRAINT fk_node_subversion
-FOREIGN KEY (subVersionId)
-REFERENCES process_model_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX fk_node_timer_expr ON node(timerExpressionId)
-;
-CREATE UNIQUE INDEX id_primary_node ON node(id)
-;
-CREATE INDEX fk_node_subversion ON node(subVersionId)
-;
-CREATE INDEX fk_node_run_expr ON node(resourceRunExpressionId)
-;
-CREATE INDEX fk_node_data_expr ON node(resourceDataExpressionId)
-;
-ALTER TABLE node_attribute
-ADD CONSTRAINT fk_node_attributes
-FOREIGN KEY (nodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_node_attribute ON node_attribute(id)
-;
-CREATE INDEX fk_node_attributes ON node_attribute(nodeId)
-;
-ALTER TABLE node_mapping
-ADD CONSTRAINT fk_nm_node
-FOREIGN KEY (nodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE node_mapping
-ADD CONSTRAINT fk_nm_fragment_version
-FOREIGN KEY (fragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX un_node_mapping ON node_mapping
-(
-  fragmentVersionId,
-  nodeId
-)
-;
-CREATE UNIQUE INDEX id_primary_node_mapping ON node_mapping(id)
-;
-CREATE INDEX fk_nm_node ON node_mapping(nodeId)
-;
-ALTER TABLE object
-ADD CONSTRAINT fk_obj_pmv
-FOREIGN KEY (processModelVersionId)
-REFERENCES process_model_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_object ON object(id)
-;
-CREATE INDEX fk_obj_pmv ON object(processModelVersionId)
-;
-ALTER TABLE object_attribute
-ADD CONSTRAINT fk_obj_att_obj
-FOREIGN KEY (objectId)
-REFERENCES object(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_object_attribute ON object_attribute(id)
-;
-CREATE INDEX fk_obj_att_obj ON object_attribute(objectId)
-;
-ALTER TABLE object_ref
-ADD CONSTRAINT fk_objrefobj_pmv
-FOREIGN KEY (objectId)
-REFERENCES object(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE object_ref
-ADD CONSTRAINT fk_objref_node
-FOREIGN KEY (nodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX fk_objref_node ON object_ref(nodeId)
-;
-CREATE UNIQUE INDEX id_primary_object_ref ON object_ref(id)
-;
-CREATE INDEX fk_objrefobj_pmv ON object_ref(objectId)
-;
-ALTER TABLE object_ref_attribute
-ADD CONSTRAINT fk_objref_att
-FOREIGN KEY (objectRefId)
-REFERENCES object_ref(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_object_ref_attribute ON object_ref_attribute(id)
-;
-CREATE INDEX fk_objref_att ON object_ref_attribute(objectRefId)
 ;
 CREATE UNIQUE INDEX id_primary_permission ON permission(id)
 ;
@@ -1177,24 +611,6 @@ CREATE INDEX fk_current_version ON process_branch(currentProcessModelVersion)
 ;
 CREATE INDEX fk_source_version ON process_branch(sourceProcessModelVersion)
 ;
-ALTER TABLE process_fragment_map
-ADD CONSTRAINT fk_fragment_versions_map
-FOREIGN KEY (fragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE process_fragment_map
-ADD CONSTRAINT fk_process_model_versions_map
-FOREIGN KEY (processModelVersionId)
-REFERENCES process_model_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_process_fragment_map ON process_fragment_map
-(
-  processModelVersionId,
-  fragmentVersionId
-)
-;
-CREATE INDEX fk_fragment_versions_map ON process_fragment_map(fragmentVersionId)
-;
 ALTER TABLE process_model_attribute
 ADD CONSTRAINT fk_pmv_att_pmv
 FOREIGN KEY (processModelVersionId)
@@ -1219,16 +635,6 @@ ADD CONSTRAINT fk_process_branch_model_version
 FOREIGN KEY (branchId)
 REFERENCES process_branch(id) ON DELETE CASCADE ON UPDATE CASCADE
 ;
-ALTER TABLE process_model_version
-ADD CONSTRAINT fk_process_canonical
-FOREIGN KEY (canonicalId)
-REFERENCES canonical(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE process_model_version
-ADD CONSTRAINT fk_process_branch_model_version1
-FOREIGN KEY (rootFragmentVersionId)
-REFERENCES fragment_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
 CREATE INDEX fk_process_native ON process_model_version(nativeId)
 ;
 CREATE INDEX fk_process_branch_model_version1 ON process_model_version(rootFragmentVersionId)
@@ -1244,67 +650,6 @@ CREATE INDEX fk_process_native_type ON process_model_version(nativeTypeId)
 CREATE INDEX idx_pmv_version ON process_model_version(version_number)
 ;
 CREATE INDEX fk_process_canonical ON process_model_version(canonicalId)
-;
-ALTER TABLE resource
-ADD CONSTRAINT fk_res_pmv
-FOREIGN KEY (processModelVersionId)
-REFERENCES process_model_version(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE INDEX fk_res_pmv ON resource(processModelVersionId)
-;
-CREATE UNIQUE INDEX id_primary_resource ON resource(id)
-;
-ALTER TABLE resource_attribute
-ADD CONSTRAINT fk_res_att_res
-FOREIGN KEY (resourceId)
-REFERENCES resource(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_resource_attribute ON resource_attribute(id)
-;
-CREATE INDEX fk_res_att_res ON resource_attribute(resourceId)
-;
-ALTER TABLE resource_ref
-ADD CONSTRAINT fk_resref_pmv
-FOREIGN KEY (resourceId)
-REFERENCES resource(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE resource_ref
-ADD CONSTRAINT fk_resref_node
-FOREIGN KEY (nodeId)
-REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_resource_ref ON resource_ref(id)
-;
-CREATE INDEX fk_resref_pmv ON resource_ref(resourceId)
-;
-CREATE INDEX fk_resref_node ON resource_ref(nodeId)
-;
-ALTER TABLE resource_ref_attribute
-ADD CONSTRAINT fk_resref_att
-FOREIGN KEY (resourceRefId)
-REFERENCES resource_ref(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_resource_ref_attribute ON resource_ref_attribute(id)
-;
-CREATE INDEX fk_resref_att ON resource_ref_attribute(resourceRefId)
-;
-ALTER TABLE resource_specialisations
-ADD CONSTRAINT fk_special
-FOREIGN KEY (specialisationId)
-REFERENCES resource(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE resource_specialisations
-ADD CONSTRAINT fk_resource
-FOREIGN KEY (resourceId)
-REFERENCES resource(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_resource_specialisations ON resource_specialisations
-(
-  resourceId,
-  specialisationId
-)
-;
-CREATE INDEX fk_special ON resource_specialisations(specialisationId)
 ;
 CREATE UNIQUE INDEX id_primary_role ON role(id)
 ;

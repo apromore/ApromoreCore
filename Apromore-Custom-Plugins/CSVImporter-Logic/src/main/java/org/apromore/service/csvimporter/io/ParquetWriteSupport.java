@@ -23,12 +23,12 @@
 package org.apromore.service.csvimporter.io;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.column.ColumnDescriptor;
+import org.apache.parquet.hadoop.api.WriteSupport;
+import org.apache.parquet.io.api.Binary;
+import org.apache.parquet.io.api.RecordConsumer;
+import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.model.LogEventModel;
-import parquet.column.ColumnDescriptor;
-import parquet.hadoop.api.WriteSupport;
-import parquet.io.api.Binary;
-import parquet.io.api.RecordConsumer;
-import parquet.schema.MessageType;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
     }
 
     @Override
-    public WriteContext init(Configuration config) {
+    public WriteSupport.WriteContext init(Configuration config) {
         return new WriteContext(schema, new HashMap<String, String>());
     }
 

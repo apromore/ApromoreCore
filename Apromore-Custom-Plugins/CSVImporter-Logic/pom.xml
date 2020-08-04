@@ -27,7 +27,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=retree
+                            artifactId=retree|parquet-hadoop-bundle|hadoop-common|guava
                         </Embed-Dependency>
 
                         <Import-Package>
@@ -148,15 +148,27 @@
             <version>1.18.8</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.parquet/parquet-hadoop-bundle -->
         <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>parquet-hadoop</artifactId>
-            <version>1.6.0</version>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop-bundle</artifactId>
+            <version>1.11.0</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.twitter</groupId>-->
+            <!--<artifactId>parquet-hadoop</artifactId>-->
+            <!--<version>1.6.0</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>3.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

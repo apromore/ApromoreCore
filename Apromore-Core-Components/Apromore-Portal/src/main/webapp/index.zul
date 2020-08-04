@@ -204,6 +204,9 @@
                             <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
                             <h:span class="ap-action-sep"></h:span>
+                            <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="Select all"/>
+                            <button id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="Select none"/>
+                            <h:span class="ap-action-sep"></h:span>
                             <button id="btnCut" visible="true" sclass="ap-icon ap-icon-cut" ca:data-t="cut" tooltiptext="Cut"/>
                             <button id="btnCopy" visible="true" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="Copy"/>
                             <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="Paste"/>
@@ -213,14 +216,16 @@
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnListView" sclass="ap-icon ap-icon-list" ca:data-t="listView" tooltiptext="List view"/>
-                            <button id="btnTileView" sclass="ap-icon ap-icon-tiles" ca:data-t="tileView" tooltiptext="Tile view"/>
-                            <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.e.portal.security.hint}"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />
+                        <hbox sclass="ap-portal-action-buttons" align="start" pack="end" width="70px" spacing="0" style="margin-right: 5px;" >
+                            <h:span class="ap-action-sep"></h:span>
+                            <button id="btnTileView" sclass="ap-icon ap-icon-tiles" ca:data-t="tileView" tooltiptext="Tile view"/>
+                            <button id="btnListView" sclass="ap-icon ap-icon-list" ca:data-t="listView" tooltiptext="List view"/>
+                        </hbox>
                     </hbox>
                     <html id="folders" visible="false" />
                     <div style="position:absolute; padding: 8px 5px 0 2px; z-index: 10000;" sclass="ap-bread-crumbs">

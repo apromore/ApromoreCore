@@ -22,7 +22,6 @@
 
 package org.apromore.service.csvimporter.services.legecy;
 
-import com.opencsv.CSVReader;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 

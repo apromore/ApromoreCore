@@ -79,8 +79,9 @@ public interface SecurityService {
     Group createGroup(String name);
 
     /**
-     * @param group  an existing group, with modifications
+     * @param group  an existing group of type {@link Group.Type#GROUP}, with modifications
      * @return the updated group
+     * @throws IllegalArgumentException if the <var>group</var> is not type {@link Group.Type#GROUP}
      */
     Group updateGroup(Group group);
 
@@ -96,6 +97,12 @@ public interface SecurityService {
      * @return all elective groups in alphabetical order by name
      */
     List<Group> findElectiveGroups();
+
+    /**
+     * @param name  name of an existing group
+     * @return the corresponding group
+     */
+    Group getGroupByName(String name);
 
     /**
      * Searches for a group by (approximate) name.

@@ -37,10 +37,11 @@
 package org.apromore.service.csvimporter.io;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.parquet.hadoop.ParquetWriter;
+import org.apache.parquet.hadoop.api.WriteSupport;
+import org.apache.parquet.hadoop.metadata.CompressionCodecName;
+import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.model.LogEventModel;
-import parquet.hadoop.ParquetWriter;
-import parquet.hadoop.metadata.CompressionCodecName;
-import parquet.schema.MessageType;
 
 import java.io.IOException;
 
@@ -55,7 +56,7 @@ public class ParquetFileWriter extends ParquetWriter<LogEventModel> {
   }
   
   public ParquetFileWriter(Path file, MessageType schema, CompressionCodecName codecName, boolean enableDictionary) throws IOException {
-    super(file, (parquet.hadoop.api.WriteSupport) new ParquetWriteSupport(schema), codecName, DEFAULT_BLOCK_SIZE, DEFAULT_PAGE_SIZE, enableDictionary, false);
+    super(file, (WriteSupport) new ParquetWriteSupport(schema), codecName, DEFAULT_BLOCK_SIZE, DEFAULT_PAGE_SIZE, enableDictionary, false);
 
   }
 }
