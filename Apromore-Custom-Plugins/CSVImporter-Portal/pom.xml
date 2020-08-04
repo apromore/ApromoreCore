@@ -37,6 +37,38 @@
                     </instructions>
                 </configuration>
             </plugin>
+            <!--
+            Ignore enforcer fail
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <executions>
+                    <execution>
+                        <id>enforce-banned-dependencies</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.apache.maven</exclude>
+                                        <exclude>org.apache.maven:badArtifact</exclude>
+                                        <exclude>*:badArtifact</exclude>
+                                    </excludes>
+                                    <includes>
+                                        <!--only 1.0 of badArtifact is allowed-->
+                                        <include>org.apache.maven:badArtifact:1.0</include>
+                                    </includes>
+                                </bannedDependencies>
+                            </rules>
+                            <fail>false</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

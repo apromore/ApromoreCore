@@ -35,7 +35,7 @@ public class CSVFileReader {
 
     CSVReader newCSVReader(Media media, String charset) {
         try{
-            
+
             // Guess at ethe separator character
             Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
 
