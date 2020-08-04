@@ -336,6 +336,7 @@ public class SecurityServiceImpl implements SecurityService {
     public void deleteUser(User user) {
         postEvent(EventType.DELETE_USER, user, null);
 
+        userRepo.delete(user);
         groupRepo.delete(user.getGroup());
     }
 

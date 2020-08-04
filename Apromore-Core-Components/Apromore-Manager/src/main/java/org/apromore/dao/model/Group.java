@@ -28,7 +28,6 @@ import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -172,7 +171,7 @@ public class Group implements Serializable {
     /**
      * @return all the users who are a member of this access control group
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "user_group",
         joinColumns        = @JoinColumn(name = "groupId",  referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"))
