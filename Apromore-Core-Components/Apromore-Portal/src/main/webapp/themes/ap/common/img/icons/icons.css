@@ -514,6 +514,16 @@
     width: 26px !important;
 }
 
+.ap-icon-select-all {
+    background-image: url('select-all.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-select-none {
+    background-image: url('select-none.svg') !important;
+    width: 27.2890625px !important;
+}
+
 .ap-icon-sign-out {
     background-image: url('sign-out.svg') !important;
     width: 26px !important;
