@@ -323,6 +323,21 @@
     width: 26.390625px !important;
 }
 
+.ap-icon-group-add {
+    background-image: url('group-add.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-group-edit {
+    background-image: url('group-edit.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-group-remove {
+    background-image: url('group-remove.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-help {
     background-image: url('help.svg') !important;
     width: 26px !important;
@@ -609,8 +624,8 @@
     width: 28.5px !important;
 }
 
-.ap-icon-user-lock {
-    background-image: url('user-lock.svg') !important;
+.ap-icon-user-add {
+    background-image: url('user-add.svg') !important;
     width: 28.5px !important;
 }
 
@@ -619,9 +634,29 @@
     width: 26px !important;
 }
 
+.ap-icon-user-edit {
+    background-image: url('user-edit.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-user-lock {
+    background-image: url('user-lock.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-user-remove {
+    background-image: url('user-remove.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-user {
     background-image: url('user.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-users {
+    background-image: url('users.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-util-avg {

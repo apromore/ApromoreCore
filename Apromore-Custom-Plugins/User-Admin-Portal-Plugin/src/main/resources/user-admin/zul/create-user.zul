@@ -19,8 +19,8 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<window width="40%" position="center" title="Create User" apply="org.apromore.plugin.portal.useradmin.CreateUserController">
-    <grid>
+<window width="500px" position="center" title="Create new user" apply="org.apromore.plugin.portal.useradmin.CreateUserController">
+    <grid sclass="ap-grid ap-form">
         <columns>
                 <column hflex="1"/>
                 <column hflex="2"/>
@@ -31,12 +31,13 @@
                 <textbox id="userNameTextbox" placeholder="Enter user name"/>
             </row>
             <row>
-                <label value="Name"/>
-                    <hbox>
-                        <textbox id="firstNameTextbox" placeholder="First"/>
-                        <textbox id="lastNameTextbox" placeholder="Last"/>
-                    </hbox>
-                </row>
+                <label value="First Name"/>
+                <textbox id="firstNameTextbox" placeholder="First"/>
+            </row>
+            <row>
+                <label value="Last Name"/>
+                <textbox id="lastNameTextbox" placeholder="Last"/>
+            </row>
             <row>
                 <label value="Email"/>
                 <textbox id="emailTextbox" placeholder="Enter email address"/>
@@ -47,8 +48,8 @@
             </row>
         </rows>
     </grid>
-    <div align="center">
-        <button id="createButton" label="Create" image="img/ok.png"/>
-        <button id="cancelButton" label="Cancel" image="img/cancel2.png"/>
+    <div sclass="ap-window-footer-actions">
+        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
+        <button id="createBtn" label="Create" iconSclass="z-icon-check-circle" />
     </div>
 </window>
