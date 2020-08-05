@@ -183,6 +183,9 @@
         <delete includeemptydirs="true">
             <fileset dir="${core-dir-virgo}">
                 <include name="repository/usr/*.jar"/>
+                <include name="repository/usr/*.war"/>
+                <include name="repository/usr/*.plan"/>
+                <include name="repository/usr/*.properties"/>
             </fileset>
         </delete>
         <delete includeemptydirs="true">
