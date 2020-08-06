@@ -131,6 +131,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
                 hl.appendChild(new Label(processName));
                 dataRow.setSclass("ap-tree-leave");
+                dataRow.setTooltiptext(processName);
             }
             break;
 
@@ -144,6 +145,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
                 hl.appendChild(new Label(processName));
                 dataRow.setSclass("ap-tree-leave");
+                dataRow.setTooltiptext(processName);
             }
             break;
 
