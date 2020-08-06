@@ -50,6 +50,10 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         return parquetFactoryProvider;
     }
 
+    public void setParquetFactoryProvider(ParquetFactoryProvider parquetFactoryProvider) {
+        this.parquetFactoryProvider = parquetFactoryProvider;
+    }
+
     public LogReader getLogReader() {
         return logReader;
     }

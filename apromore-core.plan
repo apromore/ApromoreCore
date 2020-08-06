@@ -15,6 +15,7 @@
     <artifact type="bundle" name="org.apromore.lpsolve-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.similaritysearch-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.jgraph-osgi" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.parquet-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.prom-models-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.prom-widgets-osgi" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.prom-bpmn-osgi" version="[1.0.0, 2)"/>

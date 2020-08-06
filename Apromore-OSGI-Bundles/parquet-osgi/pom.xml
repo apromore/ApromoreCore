@@ -1,0 +1,133 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>parquet-osgi</artifactId>
+    <version>1.0</version>
+    <packaging>bundle</packaging>
+
+    <properties>
+        <hadoop.version>3.3.0</hadoop.version>
+        <parquet.version>1.11.0</parquet.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.0.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Dependency>*</Embed-Dependency>
+                        <Embed-Transitive>false</Embed-Transitive>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                        <Bundle-Name>Parquet bundle</Bundle-Name>
+                        <Export-Package>
+                            !*.impl,
+                            org.apache.hadoop.*;version=${hadoop.version},
+                            org.apache.parquet.*;version=${parquet.version}
+                        </Export-Package>
+                        <Import-Package>
+                            !com.ctc.wstx.*,
+                            !com.fasterxml.jackson.*,
+                            !com.google.protobuf,
+                            !com.google.re2j,
+                            !com.jcraft.jsch,
+                            !com.nimbusds.*,
+                            !com.sun.javadoc,
+                            !com.sun.jersey.spi.container.servlet,
+                            !com.sun.tools.doclets.standard,
+                            !javax.servlet.*,
+                            !javax.ws.rs.core,
+                            !jdiff,
+                            !org.apache.avro.*,
+                            !org.apache.commons.*,
+                            !org.apache.curator.*,
+                            !org.apache.hadoop.hdfs.*,
+                            !org.apache.hadoop.thirdparty.protobuf,
+                            !org.apache.hadoop.yarn.*,
+                            !org.apache.htrace.core,
+                            !org.apache.http.*,
+                            !org.apache.kerby.kerberos.kerb.*,
+                            !org.apache.yetus.audience,
+                            !org.apache.zookeeper.*,
+                            !org.codehaus.*,
+                            !org.eclipse.jetty.*,
+                            !org.wildfly.openssl,
+                            !org.xbill.DNS,
+                            !org.xerial.snappy,
+                            !shaded.*,
+                            *
+                        </Import-Package>
+                    </instructions>
+                    <niceManifest>true</niceManifest>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-annotations</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client-runtime</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-client</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-column</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-common</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-format-structures</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+    </dependencies>
+</project>
