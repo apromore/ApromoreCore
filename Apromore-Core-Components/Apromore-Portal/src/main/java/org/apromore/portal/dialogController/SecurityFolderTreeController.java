@@ -37,11 +37,12 @@ import org.zkoss.zul.Window;
  */
 public class SecurityFolderTreeController extends BaseController {
 
-    public SecurityFolderTreeController(SecuritySetupController securitySetupController, Window win) throws DialogException {
+    public SecurityFolderTreeController(SecuritySetupController securitySetupController, Window win, int currentFolderId) throws DialogException {
         Tree tree = (Tree) win.getFellow("mainTree").getFellow("folderTree");
 
 //        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
-        FolderTreeModel model = new FolderTreeModel(new FolderTree(true).getRoot());
+        FolderTree folderTree = new FolderTree(true, currentFolderId);
+        FolderTreeModel model = new FolderTreeModel(folderTree.getRoot(), folderTree.getCurrentFolder());
         tree.setItemRenderer(new SecurityFolderTreeRenderer(securitySetupController));
         tree.setModel(model);
     }
