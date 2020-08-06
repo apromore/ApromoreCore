@@ -42,7 +42,6 @@ import org.apromore.service.WorkspaceService;
 
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
-w
 
 import java.io.InputStream;
 import java.util.ArrayList;
