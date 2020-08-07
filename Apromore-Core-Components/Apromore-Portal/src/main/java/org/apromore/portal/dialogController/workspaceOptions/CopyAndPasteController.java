@@ -42,7 +42,7 @@ import org.apromore.service.WorkspaceService;
 
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
-w
+import org.zkoss.zk.ui.util.Clients;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -224,7 +224,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    notify("A folder can't be copied into its subfolder", "error");
+                    notify("A folder can not be copied into its subfolder", "error");
                 } else {
                     cloneFolder(folder, selectedTargetFolderId, 0);
                 }
@@ -241,7 +241,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    notify("A folder can't be moved into its subfolder", "error");
+                    notify("A folder can not be moved into its subfolder", "error");
                 } else {
                     moveFolder(folder, selectedTargetFolderId, 0);
                 }
