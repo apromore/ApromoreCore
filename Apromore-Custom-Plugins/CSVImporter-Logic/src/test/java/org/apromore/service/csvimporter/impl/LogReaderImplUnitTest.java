@@ -32,11 +32,13 @@ import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.junit.Test;
+import org.zkoss.util.media.Media;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.TimeZone;
@@ -93,5 +95,9 @@ public class LogReaderImplUnitTest {
 
 
         System.out.println("\n************************************************************************\n");
+    }
+
+    @Test
+    public void testMediaToParquet(){
     }
 }

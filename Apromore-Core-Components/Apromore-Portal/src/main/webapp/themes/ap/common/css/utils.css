@@ -62,6 +62,7 @@
     zoom: 1;
     background: transparent;
     border: none;
+    vertical-align: middle;
 }
 
 .ap-header-region {

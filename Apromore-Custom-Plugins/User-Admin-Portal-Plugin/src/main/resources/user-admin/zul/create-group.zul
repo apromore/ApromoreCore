@@ -19,10 +19,21 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<window position="center" title="Create Group" apply="org.apromore.plugin.portal.useradmin.CreateGroupController">
-    <textbox id="groupNameTextbox" placeholder="Enter group name"/>
-    <div align="center">
-        <button id="createButton" label="Create" image="img/ok.png"/>
-        <button id="cancelButton" label="Cancel" image="img/cancel2.png"/>
+<window width="500px" position="center" title="Create new group" apply="org.apromore.plugin.portal.useradmin.CreateGroupController">
+    <grid sclass="ap-grid ap-form">
+        <columns>
+            <column hflex="1"/>
+            <column hflex="2"/>
+        </columns>
+        <rows>
+            <row>
+                <label>Group name</label>
+                <textbox id="groupNameTextbox" placeholder="Enter group name"/>
+            </row>
+        </rows>
+    </grid>
+    <div sclass="ap-window-footer-actions">
+        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
+        <button id="createBtn" label="Create" iconSclass="z-icon-check-circle" />
     </div>
 </window>

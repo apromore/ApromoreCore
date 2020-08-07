@@ -845,6 +845,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private InputStream getInputSream(Media media) {
+
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
 }

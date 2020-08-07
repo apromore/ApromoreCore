@@ -37,7 +37,7 @@ public class CreateGroupController extends SelectorComposer<Window> {
 
     @Wire("#groupNameTextbox") Textbox groupNameTextbox;
 
-    @Listen("onClick = #createButton")
+    @Listen("onClick = #createBtn")
     public void onClickCreateButton() throws Exception {
         boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
         if (!canEditGroups) {
@@ -48,7 +48,7 @@ public class CreateGroupController extends SelectorComposer<Window> {
         getSelf().detach();
     }
 
-    @Listen("onClick = #cancelButton")
+    @Listen("onClick = #cancelBtn")
     public void onClickCancelButton() {
         getSelf().detach();
     }
