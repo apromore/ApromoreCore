@@ -66,7 +66,7 @@ public class MenuController extends Menubar {
         MenuController me = this;
         this.mainC = mainController;
         this.portalContext = new PluginPortalContext(mainC);
-        this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
+        this.menuB = (Menubar) this.mainC.getFellow("menucomp");
         this.userMenu = (Menubar) this.mainC.getFellow("userMenu");
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
