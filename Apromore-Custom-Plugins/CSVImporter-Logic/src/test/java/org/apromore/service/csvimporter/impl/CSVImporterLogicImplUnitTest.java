@@ -39,6 +39,7 @@
 //import org.apromore.service.csvimporter.LogSample;
 //import org.deckfour.xes.model.XLog;
 //import org.deckfour.xes.out.XesXmlSerializer;
+//import org.junit.Ignore;
 //import org.junit.Test;
 //
 //import com.google.common.io.ByteStreams;
