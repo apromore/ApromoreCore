@@ -317,7 +317,7 @@ public class ImportController extends BaseController {
             fileName = StringUtil.contentDispositionFileName(contentDisposition);
         }
         if (StringUtil.isEmpty(fileName) && !StringUtil.isEmpty(contentDisposition)) {
-            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
+            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9);
         }
         if (StringUtil.isEmpty(fileName)) {
             fileName = url.substring(url.lastIndexOf('/') + 1);
