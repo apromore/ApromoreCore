@@ -22,12 +22,19 @@
 
 package org.apromore.portal.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StringUtil.class);
 
     private static final String[] DICTIONARY = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
     private static final StringBuilder STRING_BUILDER;
@@ -41,6 +48,41 @@ public class StringUtil {
     static {
         STRING_BUILDER = new StringBuilder();
         FORMATTER = new Formatter(STRING_BUILDER, Locale.getDefault());
+    }
+
+    public static String getFileNameByContentDisposition(String contentDisposition) {
+        String fileNameNoExt = "";
+        if (isBlank(contentDisposition)) {
+            return fileNameNoExt;
+        }
+        String contentDispositionFileName = contentDisposition;
+        int index = contentDispositionFileName.indexOf("filename");
+        if (index < 0) {
+            return fileNameNoExt;
+        }
+        index = contentDispositionFileName.indexOf("=", index);
+        if (index < 0) {
+            return fileNameNoExt;
+        }
+        contentDispositionFileName = contentDispositionFileName.substring(index + 1).trim();
+
+        // remove double-quotes
+        contentDispositionFileName = contentDispositionFileName.replaceAll("\"", "");
+        index = contentDispositionFileName.lastIndexOf("'");
+        if (index > -1) {
+            contentDispositionFileName = contentDispositionFileName.substring(index + 1);
+        }
+        // Check encoding
+        if (contentDispositionFileName.indexOf("%") > -1) {
+            fileNameNoExt = urlDecode(contentDispositionFileName, "UTF-8");
+        }
+        if (fileNameNoExt.indexOf("?") > -1) {
+            fileNameNoExt = urlDecode(contentDispositionFileName, "GBK");
+        }
+        if (fileNameNoExt.indexOf("?") > -1) {// Use original one
+            fileNameNoExt = contentDispositionFileName;
+        }
+        return fileNameNoExt.trim();
     }
 
     /*
@@ -77,6 +119,19 @@ public class StringUtil {
      */
     public static boolean isEmpty(CharSequence str) {
         return str == null || str.length() == 0;
+    }
+
+    /**
+     * Remove whitespaces
+     *
+     * @param s
+     * @return
+     */
+    public static boolean isBlank(String s) {
+        if (s == null || s.trim().length() == 0) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean equals(CharSequence a, CharSequence b) {
@@ -116,6 +171,40 @@ public class StringUtil {
     public static String formatString(String format, Object... args) {
         STRING_BUILDER.setLength(0);
         return FORMATTER.format(format, args).toString();
+    }
+
+    public static String urlEncode(String s, String charset) {
+        if (isBlank(s)) {
+            return "";
+        }
+        if (isBlank(charset)) {
+            charset = "UTF-8";
+        }
+        try {
+            return URLEncoder.encode(s.trim(), charset);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return s;
+    }
+
+    public static String urlEncode(String s) {
+        return urlEncode(s, "");
+    }
+
+    public static String urlDecode(String s, String charset) {
+        if (isBlank(s)) {
+            return "";
+        }
+        if (isBlank(charset)) {
+            charset = "UTF-8";
+        }
+        try {
+            return URLDecoder.decode(s, charset);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return s;
     }
 
 }
