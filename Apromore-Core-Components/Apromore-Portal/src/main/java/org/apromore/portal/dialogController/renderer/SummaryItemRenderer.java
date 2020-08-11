@@ -74,14 +74,18 @@ public class SummaryItemRenderer implements ListitemRenderer {
     public void render(Listitem listItem, Object obj, int index) {
         List<PortalProcessAttributePlugin> plugins = (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins");
 
-        listItem.setStyle("height: 25px");
+        // listItem.setStyle("height: 25px");
         if (obj instanceof ProcessSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-model");
             renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
         } else if (obj instanceof LogSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-log");
             renderLogSummary(listItem, (LogSummaryType) obj, plugins);
         } else if (obj instanceof FolderSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolderSummary(listItem, (FolderSummaryType) obj, plugins);
         } else if (obj instanceof FolderType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolder(listItem, (FolderType) obj, plugins);
         } else {
             LOGGER.error("Unknown item to render in the process summary list box.");

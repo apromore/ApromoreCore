@@ -549,11 +549,18 @@ img[src="img/icon/bpmn-22x22.png"] {
   top: 1px;
 }
 
+/* List view */
+
+.ap-listbox-process .z-listbox-body .z-listitem {
+  height: 40px !important;
+}
+
 /* Tiles view */
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body table {
   display: block;
   height: 100%;
+  background-color: #f9f9f9;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body table tbody {
@@ -566,14 +573,19 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem {
   display: block;
   width: 200px !important;
-  min-width: 200px !important;
+  /*min-width: 200px !important;*/
   height: 80px !important;
-  flex: 1 0 auto;
-  background-color: #f0f0f0;
-  margin: 2px;
+  flex: 0 0 auto;
+  background-color: white;
+  margin: 4px;
   padding: 7px;
   border-radius: 5px !important;
+  border: 1px solid #d0d0d0;
   position: relative;
+}
+
+.ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem.ap-item-folder {
+    background-color: #e0e0e0;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td {
@@ -596,16 +608,21 @@ img[src="img/icon/bpmn-22x22.png"] {
   border: 0 !important;
 }
 
-.ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem:hover,
+.ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem:hover {
+  background-color: var(--ap-c-grid-row-bg-selected) !important;
+  border: 1px solid #d0d0d0 !important;
+}
+
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem.z-listitem-selected {
   background-color: var(--ap-c-grid-row-bg-selected) !important;
-  border: 0 !important;
+  border: 2px solid #c0c0c0 !important;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(3) > .z-listcell-content {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-left: 2px;
   padding-bottom: 5px;
 }
 
@@ -621,21 +638,21 @@ img[src="img/icon/bpmn-22x22.png"] {
   display: block;
   position: absolute;
   top: 7px;
-  right: 7px;
+  right: 9px;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(9) {
   display: inline-block;
   position: absolute;
   bottom: 7px;
-  left: 7px;
+  left: 9px;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(10) {
   display: block;
   position: absolute;
   bottom: 7px;
-  right: 7px;
+  right: 9px;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(8) div,
