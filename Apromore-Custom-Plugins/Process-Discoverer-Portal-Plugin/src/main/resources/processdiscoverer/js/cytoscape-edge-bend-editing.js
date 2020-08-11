@@ -661,25 +661,34 @@ module.exports = function (params, cy) {
 
         cy.on('cxttap', 'edge', eCxtTap = function (event) {
           var edge = this;
-          
-          var menus = cy.contextMenus('get'); // get context menus instance
+          var menu = null
+
+          if (cy.contextMenus) {
+            menus = cy.contextMenus('get'); // get context menus instance
+          }
           
           if(!edgeToHighlightBends || edgeToHighlightBends.id() != edge.id() || bendPointUtilities.isIgnoredEdge(edge)) {
-            menus.hideMenuItem(removeBendPointCxtMenuId);
-            menus.hideMenuItem(addBendPointCxtMenuId);
+            if (menus) {
+              menus.hideMenuItem(removeBendPointCxtMenuId);
+              menus.hideMenuItem(addBendPointCxtMenuId);
+            }
             return;
           }
 
           var cyPos = event.position || event.cyPosition;
           var selectedBendIndex = getContainingBendShapeIndex(cyPos.x, cyPos.y, edge);
           if (selectedBendIndex == -1) {
-            menus.hideMenuItem(removeBendPointCxtMenuId);
-            menus.showMenuItem(addBendPointCxtMenuId);
+            if (menus) {
+              menus.hideMenuItem(removeBendPointCxtMenuId);
+              menus.showMenuItem(addBendPointCxtMenuId);
+            }
             bendPointUtilities.currentCtxPos = cyPos;
           }
           else {
-            menus.hideMenuItem(addBendPointCxtMenuId);
-            menus.showMenuItem(removeBendPointCxtMenuId);
+            if (menus) {
+              menus.hideMenuItem(addBendPointCxtMenuId);
+              menus.showMenuItem(removeBendPointCxtMenuId);
+            }
             bendPointUtilities.currentBendIndex = selectedBendIndex;
           }
 
