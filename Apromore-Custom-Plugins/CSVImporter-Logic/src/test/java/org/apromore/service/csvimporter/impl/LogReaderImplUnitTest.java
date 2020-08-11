@@ -22,27 +22,25 @@
 
 package org.apromore.service.csvimporter.impl;
 
-import org.apromore.service.csvimporter.services.legecy.LogReader;
-import org.apromore.service.csvimporter.services.legecy.LogReaderImpl;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ConvertToParquetFactory;
 import org.apromore.service.csvimporter.services.ParquetExporter;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
+import org.apromore.service.csvimporter.services.legecy.LogReader;
+import org.apromore.service.csvimporter.services.legecy.LogReaderImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.junit.Test;
-import org.zkoss.util.media.Media;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.TimeZone;
-
 
 
 public class LogReaderImplUnitTest {
@@ -87,17 +85,25 @@ public class LogReaderImplUnitTest {
         ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
         ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory("csv");
 
-        SampleLogGenerator sampleLogGenerator =  convertToParquetFactory.createSampleLogGenerator();
+        SampleLogGenerator sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
         ParquetExporter parquetExporter = convertToParquetFactory.createParquetExporter();
 
-        LogSample sample = sampleLogGenerator.generateSampleLog(new FileInputStream(testFile), 100, "");
-        parquetExporter.generateParqeuetFile(new FileInputStream(testFile), sample,new File("/" + testFile.getName()+".parquet"));
+        LogSample sample = sampleLogGenerator.generateSampleLog(new FileInputStream(testFile), 100, "UTF-8");
 
+//        String st = sample == null ? "Null" : "Not Null";
+//        System.out.println("---------------------------------------------------");
+//        System.out.println("st: " + st);
+//        System.out.println("---------------------------------------------------");
+//        parquetExporter.generateParqeuetFile(new FileInputStream(testFile), sample,new File("/" + testFile.getName()+".parquet"));
+
+        for (List l : sample.getLines()){
+            System.out.println(l);
+        }
 
         System.out.println("\n************************************************************************\n");
     }
 
     @Test
-    public void testMediaToParquet(){
+    public void testMediaToParquet() {
     }
 }

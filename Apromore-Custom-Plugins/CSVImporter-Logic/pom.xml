@@ -27,7 +27,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=retree|parquet-hadoop-bundle|hadoop-common|guava
+                            artifactId=retree
                         </Embed-Dependency>
 
                         <Import-Package>

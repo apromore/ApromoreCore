@@ -26,14 +26,19 @@ import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.metadata.FileMetaData;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
+import org.apromore.service.csvimporter.model.LogErrorReport;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.utilities.ParquetStream;
 
 import java.io.InputStream;
+import java.util.List;
 
 import static org.apache.parquet.format.converter.ParquetMetadataConverter.NO_FILTER;
 
 class ParquetSampleLogGenerator implements SampleLogGenerator {
+    @Override
+    public void validateLog(InputStream in, String charset) {}
+
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 //        File file = new File("src/main/resources/sample.txt");

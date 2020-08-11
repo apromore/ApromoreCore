@@ -22,18 +22,45 @@
 package org.apromore.service.csvimporter.services;
 
 import com.opencsv.CSVReader;
+import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.model.LogSampleImpl;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class CSVSampleLogGenerator implements SampleLogGenerator {
+
+    @Override
+    public void validateLog(InputStream in, String charset) throws Exception {
+
+        try {
+            Reader reader = new InputStreamReader(in, charset);
+
+            BufferedReader brReader = new BufferedReader(reader);
+            String firstLine = brReader.readLine();
+            if (firstLine == null || firstLine.isEmpty()) {
+                throw new Exception("header must have non-empty value!");
+            }
+
+            char separator = getMaxOccurringChar(firstLine);
+            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator)))) {
+                throw new Exception("Try different encoding");
+            }
+
+        } catch (IOException e) {
+            throw new Exception("Unable to import file");
+        }
+    }
+
+
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
+
+        System.out.println(" " + charset + " " + sampleSize);
 
         CSVReader csvReader = new CSVFileReader().newCSVReader(in, charset);
 
@@ -50,5 +77,27 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
             lines.add(Arrays.asList(myLine));
         }
         return new LogSampleImpl(header, lines);
+
+//        return null;
+    }
+
+    private char getMaxOccurringChar(String str) {
+        char maxchar = ' ';
+        int maxcnt = 0;
+        int[] charcnt = new int[Character.MAX_VALUE + 1];
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if (!Character.isLetter(str.charAt(i))) {
+                for (char supportedSeparator : Constants.supportedSeparators) {
+                    if (str.charAt(i) == supportedSeparator) {
+                        char ch = str.charAt(i);
+                        if (++charcnt[ch] >= maxcnt) {
+                            maxcnt = charcnt[ch];
+                            maxchar = ch;
+                        }
+                    }
+                }
+            }
+        }
+        return maxchar;
     }
 }

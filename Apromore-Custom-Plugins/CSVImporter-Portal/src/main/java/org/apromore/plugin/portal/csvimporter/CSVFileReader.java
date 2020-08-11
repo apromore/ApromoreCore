@@ -60,6 +60,7 @@ public class CSVFileReader {
                     .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
                     .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
                     .build();
+
         }catch (InvalidCSVException e){
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
             return null;

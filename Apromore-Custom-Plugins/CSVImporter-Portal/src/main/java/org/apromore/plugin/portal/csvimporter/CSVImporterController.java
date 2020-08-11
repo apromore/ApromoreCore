@@ -107,24 +107,23 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     public void doFinally() throws Exception {
         super.doFinally();
 
-
         // Populate the window
-//        CSVFileReader CSVReader = new CSVFileReader();
         try {
+
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
+
             setEncoding.addEventListener("onSelect", event -> {
-//                        CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
-//                        if (csvReader != null) {
-                        this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
-                        if (sample != null) setUpUI();
-//                        }
-                    }
-            );
 
-//            CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
+                sampleLogGenerator.validateLog(getInputSream(media), getFileEncoding());
+                this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+                if (sample != null) setUpUI();
+            });
 
+
+            sampleLogGenerator.validateLog(getInputSream(media), getFileEncoding());
             this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+
             if (sample != null) {
                 setUpUI();
                 toXESButton.setDisabled(false);
@@ -132,7 +131,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
 
         } catch (Exception e) {
-            Messagebox.show(getLabels().getString("failed_to_read_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
+            Messagebox.show(getLabels().getString("failed_to_read_log") + " " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
         }
     }
 
@@ -181,8 +180,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK, Messagebox.ERROR);
         } else {
             try {
-//                CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-//                if (reader != null) {
                 LogModel xesModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding());
 
                 if (xesModel != null) {
@@ -195,7 +192,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         handleInvalidData(xesModel, isLogPublic);
                     }
                 }
-//                }
             } catch (Exception e) {
                 Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
