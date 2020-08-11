@@ -158,7 +158,6 @@ public class MainController extends BaseController implements MainControllerInte
             this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
-            this.menu = new MenuController(this);
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
 
@@ -244,7 +243,7 @@ public class MainController extends BaseController implements MainControllerInte
     private void loadWorkspace(boolean loadTree) {
         String userId = UserSessionManager.getCurrentUser().getId();
         updateTabs(userId);
-        updateActions();
+        //updateActions();
 
         if (loadTree) {
             this.loadTree();
@@ -307,10 +306,11 @@ public class MainController extends BaseController implements MainControllerInte
         this.baseListboxController.displaySummaries(new ArrayList<FolderType>(), summaries, true);
     }
 
+/*
     // disable/enable features depending on user status
     public void updateActions() {
         Boolean connected = UserSessionManager.getCurrentUser() != null;
-        List<String> blacklist = Arrays.asList("designPatternCr", "designReference", "designPatternCo", /*"designConfiguration",*/ "designExtension");
+        List<String> blacklist = Arrays.asList("designPatternCr", "designReference", "designPatternCo", /*"designConfiguration",*//* "designExtension");
 
         // disable/enable menu items in menu bar
         for (Component C : this.menu.getMenuB().getFellows()) {
@@ -319,6 +319,7 @@ public class MainController extends BaseController implements MainControllerInte
             }
         }
     }
+*/
 
     public void reloadSummaries() {
         this.simplesearch.clearSearches();
@@ -929,9 +930,5 @@ public class MainController extends BaseController implements MainControllerInte
         }
         this.breadCrumbs.setContent(content);
         Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
-    }
-
-    public BaseListboxController geBaseListboxController() {
-        return this.baseListboxController;
     }
 }

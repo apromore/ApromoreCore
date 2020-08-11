@@ -71,7 +71,7 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
             List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
 
             if (folderIds.size() > 0) {
-                mainC.geBaseListboxController().renameFolder();
+                mainC.getBaseListboxController().renameFolder();
             } else {
                 Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
 
