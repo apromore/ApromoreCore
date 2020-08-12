@@ -34,8 +34,10 @@ import org.apromore.portal.common.UserSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Messagebox;
 
 public class SignOutPlugin extends DefaultPortalPlugin {
@@ -81,14 +83,8 @@ public class SignOutPlugin extends DefaultPortalPlugin {
                     public void onEvent(Event evt) throws Exception {
                         switch ((Integer) evt.getData()) {
                             case Messagebox.YES:
-                                UserSessionManager.setCurrentFolder(null);
-                                UserSessionManager.setCurrentSecurityItem(0);
-                                UserSessionManager.setMainController(null);
-                                UserSessionManager.setPreviousFolder(null);
-                                UserSessionManager.setSelectedFolderIds(null);
-                                UserSessionManager.setTree(null);
-                                //getService().writeUser(UserSessionManager.getCurrentUser());
-                                Executions.sendRedirect("/j_spring_security_logout");
+                                EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
+                                           .publish(new Event("onSignout", null, Sessions.getCurrent()));
                                 break;
                             case Messagebox.NO:
                                 break;

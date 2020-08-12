@@ -42,10 +42,14 @@ import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
@@ -140,6 +144,20 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                     }
                 }
             }
+
+            // The signOutQueue receives events whose data is a ZK session which has signed out
+            // If this desktop is part of a signed-out session, close the browser tab or switch to login
+            EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true).subscribe(
+                new EventListener() {
+                    public void onEvent(Event event) {
+                        Session session = Sessions.getCurrent();
+                        if (session == null || event.getData().equals(session)) {
+                            Clients.evalJavaScript("window.close()");
+                            Executions.sendRedirect("/j_spring_security_logout");
+                        }
+                    }
+                }
+            );
         }
     }
 }
