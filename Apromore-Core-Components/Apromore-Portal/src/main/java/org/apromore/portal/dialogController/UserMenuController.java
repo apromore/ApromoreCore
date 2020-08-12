@@ -89,7 +89,10 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                 // Create the menu item
                 Menu menu = menuMap.get(menuName);
                 Menuitem menuitem = new Menuitem();
-                if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
+                if (plugin.getIconPath().startsWith("/")) {
+                    menuitem.setImage(plugin.getIconPath());
+
+                } else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
                     try {
                         menuitem.setImage("portalPluginResource/"
                             + URLEncoder.encode(plugin.getGroupLabel(Locale.getDefault()), "utf-8") + "/"

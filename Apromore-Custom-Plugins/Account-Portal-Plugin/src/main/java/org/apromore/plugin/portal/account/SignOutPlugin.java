@@ -73,7 +73,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "sign-out-icon.svg";
+        return "/sign-out-icon.svg";
     }
 
     @Override
