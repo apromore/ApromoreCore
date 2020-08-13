@@ -30,6 +30,7 @@
 <?link rel="stylesheet" href="../../css/chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
 <?link rel="stylesheet" href="/processdiscoverer/css/ap/pd.css" type="text/css" ?>
+<?link rel="stylesheet" href="../../themes/${labels.theme}/portal/css/portal.css" type="text/css" ?>
 <?script src="../../themes/ap/common/js/index.js"?>
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -242,6 +243,7 @@
       <n:div id="ap-pd-process-model" style="background-color:none;"/>
       <div id="vizBridge" visible="false"></div>
     </n:div>
+    <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
   </window>
   <n:script type="text/javascript" defer="defer" src="/themes/ap/common/js/css-browser-selector.js"></n:script>
   <!-- Use the following to improve the performance of listbox dropdown display time -->

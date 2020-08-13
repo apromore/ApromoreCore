@@ -55,6 +55,11 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "/change-password-icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
         new ChangePasswordController(portalContext, securityService);
     }

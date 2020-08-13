@@ -23,7 +23,6 @@
 
 <?page title="Apromore - Portal" contentType="text/html;charset=UTF-8" ?>
 
-<?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
@@ -146,7 +145,7 @@
             visibility: hidden;
         }
     </style>
-    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
+    <window id="mainW" border="none" height="100%" width="100%" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
         <!--<div class="z-listheader">-->
             <!--
@@ -194,7 +193,7 @@
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
 
-                    <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
+                    <menubar id="menucomp" sclass="ap-portal-menu" height="32px" width="100%" apply="org.apromore.portal.dialogController.MenuController" />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
@@ -272,7 +271,7 @@
 
             </center>
         </borderlayout>
-        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;"/>
+        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
     <!-- Following script improves performance of listbox dropdown display time-->

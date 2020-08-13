@@ -90,7 +90,7 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
      * @return {@link PortalPlugin$Availability#AVAILABLE} always
      */
     @Override
-    public Availability getAvailability(PortalContext context) {
+    public Availability getAvailability() {
         return Availability.AVAILABLE;
     }
 }
