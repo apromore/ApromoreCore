@@ -42,10 +42,16 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Serves static resources by checking the available {@link WebContentService}s.
+ * The portal's default servlet.
  *
- * For ZUML resources, use the <code>zkLoader</code> servlet instead.
- * Only GET requests are supported.
+ * Serves static resources by checking the available {@link WebContentService}s
+ * and POST requests by checking {@link HttpServlet} OSGi services.
+ *
+ * Only GET requests are supported for static content.
+ * For ZUML templates, use the <code>zkLoader</code> servlet instead.
+ *
+ * For POST requests, the service must have a <code>osgi.http.whiteboard.servlet.pattern</code>
+ * service property, which must match the servlet path exactly (regex patterns unsupported).
  */
 public class ResourceServlet extends HttpServlet {
 
@@ -99,6 +105,26 @@ public class ResourceServlet extends HttpServlet {
 
             // None of the WebContentServices claimed this path, so fall back to the default servlet
             getServletContext().getNamedDispatcher("default").forward(req, resp);
+
+        } catch (InvalidSyntaxException e) {
+            throw new ServletException(e);
+        }
+    }
+
+    @Override
+    public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
+            for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
+                HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
+                if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
+                    servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
+                    servlet.service(req, resp);
+                    return;
+                }
+            }
+
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
         } catch (InvalidSyntaxException e) {
             throw new ServletException(e);
