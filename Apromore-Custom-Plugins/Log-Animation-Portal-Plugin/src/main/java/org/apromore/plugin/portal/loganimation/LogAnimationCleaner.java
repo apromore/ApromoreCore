@@ -42,7 +42,9 @@ public class LogAnimationCleaner implements DesktopCleanup {
         // Log animation logic has no tricky resources to be cleaned up, auto cleaned by the GC
 
         // Clean up the Portal session as it doesn't control plugin session
-        UserSessionManager.removeEditSession(desktop.getAttribute("pluginSessionId").toString());
+        if (desktop.hasAttribute("pluginSessionId")) {
+            UserSessionManager.removeEditSession(desktop.getAttribute("pluginSessionId").toString());
+        }
         
         System.out.println("LogAnimation cleanup is done for desktopID = " + desktop.getId());
     }

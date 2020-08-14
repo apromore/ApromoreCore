@@ -31,27 +31,26 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Bundle-Name>ZK OSGI</Bundle-Name>
                         <Import-Package>
-                            !javax.annotation,
                             com.google.common.collect;version="[20,21)",
                             !com.google.javascript.closure-compiler-unshaded,
                             !com.google.debugging.sourcemap,
                             !com.sun.jdi.*,
-                            !org.zkoss.zsoup.*,
+                            !javax.annotation,
                             !javax.enterprise.*,
                             !groovy.*,
                             !org.acegisecurity.*,
+                            !org.apache.bsf.*,
                             !org.hibernate.*,
                             !org.jruby.*,
-                            !org.python.*,
                             !org.mozilla.javascript,
+                            !org.python.*,
                             !org.reflections.*,
                             !org.seasar.*,
                             !org.xml.*,
                             !org.zkforge.*,
-                            !org.apache.bsf.*,
-
                             !org.zkoss.zkex.theme,
                             !org.zkoss.zkmax.theme,
+                            !org.zkoss.zsoup.*,
 
                             *
                         </Import-Package>
@@ -82,6 +81,11 @@
             <groupId>org.apromore</groupId>
             <artifactId>ui-theme-compact</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
         </dependency>
 
         <!-- ZK Libraries -->

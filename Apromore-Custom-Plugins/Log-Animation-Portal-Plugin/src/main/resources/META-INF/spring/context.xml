@@ -66,4 +66,9 @@
         <beans:bean class="org.apromore.plugin.portal.loganimation.LogAnimationWebContentService"/>
     </service>
 
+    <!-- Garbage collect the ZK desktop -->
+    <service interface="org.zkoss.zk.ui.util.DesktopCleanup">
+        <beans:bean class="org.apromore.plugin.portal.loganimation.LogAnimationCleaner"/>
+    </service>
+
 </beans:beans>
