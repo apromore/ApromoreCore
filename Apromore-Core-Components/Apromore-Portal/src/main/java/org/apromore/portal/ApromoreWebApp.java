@@ -61,7 +61,7 @@ public class ApromoreWebApp extends SimpleWebApp {
                     for (WebContentService webContentService: getWebContentServices()) {
                         
                         if (webContentService.hasResource(path)) {
-                            log("Got page definition for " + path + " from " + webContentService);
+//                          log("Got page definition for " + path + " from " + webContentService);
                             try (InputStream in = webContentService.getResourceAsStream(path)) {
                                 if (in != null) {
                                     pageDefinition = PageDefinitions.getPageDefinitionDirectly(
@@ -75,12 +75,12 @@ public class ApromoreWebApp extends SimpleWebApp {
                             }
 
                             break;
-                        } else {
-                            log("Unable to get page definition for " + path + " from " + webContentService);
+//                      } else {
+//                          log("Unable to get page definition for " + path + " from " + webContentService);
                         }
                     }
-                } else {
-                    log("Got page definition for " + path + " from WAR");
+//              } else {
+//                  log("Got page definition for " + path + " from WAR");
                 }
 
                 if (pageDefinition == null) {
