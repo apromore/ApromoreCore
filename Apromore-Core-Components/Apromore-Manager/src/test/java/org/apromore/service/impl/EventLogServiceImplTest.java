@@ -435,7 +435,7 @@ public class EventLogServiceImplTest {
         Integer logId = 1;
         String reallyLongString = "a really long String";
         expect(dashboardLayoutRepository.findByUserIdAndLogId(userId, logId)).andReturn(reallyLongString);
-        replay(dashboardLayoutRepository);Apromore-Core-Components/Apromore-Portal/src/main/webapp/themes/ap/common/css/zk-default.css_940827201646478
+        replay(dashboardLayoutRepository);
 
         String result = eventLogService.getLayoutByLogId(userId, logId);
         verify(dashboardLayoutRepository);
