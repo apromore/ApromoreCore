@@ -33,9 +33,11 @@ import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.service.EventLogService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
@@ -84,6 +86,7 @@ public class EventLogServiceImpl implements EventLogService {
     private StatisticRepository statisticRepository;
     private File logsDir;
     private DashboardLayoutRepository dashboardLayoutRepository;
+    private UserMetadataService userMetadataService;
 
 //    @javax.annotation.Resource
 //    private Set<EventLogPlugin> eventLogPlugins;
@@ -98,7 +101,8 @@ public class EventLogServiceImpl implements EventLogService {
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
                                final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
                                final UserService userSrv, final UserInterfaceHelper ui,
-                               final StatisticRepository statisticRepository, final ConfigBean configBean, final DashboardLayoutRepository dashboardLayoutRepository) {
+                               final StatisticRepository statisticRepository, final ConfigBean configBean,
+                               final DashboardLayoutRepository dashboardLayoutRepository, final UserMetadataService userMetadataService) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.groupLogRepo = groupLogRepository;
@@ -108,6 +112,7 @@ public class EventLogServiceImpl implements EventLogService {
         this.statisticRepository = statisticRepository;
         this.logsDir = new File(configBean.getLogsDir());
         this.dashboardLayoutRepository = dashboardLayoutRepository;
+        this.userMetadataService = userMetadataService;
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -223,6 +228,17 @@ public class EventLogServiceImpl implements EventLogService {
 
         // Perform the update
         logRepo.saveAndFlush(log);
+
+        // TODO: Remove test code
+//        userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, log.getId());
+//        userMetadataService.updateUserMetadata(16, username, "new content");
+//        userMetadataService.deleteUserMetadata(17, username);
+//        for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166, 2)) {
+//            LOGGER.info( "RESULT :" + usermetadata.getId() + usermetadata.getContent());
+//        }
+//        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));
+//        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 10));
+
 
         return log;
     }

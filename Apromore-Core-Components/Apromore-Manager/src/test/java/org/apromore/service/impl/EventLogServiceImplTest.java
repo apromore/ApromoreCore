@@ -55,6 +55,7 @@ import org.apromore.dao.LogRepository;
 import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
@@ -98,6 +99,7 @@ public class EventLogServiceImplTest {
     private StatisticRepository statisticRepository;
     private EventLogServiceImpl eventLogService;
     private DashboardLayoutRepository dashboardLayoutRepository;
+    private UserMetadataService userMetadataService;
 
     private static void walkLog(XLog log) {
         walkAttributes(log);
@@ -141,10 +143,12 @@ public class EventLogServiceImplTest {
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
         dashboardLayoutRepository = createMock(DashboardLayoutRepository.class);
+        userMetadataService = createMock(UserMetadataService.class);
+
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
-                userSrv, ui, statisticRepository, config, dashboardLayoutRepository);
+                userSrv, ui, statisticRepository, config, dashboardLayoutRepository, userMetadataService);
     }
 
     @Test
@@ -431,7 +435,7 @@ public class EventLogServiceImplTest {
         Integer logId = 1;
         String reallyLongString = "a really long String";
         expect(dashboardLayoutRepository.findByUserIdAndLogId(userId, logId)).andReturn(reallyLongString);
-        replay(dashboardLayoutRepository);
+        replay(dashboardLayoutRepository);Apromore-Core-Components/Apromore-Portal/src/main/webapp/themes/ap/common/css/zk-default.css_940827201646478
 
         String result = eventLogService.getLayoutByLogId(userId, logId);
         verify(dashboardLayoutRepository);
