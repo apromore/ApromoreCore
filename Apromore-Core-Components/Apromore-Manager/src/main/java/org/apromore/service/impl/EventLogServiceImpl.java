@@ -23,6 +23,7 @@
  */
 package org.apromore.service.impl;
 
+import com.google.common.collect.Sets;
 import org.apromore.apmlog.APMLog;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -787,19 +788,35 @@ public class EventLogServiceImpl implements EventLogService {
             usermetadataList1.add(groupUsermetadata.getUsermetadata());
         }
 
-        // Get all the user metadata that linked to specified log
-        Set<Usermetadata> usermetadataList2 = new HashSet<>();
-
-        for (Integer logId : logIds) {
+        // Get all the user metadata that linked to specified logs
+        List<Set<Usermetadata>> lists = new ArrayList<>();
+        for (int i = 0; i < logIds.size(); i++) {
+            Set<Usermetadata> usermetadataList2 = new HashSet<>();
             Set<UsermetadataLog> usermetadataLogSet =
-                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
-
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logIds.get(i))));
             for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
                 usermetadataList2.add(usermetadataLog.getUsermetadata());
             }
+            lists.add(usermetadataList2);
         }
 
-        usermetadataList1.retainAll(usermetadataList2);
+        // Find
+        List<Usermetadata> commons = new ArrayList<Usermetadata>();
+        commons.addAll(lists.get(1));
+        for (ListIterator<Set<Usermetadata>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
+            commons.retainAll(iterator.next());
+        }
+
+//        for (Integer logId : logIds) {
+//            Set<UsermetadataLog> usermetadataLogSet =
+//                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+//
+//            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+//                usermetadataList2.add(usermetadataLog.getUsermetadata());
+//            }
+//        }
+
+        usermetadataList1.retainAll(commons);
 
         // Lambda is not supported by spring version before 4
 //        List<Usermetadata> usermetadataList2 = usermetadataLogSet.stream()
@@ -817,6 +834,14 @@ public class EventLogServiceImpl implements EventLogService {
             if (u.getUsermetadataType().getId() == userMetadataTypeEnum.getUserMetadataTypeId()) {
                 result.add(u);
             }
+        }
+        return result;
+    }
+
+    public <T> Set<T> intersection(List<T>... list) {
+        Set<T> result = Sets.newHashSet(list[0]);
+        for (List<T> numbers : list) {
+            result = Sets.intersection(result, Sets.newHashSet(numbers));
         }
         return result;
     }
