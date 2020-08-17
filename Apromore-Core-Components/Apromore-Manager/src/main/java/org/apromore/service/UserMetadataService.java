@@ -42,6 +42,7 @@ public interface UserMetadataService {
 
 
     /**
+     * Save user
      *
      * @param userMetadataContent  Content of user metadata
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum

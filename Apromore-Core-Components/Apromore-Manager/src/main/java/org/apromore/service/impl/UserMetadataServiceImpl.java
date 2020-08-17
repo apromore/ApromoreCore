@@ -52,7 +52,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     private String now = dateFormat.format(new Date());
 
-    private GroupUsermetadataRepository groupUsermetadataRepo;
+
     private LogRepository logRepo;
     private GroupRepository groupRepo;
     private GroupLogRepository groupLogRepo;
@@ -60,6 +60,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private File logsDir;
+    private GroupUsermetadataRepository groupUsermetadataRepo;
     private UsermetadataRepository userMetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;

@@ -854,8 +854,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             portalContext.refreshContent();
 
             // TODO: remove test code
-            userMetadataService.saveUserMetadataLinkedToOneLog("testCSV content", UserMetadataTypeEnum.CSV_IMPORTER,
-                    "frank", 140);
+//            eventLogService.saveUserMetadataLinkedToOneLog("testCSV content", UserMetadataTypeEnum.CSV_IMPORTER,
+//                    "frank", 140);
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
