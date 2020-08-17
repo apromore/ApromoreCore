@@ -24,39 +24,18 @@ package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.lang.StringUtils;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
-import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.InvalidCSVException;
-import org.apromore.service.csvimporter.LogErrorReport;
-import org.apromore.service.csvimporter.LogModel;
-import org.apromore.service.csvimporter.LogSample;
+import org.apromore.service.csvimporter.*;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -66,25 +45,12 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.SpringUtil;
-import org.zkoss.zul.A;
-import org.zkoss.zul.Auxhead;
-import org.zkoss.zul.Auxheader;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Column;
-import org.zkoss.zul.Columns;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Popup;
-import org.zkoss.zul.Span;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import javax.xml.datatype.DatatypeFactory;
+import java.io.*;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * Controller for <code>csvimporter.zul</code>.
@@ -854,8 +820,35 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             portalContext.refreshContent();
 
             // TODO: remove test code
-//            eventLogService.saveUserMetadataLinkedToOneLog("testCSV content", UserMetadataTypeEnum.CSV_IMPORTER,
-//                    "frank", 140);
+//            userMetadataService.saveUserMetadataLinkedToOneLog("testCSV content", UserMetadataTypeEnum.CSV_IMPORTER,
+//                    "admin", 140);
+
+
+
+            List<Integer> logIdlist = new ArrayList<>();
+            logIdlist.add(138);
+            logIdlist.add(139);
+
+            userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.CSV_IMPORTER, "admin",
+                    logIdlist);
+            Set<Usermetadata> usermetadatatest = userMetadataService.getUserMetadata("admin", logIdlist,
+                    UserMetadataTypeEnum.CSV_IMPORTER);
+            for(Usermetadata usermetadata : usermetadatatest) {
+                LOGGER.info("RESULT:::::::::" + usermetadata.getId());
+            }
+
+
+
+//            userMetadataService.saveUserMetadataLinkedToOneLog("test metadata content",
+//                    UserMetadataTypeEnum.DASHBOARD, "admin", 138);
+//            userMetadataService.updateUserMetadata(16, username, "new content");
+//            userMetadataService.deleteUserMetadata(17, username);
+//            for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166,
+//                    UserMetadataTypeEnum.DASHBOARD)) {
+//                LOGGER.info("RESULT :" + usermetadata.getId() + usermetadata.getContent());
+//            }
+//            LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));
+//            LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 10));
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);

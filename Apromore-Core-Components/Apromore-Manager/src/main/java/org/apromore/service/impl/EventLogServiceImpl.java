@@ -838,13 +838,13 @@ public class EventLogServiceImpl implements EventLogService {
         return result;
     }
 
-    public <T> Set<T> intersection(List<T>... list) {
-        Set<T> result = Sets.newHashSet(list[0]);
-        for (List<T> numbers : list) {
-            result = Sets.intersection(result, Sets.newHashSet(numbers));
-        }
-        return result;
-    }
+//    public <T> Set<T> intersection(List<T>... list) {
+//        Set<T> result = Sets.newHashSet(list[0]);
+//        for (List<T> numbers : list) {
+//            result = Sets.intersection(result, Sets.newHashSet(numbers));
+//        }
+//        return result;
+//    }
 
 
     @Override

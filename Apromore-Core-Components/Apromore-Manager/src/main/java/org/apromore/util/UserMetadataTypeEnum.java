@@ -21,9 +21,12 @@
  */
 package org.apromore.util;
 
+import java.util.List;
+
 /**
  * Parameter type for the
- * {@link org.apromore.service.impl.UserMetadataServiceImpl#saveUserMetadata(String, UserMetadataTypeEnum, String, Integer)} )} method.
+ *
+ * {@link org.apromore.service.impl.UserMetadataServiceImpl#saveUserMetadata(String, UserMetadataTypeEnum, String, List)}.
  * These user metadata type must be a subset of the ones in the database.
  */
 

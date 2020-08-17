@@ -42,6 +42,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import com.google.common.collect.Sets;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.Log;
@@ -461,5 +462,17 @@ public class EventLogServiceImplTest {
         }
 
         System.out.println(commons);
+
+        System.out.println(intersection(lists));
     }
+
+
+    public <T> Set<T> intersection(List<T>... list) {
+        Set<T> result = Sets.newHashSet(list[0]);
+        for (List<T> numbers : list) {
+            result = Sets.intersection(result, Sets.newHashSet(numbers));
+        }
+        return result;
+    }
+
 }

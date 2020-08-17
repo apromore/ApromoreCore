@@ -21,13 +21,11 @@
  */
 package org.apromore.service.impl;
 
-import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
-import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +35,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -54,12 +51,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
 
     private LogRepository logRepo;
-    private GroupRepository groupRepo;
     private GroupLogRepository groupLogRepo;
-    private FolderRepository folderRepo;
     private UserService userSrv;
-    private UserInterfaceHelper ui;
-    private File logsDir;
     private GroupUsermetadataRepository groupUsermetadataRepo;
     private UsermetadataRepository userMetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
@@ -71,21 +64,16 @@ public class UserMetadataServiceImpl implements UserMetadataService {
      * @param groupUserMetadataRepo Log repository.
      */
     @Inject
-    public UserMetadataServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
-                                   final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
-                                   final UserService userSrv, final UserInterfaceHelper ui,
-                                   final ConfigBean configBean,
+    public UserMetadataServiceImpl(final LogRepository logRepository,
+                                   final GroupLogRepository groupLogRepository,
+                                   final UserService userSrv,
                                    final GroupUsermetadataRepository groupUserMetadataRepo,
                                    final UsermetadataRepository userMetadataRepo,
                                    final UsermetadataTypeRepository usermetadataTypeRepo,
                                    final UsermetadataLogRepository usermetadataLogRepo) {
         this.logRepo = logRepository;
-        this.groupRepo = groupRepository;
         this.groupLogRepo = groupLogRepository;
-        this.folderRepo = folderRepo;
         this.userSrv = userSrv;
-        this.ui = ui;
-        this.logsDir = new File(configBean.getLogsDir());
         this.groupUsermetadataRepo = groupUserMetadataRepo;
         this.userMetadataRepo = userMetadataRepo;
         this.usermetadataTypeRepo = usermetadataTypeRepo;
@@ -98,7 +86,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                                String username,
                                                Integer logId) throws UserNotFoundException {
 
-        List logIds = new LinkedList<Integer>();
+        List<Integer> logIds = new LinkedList<>();
         logIds.add(logId);
 
         saveUserMetadata(userMetadataContent, userMetadataTypeEnum, username, logIds);
@@ -128,7 +116,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         for (Integer logId : logIds) {
             // Assign READ permission to all groups that have read permission to the linked artifact
             for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
-                if (gl.getHasRead()) {
+                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner
                     groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
                 }
             }
@@ -196,9 +184,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
-    public Set<Usermetadata> getUserMetadata(String username, Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+    public Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
+                                             UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
+        assert user != null;
 
         // Get all the user metadata that can be accessed by groups contain specified user
         Set<GroupUsermetadata> groupUsermetadataSet = new HashSet<>();
@@ -216,16 +206,49 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             usermetadataList1.add(groupUsermetadata.getUsermetadata());
         }
 
-        // Get all the user metadata that linked to specified log
-        Set<UsermetadataLog> usermetadataLogSet =
-                new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
-
-        Set<Usermetadata> usermetadataList2 = new HashSet<>();
-        for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
-            usermetadataList2.add(usermetadataLog.getUsermetadata());
+        // Get all the user metadata that linked to specified logs
+        List<Set<Usermetadata>> lists = new ArrayList<>();
+        for (Integer logId : logIds) {
+            Set<Usermetadata> usermetadataList2 = new HashSet<>();
+            Set<UsermetadataLog> usermetadataLogSet =
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                usermetadataList2.add(usermetadataLog.getUsermetadata());
+            }
+            lists.add(usermetadataList2);
         }
 
-        usermetadataList1.retainAll(usermetadataList2);
+        // Find
+        if (lists.size() != 0) {
+            List<Usermetadata> commons = new ArrayList<>(lists.get(1));
+            for (ListIterator<Set<Usermetadata>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
+                commons.retainAll(iterator.next());
+            }
+            usermetadataList1.retainAll(commons);
+
+            // Match user metadata type
+            Set<Usermetadata> result = new HashSet<>();
+            for (Usermetadata u : usermetadataList1
+            ) {
+                if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
+                    result.add(u);
+                }
+            }
+            return result;
+        } else {
+            return null;
+        }
+
+
+//        for (Integer logId : logIds) {
+//            Set<UsermetadataLog> usermetadataLogSet =
+//                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+//
+//            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+//                usermetadataList2.add(usermetadataLog.getUsermetadata());
+//            }
+//        }
+
 
         // Lambda is not supported by spring version before 4
 //        List<Usermetadata> usermetadataList2 = usermetadataLogSet.stream()
@@ -237,15 +260,16 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 //                .filter(usermetadataList2::contains)
 //                .collect(Collectors.toSet());
 
-        Set<Usermetadata> result = new HashSet<>();
-        for (Usermetadata u : usermetadataList1
-             ) {
-            if (u.getUsermetadataType().getId() == userMetadataTypeEnum.getUserMetadataTypeId()) {
-                result.add(u);
-            }
-        }
-        return result;
+
     }
+
+//    public <T> Set<T> intersection(List<T>... list) {
+//        Set<T> result = Sets.newHashSet(list[0]);
+//        for (List<T> numbers : list) {
+//            result = Sets.intersection(result, Sets.newHashSet(numbers));
+//        }
+//        return result;
+//    }
 
 
     @Override
