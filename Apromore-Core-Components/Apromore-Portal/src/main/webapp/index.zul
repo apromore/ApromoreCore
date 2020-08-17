@@ -244,31 +244,6 @@
                         </tabpanels>
                     </tabbox>
                 </vlayout>
-
-                    <!--
-                                        <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
-                                            <html>
-                                                <![CDATA[
-                                                <script type="text/javascript">
-                                                    function bindBreadcrumbs() {
-                                                        jq('a.breadCrumbLink').unbind("click");
-                                                        jq('a.breadCrumbLink').click(function(e){
-                                                            payload = jq(this).attr('id');
-                                                            zAu.send(new zk.Event(zk.Widget.$(jq('$breadCrumbsWindow')[0]), 'onBreadCrumbClick', payload));
-                                                        });
-                                                    }
-
-                                                    jq(function() {
-                                                        bindBreadcrumbs();
-                                                    });
-                                                </script>
-                                                ]]>
-                                            </html>
-                                        </window>
-
-                                        <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
-                    -->
-
             </center>
         </borderlayout>
         <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />

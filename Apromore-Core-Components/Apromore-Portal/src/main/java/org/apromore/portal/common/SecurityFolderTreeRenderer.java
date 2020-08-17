@@ -97,7 +97,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
         switch (ctn.getType()) {
         case Folder:
             FolderType folder = (FolderType) ctn.getData();
-            FolderType currentFolder = UserSessionManager.getCurrentFolder();
+            FolderType currentFolder = this.securitySetupController.getMainController().getPortalSession().getCurrentFolder();
 
             if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, currentFolder)) {
                 treeItem.setOpen(true);

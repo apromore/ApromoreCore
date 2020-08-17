@@ -48,6 +48,7 @@ import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.PortalSession;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
@@ -123,6 +124,7 @@ public class MainController extends BaseController implements MainControllerInte
     private String minorVersionNumber;
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
+    public PortalSession portalSession;
 	
 	public static MainController getController() {
         return controller;
@@ -130,11 +132,17 @@ public class MainController extends BaseController implements MainControllerInte
 
     public MainController() {
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+        portalSession = new PortalSession(this);
     }
 
     /** Unit test constructor. */
     public MainController(ConfigBean configBean) {
         super(configBean);
+        portalSession = new PortalSession(this);
+    }
+
+    public PortalSession getPortalSession() {
+        return portalSession;
     }
 
     /**
@@ -254,21 +262,24 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void reloadBreadcrumbs () {
         String userId = UserSessionManager.getCurrentUser().getId();
-        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
+        int currentParentFolderId = currentFolder == null ||
+                currentFolder.getId() == 0 ? 0 :
+                currentFolder.getId();
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
-        if (UserSessionManager.getCurrentFolder() != null) {
-            FolderType folder = UserSessionManager.getCurrentFolder();
+        if (currentFolder != null) {
+            FolderType folder = currentFolder;
             folder.getFolders().clear();
             for (FolderType newFolder : folders) {
                 folder.getFolders().add(newFolder);
             }
-            UserSessionManager.setCurrentFolder(folder);
+            this.portalSession.setCurrentFolder(currentFolder);
         }
     }
 
     private void loadTree() {
         List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
-        UserSessionManager.setTree(folders);
+        this.portalSession.setTree(folders);
         this.navigation.loadWorkspace();
     }
 
@@ -288,10 +299,11 @@ public class MainController extends BaseController implements MainControllerInte
         if (isQueryResult) {
             clearProcessVersions();
         }
-        if (UserSessionManager.getCurrentFolder() == null) {
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
+        if (currentFolder == null) {
             folderId = 0;
         } else {
-            folderId = UserSessionManager.getCurrentFolder().getId();
+            folderId = currentFolder.getId();
         }
 
         // TODO switch to process query result view
@@ -326,7 +338,7 @@ public class MainController extends BaseController implements MainControllerInte
         switchToProcessSummaryView();
         pg.setActivePage(0);
 
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
         ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders, false);
 
@@ -343,7 +355,7 @@ public class MainController extends BaseController implements MainControllerInte
         switchToProcessSummaryView();
         pg.setActivePage(0);
 
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
         ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders, false);
 
@@ -539,9 +551,8 @@ public class MainController extends BaseController implements MainControllerInte
                 selectedFolder.getFolders().add(folderType);
             }
         }
-
-        UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
-        UserSessionManager.setCurrentFolder(selectedFolder);
+        this.portalSession.setPreviousFolder(this.portalSession.getCurrentFolder());
+        this.portalSession.setCurrentFolder(selectedFolder);
 
         this.reloadSummaries2();
         this.currentFolderChanged();

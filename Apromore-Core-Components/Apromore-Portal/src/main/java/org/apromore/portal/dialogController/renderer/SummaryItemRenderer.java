@@ -62,7 +62,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     private MainController mainController;
 
-
     public SummaryItemRenderer(MainController main) {
         this.mainController = main;
     }
@@ -175,7 +174,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                // UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                mainController.getPortalSession().setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }
@@ -213,7 +213,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                UserSessionManager.setCurrentFolder(folder);
+                // UserSessionManager.setCurrentFolder(folder);
+                mainController.getPortalSession().setCurrentFolder(folder);
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }

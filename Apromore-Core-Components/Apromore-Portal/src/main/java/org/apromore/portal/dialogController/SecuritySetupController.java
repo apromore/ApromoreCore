@@ -48,7 +48,8 @@ public class SecuritySetupController extends BaseController {
         this.mainController = mainController;
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, null);
-            FolderType currentFolder = UserSessionManager.getCurrentFolder();
+            // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+            FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
             this.permissionsController = new SecurityPermissionsController(this, win);
             this.findGroupsController = new SecurityFindGroupsController(this, win);
@@ -58,7 +59,7 @@ public class SecuritySetupController extends BaseController {
 
             win.addEventListener("onClose", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    UserSessionManager.getMainController().loadWorkspace();
+                    getMainController().loadWorkspace();
                 }
             });
 

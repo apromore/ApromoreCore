@@ -379,8 +379,8 @@ public class ImportController extends BaseController {
     private void importLog(Media logMedia) {
         try {
             Integer folderId = 0;
-            if (UserSessionManager.getCurrentFolder() != null) {
-                folderId = UserSessionManager.getCurrentFolder().getId();
+            if (this.mainC.getPortalSession().getCurrentFolder() != null) {
+                folderId = this.mainC.getPortalSession().getCurrentFolder().getId();
             }
 
             String fileName = logMedia.getName();

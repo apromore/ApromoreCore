@@ -119,7 +119,7 @@ public class SimpleSearchController extends BaseController {
      * @throws Exception
      */
     private void processSearch() throws Exception {
-        FolderType folder = UserSessionManager.getCurrentFolder();
+        FolderType folder = mainC.getPortalSession().getCurrentFolder();
         if (folder == null) {
             throw new Exception("Search requires a folder to be selected");
         }
