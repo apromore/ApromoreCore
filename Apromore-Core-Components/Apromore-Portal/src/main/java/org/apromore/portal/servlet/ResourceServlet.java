@@ -80,6 +80,18 @@ public class ResourceServlet extends HttpServlet {
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         try {
             BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
+
+            // Check the HttpServlet services for a handler
+            for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
+                HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
+                if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
+                    servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
+                    servlet.service(req, resp);
+                    return;
+                }
+            }
+
+            // Check the WebContextServices for a handler
             List<WebContentService> webContentServices = new ArrayList<>();
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(WebContentService.class, null)) {
                 webContentServices.add((WebContentService) bundleContext.getService((ServiceReference) serviceReference));
