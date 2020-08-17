@@ -198,12 +198,13 @@ public interface EventLogService {
     /**
      *
      * @param username username
-     * @param logId logId
+     * @param logIds List of logId
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @return
      * @throws UserNotFoundException
      */
-    Set<Usermetadata> getUserMetadata(String username, Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+    Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
+                                      UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
 
     /**
      *

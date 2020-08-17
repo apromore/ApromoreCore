@@ -34,7 +34,6 @@ import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.service.EventLogService;
-import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
@@ -768,7 +767,7 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
-    public Set<Usermetadata> getUserMetadata(String username, Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+    public Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
 
@@ -789,12 +788,15 @@ public class EventLogServiceImpl implements EventLogService {
         }
 
         // Get all the user metadata that linked to specified log
-        Set<UsermetadataLog> usermetadataLogSet =
-                new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
-
         Set<Usermetadata> usermetadataList2 = new HashSet<>();
-        for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
-            usermetadataList2.add(usermetadataLog.getUsermetadata());
+
+        for (Integer logId : logIds) {
+            Set<UsermetadataLog> usermetadataLogSet =
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+
+            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                usermetadataList2.add(usermetadataLog.getUsermetadata());
+            }
         }
 
         usermetadataList1.retainAll(usermetadataList2);
