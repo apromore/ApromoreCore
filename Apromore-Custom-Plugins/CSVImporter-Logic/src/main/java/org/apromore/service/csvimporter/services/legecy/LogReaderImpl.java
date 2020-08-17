@@ -27,6 +27,17 @@ import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.*;
 import org.apromore.service.csvimporter.utilities.NameComparator;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XLifecycleExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
+import org.deckfour.xes.extension.std.XTimeExtension;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
+import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -35,6 +46,7 @@ import java.util.*;
 public class LogReaderImpl implements LogReader, Constants {
 
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImpl.class);
     private final Parse parse = new Parse();
 
     boolean preferMonthFirstChanged;
@@ -42,7 +54,7 @@ public class LogReaderImpl implements LogReader, Constants {
     private boolean validRow;
 
     @Override
-    public LogModel readLogs(InputStream in, LogSample sample, String charset) throws Exception {
+    public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
         CSVReader reader = new CSVFileReader().newCSVReader(in, charset);
         if (reader == null)
             return null;
@@ -65,23 +77,51 @@ public class LogReaderImpl implements LogReader, Constants {
         HashMap<String, String> eventAttributes;
         HashMap<String, Timestamp> otherTimestamps;
 
-        List<LogEventModel> logData = new ArrayList<>();
+//        List<LogEventModel> logData = new ArrayList<>();
         String errorMessage = "Field is empty or has a null value!";
         boolean rowLimitExceeded = false;
 
-        while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) { // new row, new event.
+
+        //XES
+        XFactory xFactory = new XFactoryNaiveImpl();
+        XConceptExtension concept = XConceptExtension.instance();
+        XLifecycleExtension lifecycle = XLifecycleExtension.instance();
+        XTimeExtension timestamp = XTimeExtension.instance();
+        XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
+
+        XLog xLog = xFactory.createLog();
+        xLog.getExtensions().add(concept);
+        xLog.getExtensions().add(lifecycle);
+        xLog.getExtensions().add(timestamp);
+        xLog.getExtensions().add(resourceXes);
+
+        lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
+
+        XTrace xTrace = null;
+        XEvent xEvent;
+        List<XEvent> allEvents = new ArrayList<XEvent>();
+        String newTraceID = null;    // to keep track of events, when a new trace is created we assign its value and add the respective events for the trace.
+        Map<String, String> caseAttributesXes = new HashMap<>();
+        //XES
+
+
+        while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
+
+            // new row, new event.
             validRow = true;
             lineIndex++;
 
-            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n")))) { //empty row
+            //empty row
+            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n")))) {
                 continue;
             }
 
+            //Validate num of column
             if (header.length != line.length) {
                 logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
-                continue;
             }
 
+            //Construct an event
             startTimestamp = null;
             resource = null;
             caseAttributes = new HashMap<>();
@@ -115,7 +155,6 @@ public class LogReaderImpl implements LogReader, Constants {
                 }
             }
 
-
             // Other timestamps
             if (!sample.getOtherTimestamps().isEmpty()) {
                 for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
@@ -129,10 +168,8 @@ public class LogReaderImpl implements LogReader, Constants {
             }
 
             // If PreferMonthFirst changed to True, we have to start over.
-            if (!preferMonthFirst && preferMonthFirstChanged) {
-                readLogs(in, sample, charset);
-            }
-
+            if (!preferMonthFirst && preferMonthFirstChanged)
+                readLogs(in, sample, charset, skipInvalidRow);
 
             // Resource
             if (sample.getResourcePos() != -1) {
@@ -144,14 +181,34 @@ public class LogReaderImpl implements LogReader, Constants {
 
             // If row is invalid, continue to next row.
             if (!validRow) {
-                continue;
+                if (skipInvalidRow) {
+                    continue;
+                } else {
+                    return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded);
+                }
             }
+
+            //Construct a Trace if it's not exists
+            if (newTraceID == null || !newTraceID.equals(caseId)) {    // This could be new Trace
+
+                assignEventsToTrace(allEvents, xTrace);
+                assignMyCaseAttributes(caseAttributesXes, xTrace);
+                allEvents = new ArrayList<>();
+                caseAttributesXes = new HashMap<>();
+
+                xTrace = xFactory.createTrace();
+                concept.assignName(xTrace, caseId);
+                xLog.add(xTrace);
+                newTraceID = caseId;
+            }
+
 
             // Case Attributes
             if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
                 for (int columnPos : sample.getCaseAttributesPos()) {
                     caseAttributes.put(header[columnPos], line[columnPos]);
                 }
+                setMyCaseAttributes(caseAttributesXes, caseAttributes);
             }
 
             // Event Attributes
@@ -160,15 +217,27 @@ public class LogReaderImpl implements LogReader, Constants {
                     eventAttributes.put(header[columnPos], line[columnPos]);
                 }
             }
+            //Create an eventLog
+            LogEventModel newEvent = new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes);
 
-            logData.add(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
+            //Store ne Event
+            if (newEvent.getStartTimestamp() != null) {
+                xEvent = createEvent(newEvent, false);
+                allEvents.add(xEvent);
+            }
+            xEvent = createEvent(newEvent, true);
+            allEvents.add(xEvent);
         }
 
-        if (!isValidLineCount(lineIndex - 1)) {
+        if (!isValidLineCount(lineIndex - 1))
             rowLimitExceeded = true;
-        }
-        return new LogModelImpl(sortTraces(logData), logErrorReport, rowLimitExceeded);
 
+
+        // for last trace
+        assignEventsToTrace(allEvents, xTrace);
+        assignMyCaseAttributes(caseAttributesXes, xTrace);
+
+        return new LogModelXLogImpl(sortTraces(xLog), logErrorReport, rowLimitExceeded);
     }
 
     public boolean isValidLineCount(int lineCount) {
@@ -199,9 +268,118 @@ public class LogReaderImpl implements LogReader, Constants {
         validRow = false;
     }
 
-    private static List<LogEventModel> sortTraces(List<LogEventModel> traces) {
+    private static XLog sortTraces(XLog xLog) {
+
+        XConceptExtension concept = XConceptExtension.instance();
         Comparator<String> nameOrder = new NameComparator();
-        traces.sort((o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
-        return traces;
+        xLog.sort((t1, t2) -> nameOrder.compare(concept.extractName(t1), concept.extractName(t2)));
+
+        return xLog;
+    }
+
+    private void assignEventsToTrace(List<XEvent> allEvents, XTrace xTrace) {
+        if (allEvents != null && !allEvents.isEmpty()) {
+            Comparator<XEvent> compareTimestamp = (XEvent o1, XEvent o2) -> {
+                Date o1Date;
+                Date o2Date;
+                if (o1.getAttributes().get("time:timestamp") != null) {
+                    XAttribute o1da = o1.getAttributes().get("time:timestamp");
+                    if (((XAttributeTimestamp) o1da).getValue() != null) {
+                        o1Date = ((XAttributeTimestamp) o1da).getValue();
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+
+                if (o2.getAttributes().get("time:timestamp") != null) {
+                    XAttribute o2da = o2.getAttributes().get("time:timestamp");
+                    if (((XAttributeTimestamp) o2da).getValue() != null) {
+                        o2Date = ((XAttributeTimestamp) o2da).getValue();
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
+
+                if (o1Date == null || o1Date.toString().isEmpty()) {
+                    return 1;
+                } else if (o2Date == null || o2Date.toString().isEmpty()) {
+                    return -1;
+                } else {
+                    return o1Date.compareTo(o2Date);
+                }
+            };
+
+            allEvents.sort(compareTimestamp);
+            xTrace.addAll(allEvents);
+        }
+    }
+
+    private void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xTrace) {
+        if (caseAttributes != null && !caseAttributes.isEmpty()) {
+            XAttribute attribute;
+            for (Map.Entry<String, String> entry : caseAttributes.entrySet()) {
+                if (entry.getValue() != null && entry.getValue().trim().length() != 0) {
+                    attribute = new XAttributeLiteralImpl(entry.getKey(), entry.getValue());
+                    xTrace.getAttributes().put(entry.getKey(), attribute);
+                }
+            }
+        }
+    }
+
+    private void setMyCaseAttributes(Map<String, String> caseAttributes, Map<String, String> eventCaseAttributes) {
+        for (Map.Entry<String, String> entry : eventCaseAttributes.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().trim().length() != 0 && !caseAttributes.containsKey(entry.getKey())) {
+                caseAttributes.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private XEvent createEvent(LogEventModel myEvent, Boolean isEndTimestamp) {
+
+        XFactory xFactory = new XFactoryNaiveImpl();
+        XEvent xEvent = xFactory.createEvent();
+
+        XConceptExtension concept = XConceptExtension.instance();
+        concept.assignName(xEvent, myEvent.getActivity());
+
+        if (myEvent.getResource() != null) {
+            XOrganizationalExtension resource = XOrganizationalExtension.instance();
+            resource.assignResource(xEvent, myEvent.getResource());
+        }
+
+
+        XLifecycleExtension lifecycle = XLifecycleExtension.instance();
+        XTimeExtension timestamp = XTimeExtension.instance();
+        if (isEndTimestamp) {
+            lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
+            timestamp.assignTimestamp(xEvent, myEvent.getEndTimestamp());
+        } else {
+            lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.START);
+            timestamp.assignTimestamp(xEvent, myEvent.getStartTimestamp());
+        }
+
+
+        XAttribute attribute;
+        if (myEvent.getOtherTimestamps() != null) {
+            Map<String, Timestamp> otherTimestamps = myEvent.getOtherTimestamps();
+            for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
+                attribute = new XAttributeTimestampImpl(entry.getKey(), entry.getValue());
+                xEvent.getAttributes().put(entry.getKey(), attribute);
+            }
+        }
+
+        Map<String, String> eventAttributes = myEvent.getEventAttributes();
+        for (Map.Entry<String, String> entry : eventAttributes.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().trim().length() != 0) {
+                attribute = new XAttributeLiteralImpl(entry.getKey(), entry.getValue());
+                xEvent.getAttributes().put(entry.getKey(), attribute);
+            }
+        }
+
+        return xEvent;
     }
 }

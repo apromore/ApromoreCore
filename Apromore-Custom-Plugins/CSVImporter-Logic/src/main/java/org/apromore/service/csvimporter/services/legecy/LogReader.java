@@ -24,6 +24,7 @@ package org.apromore.service.csvimporter.services.legecy;
 
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
+import org.deckfour.xes.model.XLog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +47,6 @@ public interface LogReader {
      * @param sample header configuration
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogModel readLogs(InputStream in, LogSample sample, String charset) throws Exception;
+    LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception;
 
 }

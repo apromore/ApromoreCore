@@ -45,13 +45,13 @@ public class CreateXLog {
         XConceptExtension concept = XConceptExtension.instance();
         XLifecycleExtension lifecycle = XLifecycleExtension.instance();
         XTimeExtension timestamp = XTimeExtension.instance();
-        XOrganizationalExtension resource = XOrganizationalExtension.instance();
+        XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
 
         XLog xLog = xFactory.createLog();
         xLog.getExtensions().add(concept);
         xLog.getExtensions().add(lifecycle);
         xLog.getExtensions().add(timestamp);
-        xLog.getExtensions().add(resource);
+        xLog.getExtensions().add(resourceXes);
 
         lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
@@ -59,7 +59,7 @@ public class CreateXLog {
         XEvent xEvent;
         List<XEvent> allEvents = new ArrayList<XEvent>();
         String newTraceID = null;    // to keep track of events, when a new trace is created we assign its value and add the respective events for the trace.
-        Map<String, String> caseAttributes = new HashMap<>();
+        Map<String, String> caseAttributesXes = new HashMap<>();
 
         for (LogEventModel myEvent : events) {
             String caseID = myEvent.getCaseID();
@@ -67,9 +67,9 @@ public class CreateXLog {
             if (newTraceID == null || !newTraceID.equals(caseID)) {    // This could be new Trace
 
                 assignEventsToTrace(allEvents, xTrace);
-                assignMyCaseAttributes(caseAttributes, xTrace);
+                assignMyCaseAttributes(caseAttributesXes, xTrace);
                 allEvents = new ArrayList<>();
-                caseAttributes = new HashMap<>();
+                caseAttributesXes = new HashMap<>();
 
                 xTrace = xFactory.createTrace();
                 concept.assignName(xTrace, caseID);
@@ -78,7 +78,7 @@ public class CreateXLog {
             }
 
 
-            setMyCaseAttributes(caseAttributes, myEvent.getCaseAttributes());
+            setMyCaseAttributes(caseAttributesXes, myEvent.getCaseAttributes());
 
             if (myEvent.getStartTimestamp() != null) {
                 xEvent = createEvent(myEvent, false);
@@ -91,7 +91,7 @@ public class CreateXLog {
 
         // for last trace
         assignEventsToTrace(allEvents, xTrace);
-        assignMyCaseAttributes(caseAttributes, xTrace);
+        assignMyCaseAttributes(caseAttributesXes, xTrace);
         return xLog;
     }
 
@@ -165,8 +165,8 @@ public class CreateXLog {
         concept.assignName(xEvent, myEvent.getActivity());
 
         if (myEvent.getResource() != null) {
-            XOrganizationalExtension resource = XOrganizationalExtension.instance();
-            resource.assignResource(xEvent, myEvent.getResource());
+            XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
+            resourceXes.assignResource(xEvent, myEvent.getResource());
         }
 
 

@@ -175,23 +175,27 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     @Listen("onClick = #toXESButton; onClick = #toPublicXESButton")
     public void convertToXes(MouseEvent event) {
+
         StringBuilder headNOTDefined = validateUniqueAttributes();
         if (headNOTDefined.length() != 0) {
             Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK, Messagebox.ERROR);
+
         } else {
+
             try {
-                LogModel xesModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding());
+                LogModel logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                if (logModel != null) {
 
-                if (xesModel != null) {
-
-                    List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+                    List<LogErrorReport> errorReport = logModel.getLogErrorReport();
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
+
                     if (errorReport.isEmpty()) {
-                        saveXLog(xesModel, isLogPublic);
+                        saveXLog(logModel, isLogPublic);
                     } else {
-                        handleInvalidData(xesModel, isLogPublic);
+                        handleInvalidData(logModel, isLogPublic);
                     }
                 }
+
             } catch (Exception e) {
                 Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
                 e.printStackTrace();
@@ -695,6 +699,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
 
+//      Since the log is imported as a stream, errorCount can be predicted at this stage
         Label errorCount = (Label) errorPopUp.getFellow(errorCountLblId);
         errorCount.setValue(String.valueOf(errorReport.size()));
 
@@ -703,6 +708,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         Set<String> invColList = new HashSet<String>();
         Set<String> igColList = new HashSet<String>();
         Set<Integer> invTimestampPos = new HashSet<>();
+
         for (LogErrorReport error : errorReport) {
             if (error.getHeader() != null && !error.getHeader().isEmpty()) {
                 invColList.add(error.getHeader());
@@ -733,8 +739,16 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             sample.getIgnoredPos().add(pos);
                         }
 
-//                        CSVReader reader = new CSVFileReader().newCSVReader(media, getFileEncoding());
-                        saveXLog(logReader.readLogs(getInputSream(media), sample, getFileEncoding()), isPublic);
+                        LogModel logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+
+                        if (logModelSkippedCol != null) {
+
+                            if (logModelSkippedCol.getLogErrorReport().isEmpty()) {
+                                saveXLog(logModelSkippedCol, isPublic);
+                            } else {
+                                handleInvalidData(logModelSkippedCol, isPublic);
+                            }
+                        }
                     }
             );
         }
@@ -749,7 +763,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         skipRows.addEventListener("onClick", event -> {
                     errorPopUp.invalidate();
                     errorPopUp.detach();
-                    saveXLog(xesModel, isPublic);
+
+                    LogModel logModelSkippedRow = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
+                    if (logModelSkippedRow != null) {
+                        saveXLog(logModelSkippedRow, isPublic);
+                    }
                 }
         );
 
@@ -800,9 +818,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
     }
 
-    private void saveXLog(LogModel xesModel, boolean isPublic) {
+    private void saveXLog(LogModel logModel, boolean isPublic) {
+
         try {
-            XLog xlog = xesModel.getXLog();
+            XLog xlog = logModel.getXLog();
+
             if (xlog == null) {
                 throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
             }
@@ -825,10 +845,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             );
 
             String successMessage;
-            if (xesModel.isRowLimitExceeded()) {
-                successMessage = MessageFormat.format(getLabels().getString("limit_reached"), xesModel.getRowsCount());
+            if (logModel.isRowLimitExceeded()) {
+                successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
             } else {
-                successMessage = MessageFormat.format(getLabels().getString("successful_upload"), xesModel.getRowsCount());
+                successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
             }
             Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
             portalContext.refreshContent();
