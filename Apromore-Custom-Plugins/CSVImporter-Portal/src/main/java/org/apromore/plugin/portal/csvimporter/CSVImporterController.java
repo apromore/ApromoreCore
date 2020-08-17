@@ -44,11 +44,13 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogErrorReport;
 import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +98,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     // Fields injected from Spring beans/OSGi services
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
+    private UserMetadataService userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
 
     /* This is the better way to pass parameters, but it only works when opening the ZUL within the same browser window.
     // Fields injected from the ZK execution
@@ -849,6 +852,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
             Messagebox.show(successMessage, new Messagebox.Button[] {Messagebox.Button.OK}, event -> close());
             portalContext.refreshContent();
+
+            // TODO: remove test code
+            userMetadataService.saveUserMetadataLinkedToOneLog("testCSV content", UserMetadataTypeEnum.CSV_IMPORTER,
+                    "frank", 140);
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);

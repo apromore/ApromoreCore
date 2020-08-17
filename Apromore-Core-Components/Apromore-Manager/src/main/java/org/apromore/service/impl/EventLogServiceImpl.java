@@ -230,10 +230,15 @@ public class EventLogServiceImpl implements EventLogService {
         logRepo.saveAndFlush(log);
 
         // TODO: Remove test code
-//        userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, log.getId());
+
+//        List<Integer> logIdlist = new ArrayList<>();
+//        logIdlist.add(138);
+//        logIdlist.add(139);
+//        userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, logIdlist);
+//        userMetadataService.saveUserMetadataLinkedToOneLog("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, log.getId());
 //        userMetadataService.updateUserMetadata(16, username, "new content");
 //        userMetadataService.deleteUserMetadata(17, username);
-//        for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166, 2)) {
+//        for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166, UserMetadataTypeEnum.DASHBOARD)) {
 //            LOGGER.info( "RESULT :" + usermetadata.getId() + usermetadata.getContent());
 //        }
 //        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));

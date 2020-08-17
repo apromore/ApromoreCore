@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -21,7 +21,6 @@
  */
 package org.apromore.service;
 
-import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.UserMetadataTypeEnum;
@@ -32,33 +31,63 @@ import java.util.Set;
 public interface UserMetadataService {
 
     /**
-     * Save new user metadata
-     * @param metadata
-     * @param userMetadataTypeEnum
-     * @param username
-     * @param logId
+     *
+     * @param metadata Content of user metadata
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @param username username
+     * @param logIds List of logId
      * @throws UserNotFoundException
      */
-    void saveUserMetadata (String metadata, UserMetadataTypeEnum userMetadataTypeEnum, String username, Integer logId) throws UserNotFoundException;
+    void saveUserMetadata(String metadata, UserMetadataTypeEnum userMetadataTypeEnum, String username, List<Integer> logIds) throws UserNotFoundException;
+
 
     /**
-     * Update user metadata content only
-     * @param usermetadataId
-     * @param username
+     *
+     * @param userMetadataContent  Content of user metadata
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @param username username
+     * @param logId logId
      * @throws UserNotFoundException
      */
-    void updateUserMetadata (Integer usermetadataId, String username, String content) throws UserNotFoundException;
+    void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+                                        String username,
+                                        Integer logId) throws UserNotFoundException;
 
     /**
-     * Delete one user metadata
-     * @param usermetadataId
+     *
+     * @param userMetadataId  Id of user metadata
+     * @param username username
+     * @param content Content of user metadata
      * @throws UserNotFoundException
      */
-    void deleteUserMetadata (Integer usermetadataId, String username) throws UserNotFoundException;
+    void updateUserMetadata(Integer userMetadataId, String username, String content) throws UserNotFoundException;
 
-    Set<Usermetadata> getUserMetadata (String username, Integer logId, Integer typeId) throws UserNotFoundException;
+    /**
+     *
+     * @param userMetadataId Id of user metadata
+     * @param username username
+     * @throws UserNotFoundException
+     */
+    void deleteUserMetadata(Integer userMetadataId, String username) throws UserNotFoundException;
 
-    boolean canUserEditMetadata (String username, Integer UsermetadataId) throws UserNotFoundException;
+    /**
+     *
+     * @param username username
+     * @param logId logId
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return
+     * @throws UserNotFoundException
+     */
+    Set<Usermetadata> getUserMetadata(String username, Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
+    /**
+     *
+     * @param username
+     * @param UsermetadataId Id of user metadata
+     * @return
+     * @throws UserNotFoundException
+     */
+    boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
 
 }

@@ -41,7 +41,6 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
@@ -94,8 +93,20 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
+    public void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+                                               String username,
+                                               Integer logId) throws UserNotFoundException {
+
+        List logIds = new LinkedList<Integer>();
+        logIds.add(logId);
+
+        saveUserMetadata(userMetadataContent, userMetadataTypeEnum, username, logIds);
+    }
+
+    @Override
+    @Transactional
     public void saveUserMetadata(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
-                                 Integer logId) throws UserNotFoundException {
+                                 List<Integer> logIds) throws UserNotFoundException {
 
         //TODO:
         // 1. creator singleton group get Owner permission
@@ -108,25 +119,26 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Usermetadata userMetadata = new Usermetadata();
 
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
+        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
 
         // Assign OWNER permission to the user's personal group
         groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
 
-        // Assign READ permission to all groups that have read permission to the linked artifact (Log or Process model)
-        List<GroupLog> groupLogs = groupLogRepo.findByLogId(logId);
-        for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
-            if (gl.getHasRead()) {
-                groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
+        for (Integer logId : logIds) {
+            // Assign READ permission to all groups that have read permission to the linked artifact
+            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
+                if (gl.getHasRead()) {
+                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
+                }
             }
-        }
 
-        // Add linked artifact to the UsermetadataLog linked table
-        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
-        usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
-        userMetadata.setUsermetadataLog(usermetadataLogSet);
+            // Add linked artifact to the UsermetadataLog linked table
+            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+        }
 
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+        userMetadata.setUsermetadataLog(usermetadataLogSet);
         userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
@@ -183,7 +195,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
-    public Set<Usermetadata> getUserMetadata(String username, Integer logId, Integer typeId) throws UserNotFoundException {
+    public Set<Usermetadata> getUserMetadata(String username, Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
 
@@ -224,7 +236,14 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 //                .filter(usermetadataList2::contains)
 //                .collect(Collectors.toSet());
 
-        return usermetadataList1;
+        Set<Usermetadata> result = new HashSet<>();
+        for (Usermetadata u : usermetadataList1
+             ) {
+            if (u.getUsermetadataType().getId() == userMetadataTypeEnum.getUserMetadataTypeId()) {
+                result.add(u);
+            }
+        }
+        return result;
     }
 
 
