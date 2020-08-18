@@ -144,7 +144,7 @@ public class XAttributeBooleanImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.impl.XAttribute#clone()
+	 * @see org.deckfour.xes.model.services.XAttribute#clone()
 	 */
 	public Object clone() {
 		return super.clone();

@@ -20,13 +20,9 @@
  * #L%
  */
 
-package org.apromore.service.csvimporter.impl;
+package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.services.ConvertToParquetFactory;
-import org.apromore.service.csvimporter.services.ParquetExporter;
-import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.legecy.LogReader;
 import org.apromore.service.csvimporter.services.legecy.LogReaderImpl;
 import org.deckfour.xes.model.XLog;
