@@ -219,27 +219,30 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         }
 
         // Find
-        if (lists.size() != 0) {
+        if (lists.size() > 1) {
             List<Usermetadata> commons = new ArrayList<>(lists.get(1));
             for (ListIterator<Set<Usermetadata>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
                 commons.retainAll(iterator.next());
             }
             usermetadataList1.retainAll(commons);
 
-            // Match user metadata type
-            Set<Usermetadata> result = new HashSet<>();
-            for (Usermetadata u : usermetadataList1
-            ) {
-                if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
-                    result.add(u);
-                }
-            }
-            return result;
+        } else if (lists.size() == 1) {
+            usermetadataList1.retainAll(lists.get(0));
         } else {
             return null;
         }
 
+        // Match user metadata type
+        Set<Usermetadata> result = new HashSet<>();
+        for (Usermetadata u : usermetadataList1
+        ) {
+            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
+                result.add(u);
+            }
+        }
+        return result;
 
+    }
 //        for (Integer logId : logIds) {
 //            Set<UsermetadataLog> usermetadataLogSet =
 //                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
@@ -261,7 +264,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 //                .collect(Collectors.toSet());
 
 
-    }
+
 
 //    public <T> Set<T> intersection(List<T>... list) {
 //        Set<T> result = Sets.newHashSet(list[0]);
