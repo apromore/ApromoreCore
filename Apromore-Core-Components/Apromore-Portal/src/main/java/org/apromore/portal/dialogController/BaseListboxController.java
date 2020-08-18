@@ -350,12 +350,16 @@ public abstract class BaseListboxController extends BaseController {
     public void renameFolder() throws DialogException {
         getMainController().eraseMessage();
         try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            // List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 1) {
                 int selectedFolderId = folderIds.get(0);
                 String selectedFolderName = "";
-                List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
+                List<FolderType> availableFolders = getMainController().getPortalSession().getCurrentFolder() == null ||
+                        getMainController().getPortalSession().getCurrentFolder().getId() == 0 ?
+                        getMainController().getPortalSession().getTree() :
+                        getMainController().getPortalSession().getCurrentFolder().getFolders();
                 for (FolderType folder : availableFolders) {
                     if (folder.getId() == selectedFolderId) {
                         selectedFolderName = folder.getFolderName();
@@ -385,7 +389,8 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void rename() throws InterruptedException {
         try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            // List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 0) {
                 renameLogOrProcess();
@@ -430,7 +435,8 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     public void paste() throws Exception {
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
         try {
             copyAndPasteController.paste(targetFolderId);
@@ -667,7 +673,8 @@ public abstract class BaseListboxController extends BaseController {
         private SummariesType getSummaries(int pageIndex) {
             if (summaries == null || currentPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
-                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
                 summaries = getService().getProcessSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentPageIndex = pageIndex;
             }
@@ -677,7 +684,8 @@ public abstract class BaseListboxController extends BaseController {
         private SummariesType getLogSummaries(int pageIndex) {
             if (logSummaries == null || currentLogPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
-                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
                 logSummaries = getService().getLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentLogPageIndex = pageIndex;
             }

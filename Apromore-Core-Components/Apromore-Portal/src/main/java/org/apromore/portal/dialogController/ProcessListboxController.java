@@ -88,7 +88,8 @@ public class ProcessListboxController extends BaseListboxController {
                 }
 
                 // Set the selected folders
-                UserSessionManager.setSelectedFolderIds(folderIdList);
+                // UserSessionManager.setSelectedFolderIds(folderIdList);
+                getMainController().getPortalSession().setSelectedFolderIds(folderIdList);
             }
         });
     }
@@ -218,7 +219,8 @@ public class ProcessListboxController extends BaseListboxController {
     public void displayNewProcess(ProcessSummaryType process) {
        // getListModel().add(process);  // This will trigger a UiException from ZK do to the additional complexity of paged result fetching
 
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
         SummaryListModel model = displaySummaries(subFolders, false);
     }
