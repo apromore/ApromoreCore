@@ -197,6 +197,9 @@ public class PDController extends BaseController {
         if (portalSession == null) return false;
         PortalContext portalContext = (PortalContext) portalSession.get("context");
         LogSummaryType logSummary = (LogSummaryType) portalSession.get("selection");
+
+        Sessions.getCurrent().setAttribute("sourceLogId", logSummary.getId());
+
         if (portalContext == null || logSummary == null) return false;
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
