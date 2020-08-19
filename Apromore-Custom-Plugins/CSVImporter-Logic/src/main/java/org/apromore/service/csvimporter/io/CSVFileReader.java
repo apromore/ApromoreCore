@@ -33,14 +33,14 @@ import java.io.Reader;
 
 public class CSVFileReader {
 
-    public CSVReader newCSVReader(InputStream in, String charset) {
+    public CSVReader newCSVReader(InputStream in, String charset, char separator) {
         try {
             // Guess at ethe separator character
             Reader reader = new InputStreamReader(in, charset);
 
             return (new CSVReaderBuilder(reader))
                     .withSkipLines(0)
-                    .withCSVParser((new RFC4180ParserBuilder()).withSeparator(',').build())
+                    .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
                     .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
                     .build();
 

@@ -101,7 +101,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory("csv");
     SampleLogGenerator sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
-    ParquetExporter parquetExporter = convertToParquetFactory.createParquetExporter();
 
     @Override
     public void doFinally() throws Exception {

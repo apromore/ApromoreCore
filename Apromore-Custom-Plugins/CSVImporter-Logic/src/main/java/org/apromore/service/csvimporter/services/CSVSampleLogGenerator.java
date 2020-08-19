@@ -22,6 +22,7 @@
 package org.apromore.service.csvimporter.services;
 
 import com.opencsv.CSVReader;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.LogSample;
@@ -31,6 +32,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
 class CSVSampleLogGenerator implements SampleLogGenerator {
 
@@ -60,44 +64,30 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-        System.out.println(" " + charset + " " + sampleSize);
+        Reader reader = new InputStreamReader(in, charset);
+        BufferedReader brReader = new BufferedReader(reader);
+        String firstLine = brReader.readLine();
+        char separator = getMaxOccurringChar(firstLine);
 
-        CSVReader csvReader = new CSVFileReader().newCSVReader(in, charset);
+        if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
+            throw new Exception("Try different encoding");
+
+        List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+
+        InputStream in2 = new ReaderInputStream(brReader);
+        CSVReader csvReader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
         if (csvReader == null)
             return null;
 
-        List<String> header = Arrays.asList(csvReader.readNext());
-
         List<List<String>> lines = new ArrayList<>();
         String[] myLine;
+
+
         while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
             if (myLine.length != header.size()) continue;
-
             lines.add(Arrays.asList(myLine));
         }
         return new LogSampleImpl(header, lines);
-
-//        return null;
-    }
-
-    private char getMaxOccurringChar(String str) {
-        char maxchar = ' ';
-        int maxcnt = 0;
-        int[] charcnt = new int[Character.MAX_VALUE + 1];
-        for (int i = str.length() - 1; i >= 0; i--) {
-            if (!Character.isLetter(str.charAt(i))) {
-                for (char supportedSeparator : Constants.supportedSeparators) {
-                    if (str.charAt(i) == supportedSeparator) {
-                        char ch = str.charAt(i);
-                        if (++charcnt[ch] >= maxcnt) {
-                            maxcnt = charcnt[ch];
-                            maxchar = ch;
-                        }
-                    }
-                }
-            }
-        }
-        return maxchar;
     }
 }

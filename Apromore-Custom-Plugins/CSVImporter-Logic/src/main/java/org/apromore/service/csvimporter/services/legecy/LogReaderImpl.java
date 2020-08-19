@@ -22,6 +22,7 @@
 package org.apromore.service.csvimporter.services.legecy;
 
 import com.opencsv.CSVReader;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.CSVFileReader;
@@ -40,9 +41,14 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.*;
+
+import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
 public class LogReaderImpl implements LogReader, Constants {
 
@@ -54,10 +60,19 @@ public class LogReaderImpl implements LogReader, Constants {
     private List<LogErrorReport> logErrorReport;
     private boolean validRow;
 
+
     @Override
     public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
 
-        CSVReader reader = new CSVFileReader().newCSVReader(in, charset);
+        Reader readerin = new InputStreamReader(in, charset);
+        BufferedReader brReader = new BufferedReader(readerin);
+        String firstLine = brReader.readLine();
+        char separator = getMaxOccurringChar(firstLine);
+        String[] header = firstLine.split("\\s*" + separator + "\\s*");
+
+        InputStream in2 = new ReaderInputStream(brReader);
+        CSVReader reader = new CSVFileReader().newCSVReader(in2, charset, separator);
+
         if (reader == null)
             return null;
 
@@ -67,7 +82,6 @@ public class LogReaderImpl implements LogReader, Constants {
         int lineIndex = 1; // set to 1 since first line is the header
         boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
-        String[] header = reader.readNext();
         String[] line;
 
         String caseId;
