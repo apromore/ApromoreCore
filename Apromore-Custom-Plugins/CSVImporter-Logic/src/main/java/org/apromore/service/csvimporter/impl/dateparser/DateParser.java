@@ -272,6 +272,11 @@ final class DateParser {
         if (a > 31 || b > 31 || a == 0 || b == 0 || (a > 12 && b > 12)) {
             throw error(from, "Invalid DayOrMonth at " + from);
         }
+        if (a > 12) {
+            this.preferMonthFirst = false;
+            dt.day = a;
+            dt.month = b;
+        }
         if (b > 12 || preferMonthFirst) {
             dt.month = a;
             dt.day = b;
