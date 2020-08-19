@@ -254,12 +254,11 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public void deleteFolder(int folderId, String username) {
+    public void deleteFolder(int folderId, String username) throws Exception {
         try {
             workspaceSrv.deleteFolder(folderId, secSrv.getUserByName(username));
-
         } catch (NotAuthorizedException e) {
-            throw new RuntimeException(e);
+            throw e; // rethrow e
         }
     }
 

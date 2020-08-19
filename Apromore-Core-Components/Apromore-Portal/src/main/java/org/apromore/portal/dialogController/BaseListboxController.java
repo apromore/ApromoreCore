@@ -600,8 +600,17 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Removes all the selected folders and the containing folders and processes. */
     private void deleteFolders(ArrayList<FolderType> folders, MainController mainController) {
+        int failures = 0;
+
         for (FolderType folderId : folders) {
-            mainController.getService().deleteFolder(folderId.getId(), UserSessionManager.getCurrentUser().getUsername());
+            try {
+                mainController.getService().deleteFolder(folderId.getId(), UserSessionManager.getCurrentUser().getUsername());
+            } catch (Exception e) {
+                failures += 1;
+            }
+        }
+        if (failures > 0) {
+            Messagebox.show("Could not perform all delete operations. You may not be authorized to delete some of the resources.", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
         mainController.reloadSummaries();
     }
