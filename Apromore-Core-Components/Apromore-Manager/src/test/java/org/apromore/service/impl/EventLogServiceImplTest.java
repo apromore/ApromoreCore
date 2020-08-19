@@ -34,11 +34,7 @@ import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
@@ -46,15 +42,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import com.google.common.collect.Sets;
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.DashboardLayoutRepository;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.StatisticRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
@@ -98,6 +92,11 @@ public class EventLogServiceImplTest {
     private StatisticRepository statisticRepository;
     private EventLogServiceImpl eventLogService;
     private DashboardLayoutRepository dashboardLayoutRepository;
+    private UserMetadataService userMetadataService;
+    private UsermetadataRepository userMetadataRepo;
+    private GroupUsermetadataRepository groupUsermetadataRepo;
+    private UsermetadataTypeRepository usermetadataTypeRepo;
+    private UsermetadataLogRepository usermetadataLogRepo;
 
     private static void walkLog(XLog log) {
         walkAttributes(log);
@@ -141,10 +140,17 @@ public class EventLogServiceImplTest {
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
         dashboardLayoutRepository = createMock(DashboardLayoutRepository.class);
+        userMetadataService = createMock(UserMetadataService.class);
+        userMetadataRepo = createMock(UsermetadataRepository.class);
+        groupUsermetadataRepo = createMock(GroupUsermetadataRepository.class);
+        usermetadataTypeRepo = createMock(UsermetadataTypeRepository.class);
+        usermetadataLogRepo = createMock(UsermetadataLogRepository.class);
+
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
-                userSrv, ui, statisticRepository, config, dashboardLayoutRepository);
+                userSrv, ui, statisticRepository, config, dashboardLayoutRepository,
+                userMetadataRepo, groupUsermetadataRepo, usermetadataTypeRepo, usermetadataLogRepo);
     }
 
     @Test
@@ -437,4 +443,36 @@ public class EventLogServiceImplTest {
         verify(dashboardLayoutRepository);
         assertThat(result, equalTo(reallyLongString));
     }
+
+    @Test
+    public void intersectionTest() {
+        Set set1 = new HashSet(Arrays.asList(1, 3, 5));
+        Set set2 = new HashSet(Arrays.asList(1, 6, 7, 9, 3));
+        Set set3 = new HashSet(Arrays.asList(1, 3, 10, 11));
+
+        List<Set<Integer>> lists = new ArrayList<>();
+        lists.add(set1);
+        lists.add(set2);
+        lists.add(set3);
+
+        List<Integer> commons = new ArrayList<Integer>();
+        commons.addAll(lists.get(1));
+        for (ListIterator<Set<Integer>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
+            commons.retainAll(iterator.next());
+        }
+
+        System.out.println(commons);
+
+        System.out.println(intersection(lists));
+    }
+
+
+    public <T> Set<T> intersection(List<T>... list) {
+        Set<T> result = Sets.newHashSet(list[0]);
+        for (List<T> numbers : list) {
+            result = Sets.intersection(result, Sets.newHashSet(numbers));
+        }
+        return result;
+    }
+
 }

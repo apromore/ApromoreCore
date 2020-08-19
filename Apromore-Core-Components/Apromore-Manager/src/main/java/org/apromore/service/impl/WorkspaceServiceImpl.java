@@ -24,45 +24,11 @@
 
 package org.apromore.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.WorkspaceRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
+import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.WorkspaceService;
@@ -74,6 +40,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
@@ -92,7 +64,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
     private EventLogFileService logFileService;
-    
+
     @Resource
     private ConfigBean config;
 
@@ -682,4 +654,27 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupLogRepo.delete(groupLog);
         }
     }
+
+    // TODO: whether should I put this logic here or in a separate service?
+//    private void createGroupUsermetadata(Group group, UserMetadata userMetadata, boolean hasRead, boolean hasWrite,
+//                                         boolean hasOwnership) {
+//        GroupUserMetadata groupUserMetadata = groupUserMetadataRepo.findByGroupAndUserMetadata(group, userMetadata);
+//        if (groupUserMetadata == null) {
+//            groupLog= new GroupLog(group, log, hasRead, hasWrite, hasOwnership);
+//            log.getGroupLogs().add(groupLog);
+//            //group.getGroupLogs().add(groupLog);
+//        } else {
+//            groupLog.setHasRead(hasRead);
+//            groupLog.setHasWrite(hasWrite);
+//            groupLog.setHasOwnership(hasOwnership);
+//        }
+//        groupLogRepo.save(groupLog);
+//    }
+//
+//    private void removeGroupUsermetadata(Group group, UserMetadata usermetadata) {
+//        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+//        if (groupLog != null) {
+//            groupLogRepo.delete(groupLog);
+//        }
+//    }
 }

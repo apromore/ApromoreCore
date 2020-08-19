@@ -23,12 +23,14 @@
  */
 package org.apromore.service.impl;
 
+import com.google.common.collect.Sets;
 import org.apromore.apmlog.APMLog;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.SummariesType;
@@ -36,6 +38,7 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
@@ -57,6 +60,8 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 //import javax.annotation.Resource;
@@ -84,6 +89,10 @@ public class EventLogServiceImpl implements EventLogService {
     private StatisticRepository statisticRepository;
     private File logsDir;
     private DashboardLayoutRepository dashboardLayoutRepository;
+    private UsermetadataRepository userMetadataRepo;
+    private GroupUsermetadataRepository groupUsermetadataRepo;
+    private UsermetadataTypeRepository usermetadataTypeRepo;
+    private UsermetadataLogRepository usermetadataLogRepo;
 
 //    @javax.annotation.Resource
 //    private Set<EventLogPlugin> eventLogPlugins;
@@ -98,7 +107,12 @@ public class EventLogServiceImpl implements EventLogService {
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
                                final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
                                final UserService userSrv, final UserInterfaceHelper ui,
-                               final StatisticRepository statisticRepository, final ConfigBean configBean, final DashboardLayoutRepository dashboardLayoutRepository) {
+                               final StatisticRepository statisticRepository, final ConfigBean configBean,
+                               final DashboardLayoutRepository dashboardLayoutRepository,
+                               final UsermetadataRepository userMetadataRepo,
+                               final GroupUsermetadataRepository groupUserMetadataRepo,
+                               final UsermetadataTypeRepository usermetadataTypeRepo,
+                               final UsermetadataLogRepository usermetadataLogRepo) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.groupLogRepo = groupLogRepository;
@@ -108,6 +122,10 @@ public class EventLogServiceImpl implements EventLogService {
         this.statisticRepository = statisticRepository;
         this.logsDir = new File(configBean.getLogsDir());
         this.dashboardLayoutRepository = dashboardLayoutRepository;
+        this.userMetadataRepo = userMetadataRepo;
+        this.groupUsermetadataRepo = groupUserMetadataRepo;
+        this.usermetadataTypeRepo = usermetadataTypeRepo;
+        this.usermetadataLogRepo = usermetadataLogRepo;
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -223,6 +241,22 @@ public class EventLogServiceImpl implements EventLogService {
 
         // Perform the update
         logRepo.saveAndFlush(log);
+
+        // TODO: Remove test code
+
+//        List<Integer> logIdlist = new ArrayList<>();
+//        logIdlist.add(138);
+//        logIdlist.add(139);
+//        userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, logIdlist);
+//        userMetadataService.saveUserMetadataLinkedToOneLog("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, log.getId());
+//        userMetadataService.updateUserMetadata(16, username, "new content");
+//        userMetadataService.deleteUserMetadata(17, username);
+//        for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166, UserMetadataTypeEnum.DASHBOARD)) {
+//            LOGGER.info( "RESULT :" + usermetadata.getId() + usermetadata.getContent());
+//        }
+//        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));
+//        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 10));
+
 
         return log;
     }
@@ -624,6 +658,205 @@ public class EventLogServiceImpl implements EventLogService {
         dashboardLayoutRepository.saveLayoutByLogId(userId, logId, layout);
     }
 
+    // TODO: Remove
 
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private String now = dateFormat.format(new Date());
+
+
+    @Override
+    @Transactional
+    public void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+                                               String username,
+                                               Integer logId) throws UserNotFoundException {
+
+        List logIds = new LinkedList<Integer>();
+        logIds.add(logId);
+
+        saveUserMetadata(userMetadataContent, userMetadataTypeEnum, username, logIds);
+    }
+
+    @Override
+    @Transactional
+    public void saveUserMetadata(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
+                                 List<Integer> logIds) throws UserNotFoundException {
+
+        //TODO:
+        // 1. creator singleton group get Owner permission
+        // 2. Log's GroupLogs get read permission
+        // 3. Use transaction
+        // 4. Pass in User directly
+
+        User user = userSrv.findUserByLogin(username);
+
+        Usermetadata userMetadata = new Usermetadata();
+
+        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
+        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+
+        // Assign OWNER permission to the user's personal group
+        groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
+
+        for (Integer logId : logIds) {
+            // Assign READ permission to all groups that have read permission to the linked artifact
+            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
+                if (gl.getHasRead()) {
+                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
+                }
+            }
+
+            // Add linked artifact to the UsermetadataLog linked table
+            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+        }
+
+        // Assemble Usermetadata
+        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+        userMetadata.setUsermetadataLog(usermetadataLogSet);
+        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
+        userMetadata.setIsValid(true);
+        userMetadata.setCreatedBy(user.getRowGuid());
+        userMetadata.setCreatedTime(now);
+        userMetadata.setContent(userMetadataContent);
+
+        // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
+        userMetadataRepo.saveAndFlush(userMetadata);
+        LOGGER.info("Create user metadata ID: {0} TYPE: {1}." + userMetadata.getId() + userMetadataTypeEnum.toString());
+
+    }
+
+    @Override
+    @Transactional
+    public void updateUserMetadata(Integer usermetadataId, String username, String content) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
+        userMetadata.setContent(content);
+        userMetadata.setUpdatedBy(user.getRowGuid());
+        userMetadata.setUpdatedTime(now);
+
+        // Persist Usermetadata
+        userMetadataRepo.saveAndFlush(userMetadata);
+        LOGGER.info("Update user metadata ID: {0}." + userMetadata.getId());
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserMetadata(Integer usermetadataId, String username) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
+        userMetadata.setUpdatedBy(user.getRowGuid());
+        userMetadata.setUpdatedTime(now);
+        userMetadata.setIsValid(false);
+
+        // Delete all UsermetadataLog
+        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+        usermetadataLogSet.clear();
+        userMetadata.setUsermetadataLog(usermetadataLogSet);
+
+        // Delete all GroupUsermetadata
+        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
+        groupUserMetadataSet.clear();
+        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+
+        // Invalidate Usermetadata
+        userMetadataRepo.saveAndFlush(userMetadata);
+        LOGGER.info("Delete user metadata ID: {0}." + userMetadata.getId());
+    }
+
+    @Override
+    public Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        // Get all the user metadata that can be accessed by groups contain specified user
+        Set<GroupUsermetadata> groupUsermetadataSet = new HashSet<>();
+        for (Group group : user.getGroups()) {
+            groupUsermetadataSet.addAll(groupUsermetadataRepo.findByGroup(group));
+        }
+
+        // Lambda is not supported by spring version before 4
+//        List<Usermetadata> usermetadataList1 = groupUsermetadataSet.stream()
+//                .map(GroupUsermetadata::getUsermetadata)
+//                .collect(Collectors.toList());
+
+        Set<Usermetadata> usermetadataList1 = new HashSet<>();
+        for (GroupUsermetadata groupUsermetadata : groupUsermetadataSet) {
+            usermetadataList1.add(groupUsermetadata.getUsermetadata());
+        }
+
+        // Get all the user metadata that linked to specified logs
+        List<Set<Usermetadata>> lists = new ArrayList<>();
+        for (int i = 0; i < logIds.size(); i++) {
+            Set<Usermetadata> usermetadataList2 = new HashSet<>();
+            Set<UsermetadataLog> usermetadataLogSet =
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logIds.get(i))));
+            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                usermetadataList2.add(usermetadataLog.getUsermetadata());
+            }
+            lists.add(usermetadataList2);
+        }
+
+        // Find
+        List<Usermetadata> commons = new ArrayList<Usermetadata>();
+        commons.addAll(lists.get(1));
+        for (ListIterator<Set<Usermetadata>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
+            commons.retainAll(iterator.next());
+        }
+
+//        for (Integer logId : logIds) {
+//            Set<UsermetadataLog> usermetadataLogSet =
+//                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+//
+//            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+//                usermetadataList2.add(usermetadataLog.getUsermetadata());
+//            }
+//        }
+
+        usermetadataList1.retainAll(commons);
+
+        // Lambda is not supported by spring version before 4
+//        List<Usermetadata> usermetadataList2 = usermetadataLogSet.stream()
+//                .map(UsermetadataLog::getUsermetadata)
+//                .collect(Collectors.toList());
+//
+//        Set<Usermetadata> result = usermetadataList1.stream()
+//                .distinct()
+//                .filter(usermetadataList2::contains)
+//                .collect(Collectors.toSet());
+
+        Set<Usermetadata> result = new HashSet<>();
+        for (Usermetadata u : usermetadataList1
+        ) {
+            if (u.getUsermetadataType().getId() == userMetadataTypeEnum.getUserMetadataTypeId()) {
+                result.add(u);
+            }
+        }
+        return result;
+    }
+
+//    public <T> Set<T> intersection(List<T>... list) {
+//        Set<T> result = Sets.newHashSet(list[0]);
+//        for (List<T> numbers : list) {
+//            result = Sets.intersection(result, Sets.newHashSet(numbers));
+//        }
+//        return result;
+//    }
+
+
+    @Override
+    public boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException {
+
+        for (GroupUsermetadata gl : groupUsermetadataRepo.findByLogAndUser(UsermetadataId,
+                userSrv.findUserByLogin(username).getRowGuid())) {
+            if (gl.getHasWrite() || gl.getHasOwnership()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

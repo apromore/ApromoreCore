@@ -30,12 +30,14 @@ import org.apromore.exception.*;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.util.StatType;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.model.XLog;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -151,4 +153,65 @@ public interface EventLogService {
     String getLayoutByLogId(Integer logId, Integer userId);
 
     void saveLayoutByLogId(Integer logId, Integer userId, String layout);
+
+    /**
+     *
+     * @param metadata Content of user metadata
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @param username username
+     * @param logIds List of logId
+     * @throws UserNotFoundException
+     */
+    void saveUserMetadata(String metadata, UserMetadataTypeEnum userMetadataTypeEnum, String username, List<Integer> logIds) throws UserNotFoundException;
+
+
+    /**
+     * Save user
+     *
+     * @param userMetadataContent  Content of user metadata
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @param username username
+     * @param logId logId
+     * @throws UserNotFoundException
+     */
+    void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+                                        String username,
+                                        Integer logId) throws UserNotFoundException;
+
+    /**
+     *
+     * @param userMetadataId  Id of user metadata
+     * @param username username
+     * @param content Content of user metadata
+     * @throws UserNotFoundException
+     */
+    void updateUserMetadata(Integer userMetadataId, String username, String content) throws UserNotFoundException;
+
+    /**
+     *
+     * @param userMetadataId Id of user metadata
+     * @param username username
+     * @throws UserNotFoundException
+     */
+    void deleteUserMetadata(Integer userMetadataId, String username) throws UserNotFoundException;
+
+    /**
+     *
+     * @param username username
+     * @param logIds List of logId
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return
+     * @throws UserNotFoundException
+     */
+    Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
+                                      UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
+    /**
+     *
+     * @param username
+     * @param UsermetadataId Id of user metadata
+     * @return
+     * @throws UserNotFoundException
+     */
+    boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 }
