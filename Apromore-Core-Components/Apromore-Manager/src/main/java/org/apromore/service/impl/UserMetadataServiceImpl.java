@@ -186,26 +186,26 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     public Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
                                              UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
-
         User user = userSrv.findUserByLogin(username);
         assert user != null;
-
         // Get all the user metadata that can be accessed by groups contain specified user
         Set<GroupUsermetadata> groupUsermetadataSet = new HashSet<>();
         for (Group group : user.getGroups()) {
             groupUsermetadataSet.addAll(groupUsermetadataRepo.findByGroup(group));
         }
-
-        // Lambda is not supported by spring version before 4
-//        List<Usermetadata> usermetadataList1 = groupUsermetadataSet.stream()
-//                .map(GroupUsermetadata::getUsermetadata)
-//                .collect(Collectors.toList());
-
         Set<Usermetadata> usermetadataList1 = new HashSet<>();
         for (GroupUsermetadata groupUsermetadata : groupUsermetadataSet) {
             usermetadataList1.add(groupUsermetadata.getUsermetadata());
         }
-
+        if (logIds == null) {
+            Set<Usermetadata> output = new HashSet<>();
+            for (Usermetadata um : userMetadataRepo.findAll()) {
+                if (um.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
+                    output.add(um);
+                }
+            }
+            return output.size() > 0 ? output : null;
+        }
         // Get all the user metadata that linked to specified logs
         List<Set<Usermetadata>> lists = new ArrayList<>();
         for (Integer logId : logIds) {
@@ -217,62 +217,33 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             }
             lists.add(usermetadataList2);
         }
-
         // Find
-        if (lists.size() > 1) {
-            List<Usermetadata> commons = new ArrayList<>(lists.get(1));
-            for (ListIterator<Set<Usermetadata>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
-                commons.retainAll(iterator.next());
+        if (lists.size() != 0) {
+            Set<Usermetadata> result = new HashSet<>();
+            for (int i = 0; i < lists.size(); i++) {
+                Set<Usermetadata> umSet = lists.get(i);
+                for (Usermetadata u : umSet) {
+                    if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
+                        int count = 0;
+                        Set<UsermetadataLog> umlSet = u.getUsermetadataLog();
+                        if (umlSet.size() == logIds.size()) {
+                            for (UsermetadataLog uml : umlSet) {
+                                if (logIds.contains(uml.getLog().getId())) {
+                                    count += 1;
+                                }
+                            }
+                            if (count == logIds.size()) {
+                                result.add(u);
+                            }
+                        }
+                    }
+                }
             }
-            usermetadataList1.retainAll(commons);
-
-        } else if (lists.size() == 1) {
-            usermetadataList1.retainAll(lists.get(0));
+            return result.size() > 0 ? result : null;
         } else {
             return null;
         }
-
-        // Match user metadata type
-        Set<Usermetadata> result = new HashSet<>();
-        for (Usermetadata u : usermetadataList1
-        ) {
-            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
-                result.add(u);
-            }
-        }
-        return result;
-
     }
-//        for (Integer logId : logIds) {
-//            Set<UsermetadataLog> usermetadataLogSet =
-//                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
-//
-//            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
-//                usermetadataList2.add(usermetadataLog.getUsermetadata());
-//            }
-//        }
-
-
-        // Lambda is not supported by spring version before 4
-//        List<Usermetadata> usermetadataList2 = usermetadataLogSet.stream()
-//                .map(UsermetadataLog::getUsermetadata)
-//                .collect(Collectors.toList());
-//
-//        Set<Usermetadata> result = usermetadataList1.stream()
-//                .distinct()
-//                .filter(usermetadataList2::contains)
-//                .collect(Collectors.toSet());
-
-
-
-
-//    public <T> Set<T> intersection(List<T>... list) {
-//        Set<T> result = Sets.newHashSet(list[0]);
-//        for (List<T> numbers : list) {
-//            result = Sets.intersection(result, Sets.newHashSet(numbers));
-//        }
-//        return result;
-//    }
 
 
     @Override
@@ -285,5 +256,44 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             }
         }
         return false;
+    }
+
+    @Override
+    public void saveDashTemplate(String content, String username) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        Usermetadata userMetadata = new Usermetadata();
+
+        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
+        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+
+        // Assign OWNER permission to the user's personal group
+        groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
+
+//        for (Integer logId : logIds) {
+//            // Assign READ permission to all groups that have read permission to the linked artifact
+//            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
+//                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner
+//                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
+//                }
+//            }
+//
+//            // Add linked artifact to the UsermetadataLog linked table
+//            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+//        }
+//
+//        // Assemble Usermetadata
+//        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+//        userMetadata.setUsermetadataLog(usermetadataLogSet);
+//        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId()));
+//        userMetadata.setIsValid(true);
+//        userMetadata.setCreatedBy(user.getRowGuid());
+//        userMetadata.setCreatedTime(now);
+//        userMetadata.setContent(userMetadataContent);
+//
+//        // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
+//        userMetadataRepo.saveAndFlush(userMetadata);
+//        LOGGER.info("Create user metadata ID: {0} TYPE: {1}." + userMetadata.getId() + userMetadataTypeEnum.toString());
     }
 }

@@ -35,7 +35,8 @@ public enum UserMetadataTypeEnum {
     FILTER(1),
     DASHBOARD(2),
     CSV_IMPORTER(3),
-    LOG_ANIMATION(4);
+    LOG_ANIMATION(4),
+    DASH_TEMPLATE(5);
 
     private final Integer userMetadataTypeId;
 

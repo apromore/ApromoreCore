@@ -91,5 +91,7 @@ public interface UserMetadataService {
      */
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
+    void saveDashTemplate(String content, String username ) throws UserNotFoundException;
+
 
 }
