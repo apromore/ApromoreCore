@@ -28,7 +28,7 @@ package org.apromore.portal.common;
 public final class Constants {
 
     // max number of searches kept for users
-    public static final Integer maxSearches = 10;
+    public static final int maxSearches = 10;
 
     public static final String EVENT_QUEUE_REFRESH_SCREEN = "UI_UPDATES";
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
