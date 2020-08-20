@@ -109,12 +109,16 @@ public class PluginPortalContext implements PortalContext {
     /**
      * Bruce 17.05.2019: Do not use UserSessionManager as it does not work outside the portal ZK environment
      * Apromore has webapp bundles with its own ZK environment
+     *
+     * Ivo: Get current folder from the portal session
      */
     @Override
     public FolderType getCurrentFolder() {
-        //return UserSessionManager.getCurrentFolder();
-    	Desktop desktop = mainController.getDesktop();
-    	return (FolderType)desktop.getSession().getAttribute(UserSessionManager.CURRENT_FOLDER);
+        // return UserSessionManager.getCurrentFolder();
+        // Bruce:
+    	// Desktop desktop = mainController.getDesktop();
+    	// return (FolderType)desktop.getSession().getAttribute(UserSessionManager.CURRENT_FOLDER);
+    	return mainController.getPortalSession().getCurrentFolder();
     }
 
     /**

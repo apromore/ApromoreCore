@@ -61,7 +61,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "icon.svg";
+        return "/about-icon.svg";
     }
 
     @Override

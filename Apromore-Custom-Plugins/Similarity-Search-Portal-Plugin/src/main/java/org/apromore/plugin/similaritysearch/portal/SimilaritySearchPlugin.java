@@ -25,6 +25,7 @@
 package org.apromore.plugin.similaritysearch.portal;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
@@ -120,7 +121,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             e.printStackTrace();
         }
 
-        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW);
+        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW, ((PluginPortalContext)context).getMainController());
 
         Row algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
         Row buttonsR = (Row) this.similaritySearchW.getFellow("similaritySearchButtons");

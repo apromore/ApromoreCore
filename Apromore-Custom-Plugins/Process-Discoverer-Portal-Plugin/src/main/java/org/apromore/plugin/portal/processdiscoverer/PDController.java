@@ -160,6 +160,8 @@ public class PDController extends BaseController {
     private TimeStatsController timeStatsController;
     private ProcessVisualizer processVisualizer;
 
+    private LogFilterController logFilterController;
+
     //////////////////// DATA ///////////////////////////////////
 
     private String pluginSessionId; // the session ID of this plugin
@@ -195,6 +197,9 @@ public class PDController extends BaseController {
         if (portalSession == null) return false;
         PortalContext portalContext = (PortalContext) portalSession.get("context");
         LogSummaryType logSummary = (LogSummaryType) portalSession.get("selection");
+
+        Sessions.getCurrent().setAttribute("sourceLogId", logSummary.getId());
+
         if (portalContext == null || logSummary == null) return false;
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
@@ -381,6 +386,13 @@ public class PDController extends BaseController {
         }
     }
 
+    private LogFilterController getFilterController() throws Exception {
+        if (logFilterController == null) {
+            logFilterController = pdFactory.createLogFilterController(this);
+        }
+        return logFilterController;
+    }
+
     private void initializeEventListeners() {
         PDController me = this;
         try {
@@ -432,15 +444,22 @@ public class PDController extends BaseController {
                         Messagebox.OK | Messagebox.CANCEL,
                         Messagebox.QUESTION,
                         new org.zkoss.zk.ui.event.EventListener() {
-                            public void onEvent(Event evt) throws Exception {
+                            public void onEvent(Event evt) {
                                 if (evt.getName().equals("onOK")) {
-                                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                                    try {
+                                        me.clearFilter();
+                                    } catch (Exception e) {
+                                        Messagebox.show("Unable to clear the filter", "Filter error", Messagebox.OK, Messagebox.ERROR);
+                                    }
+                                    /*
+                                    LogFilterController logFilterController = me.getFilterController();
                                     logFilterController.subscribeFilterResult();
 
                                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
                                     if (eqFilteredView != null) {
                                         eqFilteredView.publish(new Event("ctrl", null, "removeall"));
                                     }
+                                    */
                                 }
                             }
                         }
@@ -453,14 +472,14 @@ public class PDController extends BaseController {
                 public void onEvent(Event event) throws Exception {
                     Clients.showBusy("Launch Filter Dialog ...");
                     String payload = event.getData().toString();
-                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                    LogFilterController logFilterController = me.getFilterController();
                     logFilterController.onEvent(event);
                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
                     eqFilteredView.publish(new Event("ctrl", null, payload));
                     Clients.clearBusy();
                 }
             });
-            filter.addEventListener("onClick", pdFactory.createLogFilterController(this));
+            filter.addEventListener("onClick", this.getFilterController());
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
     
             exportFilteredLog.addEventListener("onExport", pdFactory.createLogExportController(this));
@@ -501,6 +520,10 @@ public class PDController extends BaseController {
             Messagebox.show("Errors occured while initializing event handlers.");
         }
 
+    }
+
+    private void clearFilter() throws Exception {
+        this.getFilterController().clearFilter();
     }
 
     private void setLayout(String layout) throws Exception {

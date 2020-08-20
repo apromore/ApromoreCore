@@ -191,6 +191,7 @@ public abstract class UserSessionManager {
         Sessions.getCurrent().removeAttribute(id);
     }
 
+    /*
     public static void setCurrentFolder(FolderType folder) {
         setAttribute(CURRENT_FOLDER, folder);
         if (folder != null && getMainController() != null) {
@@ -260,6 +261,7 @@ public abstract class UserSessionManager {
 
         return null;
     }
+    */
 
     public static void setMainController(MainController mainController) {
         setAttribute(MAIN_CONTROLLER, mainController);

@@ -55,4 +55,10 @@
         <beans:bean class="org.apromore.plugin.portal.account.SignOutPlugin"/>
     </osgi:service>
 
+    <osgi:service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
+            <beans:constructor-arg type="Object" ref="portalPlugin"/>
+        </beans:bean>
+    </osgi:service>
+
 </beans:beans>

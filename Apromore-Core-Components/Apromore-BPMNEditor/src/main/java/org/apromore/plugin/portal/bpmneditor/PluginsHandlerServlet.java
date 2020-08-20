@@ -67,8 +67,6 @@ public class PluginsHandlerServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse res) throws IOException, ServletException {
-  		File pluginConf = new File(this.servletContext.getRealPath("") + "/WEB-INF/xml/editor/plugins.xml");
-
 		@SuppressWarnings("unchecked")
 		List<EditorPlugin> editorPlugins = (List<EditorPlugin>) appContext.getBean("bpmnEditorPlugins");
 		StringBuilder additionalPlugins = new StringBuilder();
@@ -76,12 +74,13 @@ public class PluginsHandlerServlet extends HttpServlet {
 			additionalPlugins.append("<plugin source=\""+plugin.getJavaScriptURI()+"\" name=\""+plugin.getJavaScriptPackage()+"\"/>");
 		}
 
-		if(pluginConf.exists()) {
+		InputStream pluginConf = PluginsHandlerServlet.class.getClassLoader().getResourceAsStream("/bpmneditor/WEB-INF/xml/editor/plugins.xml");
+		if(pluginConf != null) {
   			res.setStatus(200);
   	  		res.setContentType("text/xml");
 
 			try {
-				String pluginDef = IOUtils.toString(new FileReader(pluginConf));
+				String pluginDef = IOUtils.toString(pluginConf);
 				// Insert the Editor plug-ins replacing the placeholder
 				//TODO switch to a real XML reader/writer based implementation
 				pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
