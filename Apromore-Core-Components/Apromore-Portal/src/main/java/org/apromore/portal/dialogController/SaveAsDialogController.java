@@ -105,7 +105,18 @@ public class SaveAsDialogController extends BaseController {
         this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
         Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
         Button cancelB = (Button) saveB.getNextSibling();
-
+        if (isUpdate) {
+            saveAsW.setTitle("Save BPMN model");
+        } else {
+            saveAsW.setTitle("Save BPMN model as");
+        }
+        saveAsW.addEventListener("onOK",
+                new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        saveModel();
+                    }
+                });
         saveB.addEventListener("onClick",
                 new EventListener<Event>() {
                     @Override

@@ -29,14 +29,14 @@
                 <column width="100%"></column>
             </columns>
             <rows>
-				<row>
+                <row>
                     <label id="labelError" value="" width="100%" style="color:red;"/>
-                </row>			
-				<row>
+                </row>
+                <row>
                     <label id="labelMessage" value="" width="100%"/>
                 </row>
                 <row>
-                    <textbox id="txtValue" value="" width="100%"/>
+                    <textbox id="txtValue" value="" width="100%" submitByEnter="true"/>
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
