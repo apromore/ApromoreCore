@@ -61,6 +61,25 @@ public class SimpleSearchControllerUnitTest {
             "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "ten");
     }
 
+    /** Test whether the {@link SimpleSearchController#addSearchHistory} method corrects invalid states. */
+    @Test
+    public void testAddSearchHistory_error_correction() throws Exception {
+        SearchHistoriesType sh = new SearchHistoriesType();
+        sh.setSearch("one");
+        sh.setNum(1);
+
+        // Create an invalid history with duplicate "one" entries
+        List<SearchHistoriesType> result = new ArrayList<>();
+        result.add(sh);
+        result.add(sh);
+
+        // Perform the method under test
+        result = SimpleSearchController.addSearchHistory(result, "two");
+
+        // Confirm that the invalid duplicate "one" entries have been corrected
+        assertEquals(new String[] {"one", "two"}, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
+    }
+
     // Internal methods
 
     /**
