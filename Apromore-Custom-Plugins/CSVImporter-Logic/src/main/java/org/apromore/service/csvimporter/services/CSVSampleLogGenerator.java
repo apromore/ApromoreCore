@@ -29,10 +29,10 @@ import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.model.LogSampleImpl;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
@@ -42,7 +42,7 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
     public void validateLog(InputStream in, String charset) throws Exception {
 
         try {
-            Reader reader = new InputStreamReader(in, charset);
+            Reader reader = new InputStreamReader(in, Charset.forName(charset));
 
             BufferedReader brReader = new BufferedReader(reader);
             String firstLine = brReader.readLine();
@@ -64,7 +64,7 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-        Reader reader = new InputStreamReader(in, charset);
+        Reader reader = new InputStreamReader(in, Charset.forName(charset));
         BufferedReader brReader = new BufferedReader(reader);
         String firstLine = brReader.readLine();
         char separator = getMaxOccurringChar(firstLine);
@@ -74,7 +74,7 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
 
         List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
-        InputStream in2 = new ReaderInputStream(brReader);
+        InputStream in2 = new ReaderInputStream(brReader, charset);
         CSVReader csvReader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
         if (csvReader == null)

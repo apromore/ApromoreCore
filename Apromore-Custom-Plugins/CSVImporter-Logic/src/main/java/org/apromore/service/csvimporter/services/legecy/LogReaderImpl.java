@@ -45,6 +45,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -64,22 +65,23 @@ public class LogReaderImpl implements LogReader, Constants {
     @Override
     public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
 
-        Reader readerin = new InputStreamReader(in, charset);
+        sample.validateSample();
+
+        Reader readerin = new InputStreamReader(in, Charset.forName(charset));
         BufferedReader brReader = new BufferedReader(readerin);
         String firstLine = brReader.readLine();
         char separator = getMaxOccurringChar(firstLine);
         String[] header = firstLine.split("\\s*" + separator + "\\s*");
 
-        InputStream in2 = new ReaderInputStream(brReader);
+        InputStream in2 = new ReaderInputStream(brReader, charset);
         CSVReader reader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
         if (reader == null)
             return null;
 
-        sample.validateSample();
-
         logErrorReport = new ArrayList<>();
         int lineIndex = 1; // set to 1 since first line is the header
+        int numOfValidEvents = 0;
         boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
         String[] line;
@@ -154,7 +156,6 @@ public class LogReaderImpl implements LogReader, Constants {
             if (endTimestamp == null) {
                 invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
             }
-
             // Start Timestamp
             if (sample.getStartTimestampPos() != -1) {
                 startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
@@ -192,7 +193,7 @@ public class LogReaderImpl implements LogReader, Constants {
                 if (skipInvalidRow) {
                     continue;
                 } else {
-                    return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded);
+                    return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                 }
             }
 
@@ -219,6 +220,7 @@ public class LogReaderImpl implements LogReader, Constants {
                         new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
                         xT);
                 assignMyCaseAttributes(caseAttributes, xT);
+                numOfValidEvents++;
 
             } else {
                 XTrace xT = getXTrace(caseId, xLog);
@@ -226,6 +228,7 @@ public class LogReaderImpl implements LogReader, Constants {
                         new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
                         xT);
                 assignMyCaseAttributes(caseAttributes, xT);
+                numOfValidEvents++;
             }
         }
 
@@ -233,7 +236,7 @@ public class LogReaderImpl implements LogReader, Constants {
             rowLimitExceeded = true;
 
 
-        return new LogModelXLogImpl(sortTraces(xLog), logErrorReport, rowLimitExceeded);
+        return new LogModelXLogImpl(sortTraces(xLog), logErrorReport, rowLimitExceeded, numOfValidEvents);
 //        return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded);
     }
 

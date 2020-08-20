@@ -26,26 +26,21 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180ParserBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.nio.charset.Charset;
 
 public class CSVFileReader {
 
     public CSVReader newCSVReader(InputStream in, String charset, char separator) {
-        try {
-            // Guess at ethe separator character
-            Reader reader = new InputStreamReader(in, charset);
+        System.out.println("charset "+charset);
+        return new CSVReaderBuilder(new InputStreamReader(in, Charset.forName(charset)))
+                .withSkipLines(0)
+                .withCSVParser((new RFC4180ParserBuilder())
+                        .withSeparator(separator)
+                        .build())
+                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                .build();
 
-            return (new CSVReaderBuilder(reader))
-                    .withSkipLines(0)
-                    .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
-                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
-                    .build();
-
-        } catch (IOException e) {
-            return null;
-        }
     }
 }
