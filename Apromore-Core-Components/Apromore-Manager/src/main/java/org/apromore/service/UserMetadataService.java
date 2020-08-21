@@ -31,67 +31,87 @@ import java.util.Set;
 public interface UserMetadataService {
 
     /**
+     * Save as a new User Metadata
      *
-     * @param metadata Content of user metadata
+     * @param metadata             Content of user metadata
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
-     * @param username username
-     * @param logIds List of logId
-     * @throws UserNotFoundException
+     * @param username             username
+     * @param logIds               List of logId
+     * @throws UserNotFoundException Can't find a user with specified username
      */
-    void saveUserMetadata(String metadata, UserMetadataTypeEnum userMetadataTypeEnum, String username, List<Integer> logIds) throws UserNotFoundException;
+    void saveUserMetadata(String metadata, UserMetadataTypeEnum userMetadataTypeEnum, String username,
+                          List<Integer> logIds) throws UserNotFoundException;
 
 
     /**
-     * Save user
+     * Save as a new User Metadata. Use this method when only one log is linked to this metadata.
      *
      * @param userMetadataContent  Content of user metadata
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
-     * @param username username
-     * @param logId logId
-     * @throws UserNotFoundException
+     * @param username             username
+     * @param logId                logId
+     * @throws UserNotFoundException Can't find a user with specified username
      */
     void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                         String username,
                                         Integer logId) throws UserNotFoundException;
 
     /**
+     * Update a user metadata.
      *
-     * @param userMetadataId  Id of user metadata
-     * @param username username
-     * @param content Content of user metadata
+     * @param userMetadataId Id of user metadata
+     * @param username       username
+     * @param content        Content of user metadata
      * @throws UserNotFoundException
      */
     void updateUserMetadata(Integer userMetadataId, String username, String content) throws UserNotFoundException;
 
     /**
+     * Delete a user metadata logically.
      *
      * @param userMetadataId Id of user metadata
-     * @param username username
-     * @throws UserNotFoundException
+     * @param username       username
+     * @throws UserNotFoundException Can't find a user with specified username
      */
     void deleteUserMetadata(Integer userMetadataId, String username) throws UserNotFoundException;
 
     /**
+     * Find a set of user metadata
      *
-     * @param username username
-     * @param logIds List of logId
+     * @param username             username
+     * @param logIds               List of logId
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
-     * @return
-     * @throws UserNotFoundException
+     * @return A set of user metadata
+     * @throws UserNotFoundException Can't find a user with specified username
      */
     Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
                                       UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
 
     /**
+     * Find whether is specified user can write to this user metadata
      *
-     * @param username
+     * @param username       username
      * @param UsermetadataId Id of user metadata
-     * @return
-     * @throws UserNotFoundException
+     * @return boolean
+     * @throws UserNotFoundException Can't find a user with specified username
      */
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
-    void saveDashTemplate(String content, String username ) throws UserNotFoundException;
+    /**
+     * Save a new dashboard template
+     *
+     * @param content Content of user metadata
+     * @param username username
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    void saveDashTemplate(String content, String username) throws UserNotFoundException;
 
-
+    /**
+     * Find a set of dashboard template
+     *
+     * @param username username
+     * @return A set of dashboard template
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    Set<Usermetadata> getDashTemplate(String username) throws UserNotFoundException;
 }

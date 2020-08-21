@@ -825,17 +825,17 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
 
 
-            List<Integer> logIdlist = new ArrayList<>();
-            logIdlist.add(138);
-            logIdlist.add(139);
-
-            userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.CSV_IMPORTER, "admin",
-                    logIdlist);
-            Set<Usermetadata> usermetadatatest = userMetadataService.getUserMetadata("admin", logIdlist,
-                    UserMetadataTypeEnum.CSV_IMPORTER);
-            for(Usermetadata usermetadata : usermetadatatest) {
-                LOGGER.info("RESULT:::::::::" + usermetadata.getId());
-            }
+//            List<Integer> logIdlist = new ArrayList<>();
+//            logIdlist.add(138);
+//            logIdlist.add(139);
+//
+//            userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.CSV_IMPORTER, "admin",
+//                    logIdlist);
+//            Set<Usermetadata> usermetadatatest = userMetadataService.getUserMetadata("admin", logIdlist,
+//                    UserMetadataTypeEnum.CSV_IMPORTER);
+//            for(Usermetadata usermetadata : usermetadatatest) {
+//                LOGGER.info("RESULT:::::::::" + usermetadata.getId());
+//            }
 
 
 
@@ -849,6 +849,19 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 //            }
 //            LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));
 //            LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 10));
+
+//            userMetadataService.saveDashTemplate("dash template", "admin");
+
+//            List logIdList = new LinkedList();
+//            logIdList.add(221);
+//            logIdList.add(222);
+//            logIdList.add(223);
+//            Set<Usermetadata> usermetadataList = new HashSet<>();
+//            usermetadataList = userMetadataService.getUserMetadata("admin", logIdList,
+//                    UserMetadataTypeEnum.CSV_IMPORTER);
+//            for (Usermetadata usermetadata : usermetadataList) {
+//                LOGGER.info("RESULT :" + usermetadata.getId() + usermetadata.getContent());
+//            }
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
