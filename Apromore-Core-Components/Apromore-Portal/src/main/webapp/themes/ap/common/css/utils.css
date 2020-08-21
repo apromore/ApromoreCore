@@ -260,7 +260,8 @@ div.ap-window-footer-actions {
 }
 
 .ap-ico-folder > div:first-child {
-    background-image: url('../../common/img/icons/folder.svg') !important;
+    /* background-image: url('../../common/img/icons/folder.svg') !important; */
+    background-image: url('../../common/img/icons-2/folder-solid.svg') !important;
     width: 26.390625px;
 }
 

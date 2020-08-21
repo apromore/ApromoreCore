@@ -354,10 +354,8 @@
   margin-top: 4px;
 }
 
-
-
 .ap-portal-action-buttons table td {
-  padding: 0 2px 0 2px;
+  padding: 0 1px 0 1px;
 }
 
 .ap-portal-action-buttons .z-button:active {
@@ -585,7 +583,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem.ap-item-folder {
-    background-color: #e0e0e0;
+    /*background-color: #e0e0e0;*/
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td {
