@@ -56,6 +56,10 @@
             </n:a>
         </n:div>
     </n:div>
+
+    <!-- User menu -->
+    <n:link rel="stylesheet" href="/themes/${theme}/portal/css/portal.css" type="text/css"/>
+    <z:menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
     
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
