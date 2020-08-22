@@ -23,13 +23,19 @@
 package org.apromore.plugin.portal.processdiscoverer.plugins;
 
 import java.util.Locale;
-
+import javax.inject.Inject;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
+import org.apromore.service.DomainService;
+import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 
 @Component("frequencyPlugin")
@@ -37,6 +43,12 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     private String label = "Discover model";
     private String groupLabel = "Discover";
+
+    @Inject DomainService domainService;
+    @Inject EventLogService eventLogService;
+    @Inject ProcessService processService;
+    @Inject LogAnimationPluginInterface logAnimationPlugin;
+    @Inject LogFilterPlugin logFilterPlugin;
 
     @Override
     public String getLabel(Locale locale) {
@@ -64,7 +76,13 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
         	boolean prepare = this.prepare(context, MeasureType.FREQUENCY); //prepare session
         	Desktop d = Executions.getCurrent().getDesktop();
         	Session s = Executions.getCurrent().getSession();
-        	
+
+                Sessions.getCurrent().setAttribute("domainService", domainService);
+                Sessions.getCurrent().setAttribute("eventLogService", eventLogService);
+                Sessions.getCurrent().setAttribute("processService", processService);
+                Sessions.getCurrent().setAttribute("logAnimationPlugin", logAnimationPlugin);
+                Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
+
         	if (!prepare) return;
         	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
         } catch (Exception e) {

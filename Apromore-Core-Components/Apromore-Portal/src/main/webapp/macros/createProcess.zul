@@ -37,7 +37,7 @@ and CreateProcessController.java for creating process purpose.
         <rows>
           <row tooltiptext="Model name modification will be applied on all process versions.">
             <label value="Model name" width="100%"/>
-            <textbox width="100%" constraint="/^[a-zA-Z0-9 \\._\\-]{1,}|$/: Invalid filename" />
+            <textbox width="100%" constraint="${labels.e.common.nameConstraint.text}" />
           </row>
           <row>
             <label value="Version number" width="100%" />

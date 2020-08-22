@@ -28,48 +28,41 @@ package org.apromore.portal.dialogController;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.apromore.model.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.plugin.portal.SessionTab;
-import org.apromore.portal.common.TabListitem;
-import org.apromore.portal.common.TabQuery;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
-import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
+import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zul.Menu;
+import org.zkoss.zul.Menubar;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Menuseparator;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.*;
-
-public class MenuController extends Menubar {
+public class MenuController extends SelectorComposer<Menubar> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
-    private final MainController mainC;
-    private Menubar menuB;
-    private Menubar userMenu;
     private Menuitem aboutMenuitem;
-    private PortalContext portalContext;
+    private Menuitem targetMenuitem;
 
-    public MenuController(final MainController mainController) throws ExceptionFormats {
-        this.mainC = mainController;
-        this.portalContext = new PluginPortalContext(mainC);
-        this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
-        this.userMenu = (Menubar) this.mainC.getFellow("userMenu");
+    @Override
+    public void doAfterCompose(Menubar menubar) {
+
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
             
@@ -79,7 +72,7 @@ public class MenuController extends Menubar {
 
             SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
             for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
-                if (plugin.getAvailability(portalContext) == PortalPlugin.Availability.UNAVAILABLE) {
+                if (plugin.getAvailability() == PortalPlugin.Availability.UNAVAILABLE) {
                     continue;
                 }
 
@@ -111,17 +104,21 @@ public class MenuController extends Menubar {
                 }
                 String label = plugin.getLabel(Locale.getDefault());
                 menuitem.setLabel(label);
-                menuitem.setDisabled(plugin.getAvailability(portalContext) == PortalPlugin.Availability.DISABLED);
+                menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        plugin.execute(new PluginPortalContext(mainC));
+                        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+                        plugin.execute(portalContext);
                     }
                 });
 
                 if ("About".equals(menu.getLabel())) {
                     aboutMenuitem = menuitem;
                     continue;
+                }
+                if ("Create folder".equals(menuitem.getLabel())) {
+                    targetMenuitem = menuitem;
                 }
 
                 // Insert the menu item into the appropriate position within the menu
@@ -146,33 +143,69 @@ public class MenuController extends Menubar {
             for (final Menu menu: menuMap.values()) {
                 if (!"Account".equals(menu.getLabel()) &&
                     !"About".equals(menu.getLabel())) {
-                    menuB.appendChild(menu);
+                    menubar.appendChild(menu);
                 }
             }
 
-            Menuseparator separator = new Menuseparator();
-            separator.setHflex("1");
-            separator.setStyle("border-width: 0");
-            menuB.appendChild(separator);
-
             for (final Menu menu: menuMap.values()) {
                 if ("Account".equals(menu.getLabel())) {
+                    // ignore; belongs to the user menu
+
+                } else if ("File".equals(menu.getLabel())) {
                     try {
-                        // menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
-                        // menu.setSclass("ap-user-menu");
-                        // menuB.appendChild(menu);
-                        Menupopup userMenupopup = menu.getMenupopup();
-                        userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
-                        this.userMenu.appendChild(menu);
+                        Menupopup fileMenupopup = menu.getMenupopup();
+
+                        Menuseparator sep = new Menuseparator();
+                        fileMenupopup.insertBefore(sep, targetMenuitem);
+
+                        Menuitem item = new Menuitem();
+                        item.setLabel("Cut");
+                        item.setImage("/themes/ap/common/img/icons/cut.svg");
+                        item.addEventListener("onClick", new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                getBaseListboxController().cut();
+                            }
+                        });
+                        fileMenupopup.insertBefore(item, targetMenuitem);
+
+                        item = new Menuitem();
+                        item.setLabel("Copy");
+                        item.setImage("/themes/ap/common/img/icons/copy.svg");
+                        item.addEventListener("onClick", new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                getBaseListboxController().copy();
+                            }
+                        });
+                        fileMenupopup.insertBefore(item, targetMenuitem);
+
+                        item = new Menuitem();
+                        item.setLabel("Paste");
+                        item.setImage("/themes/ap/common/img/icons/paste.svg");
+                        item.addEventListener("onClick", new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                getBaseListboxController().paste();
+                            }
+                        });
+                        fileMenupopup.insertBefore(item, targetMenuitem);
+
+                        sep = new Menuseparator();
+                        fileMenupopup.insertBefore(sep, targetMenuitem);
+
                     } catch (Exception e) {
-                        LOGGER.warn("Unable to set Account menu to current user name", e);
+                        LOGGER.error("Ignored exception during main menu construction", e);
                     }
                 }
             }
         }
     }
 
-    public Menubar getMenuB() {
-        return menuB;
+    private BaseListboxController getBaseListboxController() {
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        MainController mainController = (MainController) portalContext.getMainController();
+
+        return mainController.getBaseListboxController();
     }
 }

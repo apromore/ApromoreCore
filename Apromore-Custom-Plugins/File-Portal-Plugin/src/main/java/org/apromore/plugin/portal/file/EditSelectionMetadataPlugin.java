@@ -24,15 +24,16 @@ package org.apromore.plugin.portal.file;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
+
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.file.impl.EditListMetadataController;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
@@ -67,10 +68,10 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
             MainController mainC = (MainController) portalContext.getMainController();
 
             mainC.eraseMessage();
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            List<Integer> folderIds = mainC.getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() > 0) {
-                mainC.geBaseListboxController().renameFolder();
+                mainC.getBaseListboxController().renameFolder();
             } else {
                 Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
 

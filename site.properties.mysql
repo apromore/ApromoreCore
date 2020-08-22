@@ -4,7 +4,7 @@
 
 # Build tagging
 version.edition = @version.edition@
-version.number  = 7.16
+version.number  = 7.17
 
 # Network
 

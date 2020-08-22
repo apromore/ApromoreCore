@@ -24,7 +24,8 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.model.FolderType;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
@@ -47,9 +48,12 @@ import java.util.List;
  */
 public class MiscFolderTreeRenderer implements TreeitemRenderer {
 
+    MainController mainController;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MiscFolderTreeRenderer.class.getName());
 
-    public MiscFolderTreeRenderer() {
+    public MiscFolderTreeRenderer(MainController mainController) {
+        this.mainController = mainController;
     }
 
     @Override
@@ -65,10 +69,11 @@ public class MiscFolderTreeRenderer implements TreeitemRenderer {
 
             FolderType folder = (FolderType) ctn.getData();
             String name = folder.getFolderName();
+            FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
 
-            if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
+            if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, currentFolder)) {
                 treeItem.setOpen(true);
-                if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
+                if (currentFolder != null && folder.getId().equals(currentFolder.getId())) {
                     treeItem.setSelected(true);
                     UserSessionManager.setCurrentSecurityItem(folder.getId());
                 }

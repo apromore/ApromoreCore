@@ -27,6 +27,9 @@ package org.apromore.dao.model;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,6 +46,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apromore.common.Constants;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -264,6 +268,23 @@ public class ProcessModelVersion implements Serializable {
                 .append(numVertices, rhs.numVertices)
                 .append(numEdges, rhs.numEdges)
                 .isEquals();
+    }
+    
+    @Override
+    public ProcessModelVersion clone() {
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        ProcessModelVersion pmv = new ProcessModelVersion();
+        pmv.setProcessBranch(this.getProcessBranch());
+        pmv.setProcessModelAttributes(this.getProcessModelAttributes());
+        pmv.setVersionNumber(this.getVersionNumber());
+        pmv.setOriginalId(null);
+        pmv.setNativeType(this.getNativeType());
+        pmv.setNativeDocument(this.getNativeDocument());
+        pmv.setLockStatus(Constants.NO_LOCK);
+        pmv.setLastUpdateDate(now);
+        pmv.setCreateDate(now);
+        return pmv;
     }
 }
 

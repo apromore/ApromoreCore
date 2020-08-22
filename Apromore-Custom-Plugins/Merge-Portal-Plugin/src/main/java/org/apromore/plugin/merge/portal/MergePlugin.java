@@ -25,17 +25,25 @@
 
 package org.apromore.plugin.merge.portal;
 
-// Java packages
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-// Third party packages
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.*;
+import javax.inject.Inject;
+
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.model.ParameterType;
+import org.apromore.portal.model.ParametersType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.ProcessVersionIdType;
+import org.apromore.portal.model.ProcessVersionIdsType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.DomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +52,15 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
-
-import javax.inject.Inject;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 @Component
 public class MergePlugin extends DefaultPortalPlugin {
@@ -75,7 +89,6 @@ public class MergePlugin extends DefaultPortalPlugin {
     private Button OKbutton;
     private Textbox processNameT;
     private Textbox versionNameT;
-    private SelectDynamicListController domainCB;
 
     private Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
 
@@ -147,17 +160,6 @@ public class MergePlugin extends DefaultPortalPlugin {
         this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
         this.versionNameT.setValue(INITIAL_VERSION);
 
-        Row mergeDomainR = (Row) this.processMergeW.getFellow("mergeddomainR");
-
-        List<String> domains = domainService.findAllDomains();
-        this.domainCB = new SelectDynamicListController(domains);
-        this.domainCB.setReference(domains);
-        this.domainCB.setAutodrop(true);
-        this.domainCB.setWidth("85%");
-        this.domainCB.setHeight("100%");
-        this.domainCB.setAttribute("hflex", "1");
-        mergeDomainR.appendChild(domainCB);
-
         Row removeEntR = (Row) this.processMergeW.getFellow("removeEnt");
         Row makePubicR = (Row) this.processMergeW.getFellow("makePublic");
         Row algoChoiceR = (Row) this.processMergeW.getFellow("mergeAlgoChoice");
@@ -187,31 +189,37 @@ public class MergePlugin extends DefaultPortalPlugin {
         updateActions();
 
         this.processNameT.addEventListener("onChange", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 updateActions();
             }
         });
         this.versionNameT.addEventListener("onChange", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 updateActions();
             }
         });
         this.algosLB.addEventListener("onSelect", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 updateActions();
             }
         });
         this.OKbutton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 mergeProcesses();
             }
         });
         this.OKbutton.addEventListener("onOK", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 mergeProcesses();
             }
         });
         cancelButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 cancel();
             }
@@ -247,7 +255,7 @@ public class MergePlugin extends DefaultPortalPlugin {
                 ProcessVersionIdsType processVersionIdsType = setProcessModels(selectedProcessVersions);
 
                 ProcessSummaryType result = mergeService.mergeProcesses(this.processNameT.getValue(),
-                        this.versionNameT.getValue(), this.domainCB.getValue(), context.getCurrentUser().getUsername(),
+                        this.versionNameT.getValue(), "", context.getCurrentUser().getUsername(),
                         this.algosLB.getSelectedItem().getLabel(), folderId, parametersType,
                         processVersionIdsType,
                         this.makePublic.isChecked());

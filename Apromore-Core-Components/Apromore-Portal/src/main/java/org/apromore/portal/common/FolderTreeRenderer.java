@@ -27,8 +27,8 @@ package org.apromore.portal.common;
 import java.util.Collections;
 import java.util.List;
 
-import org.apromore.model.FolderType;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
@@ -68,12 +68,13 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         treeItem.setValue(ctn);
 
         // Select (only) the current folder
-        if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
+        if (mainC.getPortalSession().getCurrentFolder() != null &&
+                folder.getId().equals(mainC.getPortalSession().getCurrentFolder().getId())) {
             treeItem.setSelected(true);
         }
 
         // Open all super-folders of the current folder
-        treeItem.setOpen(folder.getId() == 0 || folderContainsSubfolder(folder, UserSessionManager.getCurrentFolder()));
+        treeItem.setOpen(folder.getId() == 0 || folderContainsSubfolder(folder, mainC.getPortalSession().getCurrentFolder()));
 
         Hlayout hl = new Hlayout();
         hl.setValign("middle");
@@ -115,8 +116,8 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                             }
                         }
 
-                        UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
-                        UserSessionManager.setCurrentFolder(selectedFolder);
+                        mainC.getPortalSession().setPreviousFolder(mainC.getPortalSession().getCurrentFolder());
+                        mainC.getPortalSession().setCurrentFolder(selectedFolder);
 
                         mainC.reloadSummaries2();
                         mainC.clearProcessVersions();

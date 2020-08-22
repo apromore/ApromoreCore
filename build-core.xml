@@ -19,10 +19,7 @@
 
     <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
     <property name="core-dir-plugins" location="${core-dir}/Apromore-Plugins/"/>
-    <property name="core-dir-annotation" location="${core-dir}/Apromore-Plugins/plugin-annotation/"/>
-    <property name="core-dir-canoniser" location="${core-dir}/Apromore-Plugins/plugin-canoniser/"/>
     <property name="core-dir-portal-templates" location="${core-dir}/Apromore-Plugins/plugin-templates/"/>
-    <property name="core-dir-deploy" location="${core-dir}/Apromore-Plugins/plugin-deployment/"/>
     <property name="core-dir-osgi" location="${core-dir}/Apromore-OSGI-Bundles/"/>
     
     <fileset id="fileset-core-lpsolve-lib" dir="${core-dir-sups}">
@@ -59,12 +56,10 @@
         
         <include name="Apromore-Custom-Plugins/SplitMiner-Logic/target/splitminer-logic-1.0.jar"/>
         
-        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.jar"/>
 
         <include name="Apromore-Custom-Plugins/About-Portal-Plugin/target/about-portal-plugin-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
-
-        <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
         <!-- csvimporter-logic is the responsibility of the parent build.xml -->
         <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
@@ -75,13 +70,13 @@
         <include name="Apromore-Custom-Plugins/File-Portal-Plugin/target/file-portal-plugin-1.0.jar"/>
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.jar"/>
         
         <include name="Apromore-Custom-Plugins/Log-Logic/target/log-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Merge-Logic/target/merge-logic-1.1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Merge-Portal-Plugin/target/merge-portal-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>        
+        <include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Similarity-Search-Logic/target/similaritysearch-logic-1.1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin/target/similaritysearch-portal-1.1.0.jar"/>
     </fileset>
@@ -90,18 +85,6 @@
         <include name="APMLogModule/target/apmlog-1.0.0.jar"/>
         <include name="OpenXES//target/openxes-2.27.jar"/>
     </fileset>    
-    
-    <fileset id="fileset-core-old-plugin-annotation" dir="${core-dir-annotation}" >
-        <include name="**/target/*.jar"/>
-        <exclude name="**/target/*-sources.jar"/>
-        <exclude name="**/core/**/*.jar"/>
-    </fileset>
-    
-    <fileset id="fileset-core-old-plugin-canoniser" dir="${core-dir-canoniser}">
-        <include name="**/target/*.jar"/>
-        <exclude name="**/target/*-sources.jar"/>
-        <exclude name="**/core/**/*.jar"/>
-    </fileset>
     
     <fileset id="fileset-repo-text" dir="${core-dir}">
         <include name="apromore-core.plan"/>
@@ -125,14 +108,14 @@
             <fileset refid="fileset-core-assembly" />
             <fileset refid="fileset-core-osgi-lib" />
             <fileset refid="fileset-core-extras" />
-            <fileset refid="fileset-core-old-plugin-annotation" />
-            <fileset refid="fileset-core-old-plugin-canoniser" />
             <fileset refid="fileset-core-custom-plugins" />
         </copy>
         
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
             <fileset refid="fileset-repo-text"/>
         </copy>
+
+        <copy file="${core-dir}/target/classes/META-INF/git.properties" tofile="${core-dir-virgo}/repository/usr/git-core.properties" overwrite="true" />
     </target>
 
     <!-- Virgo Related -->
@@ -174,6 +157,7 @@
             </fileset>
         </copy>
         <delete file="${core-dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
+        <delete file="${core-dir-virgo}/pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar" />
         <chmod file="${core-dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
@@ -183,6 +167,9 @@
         <delete includeemptydirs="true">
             <fileset dir="${core-dir-virgo}">
                 <include name="repository/usr/*.jar"/>
+                <include name="repository/usr/*.war"/>
+                <include name="repository/usr/*.plan"/>
+                <include name="repository/usr/*.properties"/>
             </fileset>
         </delete>
         <delete includeemptydirs="true">
@@ -197,7 +184,7 @@
                 <include name="pickup/*.par"/>
                 <include name="pickup/*.plan"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
-                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
+                <include name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
             </fileset>
         </delete>
     </target>

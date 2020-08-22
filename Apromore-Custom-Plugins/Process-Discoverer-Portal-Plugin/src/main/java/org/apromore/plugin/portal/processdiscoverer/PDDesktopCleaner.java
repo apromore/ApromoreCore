@@ -40,8 +40,12 @@ public class PDDesktopCleaner implements DesktopCleanup {
         System.out.println("PD cleanup starts for desktopID = " + desktop.getId());
         
         // Clean up this plugin
-        ((ProcessDiscoverer)desktop.getAttribute("processDiscoverer")).cleanUp();
-        ((ProcessVisualizer)desktop.getAttribute("processVisualizer")).cleanUp();
+        if (desktop.hasAttribute("processDiscoverer")) {
+            ((ProcessDiscoverer)desktop.getAttribute("processDiscoverer")).cleanUp();
+        }
+        if (desktop.hasAttribute("processVisualizer")) {
+            ((ProcessVisualizer)desktop.getAttribute("processVisualizer")).cleanUp();
+        }
 
         // Clean up the Portal session as it doesn't control plugin session
         // TEMPORARY: remove this step to keep PD keeps working from refreshing the page after session timeout  

@@ -31,7 +31,7 @@
             <rows>
                 <row>
                     <label value="Model Name" />
-                    <textbox id="modelName" width="100%" constraint="/^[a-zA-Z0-9 \\._\\-]{1,}$/: Invalid filename" />
+                    <textbox id="modelName" width="100%" constraint="${labels.e.common.nameConstraint.text}" />
                 </row>
                 <row>
                     <label value="Version Number" />

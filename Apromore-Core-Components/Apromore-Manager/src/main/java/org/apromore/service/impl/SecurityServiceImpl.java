@@ -24,6 +24,18 @@
 
 package org.apromore.service.impl;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.inject.Inject;
+
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.MembershipRepository;
 import org.apromore.dao.PermissionRepository;
@@ -47,17 +59,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Implementation of the SecurityService Contract.
@@ -158,6 +159,9 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     @Transactional(readOnly = false)
     public Group updateGroup(Group group) {
+        if (group.getType() != Group.Type.GROUP) {
+            throw new IllegalArgumentException("Group " + group.getName() + " cannot be modified");
+        }
         Group result = groupRepo.saveAndFlush(group);
         postEvent(EventType.UPDATE_GROUP, null, result);
 
@@ -175,6 +179,11 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public List<Group> findElectiveGroups() {
         return groupRepo.findElectiveGroups();
+    }
+
+    @Override
+    public Group getGroupByName(String name) {
+        return groupRepo.findByName(name);
     }
 
     @Override
@@ -316,9 +325,10 @@ public class SecurityServiceImpl implements SecurityService {
         groups.addAll(user.getGroups());
         user.setGroups(groups);
 
-        postEvent(EventType.UPDATE_USER, user, null);
+        User result = userRepo.save(user);
+        postEvent(EventType.UPDATE_USER, result, null);
 
-        return userRepo.save(user);
+        return result;
     }
 
     @Override
@@ -326,6 +336,7 @@ public class SecurityServiceImpl implements SecurityService {
     public void deleteUser(User user) {
         postEvent(EventType.DELETE_USER, user, null);
 
+        userRepo.delete(user);
         groupRepo.delete(user.getGroup());
     }
 

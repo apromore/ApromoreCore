@@ -22,6 +22,7 @@
 
 package org.apromore.portal.dialogController.workspaceOptions;
 
+import org.apromore.exception.NotAuthorizedException;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
@@ -109,8 +110,10 @@ public class RenameFolderController extends BaseController {
             LOGGER.warning("folderName " + folderName);
             this.mainController.getService().updateFolder(this.folderId, folderName, UserSessionManager.getCurrentUser().getUsername());
             this.mainController.reloadSummaries();
-
         } catch (Exception ex) {
+            if (ex.getCause() instanceof NotAuthorizedException) {
+                Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            }
             LOGGER.warning("Exception ");
             StackTraceElement[] trace = ex.getStackTrace();
             for (StackTraceElement traceElement : trace)

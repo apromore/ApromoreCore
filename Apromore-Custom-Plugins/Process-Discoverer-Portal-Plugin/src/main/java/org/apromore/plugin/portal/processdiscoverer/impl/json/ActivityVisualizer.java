@@ -59,7 +59,8 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
     	
     	String node_displayname = node_oriname.trim();
     	int fontSize;
-    	node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
+    	node_displayname = node_displayname.replace('_', ' ');
+		node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
     	node_displayname = visSettings.getStringFormatter().fixCutName(node_displayname, 0);
 
 		if (node_displayname.length() > 25) {
@@ -73,12 +74,12 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
 		if(params.getPrimaryType() == MeasureType.DURATION) {
     		// No empty line if dual info
         	if (!params.getSecondary()) {
-        		jsonData.put("name", node_displayname + "\\n\\n" + 
+        		jsonData.put("name", node_displayname + "\\n\\n" +
         				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
         	}
         	else {
         		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + 
+        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + ", " +
         				visSettings.getDecimalFormatter().format(abs.getNodeSecondaryWeight(node)));
         	}
         }
@@ -90,7 +91,7 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
         	}
         	else {
         		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getDecimalFormatter().format(abs.getNodePrimaryWeight(node)) + "\\n" + 
+        				visSettings.getDecimalFormatter().format(abs.getNodePrimaryWeight(node)) + ", " +
         				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
         	}
         }

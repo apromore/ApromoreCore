@@ -28,21 +28,7 @@
     <persistence-unit name="TESTApromore" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-        <class>org.apromore.dao.model.Annotation</class>
-        <class>org.apromore.dao.model.Canonical</class>
-        <class>org.apromore.dao.model.Cluster</class>
-        <class>org.apromore.dao.model.ClusterAssignment</class>
-        <class>org.apromore.dao.model.Edge</class>
-        <class>org.apromore.dao.model.EdgeAttribute</class>
-        <class>org.apromore.dao.model.EdgeMapping</class>
-        <class>org.apromore.dao.model.Expression</class>
         <class>org.apromore.dao.model.Folder</class>
-        <class>org.apromore.dao.model.FolderUser</class>
-        <class>org.apromore.dao.model.Fragment</class>
-        <class>org.apromore.dao.model.FragmentDistance</class>
-        <class>org.apromore.dao.model.FragmentUser</class>
-        <class>org.apromore.dao.model.FragmentVersion</class>
-        <class>org.apromore.dao.model.FragmentVersionDag</class>
         <class>org.apromore.dao.model.Group</class>
         <class>org.apromore.dao.model.GroupFolder</class>
         <class>org.apromore.dao.model.GroupLog</class>
@@ -51,31 +37,24 @@
         <class>org.apromore.dao.model.Keywords</class>
         <class>org.apromore.dao.model.Log</class>
         <class>org.apromore.dao.model.Membership</class>
-        <class>org.apromore.dao.model.Metric</class>
         <class>org.apromore.dao.model.Native</class>
         <class>org.apromore.dao.model.NativeType</class>
-        <class>org.apromore.dao.model.Node</class>
-        <class>org.apromore.dao.model.NodeAttribute</class>
-        <class>org.apromore.dao.model.NodeMapping</class>
-        <class>org.apromore.dao.model.Object</class>
-        <class>org.apromore.dao.model.ObjectAttribute</class>
-        <class>org.apromore.dao.model.ObjectRef</class>
-        <class>org.apromore.dao.model.ObjectRefAttribute</class>
         <class>org.apromore.dao.model.Permission</class>
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.ProcessBranch</class>
         <class>org.apromore.dao.model.ProcessModelAttribute</class>
         <class>org.apromore.dao.model.ProcessModelVersion</class>
-        <class>org.apromore.dao.model.ProcessUser</class>
-        <class>org.apromore.dao.model.Resource</class>
-        <class>org.apromore.dao.model.ResourceAttribute</class>
-        <class>org.apromore.dao.model.ResourceRef</class>
-        <class>org.apromore.dao.model.ResourceRefAttribute</class>
         <class>org.apromore.dao.model.Role</class>
         <class>org.apromore.dao.model.SearchHistory</class>
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Workspace</class>
         <class>org.apromore.dao.model.Statistic</class>
+        <class>org.apromore.dao.model.DashboardLayout</class>
+        <class>org.apromore.dao.model.Usermetadata</class>
+        <class>org.apromore.dao.model.UsermetadataLog</class>
+        <class>org.apromore.dao.model.UsermetadataProcess</class>
+        <class>org.apromore.dao.model.UsermetadataType</class>
+        <class>org.apromore.dao.model.GroupUsermetadata</class>
 
         <!--For unit test purpose-->
         <properties>
@@ -83,12 +62,6 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/apromore?autoReconnect=true"/>
             <property name="javax.persistence.jdbc.user" value="apromore"/>
             <property name="javax.persistence.jdbc.password" value="MAcri"/>
-
-            <!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>-->
-            <!--<property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc"/>-->
-            <!--<property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc"/>-->
-            <!--<property name="eclipselink.ddl-generation.output-mode" value="both"/>-->
-
         </properties>
 
     </persistence-unit>

@@ -24,7 +24,7 @@
 
 package org.apromore.mapper;
 
-import org.apromore.model.DomainsType;
+import org.apromore.portal.model.DomainsType;
 import org.junit.Before;
 import org.junit.Test;
 

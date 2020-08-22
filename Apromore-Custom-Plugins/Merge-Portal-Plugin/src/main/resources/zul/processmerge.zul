@@ -37,9 +37,6 @@
                     <label value="Version Number*" width="100%"/>
                     <textbox width="100%"/>
                 </row>
-                <row id="mergeddomainR">
-                    <label value="Domain" width="100%"/>
-                </row>
                 <row id="removeEnt">
                     <label value="Remove entanglements"/>
                     <checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>

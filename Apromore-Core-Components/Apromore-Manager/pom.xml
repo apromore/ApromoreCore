@@ -59,7 +59,7 @@
                             org.springframework.security.web;version="[3.1.0,4.0)",
                             org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.apromore.manager-security;version="[1.1,1.1]",
-                            org.apromore.manager-ws-model;version="[1.1,1.1]"
+                            org.apromore.portal-model;version="[1.1,1.1]"
                         </Import-Bundle>
                         <Import-Package>
                             org.deckfour.xes.*;version="2.27",
@@ -92,7 +92,6 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.annotation.provider,
                             org.apromore.common,
                             org.apromore.dao,
                             org.apromore.dao.dataObject,
@@ -106,6 +105,7 @@
                             org.apromore.service,
                             org.apromore.service.helper,
                             org.apromore.service.model,
+                            org.apromore.service.search,
                             org.apromore.util
                         </Export-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
@@ -170,17 +170,11 @@
         <!-- Clients -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
+            <artifactId>portal-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-security</artifactId>
-        </dependency>
-
-        <!-- Core Plugins -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-graph</artifactId>
         </dependency>
 
         <!-- Plugin API -->
@@ -190,33 +184,11 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
             <artifactId>event-log-plugin-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>process-plugin-api</artifactId>
-        </dependency>
-
-        <!-- Schema -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>anf-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>cpf-schema</artifactId>
         </dependency>
 
         <!-- Blueprint OSGi -->
@@ -445,11 +417,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
             <scope>test</scope>
@@ -495,21 +462,6 @@
             <artifactId>plugin-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
                 <groupId>io.github.andreas-solti.xeslite</groupId>
@@ -517,27 +469,11 @@
                 <version>0.0.1</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>net.sf.ehcache</groupId>-->
-            <!--<artifactId>ehcache</artifactId>-->
-            <!--<version>2.10.6</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>ehcache-virgo</artifactId>-->
-            <!--<version>3.8.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.ehcache</artifactId>
             <version>2.6.11_1</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.ehcache</groupId>-->
-            <!--<artifactId>ehcache</artifactId>-->
-            <!--<version>3.8.1</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.xerial.snappy</groupId>
@@ -564,37 +500,6 @@
             <artifactId>com.springsource.org.apache.tools.ant</artifactId>
             <version>1.8.3</version>
         </dependency>
-
-
-        <!--
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>com.springsource.org.jfree</artifactId>
-            <version>1.0.12</version>
-        </dependency> 
-        -->
-		
-		<!--
-		<dependency>
-			<groupId>org.jfree.chart</groupId>
-			<artifactId>com.springsource.org.jfree.chart</artifactId>
-			<version>1.0.9</version>
-		</dependency>
-		-->
-		<!--
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.jcommon</artifactId>
-			<version>1.0.15_1</version>
-		</dependency>
-		-->
-		<!--
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.jfreechart</artifactId>
-			<version>1.0.12_1</version>
-		</dependency> 
-		-->
 				
     </dependencies>
 

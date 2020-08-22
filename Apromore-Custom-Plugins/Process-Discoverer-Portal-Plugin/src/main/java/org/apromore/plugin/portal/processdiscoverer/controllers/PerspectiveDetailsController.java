@@ -72,7 +72,7 @@ public class PerspectiveDetailsController extends DataListController {
 
     @Override
     public void onEvent(Event event) throws Exception {
-        perspectiveDetailsWindow = (Window) Executions.createComponents("/zul/perspectiveDetails.zul", null, null);
+        perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, null);
         perspectiveDetailsWindow.setTitle(parent.getPerspective());
         Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");
 

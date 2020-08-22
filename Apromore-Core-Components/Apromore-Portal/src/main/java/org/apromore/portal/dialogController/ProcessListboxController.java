@@ -28,12 +28,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apromore.model.*;
-import org.apromore.model.SummariesType;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
+import org.apromore.portal.model.*;
 // import org.apromore.portal.util.SummaryComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +42,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listheader;
-
-import org.apromore.model.FolderType;
 
 public class ProcessListboxController extends BaseListboxController {
 
@@ -91,7 +88,8 @@ public class ProcessListboxController extends BaseListboxController {
                 }
 
                 // Set the selected folders
-                UserSessionManager.setSelectedFolderIds(folderIdList);
+                // UserSessionManager.setSelectedFolderIds(folderIdList);
+                getMainController().getPortalSession().setSelectedFolderIds(folderIdList);
             }
         });
     }
@@ -221,7 +219,8 @@ public class ProcessListboxController extends BaseListboxController {
     public void displayNewProcess(ProcessSummaryType process) {
        // getListModel().add(process);  // This will trigger a UiException from ZK do to the additional complexity of paged result fetching
 
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
         SummaryListModel model = displaySummaries(subFolders, false);
     }

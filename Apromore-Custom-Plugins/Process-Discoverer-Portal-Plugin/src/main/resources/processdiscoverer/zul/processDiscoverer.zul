@@ -1,0 +1,260 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
+<?page id="ap-pd2" title="Apromore - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
+<?component name="viewSettings" macroURI="components/viewSettings.zul" ?>
+<?component name="graphSettings" macroURI="components/graphSettings.zul" ?>
+<?component name="logStats" macroURI="components/logStats.zul" ?>
+<?component name="timeStats" macroURI="components/timeStats.zul" ?>
+<?link rel="shortcut icon" href="../../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="stylesheet" href="../../css/chiaroscuro.css" type="text/css" ?>
+<?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
+<?link rel="stylesheet" href="/processdiscoverer/css/ap/pd.css" type="text/css" ?>
+<?link rel="stylesheet" href="../../themes/${labels.theme}/portal/css/portal.css" type="text/css" ?>
+<?script src="../../themes/ap/common/js/index.js"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:w="client"
+    xmlns:n="native"
+    xmlns:ca="client/attribute"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+  <style src="/processdiscoverer/css/tippy.v4.0.1.css"/>
+  <script><![CDATA[
+    Ap.theme = '${labels.theme}';
+  ]]></script>
+  <script type="text/javascript" src="/processdiscoverer/js/jquery.js"></script>
+  <script type="text/javascript" src="/processdiscoverer/js/minisearch/index.js"></script>
+  <script type="text/javascript" src="/processdiscoverer/js/file-saver/filesaver.js"></script>
+  <script src="/processdiscoverer/js/jspdf.v1.4.1.debug.js"></script>
+  <script src="/processdiscoverer/js/cytoscape.v3.2.18.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-svg-convertor.js"></script>
+  <script src="/processdiscoverer/js/dagre.v0.8.2.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-dagre.v2.2.2.js"></script>
+  <script src="/processdiscoverer/js/popper.v1.14.7.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-popper.v1.0.4.js"></script>
+  <script src="/processdiscoverer/js/tippy.v4.0.1.min.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-undo-redo.js"></script>
+  <script src="/processdiscoverer/js/cytoscape-edge-bend-editing.js"></script>
+  <script src="/processdiscoverer/js/ap/moment.min.js"></script>
+  <script src="/processdiscoverer/js/ap/search.js"></script>
+  <script src="/processdiscoverer/js/ap/graph.js"></script>
+  <script src="/processdiscoverer/js/ap/pd.js"></script>
+
+  <h:div class="ap-header">
+    <h:a href="/">
+      <h:div class="ap-header-logo"></h:div>
+    </h:a>
+    <h:div class="ap-header-title">Process Discoverer</h:div>
+    <h:div class="ap-header-actions">
+      <h:a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+        <h:button class="ap-icon ap-icon-help"/>
+      </h:a>
+    </h:div>
+  </h:div>
+  <window id="win" border="0" closable="false" height="100%" width="100%" sclass="ap-pd ap-font-base"
+          use="org.apromore.plugin.portal.processdiscoverer.PDController">
+    <caption id="windowcaption" sclass="mainCaption">
+      <div id="utilityTools" sclass="ap-pd-tools"/>
+    </caption>
+    <label visible="false" sclass="ap-pd-log-title" id="logTitle"></label>
+    <button id="caseDetails" sclass="ap-icon ap-icon-table-list" height="26px" visible="false"/>
+    <button id="perspectiveDetails" sclass="ap-icon ap-icon-table-list" height="26px" visible="false"/>
+    <popup id="shortcutPopup" width="650px">
+      <div sclass="ap-key-help">
+        <n:div class="ap-key-help-header">
+          <n:div>
+            <n:strong>On an arc:</n:strong>
+          </n:div>
+          <n:div></n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:span>right-click</n:span>
+          </n:div>
+          <n:div>remove <n:u>all</n:u> cases containing the selected directly-follows relation
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>retain <n:u>only</n:u> cases containing the selected directly-follows relation
+          </n:div>
+        </n:div>
+        <n:div class="ap-key-help-header">
+          <n:div>
+            <n:strong>On a node:</n:strong>
+          </n:div>
+          <n:div></n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:span>right-click</n:span>
+          </n:div>
+          <n:div>remove <n:u>all</n:u> cases with an event containing the selected attribute
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>retain <n:u>only</n:u> cases with an event containing the selected attribute
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="alt" class="alt-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>remove <n:u>all</n:u> events containing the selected attribute
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="alt" class="alt-kbd"></n:kbd>
+            <n:span>+</n:span>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>retain <n:u>only</n:u> events containing the selected attribute
+          </n:div>
+        </n:div>
+      </div>
+    </popup>
+    <!-- Buttons area -->
+    <hlayout sclass="ap-pd-action-buttons" spacing="0">
+      <div hflex="1" align="left">
+        <button ca:data-t="saveLog" id="exportUnfitted" w:onClick="Ap.pd.exportUnfitted()"
+                tooltiptext="${labels.e.pd.saveLog.text}" label="" sclass="ap-icon ap-icon-export-log"/>
+        <button ca:data-t="saveBPMN" id="exportBPMN" tooltiptext="${labels.e.pd.saveBPMN.text}"
+                sclass="ap-icon ap-icon-export-bpmn"/>
+        <button ca:data-t="saveBPMNAnnotated" id="exportBPMNAnnotatedForBIMP" visible="false"
+                tooltiptext="Save as BPMN model annotated for BIMP..." sclass="ap-icon ap-icon-export-bpmn"/>
+        <button ca:data-t="downloadPDF" id="downloadPDF" tooltiptext="${labels.e.pd.downloadPDF.text}"
+                sclass="ap-icon ap-icon-export-pdf"/>
+        <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="${labels.e.pd.downloadPNG.text}"
+                sclass="ap-icon ap-icon-export-image"/>
+        <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="Download JSON"
+                w:onClick="Ap.pd.exportJSON()"
+                sclass="ap-icon ap-icon-export-json"/>
+        <n:span class="ap-action-sep"></n:span>
+        <checkbox sclass="ap-stateful-button" id="layoutHierarchy"
+                  tooltiptext="Layout left-to-right" iconSclass="ap-icon ap-icon-dir-lr"/>
+        <checkbox sclass="ap-stateful-button" id="layoutDagreTopBottom"
+                  tooltiptext="Layout top-to-bottom" iconSclass="ap-icon ap-icon-dir-tb"/>
+        <button tooltiptext="Zoom in" sclass="ap-icon ap-icon-zoom-in" w:onClick="Ap.pd.zoomIn()"/>
+        <button tooltiptext="Zoom out" sclass="ap-icon ap-icon-zoom-out" w:onClick="Ap.pd.zoomOut()"/>
+        <button id="fitScreen" tooltiptext="Fit to screen" sclass="ap-icon ap-icon-zoom-to-fit"/>
+        <n:span class="ap-action-sep"></n:span>
+        <button ca:data-t="filter" id="filter" tooltiptext="Filter" sclass="ap-icon ap-icon-filter"/>
+        <button ca:data-t="filter-clear" id="filterClear" disabled="true" tooltiptext="Clear all filter" sclass="ap-icon ap-icon-filter-delete"/>
+        <n:span class="ap-action-sep"></n:span>
+        <!-- <button ca:data-t="animate" id="animate" w:onClick="Ap.pd.animate()" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/> -->
+        <button ca:data-t="animate" id="animate" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/>
+      </div>
+      <div hflex="1" align="right">
+        <!-- Exact single search -->
+        <!--
+          <n:span>Search node</n:span>
+          <n:input id="ap-pd-search-graph" style="background-color:white;border:none" type="text"/>
+        -->
+        <n:div id="ap-pd-search-graph-wrapper">
+          <n:div id="ap-pd-search-graph">
+            <n:i class="z-icon-search" />
+            <n:input type="text" placeholder="Search node" />
+            <n:span>
+              <n:i class="z-icon-times-circle" />
+            </n:span>
+          </n:div>
+        </n:div>
+        <n:div class="ap-pd-search-graph-options" />
+        <button id="shortcutButton" sclass="ap-icon ap-icon-keyboard">
+          <attribute name="onClick">
+            <![CDATA[
+              shortcutPopup.open(self,"after_end");
+            ]]>
+          </attribute>
+        </button>
+        <button sclass="ap-icon ap-icon-chevron-up" ca:data-t="collapse" ca:onClick="Ap.pd.toggleOptions()">
+        </button>
+        <button sclass="ap-icon ap-icon-chevron-down" ca:data-t="expand" style="display:none;"
+                ca:onClick="Ap.pd.toggleOptions()">
+        </button>
+      </div>
+    </hlayout>
+    <n:div class="ap-pd-main-torso">
+      <!-- Option area -->
+      <div ca:data-t="ap-pd-aux">
+        <div sclass="ap-pd-drawer">
+          <hlayout width="100%" height="170px" valign="top" spacing="0px">
+            <!-- set height 100% to make the box occupy the rest of space -->
+            <div hflex="2"></div>
+            <viewSettings sclass="ap-pd-drawer-box" width="300px"/>
+            <div hflex="2"></div>
+            <div sclass="ap-panel-sep" vflex="1" hflex="1">
+              <n:div></n:div>
+            </div>
+            <div hflex="2"></div>
+            <graphSettings sclass="ap-pd-drawer-box" hflex="75" />
+            <div hflex="2"></div>
+            <div sclass="ap-panel-sep" vflex="1" hflex="1">
+              <n:div></n:div>
+            </div>
+            <logStats sclass="ap-pd-drawer-box" hflex="64" />
+            <div sclass="ap-panel-sep" vflex="1" hflex="1">
+              <n:div></n:div>
+            </div>
+            <timeStats sclass="ap-pd-drawer-box" hflex="43" />
+          </hlayout>
+        </div>
+        <!--
+          <n:div class="ap-pd-drawer-splitter" onclick="toggleOptions()">
+            <n:i class="z-icon-caret-up"></n:i>
+            <n:i class="z-icon-caret-down" style="display:none;"></n:i>
+          </n:div>
+        -->
+      </div>
+      <!-- Graph Area -->
+      <!-- Must use a client div for cytoscape inside a client table -->
+      <n:div id="ap-pd-process-model" style="background-color:none;"/>
+      <div id="vizBridge" visible="false"></div>
+    </n:div>
+    <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
+  </window>
+  <n:script type="text/javascript" defer="defer" src="/themes/ap/common/js/css-browser-selector.js"></n:script>
+  <!-- Use the following to improve the performance of listbox dropdown display time -->
+  <!--
+  <script defer="true"><![CDATA[
+    zul.inp.Combobox.prototype.slideDown_ = function(pp) {
+      pp.style.visibility = "visible";
+      pp.style.display = "block";
+    };
+        zul.inp.Bandbox.prototype.slideDown_ = zul.inp.Combobox.prototype.slideDown_;
+    ]]>
+    </script>
+    -->
+</zk>

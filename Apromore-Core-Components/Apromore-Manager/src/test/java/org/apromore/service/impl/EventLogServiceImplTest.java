@@ -22,10 +22,33 @@
 
 package org.apromore.service.impl;
 
+import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
+import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
+
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import com.google.common.collect.Sets;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
@@ -33,7 +56,12 @@ import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XAttributable;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
@@ -47,23 +75,6 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
-import static org.easymock.EasyMock.expect;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.*;
 
 public class EventLogServiceImplTest {
 
@@ -81,6 +92,11 @@ public class EventLogServiceImplTest {
     private StatisticRepository statisticRepository;
     private EventLogServiceImpl eventLogService;
     private DashboardLayoutRepository dashboardLayoutRepository;
+    private UserMetadataService userMetadataService;
+    private UsermetadataRepository userMetadataRepo;
+    private GroupUsermetadataRepository groupUsermetadataRepo;
+    private UsermetadataTypeRepository usermetadataTypeRepo;
+    private UsermetadataLogRepository usermetadataLogRepo;
 
     private static void walkLog(XLog log) {
         walkAttributes(log);
@@ -124,10 +140,17 @@ public class EventLogServiceImplTest {
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
         dashboardLayoutRepository = createMock(DashboardLayoutRepository.class);
+        userMetadataService = createMock(UserMetadataService.class);
+        userMetadataRepo = createMock(UsermetadataRepository.class);
+        groupUsermetadataRepo = createMock(GroupUsermetadataRepository.class);
+        usermetadataTypeRepo = createMock(UsermetadataTypeRepository.class);
+        usermetadataLogRepo = createMock(UsermetadataLogRepository.class);
+
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
-                userSrv, ui, statisticRepository, config, dashboardLayoutRepository);
+                userSrv, ui, statisticRepository, config, dashboardLayoutRepository,
+                userMetadataRepo, groupUsermetadataRepo, usermetadataTypeRepo, usermetadataLogRepo);
     }
 
     @Test
@@ -408,16 +431,35 @@ public class EventLogServiceImplTest {
         System.out.println("Duration: " + timer.getDurationString());
     }
 
-//    @Test
-//    public void getLayoutByLogId() {
-//        String userId = "75f4a46a-bd32-4fbb-ba7a-c50d06414fac";
-//        Integer logId = 1;
-//        String reallyLongString = "a really long String";
-//        expect(dashboardLayoutRepository.findByUserIdAndLogId(userId, logId)).andReturn(reallyLongString);
-//        replay(dashboardLayoutRepository);
-//
-//        String result = eventLogService.getLayoutByLogId(logId, userId);
-//        verify(dashboardLayoutRepository);
-//        assertThat(result, equalTo(reallyLongString));
-//    }
+    @Test
+    public void intersectionTest() {
+        Set set1 = new HashSet(Arrays.asList(1, 3, 5));
+        Set set2 = new HashSet(Arrays.asList(1, 6, 7, 9, 3));
+        Set set3 = new HashSet(Arrays.asList(1, 3, 10, 11));
+
+        List<Set<Integer>> lists = new ArrayList<>();
+        lists.add(set1);
+        lists.add(set2);
+        lists.add(set3);
+
+        List<Integer> commons = new ArrayList<Integer>();
+        commons.addAll(lists.get(1));
+        for (ListIterator<Set<Integer>> iterator = lists.listIterator(1); iterator.hasNext(); ) {
+            commons.retainAll(iterator.next());
+        }
+
+        System.out.println(commons);
+
+        System.out.println(intersection(lists));
+    }
+
+
+    public <T> Set<T> intersection(List<T>... list) {
+        Set<T> result = Sets.newHashSet(list[0]);
+        for (List<T> numbers : list) {
+            result = Sets.intersection(result, Sets.newHashSet(numbers));
+        }
+        return result;
+    }
+
 }

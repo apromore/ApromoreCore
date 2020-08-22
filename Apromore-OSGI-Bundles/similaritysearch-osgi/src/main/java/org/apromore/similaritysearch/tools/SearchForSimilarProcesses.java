@@ -27,7 +27,7 @@ package org.apromore.similaritysearch.tools;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.similaritysearch.algorithms.FindModelSimilarity;
-import org.apromore.similaritysearch.common.CPFModelParser;
+import org.apromore.similaritysearch.common.ModelParser;
 import org.apromore.similaritysearch.common.IdGeneratorHelper;
 import org.apromore.similaritysearch.graph.Graph;
 
@@ -46,11 +46,11 @@ public class SearchForSimilarProcesses {
             return 0;
         }
 
-        Graph searchGraph = CPFModelParser.readModel(search);
+        Graph searchGraph = ModelParser.readModel(search);
         searchGraph.setIdGenerator(new IdGeneratorHelper());
         searchGraph.removeEmptyNodes();
 
-        Graph dbGraph = CPFModelParser.readModel(dbDiagram);
+        Graph dbGraph = ModelParser.readModel(dbDiagram);
         dbGraph.setIdGenerator(new IdGeneratorHelper());
         dbGraph.removeEmptyNodes();
 

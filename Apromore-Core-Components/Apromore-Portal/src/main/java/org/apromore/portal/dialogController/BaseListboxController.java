@@ -24,20 +24,16 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 
 import javax.xml.datatype.DatatypeFactory;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
@@ -45,7 +41,17 @@ import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
+import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -55,6 +61,7 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listhead;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
@@ -65,9 +72,10 @@ public abstract class BaseListboxController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseListboxController.class);
 
     private static final String ALERT = "Alert";
-    private static final String FOLDER_DELETE = "Are you sure you want to delete selected Folder(s) and all it's contents?";
-    private static final String PROCESS_DELETE = "Are you sure you want to delete selected Process(es)? If no version has been select the latest version will be removed.";
-    private static final String FOLDER_PROCESS_DELETE = "Are you sure you want to delete selected Folders and Processes?";
+    private static final String FOLDER_DELETE = "Are you sure you want to delete selected folder(s) and all it's contents?";
+    private static final String LOG_DELETE = "Are you sure you want to delete selected log(s)?";
+    private static final String PROCESS_DELETE = "Are you sure you want to delete the selected process model(s)? If no version has been selected, the latest version will be removed.";
+    private static final String MIXED_DELETE = "Are you sure you want to delete the selected file(s)? For a process model, if no version has been selected, the latest version will be removed.";
 
     private final Listbox listBox;
 
@@ -76,6 +84,9 @@ public abstract class BaseListboxController extends BaseController {
     private final Button refreshB;
     private final Button btnUpload;
     private final Button btnDownload;
+    private final Button btnSelectAll;
+    private final Button btnSelectNone;
+    private final Button btnCut;
     private final Button btnCopy;
     private final Button btnPaste;
     private final Button btnAddFolder;
@@ -83,18 +94,24 @@ public abstract class BaseListboxController extends BaseController {
     //private final Button btnGEDFolder;
     private final Button btnRenameFolder;
     private final Button btnRemoveFolder;
+    private final Button btnListView;
+    private final Button btnTileView;
     private final Button btnSecurity;
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
-    private ArrayList<LogSummaryType> sourceLogs = null;
-    private ArrayList<FolderType> sourceFolders = null;
+    private ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
+    private ArrayList<FolderType> sourceFolders = new ArrayList<>();
+    private ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
+
+    private CopyAndPasteController copyAndPasteController;
 
     public BaseListboxController(MainController mainController, String componentId, ListitemRenderer itemRenderer) {
         super();
         setHflex("100%");
         setVflex("100%");
 
+        this.copyAndPasteController = new CopyAndPasteController(mainController, UserSessionManager.getCurrentUser());
         this.mainController = mainController;
         this.portalContext = new PluginPortalContext(mainController);
         listBox = createListbox(componentId);
@@ -104,6 +121,9 @@ public abstract class BaseListboxController extends BaseController {
         refreshB = (Button) mainController.getFellow("refreshB");
         btnUpload = (Button) mainController.getFellow("btnUpload");
         btnDownload = (Button) mainController.getFellow("btnDownload");
+        btnSelectAll = (Button) mainController.getFellow("btnSelectAll");
+        btnSelectNone = (Button) mainController.getFellow("btnSelectNone");
+        btnCut = (Button) mainController.getFellow("btnCut");
         btnCopy = (Button) mainController.getFellow("btnCopy");
         btnPaste = (Button) mainController.getFellow("btnPaste");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
@@ -111,11 +131,14 @@ public abstract class BaseListboxController extends BaseController {
         //btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
         btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
         btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
+        btnListView = (Button) mainController.getFellow("btnListView");
+        btnTileView = (Button) mainController.getFellow("btnTileView");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
 
         attachEvents();
 
         appendChild(listBox);
+        setTileView(true);
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     }
@@ -153,6 +176,27 @@ public abstract class BaseListboxController extends BaseController {
             @Override
             public void onEvent(Event event) throws Exception {
                 exportFile();
+            }
+        });
+
+        this.btnSelectAll.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectAll();
+            }
+        });
+
+        this.btnSelectNone.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                unselectAll();
+            }
+        });
+
+        this.btnCut.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                cut();
             }
         });
 
@@ -206,12 +250,47 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        this.btnListView.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setTileView(false);
+            }
+        });
+
+        this.btnTileView.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setTileView(true);
+            }
+        });
+
+
         this.btnSecurity.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 security();
             }
         });
+    }
+
+    public void setTileView(boolean tileOn) {
+        Listhead listHead = (Listhead)this.listBox.query(".ap-listbox-process-head");
+        String sclass = Objects.requireNonNull(this.listBox.getSclass(), "");
+        if (tileOn) {
+            if (!sclass.contains("ap-tiles-view")) {
+                this.listBox.setSclass(sclass.trim() + " ap-tiles-view");
+            }
+            if (listHead != null) {
+                listHead.setVisible(false);
+            }
+        } else {
+            if (sclass.contains("ap-tiles-view")) {
+                this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
+            }
+            if (listHead != null) {
+                listHead.setVisible(true);
+            }
+        }
     }
 
     /**
@@ -271,12 +350,16 @@ public abstract class BaseListboxController extends BaseController {
     public void renameFolder() throws DialogException {
         getMainController().eraseMessage();
         try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            // List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 1) {
                 int selectedFolderId = folderIds.get(0);
                 String selectedFolderName = "";
-                List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
+                List<FolderType> availableFolders = getMainController().getPortalSession().getCurrentFolder() == null ||
+                        getMainController().getPortalSession().getCurrentFolder().getId() == 0 ?
+                        getMainController().getPortalSession().getTree() :
+                        getMainController().getPortalSession().getCurrentFolder().getFolders();
                 for (FolderType folder : availableFolders) {
                     if (folder.getId() == selectedFolderId) {
                         selectedFolderName = folder.getFolderName();
@@ -306,7 +389,8 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void rename() throws InterruptedException {
         try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            // List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 0) {
                 renameLogOrProcess();
@@ -323,66 +407,43 @@ public abstract class BaseListboxController extends BaseController {
         ArrayList<FolderType> folders = getSelectedFolders();
         Map<SummaryType, List<VersionSummaryType>> elements =  getMainController().getSelectedElementsAndVersions();
 
-        if (doesSelectionContainFoldersAndElements(folders, elements)) {
+        if (doesSelectionContainFoldersAndElements(folders, elements)) { // mixed
             showMessageFoldersAndElementsDelete(getMainController(), folders);
         } else {
-            if (folders != null && !folders.isEmpty()) {
+            if (folders != null && !folders.isEmpty()) { // folder only
                 showMessageFolderDelete(getMainController(), folders);
-            } else if (elements != null && !elements.isEmpty()) {
-                showMessageProcessesDelete(getMainController());
+            } else if (elements != null && !elements.isEmpty()) { // processes and logs
+                if (getSelectedProcesses().size() == 0) { // log only
+                    showMessageLogsDelete(getMainController());
+                } else if (getSelectedLogs().size() == 0) { // process only
+                    showMessageProcessesDelete(getMainController());
+                } else { // mixed log(s) and process(es)
+                    showMessageElementsDelete(getMainController());
+                }
             } else {
                 LOGGER.error("Nothing selected to delete?");
             }
         }
     }
 
-    private void copy() {
-        sourceLogs = getSelectedLogs();
-        sourceFolders = getSelectedFolders();
-        if (sourceLogs == null || sourceLogs.isEmpty()) {
-            Messagebox.show("Please select at least one log.", "Copy Log", Messagebox.OK, Messagebox.ERROR);
-        } else {
-            Messagebox.show(sourceLogs.size() + " log(s) has been selected for copying.", "Copy Log", Messagebox.OK, Messagebox.INFORMATION);
-        }
+    public void cut() {
+        copyAndPasteController.cut(getSelection());
     }
 
-    private void paste() throws Exception {
-        if (sourceLogs == null || sourceLogs.isEmpty()) {
-            Messagebox.show("Please select a log and click Copy.", "Copy Log", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+    public void copy() {
+        copyAndPasteController.copy(getSelection());
+    }
+
+    public void paste() throws Exception {
+        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
-        cloneLogs(targetFolderId);
+        try {
+            copyAndPasteController.paste(targetFolderId);
+        } catch (Exception e) {
+            Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK, Messagebox.ERROR);
+        }
         refreshContent();
-    }
-
-    private void cloneLogs(Integer targetFolderId) throws Exception {
-        if (sourceLogs != null && !sourceLogs.isEmpty() && targetFolderId != null) {
-            String username = UserSessionManager.getCurrentUser().getUsername();
-            String domain = "";
-            String created = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-            for (LogSummaryType log : sourceLogs) {
-                String logName = log.getName();
-                Integer sourceLogId = log.getId();
-                mainController.getEventLogService().cloneLog(username, targetFolderId, logName, sourceLogId, domain, created, false);
-            }
-        } else {
-            LOGGER.error("No folder is selected");
-        }
-    }
-
-    private ArrayList<LogSummaryType> getSelectedLogs() {
-        ArrayList<LogSummaryType> itemList = new ArrayList<>();
-        if (this instanceof ProcessListboxController) {
-            Set<Object> selectedItem = getListModel().getSelection();
-            for (Object obj : selectedItem) {
-                if (obj instanceof LogSummaryType) {
-                    itemList.add((LogSummaryType) obj);
-                }
-            }
-        }
-        return itemList;
     }
 
     private ArrayList<FolderType> getSelectedFolders() {
@@ -398,9 +459,75 @@ public abstract class BaseListboxController extends BaseController {
         return folderList;
     }
 
-    /* Show the message tailored to deleting one or more folders. */
+    private ArrayList<LogSummaryType> getSelectedLogs() {
+        ArrayList<LogSummaryType> logList = new ArrayList<>();
+        if (this instanceof ProcessListboxController) {
+            Set<Object> selectedItem = getListModel().getSelection();
+            for (Object obj : selectedItem) {
+                if (obj instanceof LogSummaryType) {
+                    logList.add((LogSummaryType) obj);
+                }
+            }
+        }
+        return logList;
+    }
+
+    private ArrayList<ProcessSummaryType> getSelectedProcesses() {
+        ArrayList<ProcessSummaryType> processList = new ArrayList<>();
+        if (this instanceof ProcessListboxController) {
+            Set<Object> selectedItem = getListModel().getSelection();
+            for (Object obj : selectedItem) {
+                if (obj instanceof ProcessSummaryType) {
+                    processList.add((ProcessSummaryType) obj);
+                }
+            }
+        }
+        return processList;
+    }
+
+    public Set<Object> getSelection() {
+        return getListModel().getSelection();
+    }
+
+    /* Show the message tailored to deleting process model. */
     private void showMessageProcessesDelete(final MainController mainController) throws Exception {
         Messagebox.show(PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                    case Messagebox.YES:
+                        deleteElements(mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
+                        break;
+                    case Messagebox.NO:
+                        break;
+                }
+            }
+        });
+    }
+
+    /* Show the message tailored to deleting log model. */
+    private void showMessageLogsDelete(final MainController mainController) throws Exception {
+        Messagebox.show(LOG_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                    case Messagebox.YES:
+                        deleteElements(mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
+                        break;
+                    case Messagebox.NO:
+                        break;
+                }
+            }
+        });
+    }
+
+    /* Show a message tailored to deleting a combo of folders and processes */
+    private void showMessageElementsDelete(final MainController mainController) throws Exception {
+        Messagebox.show(MIXED_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
@@ -436,7 +563,7 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Show a message tailored to deleting a combo of folders and processes */
     private void showMessageFoldersAndElementsDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
-        Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+        Messagebox.show(MIXED_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             @Override
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
@@ -462,8 +589,6 @@ public abstract class BaseListboxController extends BaseController {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
-
-
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {
@@ -548,7 +673,8 @@ public abstract class BaseListboxController extends BaseController {
         private SummariesType getSummaries(int pageIndex) {
             if (summaries == null || currentPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
-                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
                 summaries = getService().getProcessSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentPageIndex = pageIndex;
             }
@@ -558,7 +684,8 @@ public abstract class BaseListboxController extends BaseController {
         private SummariesType getLogSummaries(int pageIndex) {
             if (logSummaries == null || currentLogPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
-                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
                 logSummaries = getService().getLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentLogPageIndex = pageIndex;
             }

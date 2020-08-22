@@ -29,14 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-
 import org.apromore.portal.dialogController.*;
 
 public class EditListMetadataController extends BaseController {

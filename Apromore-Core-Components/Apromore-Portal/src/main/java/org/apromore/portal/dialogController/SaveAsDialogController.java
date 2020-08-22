@@ -32,13 +32,13 @@ import java.util.Date;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
 import org.zkoss.spring.SpringUtil;

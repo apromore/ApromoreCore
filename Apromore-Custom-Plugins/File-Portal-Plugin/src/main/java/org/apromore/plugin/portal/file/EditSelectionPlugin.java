@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
@@ -64,28 +64,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
     public void execute(PortalContext portalContext) {
         try {
             MainController mainC = (MainController) portalContext.getMainController();
-
             mainC.eraseMessage();
-
-//            List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
-//
-//            for(Tab tab : tabs){
-//                if(tab.isSelected() && tab instanceof TabQuery){
-//
-//                    TabQuery tabQuery=(TabQuery)tab;
-//                    List<Listitem> items=tabQuery.getListBox().getItems();
-//
-//                    for(Listitem item : items){
-//                        if(item.isSelected() && item instanceof TabListitem){
-//                            TabListitem tabItem=(TabListitem)item;
-//                            HashMap<SummaryType, List<VersionSummaryType>> processVersion = new HashMap<>();
-//                            processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
-//                            new EditListProcessesController2(mainC, null, processVersion);
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
             
             Map<SummaryType, List<VersionSummaryType>> selectedProcesses = mainC.getSelectedElementsAndVersions();
             if (selectedProcesses.isEmpty()) {

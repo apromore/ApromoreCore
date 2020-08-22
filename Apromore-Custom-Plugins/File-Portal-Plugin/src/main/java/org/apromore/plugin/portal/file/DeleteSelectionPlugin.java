@@ -24,9 +24,10 @@ package org.apromore.plugin.portal.file;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
+
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;

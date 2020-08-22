@@ -23,8 +23,8 @@
  */
 package org.apromore.plugin.process;
 
-import org.apromore.helper.Version;
 import org.apromore.plugin.Plugin;
+import org.apromore.portal.helper.Version;
 
 /**
  * Plug-in interface providing a hook into the process storage service.

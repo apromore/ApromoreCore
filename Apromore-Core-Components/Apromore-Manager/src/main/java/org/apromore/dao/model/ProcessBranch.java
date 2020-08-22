@@ -26,6 +26,13 @@ package org.apromore.dao.model;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,9 +43,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -60,7 +64,7 @@ public class ProcessBranch implements Serializable {
 
     private Process process;
     private ProcessModelVersion currentProcessModelVersion;
-    private ProcessModelVersion sourceProcessModelVersion;
+    private ProcessModelVersion sourceProcessModelVersion; //not used
     private List<ProcessModelVersion> processModelVersions = new ArrayList<>();
 
 
@@ -132,12 +136,14 @@ public class ProcessBranch implements Serializable {
         this.currentProcessModelVersion = newCurrentProcessModelVersion;
     }
 
+    //Unused
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sourceProcessModelVersion")
     public ProcessModelVersion getSourceProcessModelVersion() {
         return this.sourceProcessModelVersion;
     }
 
+    //Unused
     public void setSourceProcessModelVersion(final ProcessModelVersion newSourceProcessModelVersion) {
         this.sourceProcessModelVersion = newSourceProcessModelVersion;
     }
@@ -150,6 +156,22 @@ public class ProcessBranch implements Serializable {
 
     public void setProcessModelVersions(final List<ProcessModelVersion> newProcessModelVersions) {
         this.processModelVersions = newProcessModelVersions;
+    }
+    
+    @Override
+    public ProcessBranch clone() {
+        ProcessBranch newBranch = new ProcessBranch();
+        newBranch.setBranchName(this.getBranchName());
+        newBranch.setProcess(this.getProcess());
+        newBranch.setProcessModelVersions(this.getProcessModelVersions());
+        newBranch.setCurrentProcessModelVersion(this.getCurrentProcessModelVersion());
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        newBranch.setCreateDate(now);
+        newBranch.setLastUpdateDate(now);
+        
+        return newBranch;
     }
 
 }

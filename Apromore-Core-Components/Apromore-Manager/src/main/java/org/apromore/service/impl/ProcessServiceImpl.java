@@ -25,7 +25,6 @@ package org.apromore.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -63,11 +62,8 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
-import org.apromore.graph.canonical.Canonical;
-import org.apromore.helper.Version;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.SummariesType;
-import org.apromore.plugin.process.ProcessPlugin;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
@@ -75,7 +71,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
-import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,9 +99,6 @@ public class ProcessServiceImpl implements ProcessService {
     private FormatService formatSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
-
-    @javax.annotation.Resource
-    private Set<ProcessPlugin> processPlugins;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -138,27 +130,6 @@ public class ProcessServiceImpl implements ProcessService {
         this.formatSrv = formatSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
-    }
-
-    /**
-     * @see org.apromore.service.ProcessService#readProcessSummaries(Integer, String)
-     *      {@inheritDoc}
-     */
-    @Override
-    public SummariesType readProcessSummaries(final Integer folderId, final String userRowGuid, final String searchExpression) {
-        SummariesType processSummaries = null;
-
-        try {
-            processSummaries = ui.buildProcessSummaryList(folderId, userRowGuid,
-                SearchExpressionBuilder.buildSearchConditions(searchExpression, "p", "processId", "process"),  // processes
-                SearchExpressionBuilder.buildSearchConditions(searchExpression, "l", "logId",     "log"),      // logs
-                SearchExpressionBuilder.buildSearchConditions(searchExpression, "f", "folderId",  "folder"));  // folders
-
-        } catch (UnsupportedEncodingException usee) {
-            LOGGER.error("Failed to get Process Summaries: " + usee.toString());
-        }
-
-        return processSummaries;
     }
 
 
@@ -194,8 +165,6 @@ public class ProcessServiceImpl implements ProcessService {
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
-            notifyProcessPlugins(pmv);  // Notify process plugin providers
-
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
@@ -205,30 +174,6 @@ public class ProcessServiceImpl implements ProcessService {
         return pmv;
     }
 
-    /**
-     * Call the {@link ProcessPlugin#processChanged} method of each of the {@link #processPlugins}.
-     *
-     * Checked exceptions from the plugins are logged, but otherwise disregarded.
-     *
-     * @param pmv  the changed process model version
-     */
-    private void notifyProcessPlugins(ProcessModelVersion pmv) {
-        LOGGER.debug("Notifying " + processPlugins.size() + " process plugins of change in " + pmv);
-        for (ProcessPlugin processPlugin: processPlugins) {
-            LOGGER.info("Notifying process plugin " + processPlugin);
-            try {
-                int id = pmv.getProcessBranch().getProcess().getId();
-                String branch = pmv.getProcessBranch().getBranchName();
-                Version version = new Version(pmv.getVersionNumber());
-                processPlugin.processChanged(id, branch, version);
-            } catch (ProcessPlugin.ProcessChangedException e) {
-                LOGGER.warn("Process plugin " + processPlugin + " failed to change process", e);
-            } catch (Throwable e) {
-                LOGGER.error("Failed to notify process plugin", e);
-            }
-        }
-    }
-    
     /**
      * Update an existing process model version
      */
@@ -257,7 +202,6 @@ public class ProcessServiceImpl implements ProcessService {
                     pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
                     pmv.getNativeDocument().setLastUpdateDate(now);
                     processModelVersionRepo.save(pmv);
-                    notifyProcessPlugins(pmv); 
                     LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                     return pmv;
 
@@ -312,9 +256,8 @@ public class ProcessServiceImpl implements ProcessService {
                         throw new RepositoryException(message);
                     }
                     else {
-                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null, null);
+                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null);
                         formatSrv.storeNative(processName, pmv, now, now, user, nativeType, newVersion.toString(), nativeStream);
-                        notifyProcessPlugins(pmv); 
                         LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                         return pmv;
                     }
@@ -368,7 +311,6 @@ public class ProcessServiceImpl implements ProcessService {
 
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
-            // Work out if we are looking at the original format or native format for this model.
             if (isRequestForNativeFormat(processId, branch, version, format)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(
                         nativeRepo.getNative(processId, branch, version.toString(), format).getContent(), "text/xml")));
@@ -393,7 +335,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
-            final Version preVersion, final Version newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException {
+            final Version preVersion, final Version newVersion, final String ranking, final boolean tobePublic) throws UpdateProcessException {
         LOGGER.debug("Executing operation update process meta data.");
 
         try {
@@ -410,26 +352,20 @@ public class ProcessServiceImpl implements ProcessService {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
-
             } else {
                 Set<GroupProcess> groupProcesses = process.getGroupProcesses();
                 Set<GroupProcess> publicGroupProcesses = filterPublicGroupProcesses(groupProcesses);
+                boolean isCurrentPublic = !publicGroupProcesses.isEmpty();
 
-                if (publicGroupProcesses.isEmpty() && isPublic) {
+                if (!isCurrentPublic && tobePublic) {
                     groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
                     process.setGroupProcesses(groupProcesses);
+                    workspaceSrv.createPublicStatusForUsers(process);
 
-                } else if (!publicGroupProcesses.isEmpty() && !isPublic) {
+                } else if (isCurrentPublic && !tobePublic) {
                     groupProcesses.removeAll(publicGroupProcesses);
                     process.setGroupProcesses(groupProcesses);
-                }
-
-                if (isPublic != !publicGroupProcesses.isEmpty()) {
-                    if (isPublic) {
-                        workspaceSrv.createPublicStatusForUsers(process);
-                    } else {
-                        workspaceSrv.removePublicStatusForUsers(process);
-                    }
+                    workspaceSrv.removePublicStatusForUsers(process);
                 }
             }
 
@@ -499,7 +435,6 @@ public class ProcessServiceImpl implements ProcessService {
                     throw new UpdateProcessException("Unable to modify " + process.getName(), e);
                 }
 
-                notifyProcessPlugins(pvid);
             }
         }
     }
@@ -594,7 +529,7 @@ public class ProcessServiceImpl implements ProcessService {
             final String created, final String lastUpdated, NativeType nativeType) throws ImportException {
         ProcessModelVersion pmv;
         ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
-        pmv = createProcessModelVersion(branch, version, nativeType, null, null);
+        pmv = createProcessModelVersion(branch, version, nativeType, null);
         return pmv;
     }
 
@@ -681,8 +616,8 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, NativeType nativeType,
-            final Canonical proModGrap, final String netId) {
+    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, 
+            NativeType nativeType, final String netId) {
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
 

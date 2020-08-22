@@ -52,7 +52,7 @@
         <!-- Apromore WS Models -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
+            <artifactId>portal-model</artifactId>
         </dependency>
 
         <!-- Commons -->

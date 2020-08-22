@@ -5,6 +5,7 @@
     
     <artifact type="configuration" name="site" version="0" />
     <artifact type="configuration" name="git" version="0" />
+    <artifact type="configuration" name="git-core" version="0" />
     
     <!-- OSGi Libraries -->
     <artifact type="bundle" name="org.apromore.eclipse-collections-osgi" version="[1.0.0, 2)"/>
@@ -27,26 +28,12 @@
     <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
 
-    <!-- Load the Schemas for all the Canonisers and Web Application. -->
-    <artifact type="bundle" name="org.apromore.anf-schema" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.bpmn-schema" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.cpf-schema" version="[1.1.0, 2)"/>
-
     <!-- Plugins API -->
     <artifact type="bundle" name="org.apromore.plugin.api-provider" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.annotation-api-provider" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.canoniser-api-provider" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.deployment-api-provider" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.graph" version="[1.1.0, 2)"/>
-    
-    <!-- Canonisers and Annotations -->
-    <artifact type="bundle" name="org.apromore.plugin.canoniser-api" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.canoniser-bpmn" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.annotation-api" version="[1.1.0, 2)"/>
 
     <!-- Manager -->
     <artifact type="bundle" name="org.apromore.manager" version="[1.1.0, 2)" />
-    <artifact type="bundle" name="org.apromore.manager-ws-model" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.portal-model" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-client" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-security" version="[1.1.0, 2)"/>
     
@@ -70,7 +57,7 @@
     <artifact type="bundle" name="org.apromore.plugin.generic-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.about-portal-plugin" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="@about-portal.bundle@" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
     <!--<artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/> -->

@@ -28,11 +28,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.UserType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.GroupAccessType;
+import org.apromore.portal.model.UserType;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

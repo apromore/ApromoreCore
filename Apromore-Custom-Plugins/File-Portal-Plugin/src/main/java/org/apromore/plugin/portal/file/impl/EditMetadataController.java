@@ -25,13 +25,14 @@
 package org.apromore.plugin.portal.file.impl;
 
 import java.util.List;
+import java.util.ArrayList;
 
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.zkoss.spring.SpringUtil;
@@ -167,7 +168,8 @@ public class EditMetadataController extends BaseController {
         Button cancelAllB = (Button) cancelB.getNextSibling();
         Button resetB = (Button) cancelAllB.getNextSibling();
 
-        List<String> domains = mainC.getDomains();
+        // List<String> domains = mainC.getDomains();
+        List<String> domains = new ArrayList<>();
         this.domainCB = new SelectDynamicListController(domains);
         this.domainCB.setReference(domains);
         this.domainCB.setAutodrop(true);

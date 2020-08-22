@@ -115,7 +115,7 @@
             <h:div class="tab-pane fade in active" id="login">
               <h:div class="ap-form">
                 <h:h4 class="ap-form-heading">
-                  Login to Apromore
+                  ${labels.brand.login}
                 </h:h4>
                 <h:form method="post" action="j_spring_security_check" name="login_form" data-t="form-login">
                   <h:fieldset>

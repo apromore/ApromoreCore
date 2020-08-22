@@ -24,13 +24,14 @@
 
 package org.apromore.plugin.similaritysearch.portal;
 
-import org.apromore.model.*;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.dialogController.FolderTreeController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.*;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analyze";
+        return "Redesign";
     }
 
     @Override
@@ -120,7 +121,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             e.printStackTrace();
         }
 
-        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW);
+        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW, ((PluginPortalContext)context).getMainController());
 
         Row algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
         Row buttonsR = (Row) this.similaritySearchW.getFellow("similaritySearchButtons");

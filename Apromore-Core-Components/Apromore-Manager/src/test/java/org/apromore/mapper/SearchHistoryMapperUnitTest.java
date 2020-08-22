@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.dao.model.SearchHistory;
-import org.apromore.model.SearchHistoriesType;
+import org.apromore.portal.model.SearchHistoriesType;
 import org.junit.Before;
 import org.junit.Test;
 

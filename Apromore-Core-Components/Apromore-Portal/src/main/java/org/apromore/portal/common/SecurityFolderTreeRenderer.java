@@ -28,12 +28,12 @@ import org.apromore.dao.model.Group;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
 import org.apromore.portal.dialogController.SecuritySetupController;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.GroupAccessType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +97,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
         switch (ctn.getType()) {
         case Folder:
             FolderType folder = (FolderType) ctn.getData();
-            FolderType currentFolder = UserSessionManager.getCurrentFolder();
+            FolderType currentFolder = this.securitySetupController.getMainController().getPortalSession().getCurrentFolder();
 
             if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, currentFolder)) {
                 treeItem.setOpen(true);
@@ -131,6 +131,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
                 hl.appendChild(new Label(processName));
                 dataRow.setSclass("ap-tree-leave");
+                dataRow.setTooltiptext(processName);
             }
             break;
 
@@ -144,6 +145,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
                 hl.appendChild(new Label(processName));
                 dataRow.setSclass("ap-tree-leave");
+                dataRow.setTooltiptext(processName);
             }
             break;
 

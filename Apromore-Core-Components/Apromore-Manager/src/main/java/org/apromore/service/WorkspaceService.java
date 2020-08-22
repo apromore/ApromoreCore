@@ -27,8 +27,13 @@ package org.apromore.service;
 import java.util.List;
 
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -99,4 +104,75 @@ public interface WorkspaceService {
      * @param process the process model we are restricting access to.
      */
     void removePublicStatusForUsers(final Process process);
+    
+    /**
+     * Copy log to a new folder for a user
+     * @param logId
+     * @param targetFolderId
+     * @param userName
+     * @param isPublic
+     * @return: new copied log
+     * @throws Exception
+     */
+    Log copyLog(Integer logId, Integer targetFolderId, String userName, boolean isPublic) throws Exception;
+    
+    /**
+     * Move log to a new folder
+     * @param logId
+     * @param newFolderId
+     * @return the new moved log
+     * @throws Exception
+     */
+    Log moveLog(Integer logId, Integer newFolderId) throws Exception;
+    
+    /**
+     * Copy a set of process model versions to a new folder for a user 
+     * @param processId
+     * @param pmvVersions
+     * @param newFolderId
+     * @param userName
+     * @param isPublic
+     * @return the copied process model
+     * @throws Exception
+     */
+    Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId, String userName, boolean isPublic) throws Exception;
+    
+    /**
+     * Copy a process model (with all process model versions) to a new folder for a user
+     * @param processId
+     * @param newFolderId
+     * @param userName
+     * @param isPublic
+     * @return the copied process model
+     * @throws Exception
+     */
+    Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic) throws Exception;
+    
+    /**
+     * Move a process model (with all process model versions) to a new folder
+     * @param processId
+     * @param newFolderId
+     * @return the moved process model
+     * @throws Exception
+     */
+    Process moveProcess(Integer processId, Integer newFolderId) throws Exception;
+    
+    /**
+     * Copy a folder to a new parent folder; all subfolders and items are copied recursively
+     * @param folderId
+     * @param sourceFolderId
+     * @param targetFolderId
+     * @return
+     * @throws Exception
+     */
+    Folder copyFolder(Integer folderId, Integer sourceFolderId, Integer targetFolderId) throws Exception;
+    
+    /**
+     * Move a folder to a new parent folder
+     * @param folderId
+     * @param newParentFolderId
+     * @return the moved folder
+     * @throws Exception
+     */
+    Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
 }

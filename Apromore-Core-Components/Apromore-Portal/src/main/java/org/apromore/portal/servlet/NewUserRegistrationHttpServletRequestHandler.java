@@ -26,9 +26,9 @@ package org.apromore.portal.servlet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.MembershipType;
-import org.apromore.model.UserType;
 import org.apromore.portal.common.WebAttributes;
+import org.apromore.portal.model.MembershipType;
+import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

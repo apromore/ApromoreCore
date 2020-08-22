@@ -77,6 +77,7 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
         List<LogEventModel> logData = new ArrayList<>();
         String errorMessage = "Field is empty or has a null value!";
+        boolean rowLimitExceeded = false;
 
         while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) { // new row, new event.
             validRow = true;
@@ -173,7 +174,10 @@ class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             logData.add(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
         }
 
-        return new LogModelImpl(sortTraces(logData), logErrorReport);
+        if (!isValidLineCount(lineIndex - 1)) {
+            rowLimitExceeded = true;
+        }
+        return new LogModelImpl(sortTraces(logData), logErrorReport, rowLimitExceeded);
 
     }
 

@@ -26,12 +26,12 @@ package org.apromore.portal.dialogController;
 
 import java.util.Collection;
 
-import org.apromore.model.FolderType;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeRenderer;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.FolderType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -76,7 +76,7 @@ public class NavigationController extends BaseController {
      * Loads the workspace.
      */
     public void loadWorkspace() {
-        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
+        FolderTreeModel model = new FolderTreeModel(new FolderTree(false, mainC).getRoot(), null);
         tree.setItemRenderer(new FolderTreeRenderer(mainC));
         tree.setModel(model);
     }
@@ -97,7 +97,7 @@ public class NavigationController extends BaseController {
     }
  
     public void currentFolderChanged() {
-        updateFolders(tree, UserSessionManager.getCurrentFolder());
+        updateFolders(tree, mainC.getPortalSession().getCurrentFolder());
     }
 
     /**

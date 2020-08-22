@@ -24,12 +24,13 @@
 
 package org.apromore.portal.common;
 
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummariesType;
-import org.apromore.model.SummaryType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,9 +47,15 @@ public class FolderTree {
 
     private FolderTreeNode root;
     private boolean loadAll = false;
+    private int currentFolderId;
+    private int autoSelectFolder;
+    private FolderTreeNode currentFolder;
+    MainController mainController;
 
-    public FolderTree(boolean loadAll) {
+    public FolderTree(boolean loadAll, MainController mainController) {
+        this.mainController = mainController;
         this.loadAll = loadAll;
+        this.autoSelectFolder = 0;
         root = new FolderTreeNode((FolderType) null, null, true, FolderTreeNodeTypes.Folder);
 
         FolderType folder = new FolderType();
@@ -57,7 +64,30 @@ public class FolderTree {
         FolderTreeNode homeNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
 
         root.add(homeNode);
-        buildTree(homeNode, UserSessionManager.getTree(), 0, new HashSet<Integer>());
+        buildTree(homeNode, mainController.getPortalSession().getTree(), 0, new HashSet<Integer>());
+    }
+
+    public FolderTree(boolean loadAll, int currentFolderId, MainController mainController) {
+        this.mainController = mainController;
+        this.loadAll = loadAll;
+        this.currentFolderId = currentFolderId;
+        this.autoSelectFolder = 1;
+        root = new FolderTreeNode((FolderType) null, null, true, FolderTreeNodeTypes.Folder);
+
+        if (currentFolderId == 0) {
+            currentFolder = root;
+        }
+        FolderType folder = new FolderType();
+        folder.setId(0);
+        folder.setFolderName("Home");
+        FolderTreeNode homeNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
+
+        root.add(homeNode);
+        buildTree(homeNode, mainController.getPortalSession().getTree(), 0, new HashSet<Integer>());
+    }
+
+    public FolderTreeNode getCurrentFolder() {
+        return currentFolder;
     }
 
     private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId, HashSet<Integer> set) {
@@ -68,6 +98,9 @@ public class FolderTree {
 
                 FolderTreeNode childNode = new FolderTreeNode(folder, null, !loadAll, FolderTreeNodeTypes.Folder);
                 set.add(folder.getId());
+                if (this.autoSelectFolder == 1 && currentFolderId == folder.getId()) {
+                    currentFolder = childNode;
+                }
 
                 if (folder.getFolders().size() > 0) {
                     node.add(buildTree(childNode, folder.getFolders(), folder.getId(), set));

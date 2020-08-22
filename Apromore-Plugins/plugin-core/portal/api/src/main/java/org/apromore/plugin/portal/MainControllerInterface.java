@@ -26,9 +26,9 @@ package org.apromore.plugin.portal;
 
 import java.util.Set;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 
 public interface MainControllerInterface {
 

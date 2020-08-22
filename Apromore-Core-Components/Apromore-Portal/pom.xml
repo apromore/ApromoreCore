@@ -62,7 +62,6 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Bundle>
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
@@ -70,7 +69,7 @@
                             com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
                             jackson-core-lgpl;version="[1.9.12,2.0.0]",
                             jackson-mapper-lgpl;version="[1.9.12,2.0.0]",
-                            org.apromore.manager-ws-model;version="[1.1,1.1]",
+                            org.apromore.portal-model;version="[1.1,1.1]",
                             org.apromore.manager-client;version="[1.1,1.1]",
                             org.apromore.manager-security;version="[1.1,1.1]",
                             <!--org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",-->
@@ -186,7 +185,7 @@
 
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
+            <artifactId>portal-model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
@@ -234,10 +233,6 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>

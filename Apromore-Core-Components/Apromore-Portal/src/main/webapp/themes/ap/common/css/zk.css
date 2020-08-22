@@ -855,10 +855,26 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 
 .z-errorbox {
     box-shadow: 1px 2px 2px 1px rgba(127, 127, 127, 0.2);
-    width: 200px;
+    width: 260px;
 }
 
 .z-errorbox-content {
     padding: 5px 20px 4px 34px;
     border: none;
+}
+
+.z-toolbarbutton-content>img, .z-toolbarbutton-content>i {
+    margin-right: 2px;
+    max-height: 22px;
+    max-width: 22px;
+    font-size: 16px;
+}
+
+.z-menuseparator {
+    border-bottom-width: 1px !important;
+    width: 100% !important;
+}
+
+.z-menuitem-image {
+    max-height: 18px;
 }

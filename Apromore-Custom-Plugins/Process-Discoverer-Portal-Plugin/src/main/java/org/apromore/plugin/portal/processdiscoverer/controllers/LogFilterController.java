@@ -53,5 +53,6 @@ public class LogFilterController extends AbstractController implements LogFilter
     }
 
     public void subscribeFilterResult() {}
-    
+
+    public void clearFilter() throws Exception {}
 }

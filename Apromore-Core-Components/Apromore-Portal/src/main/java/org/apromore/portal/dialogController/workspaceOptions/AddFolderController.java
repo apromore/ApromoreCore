@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController.workspaceOptions;
 
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
@@ -94,7 +95,8 @@ public class AddFolderController extends BaseController {
 
             LOGGER.warning("folderName " + folderName);
             String userId = UserSessionManager.getCurrentUser().getId();
-            int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+            FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
+            int currentParentFolderId = currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
             this.mainController.getService().createFolder(userId, folderName, currentParentFolderId);
             this.mainController.reloadSummaries();
 

@@ -121,6 +121,16 @@ public class ProcessModelAttribute implements java.io.Serializable {
     public void setProcessModelVersion(ProcessModelVersion processModelVersion) {
         this.processModelVersion = processModelVersion;
     }
+    
+    @Override
+    public ProcessModelAttribute clone() {
+        ProcessModelAttribute pma = new ProcessModelAttribute();
+        pma.setAny(this.getAny());
+        pma.setName(this.getName());
+        pma.setProcessModelVersion(this.getProcessModelVersion());
+        pma.setValue(this.getValue());
+        return pma;
+    }
 
 }
 

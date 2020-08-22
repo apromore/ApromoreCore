@@ -40,11 +40,11 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.MembershipType;
-import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.MembershipType;
+import org.apromore.portal.model.UserType;
 import org.apromore.security.ApromoreWebAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public abstract class UserSessionManager {
     /**
      * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
      */
-    static Map<String,ApromoreSession> editSessionMap = new HashMap<>();
+    //static Map<String,ApromoreSession> editSessionMap = new HashMap<>();
 
     public static void setCurrentUser(UserType user) {
         setAttribute(USER, user);
@@ -177,17 +177,21 @@ public abstract class UserSessionManager {
 
     // TODO: fix the memory leak by reclaiming stale sessions
     public static void setEditSession(String id, ApromoreSession session) {
-        editSessionMap.put(id, session);
+        //editSessionMap.put(id, session);
+        setAttribute(id, session);
     }
 
     public static ApromoreSession getEditSession(String id) {
-        return editSessionMap.get(id);
+        //return editSessionMap.get(id);
+        return (ApromoreSession) getAttribute(id);
     }
     
     public static void removeEditSession(String id) {
-        editSessionMap.remove(id);
+        //editSessionMap.remove(id);
+        Sessions.getCurrent().removeAttribute(id);
     }
 
+    /*
     public static void setCurrentFolder(FolderType folder) {
         setAttribute(CURRENT_FOLDER, folder);
         if (folder != null && getMainController() != null) {
@@ -257,6 +261,7 @@ public abstract class UserSessionManager {
 
         return null;
     }
+    */
 
     public static void setMainController(MainController mainController) {
         setAttribute(MAIN_CONTROLLER, mainController);

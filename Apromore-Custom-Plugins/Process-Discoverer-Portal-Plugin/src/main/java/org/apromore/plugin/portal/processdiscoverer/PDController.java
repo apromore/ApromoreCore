@@ -33,8 +33,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
@@ -56,12 +54,16 @@ import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -97,6 +99,8 @@ import org.zkoss.zul.Window;
  * and Process Visualizer will be called to clean up themselves.
  */
 public class PDController extends BaseController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
 
     ///////////////////// LOCAL CONSTANTS /////////////////////////////
 
@@ -156,6 +160,8 @@ public class PDController extends BaseController {
     private TimeStatsController timeStatsController;
     private ProcessVisualizer processVisualizer;
 
+    private LogFilterController logFilterController;
+
     //////////////////// DATA ///////////////////////////////////
 
     private String pluginSessionId; // the session ID of this plugin
@@ -191,6 +197,9 @@ public class PDController extends BaseController {
         if (portalSession == null) return false;
         PortalContext portalContext = (PortalContext) portalSession.get("context");
         LogSummaryType logSummary = (LogSummaryType) portalSession.get("selection");
+
+        Sessions.getCurrent().setAttribute("sourceLogId", logSummary.getId());
+
         if (portalContext == null || logSummary == null) return false;
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
@@ -207,12 +216,12 @@ public class PDController extends BaseController {
     // because of system crashes or modules crashed/undeployed
     private boolean prepareSystemServices() {
         //canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
-        domainService = (DomainService) beanFactory.getBean("domainService");
-        processService = (ProcessService) beanFactory.getBean("processService");
-        eventLogService = (EventLogService) beanFactory.getBean("eventLogService");
-        logAnimationPluginInterface = (LogAnimationPluginInterface) beanFactory.getBean("logAnimationPlugin");
-        logFilterPlugin = (LogFilterPlugin) beanFactory.getBean("logFilterPlugin");
-        
+        domainService = (DomainService) Sessions.getCurrent().getAttribute("domainService"); //beanFactory.getBean("domainService");
+        processService = (ProcessService) Sessions.getCurrent().getAttribute("processService"); //beanFactory.getBean("processService");
+        eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService"); //beanFactory.getBean("eventLogService");
+        logAnimationPluginInterface = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPlugin"); //beanFactory.getBean("logAnimationPlugin");
+        logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
+
         if (domainService == null || processService == null ||
                 eventLogService == null || logAnimationPluginInterface == null ||
                 logFilterPlugin == null) {
@@ -310,6 +319,7 @@ public class PDController extends BaseController {
         }
         catch (Exception ex) {
             Messagebox.show("Error occurred while initializing: " + ex.getMessage());
+            LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
         }
     }
 
@@ -376,6 +386,13 @@ public class PDController extends BaseController {
         }
     }
 
+    private LogFilterController getFilterController() throws Exception {
+        if (logFilterController == null) {
+            logFilterController = pdFactory.createLogFilterController(this);
+        }
+        return logFilterController;
+    }
+
     private void initializeEventListeners() {
         PDController me = this;
         try {
@@ -427,15 +444,22 @@ public class PDController extends BaseController {
                         Messagebox.OK | Messagebox.CANCEL,
                         Messagebox.QUESTION,
                         new org.zkoss.zk.ui.event.EventListener() {
-                            public void onEvent(Event evt) throws Exception {
+                            public void onEvent(Event evt) {
                                 if (evt.getName().equals("onOK")) {
-                                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                                    try {
+                                        me.clearFilter();
+                                    } catch (Exception e) {
+                                        Messagebox.show("Unable to clear the filter", "Filter error", Messagebox.OK, Messagebox.ERROR);
+                                    }
+                                    /*
+                                    LogFilterController logFilterController = me.getFilterController();
                                     logFilterController.subscribeFilterResult();
 
                                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
                                     if (eqFilteredView != null) {
                                         eqFilteredView.publish(new Event("ctrl", null, "removeall"));
                                     }
+                                    */
                                 }
                             }
                         }
@@ -448,14 +472,14 @@ public class PDController extends BaseController {
                 public void onEvent(Event event) throws Exception {
                     Clients.showBusy("Launch Filter Dialog ...");
                     String payload = event.getData().toString();
-                    LogFilterController logFilterController = pdFactory.createLogFilterController(me);
+                    LogFilterController logFilterController = me.getFilterController();
                     logFilterController.onEvent(event);
                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
                     eqFilteredView.publish(new Event("ctrl", null, payload));
                     Clients.clearBusy();
                 }
             });
-            filter.addEventListener("onClick", pdFactory.createLogFilterController(this));
+            filter.addEventListener("onClick", this.getFilterController());
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
     
             exportFilteredLog.addEventListener("onExport", pdFactory.createLogExportController(this));
@@ -496,6 +520,10 @@ public class PDController extends BaseController {
             Messagebox.show("Errors occured while initializing event handlers.");
         }
 
+    }
+
+    private void clearFilter() throws Exception {
+        this.getFilterController().clearFilter();
     }
 
     private void setLayout(String layout) throws Exception {
@@ -694,7 +722,7 @@ public class PDController extends BaseController {
     public void setPerspective(String value, String label) throws Exception {
         if (!value.equals(userOptions.getMainAttributeKey())) {
             perspectiveSelected.setValue(label);
-            perspectiveSelected.setClientAttribute("title", label);
+            perspectiveSelected.setTooltiptext(label);
             animate.setDisabled(!value.equals(configData.getDefaultAttribute()));
             userOptions.setMainAttributeKey(value);
             logData.setMainAttribute(value);

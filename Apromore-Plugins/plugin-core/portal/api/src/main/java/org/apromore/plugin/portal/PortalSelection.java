@@ -24,13 +24,13 @@
 
 package org.apromore.plugin.portal;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 
 /**
  * Provides access to the current selection in the portal

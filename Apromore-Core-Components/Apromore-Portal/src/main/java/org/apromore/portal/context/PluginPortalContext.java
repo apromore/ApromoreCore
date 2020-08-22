@@ -31,16 +31,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalSelection;
 import org.apromore.plugin.portal.PortalUI;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -109,12 +109,16 @@ public class PluginPortalContext implements PortalContext {
     /**
      * Bruce 17.05.2019: Do not use UserSessionManager as it does not work outside the portal ZK environment
      * Apromore has webapp bundles with its own ZK environment
+     *
+     * Ivo: Get current folder from the portal session
      */
     @Override
     public FolderType getCurrentFolder() {
-        //return UserSessionManager.getCurrentFolder();
-    	Desktop desktop = mainController.getDesktop();
-    	return (FolderType)desktop.getSession().getAttribute(UserSessionManager.CURRENT_FOLDER);
+        // return UserSessionManager.getCurrentFolder();
+        // Bruce:
+    	// Desktop desktop = mainController.getDesktop();
+    	// return (FolderType)desktop.getSession().getAttribute(UserSessionManager.CURRENT_FOLDER);
+    	return mainController.getPortalSession().getCurrentFolder();
     }
 
     /**

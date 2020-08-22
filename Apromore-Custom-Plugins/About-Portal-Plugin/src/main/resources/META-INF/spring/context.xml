@@ -31,9 +31,13 @@
 
     <!-- Expose the components as OSGi services -->
 
-    <!--
-    <beans:bean id="portalPlugin4" class="org.apromore.plugin.portal.about.AboutPlugin" />
-    <osgi:service ref="portalPlugin4" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-    -->
+    <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.about.AboutPlugin" />
+    <osgi:service ref="portalPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+
+    <service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
+            <beans:constructor-arg type="Object" ref="portalPlugin"/>
+        </beans:bean>
+    </service>
 
 </beans:beans>

@@ -42,7 +42,6 @@
     <http pattern="/robots.txt" security="none"/>
     <http pattern="/zkau/**" security="none"/>
 
-    <http pattern="/info.zul*" security="none"/>
     <http pattern="/register/**" security="none"/>
     <http pattern="/services/**" security="none"/>
 

@@ -27,18 +27,17 @@ package org.apromore.portal.dialogController.renderer;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.FolderSummaryType;
-import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderSummaryType;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.DateTimeNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     private MainController mainController;
 
-
     public SummaryItemRenderer(MainController main) {
         this.mainController = main;
     }
@@ -75,14 +73,18 @@ public class SummaryItemRenderer implements ListitemRenderer {
     public void render(Listitem listItem, Object obj, int index) {
         List<PortalProcessAttributePlugin> plugins = (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins");
 
-        listItem.setStyle("height: 25px");
+        // listItem.setStyle("height: 25px");
         if (obj instanceof ProcessSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-model");
             renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
         } else if (obj instanceof LogSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-log");
             renderLogSummary(listItem, (LogSummaryType) obj, plugins);
         } else if (obj instanceof FolderSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolderSummary(listItem, (FolderSummaryType) obj, plugins);
         } else if (obj instanceof FolderType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolder(listItem, (FolderType) obj, plugins);
         } else {
             LOGGER.error("Unknown item to render in the process summary list box.");
@@ -172,7 +174,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                // UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                mainController.getPortalSession().setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }
@@ -210,7 +213,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                UserSessionManager.setCurrentFolder(folder);
+                // UserSessionManager.setCurrentFolder(folder);
+                mainController.getPortalSession().setCurrentFolder(folder);
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }
@@ -433,14 +437,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
             }
         }
         return result;
-    }
-
-
-    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
-        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
-            return annotations.get(annotations.size() - 1);
-        }
-        return null;
     }
 
 }

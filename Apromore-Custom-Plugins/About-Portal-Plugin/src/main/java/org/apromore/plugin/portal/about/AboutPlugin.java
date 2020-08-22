@@ -24,7 +24,7 @@ package org.apromore.plugin.portal.about;
 
 import java.util.*;
 
-import org.apromore.model.PluginInfo;
+import org.apromore.portal.model.PluginInfo;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.ConfigBean;
@@ -41,8 +41,13 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     private String label = "About Apromore";
     private String groupLabel = "About";
+    public String commitId = "";
+    public String buildDate = "";
 
     // PortalPlugin overrides
+
+    public String getCommitId() { return this.commitId; }
+    public String getBuildDate() { return this.buildDate; }
 
     @Override
     public String getLabel(Locale locale) {
@@ -56,7 +61,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "icon.svg";
+        return "/about-icon.svg";
     }
 
     @Override
@@ -68,7 +73,12 @@ public class AboutPlugin extends DefaultPortalPlugin {
             Map args = new HashMap();
             args.put("community", config.isCommunity());
             args.put("edition", config.getVersionEdition());
-            args.put("version", config.getMajorVersionNumber() + " (commit " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() + ")");
+            args.put("version", config.getMajorVersionNumber() +
+                " (commit " +
+                    getCommitId() + " built on " + getBuildDate() + " / core: " +
+                    config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() +
+                ")"
+            );
             final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/about.zul", null, args);
             pluginWindow.setAttribute("version", "dummy");
 

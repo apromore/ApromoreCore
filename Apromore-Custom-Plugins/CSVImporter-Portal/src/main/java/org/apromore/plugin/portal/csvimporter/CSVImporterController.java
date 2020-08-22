@@ -2,23 +2,22 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 The University of Melbourne.
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
- * Copyright (C) 2020, Apromore Pty Ltd.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 3 of the
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program.
- * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
  */
 
 package org.apromore.plugin.portal.csvimporter;
@@ -26,10 +25,14 @@ package org.apromore.plugin.portal.csvimporter;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import org.apache.commons.lang.StringUtils;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.*;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.apromore.service.UserMetadataService;
+import org.apromore.service.csvimporter.*;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +41,6 @@ import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -62,15 +64,23 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
 
+    /** Attribute of the ZK session containing this controller's arguments. */
+    static final String SESSION_ATTRIBUTE_KEY = "csvimport";
+
     // Fields injected from Spring beans/OSGi services
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
+    private UserMetadataService userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
 
+    /* This is the better way to pass parameters, but it only works when opening the ZUL within the same browser window.
     // Fields injected from the ZK execution
     private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
     private Media media = (Media) Executions.getCurrent().getArg().get("media");
     private JSONObject mappingJSON = (JSONObject) Executions.getCurrent().getArg().get("mappingJSON");
+    */
 
     // Fields injected from the ZK session
+    private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("csvImporterLogic");
+    private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
 
     // Fields injected from csvimporter.zul
@@ -107,80 +117,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
             if (csvReader != null) {
-
-                LogSample tempSample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
-
-                if (mappingJSON != null) {
-//        jsonMapping.put("header", logSample.getHeader());
-//        jsonMapping.put("caseIdPos", logSample.getCaseIdPos());
-//        jsonMapping.put("activityPos", logSample.getActivityPos());
-//        jsonMapping.put("endTimestampPos", logSample.getEndTimestampPos());
-//        jsonMapping.put("startTimestampPos", logSample.getStartTimestampPos());
-//        jsonMapping.put("resourcePos", logSample.getResourcePos());
-//        jsonMapping.put("caseAttributesPos", logSample.getCaseAttributesPos());
-//        jsonMapping.put("eventAttributesPos", logSample.getEventAttributesPos());
-//        jsonMapping.put("otherTimestamps", logSample.getOtherTimestamps());
-//        jsonMapping.put("ignoredPos", logSample.getIgnoredPos());
-//        jsonMapping.put("endTimestampFormat", logSample.getEndTimestampFormat());
-//        jsonMapping.put("startTimestampFormat", logSample.getStartTimestampFormat());
-
-
-                    tempSample.setCaseIdPos((Integer) mappingJSON.get("caseIdPos"));
-                    tempSample.setActivityPos((Integer) mappingJSON.get("activityPos"));
-                    tempSample.setEndTimestampFormat((String) mappingJSON.get("endTimestampFormat"));
-                    tempSample.setEndTimestampPos((Integer) mappingJSON.get("endTimestampPos"));
-                    tempSample.setStartTimestampFormat((String) mappingJSON.get("startTimestampFormat"));
-                    tempSample.setStartTimestampPos((Integer) mappingJSON.get("startTimestampPos"));
-                    tempSample.setResourcePos((Integer) mappingJSON.get("resourcePos"));
-//                    tempSample.getHeader().addAll((List<String>) mappingJSON.get("header"));
-                    tempSample.getEventAttributesPos().clear();
-                    tempSample.getEventAttributesPos().addAll((List<Integer>) mappingJSON.get(
-                            "eventAttributesPos"));
-                    tempSample.getCaseAttributesPos().clear();
-                    tempSample.getCaseAttributesPos().addAll((List<Integer>) mappingJSON.get("caseAttributesPos"));
-                    tempSample.getIgnoredPos().clear();
-                    tempSample.getIgnoredPos().addAll((List<Integer>) mappingJSON.get("ignoredPos"));
-//                    tempSample.getLines().addAll((List<List<String>>) mappingJSON.get("ignoredPos"));
-
-
-                    Object otherTimestamps = mappingJSON.get("otherTimestamps");
-//                    Map<Integer, String> otherTimestampsObject  = (Map<Integer, String>) JSONValue.parse(mappingJSON.get("otherTimestamps").toString()) ;
-//                    Object otherTimestampsObject = JSONValue.parse(mappingJSON.get(
-//                            "otherTimestamps").toString());
-
-
-                    Map<Integer, String> otherTimestampsMap = (Map<Integer, String>) otherTimestamps;
-
-                    Map<Integer, String> otherTimestampsMap2 = new HashMap<>();
-//                    otherTimestampsMap2.putAll(otherTimestampsMap);
-
-                    Iterator it=otherTimestampsMap.entrySet().iterator();
-                    while(it.hasNext()) {
-                        Map.Entry entry=(Map.Entry)it.next();
-                        Object key=entry.getKey();
-                        if(key!=null) {
-                            otherTimestampsMap2.put(Integer.parseInt(key.toString()), otherTimestampsMap.get(key));
-                        }
-                    }
-
-//                    ObjectMapper mapper = new ObjectMapper();
-//                    otherTimestampsMap = mapper.readValue(mappingJSON.get("otherTimestamps").toString(), Map.class);
-
-//                    for (int i = 0; i < otherTimestamps.size(); i++) {
-//                        String format = otherTimestamps.get(i);
-//                                jsoncargo.getJsonObject(i).getString("type");
-//                        Integer postion = jsoncargo.getJsonObject(i).getInt("amount");
-//                        otherTimestampsMap.put(type, amount);
-//                    }
-
-                    tempSample.getOtherTimestamps().clear();
-                    tempSample.getOtherTimestamps().putAll(otherTimestampsMap2);
-
-
-                }
-
-                this.sample = tempSample;
-
+                this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
                 if (sample != null) {
 
                     //TODO:
@@ -307,7 +244,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
 
         //TODO: fix logId
-        eventLogService.saveLayoutByLogId(90, userId, jsonStr);
+//        eventLogService.saveLayoutByLogId(90, userId, jsonStr);
 
 
         return null;
@@ -553,7 +490,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
                         (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
                         (myItem.getKey().equals(startTimestampLabel) && sample.getStartTimestampPos() == pos) ||
-                        (myItem.getKey().equals(otherTimestampLabel) && ((Map<Integer, String>) sample.getOtherTimestamps()).containsKey(pos)) ||
+                        (myItem.getKey().equals(otherTimestampLabel) && sample.getOtherTimestamps().containsKey(pos)) ||
                         (myItem.getKey().equals(resourceLabel) && sample.getResourcePos() == pos) ||
                         (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||
@@ -938,10 +875,58 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     isPublic  // public?
             );
 
-            Messagebox.show(MessageFormat.format(getLabels().getString("successful_upload"), xesModel.getRowsCount()),
-                            new Messagebox.Button[] {Messagebox.Button.OK},
-                            event -> close());
+            String successMessage;
+            if (xesModel.isRowLimitExceeded()) {
+                successMessage = MessageFormat.format(getLabels().getString("limit_reached"), xesModel.getRowsCount());
+            } else {
+                successMessage = MessageFormat.format(getLabels().getString("successful_upload"), xesModel.getRowsCount());
+            }
+            Messagebox.show(successMessage, new Messagebox.Button[] {Messagebox.Button.OK}, event -> close());
             portalContext.refreshContent();
+
+            // TODO: remove test code
+//            userMetadataService.saveUserMetadataLinkedToOneLog("testCSV content", UserMetadataTypeEnum.CSV_IMPORTER,
+//                    "admin", 140);
+
+
+
+//            List<Integer> logIdlist = new ArrayList<>();
+//            logIdlist.add(138);
+//            logIdlist.add(139);
+//
+//            userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.CSV_IMPORTER, "admin",
+//                    logIdlist);
+//            Set<Usermetadata> usermetadatatest = userMetadataService.getUserMetadata("admin", logIdlist,
+//                    UserMetadataTypeEnum.CSV_IMPORTER);
+//            for(Usermetadata usermetadata : usermetadatatest) {
+//                LOGGER.info("RESULT:::::::::" + usermetadata.getId());
+//            }
+
+
+
+//            userMetadataService.saveUserMetadataLinkedToOneLog("test metadata content",
+//                    UserMetadataTypeEnum.DASHBOARD, "admin", 138);
+//            userMetadataService.updateUserMetadata(16, username, "new content");
+//            userMetadataService.deleteUserMetadata(17, username);
+//            for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166,
+//                    UserMetadataTypeEnum.DASHBOARD)) {
+//                LOGGER.info("RESULT :" + usermetadata.getId() + usermetadata.getContent());
+//            }
+//            LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));
+//            LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 10));
+
+//            userMetadataService.saveDashTemplate("dash template", "admin");
+
+//            List logIdList = new LinkedList();
+//            logIdList.add(221);
+//            logIdList.add(222);
+//            logIdList.add(223);
+//            Set<Usermetadata> usermetadataList = new HashSet<>();
+//            usermetadataList = userMetadataService.getUserMetadata("admin", logIdList,
+//                    UserMetadataTypeEnum.CSV_IMPORTER);
+//            for (Usermetadata usermetadata : usermetadataList) {
+//                LOGGER.info("RESULT :" + usermetadata.getId() + usermetadata.getContent());
+//            }
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
