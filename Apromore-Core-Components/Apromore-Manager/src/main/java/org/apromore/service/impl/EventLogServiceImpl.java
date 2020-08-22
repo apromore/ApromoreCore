@@ -314,12 +314,8 @@ public class EventLogServiceImpl implements EventLogService {
         return publicGroupLogs;
     }
 
-    /**
-     * @param user  a user
-     * @param logId identifier for a log
-     * @return whether the <var>user</var> should be allowed to update the log identified by <var>logId</var>
-     */
-    private boolean canUserWriteLog(User user, Integer logId) {
+    public boolean canUserWriteLog(String username, Integer logId) throws UserNotFoundException {
+        User user = userSrv.findUserByLogin(username);
         for (GroupLog gl : groupLogRepo.findByLogAndUser(logId, user.getRowGuid())) {
             if (gl.getHasWrite()) {
                 return true;
@@ -626,7 +622,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public void deleteLogs(List<Log> logs, User user) throws Exception {
         for (Log log : logs) {
-            if (!canUserWriteLog(user, log.getId())) {
+            if (!canUserWriteLog(user.getUsername(), log.getId())) {
                 throw new NotAuthorizedException("Log with id " + log.getId() + " may not be deleted by " + user.getUsername());
             }
             Log realLog = logRepo.findUniqueByID(log.getId());
