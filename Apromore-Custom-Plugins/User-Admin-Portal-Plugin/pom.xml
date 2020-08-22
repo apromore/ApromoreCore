@@ -51,6 +51,12 @@
             <version>1.1</version>
         </dependency>
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-portal</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
