@@ -142,4 +142,14 @@ public class UserServiceImpl implements UserService {
         dbUser.setSearchHistories(history);
         userRepo.save(dbUser);
     }
+
+    @Override
+    public User findUserByRowGuid(String rowGuid) throws UserNotFoundException {
+        User user = userRepo.findByRowGuid(rowGuid);
+        if (user != null) {
+            return user;
+        } else {
+            throw new UserNotFoundException("User with rowGuid (" + rowGuid + ") could not be found.");
+        }
+    }
 }

@@ -21,6 +21,7 @@
  */
 package org.apromore.service;
 
+import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.UserMetadataTypeEnum;
@@ -134,4 +135,6 @@ public interface UserMetadataService {
      * @throws UserNotFoundException Can't find a user with specified username
      */
     Set<Usermetadata> getDashTemplate(String username) throws UserNotFoundException;
+
+    User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
 }

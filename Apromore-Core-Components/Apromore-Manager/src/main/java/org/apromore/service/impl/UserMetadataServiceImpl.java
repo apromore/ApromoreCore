@@ -393,4 +393,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         return usermetadataList.size() > 0 ? usermetadataList : null;
     }
 
+    @Override
+    public User findUserByRowGuid(String rowGuid) throws UserNotFoundException {
+        return userSrv.findUserByRowGuid(rowGuid);
+    }
+
 }

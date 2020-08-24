@@ -66,4 +66,6 @@ public interface UserService {
      * @param searchHistories the searches the user has executed in the past.
      */
     void updateUserSearchHistory(User user, List<SearchHistory> searchHistories);
+
+    User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
 }
