@@ -31,6 +31,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.service.EventLogFileService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
     private EventLogFileService logFileService;
+    private UserMetadataService userMetadataServ;
 
     @Resource
     private ConfigBean config;
@@ -87,7 +89,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final GroupFolderRepository groupFolderRepository,
                                 final GroupProcessRepository groupProcessRepository,
                                 final GroupLogRepository groupLogRepository,
-                                final EventLogFileService eventLogFileService) {
+                                final EventLogFileService eventLogFileService,
+                                final UserMetadataService userMetadataService) {
 
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
@@ -100,6 +103,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupProcessRepo = groupProcessRepository;
         groupLogRepo = groupLogRepository;
         logFileService = eventLogFileService;
+        userMetadataServ = userMetadataService;
     }
 
 
@@ -312,6 +316,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Log log = logRepo.findOne(logId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupLog(group, log);
+
+        // Sync permission with user metadata that linked to specified log
+//        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid);
+
         return "";
     }
 
@@ -347,6 +355,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             createGroupFolder(group, parentFolder, true, false, false);
             parentFolder = parentFolder.getParentFolder();
         }
+
+        // Sync permission with user metadata that linked to specified log
+        userMetadataServ.saveUserMetadataPermissions(logId, groupRowGuid, hasRead, hasWrite, hasOwnership);
 
         return "";
     }

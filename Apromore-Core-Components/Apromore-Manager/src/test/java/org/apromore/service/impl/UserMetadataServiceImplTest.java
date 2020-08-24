@@ -61,6 +61,7 @@ public class UserMetadataServiceImplTest {
     }
 
     private UserService userSrv;
+    private GroupRepository groupRepo;
 
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     private String now = dateFormat.format(new Date());
@@ -74,12 +75,13 @@ public class UserMetadataServiceImplTest {
         UsermetadataRepository userMetadataRepo = createMock(UsermetadataRepository.class);
         UsermetadataTypeRepository usermetadataTypeRepo = createMock(UsermetadataTypeRepository.class);
         UsermetadataLogRepository usermetadataLogRepo = createMock(UsermetadataLogRepository.class);
+        groupRepo = createMock(GroupRepository.class);
 
         ConfigBean config = new ConfigBean();
 
         UserMetadataService userMetadataService = new UserMetadataServiceImpl(logRepo, groupLogRepo, userSrv,
                 groupUsermetadataRepository,
-                userMetadataRepo, usermetadataTypeRepo, usermetadataLogRepo);
+                userMetadataRepo, usermetadataTypeRepo, usermetadataLogRepo, groupRepo);
     }
 
     @Test

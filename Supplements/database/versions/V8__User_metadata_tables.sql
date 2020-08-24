@@ -82,16 +82,17 @@ CREATE TABLE `usermetadata_process` (
 DROP TABLE IF EXISTS `group_usermetadata`;
 
 CREATE TABLE `group_usermetadata` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `group_id` int(11) DEFAULT NULL COMMENT 'FK GROUP ID',
-  `usermetadata_id` int(11) DEFAULT NULL COMMENT 'FK USER METADATA ID',
-  `has_read` tinyint(1) DEFAULT NULL COMMENT 'Has read permission',
-  `has_write` tinyint(1) DEFAULT NULL COMMENT 'Has write permission',
-  `has_ownership` tinyint(1) DEFAULT NULL COMMENT 'Has owner permission',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `group_id` int(11) NOT NULL COMMENT 'FK GROUP ID',
+  `usermetadata_id` int(11) NOT NULL COMMENT 'FK USER METADATA ID',
+  `has_read` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Has read permission',
+  `has_write` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Has write permission',
+  `has_ownership` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Has owner permission',
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   KEY `user_metadata_id` (`usermetadata_id`),
-  CONSTRAINT `group_usermetadata_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `group_usermetadata_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `group_usermetadata_ibfk_2` FOREIGN KEY (`usermetadata_id`) REFERENCES `usermetadata` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS=1;

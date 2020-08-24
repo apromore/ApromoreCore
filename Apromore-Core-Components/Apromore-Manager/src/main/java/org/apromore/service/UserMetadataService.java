@@ -57,6 +57,26 @@ public interface UserMetadataService {
                                         Integer logId) throws UserNotFoundException;
 
     /**
+     * Assign specified group with permission to all the user metadata that linked to the specified log
+     *
+     * @param logId log ID
+     * @param groupRowGuid group guid
+     * @param hasRead Log READ permission
+     * @param hasWrite Log WRITE permission
+     * @param hasOwnership Log OWNER permission
+     */
+    void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                     boolean hasOwnership);
+
+    /**
+     * Remove permissions of user metadata assigned to specified group and log
+     *
+     * @param logId log ID
+     * @param groupRowGuid group guid
+     */
+    void removeUserMetadataPermissions(Integer logId, String groupRowGuid);
+
+    /**
      * Update a user metadata.
      *
      * @param userMetadataId Id of user metadata

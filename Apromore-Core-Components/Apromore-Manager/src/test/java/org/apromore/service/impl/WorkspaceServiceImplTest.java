@@ -51,6 +51,7 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
 import org.apromore.service.EventLogFileService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -78,6 +79,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository pmvRepo;
     private UserRepository userRepo;
+    private UserMetadataService userMetadataServ;
     
     private ConfigBean config;
     
@@ -96,6 +98,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         processRepo = createMock(ProcessRepository.class);
         pmvRepo = createMock(ProcessModelVersionRepository.class);
         userRepo = createMock(UserRepository.class);
+        userMetadataServ = createMock(UserMetadataService.class);
         
         config = new ConfigBean();
 
@@ -109,9 +112,10 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupFolderRepo,
                                                 groupProcessRepo,
                                                 groupLogRepo,
-                                                logFileService);
+                                                logFileService,
+                                                userMetadataServ);
     }
-    
+
     @Test
     public void testCopyLog() throws Exception {
         // Set up test data
