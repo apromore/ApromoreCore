@@ -283,6 +283,8 @@ public abstract class BaseListboxController extends BaseController {
             if (listHead != null) {
                 listHead.setVisible(false);
             }
+            toggleComponentSclass(btnTileView, true, "ap-btn-off", "ap-btn-on");
+            toggleComponentSclass(btnListView, false, "ap-btn-off", "ap-btn-on");
         } else {
             if (sclass.contains("ap-tiles-view")) {
                 this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
@@ -290,6 +292,8 @@ public abstract class BaseListboxController extends BaseController {
             if (listHead != null) {
                 listHead.setVisible(true);
             }
+            toggleComponentSclass(btnListView, true, "ap-btn-off", "ap-btn-on");
+            toggleComponentSclass(btnTileView, false, "ap-btn-off", "ap-btn-on");
         }
     }
 

@@ -29,6 +29,7 @@ package org.apromore.portal.dialogController;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.Objects;
 
 // Third party packages
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -36,6 +37,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Window;
 
@@ -174,6 +176,17 @@ public class BaseController extends Window {
         return exportPath;
     }
 
+    public void toggleComponentSclass(HtmlBasedComponent comp, boolean state, String stateOff, String stateOn) {
+        String sclass = Objects.requireNonNull(comp.getSclass(), stateOff);
+        if (!sclass.contains(stateOff)) {
+            sclass = sclass + " " + stateOff;
+        }
+        if (state) {
+            comp.setSclass(sclass.replace(stateOff, stateOn));
+        } else {
+            comp.setSclass(sclass.replace(stateOn, stateOff));
+        }
+    }
 
     private void setManagerService(final ManagerService managerService) {
         this.managerService = managerService;
