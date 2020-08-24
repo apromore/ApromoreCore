@@ -99,7 +99,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private Span[] parsedIcons;
     private List<Listbox> dropDownLists;
 
-    ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory("csv");
+    ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory(media.getFormat());
     SampleLogGenerator sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
 
     @Override
@@ -863,4 +863,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
+
+//    private String getMediaNameExtension(Media media) {
+//        String name = media.;
+//        int lastIndexOf = name.lastIndexOf(".");
+//        if (lastIndexOf == -1) {
+//            return ""; // empty extension
+//        }
+//        return name.substring(lastIndexOf);
+//    }
 }
