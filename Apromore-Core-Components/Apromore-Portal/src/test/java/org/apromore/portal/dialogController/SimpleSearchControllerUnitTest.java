@@ -27,36 +27,71 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.model.SearchHistoriesType;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/** Test suite for {@link ImportController}. */
+/** Test suite for {@link SimpleSearchController}. */
 public class SimpleSearchControllerUnitTest {
 
     // Test cases.
 
-    /** Test the {@link ImportController#importFile} method with no file importers and a CSV log. */
-    @Ignore
+    /** Test {@link SimpleSearchController#addSearchHistory} method. */
     @Test
-    public void testAddSearchHistory() throws Exception {
-	
-        List<SearchHistoriesType> result = SimpleSearchController.addSearchHistory(new ArrayList<>(), "one");
-        result = SimpleSearchController.addSearchHistory(result, "two");
-        result = SimpleSearchController.addSearchHistory(result, "three");
-        result = SimpleSearchController.addSearchHistory(result, "four");
-        result = SimpleSearchController.addSearchHistory(result, "five");
-        result = SimpleSearchController.addSearchHistory(result, "six");
-        result = SimpleSearchController.addSearchHistory(result, "seven");
-        result = SimpleSearchController.addSearchHistory(result, "eight");
-        result = SimpleSearchController.addSearchHistory(result, "nine");
-        result = SimpleSearchController.addSearchHistory(result, "ten");
-        result = SimpleSearchController.addSearchHistory(result, "eleven");
+    public void testAddSearchHistory_duplicates_and_overflows() throws Exception {
+        assertEquals(Constants.maxSearches, 10);
 
-        assertEquals(10, result.size());
-        assertEquals("two", result.get(0).getSearch());
-        assertEquals(new Integer(1), result.get(0).getNum());
-        assertEquals("eleven", result.get(9).getSearch());
-        assertEquals(new Integer(10), result.get(9).getNum());
+        // When there are duplicates, only the most recent is retained
+        assertSearchHistory(new String[] {"two", "one"},
+            "one", "two", "one", "two", "one");
+
+        // When more than ten elements are added, the earliest is discarded
+        assertSearchHistory(new String[] {"two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"},
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven");
+
+        // Adding a duplicate to a full history may reorder it but can't change the population
+        assertSearchHistory(new String[] {"two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "one"},
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "one");
+
+        assertSearchHistory(new String[] {"one", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "two"},
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "two");
+
+        assertSearchHistory(new String[] {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"},
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "ten");
+    }
+
+    /** Test whether the {@link SimpleSearchController#addSearchHistory} method corrects invalid states. */
+    @Test
+    public void testAddSearchHistory_error_correction() throws Exception {
+        SearchHistoriesType sh = new SearchHistoriesType();
+        sh.setSearch("one");
+        sh.setNum(1);
+
+        // Create an invalid history with duplicate "one" entries
+        List<SearchHistoriesType> result = new ArrayList<>();
+        result.add(sh);
+        result.add(sh);
+
+        // Perform the method under test
+        result = SimpleSearchController.addSearchHistory(result, "two");
+
+        // Confirm that the invalid duplicate "one" entries have been corrected
+        assertEquals(new String[] {"one", "two"}, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
+    }
+
+    // Internal methods
+
+    /**
+     * @param expected  the expected search history after <var>searches</var> have been added
+     * @param searches  a series of search terms to add to the search history
+     */
+    private void assertSearchHistory(String[] expected, String... searches) throws Exception {
+        List<SearchHistoriesType> result = new ArrayList<>();
+        for (String search: searches) {
+            result = SimpleSearchController.addSearchHistory(result, search);
+        }
+
+        assertEquals(expected, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
     }
 }

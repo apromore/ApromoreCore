@@ -125,7 +125,7 @@ public interface ManagerService {
 
     void updateFolder(int folderId, String folderName, String username);
 
-    void deleteFolder(int folderId, String username);
+    void deleteFolder(int folderId, String username) throws Exception;
 
     String saveFolderPermissions(int folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 

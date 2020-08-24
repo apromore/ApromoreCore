@@ -71,8 +71,12 @@ public class RenameFolderController extends BaseController {
             });
             btnSave.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    Clients.showBusy("Processing...");
-                    Events.echoEvent("onLater", folderEditWindow, null);
+                    submit();
+                }
+            });
+            win.addEventListener("onOK", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    submit();
                 }
             });
             btnCancel.addEventListener("onClick", new EventListener<Event>() {
@@ -91,6 +95,11 @@ public class RenameFolderController extends BaseController {
         }
     }
 
+    private void submit() throws Exception {
+        Clients.showBusy("Processing...");
+        Events.echoEvent("onLater", folderEditWindow, null);
+    }
+
     private void cancel() throws IOException {
         this.folderEditWindow.detach();
     }
@@ -101,7 +110,7 @@ public class RenameFolderController extends BaseController {
 
     private void save() throws InterruptedException {
         try {
-            String folderName = txtName.getValue();
+            String folderName = txtName.getValue().trim();
             if (folderName.isEmpty()) {
                 Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
                 return;
