@@ -10,6 +10,8 @@
 # Generation Time: 2020-08-15 05:58:50 +0000
 # ************************************************************
 
+SET FOREIGN_KEY_CHECKS=0;
+
 DROP TABLE IF EXISTS `usermetadata_type`;
 
 CREATE TABLE `usermetadata_type` (
@@ -35,7 +37,7 @@ CREATE TABLE `usermetadata` (
   PRIMARY KEY (`id`),
   KEY `type_id` (`type_id`),
   CONSTRAINT `usermetadata_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `usermetadata_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `usermetadata_type` WRITE;
 /*!40000 ALTER TABLE `usermetadata_type` DISABLE KEYS */;
@@ -45,7 +47,7 @@ VALUES
 	(1,'FILTER',1,1),
 	(2,'DASHBOARD',1,1),
 	(3,'CSV_IMPORTER',1,1),
-	(4,'LOG_ANIMATION',1,1);
+	(4,'LOG_ANIMATION',1,1),
 	(5,'DASH_TEMPLATE',1,1);
 
 /*!40000 ALTER TABLE `usermetadata_type` ENABLE KEYS */;
@@ -62,7 +64,7 @@ CREATE TABLE `usermetadata_log` (
   KEY `usermetadata_id` (`usermetadata_id`),
   CONSTRAINT `usermetadata_log_ibfk_1` FOREIGN KEY (`log_id`) REFERENCES `log` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `usermetadata_log_ibfk_2` FOREIGN KEY (`usermetadata_id`) REFERENCES `usermetadata` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `usermetadata_process`;
 
@@ -90,4 +92,6 @@ CREATE TABLE `group_usermetadata` (
   KEY `group_id` (`group_id`),
   KEY `user_metadata_id` (`usermetadata_id`),
   CONSTRAINT `group_usermetadata_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SET FOREIGN_KEY_CHECKS=1;
