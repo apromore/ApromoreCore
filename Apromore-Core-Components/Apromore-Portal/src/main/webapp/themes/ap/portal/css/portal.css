@@ -358,6 +358,10 @@
   padding: 0 1px 0 1px;
 }
 
+.ap-portal-action-buttons .z-button {
+  filter: none !important;
+}
+
 .ap-portal-action-buttons .z-button:active {
   background-color: transparent;
 }
@@ -367,6 +371,10 @@
 }
 
 .ap-portal-action-buttons .z-button:hover {
+  background-color: var(--ap-c-action-bg-hover);
+}
+
+.ap-portal-action-buttons .z-button.ap-btn-on {
   background-color: var(--ap-c-action-bg-hover);
 }
 

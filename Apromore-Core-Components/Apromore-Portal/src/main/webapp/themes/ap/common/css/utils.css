@@ -276,17 +276,20 @@ div.ap-window-footer-actions {
 }
 
 .z-treerow-selected .ap-ico-folder > div:first-child {
-    background-image: url('../../common/img/icons/folder-open.svg') !important;
+    /* background-image: url('../../common/img/icons/folder-open.svg') !important; */
+    background-image: url('../../common/img/icons-2/folder-open-solid.svg') !important;
     width: 28.5px;
 }
 
 .ap-folder-tree .ap-ico-home > div:first-child {
-    background-image: url('../../common/img/icons/folder-home.svg') !important;
+    /* background-image: url('../../common/img/icons/folder-home.svg') !important; */
+    background-image: url('../../common/img/icons-2/folder-home-solid.svg') !important;
     width: 26.390625px;
 }
 
 .ap-folder-tree .z-treerow-selected .ap-ico-folder > div:first-child {
-    background-image: url('../../common/img/icons/folder-open.svg') !important;
+    /* background-image: url('../../common/img/icons/folder-open.svg') !important; */
+    background-image: url('../../common/img/icons-2/folder-open-solid.svg') !important;
     width: 28.5px;
 }
 
