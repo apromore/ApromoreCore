@@ -139,11 +139,15 @@
     searchOptions.hide();
   }
 
-  function setupSearch(source) {
+  function setupSearch(source, reset) {
     // call here in case setupSearch is called earlier
     searchOptions = $('.ap-pd-search-graph-options');
     searchClear = $(`${SEARCH_ID} i:last-child`);
     searchInput = $(`${SEARCH_ID} input`);
+
+    if (reset) {
+      resetSearchInput();
+    }
 
     collectNodeNames(source);
     miniSearch = new MiniSearch({
