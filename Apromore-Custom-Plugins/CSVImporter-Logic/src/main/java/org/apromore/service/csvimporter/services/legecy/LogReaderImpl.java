@@ -27,7 +27,6 @@ import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.*;
-import org.apromore.service.csvimporter.utilities.NameComparator;
 import org.apromore.service.csvimporter.utilities.XEventComparator;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
@@ -38,8 +37,6 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -53,10 +50,7 @@ import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccu
 
 public class LogReaderImpl implements LogReader, Constants {
 
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImpl.class);
     private final Parse parse = new Parse();
-
     boolean preferMonthFirstChanged;
     private List<LogErrorReport> logErrorReport;
     private boolean validRow;
@@ -95,6 +89,8 @@ public class LogReaderImpl implements LogReader, Constants {
         HashMap<String, String> eventAttributes;
         HashMap<String, Timestamp> otherTimestamps;
 
+        TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
+
         String errorMessage = "Field is empty or has a null value!";
         boolean rowLimitExceeded = false;
 
@@ -113,7 +109,6 @@ public class LogReaderImpl implements LogReader, Constants {
 
         lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
-
         while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
             // new row, new event.
@@ -121,9 +116,8 @@ public class LogReaderImpl implements LogReader, Constants {
             lineIndex++;
 
             //empty row
-            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n")))) {
+            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
                 continue;
-            }
 
             //Validate num of column
             if (header.length != line.length) {
@@ -212,18 +206,18 @@ public class LogReaderImpl implements LogReader, Constants {
             }
 
             //Construct a Trace if it's not exists
-            if (getXTrace(caseId, xLog) == null) {
+            if (tracesHistory.isEmpty() || !tracesHistory.containsKey(caseId)) {
                 XTrace xT = xFactory.createTrace();
                 concept.assignName(xT, caseId);
-                xLog.add(xT);
                 assignEventsToTrace(
                         new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
                         xT);
                 assignMyCaseAttributes(caseAttributes, xT);
+                tracesHistory.put(caseId, xT);
                 numOfValidEvents++;
 
             } else {
-                XTrace xT = getXTrace(caseId, xLog);
+                XTrace xT = tracesHistory.get(caseId);
                 assignEventsToTrace(
                         new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
                         xT);
@@ -231,25 +225,19 @@ public class LogReaderImpl implements LogReader, Constants {
                 numOfValidEvents++;
             }
         }
+
+        //Sort and feed xLog
+        tracesHistory.forEach((k, v) -> {
+            v.sort(new XEventComparator());
+            xLog.add(v);
+        });
 
         if (!isValidLineCount(lineIndex - 1))
             rowLimitExceeded = true;
 
-
-        return new LogModelXLogImpl(sortTraces(xLog), logErrorReport, rowLimitExceeded, numOfValidEvents);
-//        return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded);
+        return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
     }
 
-    private XTrace getXTrace(String caseId, XLog xLog) {
-        XConceptExtension concept = XConceptExtension.instance();
-        for (XTrace xT : xLog) {
-            if (concept.extractName(xT).equalsIgnoreCase(caseId)) {
-                return xT;
-            }
-
-        }
-        return null;
-    }
 
     public boolean isValidLineCount(int lineCount) {
         return true;
@@ -277,21 +265,6 @@ public class LogReaderImpl implements LogReader, Constants {
     private void invalidRow(LogErrorReportImpl error) {
         logErrorReport.add(error);
         validRow = false;
-    }
-
-    private static XLog sortTraces(XLog xLog) {
-
-        XConceptExtension concept = XConceptExtension.instance();
-
-        Comparator<String> nameOrder = new NameComparator();
-        Comparator<XEvent> compareTimestamp = new XEventComparator();
-
-        for (XTrace xTrace : xLog)
-            xTrace.sort(compareTimestamp);
-
-        xLog.sort((t1, t2) -> nameOrder.compare(concept.extractName(t1), concept.extractName(t2)));
-
-        return xLog;
     }
 
     private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {

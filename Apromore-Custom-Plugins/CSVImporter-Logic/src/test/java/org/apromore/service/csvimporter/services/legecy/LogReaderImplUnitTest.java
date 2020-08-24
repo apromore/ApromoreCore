@@ -26,7 +26,6 @@ import com.google.common.io.ByteStreams;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.junit.Test;
@@ -125,15 +124,14 @@ public class LogReaderImplUnitTest {
 
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("csv")
                 .createSampleLogGenerator()
                 .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test1-valid.csv"), 100, "UTF-8");
 
         LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test1-valid.csv"), sample, "UTF-8", false);
-
 
         // Validate result
         assertNotNull(logModel);
@@ -466,7 +464,7 @@ public class LogReaderImplUnitTest {
 
         // Validate result
         assertNotNull(logModel);
-         assertEquals(5, logModel.getRowsCount());
+        assertEquals(5, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
