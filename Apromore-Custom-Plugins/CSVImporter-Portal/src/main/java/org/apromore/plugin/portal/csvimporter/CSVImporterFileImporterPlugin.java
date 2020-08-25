@@ -22,30 +22,43 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.opencsv.CSVReader;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.util.UserMetadataTypeEnum;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
+
+import java.io.IOException;
+import java.util.*;
 
 public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
     private CSVImporterLogic csvImporterLogic;
+    private UserMetadataService userMetadataService;
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         LOGGER.info("Injected CSV importer logic {}", newCSVImporterLogic);
         this.csvImporterLogic = newCSVImporterLogic;
+    }
+
+    public void setUserMetadataService(UserMetadataService newUserMetadataService) {
+        LOGGER.info("Injected CSV importer logic {}", newUserMetadataService);
+        this.userMetadataService = newUserMetadataService;
     }
 
     // Implementation of FileImporterPlugin
@@ -58,28 +71,174 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     @Override
     public void importFile(Media media, boolean isLogPublic) {
 
+        //TODO: find matches mapping
+
+
+        // Create a CSV importer view
+        String zul = "/org/apromore/plugin/portal/csvimporter/csvimporter.zul";
+
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+
+        String userId = portalContext.getCurrentUser().getId();
+        String username = portalContext.getCurrentUser().getUsername();
+
+        List<Integer> logList = new ArrayList<>();
+        logList.add(2);
+        List<Usermetadata> mappingJSONList = new ArrayList<>();
+
+        Set<Usermetadata> usermetadataSet = null;
+        try {
+            usermetadataSet = userMetadataService.getUserMetadataWithoutLog(UserMetadataTypeEnum.CSV_IMPORTER, username);
+        } catch (Exception e) {
+
+        }
+        mappingJSONList = new ArrayList<>(usermetadataSet);
+
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
         arg.put("csvImporterLogic", csvImporterLogic);
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
 
-        // Create a CSV importer view
-        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
-        case "page":  // create the view in its own page
-            Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
-            break;
+        List<String> header = new ArrayList<>();
+        String fileEncoding = "UTF-8";
 
-        case "modal": default:  // create the view in a modal popup within the current page
-            PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-            try {
-                Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
-                window.doModal();
+        // Creating Object of ObjectMapper define in Jakson Api
+        ObjectMapper Obj = new ObjectMapper();
+        JsonFactory jsonF = new JsonFactory();
 
-            } catch (IOException e) {
-                LOGGER.error("Unable to create window", e);
-            }
-            break;
+        CSVFileReader csvFileReader = new CSVFileReader();
+        CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
+        try {
+            header = Arrays.asList(csvReader.readNext());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        if (mappingJSONList.size() > 0) {
+
+            // Matching from the latest record
+            for (int i = mappingJSONList.size() - 1; i >= 0; i--) {
+                System.out.println(mappingJSONList.get(i));
+
+                JSONObject jsonObject = (JSONObject) JSONValue.parse(mappingJSONList.get(i).getContent());
+
+                JSONValue.parse(jsonObject.get("header").toString());
+
+                List<String> sampleHeader = (List<String>) jsonObject.get("header");
+
+                if (sampleHeader != null && sampleHeader.equals(header)) {
+
+                    // Attempt 1: try to create a popup window on top of csvImporter window here.
+                    try {
+                        Window matchedMappingPopUp =
+                                (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
+                                        "/matchedMapping.zul", null, null);
+                        matchedMappingPopUp.doModal();
+
+                        Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
+                                "uploadWithMatchedMapping");
+                        Button uploadAsNewBtn = (Button) matchedMappingPopUp.getFellow(
+                                "uploadAsNew");
+                        uploadWithMatchedMappingBtn.addEventListener("onClick", event -> {
+                                    LOGGER.info("################## BUTTON uploadWithMatchedMappingBtn CLICKED " +
+                                            "***************");
+                                    arg.put("mappingJSON", jsonObject);
+                                    matchedMappingPopUp.detach();
+
+                                    // Create a CSV importer view
+                                    switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+                                        case "page":  // create the view in its own page
+                                            Executions.getCurrent().sendRedirect("/csvimporter.zul", "_blank");
+                                            break;
+
+                                        case "modal":
+                                        default:  // create the view in a modal popup within the current page
+                                            try {
+                                                Window window =
+                                                        (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "csvimporter.zul", null, arg);
+                                                window.doModal();
+
+                                            } catch (IOException e) {
+                                                LOGGER.error("Unable to create window", e);
+                                            }
+                                            break;
+                                    }
+                                }
+                        );
+                        uploadAsNewBtn.addEventListener("onClick", event -> {
+                                    LOGGER.info("################## BUTTON uploadAsNewBtn CLICKED ***************");
+                                    arg.put("mappingJSON", null);
+                                    matchedMappingPopUp.detach();
+
+                            // Create a CSV importer view
+                            switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+                                case "page":  // create the view in its own page
+                                    Executions.getCurrent().sendRedirect("/csvimporter.zul", "_blank");
+                                    break;
+
+                                case "modal": default:  // create the view in a modal popup within the current page
+                                    try {
+                                        Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "csvimporter.zul", null, arg);
+                                        window.doModal();
+
+                                    } catch (IOException e) {
+                                        LOGGER.error("Unable to create window", e);
+                                    }
+                                    break;
+                            }
+                                }
+                        );
+                        // only match the last mapping if there are multiple
+                        break;
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else { // can't find match in JSONList
+                    arg.put("mappingJSON", null);
+                    Window window = null;
+                    try {
+                        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul,
+                                null, arg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    window.doModal();
+                }
+            }
+        } else { // this user doesn't have mapping stored
+            arg.put("mappingJSON", null);
+            Window window = null;
+            try {
+                window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul,
+                        null, arg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            window.doModal();
+        }
+
+
+
+        //TODO: create a dialog to provide options to user: “An existing mapping is applicable to this log. Would you
+        // like to use it?” and shows an example with the first 5 rows as a table inside the window.
+        // 1. Yes -> import directly
+        // 2. Edit -> go to importer view and load the existing mapping (the latest one)
+        // 3. No -> Import as a new process -> go to importer view and load guessed mapping
+
+
+
+
+        // Create a CSV importer view
+//        try {
+////        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+//            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), zul, null, arg);
+//            window.doModal();
+//
+//
+//        } catch (IOException e) {
+//            LOGGER.error("Unable to create window", e);
+//        }
     }
 }

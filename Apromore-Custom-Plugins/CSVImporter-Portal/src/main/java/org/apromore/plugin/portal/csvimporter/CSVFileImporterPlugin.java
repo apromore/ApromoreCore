@@ -56,7 +56,6 @@ public class CSVFileImporterPlugin implements FileImporterPlugin {
 //    private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
 //    @Inject private EventLogService eventLogService;
 
-    @Inject
     private CSVImporterLogic csvImporterLogic;
     private EventLogService eventLogService;
     private UserMetadataService userMetadataService;
