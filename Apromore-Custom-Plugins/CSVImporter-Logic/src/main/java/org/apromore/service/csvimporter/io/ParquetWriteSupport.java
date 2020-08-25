@@ -58,20 +58,10 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
 
     @Override
     public void write(LogEventModel logEventModel) {
-
-//    if (values.size() != cols.size()) {
-//      throw new ParquetEncodingException("Invalid input data. Expecting " +
-//          cols.size() + " columns. Input had " + values.size() + " columns (" + cols + ") : " + values);
-//    }
         int index = 0;
 
         recordConsumer.startMessage();
 
-//      // val.length() == 0 indicates a NULL value.
-//      if (val.length() > 0) {
-//      }
-
-//        System.out.println("Index " + index + " value " + logEventModel.getCaseID());
         //caseID
         recordConsumer.startField(cols.get(index).getPath()[0], index);
         recordConsumer.addBinary(stringToBinary(logEventModel.getCaseID()));
@@ -79,7 +69,6 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
 
         //activity
         index++;
-//        System.out.println("Index " + index + " value " + logEventModel.getActivity());
         recordConsumer.startField(cols.get(index).getPath()[0], index);
         recordConsumer.addBinary(stringToBinary(logEventModel.getActivity()));
         recordConsumer.endField(cols.get(index).getPath()[0], index);
@@ -87,14 +76,12 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
 
         //endTimestamp
         index++;
-//        System.out.println("Index " + index + " value " + logEventModel.getEndTimestamp());
         recordConsumer.startField(cols.get(index).getPath()[0], index);
         recordConsumer.addBinary(stringToBinary(logEventModel.getEndTimestamp()));
         recordConsumer.endField(cols.get(index).getPath()[0], index);
 
         //startTimestamp
         index++;
-//        System.out.println("Index " + index + " value " + logEventModel.getStartTimestamp());
         recordConsumer.startField(cols.get(index).getPath()[0], index);
         recordConsumer.addBinary(stringToBinary(logEventModel.getStartTimestamp()));
         recordConsumer.endField(cols.get(index).getPath()[0], index);
@@ -104,7 +91,6 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
         if (otherTimestamps.size() > 0) {
             for (String key : otherTimestamps.keySet()) {
                 index++;
-//                System.out.println("Index " + index + " value " + otherTimestamps.get(key).toString());
                 recordConsumer.startField(cols.get(index).getPath()[0], index);
                 recordConsumer.addBinary(stringToBinary(otherTimestamps.get(key).toString()));
                 recordConsumer.endField(cols.get(index).getPath()[0], index);
@@ -113,7 +99,6 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
 
         //resource
         index++;
-//        System.out.println("Index " + index + " value " + logEventModel.getResource());
         recordConsumer.startField(cols.get(index).getPath()[0], index);
         recordConsumer.addBinary(stringToBinary(logEventModel.getResource()));
         recordConsumer.endField(cols.get(index).getPath()[0], index);
@@ -124,7 +109,6 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
         if (caseAttributes.size() > 0) {
             for (String key : caseAttributes.keySet()) {
                 index++;
-//                System.out.println("Index " + index + " value " + caseAttributes.get(key).toString());
                 recordConsumer.startField(cols.get(index).getPath()[0], index);
                 recordConsumer.addBinary(stringToBinary(caseAttributes.get(key)));
                 recordConsumer.endField(cols.get(index).getPath()[0], index);
@@ -136,7 +120,6 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
         if (eventAttributes.size() > 0) {
             for (String key : eventAttributes.keySet()) {
                 index++;
-//                System.out.println("Index " + index + " value " + eventAttributes.get(key).toString());
                 recordConsumer.startField(cols.get(index).getPath()[0], index);
                 recordConsumer.addBinary(stringToBinary(eventAttributes.get(key)));
                 recordConsumer.endField(cols.get(index).getPath()[0], index);

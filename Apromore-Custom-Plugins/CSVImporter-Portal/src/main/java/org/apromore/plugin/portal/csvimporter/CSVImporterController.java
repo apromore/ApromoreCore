@@ -92,6 +92,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private @Wire("#toPublicXESButton")
     Button toPublicXESButton;
 
+
+    //Get Data layer config
+    private final String propertyFile = "datalayer.config";
+    private boolean useParquet;
+
+
     private LogSample sample;
 
     private Div popUpBox;
@@ -101,6 +107,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory(media.getFormat());
     SampleLogGenerator sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
+    ParquetExporter parquetExporter = convertToParquetFactory.createParquetExporter();
 
     @Override
     public void doFinally() throws Exception {
@@ -108,7 +115,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         // Populate the window
         try {
-
+            useParquet = useParqeut();
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
 
@@ -182,9 +189,21 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         } else {
 
             try {
-                LogModel logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
-                if (logModel != null) {
+                LogModel logModel;
+                if (useParquet) {
 
+                    logModel = parquetExporter.generateParqeuetFile(
+                            getInputSream(media),
+                            sample,
+                            getFileEncoding(),
+                            getClass().getClassLoader().getResource("/").toURI() + media.getName().replace("." + media.getFormat(), ".parquet"),
+                            false);
+
+                } else {
+                    logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                }
+
+                if (logModel != null) {
                     List<LogErrorReport> errorReport = logModel.getLogErrorReport();
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
 
@@ -194,6 +213,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         handleInvalidData(logModel, isLogPublic);
                     }
                 }
+
 
             } catch (Exception e) {
                 Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -738,10 +758,19 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             sample.getIgnoredPos().add(pos);
                         }
 
-                        LogModel logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                        LogModel logModelSkippedCol;
+                        if (useParquet) {
+                            logModelSkippedCol = parquetExporter.generateParqeuetFile(
+                                    getInputSream(media),
+                                    sample,
+                                    getFileEncoding(),
+                                    getClass().getClassLoader().getResource("/").toURI() + media.getName().replace("." + media.getFormat(), ".parquet"),
+                                    false);
+                        } else {
+                            logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                        }
 
                         if (logModelSkippedCol != null) {
-
                             if (logModelSkippedCol.getLogErrorReport().isEmpty()) {
                                 saveXLog(logModelSkippedCol, isPublic);
                             } else {
@@ -763,10 +792,22 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     errorPopUp.invalidate();
                     errorPopUp.detach();
 
-                    LogModel logModelSkippedRow = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
-                    if (logModelSkippedRow != null) {
-                        saveXLog(logModelSkippedRow, isPublic);
+                    LogModel logModelSkippedRow;
+
+                    if (useParquet) {
+                        logModelSkippedRow = parquetExporter.generateParqeuetFile(
+                                getInputSream(media),
+                                sample,
+                                getFileEncoding(),
+                                getClass().getClassLoader().getResource("/").toURI() + media.getName().replace("." + media.getFormat(), ".parquet"),
+                                true);
+
+                    } else {
+                        logModelSkippedRow = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
                     }
+
+                    if (logModelSkippedRow != null)
+                        saveXLog(logModelSkippedRow, isPublic);
                 }
         );
 
@@ -820,37 +861,49 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private void saveXLog(LogModel logModel, boolean isPublic) {
 
         try {
-            XLog xlog = logModel.getXLog();
-
-            if (xlog == null) {
-                throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
-            }
-
-            String name = media.getName().replaceFirst("[.][^.]+$", "");
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            eventLogService.exportToStream(outputStream, xlog);
-
-            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
-
-            eventLogService.importLog(
-                    portalContext.getCurrentUser().getUsername(),
-                    folderId,
-                    name,
-                    new ByteArrayInputStream(outputStream.toByteArray()),
-                    "xes.gz",
-                    "",  // domain
-                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                    isPublic  // public?
-            );
-
-            String successMessage;
-            if (logModel.isRowLimitExceeded()) {
-                successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
+            if (useParquet) {
+                String successMessage;
+                if (logModel.isRowLimitExceeded()) {
+                    successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
+                } else {
+                    successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
+                    Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                    portalContext.refreshContent();
+                }
             } else {
-                successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
+                XLog xlog = logModel.getXLog();
+
+                if (xlog == null) {
+                    throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
+                }
+
+                String name = media.getName().replaceFirst("[.][^.]+$", "");
+                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                eventLogService.exportToStream(outputStream, xlog);
+
+                int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+
+                eventLogService.importLog(
+                        portalContext.getCurrentUser().getUsername(),
+                        folderId,
+                        name,
+                        new ByteArrayInputStream(outputStream.toByteArray()),
+                        "xes.gz",
+                        "",  // domain
+                        DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                        isPublic  // public?
+                );
+
+                String successMessage;
+                if (logModel.isRowLimitExceeded()) {
+                    successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
+                } else {
+                    successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
+                }
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                portalContext.refreshContent();
+
             }
-            Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
-            portalContext.refreshContent();
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -864,12 +917,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
 
-//    private String getMediaNameExtension(Media media) {
-//        String name = media.;
-//        int lastIndexOf = name.lastIndexOf(".");
-//        if (lastIndexOf == -1) {
-//            return ""; // empty extension
-//        }
-//        return name.substring(lastIndexOf);
-//    }
+    private boolean useParqeut() throws Exception {
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));
+        } catch (IOException e) {
+            throw new Exception("Unable to import file");
+        }
+        return Boolean.parseBoolean(props.getProperty("use.parquet"));
+    }
 }
