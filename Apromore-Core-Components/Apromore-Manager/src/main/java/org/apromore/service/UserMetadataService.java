@@ -119,22 +119,22 @@ public interface UserMetadataService {
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
     /**
-     * Save a new dashboard template
+     * Save a user metadata which is not linked to log. So it can not be shared to other users at stage one.
      *
      * @param content Content of user metadata
      * @param username username
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    void saveDashTemplate(String content, String username) throws UserNotFoundException;
+    void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
 
     /**
-     * Find a set of dashboard template
+     * Find a set of user metadata which is not linked to log.
      *
      * @param username username
-     * @return A set of dashboard template
+     * @return A set of user metadata
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    Set<Usermetadata> getDashTemplate(String username) throws UserNotFoundException;
+    Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
 
     User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
 }

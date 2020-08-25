@@ -339,7 +339,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveDashTemplate(String content, String username) throws UserNotFoundException {
+    public void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum,
+                                           String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
 
@@ -361,7 +362,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
         userMetadata.setUsermetadataLog(usermetadataLogSet);
-        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId()));
+        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
@@ -373,7 +374,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
-    public Set<Usermetadata> getDashTemplate(String username) throws UserNotFoundException {
+    public Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
         assert user != null;
@@ -386,7 +387,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Set<Usermetadata> usermetadataList = new HashSet<>();
         for (GroupUsermetadata groupUsermetadata : groupUsermetadataSet) {
             Usermetadata u = groupUsermetadata.getUsermetadata();
-            if (u.getUsermetadataType().getId().equals(UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId()) && u.getIsValid()) {
+            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
                 usermetadataList.add(u);
             }
         }
