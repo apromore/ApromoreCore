@@ -31,7 +31,6 @@
                             org.apache.parquet.*;version=${parquet.version}
                         </Export-Package>
                         <Import-Package>
-                            !com.ctc.wstx.*,
                             !com.fasterxml.jackson.*,
                             !com.google.protobuf,
                             !com.google.re2j,
@@ -39,27 +38,42 @@
                             !com.nimbusds.*,
                             !com.sun.javadoc,
                             !com.sun.jersey.spi.container.servlet,
+                            !com.sun.jdmk.comm,
                             !com.sun.tools.doclets.standard,
                             !javax.servlet.*,
                             !javax.ws.rs.core,
                             !jdiff,
+                            !org.apache.avalon.framework.logger,
                             !org.apache.avro.*,
-                            !org.apache.commons.*,
+                            !org.apache.commons.cli.*,
+                            !org.apache.commons.codec.*,
+                            !org.apache.commons.collections4.map,
+                            !org.apache.commons.compress.*,
+                            !org.apache.commons.jexl2,
+                            !org.apache.commons.jxpath.*,
+                            !org.apache.commons.net.*,
+                            !org.apache.commons.pool.*,
                             !org.apache.curator.*,
                             !org.apache.hadoop.hdfs.*,
+                            !org.apache.commons.text.*,
                             !org.apache.hadoop.thirdparty.protobuf,
                             !org.apache.hadoop.yarn.*,
                             !org.apache.htrace.core,
                             !org.apache.http.*,
+                            !org.apache.jackrabbit.webdav.*,
                             !org.apache.kerby.kerberos.kerb.*,
+                            !org.apache.log,
+                            !org.apache.xml.resolver.*,
                             !org.apache.yetus.audience,
                             !org.apache.zookeeper.*,
                             !org.codehaus.*,
                             !org.eclipse.jetty.*,
+                            !org.yaml.snakeyaml.*,
                             !org.wildfly.openssl,
                             !org.xbill.DNS,
                             !org.xerial.snappy,
                             !shaded.*,
+                            !sun.nio.ch,
                             *
                         </Import-Package>
                     </instructions>
@@ -70,6 +84,24 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-vfs2</artifactId>
+            <version>2.4</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-annotations</artifactId>
@@ -107,6 +139,12 @@
         </dependency>
 -->
         <dependency>
+            <groupId>org.apache.htrace</groupId>
+            <artifactId>htrace-zipkin</artifactId>
+            <version>4.2.0-incubating</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.parquet</groupId>
             <artifactId>parquet-column</artifactId>
             <version>${parquet.version}</version>
@@ -128,6 +166,12 @@
             <groupId>org.apache.parquet</groupId>
             <artifactId>parquet-hadoop</artifactId>
             <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.ecf</groupId>
+            <artifactId>org.apache.commons.logging</artifactId>
+            <version>1.1.1.v201101211721</version>
         </dependency>
     </dependencies>
 </project>
