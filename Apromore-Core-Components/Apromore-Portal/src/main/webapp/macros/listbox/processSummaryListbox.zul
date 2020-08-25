@@ -25,7 +25,7 @@
          multiple="true" checkmark="false" sclass="ap-listbox-process ap-forced-scroll">
   <listhead hflex="1" sizable="true" sclass="ap-listbox-process-head">
     <listheader width="40px" visible="true"/>
-    <listheader label="Score" hflex="1" visible="true" id="columnScore"/>
+    <listheader label="Score" hflex="1" visible="false" id="columnScore"/>
     <listheader label="Name" id="columnName" hflex="4" />                   <!-- name -->
     <listheader label="ID" width="80px" align="center"/> <!-- id -->
     <listheader label="Format" width="80px" align="center" visible="false"/>                 <!-- originalNativeType -->

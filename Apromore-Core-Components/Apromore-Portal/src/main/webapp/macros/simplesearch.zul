@@ -25,25 +25,37 @@
 <!-- Controller is SimpleSearchController -->
 <window id="simplesearchwindow"
         sclass="ap-container-search"
-        style="margin: 5px 10px 0 0;"
-        hflex="1">
+        style="margin: 5px 0 0 0;"
+        hflex="1"
+        xmlns:n="native"
+>
   <style>
     .z-button {
     box-shadow: unset;
     }
   </style>
   <hbox id="previoussearcheshbox"
-        pack="stretch"
-        hflex="1">
-    <combobox
-        id="previoussearchescombobox"
-        autodrop="true"
-        mold="rounded"
-        buttonVisible="true"
-        hflex="1"
-        tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
-        placeholder="Search"/>
+        style="float:right"
+        spacing="0">
+    <div sclass="ap-search-combo">
+      <span sclass="ap-search-part-icon">
+        <n:i class="z-icon-search" />
+      </span>
+      <combobox
+          id="previoussearchescombobox"
+          autodrop="true"
+          mold="rounded"
+          width="300px"
+          buttonVisible="true"
+          tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
+          placeholder="Search"
+      />
+      <span sclass="ap-search-part-clear" id="clearSearch">
+        <n:i class="z-icon-times-circle" />
+      </span>
+    </div>
     <button id="previoussearchesbutton"
+            visible="false"
             width="34px"
             sclass="ap-icon ap-icon-search"
             style="background: transparent; padding: 0; border:none; margin-left: 7px;margin-right: 7px;"

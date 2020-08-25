@@ -1151,11 +1151,12 @@ div.ap-pd-drawer-splitter:hover {
     background-color: white;
     border: 1px solid white;
     padding-left: 3px;
+    color: grey !important;
 }
 
 #ap-pd-search-graph > * {
     display: inline-block;
-    height: 18px;
+    height: 20px;
     vertical-align: middle;
     background-color: white;
     margin: 0;
@@ -1163,7 +1164,7 @@ div.ap-pd-drawer-splitter:hover {
 }
 
 #ap-pd-search-graph i {
-    line-height: 18px;
+    line-height: 20px;
     font-size: 16px;
     padding: 0 4px;
     color: grey;
