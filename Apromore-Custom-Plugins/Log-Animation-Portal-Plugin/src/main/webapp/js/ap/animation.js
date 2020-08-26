@@ -578,10 +578,12 @@ let AnimationController = {
       return;
     } else {
       let tracedates = this.tracedates; // assume that this.jsonServer.tracedates has been sorted in ascending order
-      // let currentTimeMillis = this.getCurrentTime() * this.timeCoef * 1000 + this.startMs;
       // search for the next trace date/time immediately after the current time
+      let currentS = this.getCurrentTime();
+      this.currentMs = this.slotSecondstoRealMs(currentS);
       for (let i = 0; i < tracedates.length; i++) {
-        if (this.currentMs < tracedates[i]) {
+        let traceS = (tracedates[i] - this.startMs) / (1000 * this.timeCoef);
+        if (Math.round(currentS * 1000) < Math.round(traceS * 1000)) {
           this.setCurrentTime((tracedates[i] - this.startMs) / (1000 * this.timeCoef), tracedates[i]);
           return;
         }
@@ -594,10 +596,12 @@ let AnimationController = {
       return;
     } else {
       let tracedates = this.tracedates; //assume that this.jsonServer.tracedates has been sorted in ascending order
-      // let currentTimeMillis = this.getCurrentTime() * this.timeCoef * 1000 + this.startMs;
       // search for the previous trace date/time immediately before the current time
+      let currentS = this.getCurrentTime();
+      this.currentMs = this.slotSecondstoRealMs(currentS);
       for (let i = tracedates.length - 1; i >= 0; i--) {
-        if (this.currentMs > tracedates[i]) {
+        let traceS = (tracedates[i] - this.startMs) / (1000 * this.timeCoef);
+        if (Math.round(currentS * 1000) > Math.round(traceS * 1000)) {
           this.setCurrentTime((tracedates[i] - this.startMs) / (1000 * this.timeCoef), tracedates[i]);
           return;
         }
