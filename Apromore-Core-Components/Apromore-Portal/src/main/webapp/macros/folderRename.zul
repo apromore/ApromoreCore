@@ -42,9 +42,6 @@ and CreateProcessController.java for creating process purpose.
                     <div align="center">
                         <button id="btnSave" label="OK" iconSclass="z-icon-check-circle" width="85px"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle" width="85px" ></button>
-                        <!--
-                        <button id="btnReset" label="Reset" iconSclass="z-icon-undo" width="85px" tooltiptext="Restore initial values." />
-                        -->
                     </div>
                 </row>
             </rows>
