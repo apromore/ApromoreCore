@@ -24,10 +24,11 @@ package org.apromore.service.csvimporter.services;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 
+import java.io.File;
 import java.io.InputStream;
 
 public interface ParquetExporter {
 
-    LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, String outputParquet, boolean skipInvalidRow) throws Exception;
+    LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception;
 
 }

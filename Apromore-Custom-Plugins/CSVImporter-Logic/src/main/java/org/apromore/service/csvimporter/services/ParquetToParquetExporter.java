@@ -29,7 +29,7 @@ import java.io.InputStream;
 
 class ParquetToParquetExporter implements ParquetExporter {
     @Override
-    public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, String outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         return null;
     }

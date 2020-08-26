@@ -23,6 +23,7 @@ package org.apromore.service.csvimporter.services;
 
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.dateparser.Parse;
@@ -48,10 +49,9 @@ class CSVToParqeutExporter implements ParquetExporter {
     private boolean validRow;
 
     @Override
-    public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, String outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
-        System.out.println("outputParquet " + outputParquet);
-
+        System.out.println("outputParquet " + outputParquet.toURI());
         sample.validateSample();
 
         Reader readerin = new InputStreamReader(in, Charset.forName(charset));
@@ -67,7 +67,7 @@ class CSVToParqeutExporter implements ParquetExporter {
             return null;
 
         MessageType parquetSchema = createParquetSchema(header, sample);
-        ParquetFileWriter writer = new ParquetFileWriter(new Path(outputParquet), parquetSchema, true);
+        ParquetFileWriter writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
 
         logErrorReport = new ArrayList<>();
         int lineIndex = 1; // set to 1 since first line is the header

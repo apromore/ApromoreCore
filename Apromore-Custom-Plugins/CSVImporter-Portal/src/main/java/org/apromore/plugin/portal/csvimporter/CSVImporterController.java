@@ -96,7 +96,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     //Get Data layer config
     private final String propertyFile = "datalayer.config";
     private boolean useParquet;
-
+    private File parquetFile;
 
     private LogSample sample;
 
@@ -115,7 +115,25 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         // Populate the window
         try {
-            useParquet = useParqeut();
+            Properties props = new Properties();
+            props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));
+
+            useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
+
+            File parquetDir = new File(props.getProperty("parquet.dir"));
+            parquetDir.mkdirs();
+
+            //make directory if not exist
+            String parquetFilePath = parquetDir.getPath()
+                    + File.separator + media.getName().replace("." + media.getFormat(), ".parquet");
+            parquetFile = new File(parquetFilePath);
+
+
+            //If file exist rename
+            if (parquetFile.exists())
+                parquetFile = new File(props.getProperty("parquet.dir")
+                        + File.separator + media.getName().replace("." + media.getFormat(), "-copy.parquet"));
+
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
 
@@ -192,11 +210,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 LogModel logModel;
                 if (useParquet) {
 
+
                     logModel = parquetExporter.generateParqeuetFile(
                             getInputSream(media),
                             sample,
                             getFileEncoding(),
-                            getClass().getClassLoader().getResource("/").toURI() + media.getName().replace("." + media.getFormat(), ".parquet"),
+                            parquetFile,
                             false);
 
                 } else {
@@ -764,7 +783,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                                     getInputSream(media),
                                     sample,
                                     getFileEncoding(),
-                                    getClass().getClassLoader().getResource("/").toURI() + media.getName().replace("." + media.getFormat(), ".parquet"),
+                                    parquetFile,
                                     false);
                         } else {
                             logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
@@ -799,7 +818,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                                 getInputSream(media),
                                 sample,
                                 getFileEncoding(),
-                                getClass().getClassLoader().getResource("/").toURI() + media.getName().replace("." + media.getFormat(), ".parquet"),
+                                parquetFile,
                                 true);
 
                     } else {
@@ -915,15 +934,5 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private InputStream getInputSream(Media media) {
 
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
-    }
-
-    private boolean useParqeut() throws Exception {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));
-        } catch (IOException e) {
-            throw new Exception("Unable to import file");
-        }
-        return Boolean.parseBoolean(props.getProperty("use.parquet"));
     }
 }
