@@ -204,22 +204,63 @@
   background-color: transparent;
 }
 
-/*.ap-container-search .z-combobox {*/
-/*  height: 30px;*/
-/*}*/
+.ap-container-search .z-combobox {
+  display: inline-block;
+  margin: 0 !important;
+  height: 20px;
+  vertical-align: top;
+  line-height: 18px;
+}
+
+.ap-container-search .ap-search-combo {
+  height: 21px;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  background-color: white;
+  border-radius: 3px;
+  margin-top: 1px;
+}
+
+.ap-container-search .ap-search-combo .ap-search-part-icon,
+.ap-container-search .ap-search-combo .ap-search-part-clear {
+  display: inline-block;
+  height: 21px;
+  line-height: 21px;
+  vertical-align: middle;
+  background-color: white;
+  margin: 0;
+  box-sizing: border-box;
+  color: grey;
+  font-size: 16px !important;
+  padding: 0 4px;
+}
+
+.ap-container-search .ap-search-combo .ap-search-part-icon {
+  border-radius: 3px 0 0 3px;
+}
+
+.ap-container-search .ap-search-combo .ap-search-part-clear {
+  border-radius: 0 3px 3px 0;
+  cursor: pointer;
+}
 
 .ap-container-search .z-combobox-input {
-  height: 22px;
+  height: 20px;
+  color: grey !important;
+  font-family: var(--ap-font-base);
+  font-size: 14px !important;
 }
 
 .ap-container-search .z-combobox-button {
-  height: 22px;
-  min-height: 22px;
+  height: 20px;
+  min-height:20px;
+  padding: 0 2px !important;
 }
 
 .ap-container-search .z-combobox-button,
 .ap-container-search .z-combobox-input {
-  border: 1px solid transparent;
+  border: 1px solid white !important;
 }
 
 .ap-container-search .z-combobox-button {
@@ -230,13 +271,14 @@
   border-right: none;
 }
 
+/*
 .ap-container-search .z-combobox-input:focus {
   border-color: var(--ap-c-grey-minor);
 }
 
 .ap-container-search .z-combobox-input:focus + .z-combobox-button {
   border-color: var(--ap-c-grey-minor);
-}
+}*/
 
 .ap-container-search .z-comboitem-selected {
   color: white;
@@ -358,10 +400,6 @@
   padding: 0 1px 0 1px;
 }
 
-.ap-portal-action-buttons .z-button {
-  filter: none !important;
-}
-
 .ap-portal-action-buttons .z-button:active {
   background-color: transparent;
 }
@@ -376,6 +414,7 @@
 
 .ap-portal-action-buttons .z-button.ap-btn-on {
   background-color: var(--ap-c-action-bg-hover);
+  filter: none !important;
 }
 
 .ap-wrapper-process .z-window-content {
@@ -591,7 +630,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem.ap-item-folder {
-    /*background-color: #e0e0e0;*/
+  /*background-color: #e0e0e0;*/
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td {

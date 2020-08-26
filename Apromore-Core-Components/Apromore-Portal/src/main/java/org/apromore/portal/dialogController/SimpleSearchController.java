@@ -46,6 +46,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Span;
 import org.zkoss.zul.Window;
 
 public class SimpleSearchController extends BaseController {
@@ -60,10 +61,25 @@ public class SimpleSearchController extends BaseController {
         Hbox previousSearchesH = (Hbox) simpleSearchW.getFellow("previoussearcheshbox");
         Button simpleSearchesBu = (Button) previousSearchesH.getFellow("previoussearchesbutton");
         previousSearchesCB = (Combobox) previousSearchesH.getFellow("previoussearchescombobox");
+        Span clearSearchBtn = (Span) previousSearchesH.getFellow("clearSearch");
 
         refreshSearch("");
+        clearSearchBtn.setVisible(false);
+
+        clearSearchBtn.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                clearSearches();
+                mainC.reloadSummaries();
+                clearSearchBtn.setVisible(false);
+            }
+        });
 
         simpleSearchesBu.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                processSearch();
+            }
+        });
+        simpleSearchW.addEventListener("onOK", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 processSearch();
             }
@@ -75,6 +91,7 @@ public class SimpleSearchController extends BaseController {
             });
         previousSearchesCB.addEventListener("onChanging", new EventListener<InputEvent>() {
             public void onEvent(InputEvent event) throws Exception {
+                clearSearchBtn.setVisible(true);
                 if (!event.isChangingBySelectBack()) {
                     refreshSearch(event.getValue());
                 }
