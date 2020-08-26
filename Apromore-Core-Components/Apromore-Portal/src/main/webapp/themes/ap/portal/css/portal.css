@@ -320,7 +320,7 @@
   position: fixed;
   right: 5px;
   top: 1px;
-  z-index: 20000;
+  z-index: var(--ap-z-user-menu);
   background-color: transparent;
   width: 30px;
   border: none;
