@@ -36,7 +36,7 @@
                 <label value=" An existing csv schema mapping is applicable to this log. "/>
                 <separator/>
                 <separator/>
-                <label
+                <label id="fileNameLabel"
                         value=" The matched CSV file (test1-valid.csv) is uploaded in 2020-07-06 11:12:08 using encoding UTF-8. "/>
                 <separator/>
                 <separator/>

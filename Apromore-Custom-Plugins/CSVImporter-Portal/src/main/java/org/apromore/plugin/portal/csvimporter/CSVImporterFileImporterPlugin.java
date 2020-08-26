@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataLog;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -38,6 +39,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
@@ -144,7 +146,9 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
             for (int i = mappingJSONList.size() - 1; i >= 0; i--) {
                 System.out.println(mappingJSONList.get(i));
 
-                JSONObject jsonObject = (JSONObject) JSONValue.parse(mappingJSONList.get(i).getContent());
+                Usermetadata usermetadata = mappingJSONList.get(i);
+
+                JSONObject jsonObject = (JSONObject) JSONValue.parse(usermetadata.getContent());
 
                 JSONValue.parse(jsonObject.get("header").toString());
 
@@ -156,6 +160,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                             (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
                                     "/matchedMapping.zul", null, null);
                     matchedMappingPopUp.doModal();
+
+                    Label fileNameLabel = (Label) matchedMappingPopUp.getFellow("fileNameLabel");
+                    Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();
+                    UsermetadataLog usermetadataLog = usermetadataLogSet.iterator().next();
+                    fileNameLabel.setValue("The matched CSV file (" + usermetadataLog.getLog().getName() + ") is " +
+                            "uploaded in " + usermetadata.getCreatedTime());
 
                     Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
                             "uploadWithMatchedMapping");
