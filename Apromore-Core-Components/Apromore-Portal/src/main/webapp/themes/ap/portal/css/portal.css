@@ -313,7 +313,7 @@
   position: absolute;
   right: 5px;
   top: 2px;
-  z-index: 20000;
+  z-index: var(--ap-z-user-menu);
 }
 
 .ap-user-menu {
