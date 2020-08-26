@@ -25,9 +25,13 @@ package org.apromore.plugin.portal.csvimporter;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import org.apache.commons.lang.StringUtils;
+import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.csvimporter.*;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.apromore.service.csvimporter.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.apromore.service.UserMetadataService;
@@ -76,12 +80,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) Executions.getCurrent().getArg().get("csvImporterLogic");
     private Media media = (Media) Executions.getCurrent().getArg().get("media");
     private JSONObject mappingJSON = (JSONObject) Executions.getCurrent().getArg().get("mappingJSON");
+    private JSONObject mappingJSON = (JSONObject) Executions.getCurrent().getArg().get("mappingJSON");
     */
 
     // Fields injected from the ZK session
     private CSVImporterLogic csvImporterLogic = (CSVImporterLogic) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("csvImporterLogic");
     private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+    private JSONObject mappingJSON = (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("mappingJSON");
 
     // Fields injected from csvimporter.zul
     private @Wire("#mainWindow")        Window window;
@@ -117,7 +123,80 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             CSVReader csvReader = CSVReader.newCSVReader(media, getFileEncoding());
             if (csvReader != null) {
-                this.sample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
+
+                LogSample tempSample = csvImporterLogic.sampleCSV(csvReader, logSampleSize);
+
+                if (mappingJSON != null) {
+//        jsonMapping.put("header", logSample.getHeader());
+//        jsonMapping.put("caseIdPos", logSample.getCaseIdPos());
+//        jsonMapping.put("activityPos", logSample.getActivityPos());
+//        jsonMapping.put("endTimestampPos", logSample.getEndTimestampPos());
+//        jsonMapping.put("startTimestampPos", logSample.getStartTimestampPos());
+//        jsonMapping.put("resourcePos", logSample.getResourcePos());
+//        jsonMapping.put("caseAttributesPos", logSample.getCaseAttributesPos());
+//        jsonMapping.put("eventAttributesPos", logSample.getEventAttributesPos());
+//        jsonMapping.put("otherTimestamps", logSample.getOtherTimestamps());
+//        jsonMapping.put("ignoredPos", logSample.getIgnoredPos());
+//        jsonMapping.put("endTimestampFormat", logSample.getEndTimestampFormat());
+//        jsonMapping.put("startTimestampFormat", logSample.getStartTimestampFormat());
+
+
+                    tempSample.setCaseIdPos((Integer) mappingJSON.get("caseIdPos"));
+                    tempSample.setActivityPos((Integer) mappingJSON.get("activityPos"));
+                    tempSample.setEndTimestampFormat((String) mappingJSON.get("endTimestampFormat"));
+                    tempSample.setEndTimestampPos((Integer) mappingJSON.get("endTimestampPos"));
+                    tempSample.setStartTimestampFormat((String) mappingJSON.get("startTimestampFormat"));
+                    tempSample.setStartTimestampPos((Integer) mappingJSON.get("startTimestampPos"));
+                    tempSample.setResourcePos((Integer) mappingJSON.get("resourcePos"));
+//                    tempSample.getHeader().addAll((List<String>) mappingJSON.get("header"));
+                    tempSample.getEventAttributesPos().clear();
+                    tempSample.getEventAttributesPos().addAll((List<Integer>) mappingJSON.get(
+                            "eventAttributesPos"));
+                    tempSample.getCaseAttributesPos().clear();
+                    tempSample.getCaseAttributesPos().addAll((List<Integer>) mappingJSON.get("caseAttributesPos"));
+                    tempSample.getIgnoredPos().clear();
+                    tempSample.getIgnoredPos().addAll((List<Integer>) mappingJSON.get("ignoredPos"));
+//                    tempSample.getLines().addAll((List<List<String>>) mappingJSON.get("ignoredPos"));
+
+
+                    Object otherTimestamps = mappingJSON.get("otherTimestamps");
+//                    Map<Integer, String> otherTimestampsObject  = (Map<Integer, String>) JSONValue.parse(mappingJSON.get("otherTimestamps").toString()) ;
+//                    Object otherTimestampsObject = JSONValue.parse(mappingJSON.get(
+//                            "otherTimestamps").toString());
+
+
+                    Map<Integer, String> otherTimestampsMap = (Map<Integer, String>) otherTimestamps;
+
+                    Map<Integer, String> otherTimestampsMap2 = new HashMap<>();
+//                    otherTimestampsMap2.putAll(otherTimestampsMap);
+
+                    Iterator it=otherTimestampsMap.entrySet().iterator();
+                    while(it.hasNext()) {
+                        Map.Entry entry=(Map.Entry)it.next();
+                        Object key=entry.getKey();
+                        if(key!=null) {
+                            otherTimestampsMap2.put(Integer.parseInt(key.toString()), otherTimestampsMap.get(key));
+                        }
+                    }
+
+//                    ObjectMapper mapper = new ObjectMapper();
+//                    otherTimestampsMap = mapper.readValue(mappingJSON.get("otherTimestamps").toString(), Map.class);
+
+//                    for (int i = 0; i < otherTimestamps.size(); i++) {
+//                        String format = otherTimestamps.get(i);
+//                                jsoncargo.getJsonObject(i).getString("type");
+//                        Integer postion = jsoncargo.getJsonObject(i).getInt("amount");
+//                        otherTimestampsMap.put(type, amount);
+//                    }
+
+                    tempSample.getOtherTimestamps().clear();
+                    tempSample.getOtherTimestamps().putAll(otherTimestampsMap2);
+
+
+                }
+
+                this.sample = tempSample;
+
                 if (sample != null) {
 
                     //TODO:
@@ -213,9 +292,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
     }
 
-    private String storeMappingAsJSON(Media media, LogSample logSample) {
+    private String storeMappingAsJSON(Media media, LogSample logSample) throws UserNotFoundException {
 
-        String userId = portalContext.getCurrentUser().getId();
+        String username = portalContext.getCurrentUser().getUsername();
 
         String jsonStr = null;
 
@@ -245,6 +324,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         //TODO: fix logId
 //        eventLogService.saveLayoutByLogId(90, userId, jsonStr);
+        userMetadataService.saveUserMetadataWithoutLog(jsonStr, UserMetadataTypeEnum.CSV_IMPORTER, username);
 
 
         return null;
@@ -490,7 +570,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         (myItem.getKey().equals(activityLabel) && sample.getActivityPos() == pos) ||
                         (myItem.getKey().equals(endTimestampLabel) && sample.getEndTimestampPos() == pos)) ||
                         (myItem.getKey().equals(startTimestampLabel) && sample.getStartTimestampPos() == pos) ||
-                        (myItem.getKey().equals(otherTimestampLabel) && sample.getOtherTimestamps().containsKey(pos)) ||
+                        (myItem.getKey().equals(otherTimestampLabel) && ((Map<Integer, String>) sample.getOtherTimestamps()).containsKey(pos)) ||
                         (myItem.getKey().equals(resourceLabel) && sample.getResourcePos() == pos) ||
                         (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||

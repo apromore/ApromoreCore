@@ -47,8 +47,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserMetadataServiceImpl.class);
 
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-    private String now = dateFormat.format(new Date());
-
 
     private LogRepository logRepo;
     private GroupLogRepository groupLogRepo;
@@ -57,6 +55,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private UsermetadataRepository userMetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;
+    private GroupRepository groupRepo;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -70,7 +69,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                    final GroupUsermetadataRepository groupUserMetadataRepo,
                                    final UsermetadataRepository userMetadataRepo,
                                    final UsermetadataTypeRepository usermetadataTypeRepo,
-                                   final UsermetadataLogRepository usermetadataLogRepo) {
+                                   final UsermetadataLogRepository usermetadataLogRepo,
+                                   final GroupRepository groupRepository) {
         this.logRepo = logRepository;
         this.groupLogRepo = groupLogRepository;
         this.userSrv = userSrv;
@@ -78,6 +78,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         this.userMetadataRepo = userMetadataRepo;
         this.usermetadataTypeRepo = usermetadataTypeRepo;
         this.usermetadataLogRepo = usermetadataLogRepo;
+        this.groupRepo = groupRepository;
     }
 
     @Override
@@ -116,7 +117,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         for (Integer logId : logIds) {
             // Assign READ permission to all groups that have read permission to the linked artifact
             for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
-                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner
+                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
                     groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
                 }
             }
@@ -131,13 +132,80 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
-        userMetadata.setCreatedTime(now);
+        userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(userMetadataContent);
 
         // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
         userMetadataRepo.saveAndFlush(userMetadata);
         LOGGER.info("Create user metadata ID: {} TYPE: {}.", userMetadata.getId(), userMetadataTypeEnum.toString());
 
+    }
+
+    @Override
+    @Transactional
+    public void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                            boolean hasOwnership) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        // Assign specified group with READ permission to all the user metadata that linked to the specified log
+        if (hasRead || hasWrite || hasOwnership) {
+
+            // All the user metadata that linked to this log
+            Set<UsermetadataLog> usermetadataLogSet =
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+
+            if (usermetadataLogSet.size() != 0) {
+
+                for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                    Usermetadata u = usermetadataLog.getUsermetadata();
+                    GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
+
+                    // Inherit permission from log (simplified at stage 1, only assign READ permission)
+                    if (g == null) {
+                        g = new GroupUsermetadata(group,
+                                u, true, false, false);
+                        u.getGroupUserMetadata().add(g);
+                    } else {
+                        g.setHasRead(true);
+                        g.setHasWrite(false);
+                        g.setHasOwnership(false);
+
+                    }
+                    groupUsermetadataRepo.save(g);
+                    userMetadataRepo.save(u);
+                }
+            }
+
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        // All the user metadata that linked to this log
+        List<UsermetadataLog> usermetadataLogList =
+                usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId));
+
+        if (null != usermetadataLogList && usermetadataLogList.size() != 0) {
+
+            for (UsermetadataLog usermetadataLog : usermetadataLogList) {
+                Usermetadata u = usermetadataLog.getUsermetadata();
+
+                // Get all the user metadata that can be accessed by group
+                List<GroupUsermetadata> groupUsermetadataList = groupUsermetadataRepo.findByUsermetadataId(u.getId());
+
+                // Remove permissions assigned to specified group
+                for (GroupUsermetadata g : groupUsermetadataList) {
+                    if (g.getGroup().equals(group)) {
+                        groupUsermetadataRepo.delete(g);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -149,7 +217,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
         userMetadata.setContent(content);
         userMetadata.setUpdatedBy(user.getRowGuid());
-        userMetadata.setUpdatedTime(now);
+        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
 
         // Persist Usermetadata
         userMetadataRepo.saveAndFlush(userMetadata);
@@ -165,7 +233,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
         userMetadata.setUpdatedBy(user.getRowGuid());
-        userMetadata.setUpdatedTime(now);
+        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
         userMetadata.setIsValid(false);
 
         // Delete all UsermetadataLog
@@ -271,7 +339,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveDashTemplate(String content, String username) throws UserNotFoundException {
+    public void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum,
+                                           String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
 
@@ -293,10 +362,10 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
         userMetadata.setUsermetadataLog(usermetadataLogSet);
-        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId()));
+        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
-        userMetadata.setCreatedTime(now);
+        userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(content);
 
         userMetadataRepo.saveAndFlush(userMetadata);
@@ -305,7 +374,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
-    public Set<Usermetadata> getDashTemplate(String username) throws UserNotFoundException {
+    public Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
         assert user != null;
@@ -318,11 +387,16 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Set<Usermetadata> usermetadataList = new HashSet<>();
         for (GroupUsermetadata groupUsermetadata : groupUsermetadataSet) {
             Usermetadata u = groupUsermetadata.getUsermetadata();
-            if (u.getUsermetadataType().getId().equals(UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId()) && u.getIsValid()) {
+            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
                 usermetadataList.add(u);
             }
         }
         return usermetadataList.size() > 0 ? usermetadataList : null;
+    }
+
+    @Override
+    public User findUserByRowGuid(String rowGuid) throws UserNotFoundException {
+        return userSrv.findUserByRowGuid(rowGuid);
     }
 
 }

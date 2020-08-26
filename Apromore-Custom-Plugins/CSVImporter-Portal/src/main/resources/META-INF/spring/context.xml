@@ -37,6 +37,7 @@
 
   <beans:bean id="fileImporterPlugin" class="org.apromore.plugin.portal.csvimporter.CSVImporterFileImporterPlugin">
     <beans:property name="csvImporterLogic" ref="csvImporterLogic"/>
+    <beans:property name="userMetadataService" ref="userMetadataService"/>
   </beans:bean>
 
   <service interface="org.apromore.plugin.portal.FileImporterPlugin" ref="fileImporterPlugin"/>

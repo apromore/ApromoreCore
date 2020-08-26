@@ -21,6 +21,7 @@
  */
 package org.apromore.service;
 
+import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.UserMetadataTypeEnum;
@@ -55,6 +56,26 @@ public interface UserMetadataService {
     void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                         String username,
                                         Integer logId) throws UserNotFoundException;
+
+    /**
+     * Assign specified group with permission to all the user metadata that linked to the specified log
+     *
+     * @param logId log ID
+     * @param groupRowGuid group guid
+     * @param hasRead Log READ permission
+     * @param hasWrite Log WRITE permission
+     * @param hasOwnership Log OWNER permission
+     */
+    void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                     boolean hasOwnership);
+
+    /**
+     * Remove permissions of user metadata assigned to specified group and log
+     *
+     * @param logId log ID
+     * @param groupRowGuid group guid
+     */
+    void removeUserMetadataPermissions(Integer logId, String groupRowGuid);
 
     /**
      * Update a user metadata.
@@ -98,20 +119,22 @@ public interface UserMetadataService {
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
     /**
-     * Save a new dashboard template
+     * Save a user metadata which is not linked to log. So it can not be shared to other users at stage one.
      *
      * @param content Content of user metadata
      * @param username username
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    void saveDashTemplate(String content, String username) throws UserNotFoundException;
+    void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
 
     /**
-     * Find a set of dashboard template
+     * Find a set of user metadata which is not linked to log.
      *
      * @param username username
-     * @return A set of dashboard template
+     * @return A set of user metadata
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    Set<Usermetadata> getDashTemplate(String username) throws UserNotFoundException;
+    Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
+
+    User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
 }
