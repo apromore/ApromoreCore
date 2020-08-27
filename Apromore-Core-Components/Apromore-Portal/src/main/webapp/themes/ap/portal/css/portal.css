@@ -214,9 +214,11 @@
 
 .ap-container-search .ap-search-combo {
   height: 21px;
+  /*
   display: flex;
   justify-content: flex-end;
   flex-direction: row;
+   */
   background-color: white;
   border-radius: 3px;
   margin-top: 1px;
@@ -233,7 +235,8 @@
   box-sizing: border-box;
   color: grey;
   font-size: 16px !important;
-  padding: 0 4px;
+  padding: 1px 4px;
+  cursor: pointer;
 }
 
 .ap-container-search .ap-search-combo .ap-search-part-icon {

@@ -36,24 +36,23 @@
   </style>
   <hbox id="previoussearcheshbox"
         style="float:right"
+        sclass="ap-search-combo"
         spacing="0">
-    <div sclass="ap-search-combo">
-      <span sclass="ap-search-part-icon">
-        <n:i class="z-icon-search" />
-      </span>
-      <combobox
-          id="previoussearchescombobox"
-          autodrop="true"
-          mold="rounded"
-          width="300px"
-          buttonVisible="true"
-          tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
-          placeholder="Search"
-      />
-      <span sclass="ap-search-part-clear" id="clearSearch">
-        <n:i class="z-icon-times-circle" />
-      </span>
-    </div>
+    <span sclass="ap-search-part-icon" width="24px" id="doSearch">
+      <n:i class="z-icon-search" />
+    </span>
+    <combobox
+        id="previoussearchescombobox"
+        autodrop="true"
+        mold="rounded"
+        width="300px"
+        buttonVisible="true"
+        tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
+        placeholder="Search"
+    />
+    <span sclass="ap-search-part-clear" id="clearSearch" width="24px">
+      <n:i class="z-icon-times-circle" />
+    </span>
     <button id="previoussearchesbutton"
             visible="false"
             width="34px"
