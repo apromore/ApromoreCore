@@ -42,6 +42,7 @@ import org.apromore.portal.model.SummariesType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
@@ -62,18 +63,23 @@ public class SimpleSearchController extends BaseController {
         Button simpleSearchesBu = (Button) previousSearchesH.getFellow("previoussearchesbutton");
         previousSearchesCB = (Combobox) previousSearchesH.getFellow("previoussearchescombobox");
         Span clearSearchBtn = (Span) previousSearchesH.getFellow("clearSearch");
+        Span doSearchBtn = (Span) previousSearchesH.getFellow("doSearch");
 
         refreshSearch("");
-        clearSearchBtn.setVisible(false);
+        setVisibility(clearSearchBtn, false);
 
+        doSearchBtn.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                processSearch();
+            }
+        });
         clearSearchBtn.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 clearSearches();
                 mainC.reloadSummaries();
-                clearSearchBtn.setVisible(false);
+                setVisibility(clearSearchBtn, false);
             }
         });
-
         simpleSearchesBu.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 processSearch();
@@ -91,7 +97,7 @@ public class SimpleSearchController extends BaseController {
             });
         previousSearchesCB.addEventListener("onChanging", new EventListener<InputEvent>() {
             public void onEvent(InputEvent event) throws Exception {
-                clearSearchBtn.setVisible(true);
+                setVisibility(clearSearchBtn, true);
                 if (!event.isChangingBySelectBack()) {
                     refreshSearch(event.getValue());
                 }
@@ -99,6 +105,20 @@ public class SimpleSearchController extends BaseController {
         });
     }
 
+    public void setVisibility(HtmlBasedComponent comp, boolean visibility) {
+        String style = comp.getStyle();
+        if (style == null) {
+            style = "";
+        }
+        if (visibility) {
+            style = style.replace(";visibility: hidden;", "");
+            style = style.concat(";visibility: visible;");
+        } else {
+            style = style.replace(";visibility: visible;", "");
+            style = style.concat(";visibility: hidden;");
+        }
+        comp.setStyle(style);
+    }
 
     /**
      * Makes sure the Search ComboBox is empty;
