@@ -197,8 +197,8 @@
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
-                            <button visible="false" id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.e.portal.reload.hint}" />
-                            <!--<h:span class="ap-action-sep"></h:span> -->
+                            <button id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.e.portal.reload.hint}" />
+                            <h:span class="ap-action-sep"></h:span>
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
                             <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
