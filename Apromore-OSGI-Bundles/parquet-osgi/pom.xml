@@ -74,6 +74,7 @@
                             !org.xerial.snappy,
                             !shaded.*,
                             !sun.nio.ch,
+                            org.codehaus.stax2,
                             *
                         </Import-Package>
                     </instructions>
@@ -84,6 +85,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
@@ -152,6 +159,12 @@
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-encoding</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
             <artifactId>parquet-common</artifactId>
             <version>${parquet.version}</version>
         </dependency>
@@ -169,9 +182,21 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-jackson</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.eclipse.ecf</groupId>
             <artifactId>org.apache.commons.logging</artifactId>
             <version>1.1.1.v201101211721</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.8</version>
         </dependency>
     </dependencies>
 </project>

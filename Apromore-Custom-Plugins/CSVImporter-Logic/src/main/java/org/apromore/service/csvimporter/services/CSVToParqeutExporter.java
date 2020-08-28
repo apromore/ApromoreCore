@@ -67,7 +67,19 @@ class CSVToParqeutExporter implements ParquetExporter {
             return null;
 
         MessageType parquetSchema = createParquetSchema(header, sample);
-        ParquetFileWriter writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
+        ParquetFileWriter writer;
+
+        // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
+        Thread thread = Thread.currentThread();
+        synchronized (thread) {
+            ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+            try {
+                thread.setContextClassLoader(Path.class.getClassLoader());
+                writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
+            } finally {
+                thread.setContextClassLoader(originalContextClassLoader);
+            }
+        }
 
         logErrorReport = new ArrayList<>();
         int lineIndex = 1; // set to 1 since first line is the header
