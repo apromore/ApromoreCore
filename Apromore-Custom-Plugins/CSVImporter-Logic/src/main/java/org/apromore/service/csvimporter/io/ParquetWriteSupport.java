@@ -63,28 +63,35 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
         recordConsumer.startMessage();
 
         //caseID
-        recordConsumer.startField(cols.get(index).getPath()[0], index);
-        recordConsumer.addBinary(stringToBinary(logEventModel.getCaseID()));
-        recordConsumer.endField(cols.get(index).getPath()[0], index);
+        if (logEventModel.getCaseID() != null) {
+            recordConsumer.startField(cols.get(index).getPath()[0], index);
+            recordConsumer.addBinary(stringToBinary(logEventModel.getCaseID()));
+            recordConsumer.endField(cols.get(index).getPath()[0], index);
+        }
 
         //activity
-        index++;
-        recordConsumer.startField(cols.get(index).getPath()[0], index);
-        recordConsumer.addBinary(stringToBinary(logEventModel.getActivity()));
-        recordConsumer.endField(cols.get(index).getPath()[0], index);
-
-
-        //endTimestamp
-        index++;
-        recordConsumer.startField(cols.get(index).getPath()[0], index);
-        recordConsumer.addBinary(stringToBinary(logEventModel.getEndTimestamp()));
-        recordConsumer.endField(cols.get(index).getPath()[0], index);
+        if (logEventModel.getActivity() != null) {
+            index++;
+            recordConsumer.startField(cols.get(index).getPath()[0], index);
+            recordConsumer.addBinary(stringToBinary(logEventModel.getActivity()));
+            recordConsumer.endField(cols.get(index).getPath()[0], index);
+        }
 
         //startTimestamp
-        index++;
-        recordConsumer.startField(cols.get(index).getPath()[0], index);
-        recordConsumer.addBinary(stringToBinary(logEventModel.getStartTimestamp()));
-        recordConsumer.endField(cols.get(index).getPath()[0], index);
+        if (logEventModel.getStartTimestamp() != null) {
+            index++;
+            recordConsumer.startField(cols.get(index).getPath()[0], index);
+            recordConsumer.addBinary(stringToBinary(logEventModel.getStartTimestamp()));
+            recordConsumer.endField(cols.get(index).getPath()[0], index);
+        }
+
+        //endTimestamp
+        if (logEventModel.getEndTimestamp() != null) {
+            index++;
+            recordConsumer.startField(cols.get(index).getPath()[0], index);
+            recordConsumer.addBinary(stringToBinary(logEventModel.getEndTimestamp()));
+            recordConsumer.endField(cols.get(index).getPath()[0], index);
+        }
 
         //getOtherTimestamps
         Map<String, Timestamp> otherTimestamps = logEventModel.getOtherTimestamps();
@@ -98,11 +105,12 @@ public class ParquetWriteSupport extends WriteSupport<LogEventModel> {
         }
 
         //resource
-        index++;
-        recordConsumer.startField(cols.get(index).getPath()[0], index);
-        recordConsumer.addBinary(stringToBinary(logEventModel.getResource()));
-        recordConsumer.endField(cols.get(index).getPath()[0], index);
-
+        if (logEventModel.getResource() != null) {
+            index++;
+            recordConsumer.startField(cols.get(index).getPath()[0], index);
+            recordConsumer.addBinary(stringToBinary(logEventModel.getResource()));
+            recordConsumer.endField(cols.get(index).getPath()[0], index);
+        }
 
         //Case Attributes
         Map<String, String> caseAttributes = logEventModel.getCaseAttributes();

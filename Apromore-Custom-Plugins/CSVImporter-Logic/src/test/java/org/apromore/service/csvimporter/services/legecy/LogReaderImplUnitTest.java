@@ -376,8 +376,7 @@ public class LogReaderImplUnitTest {
     public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
 
         System.out.println("\n************************************\ntest9 - Differentiate dates");
-        ArrayList<String> dateFormats = new ArrayList();
-        String expectedFormat = null;
+
         // Set up inputs and expected outputs
         String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test9-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
 
