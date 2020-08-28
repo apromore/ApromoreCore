@@ -139,30 +139,30 @@
     <style src="css/astyle.css"/>
     <style>
         .ap-portal-menu-buttons button {
-            background: transparent;
+        background: transparent;
         }
         .ap-portal-menu-buttons button img {
-            visibility: hidden;
+        visibility: hidden;
         }
     </style>
     <window id="mainW" border="none" height="100%" width="100%" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
         <!--<div class="z-listheader">-->
-            <!--
-            <style>
-                <![CDATA[
-                @import url('https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap');
-                ]]>
-            </style>
-            <image src="img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
-            <label value="apromore" zclass="z-listheader" style="font-family: 'Lexend Deca'; font-size: 24pt; position: absolute; top: -0.3ex"/>
-            -->
-            <!--<h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
-                <h:img src="img/apromore_header.png" width="115"/>
-            </h:a>
-            <h:a href="https://apromore.org/documentation/features" style="float: right; padding: 6px">
-                <h:img src="img/icon/svg/help-icon.svg"/>
-            </h:a>-->
+        <!--
+        <style>
+            <![CDATA[
+            @import url('https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap');
+            ]]>
+        </style>
+        <image src="img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
+        <label value="apromore" zclass="z-listheader" style="font-family: 'Lexend Deca'; font-size: 24pt; position: absolute; top: -0.3ex"/>
+        -->
+        <!--<h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
+            <h:img src="img/apromore_header.png" width="115"/>
+        </h:a>
+        <h:a href="https://apromore.org/documentation/features" style="float: right; padding: 6px">
+            <h:img src="img/icon/svg/help-icon.svg"/>
+        </h:a>-->
         <!--</div>-->
 
         <borderlayout vflex="true" sclass="ap-portal-layout">
