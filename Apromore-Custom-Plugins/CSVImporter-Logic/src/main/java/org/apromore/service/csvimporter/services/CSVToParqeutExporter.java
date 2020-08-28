@@ -51,7 +51,7 @@ class CSVToParqeutExporter implements ParquetExporter {
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
-        System.out.println("outputParquet " + outputParquet.toURI());
+//        System.out.println("outputParquet " + outputParquet.toURI());
         sample.validateSample();
 
         Reader readerin = new InputStreamReader(in, Charset.forName(charset));

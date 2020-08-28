@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,11 +31,16 @@ public class ParquetUtilities {
     public static MessageType createParquetSchema(String[] header, LogSample sample) {
         MessageType schema;
         StringBuilder sb = new StringBuilder();
-        sb.append("message EventLog {\n" +
-                "required binary caseID;\n" +
-                "required binary activity;\n" +
-                "required binary endTimestamp;\n" +
-                "required binary startTimestamp;\n");
+        sb.append("message EventLog {\n");
+
+        if (sample.getCaseIdPos() != -1)
+            sb.append("required binary caseID;\n");
+        if (sample.getActivityPos() != -1)
+            sb.append("required binary activity;\n");
+        if (sample.getStartTimestampPos() != -1)
+            sb.append("required binary startTimestamp;\n");
+        if (sample.getEndTimestampPos() != -1)
+            sb.append("required binary endTimestamp;\n");
 
         // Other timestamps
         if (!sample.getOtherTimestamps().isEmpty()) {
@@ -45,8 +50,9 @@ public class ParquetUtilities {
                 sb.append(header[otherTimestamp.getKey()].replaceAll("\\s", "").toLowerCase() + ";\n");
             }
         }
-        sb.append("required binary resource;\n");
 
+        if (sample.getResourcePos() != -1)
+            sb.append("required binary resource;\n");
 
         // Case Attributes
         if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
@@ -67,8 +73,6 @@ public class ParquetUtilities {
         }
 
         sb.append("}");
-
-        System.out.println("schema " + sb);
         schema = MessageTypeParser.parseMessageType(sb.toString());
         return schema;
     }
