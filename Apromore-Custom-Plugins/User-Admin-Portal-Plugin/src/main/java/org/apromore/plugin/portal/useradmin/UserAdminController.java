@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ import org.apromore.dao.model.User;
 import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
+import org.apromore.security.util.SecurityUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;;
 //import org.osgi.service.event.Event;
@@ -66,6 +68,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModels;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
@@ -83,10 +86,12 @@ public class UserAdminController extends SelectorComposer<Window> {
     User currentUser;
     User selectedUser;
     Group selectedGroup;
+    Set<User> prevSelectedUsers;
 
     ListModelList<Group> groupsModel;
     ListModelList<Role> assignedRolesModel;
     ListModelList<User> usersModel;
+    ListModelList<User> candidateUsersModel;
     ListModelList<User> assignedUsersModel;
     ListModelList<Group> assignedGroupsModel;
 
@@ -105,24 +110,46 @@ public class UserAdminController extends SelectorComposer<Window> {
     Tab groupsTab;
     @Wire("#userListView")
     Vbox userListView;
-    @Wire("#firstNameTextbox")
-    Textbox firstNameTextbox;
-    @Wire("#lastNameTextbox")
-    Textbox lastNameTextbox;
+
     @Wire("#usersListbox")
     Listbox usersListbox;
     @Wire("#groupsListbox")
     Listbox groupsListbox;
+
+    @Wire("#userDetail")
+    Label userDetail;
+    @Wire("#firstNameTextbox")
+    Textbox firstNameTextbox;
+    @Wire("#lastNameTextbox")
+    Textbox lastNameTextbox;
+    @Wire("#passwordTextbox")
+    Textbox passwordTextbox;
+    @Wire("#confirmPasswordTextbox")
+    Textbox confirmPasswordTextbox;
+    @Wire("#dateCreatedDatebox")
+    Datebox dateCreatedDatebox;
+    @Wire("#lastActivityDatebox")
+    Datebox lastActivityDatebox;
+    @Wire("#emailTextbox")
+    Textbox emailTextbox;
+
     @Wire("#assignedRolesListbox")
     Listbox assignedRolesListbox;
     @Wire("#assignedGroupsListbox")
     Listbox assignedGroupsListbox;
-    @Wire("#assignedUsersListbox")
-    Listbox assignedUsersListbox;
-    @Wire("#userDetail")
-    Label userDetail;
+
     @Wire("#groupDetail")
     Label groupDetail;
+    @Wire("#groupNameTextbox")
+    Textbox groupNameTextbox;
+    @Wire("#candidateUser")
+    Combobox candidateUser;
+    @Wire("#candidateUserAdd")
+    Button candidateUserAdd;
+    @Wire("#candidateUserRemove")
+    Button candidateUserRemove;
+    @Wire("#assignedUsersListbox")
+    Listbox assignedUsersListbox;
 
     @Wire("#userAddBtn")
     Button userAddBtn;
@@ -136,11 +163,6 @@ public class UserAdminController extends SelectorComposer<Window> {
     Button groupEditBtn;
     @Wire("#groupRemoveBtn")
     Button groupRemoveBtn;
-
-    @Wire("#dateCreatedDatebox")
-    Datebox dateCreatedDatebox;
-    @Wire("#lastActivityDatebox")
-    Datebox lastActivityDatebox;
 
     /**
      * Test whether the current user has a permission.
@@ -168,28 +190,40 @@ public class UserAdminController extends SelectorComposer<Window> {
         // Users tab
         usersModel = new ListModelList<>(securityService.getAllUsers(), false);
         usersModel.setMultiple(true);
-        usersListbox.setNonselectableTags("*");
         usersList = new UsersListbox(usersListbox, usersModel);
 
         assignedRolesModel = new ListModelList<>(securityService.getAllRoles(), false);
         assignedRolesModel.setMultiple(true);
         assignedRolesListbox.setModel(assignedRolesModel);
-        assignedRolesListbox.setNonselectableTags(canEditRoles ? null : "*");
+        assignedRolesListbox.setNonselectableTags("*");
 
         refreshAssignedGroups();
 
-        // Groups tab
-        groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
-        groupsModel.setMultiple(true);
-        // groupsListbox.setNonselectableTags(canEditGroups ? null : "*");
-        groupsListbox.setNonselectableTags("*");
-        groupsList = new GroupsListbox(groupsListbox, groupsModel);
-
-        refreshAssignedUsers();
-
         firstNameTextbox.setReadonly(!canEditUsers);
         lastNameTextbox.setReadonly(!canEditUsers);
+        emailTextbox.setReadonly(!canEditUsers);
+        passwordTextbox.setReadonly(!canEditUsers);
+        confirmPasswordTextbox.setReadonly(!canEditUsers);
+        userAddBtn.setVisible(canEditUsers);
+        userRemoveBtn.setVisible(canEditUsers);
+
+        // Groups tab
+
+        groupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
+        groupsModel.setMultiple(true);
+        groupsList = new GroupsListbox(groupsListbox, groupsModel);
+
+        candidateUsersModel = new ListModelList<>(securityService.getAllUsers(), false);
+        candidateUser.setModel(ListModels.toListSubModel(candidateUsersModel));
+
+        refreshCandidateUsers();
+
+        groupNameTextbox.setReadonly(!canEditGroups);
+        candidateUser.setReadonly(!canEditGroups);
+        candidateUserAdd.setDisabled(!canEditGroups);
+        candidateUserRemove.setDisabled(!canEditGroups);
         groupAddBtn.setVisible(canEditGroups);
+        groupRemoveBtn.setVisible(canEditGroups);
 
         if (canViewUsers) {
             usersListbox.setVisible(true);
@@ -208,7 +242,11 @@ public class UserAdminController extends SelectorComposer<Window> {
             userListView.setVisible(false);
         }
 
-        groupsListbox.setNonselectableTags("*");
+        // Set default to nothing
+        setSelectedUser(null);
+        setSelectedGroup(null);
+
+        /*
         groupEditBtn.addEventListener("onExecute", new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -252,8 +290,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                 refreshAssignedGroups();
             }
         });
-
-        setSelectedUser(currentUser);
+        */
 
         // Register ZK event handler
         EventQueue securityEventQueue = EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true);
@@ -270,7 +307,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                     // Update the user collection
                     if (eventType.equals("CREATE_USER") || eventType.equals("DELETE_USER")) {
                         refreshUsers();
-                        refreshAssignedUsers();
+                        refreshCandidateUsers();
                     }
 
                     // Update the group collection
@@ -279,15 +316,17 @@ public class UserAdminController extends SelectorComposer<Window> {
                         refreshAssignedGroups();
                     }
 
-                    String selectedUsername = selectedUser.getUsername();
-                    // Skip this update if it doesn't apply to the currently displayed user
-                    if (eventUserName != null && !eventUserName.equals(selectedUsername)) {
-                        return;
-                    }
+                    if (selectedUser != null) {
+                        String selectedUsername = selectedUser.getUsername();
+                        // Skip this update if it doesn't apply to the currently displayed user
+                        if (eventUserName != null && !eventUserName.equals(selectedUsername)) {
+                            return;
+                        }
 
-                    // Update the user panel
-                    if ("UPDATE_USER".equals(eventType)) {
-                        setSelectedUser(securityService.getUserByName(selectedUsername));
+                        // Update the user panel
+                        if ("UPDATE_USER".equals(eventType)) {
+                            setSelectedUser(securityService.getUserByName(selectedUsername));
+                        }
                     }
                 }
             }
@@ -317,25 +356,17 @@ public class UserAdminController extends SelectorComposer<Window> {
         Clients.evalJavaScript("Ap.common.notify('" + message + "','" + type + "');");
     }
 
-    private void refreshAssignedGroups() {
-        assignedGroupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
-        assignedGroupsModel.setMultiple(true);
-        assignedGroupsListbox.setModel(assignedGroupsModel);
-        assignedGroupsListbox.setNonselectableTags("*");
-    }
-
-    private void refreshAssignedUsers() {
-        assignedUsersModel = new ListModelList<>(securityService.getAllUsers(), false);
-        assignedUsersModel.setMultiple(true);
-        assignedUsersListbox.setModel(assignedUsersModel);
-        assignedUsersListbox.setNonselectableTags("*");
-    }
-
     private void refreshUsers() {
         usersModel = new ListModelList<>(securityService.getAllUsers(), false);
         usersList.setSourceListmodel(usersModel);
         usersList.reset();
-        setSelectedUser(currentUser);
+        setSelectedUser(null);
+    }
+
+    private void refreshCandidateUsers() {
+        candidateUsersModel = new ListModelList<>(securityService.getAllUsers(), false);
+        candidateUsersModel.setMultiple(true);
+        candidateUser.setModel(candidateUsersModel);
     }
 
     private void refreshGroups() {
@@ -344,31 +375,59 @@ public class UserAdminController extends SelectorComposer<Window> {
         groupsList.reset();
     }
 
+    private void refreshAssignedGroups() {
+        assignedGroupsModel = new ListModelList<>(securityService.findElectiveGroups(), false);
+        assignedGroupsModel.setMultiple(true);
+        assignedGroupsListbox.setModel(assignedGroupsModel);
+        assignedGroupsListbox.setNonselectableTags("*");
+    }
+
     private User setSelectedUser(final User user) {
+        passwordTextbox.setValue("");
+        confirmPasswordTextbox.setValue("");
         if (user == null) {
-            return null;
+            firstNameTextbox.setValue("");
+            lastNameTextbox.setValue("");
+            dateCreatedDatebox.setValue(null);
+            lastActivityDatebox.setValue(null);
+            emailTextbox.setValue("");
+            userDetail.setValue("");
+            assignedGroupsModel.clearSelection();
+            assignedRolesModel.clearSelection();
+        } else {
+            firstNameTextbox.setValue(user.getFirstName());
+            lastNameTextbox.setValue(user.getLastName());
+            dateCreatedDatebox.setValue(user.getDateCreated());
+            lastActivityDatebox.setValue(user.getLastActivityDate());
+            emailTextbox.setValue(user.getMembership().getEmail());
+            userDetail.setValue("User: " + user.getUsername());
+            assignedGroupsModel.setSelection(securityService.findGroupsByUser(user));
+            assignedRolesModel.setSelection(securityService.findRolesByUser(user));
         }
         selectedUser = user;
-        firstNameTextbox.setValue(user.getFirstName());
-        lastNameTextbox.setValue(user.getLastName());
-        dateCreatedDatebox.setValue(user.getDateCreated());
-        lastActivityDatebox.setValue(user.getLastActivityDate());
-        userDetail.setValue("Details for " + user.getUsername());
-        assignedGroupsModel.setSelection(securityService.findGroupsByUser(user));
-        assignedRolesModel.setSelection(securityService.findRolesByUser(user));
         return user;
     }
 
-    private Group setSelectedGroup(final Group group) {
+    private Group setSelectedGroup(Group group) {
         if (group == null) {
-            return null;
+            groupNameTextbox.setValue("");
+            groupDetail.setValue("");
+            assignedUsersModel = new ListModelList<>();
+        } else {
+            groupNameTextbox.setValue(group.getName());
+            groupDetail.setValue("Group: " + group.getName());
+            assignedUsersModel = new ListModelList<>(new ArrayList<>(group.getUsers()), false);
         }
+        assignedUsersModel.setMultiple(true);
+        assignedUsersListbox.setModel(assignedUsersModel);
+        candidateUsersModel.clearSelection();
         selectedGroup = group;
-        groupDetail.setValue("Group " + group.getName());
-        assignedUsersModel.setSelection(getUserCollection(assignedUsersModel, group.getUsers()));
         return group;
     }
 
+    /*
+        Find the User from ListModelList based on the set
+     */
     private Set<User> getUserCollection(ListModelList model, Set<User> userSet) {
         Set<String> userNames = new HashSet<String>();
         Set<User> users = new HashSet<User>();
@@ -384,80 +443,45 @@ public class UserAdminController extends SelectorComposer<Window> {
         return users;
     }
 
-    /*
-    @Listen("onOK = #firstNameTextbox")
-    public void onOKFirstNameTextbox(KeyEvent event) throws Exception {
-        if (!hasPermission(Permissions.EDIT_USERS)) {
-            throw new Exception("Cannot edit users without permission");
-        }
-
-        selectedUser.setFirstName(firstNameTextbox.getValue());
-        securityService.updateUser(selectedUser);
-    }
-
-    @Listen("onOK = #lastNameTextbox")
-    public void onOKLastNameTextbox(KeyEvent event) throws Exception {
-        if (!hasPermission(Permissions.EDIT_USERS)) {
-            throw new Exception("Cannot edit users without permission");
-        }
-
-        selectedUser.setLastName(lastNameTextbox.getValue());
-        securityService.updateUser(selectedUser);
-    }
-    */
-
-    @Listen("onOK = #groupsListbox")
-    public void onOKGroupsListbox(KeyEvent event) {
-        if (!hasPermission(Permissions.EDIT_GROUPS)) {
-            Messagebox.show("You do not have permission to edit group", "Apromore", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
-        Textbox textbox = (Textbox) event.getReference();
-        Group group = securityService.findGroupByRowGuid(textbox.getId());
-        if ("".equals(textbox.getValue())) {
-            securityService.deleteGroup(group);
-            groupsModel.remove(group);
-
-        } else {
-            group.setName(textbox.getValue());
-            securityService.updateGroup(group);
-        }
-    }
-
-    // User functions
+    // User-related features
 
     @Listen("onSelect = #usersListbox")
     public void onSelectUsersListbox(SelectEvent event) throws Exception {
         if (!hasPermission(Permissions.VIEW_USERS)) {
             throw new Exception("Cannot view users without permission");
         }
-        Set<User> selectedUsers = event.getSelectedItems();
-        Set<User> unselectedUsers = event.getUnselectedItems();
-        // setSelectedUser(securityService.getUserByName());
+        Set<User> selectedUsers = event.getSelectedObjects();
+        if (selectedUsers.size() == 1) {
+            User user = selectedUsers.iterator().next();
+            setSelectedUser(securityService.getUserByName(user.getUsername()));
+        } else {
+            setSelectedUser(null);
+        }
+        prevSelectedUsers = selectedUsers;
     }
 
     @Listen("onSelect = #assignedGroupsListbox")
-    public void onSelectGroupsListbox(SelectEvent event) {
+    public void onSelectAssignedGroupsListbox(SelectEvent event) {
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
             groupsListbox.setSelectedItems(event.getPreviousSelectedItems());
             Messagebox.show("You do not have permission to assign group(s)", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
-        selectedUser.setGroups(event.getSelectedObjects());
-        securityService.updateUser(selectedUser);
-        showNotification("Groups for user " + selectedUser.getUsername() + " is updated", "info");
+        // selectedUser.setGroups(event.getSelectedObjects());
+        // securityService.updateUser(selectedUser);
+        // showNotification("Groups for user " + selectedUser.getUsername() + " is updated", "info");
     }
 
     @Listen("onSelect = #assignedRolesListbox")
-    public void onSelectRolesListbox(SelectEvent event) {
+    public void onSelectAssignedRolesListbox(SelectEvent event) {
         if (!hasPermission(Permissions.EDIT_ROLES)) {
             assignedRolesListbox.setSelectedItems(event.getPreviousSelectedItems());
             Messagebox.show("You do not have permission to assign roles", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
-        selectedUser.setRoles(event.getSelectedObjects());
-        securityService.updateUser(selectedUser);
-        showNotification("Roles for user " + selectedUser.getUsername() + " is updated", "info");
+        // selectedUser.setRoles(event.getSelectedObjects());
+        // securityService.updateUser(selectedUser);
+        // showNotification("Roles for user " + selectedUser.getUsername() + " is updated", "info");
     }
 
     @Listen("onClick = #userAddBtn")
@@ -487,6 +511,10 @@ public class UserAdminController extends SelectorComposer<Window> {
             return;
         }
         Set<User> selectedUsers = usersList.getSelection();
+        if (selectedUsers.size() == 0) {
+            Messagebox.show("Nothing to delete", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
         if (selectedUsers.contains(currentUser)) {
             Messagebox.show("You can not delete your own account", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
@@ -507,15 +535,84 @@ public class UserAdminController extends SelectorComposer<Window> {
                                 LOGGER.info("Deleting user " + user.getUsername());
                                 securityService.deleteUser(user);
                             }
+                            setSelectedUser(null);
                         }
-                        // else if(Messagebox.ON_CANCEL.equals(e.getName())){ }
                     }
                 }
         );
     }
 
-    // Group functions
+    @Listen("onClick = #userSaveBtn")
+    public void onClickUserSaveButton() {
+        boolean passwordDirty = false;
 
+        if (!hasPermission(Permissions.EDIT_USERS)) {
+            Messagebox.show("You do not have permission to edit user", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+
+        if (passwordTextbox.getValue() != null && passwordTextbox.getValue().length() > 0) {
+            if (passwordTextbox.getValue().length() < 6) {
+                Messagebox.show("New password must be at least 6 characters long.", null, Messagebox.OK, Messagebox.ERROR);
+                return;
+            } else if (!Objects.equals(passwordTextbox.getValue(), confirmPasswordTextbox.getValue())) {
+                Messagebox.show("Password does not match.", null, Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
+            passwordDirty = true;
+        }
+
+        selectedUser.setFirstName(firstNameTextbox.getValue());
+        selectedUser.setLastName(lastNameTextbox.getValue());
+        selectedUser.setGroups(assignedGroupsModel.getSelection());
+        selectedUser.setRoles(assignedRolesModel.getSelection());
+        selectedUser.getMembership().setEmail(emailTextbox.getValue());
+        if (passwordDirty) {
+            selectedUser.getMembership().setPassword(SecurityUtil.hashPassword(passwordTextbox.getValue()));
+            selectedUser.getMembership().setSalt("username");
+        }
+        selectedUser.getMembership().setUser(selectedUser);
+        securityService.updateUser(selectedUser);
+        showNotification("Details for user " + selectedUser.getUsername() + " is updated", "info");
+    }
+
+    // Group-related features
+
+    /*
+    @Listen("onOK = #groupsListbox")
+    public void onOKGroupsListbox(KeyEvent event) {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to edit group", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        Textbox textbox = (Textbox) event.getReference();
+        Group group = securityService.findGroupByRowGuid(textbox.getId());
+        if ("".equals(textbox.getValue())) {
+            securityService.deleteGroup(group);
+            groupsModel.remove(group);
+
+        } else {
+            group.setName(textbox.getValue());
+            securityService.updateGroup(group);
+        }
+    }*/
+
+    @Listen("onSelect = #groupsListbox")
+    public void onSelectGroupsListbox(SelectEvent event) {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to edit group", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        Set<Group> selectedGroups = event.getSelectedObjects();
+        if (selectedGroups.size() == 1) {
+            Group group = selectedGroups.iterator().next();
+            setSelectedGroup(securityService.getGroupByName(group.getName()));
+        } else {
+            setSelectedGroup(null);
+        }
+    }
+
+    /*
     @Listen("onSelect = #assignedUsersListbox")
     public void onSelectAssignedUsersListbox(SelectEvent event) {
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
@@ -526,6 +623,44 @@ public class UserAdminController extends SelectorComposer<Window> {
         selectedGroup.setUsers(event.getSelectedObjects());
         securityService.updateGroup(selectedGroup);
         showNotification("Allocation for group " + selectedGroup.getName() + " is updated", "info");
+    }
+    */
+
+    @Listen("onClick = #candidateUserAdd")
+    public void onClickCandidateUserAdd() {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to allocate users to a group", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        Set<User> users = candidateUsersModel.getSelection();
+        if (users != null && users.size() == 1) {
+            User candidateUser = users.iterator().next();
+            for (int i = 0; i < assignedUsersModel.size(); i++) {
+                User user = (User) assignedUsersModel.get(i);
+                if (candidateUser.getUsername().contains(user.getUsername()) ) {
+                    return;
+                }
+            }
+            assignedUsersModel.add(candidateUser);
+        }
+    }
+
+    @Listen("onClick = #candidateUserRemove")
+    public void onClickCandidateUserRemove() {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to allocate users to a group", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        Set<User> users = candidateUsersModel.getSelection();
+        if (users != null && users.size() == 1) {
+            User candidateUser = users.iterator().next();
+            for (int i = 0; i < assignedUsersModel.size(); i++) {
+                User user = (User) assignedUsersModel.get(i);
+                if (candidateUser.getUsername().contains(user.getUsername()) ) {
+                    assignedUsersModel.remove(user);
+                }
+            }
+        }
     }
 
     @Listen("onClick = #groupAddBtn")
@@ -554,8 +689,12 @@ public class UserAdminController extends SelectorComposer<Window> {
             Messagebox.show("You do not have permission to delete group", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
-
         Set<Group> selectedGroups = groupsList.getSelection();
+        if (selectedGroups.size() == 0) {
+            Messagebox.show("Nothing to delete", "Apromore", Messagebox.OK, Messagebox.EXCLAMATION);
+            return;
+        }
+
         List<String> groups = new ArrayList<>();
         for (Group g : selectedGroups) {
             groups.add(g.getName());
@@ -572,22 +711,47 @@ public class UserAdminController extends SelectorComposer<Window> {
                                 LOGGER.info("Deleting user " + group.getName());
                                 securityService.deleteGroup(group);
                             }
+                            setSelectedGroup(null);
                         }
                     }
                 }
         );
     }
 
-    @Listen("onClick = #userSaveBtn")
-    public void onClickUserSaveButton() {
-        if (!hasPermission(Permissions.EDIT_USERS)) {
-            Messagebox.show("You do not have permission to edit user", "Apromore", Messagebox.OK, Messagebox.ERROR);
+    @Listen("onClick = #groupSaveBtn")
+    public void onClickGroupSaveButton() {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to edit groups", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
-        selectedUser.setFirstName(firstNameTextbox.getValue());
-        selectedUser.setLastName(lastNameTextbox.getValue());
-        securityService.updateUser(selectedUser);
-        showNotification("Details for user " + selectedUser.getUsername() + " is updated", "info");
+        selectedGroup.setName(groupNameTextbox.getValue());
+        selectedGroup.setUsers(new HashSet<User>(assignedUsersModel));
+        securityService.updateGroup(selectedGroup);
+        showNotification("Details for group " + selectedGroup.getName() + " is updated", "info");
+    }
+
+    @Listen("onClick = #userSelectAllBtn")
+    public void onUserSelectAllBtn() {
+        usersListbox.selectAll();
+        setSelectedUser(null);
+    }
+
+    @Listen("onClick = #userSelectNoneBtn")
+    public void onUserSelectNoneBtn() {
+        usersListbox.clearSelection();
+        setSelectedUser(null);
+    }
+
+    @Listen("onClick = #groupSelectAllBtn")
+    public void onGroupSelectAllBtn() {
+        groupsListbox.selectAll();
+        setSelectedGroup(null);
+    }
+
+    @Listen("onClick = #groupSelectNoneBtn")
+    public void onGroupSelectNoneBtn() {
+        groupsListbox.clearSelection();
+        setSelectedGroup(null);
     }
 
     @Listen("onClick = #okBtn")

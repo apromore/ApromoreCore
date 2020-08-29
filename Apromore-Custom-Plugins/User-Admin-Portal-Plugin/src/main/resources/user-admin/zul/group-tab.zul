@@ -1,0 +1,83 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?component name="groupListboxComp" macroURI="/user-admin/zul/group-listbox.zul" inline="true" ?>
+<hbox vflex="1" hflex="1" spacing="0" style="padding: 0;" xmlns:h="http://www.w3.org/1999/xhtml">
+  <vbox hflex="1" vflex="1" spacing="0">
+    <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
+      <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
+            style="margin-left: 10px;">
+        <button id="groupAddBtn" sclass="ap-icon ap-icon-group-add" tooltiptext="Create new group"/>
+        <button visible="false" id="groupEditBtn" sclass="ap-icon ap-icon-group-edit"
+                tooltiptext="Edit group"/>
+        <button id="groupRemoveBtn" sclass="ap-icon ap-icon-group-remove" tooltiptext="Remove group"/>
+        <h:span class="ap-action-sep"></h:span>
+        <button id="groupSelectAllBtn" sclass="ap-icon ap-icon-select-all" tooltiptext="Select all"/>
+        <button id="groupSelectNoneBtn" sclass="ap-icon ap-icon-select-none" tooltiptext="Select none"/>
+      </hbox>
+    </hbox>
+    <groupListboxComp/>
+  </vbox>
+  <vbox hflex="1" vflex="1" spacing="0">
+    <div sclass="ap-usrmgt-detail" hflex="1" height="32px">
+      <label id="groupDetail" value="Group"></label>
+    </div>
+    <grid sclass="ap-grid ap-form" hflex="1" vflex="min">
+      <columns>
+        <column width="120px"/>
+        <column hflex="1"/>
+      </columns>
+      <rows>
+        <row>
+          <label value="Group name"/>
+          <hbox>
+            <textbox id="groupNameTextbox" placeholder="Enter group name"/>
+          </hbox>
+        </row>
+        <row>
+          <label value="Select a user"/>
+          <hbox>
+            <combobox id="candidateUser" placeholder="Select a user">
+              <template name="model">
+                <comboitem label="${each.username}"/>
+              </template>
+            </combobox>
+            <button id="candidateUserAdd" label="Add to group"/>
+            <button id="candidateUserRemove" label="Remove from group"/>
+          </hbox>
+        </row>
+      </rows>
+    </grid>
+    <listbox id="assignedUsersListbox" multiple="true" hflex="1" vflex="1" style="margin: 8px">
+      <listhead>
+        <listheader>Assigned Users</listheader>
+      </listhead>
+      <template name="model">
+        <listitem>
+          <listcell label="${each.username}"/>
+        </listitem>
+      </template>
+    </listbox>
+    <div align="right" style="padding: 0 8px 8px 8px" hflex="1" height="35px">
+      <button id="groupSaveBtn" label="Save" iconSclass="z-icon-check-circle"/>
+    </div>
+  </vbox>
+</hbox>

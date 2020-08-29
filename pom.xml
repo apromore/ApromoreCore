@@ -86,7 +86,8 @@
         <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>        
         <module>Apromore-Custom-Plugins/Similarity-Search-Logic</module>
         <module>Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin</module>
-        
+
+        <module>Apromore-Custom-Plugins/User-Admin-Portal-Plugin</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
         <!-- Clients that we can distribute -->

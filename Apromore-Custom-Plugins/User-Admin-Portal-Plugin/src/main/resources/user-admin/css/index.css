@@ -45,6 +45,10 @@
     padding: 8px 10px;
 }
 
+.ap-usrmgt-win .z-listheader-checkable {
+    visibility: hidden;
+}
+
 .ap-usrmgt-detail .z-label {
     font-size: 16px;
     font-weight: 700;
