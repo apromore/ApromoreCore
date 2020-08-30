@@ -24,18 +24,29 @@ package org.apromore.logman.attribute.graph.filtering;
 
 import java.util.BitSet;
 
+import org.apromore.logman.attribute.AttributeMatrixGraph;
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
+import org.apromore.logman.attribute.graph.WeightedAttributeGraph;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.set.primitive.IntSet;
 
-public abstract class AbstractFilteredGraph implements FilteredGraph {
+/**
+ * AbstractFilteredGraph is a {@link WeightedAttributeGraph} which can be filtered by 
+ * removing nodes/arcs. Thus, it also takes an {@link AttributeMatrixGraph} as a base graph.
+ * It is created from an original {@link AttributeLogGraph}.
+ * 
+ * @author Bruce Nguyen
+ *
+ */
+public abstract class AbstractFilteredGraph extends WeightedAttributeGraph implements FilteredGraph {
     protected AttributeLogGraph originalGraph;
     protected BitSet nodeBitMask; //true indicate that the node i (also at the index i, node = index) is active
     protected BitSet arcBitMask; //true indicate that the arc i (also at the index i, arc = index) is active
     
     public AbstractFilteredGraph(AttributeLogGraph originalGraph, BitSet nodeBitMask, BitSet arcBitMask) {
+        super(originalGraph.getBaseGraph().getAttribute());
         this.originalGraph = originalGraph;
         this.nodeBitMask = nodeBitMask;
         this.arcBitMask = arcBitMask;
@@ -100,7 +111,7 @@ public abstract class AbstractFilteredGraph implements FilteredGraph {
     }
     
     @Override
-    public String getNodeName(int node) throws Exception {
+    public String getNodeName(int node) {
         return originalGraph.getNodeName(node);
     }
     
@@ -192,10 +203,5 @@ public abstract class AbstractFilteredGraph implements FilteredGraph {
         if (!(other instanceof FilteredGraph)) return false;
         FilteredGraph otherGraph = (FilteredGraph)other;
         return (this.getNodes().equals(otherGraph.getNodes()) && this.getArcs().equals(otherGraph.getArcs()));
-    }
-    
-    @Override
-    public String toString() {
-        return getNodes().toString() + ", " + getArcs().toString();
     }
 }

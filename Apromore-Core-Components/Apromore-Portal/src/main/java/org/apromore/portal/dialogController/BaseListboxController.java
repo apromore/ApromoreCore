@@ -52,6 +52,8 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.SecurityService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -97,6 +99,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button btnListView;
     private final Button btnTileView;
     private final Button btnSecurity;
+    private final Button btnUserMgmt;
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -134,6 +137,7 @@ public abstract class BaseListboxController extends BaseController {
         btnListView = (Button) mainController.getFellow("btnListView");
         btnTileView = (Button) mainController.getFellow("btnTileView");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
+        btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
 
         attachEvents();
 
@@ -271,6 +275,14 @@ public abstract class BaseListboxController extends BaseController {
                 security();
             }
         });
+
+        this.btnUserMgmt.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                userMgmt();
+            }
+        });
+
     }
 
     public void setTileView(boolean tileOn) {
@@ -593,6 +605,21 @@ public abstract class BaseListboxController extends BaseController {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
+
+    protected void userMgmt() throws InterruptedException {
+        PortalPlugin userMgmtPlugin;
+
+        getMainController().eraseMessage();
+        try {
+            userMgmtPlugin = portalPluginMap.get("Manage user permissions");
+            userMgmtPlugin.execute(portalContext);
+        } catch(Exception e) {
+            LOGGER.error("Unable to create user administration dialog", e);
+            Messagebox.show("Unable to create user administration dialog");
+        }
+    }
+
+
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {

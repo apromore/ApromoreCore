@@ -24,13 +24,16 @@ package org.apromore.plugin.portal.processdiscoverer.vis;
 
 public class StringFormatter {
     private final int MAXLEN = 60;
-    private final int MAXWORDLEN = 25;
+    private final int MAXWORDLEN = 15;
 
     public String escapeChars(String value) {
     	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
     }
 
     public String fixCutName(String name, int len) {
+        name = name.replace('_', ' ');
+        name = name.replace('-', ' ');
+
         if (len <= 0) {
             len = MAXLEN;
         }
@@ -43,17 +46,24 @@ public class StringFormatter {
 
     public String shortenName(String name, int len) {
         boolean needEllipsis = false;
+
+        name = name.replace('_', ' ');
+        name = name.replace('-', ' ');
+
         if (len <= 0) {
             len = MAXLEN;
         }
         String[] parts = name.split(" ");
-        if (parts.length > 2) {
+        if (parts.length >= 2) {
             if (parts[0].length() > MAXWORDLEN || parts[parts.length - 1].length() > MAXWORDLEN) {
                 name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
                 needEllipsis = true;
-            } else {
+            } else if (parts.length > 2) {
                 name = parts[0] + " ... " + parts[parts.length - 1];
             }
+        } else if (parts[0].length() > MAXWORDLEN) {
+            name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
+            needEllipsis = true;
         }
         if (name.length() > len) {
             name = name.substring(0, len);

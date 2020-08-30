@@ -46,7 +46,6 @@ public class SearchableListbox {
     // private Auxhead auxead;
 
     private Listheader listheader;
-    private Checkbox selectAll;
 
     private Textbox searchInput;
     private Button searchBtn;
@@ -78,18 +77,6 @@ public class SearchableListbox {
     }
 
     private void initEvents() {
-
-//        selectAll.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
-//            @Override
-//            public void onEvent(CheckEvent event) throws Exception {
-//                if (event.isChecked()) {
-//                    listbox.selectAll();
-//                } else {
-//                    listbox.clearSelection();
-//                }
-//                updateCounts();
-//            }
-//        });
 
         searchToggle.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
             @Override
@@ -128,21 +115,6 @@ public class SearchableListbox {
         listbox.addEventListener(Events.ON_SELECT, new EventListener<SelectEvent>() {
             @Override
             public void onEvent(SelectEvent e) throws Exception {
-                if (e.getSelectedItems().size() > 0) {
-                    if (searchToggle.isChecked()) {
-                        if (listbox.getSelectedCount() == listbox.getItems().size()) {
-                            // selectAll.setChecked(true);
-                        }
-                    } else {
-                        if (listbox.getSelectedCount() == listmodel.size()) {
-                            // selectAll.setChecked(true);
-                        }
-                    }
-                }
-
-                if (e.getUnselectedItems().size() > 0) {
-                    // selectAll.setChecked(false);
-                }
                 updateCounts();
             }
         });

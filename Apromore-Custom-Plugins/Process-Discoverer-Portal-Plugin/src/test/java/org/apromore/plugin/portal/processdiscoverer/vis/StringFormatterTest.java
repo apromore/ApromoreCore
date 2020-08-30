@@ -38,8 +38,12 @@ public class StringFormatterTest {
             if (!stringFormatter.shortenName("Great White", 0).equals("Great White")) {
                 fail("Shorten name is not correct");
             }
-            if (!stringFormatter.shortenName("GreatAlpineRoadGreatOceanRoadGreatWesternHighway", 30)
-                    .equals("GreatAlpineRoadGreatOceanRoadG...")) {
+            if (!stringFormatter.shortenName("12345678 12345678901234567890", 0)
+                    .equals("12345678...")) {
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("12345678901234567890", 0)
+                    .equals("123456789012345...")) {
                 fail("Shorten name is not correct");
             }
             System.out.println("Testing StringFormatter - shortenName()");

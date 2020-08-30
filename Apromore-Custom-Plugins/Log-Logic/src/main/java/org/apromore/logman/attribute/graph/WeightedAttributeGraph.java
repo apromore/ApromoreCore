@@ -33,7 +33,8 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * WeightedAttributeGraph is a subgraph of {@link AttributeMatrixGraph} with added weights for nodes/arcs.
+ * WeightedAttributeGraph is a subgraph of {@link AttributeMatrixGraph} (a base graph) 
+ * with added weights for nodes/arcs.
  * 
  * @author Bruce Nguyen
  *
@@ -50,6 +51,10 @@ public abstract class WeightedAttributeGraph {
     
     public WeightedAttributeGraph(IndexableAttribute attribute) {
         this.attMatrixGraph = attribute.getMatrixGraph();
+    }
+    
+    public AttributeMatrixGraph getBaseGraph() {
+        return this.attMatrixGraph;
     }
     
     public void resetToAttribute(IndexableAttribute attribute) {
@@ -287,5 +292,20 @@ public abstract class WeightedAttributeGraph {
     
     public double getArcMedianDuration(int arc) {
         return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEDIAN);
+    }
+    
+    @Override
+    public String toString() {
+        String toString = "Nodes: ";
+        for (int n : getNodes().toArray()) {
+            toString += this.getNodeName(n) + "(" + n + ")" + "|";
+        }
+        
+        toString += "\nArcs: ";
+        for (int a : getArcs().toArray()) {
+            toString += (getNodeName(getSource(a)) + "->" + getNodeName(getTarget(a)) + "(" + a + ")" + "!");
+        }
+        
+        return toString;
     }
 }

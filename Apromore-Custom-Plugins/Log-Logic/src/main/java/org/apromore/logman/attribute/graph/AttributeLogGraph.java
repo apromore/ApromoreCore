@@ -25,6 +25,7 @@ package org.apromore.logman.attribute.graph;
 import java.util.Comparator;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
+import org.apromore.logman.attribute.AttributeMatrixGraph;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.graph.filtering.NodeBasedGraph;
@@ -50,10 +51,10 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * AttributeLogGraph is an {@link WeightedAttributeGraph} implementation for AttributeLog.
- * AttributeLogGraph can be created by adding graphs of all {@link AttributeTrace}. 
+ * AttributeLogGraph is a {@link WeightedAttributeGraph} for an {@link AttributeLog}.
+ * Thus, AttributeLogGraph is a subgraph of an {@link AttributeMatrixGraph} (a base graph).
+ * AttributeLogGraph is created from an AttributeLog by merging all the graphs of {@link AttributeTrace} in the log. 
  * AttributeLogGraph can be filtered on nodes and arcs to create subgraphs. 
- * This is filtering at the graph level, not at the log level.
  * 
  * @author Bruce Nguyen
  *

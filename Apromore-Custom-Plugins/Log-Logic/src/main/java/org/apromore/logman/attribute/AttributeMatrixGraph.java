@@ -53,6 +53,10 @@ public class AttributeMatrixGraph {
         endIndex = attribute.getArtificialEndIndex();
     }
     
+    public IndexableAttribute getAttribute() {
+        return this.attribute;
+    }
+    
     public IntList getNodes() {
         return IntInterval.fromTo(0, numberOfNodes-1).toImmutable();
     }

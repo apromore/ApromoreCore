@@ -44,7 +44,7 @@ body {
     font-family: var(--ap-font-base);
     font-weight: normal;
     font-size: 14px;
-    width: calc(100% - var(--ap-header-logo-width) - 180px);
+    width: calc(100% - var(--ap-header-logo-width) - 200px);
     color: var(--ap-c-asset-title);
     z-index: var(--ap-z-header-title);
 }
