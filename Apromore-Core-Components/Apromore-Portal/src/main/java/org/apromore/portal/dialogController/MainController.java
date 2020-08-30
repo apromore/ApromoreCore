@@ -81,6 +81,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
@@ -93,6 +94,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
+
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
@@ -916,6 +918,13 @@ public class MainController extends BaseController implements MainControllerInte
     			}
     		}
     	});
+
+        win.addEventListener("onOK", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Events.sendEvent("onClick", (Button)dialog.getFellow("btnOK"), null);
+            }
+        });
 
     }
 
