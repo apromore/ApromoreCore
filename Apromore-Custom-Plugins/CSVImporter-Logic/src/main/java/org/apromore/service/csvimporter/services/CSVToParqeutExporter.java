@@ -23,7 +23,6 @@ package org.apromore.service.csvimporter.services;
 
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.dateparser.Parse;
@@ -51,8 +50,10 @@ class CSVToParqeutExporter implements ParquetExporter {
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
-//        System.out.println("outputParquet " + outputParquet.toURI());
         sample.validateSample();
+        //If file exist, delete it
+        if (outputParquet.exists())
+            outputParquet.delete();
 
         Reader readerin = new InputStreamReader(in, Charset.forName(charset));
         BufferedReader brReader = new BufferedReader(readerin);
@@ -166,6 +167,7 @@ class CSVToParqeutExporter implements ParquetExporter {
             // If PreferMonthFirst changed to True, we have to start over.
             if (!preferMonthFirst && preferMonthFirstChanged)
                 generateParqeuetFile(in, sample, charset, outputParquet, skipInvalidRow);
+
 
             // Resource
             if (sample.getResourcePos() != -1) {

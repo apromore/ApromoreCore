@@ -54,6 +54,7 @@ import org.zkoss.zul.*;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -121,18 +122,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
 
             File parquetDir = new File(props.getProperty("parquet.dir"));
+            //make directory if not exist
             parquetDir.mkdirs();
 
-            //make directory if not exist
-            String parquetFilePath = parquetDir.getPath()
-                    + File.separator + media.getName().replace("." + media.getFormat(), ".parquet");
-            parquetFile = new File(parquetFilePath);
 
-
-            //If file exist rename
-            if (parquetFile.exists())
-                parquetFile = new File(props.getProperty("parquet.dir")
-                        + File.separator + media.getName().replace("." + media.getFormat(), "-copy.parquet"));
+            //Add timestamp to file name
+            String fileSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            parquetFile = new File(parquetDir.getPath()
+                    + File.separator + media.getName().replace("." + media.getFormat(), fileSuffix + ".parquet"));
 
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
@@ -209,8 +206,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             try {
                 LogModel logModel;
                 if (useParquet) {
-
-
                     logModel = parquetExporter.generateParqeuetFile(
                             getInputSream(media),
                             sample,
@@ -886,9 +881,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
                 } else {
                     successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
-                    Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
-                    portalContext.refreshContent();
                 }
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                portalContext.refreshContent();
             } else {
                 XLog xlog = logModel.getXLog();
 
