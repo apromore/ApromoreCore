@@ -156,7 +156,6 @@ public class MainController extends BaseController implements MainControllerInte
     public void onCreate() throws InterruptedException {
         try {
             loadProperties();
-            UserSessionManager.initializeUser(getService());
 
             Window mainW = (Window) this.getFellow("mainW");
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
@@ -170,10 +169,6 @@ public class MainController extends BaseController implements MainControllerInte
             this.simplesearch = new SimpleSearchController(this);
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
-
-            switchToProcessSummaryView();
-            UserSessionManager.setMainController(this);
-            pagingandbuttons.setVisible(true);
 
             controller = this;
             MainController self = this;
@@ -196,26 +191,27 @@ public class MainController extends BaseController implements MainControllerInte
                 }
             });
 
-            qe.subscribe(
-                    new EventListener<Event>() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            if (Constants.EVENT_MESSAGE_SAVE.equals(event.getName())) {
-                                clearProcessVersions();
-                                reloadSummaries();
-                            }
-                        }
-                    });
+            qe.subscribe(new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    switch (event.getName()) {
+                    case Constants.EVENT_MESSAGE_SAVE:
+                        clearProcessVersions();
+                        reloadSummaries();
+                        break;
 
-            qe.subscribe(
-                    new EventListener<Event>() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            if (Constants.EVENT_QUEUE_REFRESH_SCREEN.equals(event.getName())) {
-                                reloadSummaries();
-                            }
-                        }
-                    });
+                    case Constants.EVENT_QUEUE_REFRESH_SCREEN:
+                        reloadSummaries();
+                        break;
+                    }
+                }
+            });
+
+            UserSessionManager.initializeUser(getService());
+            switchToProcessSummaryView();
+            UserSessionManager.setMainController(this);
+            pagingandbuttons.setVisible(true);
+
         } catch (Exception e) {
             String message;
             if (e.getMessage() == null) {

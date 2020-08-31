@@ -36,6 +36,8 @@ import java.util.TreeMap;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -46,6 +48,7 @@ import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
@@ -62,6 +65,25 @@ public class MenuController extends SelectorComposer<Menubar> {
 
     @Override
     public void doAfterCompose(Menubar menubar) {
+
+        // Recreate the menubar when the authenticated user changes
+        EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true).subscribe(new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (Constants.EVENT_QUEUE_SESSION_ATTRIBUTES.equals(event.getName())) {
+                    if (UserSessionManager.USER.equals(event.getData())) {
+                        getSelf().getChildren().clear();
+                        populateMenubar(getSelf());
+                    }
+                }
+            }
+        });
+
+        // Create the menubar initially
+        populateMenubar(menubar);
+    }
+
+    private void populateMenubar(Menubar menubar) {
 
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {

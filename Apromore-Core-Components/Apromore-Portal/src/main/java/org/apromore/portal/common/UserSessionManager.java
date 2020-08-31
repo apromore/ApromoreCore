@@ -40,6 +40,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.FolderType;
@@ -51,7 +52,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 
+/**
+ * Static methods for typed access to user session attributes.
+ *
+ * These methods are a type-safe way to manipulate the ZK {@link org.zkoss.zk.ui.Session).
+ */
 public abstract class UserSessionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionManager.class);
@@ -67,13 +75,10 @@ public abstract class UserSessionManager {
     public static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
     public static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
 
-    /**
-     * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
-     */
-    //static Map<String,ApromoreSession> editSessionMap = new HashMap<>();
-
     public static void setCurrentUser(UserType user) {
         setAttribute(USER, user);
+        EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, Sessions.getCurrent(), true)
+                   .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
     }
 
     private static Object getAttribute(String attribute) {
