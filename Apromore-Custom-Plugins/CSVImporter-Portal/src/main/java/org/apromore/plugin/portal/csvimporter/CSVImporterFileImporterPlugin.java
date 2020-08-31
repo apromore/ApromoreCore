@@ -43,6 +43,8 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
@@ -162,11 +164,20 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                                     "/matchedMapping.zul", null, null);
                     matchedMappingPopUp.doModal();
 
+//                    String pattern = "yyyy-MM-dd";
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//                    String date = simpleDateFormat.format(new Date(usermetadata.getCreatedTime()));
+
+                    Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(usermetadata.getCreatedTime());
+                    String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
+                    String formattedTime = new SimpleDateFormat("HH:mm:ss").format(date);
+
+
                     Label fileNameLabel = (Label) matchedMappingPopUp.getFellow("fileNameLabel");
                     Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();
                     UsermetadataLog usermetadataLog = usermetadataLogSet.iterator().next();
-                    fileNameLabel.setValue("The matched CSV file (" + usermetadataLog.getLog().getName() + ") is " +
-                            "uploaded in " + usermetadata.getCreatedTime());
+                    fileNameLabel.setValue("This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
+                            formattedTime + " on " + formattedDate);
 
                     Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
                             "uploadWithMatchedMapping");
@@ -222,7 +233,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                     // only match the last mapping if there are multiple
                     return;
 
-                } catch (IOException e) {
+                } catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
 
