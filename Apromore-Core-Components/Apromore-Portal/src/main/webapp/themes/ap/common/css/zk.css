@@ -309,6 +309,7 @@ input {
 }
 
 /* Checkbox */
+input[type="checkbox"]:indeterminate,
 input[type="checkbox"]:checked {
     background-color: var(--ap-c-widget);
     color: #fff;

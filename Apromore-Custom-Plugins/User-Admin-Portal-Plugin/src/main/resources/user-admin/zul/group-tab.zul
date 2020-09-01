@@ -20,6 +20,7 @@
   #L%
   -->
 <?component name="groupListboxComp" macroURI="/user-admin/zul/group-listbox.zul" inline="true" ?>
+<?component name="assignedUserListboxComp" macroURI="/user-admin/zul/assigned-user-listbox.zul" inline="true" ?>
 <hbox vflex="1" hflex="1" spacing="0" style="padding: 0;" xmlns:h="http://www.w3.org/1999/xhtml">
   <vbox hflex="1" vflex="1" spacing="0">
     <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
@@ -40,7 +41,7 @@
     <div sclass="ap-usrmgt-detail" hflex="1" height="32px">
       <label id="groupDetail" value="Group"></label>
     </div>
-    <grid sclass="ap-grid ap-form" hflex="1" vflex="min">
+    <grid sclass="ap-grid ap-form" hflex="1" vflex="min" style="margin-bottom: 4px !important;">
       <columns>
         <column width="120px"/>
         <column hflex="1"/>
@@ -52,30 +53,32 @@
             <textbox id="groupNameTextbox" placeholder="Enter group name"/>
           </hbox>
         </row>
-        <row>
-          <label value="Select a user"/>
-          <hbox>
+      </rows>
+    </grid>
+    <vbox hflex="1" vflex="1" spacing="0">
+      <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
+        <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
+              style="margin-left: 10px;">
+          <button id="assignedUserAddBtn" sclass="ap-icon ap-icon-user-add" tooltiptext="Add new user to the group"/>
+          <button id="assignedUserRemoveBtn" sclass="ap-icon ap-icon-user-remove" tooltiptext="Remove user from the group"/>
+          <div id="assignedUserAddView">
+            <h:span class="ap-action-sep"></h:span>
             <combobox id="candidateUser" placeholder="Select a user">
               <template name="model">
                 <comboitem label="${each.username}"/>
               </template>
             </combobox>
-            <button id="candidateUserAdd" label="Add to group"/>
-            <button id="candidateUserRemove" label="Remove from group"/>
-          </hbox>
-        </row>
-      </rows>
-    </grid>
-    <listbox id="assignedUsersListbox" multiple="true" hflex="1" vflex="1" style="margin: 8px">
-      <listhead>
-        <listheader>Assigned Users</listheader>
-      </listhead>
-      <template name="model">
-        <listitem>
-          <listcell label="${each.username}"/>
-        </listitem>
-      </template>
-    </listbox>
+            <button id="candidateUserAdd" label="Add"/>
+            <!--<button id="candidateUserRemove" label="Remove"/>-->
+          </div>
+          <!--
+          <button id="assignedUserSelectAllBtn" sclass="ap-icon ap-icon-select-all" tooltiptext="Select all"/>
+          <button id="assignedUserSelectNoneBtn" sclass="ap-icon ap-icon-select-none" tooltiptext="Select none"/>
+          -->
+        </hbox>
+      </hbox>
+      <assignedUserListboxComp />
+    </vbox>
     <div align="right" style="padding: 0 8px 8px 8px" hflex="1" height="35px">
       <button id="groupSaveBtn" label="Save" iconSclass="z-icon-check-circle"/>
     </div>

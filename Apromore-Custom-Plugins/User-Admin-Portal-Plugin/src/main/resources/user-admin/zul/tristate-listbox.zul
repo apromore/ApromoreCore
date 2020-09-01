@@ -19,26 +19,28 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<listbox id="groupListbox" multiple="true" vflex="1" xmlns:ca="client/attribute">
+<listbox hflex="1" vflex="1" id="${arg.id}" multiple="true" checkmark="false"
+         sclass="ap-form-sublist ap-tristatelistbox">
   <listhead>
-    <listheader sclass="ap-listheader" label="Group name" style="cursor:pointer;">
+    <listheader width="30px"></listheader>
+    <listheader sclass="ap-listheader" label="${arg.title}" hflex="1" style="cursor:pointer;">
       <div sclass="ap-listheader-search">
-        <checkbox
-            sclass="ap-listbox-search-toggle"
-            width="20px"
-            iconSclass="z-icon-search"
-            style="padding:0px; border:0px; box-shadow:0px 0px black;"
+        <checkbox width="20px"
+                  sclass="ap-listbox-search-toggle"
+                  iconSclass="z-icon-search"
+                  style="padding:0px; border:0px; box-shadow:0px 0px black;"
         />
       </div>
     </listheader>
-    <listheader align="center" visible="false" label="" width="40px" style="cursor:pointer;"/>
   </listhead>
   <auxhead sclass="ap-auxhead" visible="false">
     <auxheader>
+      <div width="20px" align="center">
+        <span sclass="z-icon-filter"/>
+      </div>
+    </auxheader>
+    <auxheader>
       <hlayout hflex="1" style="border:0px solid #F00;">
-        <div width="20px" align="center">
-          <span sclass="z-icon-filter"/>
-        </div>
         <div hflex="1">
           <textbox hflex="1" sclass="ap-listbox-search-input"/>
           <button sclass="ap-listbox-search-clear"
@@ -53,26 +55,4 @@
       </hlayout>
     </auxheader>
   </auxhead>
-  <template name="model">
-    <listitem>
-      <listcell label="${each.name}"/>
-      <!--
-      <listcell>
-        <textbox width="80%" id="${each.rowGuid}" value="${each.name}" submitByEnter="true"
-                 style="margin-right: 5px;"
-                 ca:onFocus="Ap.userAdmin.tbFocus(this)"
-                 ca:onBlur="Ap.userAdmin.tbBlur(this)"/>
-        <h:span style="visibility: hidden" class="z-icon-check ap-mini-icon"
-                onclick="Ap.userAdmin.changeGroupNameOK('${each.name}', '${each.rowGuid}')"/>
-        <h:span style="visibility: hidden" class="z-icon-times ap-mini-icon"
-                onclick="Ap.userAdmin.changeGroupNameCancel('${each.name}', '${each.rowGuid}')"/>
-      </listcell>
-      <listcell>
-        <button sclass="ap-icon ap-icon-group-edit" tooltiptext="Edit group"
-                ca:onClick="Ap.userAdmin.editGroup('${each.name}', ${forEachStatus.index})"
-        />
-      </listcell>
-      -->
-    </listitem>
-  </template>
 </listbox>

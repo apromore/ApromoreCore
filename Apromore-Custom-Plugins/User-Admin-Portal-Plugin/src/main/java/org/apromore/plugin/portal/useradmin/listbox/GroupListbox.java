@@ -1,6 +1,6 @@
 /*-
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
@@ -19,34 +19,28 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-/*
- * This file is part of "Apromore".
- *
- * Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
- *
- */
 package org.apromore.plugin.portal.useradmin.listbox;
 
 import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.Group;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModelList;
 
 import java.util.Set;
 
-public class UsersListbox extends SearchableListbox {
+public class GroupListbox extends SearchableListbox {
 
-    public UsersListbox(Listbox listbox, ListModelList sourceListmodel) {
-        super(listbox, sourceListmodel);
+    public GroupListbox(Listbox listbox, ListModelList sourceListModel, String title) {
+        super(listbox, sourceListModel, title);
     }
 
     @Override
     public String getValue(int index) {
-        return ((User)this.getSourceListmodel().get(index)).getUsername().toLowerCase();
+        return ((Group)this.getSourceListModel().get(index)).getName().toLowerCase();
     }
 
     @Override
-    public Set<User> getSelection() {
-        return (Set<User>)getListmodel().getSelection();
+    public Set<Group> getSelection() {
+        return (Set<Group>)getListModel().getSelection();
     }
 }
