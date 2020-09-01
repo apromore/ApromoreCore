@@ -27,7 +27,10 @@ package org.apromore.portal.dialogController;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.common.Constants;
@@ -136,11 +139,17 @@ public class SimpleSearchController extends BaseController {
     /* Add a search History for this user for later use. */
     static List<SearchHistoriesType> addSearchHistory(List<SearchHistoriesType> searchHist, String query) throws Exception {
 
-        // If the new query is already present, remove it
-        for (SearchHistoriesType sh: searchHist) {
-            if (sh.getSearch().equals(query)) {
-                searchHist.remove(sh);
-                break;
+        // Remove any element of the search history if it is equal to the query or not unique
+        {
+            Set<String> searchSet = new HashSet<>();
+            searchSet.add(query);
+            Iterator<SearchHistoriesType> iterator = searchHist.iterator();
+            while (iterator.hasNext()) {
+                SearchHistoriesType sh = iterator.next();
+                if (searchSet.contains(sh.getSearch())) {
+                    iterator.remove();
+                }
+                searchSet.add(sh.getSearch());
             }
         }
 
