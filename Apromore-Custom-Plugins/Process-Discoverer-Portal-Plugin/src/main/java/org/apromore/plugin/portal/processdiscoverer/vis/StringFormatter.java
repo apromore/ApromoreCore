@@ -45,8 +45,6 @@ public class StringFormatter {
     }
 
     public String shortenName(String name, int len) {
-        boolean needEllipsis = false;
-
         name = name.replace('_', ' ');
         name = name.replace('-', ' ');
 
@@ -55,22 +53,26 @@ public class StringFormatter {
         }
         String[] parts = name.split(" ");
         if (parts.length >= 2) {
-            if (parts[0].length() > MAXWORDLEN || parts[parts.length - 1].length() > MAXWORDLEN) {
+            // int toCheck = parts.length - 1;
+            int toCheck = 1;
+            if (parts[0].length() > MAXWORDLEN || parts[toCheck].length() > MAXWORDLEN) {
                 name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
-                needEllipsis = true;
+                return name + "...";
             } else if (parts.length > 2) {
-                name = parts[0] + " ... " + parts[parts.length - 1];
+                if (name.length() > len) {
+                    // name = parts[0] + " ... " + parts[toCheck];
+                    name = parts[0] + " " + parts[toCheck] + "...";
+                    if (name.length() > len) {
+                        return name.substring(0, len)  + "...";
+                    }
+                    return name;
+                } else {
+                    return name;
+                }
             }
         } else if (parts[0].length() > MAXWORDLEN) {
             name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
-            needEllipsis = true;
-        }
-        if (name.length() > len) {
-            name = name.substring(0, len);
-            needEllipsis = true;
-        }
-        if (needEllipsis) {
-            name += "...";
+            return name + "...";
         }
         return name;
     }
