@@ -53,15 +53,15 @@ public class StringFormatter {
         }
         String[] parts = name.split(" ");
         if (parts.length >= 2) {
-            // int toCheck = parts.length - 1;
-            int toCheck = 1;
+            int toCheck = parts.length - 1; // first ... last
+            // int toCheck = 1; // first second ...
             if (parts[0].length() > MAXWORDLEN || parts[toCheck].length() > MAXWORDLEN) {
                 name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
                 return name + "...";
             } else if (parts.length > 2) {
                 if (name.length() > len) {
-                    // name = parts[0] + " ... " + parts[toCheck];
-                    name = parts[0] + " " + parts[toCheck] + "...";
+                    name = parts[0] + " ... " + parts[toCheck]; // first ... last
+                    // name = parts[0] + " " + parts[toCheck] + "..."; // first second ...
                     if (name.length() > len) {
                         return name.substring(0, len)  + "...";
                     }

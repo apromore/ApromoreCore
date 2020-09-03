@@ -235,18 +235,17 @@ public class PDController extends BaseController {
     // E.g. before calling export log/model to the portal.
     public boolean prepareCriticalServices() {
         if (pluginSessionId == null) {
-            Messagebox.show("Process Discoverer session has not been initialized. Please open it again properly!");
+            Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
             return false;
         }
         
         if (!preparePortalSession(pluginSessionId)) {
-            Messagebox.show("The Apromore Portal has become unavailable due to user logoff, timeout or some other reason. " + 
-                    "Please close Process Discover, refresh/relogin the portal and try opening Process Discoverer again.");
+            Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
             return false;
         }
         
         if (!prepareSystemServices()) {
-            Messagebox.show("Critical system services are not available for Process Discoverer. Please check with your administrator!");
+            Messagebox.show("Errors occurred while initializing Process Discoverer. Please contact your administrator.");
             return false;
         }
         

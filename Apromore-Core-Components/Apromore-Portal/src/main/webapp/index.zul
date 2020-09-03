@@ -172,7 +172,7 @@
                         <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
                         <h:div class="ap-header-title">Portal</h:div>
                         <h:div class="ap-header-actions">
-                            <h:a href="https://apromore.org/documentation/features/navigating-the-apromore-portal/" target="_blank">
+                            <h:a href="https://apromore.org/help/user-manual/getting-started/navigating-the-apromore-portal/" target="_blank">
                                 <h:button class="ap-icon ap-icon-help"/>
                             </h:a>
                         </h:div>
