@@ -81,6 +81,6 @@
 
     <import resource="portal-osgi-context.xml" />
     <import resource="portalContext-services.xml" />
-    <import resource="portalContext-security.xml" />
+    <import resource="file:configuration/portalContext-security.xml" />
 
 </beans>

@@ -156,6 +156,7 @@
                 <include name="java6-server.profile"/>
                 <include name="serviceability.xml"/>
                 <include name="login.conf"/>
+                <include name="portalContext-security.xml"/>
             </fileset>
         </copy>
         <delete file="${core-dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
