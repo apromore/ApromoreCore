@@ -25,6 +25,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.json;
 import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
 
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.utils.BPMNHelper;
 import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
@@ -76,14 +77,12 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         jsonData.put("style", BPMNHelper.isStartingOrEndingEdge(edge, abs.getDiagram()) ? "dashed" : "solid");
         jsonData.put("strength", relativeWeight*100);
         jsonData.put("color", visSettings.getColorSettings().getEdgeColor(element, visContext, visSettings));
-        jsonData.put("label", "");
-        if (params.getPrimaryType() == MeasureType.DURATION) {
-        	jsonData.put("label", visSettings.getTimeConverter().convertMilliseconds(primaryWeight+"") + ((params.getSecondary()) ? "\\n" +
-        				visSettings.getDecimalFormatter().format(Double.parseDouble(secondaryWeight+"")) : ""));
-        }else {
-            jsonData.put("label", visSettings.getDecimalFormatter().format(primaryWeight) + ((params.getSecondary()) ? "\\n" +
-            			visSettings.getTimeConverter().convertMilliseconds(secondaryWeight+"") : ""));
+        
+        String label = getWeightString(primaryWeight, "", params.getPrimaryType(), params.getPrimaryRelation());
+        if (params.getSecondary()) {
+            label += getWeightString(secondaryWeight, "\\n", params.getSecondaryType(), params.getSecondaryRelation());
         }
+        jsonData.put("label", label);
         
         //Add (distance, weight) points for the edge
         LayoutElement edgeLayout = abs.getLayout().getLayoutElement(edge.getEdgeID().toString());
@@ -120,5 +119,26 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         
         return jsonEdge;
 	}
+	
+    private void addWeightValueToLabel(JSONObject jsonData, double weightValue, String separator, MeasureType measureType, 
+            MeasureRelation measureRelation) throws JSONException {
+        if (!jsonData.has("label")) return;
+  
+        if (measureRelation == MeasureRelation.ABSOLUTE) {
+            if (measureType == MeasureType.FREQUENCY) {
+                jsonData.put("label", jsonData.get("label") + separator + 
+                visSettings.getDecimalFormatter().format(weightValue));
+            }
+            else if (measureType == MeasureType.DURATION) {
+                jsonData.put("label", jsonData.get("label") + separator + 
+                visSettings.getTimeConverter().convertMilliseconds("" + weightValue));
+            }
+        }
+        else {
+            jsonData.put("label", jsonData.get("label") + separator + 
+            visSettings.getDecimalFormatter().format(weightValue*100) + "%");
+        }
+    }
+	
 	
 }

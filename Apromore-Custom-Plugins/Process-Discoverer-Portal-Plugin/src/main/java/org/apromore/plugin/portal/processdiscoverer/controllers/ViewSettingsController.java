@@ -38,6 +38,7 @@ import java.util.Set;
 
 import org.apromore.logman.attribute.AbstractAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
@@ -73,14 +74,27 @@ public class ViewSettingsController extends VisualController {
             "org:role"
     );
 
-    private Map<String, MeasureAggregation> aggMap = new HashMap<String, MeasureAggregation>() {
+    private Map<String, MeasureAggregation> measureAggMap = new HashMap<String, MeasureAggregation>() {
         {
             put("case", MeasureAggregation.CASES);
+            put("case_relative", MeasureAggregation.CASES);
             put("total", MeasureAggregation.TOTAL);
             put("mean", MeasureAggregation.MEAN);
             put("median", MeasureAggregation.MEDIAN);
             put("max", MeasureAggregation.MAX);
             put("min", MeasureAggregation.MIN);
+        }
+    };
+    
+    private Map<String, MeasureRelation> measureRelationMap = new HashMap<String, MeasureRelation>() {
+        {
+            put("case", MeasureRelation.ABSOLUTE);
+            put("case_relative", MeasureRelation.RELATIVE);
+            put("total", MeasureRelation.ABSOLUTE);
+            put("mean", MeasureRelation.ABSOLUTE);
+            put("median", MeasureRelation.ABSOLUTE);
+            put("max", MeasureRelation.ABSOLUTE);
+            put("min", MeasureRelation.ABSOLUTE);
         }
     };
 
@@ -341,9 +355,11 @@ public class ViewSettingsController extends VisualController {
 
         parent.setOverlay(
             FREQUENCY,
-            aggMap.get(freqAgg),
+            measureAggMap.get(freqAgg),
+            measureRelationMap.get(freqAgg),
             DURATION,
-            aggMap.get(durationAgg),
+            measureAggMap.get(durationAgg),
+            measureRelationMap.get(durationAgg),
             freqAgg
         );
     }
@@ -364,9 +380,11 @@ public class ViewSettingsController extends VisualController {
 
         parent.setOverlay(
             DURATION,
-            aggMap.get(durationAgg),
+            measureAggMap.get(durationAgg),
+            measureRelationMap.get(durationAgg),
             FREQUENCY,
-            aggMap.get(freqAgg),
+            measureAggMap.get(freqAgg),
+            measureRelationMap.get(freqAgg),
                 durationAgg
         );
     }

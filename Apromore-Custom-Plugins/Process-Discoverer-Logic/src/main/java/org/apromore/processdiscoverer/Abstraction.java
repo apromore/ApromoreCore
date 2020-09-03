@@ -53,6 +53,7 @@ public interface Abstraction {
 	double getMaxEdgePrimaryWeight();
 	double getNodeRelativePrimaryWeight(BPMNNode node);
 	double getEdgeRelativePrimaryWeight(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge);
+	
 	Layout getLayout();
 	void setLayout(Layout layout);
 	boolean equal(Abstraction other);

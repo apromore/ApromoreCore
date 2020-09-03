@@ -32,6 +32,7 @@ import java.util.Date;
 import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
@@ -444,6 +445,7 @@ public class PDController extends BaseController {
                         Messagebox.OK | Messagebox.CANCEL,
                         Messagebox.QUESTION,
                         new org.zkoss.zk.ui.event.EventListener() {
+                            @Override
                             public void onEvent(Event evt) {
                                 if (evt.getName().equals("onOK")) {
                                     try {
@@ -585,15 +587,20 @@ public class PDController extends BaseController {
     public void setOverlay(
             MeasureType primaryType,
             MeasureAggregation primaryAggregation,
+            MeasureRelation primaryRelation,
             MeasureType secondaryType,
             MeasureAggregation secondaryAggregation,
+            MeasureRelation secondaryRelation,
             String aggregateCode
     ) throws InterruptedException {
 
         userOptions.setPrimaryType(primaryType);
         userOptions.setPrimaryAggregation(primaryAggregation);
+        userOptions.setPrimaryRelation(primaryRelation);
+        
         userOptions.setSecondaryType(secondaryType);
         userOptions.setSecondaryAggregation(secondaryAggregation);
+        userOptions.setSecondaryRelation(secondaryRelation);
 
         primaryAggregateCode = aggregateCode;
         if (primaryType == FREQUENCY) {
@@ -606,8 +613,8 @@ public class PDController extends BaseController {
 
     public AbstractionParams genAbstractionParamsSimple(
             boolean prioritizeParallelism, boolean preserve_connectivity, boolean secondary,
-            MeasureType primaryType, MeasureAggregation primaryAggregation,
-            MeasureType secondaryType, MeasureAggregation secondaryAggregation
+            MeasureType primaryType, MeasureAggregation primaryAggregation, MeasureRelation primaryRelation,
+            MeasureType secondaryType, MeasureAggregation secondaryAggregation, MeasureRelation secondaryRelation
             ) {
         return new AbstractionParams(
                 logData.getMainAttribute(),
@@ -620,10 +627,13 @@ public class PDController extends BaseController {
                 secondary,
                 userOptions.getFixedType(),
                 userOptions.getFixedAggregation(),
+                userOptions.getFixedRelation(),
                 primaryType,
                 primaryAggregation,
+                primaryRelation,
                 secondaryType,
                 secondaryAggregation,
+                secondaryRelation,
                 userOptions.getRelationReader(),
                 null);
     }
@@ -663,8 +673,10 @@ public class PDController extends BaseController {
                 userOptions.getIncludeSecondary(),
                 userOptions.getPrimaryType(),
                 userOptions.getPrimaryAggregation(),
+                userOptions.getPrimaryRelation(),
                 userOptions.getSecondaryType(),
-                userOptions.getSecondaryAggregation()
+                userOptions.getSecondaryAggregation(),
+                userOptions.getSecondaryRelation()
             );
 
             // Find a DFG first

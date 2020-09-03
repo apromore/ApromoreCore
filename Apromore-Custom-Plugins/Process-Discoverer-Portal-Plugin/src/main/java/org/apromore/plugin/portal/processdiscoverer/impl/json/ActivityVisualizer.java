@@ -22,7 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
-import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualSettings;
@@ -69,31 +68,13 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
 		}
     	Abstraction abs = visContext.getProcessAbstraction();
 		AbstractionParams params = abs.getAbstractionParams();
-    	
-		if(params.getPrimaryType() == MeasureType.DURATION) {
-    		// No empty line if dual info
-        	if (!params.getSecondary()) {
-        		jsonData.put("name", node_displayname + "\\n\\n" +
-        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
-        	}
-        	else {
-        		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + ", " +
-        				visSettings.getDecimalFormatter().format(abs.getNodeSecondaryWeight(node)));
-        	}
-        }
-        else {
-        	// No empty line if dual info
-        	if (!params.getSecondary()) {
-        		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getDecimalFormatter().format(abs.getNodePrimaryWeight(node)));
-        	}
-        	else {
-        		jsonData.put("name", node_displayname + "\\n\\n" + 
-        				visSettings.getDecimalFormatter().format(abs.getNodePrimaryWeight(node)) + ", " +
-        				visSettings.getTimeConverter().convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
-        	}
-        }
+		
+		String name = node_displayname;
+        name += getWeightString(abs.getNodePrimaryWeight(node), "\\n\\n", params.getPrimaryType(), params.getPrimaryRelation());	
+		if (params.getSecondary()) {
+		    name += getWeightString(abs.getNodeSecondaryWeight(node), ", ", params.getSecondaryType(), params.getSecondaryRelation());
+		}
+		jsonData.put("name", name);
 
 		jsonData.put("shape", "roundrectangle");
         jsonData.put("color", visSettings.getColorSettings().getActivityBackgroundColor(element, visContext, visSettings));
@@ -103,5 +84,4 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
         jsonData.put("textsize", fontSize + "px");
         jsonData.put("borderwidth", visSettings.getBorderWidth() + "px");
 	}
-
 }

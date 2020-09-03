@@ -69,12 +69,15 @@ public class DFGAbstraction extends AbstractAbstraction {
 			                            ", target=" + edge.getTarget().getLabel());
 			}
 			
-			double arcWeight = log.getGraphView().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation());
+			double arcWeight = log.getGraphView().getArcWeight(arc, params.getPrimaryType(), params.getPrimaryAggregation(),
+			                                                    params.getPrimaryRelation());
 			arcPrimaryWeights.put(edge, arcWeight);
 			maxArcPrimaryWeight = Math.max(maxArcPrimaryWeight, arcWeight);
 			minArcPrimaryWeight = Math.min(minArcPrimaryWeight, arcWeight);
 			if (params.getSecondary()) {
-				arcSecondaryWeights.put(edge, log.getGraphView().getArcWeight(arc, params.getSecondaryType(), params.getSecondaryAggregation()));
+				arcSecondaryWeights.put(edge, log.getGraphView().getArcWeight(arc, params.getSecondaryType(), 
+				                                                            params.getSecondaryAggregation(),
+				                                                            params.getSecondaryRelation()));
 			}
 			
 		}

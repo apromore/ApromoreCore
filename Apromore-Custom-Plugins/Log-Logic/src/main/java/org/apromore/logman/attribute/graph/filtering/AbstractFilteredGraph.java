@@ -27,6 +27,7 @@ import java.util.BitSet;
 import org.apromore.logman.attribute.AttributeMatrixGraph;
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.graph.WeightedAttributeGraph;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -168,13 +169,13 @@ public abstract class AbstractFilteredGraph extends WeightedAttributeGraph imple
     }
     
     @Override
-    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation) {
-        return originalGraph.getNodeWeight(node, type, aggregation);
+    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
+        return originalGraph.getNodeWeight(node, type, aggregation, relation);
     }
     
     @Override
-    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation) {
-        return originalGraph.getArcWeight(arc, type, aggregation);
+    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
+        return originalGraph.getArcWeight(arc, type, aggregation, relation);
     }
     
     

@@ -26,10 +26,8 @@ import org.apromore.logman.Constants;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.impl.list.primitive.IntInterval;
 
-
-
 /**
- * AttributeMatrixGraph is the matrix graph based on an attribute.
+ * AttributeMatrixGraph is the matrix-based graph based on an attribute.
  * The nodes are the value indexes of the attribute. In addition, there are also two artificial nodes representing
  * the source and the sink. These nodes are the next values of the index of the attribute. The source
  * is max_index+1 and the sink is max_index+2.
