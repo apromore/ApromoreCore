@@ -19,7 +19,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<listbox id="usersListbox" multiple="true" vflex="1" hflex="1" xmlns:ca="client/attribute">
+<listbox id="userListbox" multiple="true" vflex="1" hflex="1" xmlns:ca="client/attribute">
   <listhead>
     <listheader sclass="ap-listheader" label="Username" hflex="1" style="cursor:pointer;">
       <div sclass="ap-listheader-search">
