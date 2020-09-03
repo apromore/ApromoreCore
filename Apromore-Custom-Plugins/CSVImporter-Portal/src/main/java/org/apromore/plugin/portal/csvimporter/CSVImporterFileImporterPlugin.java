@@ -34,10 +34,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
@@ -64,9 +61,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     // Implementation of FileImporterPlugin
 
     @Override
-    public Set<String> getFileExtensions() {
-        return Collections.singleton("csv");
-    }
+    public Set<String> getFileExtensions() {return new HashSet<>(Arrays.asList("csv", "parquet"));}
 
     @Override
     public void importFile(Media media, boolean isLogPublic) {

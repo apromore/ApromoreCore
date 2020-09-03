@@ -21,10 +21,13 @@
  */
 package org.apromore.service.csvimporter.utilities;
 
+import org.apache.parquet.column.ColumnDescriptor;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.MessageTypeParser;
 import org.apromore.service.csvimporter.model.LogSample;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ParquetUtilities {
@@ -75,5 +78,13 @@ public class ParquetUtilities {
         sb.append("}");
         schema = MessageTypeParser.parseMessageType(sb.toString());
         return schema;
+    }
+
+    public static List<String> getHeaderFromParquet(MessageType schema) {
+        List<String> header = new ArrayList<>();
+        for (ColumnDescriptor columnDescriptor : schema.getColumns()) {
+            header.add(columnDescriptor.getPath()[0]);
+        }
+        return header;
     }
 }

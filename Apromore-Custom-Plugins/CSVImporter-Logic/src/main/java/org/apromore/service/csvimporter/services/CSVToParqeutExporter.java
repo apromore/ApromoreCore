@@ -50,6 +50,7 @@ class CSVToParqeutExporter implements ParquetExporter {
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
+
         sample.validateSample();
         //If file exist, delete it
         if (outputParquet.exists())
@@ -98,10 +99,8 @@ class CSVToParqeutExporter implements ParquetExporter {
         HashMap<String, String> eventAttributes;
         HashMap<String, Timestamp> otherTimestamps;
 
-
         String errorMessage = "Field is empty or has a null value!";
         boolean rowLimitExceeded = false;
-
 
         while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
