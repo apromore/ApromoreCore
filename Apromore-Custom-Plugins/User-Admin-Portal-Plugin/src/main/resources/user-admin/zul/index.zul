@@ -27,7 +27,7 @@
         sclass="ap-usrmgt-win"
         width="90%" height="80%" position="center"
         closable="true"
-        title="User Management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
+        title="User and Group Management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
   <script type="text/javascript" src="/user-admin/js/index.js"></script>
   <style src="/user-admin/css/index.css"/>
   <vbox vflex="1" hflex="1" spacing="0">

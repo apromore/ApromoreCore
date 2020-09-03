@@ -100,6 +100,9 @@ public class MenuController extends SelectorComposer<Menubar> {
 
                 String menuName = plugin.getGroupLabel(Locale.getDefault());
 
+                if (menuName == "Settings") {
+                    continue;
+                }
                 // Create a new menu if this is the first menu item within it
                 if (!menuMap.containsKey(menuName)) {
                     Menu menu = new Menu(menuName);

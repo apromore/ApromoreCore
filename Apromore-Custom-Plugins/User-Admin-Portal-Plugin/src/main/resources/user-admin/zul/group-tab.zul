@@ -56,7 +56,7 @@
       </rows>
     </grid>
     <vbox hflex="1" vflex="1" spacing="0">
-      <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
+      <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px" visible="false">
         <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
               style="margin-left: 10px;">
           <button id="assignedUserAddBtn" sclass="ap-icon ap-icon-user-add" tooltiptext="Add new user to the group"/>
@@ -77,7 +77,14 @@
           -->
         </hbox>
       </hbox>
-      <assignedUserListboxComp />
+      <hbox vflex="1" hflex="1" spacing="0">
+        <assignedUserListboxComp id="nonAssignedUserListbox" vflex="1"  />
+        <vbox pack="center" align="center" vflex="1">
+          <button id="assignUser" iconSclass="z-icon-chevron-right"></button>
+          <button id="retractUser" iconSclass="z-icon-chevron-left"></button>
+        </vbox>
+        <assignedUserListboxComp id="assignedUserListbox" vflex="1" />
+      </hbox>
     </vbox>
     <div align="right" style="padding: 0 8px 8px 8px" hflex="1" height="35px">
       <button id="groupSaveBtn" label="Save" iconSclass="z-icon-check-circle"/>

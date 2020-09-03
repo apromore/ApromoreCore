@@ -404,4 +404,21 @@ public class User implements Serializable {
     public void addHistoryEvent(HistoryEvent newHistoryEvent) {
         this.historyEvents.add(newHistoryEvent);
     }
+
+    // Object methods
+
+    @Override
+    public boolean equals(java.lang.Object other) {
+        if (!User.class.equals(other.getClass())) {
+            return false;
+        }
+
+        User otherUser = (User) other;
+        return otherUser.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
 }
