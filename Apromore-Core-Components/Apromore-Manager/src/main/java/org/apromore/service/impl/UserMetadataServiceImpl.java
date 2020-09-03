@@ -275,17 +275,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             }
         }
 
-        // ??? Dash Template ???
-//        if (logIds == null) {
-//            Set<Usermetadata> output = new HashSet<>();
-//            for (Usermetadata um : userMetadataRepo.findAll()) {
-//                if (um.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())) {
-//                    output.add(um);
-//                }
-//            }
-//            return output.size() > 0 ? output : null;
-//        }
-
         // Get all the user metadata that linked to specified logs
         List<Set<Usermetadata>> lists = new ArrayList<>();
         for (Integer logId : logIds) {
@@ -356,8 +345,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         for (Group group : user.getGroups()) {
             groupUserMetadataSet.add(new GroupUsermetadata(group, userMetadata, true, false, false));
         }
-
-//        usermetadataLogSet.add(new UsermetadataLog(userMetadata, null));
 
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);

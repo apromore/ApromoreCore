@@ -71,35 +71,6 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         return Collections.singleton("csv");
     }
 
-//    @Override
-//    public void importFile(Media media, boolean isLogPublic) {
-//
-//        // Configure the arguments to pass to the CSV importer view
-//        Map arg = new HashMap<>();
-//        arg.put("csvImporterLogic", csvImporterLogic);
-//        arg.put("media", media);
-//        Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
-//
-//        // Create a CSV importer view
-//        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
-//            case "page":  // create the view in its own page
-//                Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
-//                break;
-//
-//            case "modal": default:  // create the view in a modal popup within the current page
-//                PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-//                try {
-//                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
-//                    "import-csv/csvimporter.zul", null, arg);
-//                    window.doModal();
-//
-//                } catch (IOException e) {
-//                    LOGGER.error("Unable to create window", e);
-//                }
-//                break;
-//        }
-//    }
-
     @Override
     public void importFile(Media media, boolean isLogPublic) {
 
@@ -112,40 +83,38 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         String username = portalContext.getCurrentUser().getUsername();
 
-        List<Usermetadata> mappingJSONList = null;
+        // Get header from imported CSV
+        List<String> header = new ArrayList<>();
+        String fileEncoding = "UTF-8";
+        CSVFileReader csvFileReader = new CSVFileReader();
+        CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
+        try {
+            header = Arrays.asList(csvReader.readNext());
+        } catch (IOException e) {
+            LOGGER.error("Unable to read CSV", e);
+        }
+
+        // Get saved schema mapping from DB
+        List<Usermetadata> mappingJSONList;
         Set<Usermetadata> usermetadataSet = null;
 
         try {
             usermetadataSet = userMetadataService.getUserMetadataWithoutLog(UserMetadataTypeEnum.CSV_IMPORTER,
                     username);
         } catch (UserNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("Unable to find user " + username, e);
         }
 
         if (usermetadataSet != null) {
             mappingJSONList = new ArrayList<>(usermetadataSet);
         } else mappingJSONList = new ArrayList<>();
 
-        // Get header from imported CSV
-        List<String> header = new ArrayList<>();
-        String fileEncoding = "UTF-8";
-
-//        // Creating Object of ObjectMapper define in Jakson Api
-//        ObjectMapper Obj = new ObjectMapper();
-//        JsonFactory jsonF = new JsonFactory();
-
-        CSVFileReader csvFileReader = new CSVFileReader();
-        CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
-        try {
-            header = Arrays.asList(csvReader.readNext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Sort by Usermetadata object Id, since a new csv schema mapping is created each time.
+        Collections.sort(mappingJSONList, Comparator.comparing(Usermetadata::getId));
 
         if (mappingJSONList.size() != 0) {
 
             // Matching from the latest record
-            // TODO: sort by created time or Id
             for (int i = mappingJSONList.size() - 1; i >= 0; i--) {
                 System.out.println(mappingJSONList.get(i));
 
@@ -153,7 +122,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
                 JSONObject jsonObject = (JSONObject) JSONValue.parse(usermetadata.getContent());
 
-                JSONValue.parse(jsonObject.get("header").toString());
+                System.out.println(JSONValue.parse(jsonObject.get("header").toString()));
 
                 List<String> sampleHeader = (List<String>) jsonObject.get("header");
 
@@ -164,19 +133,14 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                                     "/matchedMapping.zul", null, null);
                     matchedMappingPopUp.doModal();
 
-//                    String pattern = "yyyy-MM-dd";
-//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-//                    String date = simpleDateFormat.format(new Date(usermetadata.getCreatedTime()));
-
                     Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(usermetadata.getCreatedTime());
                     String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
                     String formattedTime = new SimpleDateFormat("HH:mm:ss").format(date);
 
-
                     Label fileNameLabel = (Label) matchedMappingPopUp.getFellow("fileNameLabel");
                     Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();
                     UsermetadataLog usermetadataLog = usermetadataLogSet.iterator().next();
-                    fileNameLabel.setValue("This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
+                    fileNameLabel.setValue("  This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
                             formattedTime + " on " + formattedDate);
 
                     Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
@@ -184,8 +148,6 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                     Button uploadAsNewBtn = (Button) matchedMappingPopUp.getFellow(
                             "uploadAsNew");
                     uploadWithMatchedMappingBtn.addEventListener("onClick", event -> {
-                                LOGGER.info("################## BUTTON uploadWithMatchedMappingBtn CLICKED " +
-                                        "***************");
                                 arg.put("mappingJSON", jsonObject);
                                 matchedMappingPopUp.detach();
 
@@ -208,7 +170,6 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                             }
                     );
                     uploadAsNewBtn.addEventListener("onClick", event -> {
-                                LOGGER.info("################## BUTTON uploadAsNewBtn CLICKED ***************");
                                 arg.put("mappingJSON", null);
                                 matchedMappingPopUp.detach();
 
@@ -230,17 +191,16 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                         }
                             }
                     );
-                    // only match the last mapping if there are multiple
+                    // only match the last schema mapping if there are multiple
                     return;
 
                 } catch (IOException | ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Unable to import CSV", e);
                 }
 
             }
         }
         // can't find match in JSONList or no mapping record
-
         arg.put("mappingJSON", null);
 
         // Create a CSV importer view
