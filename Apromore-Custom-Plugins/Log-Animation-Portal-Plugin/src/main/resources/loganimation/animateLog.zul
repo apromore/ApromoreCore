@@ -61,7 +61,7 @@
             <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
             <n:div class="ap-header-title">Log Animator</n:div>
             <n:div class="ap-header-actions">
-                <n:a href="https://apromore.org/documentation/features/animate-log-map/" target="_blank">
+                <n:a href="https://apromore.org/help/user-manual/analysis/animate-logs-process-map/" target="_blank">
                     <n:button class="ap-icon ap-icon-help"/>
                 </n:a>
             </n:div>
