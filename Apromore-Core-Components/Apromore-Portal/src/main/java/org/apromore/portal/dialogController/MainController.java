@@ -207,7 +207,7 @@ public class MainController extends BaseController implements MainControllerInte
                 }
             });
 
-            UserSessionManager.initializeUser(getService());
+            UserSessionManager.initializeUser(getService(), config);
             switchToProcessSummaryView();
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);

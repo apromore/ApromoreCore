@@ -111,10 +111,9 @@ The manager.ehcache.config.url property in site.properties can be used to point 
 ### LDAP setup
 
 As distributed, Apromore maintains its own catalogue of users and passwords.
-It can be modified to instead allow login based on an external LDAP directory.
-This requires recompiling server components rather than just changing to `site.properties`; you will need to be comfortable hacking Spring, LDAP, Java and ZUL.
+It can be configured to instead allow login based on an external LDAP directory.
 
-* Edit the portal Spring configuration in `Apromore-Core-Components/Apromore-Portal/src/main/resources/META-INF/spring/portalContext-security.xml`, uncommenting the jaasAuthenticationProvider as so:
+* Edit the portal Spring configuration in `virgo-tomcat-server-3.6.4.RELEASE/configuration/portalContext-security.xml`, uncommenting the jaasAuthenticationProvider as so:
 
 ```xml
     <!-- The remote authentication details -->
@@ -137,30 +136,23 @@ This requires recompiling server components rather than just changing to `site.p
         </beans:property>
         <beans:property name="authorityGranters">
             <beans:list>
-                <beans:ref bean="authorityGranter"/>
+                <beans:bean class="org.apromore.security.AuthorityGranterImpl">
+                    <beans:property name="principalClassName" value="com.sun.security.auth.UserPrincipal"/>
+                    <beans:property name="grants">
+                        <beans:set>
+                            <beans:value>ROLE_USER</beans:value>
+                        </beans:set>
+                    </beans:property>
+                </beans:bean>
             </beans:list>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="authorityGranter" class="org.apromore.security.AuthorityGranterImpl">
-        <beans:property name="principalClassName" value="com.sun.security.auth.UserPrincipal"/>
-        <beans:property name="grants">
-            <beans:set>
-                <beans:value>ROLE_USER</beans:value>
-            </beans:set>
         </beans:property>
     </beans:bean>
 ```
 
 * Unless you're using the University of Melbourne's central authentication, you will need to additionally edit the following files to match your local LDAP installation:
-  - Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF/login.conf
-  - Apromore-Core-Components/Apromore-Portal/src/main/java/org/apromore/portal/common/UserSessionManager.java (constructUserType method)
+  - `virgo-tomcat-server-3.6.4.RELEASE/repository/usr/site.properties` (section marked "LDAP")
+  - `virgo-tomcat-server-3.6.4.RELEASE/configuration/login.conf`
 
 * Since accounts will now be created automatically, you might want to remove the "Forgot password?" and "No account yet? Register for free!" buttons on the login screen by editing `Apromore-Core-Components/Apromore-Portal/src/main/webapp/login.zul`
 
-* Recompile the Portal bundle and its dependencies:
-```bash
-mvn clean install -pl :apromore-portal -amd
-```
-
-When the server starts with the modified portal, it will automatically create new accounts for valid LDAP logins.
+When the server starts with the reconfigured portal, it will automatically create new accounts for valid LDAP logins.

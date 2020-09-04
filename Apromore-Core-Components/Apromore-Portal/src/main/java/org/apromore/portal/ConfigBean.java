@@ -45,6 +45,16 @@ public class ConfigBean implements Serializable {
     private String  minorVersionNumber;
     private String  versionEdition;
     private String  versionBuildDate;
+
+    // LDAP
+    private String  ldapProviderURL;
+    private String  ldapUserContext;
+    private String  ldapUsernameAttribute;
+    private String  ldapEmailAttribute;
+    private String  ldapFirstNameAttribute;
+    private String  ldapLastNameAttribute;
+
+    // Switches to enable features
     private boolean  enablePublish;
     private boolean  enableTC;
     private boolean  enablePP;
@@ -56,7 +66,10 @@ public class ConfigBean implements Serializable {
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore,
                       String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber,
-                      String versionEdition, String versionBuildDate, boolean enablePublish, boolean enableTC, boolean enablePP,
+                      String versionEdition, String versionBuildDate,
+                      String ldapProviderURL, String ldapUserContext, String ldapUsernameAttribute,
+                      String ldapEmailAttribute, String ldapFirstNameAttribute, String ldapLastNameAttribute,
+                      boolean enablePublish, boolean enableTC, boolean enablePP,
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
@@ -81,6 +94,14 @@ public class ConfigBean implements Serializable {
         this.minorVersionNumber = minorVersionNumber;
         this.versionEdition     = versionEdition;
         this.versionBuildDate   = versionBuildDate;
+
+        this.ldapProviderURL        = ldapProviderURL;
+        this.ldapUserContext        = ldapUserContext;
+        this.ldapUsernameAttribute  = ldapUsernameAttribute;
+        this.ldapEmailAttribute     = ldapEmailAttribute;
+        this.ldapFirstNameAttribute = ldapFirstNameAttribute;
+        this.ldapLastNameAttribute  = ldapLastNameAttribute;
+
         this.enablePublish      = enablePublish;
         this.enableTC           = enableTC;
         this.enablePP           = enablePP;
@@ -99,6 +120,14 @@ public class ConfigBean implements Serializable {
     public String getMinorVersionNumber()   { return minorVersionNumber; }
     public String getVersionEdition()       { return versionEdition; }
     public String getVersionBuildDate()     { return versionBuildDate; }
+
+    public String getLdapProviderURL()        { return ldapProviderURL; }
+    public String getLdapUserContext()        { return ldapUserContext; }
+    public String getLdapUsernameAttribute()  { return ldapUsernameAttribute; }
+    public String getLdapEmailAttribute()     { return ldapEmailAttribute; }
+    public String getLdapFirstNameAttribute() { return ldapFirstNameAttribute; }
+    public String getLdapLastNameAttribute()  { return ldapLastNameAttribute; }
+
     public boolean getEnablePublish()       { return enablePublish; }
     public boolean getEnableTC()            { return enableTC; }
     public boolean getEnablePP()            { return enablePP; }
