@@ -85,7 +85,7 @@
       </rows>
     </grid>
     <hbox vflex="1" hflex="1" spacing="0" style="margin: 8px">
-      <listbox hflex="1" vflex="1" id="assignedRoleListbox" multiple="true" checkmark="false"
+      <!--<listbox hflex="1" vflex="1" id="assignedRoleListbox" multiple="true" checkmark="false"
                sclass="ap-form-sublist ap-tristatelistbox">
         <listhead>
           <listheader width="30px"></listheader>
@@ -121,7 +121,8 @@
             </hlayout>
           </auxheader>
         </auxhead>
-      </listbox>
+      </listbox>-->
+      <tristateListboxComp id="assignedRoleListbox" title="Assigned Roles"/>
       <tristateListboxComp id="assignedGroupListbox" title="Assigned Groups"/>
     </hbox>
     <div align="right" style="padding: 0 8px 8px 8px" height="35px" hflex="1">

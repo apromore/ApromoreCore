@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -106,6 +107,15 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
     };
 
+    public static Comparator<User> nameComparator = new Comparator<User>() {
+
+        public int compare(User user1, User user2) {
+            String username1 = user1.getUsername().toUpperCase();
+            String username2 = user2.getUsername().toUpperCase();
+
+            return username1.compareTo(username2);
+        }};
+
     Window mainWindow;
     User currentUser;
     User selectedUser;
@@ -119,10 +129,12 @@ public class UserAdminController extends SelectorComposer<Window> {
     ListModelList<User> userModel;
     ListModelList<User> candidateUserModel;
     ListModelList<User> allUserModel;
+    ListModelList<User> nonAssignedUserModel;
     ListModelList<User> assignedUserModel;
 
     UserListbox userList;
     GroupListbox groupList;
+    AssignedUserListbox nonAssignedUserList;
     AssignedUserListbox assignedUserList;
     TristateListbox<Role> assignedRoleList;
     TristateListbox<Group> assignedGroupList;
@@ -187,6 +199,8 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Wire("#assignedUserAddView")
     Div assignedUserAddView;
+    @Wire("#nonAssignedUserListbox")
+    Listbox nonAssignedUserListbox;
     @Wire("#assignedUserListbox")
     Listbox assignedUserListbox;
 
@@ -249,7 +263,8 @@ public class UserAdminController extends SelectorComposer<Window> {
         groupList = new GroupListbox(groupListbox, groupModel, "Group name");
 
         allUserModel = new ListModelList<User>(securityService.getAllUsers(), false);
-        refreshCandidateUsers();
+        // refreshCandidateUsers();
+        refreshNonAssignedUsers();
 
         groupNameTextbox.setReadonly(!canEditGroups);
         candidateUser.setReadonly(!canEditGroups);
@@ -410,6 +425,12 @@ public class UserAdminController extends SelectorComposer<Window> {
         candidateUser.setModel(ListModels.toListSubModel(candidateUserModel, userComparator, 20));
     }
 
+    private void refreshNonAssignedUsers() {
+        nonAssignedUserModel = new ListModelList<>(securityService.getAllUsers(), false);
+        nonAssignedUserModel.setMultiple(true);
+        nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
+    }
+
     private void refreshGroups() {
         groupModel = new ListModelList<>(securityService.findElectiveGroups(), false);
         groupList.setSourceListModel(groupModel);
@@ -428,7 +449,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedRoleListbox.setModel(assignedRoleModel);
         assignedRoleListbox.setNonselectableTags("*");
         assignedRoleListbox.setItemRenderer(new TristateItemRenderer());
-        assignedRoleList = new TristateListbox<Role>(assignedRoleListbox, assignedRoleModel, "Assigned roles");
+        assignedRoleList = new TristateListbox<Role>(assignedRoleListbox, assignedRoleModel, "Assigned Roles");
     }
 
     private void refreshAssignedGroups() {
@@ -443,7 +464,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedGroupListbox.setModel(assignedGroupModel);
         assignedGroupListbox.setNonselectableTags("*");
         assignedGroupListbox.setItemRenderer(new TristateItemRenderer());
-        assignedGroupList = new TristateListbox<Group>(assignedGroupListbox, assignedGroupModel, "Assigned groups");
+        assignedGroupList = new TristateListbox<Group>(assignedGroupListbox, assignedGroupModel, "Assigned Groups");
     }
 
     private void updateTristateModels(TristateListbox list, Map<String, Integer> tally, Integer total) {
@@ -597,15 +618,23 @@ public class UserAdminController extends SelectorComposer<Window> {
             groupNameTextbox.setValue("");
             groupDetail.setValue("");
             assignedUserModel = new ListModelList<>();
+            nonAssignedUserModel = new ListModelList<>();
         } else {
             groupNameTextbox.setValue(group.getName());
             groupDetail.setValue("Group: " + group.getName());
-            assignedUserModel = new ListModelList<>(new ArrayList<>(group.getUsers()), false);
+            List<User> assignedUsers = new ArrayList<>(group.getUsers());
+            List<User> nonAssignedUsers = new ArrayList<>(securityService.getAllUsers());
+            nonAssignedUsers.removeAll(assignedUsers);
+            Collections.sort(assignedUsers, nameComparator);
+            Collections.sort(nonAssignedUsers, nameComparator);
+            assignedUserModel = new ListModelList<User>(assignedUsers, false);
+            nonAssignedUserModel = new ListModelList<User>(nonAssignedUsers, false);
         }
         assignedUserModel.setMultiple(true);
-        assignedUserListbox.setModel(assignedUserModel);
-        assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, "Assigned users");
-        candidateUserModel.clearSelection();
+        assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, "Assigned Users");
+        nonAssignedUserModel.setMultiple(true);
+        nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
+        // candidateUserModel.clearSelection();
         selectedGroup = group;
         return group;
     }
@@ -835,6 +864,40 @@ public class UserAdminController extends SelectorComposer<Window> {
             }
             assignedUserModel.add(candidateUser);
             assignedUserList.getListModel().add(candidateUser);
+        }
+    }
+
+    @Listen("onClick = #retractUser")
+    public void onClickRetractUser() {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to allocate users to a group", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        Set<User> users = assignedUserList.getSelection();
+        if (users != null && users.size() >= 1) {
+            for(User user: users) {
+                nonAssignedUserModel.add(user);
+                nonAssignedUserList.getListModel().add(user);
+                assignedUserModel.remove(user);
+                assignedUserList.getListModel().remove(user);
+            }
+        }
+    }
+
+    @Listen("onClick = #assignUser")
+    public void onClickAssignUser() {
+        if (!hasPermission(Permissions.EDIT_GROUPS)) {
+            Messagebox.show("You do not have permission to allocate users to a group", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        Set<User> users = nonAssignedUserList.getSelection();
+        if (users != null && users.size() >= 1) {
+            for(User user: users) {
+                assignedUserModel.add(user);
+                assignedUserList.getListModel().add(user);
+                nonAssignedUserModel.remove(user);
+                nonAssignedUserList.getListModel().remove(user);
+            }
         }
     }
 

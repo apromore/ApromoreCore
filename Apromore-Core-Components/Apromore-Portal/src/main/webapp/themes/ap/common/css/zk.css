@@ -648,6 +648,7 @@ input[type="radio"]:checked:before {
 
 .z-grid-header,
 .z-auxheader,
+.z-auxhead-bar,
 .z-column {
     background-color: var(--ap-c-soft-blue-dark-4) !important;
 }

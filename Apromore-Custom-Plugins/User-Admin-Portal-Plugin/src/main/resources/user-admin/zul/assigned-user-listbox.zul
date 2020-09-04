@@ -19,9 +19,9 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<listbox id="assignedUserListbox" multiple="true" hflex="1" vflex="1" style="margin: 8px" sclass="ap-form-sublist">
+<listbox id="${arg.id}" multiple="true" hflex="1" vflex="1" style="margin: 8px" sclass="ap-form-sublist">
   <listhead>
-    <listheader sclass="ap-listheader" label="Assigned Users" hflex="1" style="cursor:pointer;">
+    <listheader sclass="ap-listheader" label="${arg.title}" hflex="1" style="cursor:pointer;">
       <div sclass="ap-listheader-search">
         <checkbox width="20px"
                   sclass="ap-listbox-search-toggle"
