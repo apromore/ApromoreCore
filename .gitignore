@@ -24,6 +24,7 @@
 
 # Maven artifacts (i.e. object files)
 **/target/*
+**/.settings/*
 
 # Tomcat artifacts
 Apromore-Clients/manager-client/catalina.home_IS_UNDEFINED
