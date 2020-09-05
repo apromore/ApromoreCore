@@ -216,8 +216,8 @@
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.e.portal.security.hint}"/>
-                            <button id="btnUserMgmt" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="User and Group Management"/>
+                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
+                            <button id="btnUserMgmt" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="Manage users and groups"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />

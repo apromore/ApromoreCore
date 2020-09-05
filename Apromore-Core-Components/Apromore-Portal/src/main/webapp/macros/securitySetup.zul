@@ -25,7 +25,7 @@
 <?component name="Permissions" macroURI="/macros/permissions.zul" ?>
 <?component name="Groups" macroURI="/macros/groups.zul" ?>
 
-<window width="900px" closable="true" title="Manage Security" position="center" id="winSecuritySetup">
+<window width="900px" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
     <style>
         .z-tree-icon {
         vertical-align: middle;

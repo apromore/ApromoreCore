@@ -182,6 +182,9 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Wire("#assignedGroupListbox")
     Listbox assignedGroupListbox;
 
+    @Wire("#userSaveBtn")
+    Button userSaveBtn;
+
     @Wire("#groupDetail")
     Label groupDetail;
     @Wire("#groupNameTextbox")
@@ -216,6 +219,9 @@ public class UserAdminController extends SelectorComposer<Window> {
     Button groupEditBtn;
     @Wire("#groupRemoveBtn")
     Button groupRemoveBtn;
+    @Wire("#groupSaveBtn")
+    Button groupSaveBtn;
+
 
     /**
      * Test whether the current user has a permission.
@@ -371,6 +377,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                         // Reset group panel
                         setSelectedGroup(null);
                     } if ("UPDATE_GROUP".equals(eventType)) {
+                        refreshAssignedGroups();
                         if (selectedUser != null) {
                             String selectedUsername = selectedUser.getUsername();
                             // Skip this update if it doesn't apply to the currently displayed user
@@ -590,12 +597,12 @@ public class UserAdminController extends SelectorComposer<Window> {
             dateCreatedDatebox.setValue(null);
             lastActivityDatebox.setValue(null);
             emailTextbox.setValue("");
-            // TO DO
-            assignedGroupModel.clearSelection();
             if (users == null) {
                 userDetail.setValue("No user is selected");
+                userSaveBtn.setDisabled(true);
             } else {
                 userDetail.setValue("Multiple users are selected");
+                userSaveBtn.setDisabled(false);
             }
         } else {
             selectedUser = users.iterator().next();
@@ -606,6 +613,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             lastActivityDatebox.setValue(selectedUser.getLastActivityDate());
             emailTextbox.setValue(selectedUser.getMembership().getEmail());
             userDetail.setValue("User: " + selectedUser.getUsername());
+            userSaveBtn.setDisabled(false);
         }
         updateAssignedRoleModel(users);
         updateAssignedGroupModel(users);
@@ -619,6 +627,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             groupDetail.setValue("");
             assignedUserModel = new ListModelList<>();
             nonAssignedUserModel = new ListModelList<>();
+            groupSaveBtn.setDisabled(true);
         } else {
             groupNameTextbox.setValue(group.getName());
             groupDetail.setValue("Group: " + group.getName());
@@ -629,6 +638,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Collections.sort(nonAssignedUsers, nameComparator);
             assignedUserModel = new ListModelList<User>(assignedUsers, false);
             nonAssignedUserModel = new ListModelList<User>(nonAssignedUsers, false);
+            groupSaveBtn.setDisabled(false);
         }
         assignedUserModel.setMultiple(true);
         assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, "Assigned Users");
@@ -869,34 +879,44 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Listen("onClick = #retractUser")
     public void onClickRetractUser() {
+        if (selectedGroup == null) {
+            return;
+        }
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
             Messagebox.show("You do not have permission to allocate users to a group", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
-        Set<User> users = assignedUserList.getSelection();
+        List<User> users = new ArrayList<User>(assignedUserList.getSelection());
         if (users != null && users.size() >= 1) {
             for(User user: users) {
                 nonAssignedUserModel.add(user);
-                nonAssignedUserList.getListModel().add(user);
+                // nonAssignedUserList.getListModel().add(user);
                 assignedUserModel.remove(user);
-                assignedUserList.getListModel().remove(user);
+                // assignedUserList.getListModel().remove(user);
+                nonAssignedUserList.reset();
+                assignedUserList.reset();
             }
         }
     }
 
     @Listen("onClick = #assignUser")
     public void onClickAssignUser() {
+        if (selectedGroup == null) {
+            return;
+        }
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
             Messagebox.show("You do not have permission to allocate users to a group", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
-        Set<User> users = nonAssignedUserList.getSelection();
+        List<User> users = new ArrayList<User>(nonAssignedUserList.getSelection());
         if (users != null && users.size() >= 1) {
             for(User user: users) {
                 assignedUserModel.add(user);
-                assignedUserList.getListModel().add(user);
+                // assignedUserList.getListModel().add(user);
                 nonAssignedUserModel.remove(user);
-                nonAssignedUserList.getListModel().remove(user);
+                // nonAssignedUserList.getListModel().remove(user);
+                nonAssignedUserList.reset();
+                assignedUserList.reset();
             }
         }
     }
@@ -967,8 +987,10 @@ public class UserAdminController extends SelectorComposer<Window> {
         selectedGroup.setName(groupNameTextbox.getValue());
         selectedGroup.setUsers(users);
         securityService.updateGroup(selectedGroup);
-        isGroupDetailDirty = false;
         showNotification("Details for group " + selectedGroup.getName() + " is updated", "info");
+        isGroupDetailDirty = false;
+        refreshGroups();
+        setSelectedGroup(null);
     }
 
     @Listen("onClick = #userSelectAllBtn")

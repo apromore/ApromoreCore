@@ -96,7 +96,7 @@ public class TristateListbox<T> extends SearchableListbox {
         keyToIndexMap = new HashMap<String, Integer>();
         for (int i = 0; i < sourceListModel.size(); i++) {
             TristateModel model = (TristateModel)(sourceListModel.get(i));
-            // model.setState(0);
+            model.setState(TristateModel.UNCHECKED);
             listModel.add(model);
             keyToIndexMap.put(model.getKey(), i);
         }
