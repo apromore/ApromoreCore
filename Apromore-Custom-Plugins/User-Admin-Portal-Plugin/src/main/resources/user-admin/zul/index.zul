@@ -27,11 +27,11 @@
         sclass="ap-usrmgt-win"
         width="90%" height="80%" position="center"
         closable="true"
-        title="User and Group Management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
+        title="User and group management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
   <script type="text/javascript" src="/user-admin/js/index.js"></script>
   <style src="/user-admin/css/index.css"/>
   <vbox vflex="1" hflex="1" spacing="0">
-    <tabbox id="tabbox" vflex="1" hflex="1" sclass="ap-usrmgt-tabbox">
+    <tabbox id="tabbox" vflex="1" hflex="1" sclass="ap-usrmgt-tabbox" style="border: none;">
       <tabs id="tabs" vflex="1" hflex="1">
         <tab label="Users"/>
         <tab label="Groups" id="groupsTab"/>
