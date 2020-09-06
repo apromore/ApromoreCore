@@ -25,6 +25,7 @@ import org.deckfour.xes.model.XLog;
 
 import java.util.List;
 
+//Upon migrating to parquet, xlog need to be removed and LogModelXLogImpl need to be renamed
 public class LogModelXLogImpl implements LogModel {
     private XLog xLog;
     private List<LogErrorReport> logErrorReport;

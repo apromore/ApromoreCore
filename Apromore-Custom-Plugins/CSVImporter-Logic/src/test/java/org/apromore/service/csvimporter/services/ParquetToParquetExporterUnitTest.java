@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,6 +26,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
+import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.junit.Test;
 
@@ -49,27 +50,31 @@ public class ParquetToParquetExporterUnitTest {
 
         String testFile = "/test1-valid.parquet";        //Create an output parquet file
         InputStream in = ParquetToParquetExporterUnitTest.class.getResourceAsStream(testFile);
+        File tempOutput = File.createTempFile("test", "parquet");
 
-        LogSample logSample =  parquetFactoryProvider
+        LogSample logSample = parquetFactoryProvider
                 .getParquetFactory("parquet")
                 .createSampleLogGenerator()
                 .generateSampleLog(in, 100, "UTF-8");
 
-        System.out.println("*******************************************************");
-        System.out.println("logSample " + logSample.getLines());
-        System.out.println("parquetFileReader " + logSample.getHeader());
+        LogModel logModel = parquetFactoryProvider
+                .getParquetFactory("parquet")
+                .createParquetExporter()
+                .generateParqeuetFile(
+                        in,
+                        logSample,
+                        "UTF-8",
+                        tempOutput,
+                        false);
+
+        //Read Parquet file
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
         System.out.println("*******************************************************");
-
-//        File output = new File("src/main/resources/temp.parquet");
-//
-//        //Read Parquet file
-//        Configuration conf = new Configuration(true);
-//        ParquetMetadata parquetFooter = ParquetFileReader.readFooter(conf, new Path(output.toURI()), NO_FILTER);
-//        MessageType parquetSchema = parquetFooter.getFileMetaData().getSchema();
-//        ParquetFileReader parquetFileReader = new ParquetFileReader(conf, new Path(output.toURI()), parquetFooter.getBlocks(), parquetSchema.getColumns());
-
-//        System.out.println("Output " + parquetSchema.getColumns());
-
+        System.out.println("logSample " + logSample.getHeader());
+        System.out.println("logModel " + logModel.getRowsCount());
+        System.out.println("getLogErrorReport " + logModel.getLogErrorReport().size());
+        System.out.println("parquetToCSV: \n" + parquetToCSV);
+        System.out.println("*******************************************************");
     }
 }

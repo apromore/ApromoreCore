@@ -21,31 +21,25 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import com.opencsv.CSVReader;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.example.data.Group;
-import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.apache.parquet.hadoop.example.GroupReadSupport;
-import org.apache.parquet.hadoop.util.HadoopInputFile;
-import org.apache.parquet.io.InputFile;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.dateparser.Parse;
-import org.apromore.service.csvimporter.io.CSVFileReader;
+import org.apromore.service.csvimporter.io.ParquetFileIO;
 import org.apromore.service.csvimporter.io.ParquetFileWriter;
 import org.apromore.service.csvimporter.model.*;
+import org.omg.CORBA.PRIVATE_MEMBER;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
@@ -66,16 +60,13 @@ class ParquetToParquetExporter implements ParquetExporter {
             outputParquet.delete();
 
         File tempFile = parquetLogSample.getParquetTempFile();
-        Configuration conf = new Configuration();
+        if (tempFile == null)
+            throw new Exception("Imported file cant be found!");
 
         //Read Parquet file
-        InputFile inputFile = HadoopInputFile.fromPath(new Path(tempFile.toURI()), conf);
-        ParquetFileReader parquetFileReader = ParquetFileReader.open(inputFile);
-        MessageType tempFileSchema = parquetFileReader.getFooter().getFileMetaData().getSchema();
-
-        GroupReadSupport readSupport = new GroupReadSupport();
-        readSupport.init(conf, null, tempFileSchema);
-        ParquetReader<Group> reader = ParquetReader.builder(readSupport, new Path(tempFile.toURI())).build();
+        ParquetFileIO parquetFileIO = new ParquetFileIO(new Configuration(true), tempFile);
+        MessageType tempFileSchema = parquetFileIO.getSchema();
+        ParquetReader<Group> reader = parquetFileIO.getParquetReader();
 
         if (reader == null)
             return null;
@@ -97,7 +88,7 @@ class ParquetToParquetExporter implements ParquetExporter {
         }
 
         logErrorReport = new ArrayList<>();
-        int lineIndex = 1; // set to 1 since first line is the header
+        int lineIndex = 0;
         int numOfValidEvents = 0;
         boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
@@ -115,8 +106,8 @@ class ParquetToParquetExporter implements ParquetExporter {
         String errorMessage = "Field is empty or has a null value!";
         boolean rowLimitExceeded = false;
 
-        Group g = null;
-        while ((g = reader.read()) != null  && isValidLineCount(lineIndex - 1)) {
+        Group g;
+        while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
 
             line = readGroup(g, tempFileSchema);
 
@@ -197,6 +188,7 @@ class ParquetToParquetExporter implements ParquetExporter {
                 if (skipInvalidRow) {
                     continue;
                 } else {
+                    //Upon migrating to parquet, xlog need to be removed and LogModelXLogImpl need to be renamed
                     return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                 }
             }
@@ -220,12 +212,13 @@ class ParquetToParquetExporter implements ParquetExporter {
         }
         writer.close();
 
-        if (!isValidLineCount(lineIndex - 1))
+        if (!isValidLineCount(lineIndex))
             rowLimitExceeded = true;
-
+        //Upon migrating to parquet, xlog need to be removed and LogModelXLogImpl need to be renamed
         return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
     }
-    public boolean isValidLineCount(int lineCount) {
+
+    private boolean isValidLineCount(int lineCount) {
         return true;
     }
 
@@ -252,6 +245,7 @@ class ParquetToParquetExporter implements ParquetExporter {
         logErrorReport.add(error);
         validRow = false;
     }
+
     private String[] readGroup(Group g, MessageType schema) {
 
         String[] line = new String[schema.getColumns().size()];

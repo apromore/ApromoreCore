@@ -22,28 +22,20 @@
 package org.apromore.service.csvimporter.services;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.parquet.column.ColumnDescriptor;
 import org.apache.parquet.example.data.Group;
-import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.apache.parquet.hadoop.example.GroupReadSupport;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
-import org.apache.parquet.hadoop.util.HadoopInputFile;
-import org.apache.parquet.io.InputFile;
 import org.apache.parquet.schema.MessageType;
+import org.apromore.service.csvimporter.io.FileWriter;
+import org.apromore.service.csvimporter.io.ParquetFileIO;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.model.ParquetLogSampleImpl;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.apache.parquet.format.converter.ParquetMetadataConverter.NO_FILTER;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 class ParquetSampleLogGenerator implements SampleLogGenerator {
@@ -53,39 +45,20 @@ class ParquetSampleLogGenerator implements SampleLogGenerator {
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-
         //Write InputStream to a file
-        File tempFile = File.createTempFile("parqeut", "parquet");
-        OutputStream os = new FileOutputStream(tempFile);
-        byte[] buffer = new byte[2048];
-        int bytesRead;
+        File tempFile = File.createTempFile("samplelog", "parquet");
+        new FileWriter(in, tempFile).writeToFile();
 
-        //read from is to buffer
-        while ((bytesRead = in.read(buffer)) != -1)
-            os.write(buffer, 0, bytesRead);
-
-        in.close();
-        //flush OutputStream to write any buffered data to file
-        os.flush();
-        os.close();
-
-        Configuration conf = new Configuration(true);
-        
         //Read Parquet file
-        InputFile inputFile = HadoopInputFile.fromPath(new Path(tempFile.toURI()), conf);
-        ParquetFileReader parquetFileReader = ParquetFileReader.open(inputFile);
-        MessageType schema = parquetFileReader.getFooter().getFileMetaData().getSchema();
-
-        GroupReadSupport readSupport = new GroupReadSupport();
-        readSupport.init(conf, null, schema);
-        ParquetReader<Group> reader = ParquetReader.builder(readSupport, new Path(tempFile.toURI())).build();
-
+        ParquetFileIO parquetFileIO = new ParquetFileIO(new Configuration(true), tempFile);
+        MessageType schema = parquetFileIO.getSchema();
+        ParquetReader<Group> reader = parquetFileIO.getParquetReader();
 
         List<List<String>> lines = new ArrayList<>();
-        Group g = null;
+        Group g;
         int lineIndex = 0;
         while ((g = reader.read()) != null && lineIndex < sampleSize) {
-            String[] myLine = readGroup(g, schema);readGroup(g, schema);
+            String[] myLine = readGroup(g, schema);
             lines.add(Arrays.asList(myLine));
             lineIndex++;
         }
