@@ -26,7 +26,7 @@ import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.FileWriter;
-import org.apromore.service.csvimporter.io.ParquetFileIO;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.model.ParquetLogSampleImpl;
 
@@ -50,9 +50,9 @@ class ParquetSampleLogGenerator implements SampleLogGenerator {
         new FileWriter(in, tempFile).writeToFile();
 
         //Read Parquet file
-        ParquetFileIO parquetFileIO = new ParquetFileIO(new Configuration(true), tempFile);
-        MessageType schema = parquetFileIO.getSchema();
-        ParquetReader<Group> reader = parquetFileIO.getParquetReader();
+        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+        MessageType schema = parquetLocalFileReader.getSchema();
+        ParquetReader<Group> reader = parquetLocalFileReader.getParquetReader();
 
         List<List<String>> lines = new ArrayList<>();
         Group g;

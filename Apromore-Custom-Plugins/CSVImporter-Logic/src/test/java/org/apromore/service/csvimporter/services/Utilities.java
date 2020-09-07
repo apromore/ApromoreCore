@@ -22,13 +22,10 @@
 package org.apromore.service.csvimporter.services;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.parquet.example.data.Group;
-import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.apache.parquet.hadoop.example.GroupReadSupport;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,16 +34,13 @@ public class Utilities {
     public static String convertParquetToCSV(File parquetFile, char delimdelimiters) throws IOException {
 
         StringBuilder stringBuilder = new StringBuilder();
-        Path parquetFilePath = new Path(parquetFile.toURI());
-        Configuration configuration = new Configuration(true);
 
-        GroupReadSupport readSupport = new GroupReadSupport();
-        ParquetMetadata readFooter = ParquetFileReader.readFooter(configuration, parquetFilePath);
-        MessageType schema = readFooter.getFileMetaData().getSchema();
-        readSupport.init(configuration, null, schema);
-        ParquetReader<Group> reader = new ParquetReader<Group>(parquetFilePath, readSupport);
+        //Read Parquet file
+        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), parquetFile);
+        MessageType schema = parquetLocalFileReader.getSchema();
+        ParquetReader<Group> reader = parquetLocalFileReader.getParquetReader();
 
-        Group g = null;
+        Group g;
         while ((g = reader.read()) != null) {
             StringBuilder s = writeGroup(g, schema, delimdelimiters);
             stringBuilder.append(s);

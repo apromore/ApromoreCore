@@ -27,10 +27,10 @@ import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.dateparser.Parse;
-import org.apromore.service.csvimporter.io.ParquetFileIO;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.io.ParquetFileWriter;
+import org.apromore.service.csvimporter.io.ParquetLocalFileWriter;
 import org.apromore.service.csvimporter.model.*;
-import org.omg.CORBA.PRIVATE_MEMBER;
 
 import java.io.File;
 import java.io.InputStream;
@@ -64,28 +64,16 @@ class ParquetToParquetExporter implements ParquetExporter {
             throw new Exception("Imported file cant be found!");
 
         //Read Parquet file
-        ParquetFileIO parquetFileIO = new ParquetFileIO(new Configuration(true), tempFile);
-        MessageType tempFileSchema = parquetFileIO.getSchema();
-        ParquetReader<Group> reader = parquetFileIO.getParquetReader();
+        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+        MessageType tempFileSchema = parquetLocalFileReader.getSchema();
+        ParquetReader<Group> reader = parquetLocalFileReader.getParquetReader();
 
         if (reader == null)
             return null;
 
         String[] header = getHeaderFromParquet(tempFileSchema).toArray(new String[0]);
         MessageType sampleSchema = createParquetSchema(header, sample);
-        ParquetFileWriter writer;
-
-        // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
-        Thread thread = Thread.currentThread();
-        synchronized (thread) {
-            ClassLoader originalContextClassLoader = thread.getContextClassLoader();
-            try {
-                thread.setContextClassLoader(Path.class.getClassLoader());
-                writer = new ParquetFileWriter(new Path(outputParquet.toURI()), sampleSchema, true);
-            } finally {
-                thread.setContextClassLoader(originalContextClassLoader);
-            }
-        }
+        ParquetFileWriter writer = new ParquetLocalFileWriter().getParquetWriter(outputParquet, sampleSchema);
 
         logErrorReport = new ArrayList<>();
         int lineIndex = 0;
