@@ -112,7 +112,8 @@ public class ProcessListboxController extends BaseListboxController {
      */
     @SuppressWarnings("unchecked")
     public void displaySummaries(List<FolderType> subFolders, SummariesType summaries, Boolean isQueryResult) {
-        this.columnScore.setVisible(isQueryResult);
+        // this.columnScore.setVisible(isQueryResult);
+        this.columnScore.setVisible(false);
 
         getListBox().clearSelection();
         getListBox().setModel(new ListModelList<>());
@@ -126,7 +127,8 @@ public class ProcessListboxController extends BaseListboxController {
     }
 
     public SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult) {
-        this.columnScore.setVisible(isQueryResult);
+        // this.columnScore.setVisible(isQueryResult);
+        this.columnScore.setVisible(false);
 
         getListBox().clearSelection();
         SummaryListModel model = new SummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);

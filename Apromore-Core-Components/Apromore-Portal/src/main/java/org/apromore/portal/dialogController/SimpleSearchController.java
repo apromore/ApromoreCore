@@ -95,6 +95,11 @@ public class SimpleSearchController extends BaseController {
                     processSearch();
                 }
             });
+        previousSearchesCB.addEventListener("onSelect", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                setVisibility(clearSearchBtn, true);
+            }
+        });
         previousSearchesCB.addEventListener("onChanging", new EventListener<InputEvent>() {
             public void onEvent(InputEvent event) throws Exception {
                 setVisibility(clearSearchBtn, true);
