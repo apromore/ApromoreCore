@@ -78,7 +78,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile } to convert to CSVReader.
      */
     @Test
-    public void test1_valid() throws Exception {
+    public void testPrepareXesModel_test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
@@ -130,7 +130,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test2_missing_columns() throws Exception {
+    public void _test2_missing_columns() throws Exception {
 
         System.out.println("\n************************************\ntest2 - Missing columns test");
         //CSV file input
@@ -286,7 +286,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test5_empty_caseID() throws Exception {
+    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
         System.out.println("\n************************************\ntest5 - Empty caseID");
         //CSV file input
@@ -337,7 +337,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test6_different_delimiters() throws Exception {
+    public void testPrepareXesModel_test6_different_delimiters() throws Exception {
 
         System.out.println("\n************************************\ntest6 - different delimiters");
         //CSV file input
@@ -389,7 +389,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test7_record_invalid() throws Exception {
+    public void testPrepareXesModel_test7_record_invalid() throws Exception {
 
         System.out.println("\n************************************\ntest7 - Record invalid");
         //CSV file input
@@ -444,7 +444,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test8_all_invalid() throws Exception {
+    public void testPrepareXesModel_test8_all_invalid() throws Exception {
 
         System.out.println("\n************************************\ntest8 - All invalid");
         //CSV file input
@@ -490,7 +490,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test9_differentiate_dates() throws Exception {
+    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
 
         System.out.println("\n************************************\ntest9 - Differentiate dates");
         //CSV file input
@@ -548,7 +548,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test10_detect_name() throws Exception {
+    public void testPrepareXesModel_test10_detect_name() throws Exception {
 
         System.out.println("\n************************************\ntest10 - Event Attribute");
         //CSV file input
@@ -601,7 +601,7 @@ public class CSVToParquetExporterUnitTest {
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test11_encoding() throws Exception {
+    public void testPrepareXesModel_test11_encoding() throws Exception {
 
         System.out.println("\n************************************\ntest11 - Encoding");
         //CSV file input
@@ -618,7 +618,6 @@ public class CSVToParquetExporterUnitTest {
                 .getParquetFactory("csv")
                 .createSampleLogGenerator()
                 .generateSampleLog(CSVToParquetExporterUnitTest.class.getResourceAsStream(testFile), 100, "windows-1255");
-
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
 

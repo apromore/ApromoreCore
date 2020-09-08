@@ -70,8 +70,14 @@ class ParquetSampleLogGenerator implements SampleLogGenerator {
 
         String[] line = new String[schema.getColumns().size()];
         for (int j = 0; j < schema.getFieldCount(); j++) {
+            String valueToString;
 
-            String valueToString = g.getValueToString(j, 0);
+            try {
+                valueToString = g.getValueToString(j, 0);
+            } catch (Exception e) {
+                valueToString = "";
+            }
+
             line[j] = valueToString;
         }
         return line;

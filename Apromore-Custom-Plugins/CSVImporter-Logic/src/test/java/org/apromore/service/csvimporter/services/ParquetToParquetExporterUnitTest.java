@@ -71,7 +71,6 @@ public class ParquetToParquetExporterUnitTest {
     }
 
     // Test cases
-
     /**
      * Test {@link SampleLogGenerator.generateSampleLog} sampling fewer lines than contained in <code>test1-valid.csv</code>.
      */
@@ -216,6 +215,7 @@ public class ParquetToParquetExporterUnitTest {
 //        assertEquals(expectedParquetSchema, schema);
 //        assertEquals(expectedCsv, parquetToCSV);
     }
+
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
@@ -262,12 +262,13 @@ public class ParquetToParquetExporterUnitTest {
         String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
         // Validate result
-//        assertEquals(3, parquetFileReader.getRecordCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
+        assertEquals(3, parquetFileReader.getRecordCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedParquetSchema, schema);
+        assertEquals(expectedCsv, parquetToCSV);
     }
+
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
@@ -289,7 +290,7 @@ public class ParquetToParquetExporterUnitTest {
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("parquet")
                 .createSampleLogGenerator()
-                .generateSampleLog(in, 100, "UTF-8");
+                .generateSampleLog(in, 2, "UTF-8");
 
         //Construct an expected schema
         MessageType expectedParquetSchema = createParquetSchema(TEST1_EXPECTED_HEADER.toArray(new String[0]), sample);
@@ -314,11 +315,11 @@ public class ParquetToParquetExporterUnitTest {
         String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
         // Validate result
-//        assertEquals(3, parquetFileReader.getRecordCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
+        assertEquals(3, parquetFileReader.getRecordCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedParquetSchema, schema);
+        assertEquals(expectedCsv, parquetToCSV);
     }
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
@@ -366,66 +367,11 @@ public class ParquetToParquetExporterUnitTest {
         String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
         // Validate result
-//        assertEquals(2, parquetFileReader.getRecordCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
-    }
-    /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-     */
-    @Test
-    public void test6_record_invalid() throws Exception {
-
-        System.out.println("\n************************************\ntest6 - Record invalid");
-        //Parquet file input
-        String testFile = "/test7-record-invalid.parquet";
-        String expectedTestFile = "/test7-record-invalid-expected.csv";
-
-        InputStream in = ParquetToParquetExporterUnitTest.class.getResourceAsStream(testFile);
-        String expectedCsv = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream(expectedTestFile))), "\\+03:00");
-
-        //Create an output parquet file
-        File tempOutput = File.createTempFile("test", "parquet");
-
-        //Generate sample
-        LogSample sample = parquetFactoryProvider
-                .getParquetFactory("parquet")
-                .createSampleLogGenerator()
-                .generateSampleLog(in, 100, "UTF-8");
-
-        sample.setStartTimestampPos(2);
-        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
-
-        //Construct an expected schema
-        MessageType expectedParquetSchema = createParquetSchema(TEST1_EXPECTED_HEADER.toArray(new String[0]), sample);
-
-        //Export parquet
-        LogModel logModel = parquetFactoryProvider
-                .getParquetFactory("parquet")
-                .createParquetExporter()
-                .generateParqeuetFile(
-                        in,
-                        sample,
-                        "UTF-8",
-                        tempOutput,
-                        true);
-
-
-        //Read Parquet file
-        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempOutput);
-        MessageType schema = parquetLocalFileReader.getSchema();
-        ParquetFileReader parquetFileReader = parquetLocalFileReader.getParquetFileReader();
-
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
-
-        // Validate result
-//        assertEquals(1, parquetFileReader.getRecordCount());
-//        assertEquals(2, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
+        assertEquals(2, parquetFileReader.getRecordCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedParquetSchema, schema);
+        assertEquals(expectedCsv, parquetToCSV);
     }
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
@@ -445,7 +391,7 @@ public class ParquetToParquetExporterUnitTest {
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("parquet")
                 .createSampleLogGenerator()
-                .generateSampleLog(in, 100, "UTF-8");
+                .generateSampleLog(in, 2, "UTF-8");
 
         //Construct an expected schema
         MessageType expectedParquetSchema = createParquetSchema(TEST1_EXPECTED_HEADER.toArray(new String[0]), sample);
@@ -468,10 +414,10 @@ public class ParquetToParquetExporterUnitTest {
         ParquetFileReader parquetFileReader = parquetLocalFileReader.getParquetFileReader();
 
         // Validate result
-//        assertEquals(0, parquetFileReader.getRecordCount());
-//        assertEquals(3, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
+        assertEquals(0, parquetFileReader.getRecordCount());
+        assertEquals(3, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedParquetSchema, schema);
     }
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
@@ -517,7 +463,6 @@ public class ParquetToParquetExporterUnitTest {
                         tempOutput,
                         true);
 
-
         //Read Parquet file
         ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempOutput);
         MessageType schema = parquetLocalFileReader.getSchema();
@@ -526,11 +471,11 @@ public class ParquetToParquetExporterUnitTest {
         String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
         // Validate result
-//        assertEquals(13, parquetFileReader.getRecordCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
+        assertEquals(13, parquetFileReader.getRecordCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedParquetSchema, schema);
+        assertEquals(expectedCsv, parquetToCSV);
     }
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
@@ -578,11 +523,11 @@ public class ParquetToParquetExporterUnitTest {
         String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
         // Validate result
-//        assertEquals(3, parquetFileReader.getRecordCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
+        assertEquals(3, parquetFileReader.getRecordCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedParquetSchema, schema);
+        assertEquals(expectedCsv, parquetToCSV);
     }
     /**
      * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
@@ -633,10 +578,9 @@ public class ParquetToParquetExporterUnitTest {
         String parquetToCSV = convertParquetToCSV(tempOutput, '¸');
 
         // Validate result
-//        assertEquals(5, parquetFileReader.getRecordCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-//        assertEquals(expectedParquetSchema, schema);
-//        assertEquals(expectedCsv, parquetToCSV);
+        assertEquals(5, parquetFileReader.getRecordCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+        assertEquals(expectedCsv, parquetToCSV);
     }
 }

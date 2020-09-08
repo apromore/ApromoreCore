@@ -22,18 +22,18 @@
 package org.apromore.service.csvimporter.services;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.dateparser.Parse;
-import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.io.ParquetFileWriter;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.io.ParquetLocalFileWriter;
 import org.apromore.service.csvimporter.model.*;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +97,12 @@ class ParquetToParquetExporter implements ParquetExporter {
         Group g;
         while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
 
-            line = readGroup(g, tempFileSchema);
+            try {
+                line = readGroup(g, tempFileSchema);
+            } catch (Exception e) {
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Cant read line. " + e.getMessage()));
+                continue;
+            }
 
             // new row, new event.
             validRow = true;
@@ -234,7 +239,7 @@ class ParquetToParquetExporter implements ParquetExporter {
         validRow = false;
     }
 
-    private String[] readGroup(Group g, MessageType schema) {
+    private String[] readGroup(Group g, MessageType schema) throws UnsupportedEncodingException {
 
         String[] line = new String[schema.getColumns().size()];
         for (int j = 0; j < schema.getFieldCount(); j++) {
