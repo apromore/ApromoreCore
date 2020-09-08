@@ -121,9 +121,9 @@ public class ProcessListboxController extends BaseListboxController {
 
         //getListModel().addAll(subFolders);
         getListModel().addAll(summaries.getSummary());
-        if (isQueryResult && getListBox().getItemCount() > 0) {
-            getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
-        }
+        // if (isQueryResult && getListBox().getItemCount() > 0) {
+        //    getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
+        // }
     }
 
     public SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult) {
