@@ -935,7 +935,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private static String getMediaFormat(Media media) throws Exception {
         if (media.getName().lastIndexOf('.') < 0)
             throw new Exception("Can't read file format");
-
         return media.getName().substring(media.getName().lastIndexOf('.') + 1);
     }
 }

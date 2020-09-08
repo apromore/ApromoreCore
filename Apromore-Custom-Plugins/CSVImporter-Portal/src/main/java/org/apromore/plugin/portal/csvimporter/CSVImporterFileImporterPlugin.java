@@ -61,7 +61,22 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     // Implementation of FileImporterPlugin
 
     @Override
-    public Set<String> getFileExtensions() {return new HashSet<>(Arrays.asList("csv", "parquet"));}
+    public Set<String> getFileExtensions() {
+
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream("datalayer.config"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boolean useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
+
+        if (useParquet) {
+            return new HashSet<>(Arrays.asList("csv", "parquet"));
+        } else {
+            return Collections.singleton("csv");
+        }
+    }
 
     @Override
     public void importFile(Media media, boolean isLogPublic) {
