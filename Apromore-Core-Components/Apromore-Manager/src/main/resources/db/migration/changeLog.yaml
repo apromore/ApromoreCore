@@ -1,0 +1,27 @@
+databaseChangeLog:
+ - include:
+    file: db/migration/changeLog-Schema-init.yaml
+
+ - changeSet:  
+    id: 1599618934768-128  
+    author: init-data
+    context: MYSQL
+    changes:  
+    - sqlFile:    
+        encoding: UTF-8
+        path: sql/db-data-mysql.sql
+        relativeToChangelogFile: true
+        splitStatements: false  
+        stripComments: true
+
+ - changeSet:  
+    id:  1599618934768-129  
+    author: init-data
+    context: H2
+    changes:  
+    - sqlFile:    
+        encoding: UTF-8
+        path: sql/db-data-h2.sql
+        relativeToChangelogFile: true
+        splitStatements: false  
+        stripComments: true
