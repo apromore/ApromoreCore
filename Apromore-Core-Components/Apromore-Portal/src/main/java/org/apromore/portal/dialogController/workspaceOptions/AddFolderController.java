@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController.workspaceOptions;
 
+import org.apromore.exception.NotAuthorizedException;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
@@ -34,6 +35,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
@@ -108,14 +110,19 @@ public class AddFolderController extends BaseController {
             int currentParentFolderId = currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
             this.mainController.getService().createFolder(userId, folderName, currentParentFolderId);
             this.mainController.reloadSummaries();
-
         } catch (Exception ex) {
+            if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
+                Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            }
+            if (ex instanceof WrongValueException) {
+                // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
             LOGGER.warning("Exception ");
             StackTraceElement[] trace = ex.getStackTrace();
             for (StackTraceElement traceElement : trace)
                 LOGGER.warning("\tat " + traceElement);
         }
-
         this.folderEditWindow.detach();
     }
 }

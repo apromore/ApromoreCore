@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
@@ -106,9 +107,14 @@ public class RenameFolderController extends BaseController {
             LOGGER.warning("folderName " + folderName);
             this.mainController.getService().updateFolder(this.folderId, folderName, UserSessionManager.getCurrentUser().getUsername());
             this.mainController.reloadSummaries();
+            this.folderEditWindow.detach();
         } catch (Exception ex) {
-            if (ex.getCause() instanceof NotAuthorizedException) {
+            if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
                 Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            }
+            if (ex instanceof WrongValueException) {
+                // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                return;
             }
             LOGGER.warning("Exception ");
             StackTraceElement[] trace = ex.getStackTrace();
