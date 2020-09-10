@@ -86,9 +86,7 @@ public class EventLogServiceImpl implements EventLogService {
     private FolderRepository folderRepo;
     private UserService userSrv;
     private UserInterfaceHelper ui;
-    private StatisticRepository statisticRepository;
     private File logsDir;
-    private DashboardLayoutRepository dashboardLayoutRepository;
     private UsermetadataRepository userMetadataRepo;
     private GroupUsermetadataRepository groupUsermetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
@@ -107,8 +105,7 @@ public class EventLogServiceImpl implements EventLogService {
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
                                final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
                                final UserService userSrv, final UserInterfaceHelper ui,
-                               final StatisticRepository statisticRepository, final ConfigBean configBean,
-                               final DashboardLayoutRepository dashboardLayoutRepository,
+                               final ConfigBean configBean,
                                final UsermetadataRepository userMetadataRepo,
                                final GroupUsermetadataRepository groupUserMetadataRepo,
                                final UsermetadataTypeRepository usermetadataTypeRepo,
@@ -119,9 +116,7 @@ public class EventLogServiceImpl implements EventLogService {
         this.folderRepo = folderRepo;
         this.userSrv = userSrv;
         this.ui = ui;
-        this.statisticRepository = statisticRepository;
         this.logsDir = new File(configBean.getLogsDir());
-        this.dashboardLayoutRepository = dashboardLayoutRepository;
         this.userMetadataRepo = userMetadataRepo;
         this.groupUsermetadataRepo = groupUserMetadataRepo;
         this.usermetadataTypeRepo = usermetadataTypeRepo;
@@ -242,22 +237,6 @@ public class EventLogServiceImpl implements EventLogService {
         // Perform the update
         logRepo.saveAndFlush(log);
 
-        // TODO: Remove test code
-
-//        List<Integer> logIdlist = new ArrayList<>();
-//        logIdlist.add(138);
-//        logIdlist.add(139);
-//        userMetadataService.saveUserMetadata("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, logIdlist);
-//        userMetadataService.saveUserMetadataLinkedToOneLog("test metadata content", UserMetadataTypeEnum.DASHBOARD, username, log.getId());
-//        userMetadataService.updateUserMetadata(16, username, "new content");
-//        userMetadataService.deleteUserMetadata(17, username);
-//        for (Usermetadata usermetadata : userMetadataService.getUserMetadata(username, 166, UserMetadataTypeEnum.DASHBOARD)) {
-//            LOGGER.info( "RESULT :" + usermetadata.getId() + usermetadata.getContent());
-//        }
-//        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 18));
-//        LOGGER.info("Result: " + userMetadataService.canUserEditMetadata(username, 10));
-
-
         return log;
     }
 
@@ -361,262 +340,6 @@ public class EventLogServiceImpl implements EventLogService {
         XLog xLog = logRepo.getProcessLog(log, factoryName);
         LOGGER.info("[--IMPORTANT--] Plugin take over control ");
         return xLog;
-    }
-
-    @Override
-    public XLog getXLogWithStats(Integer logId) {
-
-        XFactory factory = XFactoryRegistry.instance().currentDefault();
-        XAttribute parent;
-
-        XLog log = getXLog(logId);
-
-        // TODO: The value of containerAttribute can be used to store the availability of different of statistics by
-        //  bitwise.
-        XAttribute containerAttribute = factory.createAttributeLiteral(STAT_NODE_NAME, "", null);
-        log.getAttributes().put(STAT_NODE_NAME, containerAttribute);
-
-        List<Statistic> stats = getStats(logId);
-
-        if (stats != null && !stats.isEmpty()) { // if there is cache, then append it to XES log as metadata
-//            for (Statistic stat : stats) {
-//                if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
-//                    parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
-//                    parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
-//                    // Since parent share the same stat_key, so add Statistic.count as key when put stat into
-//                    XAttributeMap
-//                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getCount().toString(), parent);
-//                }
-//            }
-
-            // Append stats into Log in one loop
-            for (int i = 0; i < stats.size(); i++) {
-
-                Statistic pStat = stats.get(i);
-                byte[] parentId = pStat.getId();
-
-                if (Arrays.equals(pStat.getPid(), PARENT_NODE_FLAG.getBytes())) {
-
-                    parent = factory.createAttributeLiteral(pStat.getStat_key(), pStat.getStat_value(), null);
-
-                    XAttributeMap attributeMap = factory.createAttributeMap();
-
-                    for (int j = 1; j < stats.size(); j++) {
-                        if (i + j < stats.size()) {
-                            if (Arrays.equals(stats.get(i + j).getPid(), parentId)) {
-                                XAttribute attribute = factory.createAttributeLiteral(stats.get(i + j).getStat_key(),
-                                        stats.get(i + j).getStat_value(), null);
-                                attributeMap.put(stats.get(i + j).getStat_key(), attribute);
-                            } else {
-                                i = i + j - 1;
-                                break;
-                            }
-                        }
-
-                    }
-                    parent.setAttributes(attributeMap);
-                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(pStat.getCount().toString(), parent);
-                }
-            }
-        }
-        return log;
-    }
-
-    /**
-     * @param parentId parent ID
-     * @param stats    list of statistic entities
-     * @return XAttributeMap
-     */
-    private XAttributeMap getChildNodes(byte[] parentId, List<Statistic> stats, XFactory factory) {
-        XAttributeMap attributeMap = factory.createAttributeMap();
-        for (Statistic stat : stats) {
-            if (Arrays.equals(stat.getPid(), parentId)) {
-                XAttribute attribute = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
-                attributeMap.put(stat.getStat_key(), attribute);
-            }
-        }
-        return attributeMap;
-    }
-
-    /**
-     * Get statistics by LogID
-     *
-     * @param logId logID
-     * @return list of statistic entities
-     */
-    public List<Statistic> getStats(Integer logId) {
-        LOGGER.info("Get statistics by LogID  " + logId);
-        return statisticRepository.findByLogid(logId);
-    }
-
-    /**
-     * @param logId
-     * @param statType
-     * @return
-     */
-    public List<?> getStatsByType(Integer logId, StatType statType) {
-        // if flag = pd, if flag = db
-        List<?> stats;
-
-        switch (statType) {
-
-            case FILTER:
-                stats = statisticRepository.findByLogid(logId);
-                break;
-            case CASE:
-            case ACTIVITY:
-            case RESOURCE:
-                stats = statisticRepository.findByLogid(logId);
-                break;
-            default:
-                stats = null;
-                break;
-        }
-        return stats;
-    }
-
-//    public Boolean isStatsExists(Integer logId, StatType statType) {
-//        List<Statistic> stats = statisticRepository.findByLogid(logId);
-//        return (null == stats || stats.size() == 0);
-//    }
-
-    // just for test, delete when finish
-//    private static EntityManagerFactory emf = null;
-//    public EntityManagerFactory getEntityManagerFactory() {
-//        if (emf == null) {
-//            emf = Persistence.createEntityManagerFactory("Apromore");
-//        }
-//        return emf;
-//    }
-
-    /**
-     * @param logId
-     * @param statType
-     * @return
-     */
-    @Override
-    public boolean isStatsExists(Integer logId, StatType statType) {
-        return statisticRepository.existsByLogidAndStatType(logId, statType);
-    }
-
-    @Override
-    public void storeStats(Map<String, Map<String, Integer>> map, Integer logId) {
-
-        List<Statistic> stats = getStats(logId);
-        if (null == stats || stats.size() == 0) {
-
-            statisticRepository.storeAllStats(flattenNestedMap(map, logId));
-
-//            statisticRepository.save(flattenNestedMap(map, logId));
-            LOGGER.info("Stored statistics of Log: " + logId);
-        }
-        LOGGER.info("statistics already exist in Log: " + logId);
-    }
-
-    public void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
-
-        if (!isStatsExists(logId, statType)) {
-            statisticRepository.storeAllStats(flattenNestedStringMap(map, logId, statType));
-
-            LOGGER.info("Stored statistics of " + statType.toString() + " in Log [" + logId + "]");
-        }
-    }
-
-    /**
-     * flatten nested map into list of {@link org.apromore.dao.model.Statistic } entities
-     *
-     * @param map   nested map generated by Process Discover generateStatistic() method
-     *              <caseId, <key, value>>
-     *              <activityId, <key, value>>
-     *              <resourceId, <key, value>>
-     *              <p>
-     *              <caseId, <caseID, 173640>>, <caseId, <Events, 20>>, <caseId, <Variant, 2>>
-     * @param logId logID
-     * @return list of statistic entities
-     * @throws IllegalArgumentException
-     */
-
-    public List<Statistic> flattenNestedStringMap(Map<String, Map<String, String>> map, Integer logId,
-                                                  StatType statType) {
-
-        if (map == null || logId == null || statType == null) {
-            throw new IllegalArgumentException();
-        }
-
-        List<Statistic> statList = new ArrayList<>();
-
-        for (Map.Entry<String, Map<String, String>> option : map.entrySet()) {
-            Statistic parent = new Statistic();
-            if (option.getKey() != null && option.getValue() != null) {
-                parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-                parent.setStat_key(statType.toString()); //assign statType to the key, align with XAttributable object
-                parent.setStat_value(option.getKey());
-                parent.setLogid(logId);
-                parent.setPid(PARENT_NODE_FLAG.getBytes());
-                statList.add(parent);
-            }
-            HashMap<String, String> options_frequency = (HashMap<String, String>) option.getValue();
-            if (options_frequency != null) {
-                for (Map.Entry<String, String> entry : options_frequency.entrySet()) {
-                    Statistic child = new Statistic();
-                    if (entry.getKey() != null && entry.getValue() != null) {
-                        // child.setId(option.getKey().getBytes());
-                        child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-                        child.setStat_key(entry.getKey());
-                        child.setStat_value(entry.getValue());
-                        child.setLogid(logId);
-                        child.setPid(parent.getId());
-                        statList.add(child);
-                    }
-                }
-            }
-        }
-        return statList;
-    }
-
-    /**
-     * flatten nested map into list of Statistic entities
-     *
-     * @param map   nested map generated by Process Discover generateStatistic() method
-     *              <caseId, <key, value>>
-     *              <activityId, <key, value>>
-     *              <resourceId, <key, value>>
-     *              <p>
-     *              <caseId, <caseID, 173640>>, <caseId, <Events, 20>>, <caseId, <Variant, 2>>
-     * @param logId logID
-     * @return list of statistic entities
-     */
-    public List<Statistic> flattenNestedMap(Map<String, Map<String, Integer>> map, Integer logId) {
-
-        List<Statistic> statList = new ArrayList<>();
-
-        for (Map.Entry<String, Map<String, Integer>> option : map.entrySet()) {
-            Statistic parent = new Statistic();
-            if (option.getKey() != null && option.getValue() != null) {
-                parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-                parent.setStat_key(option.getKey());
-                parent.setStat_value("");
-                parent.setLogid(logId);
-                parent.setPid(PARENT_NODE_FLAG.getBytes());
-                statList.add(parent);
-            }
-            HashMap<String, Integer> options_frequency = (HashMap<String, Integer>) option.getValue();
-            if (options_frequency != null) {
-                for (Map.Entry<String, Integer> entry : options_frequency.entrySet()) {
-                    Statistic child = new Statistic();
-                    if (entry.getKey() != null && entry.getValue() != null) {
-                        // child.setId(option.getKey().getBytes());
-                        child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-                        child.setStat_key(entry.getKey());
-                        child.setStat_value(entry.getValue().toString());
-                        child.setLogid(logId);
-                        child.setPid(parent.getId());
-                        statList.add(child);
-                    }
-                }
-            }
-        }
-        return statList;
     }
 
     @Override

@@ -99,50 +99,6 @@ public interface EventLogService {
     boolean isPublicLog(Integer logId);
 
     /**
-     * Get XLog and append statistics as log level metadata
-     * @param logId
-     */
-    XLog getXLogWithStats(Integer logId);
-
-
-    /**
-     * Persist statistics of XLog into DB
-     * @param map nested map that represent statistics
-     * @param logId logID of the XLog
-     */
-    void storeStats(Map<String, Map<String, Integer>> map, Integer logId);
-
-    /**
-     * @param logId logID of the XLog
-     * @return List of statistic entities
-     */
-    List<Statistic> getStats(Integer logId);
-
-
-    /**
-     * Persist statistics of XLog into DB by stat types
-     * TODO: explain the format of input nested map
-     *
-     * @param map  {String statUID {[String stat_key, String stat_value]}}
-     *             The statUID is a unique identifier that is associated with a set of statistics of the same type.
-     *             For example, it can be the caseID which is used to identify a set of attributes of one case.
-     *             {caseID, {[attrKey, attrValue] [attrKey, attrValue]}}
-     * @param logId logID of XES log file
-     * @param statType enum that store all the types of statistic
-     * @throws IllegalArgumentException
-     */
-    void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType);
-
-    /**
-     * Check if this log has this type of statistic in the database.
-     *
-     * @param logId logID of XES log file
-     * @param statType enum that store all the types of statistic
-     * @return
-     */
-    boolean isStatsExists(Integer logId, StatType statType);
-
-    /**
      * Get aggregated log.
      *
      * @param logId
