@@ -329,20 +329,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         return null;
     }
 
-    public String getLayoutByLogId(Integer logId, Integer userId) {
-
-        StringBuilder strQry = new StringBuilder(0);
-        strQry.append("SELECT d.layout FROM DashboardLayout d");
-        if (logId != null && userId != null) {
-            strQry.append(" WHERE d.userId = ").append(userId);
-            strQry.append(" AND d.logId = ").append(logId);
-        }
-
-        Query query = em.createQuery(strQry.toString());
-        return (String) query.getSingleResult();
-    }
-
-
     private XFactory getXFactory(String factoryName) {
 
         if (factoryName != null) {

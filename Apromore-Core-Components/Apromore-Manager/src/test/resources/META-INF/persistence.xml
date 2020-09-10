@@ -48,8 +48,6 @@
         <class>org.apromore.dao.model.SearchHistory</class>
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Workspace</class>
-        <class>org.apromore.dao.model.Statistic</class>
-        <class>org.apromore.dao.model.DashboardLayout</class>
         <class>org.apromore.dao.model.Usermetadata</class>
         <class>org.apromore.dao.model.UsermetadataLog</class>
         <class>org.apromore.dao.model.UsermetadataProcess</class>
