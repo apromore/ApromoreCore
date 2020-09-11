@@ -718,16 +718,6 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    /* Get the Search Histories for the current logged in User. */
-    public List<SearchHistoriesType> getSearchHistory() {
-        return UserSessionManager.getCurrentUser().getSearchHistories();
-    }
-
-    /* Tell the portal we need to update the search history for this user. */
-    public void updateSearchHistory(final List<SearchHistoriesType> searchHist) throws Exception {
-        getService().updateSearchHistories(UserSessionManager.getCurrentUser(), searchHist);
-    }
-
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
         this.getFellow("baseListboxProcesses").getFellow("tablecomp").getChildren().clear();

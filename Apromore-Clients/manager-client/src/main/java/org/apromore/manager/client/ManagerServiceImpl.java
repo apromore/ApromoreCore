@@ -662,16 +662,4 @@ public class ManagerServiceImpl implements ManagerService {
             }
         }
     }
-
-    /**
-     * Update the search history records for a User.
-     * @param currentUser the Current User to save the serches against.
-     * @param searchHist the list of searches we need to save.
-     * @throws Exception ... change to be something more relevant
-     */
-    @Override
-    public void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception {
-        userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(currentUser, secSrv),
-                                        SearchHistoryMapper.convertFromSearchHistoriesType(searchHist));
-    }
 }

@@ -368,13 +368,4 @@ public interface ManagerService {
      * TODO: Fix Exception
      */
     void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception;
-
-
-    /**
-     * Update the search history records for a User.
-     * @param currentUser the Current User to save the serches against.
-     * @param searchHist the list of searches we need to save.
-     * @throws Exception ... change to be something more relevant
-     */
-    void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception;
 }

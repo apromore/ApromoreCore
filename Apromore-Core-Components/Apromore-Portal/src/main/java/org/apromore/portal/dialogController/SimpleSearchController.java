@@ -33,16 +33,23 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.bind.JAXBException;
 
+import org.apromore.dao.model.SearchHistory;
+import org.apromore.dao.model.User;
+import org.apromore.mapper.SearchHistoryMapper;
+import org.apromore.mapper.UserMapper;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
+import org.apromore.service.SecurityService;
+import org.apromore.service.UserService;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
@@ -142,7 +149,7 @@ public class SimpleSearchController extends BaseController {
             return;
         }
 
-        List<SearchHistoriesType> previousSearches = this.mainC.getSearchHistory();
+        List<SearchHistoriesType> previousSearches = UserSessionManager.getCurrentUser().getSearchHistories();
 
         if (previousSearches == null) {
             return;
@@ -164,6 +171,14 @@ public class SimpleSearchController extends BaseController {
      * @throws Exception
      */
     private void processSearch() throws Exception {
+        SecurityService securityService = (SecurityService) SpringUtil.getBean("securityService");
+        if (securityService == null) {
+            throw new Exception("Security service unavailable");
+        }
+        UserService userService = (UserService) SpringUtil.getBean("userService");
+        if (userService == null) {
+            throw new Exception("User service unavailable");
+        }
         FolderType folder = mainC.getPortalSession().getCurrentFolder();
         if (folder == null) {
             throw new Exception("Search requires a folder to be selected");
@@ -177,7 +192,11 @@ public class SimpleSearchController extends BaseController {
         int nbAnswers = summaries.getSummary().size();
         mainC.displayMessage("Search returned " + nbAnswers + ((nbAnswers == 1) ? " result." : " results."));
         mainC.displaySearchResult(summaries);
-        mainC.updateSearchHistory(addSearchHistory(mainC.getSearchHistory(), query));
+
+        // Update the current user's search history
+        User currentUser = UserMapper.convertFromUserType(UserSessionManager.getCurrentUser(), securityService);
+        List<SearchHistory> searchHistories = SearchHistoryMapper.convertFromSearchHistoriesType(addSearchHistory(UserSessionManager.getCurrentUser().getSearchHistories(), query));
+        userService.updateUserSearchHistory(currentUser, searchHistories);
     }
 
     /* Add a search History for this user for later use. */
