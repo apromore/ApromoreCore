@@ -319,31 +319,6 @@ public class ManagerServiceImpl implements ManagerService {
         return NativeTypeMapper.convertFromNativeType(frmSrv.findAllFormats());
     }
 
-
-    /**
-     * Get the Process Summaries from the Apromore Manager.
-     * @param folderId the folder we are currently asking for the process Ids.
-     * @param userRowGuid the user to whom the processes must be visible
-     * @param searchCriteria the search criteria to restrict the results
-     * @return the ProcessSummaryType from the WebService
-     */
-    @Override
-    public SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria) {
-        SummariesType processSummaries = null;
-
-        try {
-            processSummaries = uiHelper.buildProcessSummaryList(folderId, userRowGuid,
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "p", "processId", "process"),  // processes
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "l", "logId",     "log"),      // logs
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "f", "folderId",  "folder"));  // folders
-
-        } catch (UnsupportedEncodingException usee) {
-            LOGGER.error("Failed to get Process Summaries: " + usee.toString());
-        }
-
-        return processSummaries;
-    }
-
     /**
      * Run a search for similar processes models.
      * @param processId the search criteria being a process model

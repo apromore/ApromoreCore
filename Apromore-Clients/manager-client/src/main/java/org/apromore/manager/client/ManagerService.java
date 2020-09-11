@@ -158,14 +158,6 @@ public interface ManagerService {
     NativeTypesType readNativeTypes();
 
     /**
-     * Get the Process Summaries from the Apromore Manager.
-     * @param folderId the folder we are currently asking for the process Ids.
-     * @param searchCriteria the search criteria to restrict the results
-     * @return the ProcessSummaryType from the WebService
-     */
-    SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria);
-
-    /**
      * Run a search for similar processes models.
      * @param processId the search criteria being a process model
      * @param versionName the version name of the process model search criteria

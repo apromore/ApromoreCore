@@ -40,6 +40,7 @@
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="securityService" interface="org.apromore.service.SecurityService"/>
     <reference id="userService" interface="org.apromore.service.UserService"/>
+    <reference id="uiHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <reference id="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider"/>
     <reference id="workspaceService" interface="org.apromore.service.WorkspaceService"/>
     <reference id="userMetadataService" interface="org.apromore.service.UserMetadataService"/>
