@@ -139,6 +139,9 @@ public class UserAdminController extends SelectorComposer<Window> {
     TristateListbox<Role> assignedRoleList;
     TristateListbox<Group> assignedGroupList;
 
+    TristateItemRenderer assignedRoleItemRenderer;
+    TristateItemRenderer assignedGroupItemRenderer;
+
     boolean isUserDetailDirty = false;
     boolean isGroupDetailDirty = false;
 
@@ -455,8 +458,11 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedRoleModel.setMultiple(true);
         assignedRoleListbox.setModel(assignedRoleModel);
         assignedRoleListbox.setNonselectableTags("*");
-        assignedRoleListbox.setItemRenderer(new TristateItemRenderer());
+        assignedRoleItemRenderer = new TristateItemRenderer();
+        assignedRoleListbox.setItemRenderer(assignedRoleItemRenderer);
         assignedRoleList = new TristateListbox<Role>(assignedRoleListbox, assignedRoleModel, "Assigned Roles");
+        assignedRoleItemRenderer.setList(assignedRoleList);
+
     }
 
     private void refreshAssignedGroups() {
@@ -470,8 +476,10 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedGroupModel.setMultiple(true);
         assignedGroupListbox.setModel(assignedGroupModel);
         assignedGroupListbox.setNonselectableTags("*");
-        assignedGroupListbox.setItemRenderer(new TristateItemRenderer());
+        assignedGroupItemRenderer = new TristateItemRenderer();
+        assignedGroupListbox.setItemRenderer(assignedGroupItemRenderer);
         assignedGroupList = new TristateListbox<Group>(assignedGroupListbox, assignedGroupModel, "Assigned Groups");
+        assignedGroupItemRenderer.setList(assignedGroupList);
     }
 
     private void updateTristateModels(TristateListbox list, Map<String, Integer> tally, Integer total) {
@@ -589,6 +597,10 @@ public class UserAdminController extends SelectorComposer<Window> {
         isUserDetailDirty = false;
         passwordTextbox.setValue("");
         confirmPasswordTextbox.setValue("");
+        assignedRoleItemRenderer.setDisabled(false);
+        assignedGroupItemRenderer.setDisabled(false);
+        assignedRoleListbox.setDisabled(false);
+        assignedGroupListbox.setDisabled(false);
         if (users == null || users.size() == 0 || users.size() > 1) {
             selectedUser = null;
             selectedUsers = users;
@@ -604,6 +616,15 @@ public class UserAdminController extends SelectorComposer<Window> {
                 userDetail.setValue("Multiple users are selected");
                 userSaveBtn.setDisabled(false);
             }
+            if (users == null || users.size() == 0) {
+                assignedRoleItemRenderer.setDisabled(true);
+                assignedGroupItemRenderer.setDisabled(true);
+                assignedRoleListbox.setDisabled(true);
+                assignedGroupListbox.setDisabled(true);
+            } else {
+                assignedRoleItemRenderer.setForceTwoState(false);
+                assignedGroupItemRenderer.setForceTwoState(false);
+            }
         } else {
             selectedUser = users.iterator().next();
             selectedUsers = users;
@@ -614,6 +635,8 @@ public class UserAdminController extends SelectorComposer<Window> {
             emailTextbox.setValue(selectedUser.getMembership().getEmail());
             userDetail.setValue("User: " + selectedUser.getUsername());
             userSaveBtn.setDisabled(false);
+            assignedRoleItemRenderer.setForceTwoState(true);
+            assignedGroupItemRenderer.setForceTwoState(true);
         }
         updateAssignedRoleModel(users);
         updateAssignedGroupModel(users);
