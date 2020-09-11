@@ -59,7 +59,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Span;
 import org.zkoss.zul.Window;
 
-public class SimpleSearchController extends Window {
+public class SimpleSearchController {
 
     private MainController mainC;
     private Combobox previousSearchesCB;
