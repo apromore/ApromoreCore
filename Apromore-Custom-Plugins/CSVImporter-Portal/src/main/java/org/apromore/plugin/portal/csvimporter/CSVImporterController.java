@@ -54,6 +54,7 @@ import org.zkoss.zul.*;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -92,6 +93,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private @Wire("#toPublicXESButton")
     Button toPublicXESButton;
 
+
+    //Get Data layer config
+    private final String propertyFile = "datalayer.config";
+    private boolean useParquet;
+    private File parquetFile;
+
     private LogSample sample;
 
     private Div popUpBox;
@@ -99,8 +106,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private Span[] parsedIcons;
     private List<Listbox> dropDownLists;
 
-    ConvertToParquetFactory convertToParquetFactory = parquetFactoryProvider.getParquetFactory(media.getFormat());
-    SampleLogGenerator sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
+    ConvertToParquetFactory convertToParquetFactory;
+    SampleLogGenerator sampleLogGenerator;
+    ParquetExporter parquetExporter;
 
     @Override
     public void doFinally() throws Exception {
@@ -108,6 +116,23 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         // Populate the window
         try {
+            convertToParquetFactory = parquetFactoryProvider.getParquetFactory(getMediaFormat(media));
+            sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
+            parquetExporter = convertToParquetFactory.createParquetExporter();
+
+            Properties props = new Properties();
+            props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));
+
+            useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
+
+            File parquetDir = new File(props.getProperty("parquet.dir"));
+            //make directory if not exist
+            parquetDir.mkdirs();
+
+            //Add timestamp to file name
+            String fileSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            parquetFile = new File(parquetDir.getPath()
+                    + File.separator + media.getName().replace("." + getMediaFormat(media), fileSuffix + ".parquet"));
 
             Combobox setEncoding = (Combobox) window.getFellow(setEncodingId);
             setEncoding.setModel(new ListModelList<>(fileEncoding));
@@ -117,13 +142,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 sampleLogGenerator.validateLog(getInputSream(media), getFileEncoding());
                 this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
                 if (sample != null) setUpUI();
-            });
 
+            });
 
             sampleLogGenerator.validateLog(getInputSream(media), getFileEncoding());
             this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
 
             if (sample != null) {
+
                 setUpUI();
                 toXESButton.setDisabled(false);
                 toPublicXESButton.setDisabled(false);
@@ -176,15 +202,24 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     public void convertToXes(MouseEvent event) {
 
         StringBuilder headNOTDefined = validateUniqueAttributes();
+
         if (headNOTDefined.length() != 0) {
             Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK, Messagebox.ERROR);
-
         } else {
-
             try {
-                LogModel logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
-                if (logModel != null) {
+                LogModel logModel;
+                if (useParquet) {
+                    logModel = parquetExporter.generateParqeuetFile(
+                            getInputSream(media),
+                            sample,
+                            getFileEncoding(),
+                            parquetFile,
+                            false);
+                } else {
+                    logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                }
 
+                if (logModel != null) {
                     List<LogErrorReport> errorReport = logModel.getLogErrorReport();
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
 
@@ -194,6 +229,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         handleInvalidData(logModel, isLogPublic);
                     }
                 }
+
 
             } catch (Exception e) {
                 Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -693,6 +729,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private void handleInvalidData(LogModel xesModel, boolean isPublic) throws IOException {
+
         Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
         errorPopUp.doModal();
 
@@ -738,10 +775,19 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             sample.getIgnoredPos().add(pos);
                         }
 
-                        LogModel logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                        LogModel logModelSkippedCol;
+                        if (useParquet) {
+                            logModelSkippedCol = parquetExporter.generateParqeuetFile(
+                                    getInputSream(media),
+                                    sample,
+                                    getFileEncoding(),
+                                    parquetFile,
+                                    false);
+                        } else {
+                            logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                        }
 
                         if (logModelSkippedCol != null) {
-
                             if (logModelSkippedCol.getLogErrorReport().isEmpty()) {
                                 saveXLog(logModelSkippedCol, isPublic);
                             } else {
@@ -763,10 +809,22 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     errorPopUp.invalidate();
                     errorPopUp.detach();
 
-                    LogModel logModelSkippedRow = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
-                    if (logModelSkippedRow != null) {
-                        saveXLog(logModelSkippedRow, isPublic);
+                    LogModel logModelSkippedRow;
+
+                    if (useParquet) {
+                        logModelSkippedRow = parquetExporter.generateParqeuetFile(
+                                getInputSream(media),
+                                sample,
+                                getFileEncoding(),
+                                parquetFile,
+                                true);
+
+                    } else {
+                        logModelSkippedRow = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
                     }
+
+                    if (logModelSkippedRow != null)
+                        saveXLog(logModelSkippedRow, isPublic);
                 }
         );
 
@@ -820,37 +878,48 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private void saveXLog(LogModel logModel, boolean isPublic) {
 
         try {
-            XLog xlog = logModel.getXLog();
-
-            if (xlog == null) {
-                throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
-            }
-
-            String name = media.getName().replaceFirst("[.][^.]+$", "");
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            eventLogService.exportToStream(outputStream, xlog);
-
-            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
-
-            eventLogService.importLog(
-                    portalContext.getCurrentUser().getUsername(),
-                    folderId,
-                    name,
-                    new ByteArrayInputStream(outputStream.toByteArray()),
-                    "xes.gz",
-                    "",  // domain
-                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                    isPublic  // public?
-            );
-
-            String successMessage;
-            if (logModel.isRowLimitExceeded()) {
-                successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
+            if (useParquet) {
+                String successMessage;
+                if (logModel.isRowLimitExceeded()) {
+                    successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
+                } else {
+                    successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
+                }
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                portalContext.refreshContent();
             } else {
-                successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
+                XLog xlog = logModel.getXLog();
+
+                if (xlog == null) {
+                    throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
+                }
+
+                String name = media.getName().replaceFirst("[.][^.]+$", "");
+                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                eventLogService.exportToStream(outputStream, xlog);
+
+                int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+
+                eventLogService.importLog(
+                        portalContext.getCurrentUser().getUsername(),
+                        folderId,
+                        name,
+                        new ByteArrayInputStream(outputStream.toByteArray()),
+                        "xes.gz",
+                        "",  // domain
+                        DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                        isPublic  // public?
+                );
+
+                String successMessage;
+                if (logModel.isRowLimitExceeded()) {
+                    successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
+                } else {
+                    successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
+                }
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                portalContext.refreshContent();
             }
-            Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
-            portalContext.refreshContent();
 
         } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -860,16 +929,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private InputStream getInputSream(Media media) {
-
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
 
-//    private String getMediaNameExtension(Media media) {
-//        String name = media.;
-//        int lastIndexOf = name.lastIndexOf(".");
-//        if (lastIndexOf == -1) {
-//            return ""; // empty extension
-//        }
-//        return name.substring(lastIndexOf);
-//    }
+    private static String getMediaFormat(Media media) throws Exception {
+        if (media.getName().lastIndexOf('.') < 0)
+            throw new Exception("Can't read file format");
+        return media.getName().substring(media.getName().lastIndexOf('.') + 1);
+    }
 }

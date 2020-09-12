@@ -19,29 +19,32 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal;
+package org.apromore.service.csvimporter.io;
 
-import java.io.IOException;
-import java.util.Set;
-import org.zkoss.util.media.Media;
+import java.io.*;
 
-/**
- * Plug-in interface for importing files.
- *
- * This modifies the File/Import UI.
- */
-public interface FileImporterPlugin {
+public class FileWriter {
 
-    /**
-     * @return the file extensions handled by this plugin; may be empty but should not be null
-     */
-    Set<String> getFileExtensions() throws IOException;
+    private InputStream in;
+    private File outputFile;
 
-    /**
-     * Call-back that is called when this plug-in is executed.
-     *
-     * @param media to be imported
-     * @param isPublic whether to make the uploaded file publicly accessible
-     */
-    void importFile(Media media, boolean isPublic);
+    public FileWriter(InputStream in, File outputFile) {
+        this.in = in;
+        this.outputFile = outputFile;
+    }
+
+    public void writeToFile() throws IOException {
+
+        OutputStream os = new FileOutputStream(outputFile);
+        byte[] buffer = new byte[2048];
+        int bytesRead;
+        //read from in to buffer
+        while ((bytesRead = in.read(buffer)) != -1)
+            os.write(buffer, 0, bytesRead);
+
+        in.close();
+        //flush OutputStream to write any buffered data to file
+        os.flush();
+        os.close();
+    }
 }

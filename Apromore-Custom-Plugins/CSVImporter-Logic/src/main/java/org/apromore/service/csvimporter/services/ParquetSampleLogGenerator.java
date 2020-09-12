@@ -21,93 +21,65 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import org.apache.parquet.column.page.PageReadStore;
-import org.apache.parquet.hadoop.ParquetFileReader;
-import org.apache.parquet.hadoop.metadata.FileMetaData;
-import org.apache.parquet.hadoop.metadata.ParquetMetadata;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.example.data.Group;
+import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
-import org.apromore.service.csvimporter.model.LogErrorReport;
+import org.apromore.service.csvimporter.io.FileWriter;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.utilities.ParquetStream;
+import org.apromore.service.csvimporter.model.ParquetLogSampleImpl;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.apache.parquet.format.converter.ParquetMetadataConverter.NO_FILTER;
+import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 class ParquetSampleLogGenerator implements SampleLogGenerator {
     @Override
-    public void validateLog(InputStream in, String charset) {}
+    public void validateLog(InputStream in, String charset) { /**To be Implemented**/}
 
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
-//        File file = new File("src/main/resources/sample.txt");
-//
-//        byte[] bytes = IOUtils.toByteArray(in);
-//        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//
-//        buffer.write(bytes, 0, bytes.length);
-//
-//        ParquetStream parquetStream = new ParquetStream("", buffer);
-//
-////        try(OutputStream outputStream = new FileOutputStream(file)){
-////            IOUtils.copy(in, outputStream);
-////        } catch (FileNotFoundException e) {
-////            // handle exception here
-////        } catch (IOException e) {
-////            // handle exception here
-////        }
-//////        ParquetFileReader parquetFileReader = (ParquetFileReader) reader;
-//        Configuration conf = new Configuration();
-//        Path parqeutFilePath = new Path(file.toURI());
-//        PageReadStore pageReadStore = null;
-//
-//        ParquetMetadata parquetFooter = ParquetFileReader.open();
-//        FileMetaData mdata = parquetFooter.getFileMetaData();
-//        MessageType parquetSchema = mdata.getSchema();
-//
-//
-//        ParquetFileReader parquetFileReader = new ParquetFileReader(conf, parqeutFilePath, parquetFooter.getBlocks(), parquetSchema.getColumns());
-//
-//
-//        ParquetFileWriter writer = new ParquetFileWriter(new Path(file.toURI()), parquetSchema, true);
 
-//        pageReadStore = parquetFileReader.readNextRowGroup();
+        //Write InputStream to a file
+        File tempFile = File.createTempFile("samplelog", "parquet");
+        new FileWriter(in, tempFile).writeToFile();
 
-        //TODO
-//        while (pageReadStore != null) {
-//
-//        }
+        //Read Parquet file
+        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+        MessageType schema = parquetLocalFileReader.getSchema();
+        ParquetReader<Group> reader = parquetLocalFileReader.getParquetReader();
 
-        return null;
+        List<List<String>> lines = new ArrayList<>();
+        Group g;
+        int lineIndex = 0;
+        while ((g = reader.read()) != null && lineIndex < sampleSize) {
+            String[] myLine = readGroup(g, schema);
+            lines.add(Arrays.asList(myLine));
+            lineIndex++;
+        }
+        reader.close();
+        return new ParquetLogSampleImpl(getHeaderFromParquet(schema), lines, tempFile);
     }
 
-    public static void generateSampleLogsOLUTION(byte[] bytes, int sampleSize) throws Exception {
+    private String[] readGroup(Group g, MessageType schema) {
 
+        String[] line = new String[schema.getColumns().size()];
+        for (int j = 0; j < schema.getFieldCount(); j++) {
+            String valueToString;
 
-        PageReadStore pageReadStore = null;
+            try {
+                valueToString = g.getValueToString(j, 0);
+            } catch (Exception e) {
+                valueToString = "";
+            }
 
-        ParquetMetadata parquetFooter = ParquetFileReader.readFooter(new ParquetStream("", bytes), NO_FILTER);
-        FileMetaData mdata = parquetFooter.getFileMetaData();
-        MessageType parquetSchema = mdata.getSchema();
-
-
-        System.out.println("Parquet Schema: " + parquetSchema.toString());
-
-
-//        ParquetFileReader parquetFileReader = new ParquetFileReader(new ParquetStream("", bytes), ParquetReadOptions.builder().build());
-//        ParquetFileReader(new Configuration(), parqeutFilePath, parquetFooter.getBlocks(), parquetSchema.getColumns());
-
-
-//        ParquetFileWriter writer = new ParquetFileWriter(new Path(file.toURI()), parquetSchema, true);
-
-//        pageReadStore = parquetFileReader.readNextRowGroup();
-
-//        while (pageReadStore != null) {
-//
-//
-//
-//        }
-
+            line[j] = valueToString;
+        }
+        return line;
     }
 }

@@ -19,29 +19,19 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal;
+package org.apromore.service.csvimporter.model;
 
-import java.io.IOException;
-import java.util.Set;
-import org.zkoss.util.media.Media;
+import lombok.Data;
 
-/**
- * Plug-in interface for importing files.
- *
- * This modifies the File/Import UI.
- */
-public interface FileImporterPlugin {
+import java.io.File;
+import java.util.List;
 
-    /**
-     * @return the file extensions handled by this plugin; may be empty but should not be null
-     */
-    Set<String> getFileExtensions() throws IOException;
+@Data
+public class ParquetLogSampleImpl extends LogSampleImpl{
+    private File parquetTempFile;
 
-    /**
-     * Call-back that is called when this plug-in is executed.
-     *
-     * @param media to be imported
-     * @param isPublic whether to make the uploaded file publicly accessible
-     */
-    void importFile(Media media, boolean isPublic);
+    public ParquetLogSampleImpl(List<String> header, List<List<String>> lines, File parquetTempFile) throws Exception {
+        super(header, lines);
+        this.parquetTempFile = parquetTempFile;
+    }
 }
