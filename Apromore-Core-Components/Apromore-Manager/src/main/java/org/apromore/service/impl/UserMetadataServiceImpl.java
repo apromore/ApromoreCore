@@ -315,9 +315,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
 
     @Override
-    public boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException {
+    public boolean canUserEditMetadata(String username, Integer usermetadataId) throws UserNotFoundException {
 
-        for (GroupUsermetadata gl : groupUsermetadataRepo.findByLogAndUser(UsermetadataId,
+        for (GroupUsermetadata gl : groupUsermetadataRepo.findByLogAndUser(usermetadataId,
                 userSrv.findUserByLogin(username).getRowGuid())) {
             if (gl.getHasOwnership()) {
                 return true;
@@ -379,6 +379,16 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             }
         }
         return usermetadataList.size() > 0 ? usermetadataList : null;
+    }
+
+    @Override
+    public void deleteUserMetadataByLog(Log log, User user) throws UserNotFoundException {
+
+        Set<UsermetadataLog> usermetadataLogSet =
+                new HashSet<>(usermetadataLogRepo.findByLog(log));
+        for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+            deleteUserMetadata(usermetadataLog.getUsermetadata().getId(), user.getUsername());
+        }
     }
 
     @Override

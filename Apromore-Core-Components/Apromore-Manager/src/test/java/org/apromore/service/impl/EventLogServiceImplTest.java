@@ -114,16 +114,12 @@ public class EventLogServiceImplTest {
         userSrv = createMock(UserService.class);
         ui = createMock(UserInterfaceHelper.class);
         userMetadataService = createMock(UserMetadataService.class);
-        userMetadataRepo = createMock(UsermetadataRepository.class);
-        groupUsermetadataRepo = createMock(GroupUsermetadataRepository.class);
-        usermetadataTypeRepo = createMock(UsermetadataTypeRepository.class);
-        usermetadataLogRepo = createMock(UsermetadataLogRepository.class);
 
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
                 userSrv, ui, config,
-                userMetadataRepo, groupUsermetadataRepo, usermetadataTypeRepo, usermetadataLogRepo);
+                userMetadataService);
     }
 
     @Test

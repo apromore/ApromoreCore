@@ -139,9 +139,13 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
                     Label fileNameLabel = (Label) matchedMappingPopUp.getFellow("fileNameLabel");
                     Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();
-                    UsermetadataLog usermetadataLog = usermetadataLogSet.iterator().next();
-                    fileNameLabel.setValue("  This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
-                            formattedTime + " on " + formattedDate);
+
+                    Iterator itr = usermetadataLogSet.iterator();
+                    while (itr.hasNext()) {
+                        UsermetadataLog usermetadataLog = usermetadataLogSet.iterator().next();
+                        fileNameLabel.setValue("  This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
+                                formattedTime + " on " + formattedDate);
+                    }
 
                     Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
                             "uploadWithMatchedMapping");
