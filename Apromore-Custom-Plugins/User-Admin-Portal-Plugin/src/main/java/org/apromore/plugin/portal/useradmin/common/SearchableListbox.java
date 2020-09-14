@@ -59,7 +59,6 @@ public class SearchableListbox {
 
         // These selector must be custom and defined via sclass
         this.listheader = (Listheader)listbox.query(".z-listheader");
-        this.listheader.setSort("auto");
         this.searchToggle = (Checkbox)listbox.query(".ap-listbox-search-toggle");
         this.searchInput = (Textbox)listbox.query(".ap-listbox-search-input");
         this.searchBtn = (Button)listbox.query(".ap-listbox-search-btn");

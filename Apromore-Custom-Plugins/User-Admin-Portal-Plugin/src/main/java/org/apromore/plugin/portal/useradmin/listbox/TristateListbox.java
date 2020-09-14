@@ -22,6 +22,8 @@
 package org.apromore.plugin.portal.useradmin.listbox;
 
 import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModelList;
 import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
@@ -42,6 +44,7 @@ public class TristateListbox<T> extends SearchableListbox {
 
     public TristateListbox(Listbox listbox, ListModelList sourceListModel, String title) {
         super(listbox, sourceListModel, title);
+        this.listheader.setSort("none");
     }
 
     public void setMulti(boolean isMulti) {
@@ -68,7 +71,9 @@ public class TristateListbox<T> extends SearchableListbox {
     @Override
     public void doSearch(String input) {
         keyToIndexMap = new HashMap<String, Integer>();
+        // TO DO: Allow cache search
         // keyToStateCache = new HashMap<String, Integer>();
+
         if (!input.equals("")) {
             // Save current selection
             // keyToStateCache.clear();

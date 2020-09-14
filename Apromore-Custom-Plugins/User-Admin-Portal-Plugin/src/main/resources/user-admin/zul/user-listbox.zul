@@ -21,7 +21,7 @@
   -->
 <listbox id="userListbox" multiple="true" vflex="1" hflex="1" xmlns:ca="client/attribute">
   <listhead>
-    <listheader sclass="ap-listheader" label="Username" hflex="1" style="cursor:pointer;">
+    <listheader sclass="ap-listheader" label="Username" hflex="1" style="cursor:pointer;" sort="auto(UPPER(username))">
       <div sclass="ap-listheader-search">
         <checkbox width="20px"
                   sclass="ap-listbox-search-toggle"
@@ -30,7 +30,7 @@
         />
       </div>
     </listheader>
-    <listheader align="center" label="Created" width="130px"/>
+    <listheader align="center" label="Created" width="130px" sort="auto(dateCreated)"/>
     <listheader align="center" label="" width="40px" visible="false" style="cursor:pointer;"/>
   </listhead>
   <auxhead sclass="ap-auxhead" visible="false">

@@ -31,12 +31,14 @@ public class TristateModel {
     private String key;
     private Integer state;
     private Object obj;
+    private boolean twoStateOnly;
 
     public TristateModel(String label, String key, Object obj, Integer state) {
         this.label = label;
         this.key = key;
         this.obj = obj;
         this.state = state;
+        this.twoStateOnly = false;
     }
 
     public String getLabel() {
@@ -57,6 +59,14 @@ public class TristateModel {
 
     public Integer getState() {
         return state;
+    }
+
+    public boolean isTwoStateOnly() {
+        return twoStateOnly;
+    }
+
+    public void setTwoStateOnly(boolean twoStateOnly) {
+        this.twoStateOnly = twoStateOnly;
     }
 
     public void setState(Integer state) {
