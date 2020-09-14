@@ -158,14 +158,6 @@ public interface ManagerService {
     NativeTypesType readNativeTypes();
 
     /**
-     * Get the Process Summaries from the Apromore Manager.
-     * @param folderId the folder we are currently asking for the process Ids.
-     * @param searchCriteria the search criteria to restrict the results
-     * @return the ProcessSummaryType from the WebService
-     */
-    SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria);
-
-    /**
      * Run a search for similar processes models.
      * @param processId the search criteria being a process model
      * @param versionName the version name of the process model search criteria
@@ -368,13 +360,4 @@ public interface ManagerService {
      * TODO: Fix Exception
      */
     void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception;
-
-
-    /**
-     * Update the search history records for a User.
-     * @param currentUser the Current User to save the serches against.
-     * @param searchHist the list of searches we need to save.
-     * @throws Exception ... change to be something more relevant
-     */
-    void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception;
 }

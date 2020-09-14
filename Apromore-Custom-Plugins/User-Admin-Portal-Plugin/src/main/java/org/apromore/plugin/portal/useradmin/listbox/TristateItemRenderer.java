@@ -29,6 +29,9 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListitemRenderer;
 
 import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
@@ -38,6 +41,22 @@ public class TristateItemRenderer implements ListitemRenderer {
     final static int UNCHECKED = TristateModel.UNCHECKED;
     final static int CHECKED = TristateModel.CHECKED;
     final static int INDETERMINATE = TristateModel.INDETERMINATE;
+
+    public TristateListbox list;
+    public boolean forceTwoState = false;
+    public boolean disabled = false;
+
+    public void setList(TristateListbox list) {
+        this.list = list;
+    }
+
+    public void setForceTwoState(boolean forceTwoState) {
+        this.forceTwoState = forceTwoState;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
 
     @Override
     public void render(Listitem listItem, Object obj, int index) {
@@ -64,7 +83,7 @@ public class TristateItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Listitem listitem = (Listitem)event.getTarget();
-                Checkbox checkbox = (Checkbox)listitem.getChildren().get(1).getFirstChild();
+                Checkbox checkbox = (Checkbox)listitem.getChildren().get(0).getFirstChild();
                 rotateState(checkbox);
             }
         });
@@ -88,19 +107,42 @@ public class TristateItemRenderer implements ListitemRenderer {
 
     public void rotateState(Checkbox checkbox) {
         TristateModel model = checkbox.getValue();
+        Listitem listitem = (Listitem) checkbox.getParent().getParent();
+        int index = listitem.getIndex();
 
-        if (model.getState() == INDETERMINATE) {
+        if (disabled) {
             model.setState(UNCHECKED);
             checkbox.setIndeterminate(false);
             checkbox.setChecked(false);
-        } else if (model.getState() == UNCHECKED) {
-            model.setState(CHECKED);
-            checkbox.setIndeterminate(false);
-            checkbox.setChecked(true);
+        } else if (forceTwoState) {
+            if (model.getState() == INDETERMINATE) {
+                model.setState(UNCHECKED);
+                checkbox.setIndeterminate(false);
+                checkbox.setChecked(false);
+            } else if (model.getState() == UNCHECKED) {
+                model.setState(CHECKED);
+                checkbox.setIndeterminate(false);
+                checkbox.setChecked(true);
+            } else {
+                model.setState(UNCHECKED);
+                checkbox.setIndeterminate(false);
+                checkbox.setChecked(false);
+            }
         } else {
-            model.setState(INDETERMINATE);
-            checkbox.setIndeterminate(true);
-            checkbox.setChecked(false);
+            if (model.getState() == INDETERMINATE) {
+                model.setState(UNCHECKED);
+                checkbox.setIndeterminate(false);
+                checkbox.setChecked(false);
+            } else if (model.getState() == UNCHECKED) {
+                model.setState(CHECKED);
+                checkbox.setIndeterminate(false);
+                checkbox.setChecked(true);
+            } else {
+                model.setState(INDETERMINATE);
+                checkbox.setIndeterminate(true);
+                checkbox.setChecked(false);
+            }
         }
+        list.getListModel().set(index, model); // trigger change
     }
 }

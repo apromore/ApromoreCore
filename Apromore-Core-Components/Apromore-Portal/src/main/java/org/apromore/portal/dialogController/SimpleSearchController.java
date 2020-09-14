@@ -33,16 +33,25 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.bind.JAXBException;
 
+import org.apromore.dao.model.SearchHistory;
+import org.apromore.dao.model.User;
+import org.apromore.mapper.SearchHistoryMapper;
+import org.apromore.mapper.UserMapper;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
+import org.apromore.service.SecurityService;
+import org.apromore.service.UserService;
+import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.search.SearchExpressionBuilder;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
@@ -50,7 +59,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Span;
 import org.zkoss.zul.Window;
 
-public class SimpleSearchController extends BaseController {
+public class SimpleSearchController {
 
     private MainController mainC;
     private Combobox previousSearchesCB;
@@ -142,7 +151,7 @@ public class SimpleSearchController extends BaseController {
             return;
         }
 
-        List<SearchHistoriesType> previousSearches = this.mainC.getSearchHistory();
+        List<SearchHistoriesType> previousSearches = UserSessionManager.getCurrentUser().getSearchHistories();
 
         if (previousSearches == null) {
             return;
@@ -164,6 +173,14 @@ public class SimpleSearchController extends BaseController {
      * @throws Exception
      */
     private void processSearch() throws Exception {
+        SecurityService securityService = (SecurityService) SpringUtil.getBean("securityService");
+        if (securityService == null) {
+            throw new Exception("Security service unavailable");
+        }
+        UserService userService = (UserService) SpringUtil.getBean("userService");
+        if (userService == null) {
+            throw new Exception("User service unavailable");
+        }
         FolderType folder = mainC.getPortalSession().getCurrentFolder();
         if (folder == null) {
             throw new Exception("Search requires a folder to be selected");
@@ -173,11 +190,36 @@ public class SimpleSearchController extends BaseController {
         if (query == null || query.length() == 0) {
             return;
         }
-        SummariesType summaries = getService().readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query);
+        SummariesType summaries = readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query);
         int nbAnswers = summaries.getSummary().size();
         mainC.displayMessage("Search returned " + nbAnswers + ((nbAnswers == 1) ? " result." : " results."));
         mainC.displaySearchResult(summaries);
-        mainC.updateSearchHistory(addSearchHistory(mainC.getSearchHistory(), query));
+
+        // Update the current user's search history
+        User currentUser = UserMapper.convertFromUserType(UserSessionManager.getCurrentUser(), securityService);
+        List<SearchHistory> searchHistories = SearchHistoryMapper.convertFromSearchHistoriesType(addSearchHistory(UserSessionManager.getCurrentUser().getSearchHistories(), query));
+        userService.updateUserSearchHistory(currentUser, searchHistories);
+    }
+
+    private SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria) throws Exception {
+        UserInterfaceHelper uiHelper = (UserInterfaceHelper) SpringUtil.getBean("uiHelper");
+        if (uiHelper == null) {
+            throw new Exception("User interface helper");
+        }
+
+        SummariesType processSummaries = null;
+
+        try {
+            processSummaries = uiHelper.buildProcessSummaryList(folderId, userRowGuid,
+                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "p", "processId", "process"),  // processes
+                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "l", "logId",     "log"),      // logs
+                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "f", "folderId",  "folder"));  // folders
+
+        } catch (UnsupportedEncodingException usee) {
+            throw new Exception("Failed to get Process Summaries: " + usee.toString(), usee);
+        }
+
+        return processSummaries;
     }
 
     /* Add a search History for this user for later use. */

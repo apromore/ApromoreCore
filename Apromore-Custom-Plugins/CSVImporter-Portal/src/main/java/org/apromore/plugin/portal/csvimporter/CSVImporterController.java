@@ -325,10 +325,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             e.printStackTrace();
         }
 
-        //TODO: fix logId
-//        eventLogService.saveLayoutByLogId(90, userId, jsonStr);
         userMetadataService.saveUserMetadataLinkedToOneLog(jsonStr, UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
-
 
         return null;
     }
