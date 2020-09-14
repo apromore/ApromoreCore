@@ -21,7 +21,7 @@
   -->
 <listbox id="${arg.id}" multiple="true" hflex="1" vflex="1" style="margin: 8px" sclass="ap-form-sublist">
   <listhead>
-    <listheader sclass="ap-listheader" label="${arg.title}" hflex="1" style="cursor:pointer;">
+    <listheader sclass="ap-listheader" label="${arg.title}" hflex="1" style="cursor:pointer;" sort="auto(UPPER(username))">
       <div sclass="ap-listheader-search">
         <checkbox width="20px"
                   sclass="ap-listbox-search-toggle"
