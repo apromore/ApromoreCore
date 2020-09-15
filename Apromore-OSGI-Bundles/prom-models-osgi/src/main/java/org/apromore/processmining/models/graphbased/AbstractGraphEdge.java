@@ -37,14 +37,16 @@ public abstract class AbstractGraphEdge<S, T> extends AbstractGraphElement imple
 		this.hash = source.hashCode() + 37 * target.hashCode();
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		// Hashcode based on source and target, which
 		// respects contract that this.equals(o) implies
 		// this.hashCode()==o.hashCode()
 		return hash;
 	}
 
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (!(this.getClass().equals(o.getClass()))) {
 			return false;
 		}
@@ -60,6 +62,11 @@ public abstract class AbstractGraphEdge<S, T> extends AbstractGraphElement imple
 
 	public T getTarget() {
 		return target;
+	}
+	
+	@Override
+    public String toString() {
+	    return source.toString() + "->" + target.toString();
 	}
 
 }
