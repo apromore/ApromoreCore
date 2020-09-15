@@ -8,29 +8,39 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.dao;
+package org.apromore.plugin.portal.useradmin.listbox;
 
-import org.apromore.dao.model.DashboardLayout;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
+import org.apromore.dao.model.User;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModelList;
 
-@Repository
-public interface DashboardLayoutRepository extends JpaRepository<DashboardLayout, Integer>,
-        DashboardLayoutRepositoryCustom{
+import java.util.Set;
 
-    @Query("SELECT d.layout FROM DashboardLayout d WHERE d.userId = ?1 AND d.logId = ?2")
-    String findByUserIdAndLogId(Integer userId, Integer logId);
+public class AssignedUserListbox extends SearchableListbox {
 
+    public AssignedUserListbox(Listbox listbox, ListModelList sourceListmodel, String title) {
+        super(listbox, sourceListmodel, title);
+    }
+
+    @Override
+    public String getValue(int index) {
+        return ((User)this.getSourceListModel().get(index)).getUsername().toLowerCase();
+    }
+
+    @Override
+    public Set<User> getSelection() {
+        return (Set<User>)getListModel().getSelection();
+    }
 }

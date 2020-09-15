@@ -25,6 +25,7 @@ package org.apromore.logman.attribute.graph;
 import java.util.Comparator;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
+import org.apromore.logman.attribute.AttributeMatrixGraph;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.graph.filtering.NodeBasedGraph;
@@ -50,13 +51,13 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * AttributeLogGraph is an {@link WeightedAttributeGraph} implementation for AttributeLog.
- * AttributeLogGraph can be created by adding graphs of all {@link AttributeTrace}. 
+ * AttributeLogGraph is a {@link WeightedAttributeGraph} for an {@link AttributeLog}.
+ * Thus, AttributeLogGraph is a subgraph of an {@link AttributeMatrixGraph} (a base graph).
+ * AttributeLogGraph is created from an AttributeLog by merging all the graphs of {@link AttributeTrace} in the log. 
  * AttributeLogGraph can be filtered on nodes and arcs to create subgraphs. 
- * This is filtering at the graph level, not at the log level.
  * 
  * @author Bruce Nguyen
- *
+ * 
  */
 public class AttributeLogGraph extends WeightedAttributeGraph {
     private AttributeLog attLog;
@@ -188,16 +189,16 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     ////////////////////////////  Node measure ///////////////////////////////////
     
     private void updateNodeWeights(int node, AttributeTraceGraph traceGraph) {
-        incrementNodeTotalFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        incrementNodeCaseFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.CASES));
-        updateNodeMinFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        updateNodeMaxFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        incrementNodeTotalFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        incrementNodeCaseFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE));
+        updateNodeMinFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateNodeMaxFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         
-        incrementNodeTotalDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.TOTAL));
-        updateNodeMinDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MIN));
-        updateNodeMaxDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MAX));
+        incrementNodeTotalDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateNodeMinDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE));
+        updateNodeMaxDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE));
         
-        collectNodeFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        collectNodeFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectNodeDuration(node, traceGraph.getNodeDurations(node));
     }    
     
@@ -242,16 +243,16 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     //////////////////////////// Arc measure ///////////////////////////////////
     
     private void updateArcWeights(int arc, AttributeTraceGraph traceGraph) {
-        incrementArcTotalFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        incrementArcCaseFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.CASES));
-        updateArcMinFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        updateArcMaxFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        incrementArcTotalFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        incrementArcCaseFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE));
+        updateArcMinFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateArcMaxFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         
-        incrementArcTotalDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.TOTAL));
-        updateArcMinDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MIN));
-        updateArcMaxDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MAX));
+        incrementArcTotalDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateArcMinDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE));
+        updateArcMaxDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE));
         
-        collectArcFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        collectArcFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectArcDuration(arc, traceGraph.getArcDurations(arc));
     }    
     
@@ -296,19 +297,37 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     
     ///////////////////////////// MEAUSURES ////////////////////////////////////////
     
-    public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation) {
+    public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
         int node = this.getNodeFromName(nodeName);
-        return (node >= 0) ? this.getNodeWeight(node, type, aggregation) : 0;
+        return (node >= 0) ? this.getNodeWeight(node, type, aggregation, measureRelation) : 0;
     }
     
     @Override
-    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation) {
-        return (!containNode(node) ? 0d : getNodeWeightMap(type, aggregation).get(node));
+    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
+        if (!containNode(node)) {
+            return 0d;
+        }
+        else if (measureRelation == MeasureRelation.ABSOLUTE) {
+            return getNodeWeightMap(type, aggregation).get(node);
+        }
+        else {
+            double totalWeight = getTotalWeight(type, aggregation);
+            return totalWeight==0 ? 0d : getNodeWeightMap(type, aggregation).get(node)/totalWeight;
+        }
     }
     
     @Override
-    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation) {
-        return (!containArc(arc) ? 0d : getArcWeightMap(type, aggregation).get(arc));
+    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
+        if (!containArc(arc)) {
+            return 0d;
+        }
+        else if (measureRelation == MeasureRelation.ABSOLUTE) {
+            return getArcWeightMap(type, aggregation).get(arc);
+        }
+        else {
+            double totalWeight = getTotalWeight(type, aggregation);
+            return totalWeight==0 ? 0d : getArcWeightMap(type, aggregation).get(arc)/totalWeight;
+        }
     }
     
     public double getArcStructuralWeight(int arc) {
@@ -389,6 +408,45 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
                 return arcMedianDurs;
             default:
                 return arcTotalDurs;
+            }
+        }
+    }
+    
+    // The total weight is used for calculating relative measures 
+    // Only used for Case Frequency atm, can extend for other types of measures if needed
+    private double getTotalWeight(MeasureType type, MeasureAggregation aggregation) {
+        if (type == MeasureType.FREQUENCY) {
+            switch (aggregation) {
+            case TOTAL:
+                return 1;
+            case CASES:
+                return this.attLog.getTraces().size();                
+            case MEAN:
+                return 1;
+            case MIN:
+                return 1;
+            case MAX:
+                return 1;
+            case MEDIAN:
+                return 1;
+            default:
+                return 1;
+            }
+        }
+        else {
+            switch (aggregation) {
+            case TOTAL:
+                return 1;
+            case MEAN:
+                return 1;
+            case MIN:
+                return 1;
+            case MAX:
+                return 1;
+            case MEDIAN:
+                return 1;
+            default:
+                return 1;
             }
         }
     }

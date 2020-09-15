@@ -66,4 +66,9 @@
         <beans:bean class="org.apromore.plugin.portal.processdiscoverer.PDWebContentService"/>
     </osgi:service>
 
+    <!-- Garbage collect the ZK desktop -->
+    <osgi:service interface="org.zkoss.zk.ui.util.DesktopCleanup">
+        <beans:bean class="org.apromore.plugin.portal.processdiscoverer.PDDesktopCleaner"/>
+    </osgi:service>
+
 </beans:beans>

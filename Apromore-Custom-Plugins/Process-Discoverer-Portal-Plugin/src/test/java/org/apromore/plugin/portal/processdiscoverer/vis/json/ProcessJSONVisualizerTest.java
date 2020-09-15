@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import org.apromore.logman.ALog;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.processdiscoverer.TestDataSetup;
@@ -51,11 +52,11 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                     "style", "label"};
     
     private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
-                                        MeasureType structureType, MeasureAggregation structureAggregate,
-                                        MeasureType primaryType, MeasureAggregation primaryAggregate,
-                                        MeasureType secondaryType, MeasureAggregation secondaryAggregate,
-                                        boolean useSecondary,
-                                        boolean bpmn) throws Exception {
+                        MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
+                        MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
+                        MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
+                        boolean useSecondary,
+                        boolean bpmn) throws Exception {
         ALog log = new ALog(xlog);
         IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
         AttributeLog attLog = new AttributeLog(log, mainAttribute);
@@ -71,10 +72,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                 useSecondary,
                 structureType,
                 structureAggregate,
+                structureRelation,
                 primaryType,
                 primaryAggregate,
+                primaryRelation,
                 secondaryType,
                 secondaryAggregate,
+                secondaryRelation,
                 null,
                 null);
         
@@ -157,10 +161,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false,
                                                 false);
             ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
@@ -182,10 +189,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false,
                                                 false);
             ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
@@ -207,10 +217,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 true,
                                                 false);
             ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
@@ -232,10 +245,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false,
                                                 true);
             ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
@@ -257,10 +273,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false,
                                                 true);
             ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
@@ -282,10 +301,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 true,
                                                 true);
             ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);

@@ -70,7 +70,7 @@
     <!-- Uncommenting this bean and adding it to #authenticationManager (above) will enable LDAP logins.
          See https://docs.spring.io/spring-security/site/docs/3.1.x/reference/jaas.html
     <beans:bean id="jaasAuthenticationProvider" class="org.springframework.security.authentication.jaas.JaasAuthenticationProvider">
-        <beans:property name="loginConfig" value="/WEB-INF/login.conf"/>
+        <beans:property name="loginConfig" value="file:configuration/login.conf"/>
         <beans:property name="loginContextName" value="apromore"/>
         <beans:property name="callbackHandlers">
             <beans:list>
@@ -80,17 +80,15 @@
         </beans:property>
         <beans:property name="authorityGranters">
             <beans:list>
-                <beans:ref bean="authorityGranter"/>
+                <beans:bean class="org.apromore.security.AuthorityGranterImpl">
+                    <beans:property name="principalClassName" value="com.sun.security.auth.UserPrincipal"/>
+                    <beans:property name="grants">
+                        <beans:set>
+                            <beans:value>ROLE_USER</beans:value>
+                        </beans:set>
+                    </beans:property>
+                </beans:bean>
             </beans:list>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="authorityGranter" class="org.apromore.security.AuthorityGranterImpl">
-        <beans:property name="principalClassName" value="com.sun.security.auth.UserPrincipal"/>
-        <beans:property name="grants">
-            <beans:set>
-                <beans:value>ROLE_USER</beans:value>
-            </beans:set>
         </beans:property>
     </beans:bean>
     -->

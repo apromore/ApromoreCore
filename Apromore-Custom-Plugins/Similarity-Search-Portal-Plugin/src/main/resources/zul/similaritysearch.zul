@@ -24,7 +24,7 @@
 
 <window width="780px" closable="false" position="center" title="Search for similar processes" sclass="ap-simsearch">
 	<caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/documentation/features/search-similar-models/" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/redesign/search-similar-models/" target="_blank" />
     </caption>
     <vlayout width="100%" spacing="0">
         <hbox width="100%" widths="40%,60%" vflex="1" spacing="0">

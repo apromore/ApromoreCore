@@ -23,7 +23,6 @@
 
 <?page title="Apromore - Portal" contentType="text/html;charset=UTF-8" ?>
 
-<?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
@@ -140,30 +139,30 @@
     <style src="css/astyle.css"/>
     <style>
         .ap-portal-menu-buttons button {
-            background: transparent;
+        background: transparent;
         }
         .ap-portal-menu-buttons button img {
-            visibility: hidden;
+        visibility: hidden;
         }
     </style>
-    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
+    <window id="mainW" border="none" height="100%" width="100%" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
         <!--<div class="z-listheader">-->
-            <!--
-            <style>
-                <![CDATA[
-                @import url('https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap');
-                ]]>
-            </style>
-            <image src="img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
-            <label value="apromore" zclass="z-listheader" style="font-family: 'Lexend Deca'; font-size: 24pt; position: absolute; top: -0.3ex"/>
-            -->
-            <!--<h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
-                <h:img src="img/apromore_header.png" width="115"/>
-            </h:a>
-            <h:a href="https://apromore.org/documentation/features" style="float: right; padding: 6px">
-                <h:img src="img/icon/svg/help-icon.svg"/>
-            </h:a>-->
+        <!--
+        <style>
+            <![CDATA[
+            @import url('https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap');
+            ]]>
+        </style>
+        <image src="img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
+        <label value="apromore" zclass="z-listheader" style="font-family: 'Lexend Deca'; font-size: 24pt; position: absolute; top: -0.3ex"/>
+        -->
+        <!--<h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
+            <h:img src="img/apromore_header.png" width="115"/>
+        </h:a>
+        <h:a href="https://apromore.org/documentation/features" style="float: right; padding: 6px">
+            <h:img src="img/icon/svg/help-icon.svg"/>
+        </h:a>-->
         <!--</div>-->
 
         <borderlayout vflex="true" sclass="ap-portal-layout">
@@ -173,7 +172,7 @@
                         <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
                         <h:div class="ap-header-title">Portal</h:div>
                         <h:div class="ap-header-actions">
-                            <h:a href="https://apromore.org/documentation/features/navigating-the-apromore-portal/" target="_blank">
+                            <h:a href="https://apromore.org/help/user-manual/getting-started/navigating-the-apromore-portal/" target="_blank">
                                 <h:button class="ap-icon ap-icon-help"/>
                             </h:a>
                         </h:div>
@@ -194,7 +193,7 @@
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
 
-                    <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
+                    <menubar id="menucomp" sclass="ap-portal-menu" height="32px" width="100%" apply="org.apromore.portal.dialogController.MenuController" />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
@@ -217,7 +216,8 @@
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.e.portal.security.hint}"/>
+                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
+                            <button id="btnUserMgmt" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="Manage users and groups"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />
@@ -245,34 +245,9 @@
                         </tabpanels>
                     </tabbox>
                 </vlayout>
-
-                    <!--
-                                        <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
-                                            <html>
-                                                <![CDATA[
-                                                <script type="text/javascript">
-                                                    function bindBreadcrumbs() {
-                                                        jq('a.breadCrumbLink').unbind("click");
-                                                        jq('a.breadCrumbLink').click(function(e){
-                                                            payload = jq(this).attr('id');
-                                                            zAu.send(new zk.Event(zk.Widget.$(jq('$breadCrumbsWindow')[0]), 'onBreadCrumbClick', payload));
-                                                        });
-                                                    }
-
-                                                    jq(function() {
-                                                        bindBreadcrumbs();
-                                                    });
-                                                </script>
-                                                ]]>
-                                            </html>
-                                        </window>
-
-                                        <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
-                    -->
-
             </center>
         </borderlayout>
-        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;"/>
+        <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
     <!-- Following script improves performance of listbox dropdown display time-->

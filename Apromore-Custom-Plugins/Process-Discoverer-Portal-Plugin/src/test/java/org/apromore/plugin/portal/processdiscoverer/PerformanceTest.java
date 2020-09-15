@@ -60,12 +60,19 @@ public class PerformanceTest extends TestDataSetup {
                     userOptions.getInvertedNodesMode(), 
                     userOptions.getInvertedArcsMode(),
                     userOptions.getIncludeSecondary(),
+                    
                     userOptions.getFixedType(), 
                     userOptions.getFixedAggregation(), 
+                    userOptions.getFixedRelation(),
+                    
                     userOptions.getPrimaryType(), 
-                    userOptions.getPrimaryAggregation(), 
+                    userOptions.getPrimaryAggregation(),
+                    userOptions.getPrimaryRelation(),
+                    
                     userOptions.getSecondaryType(), 
-                    userOptions.getSecondaryAggregation(), 
+                    userOptions.getSecondaryAggregation(),
+                    userOptions.getSecondaryRelation(),
+                    
                     userOptions.getRelationReader(),
                     null);
             Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(params);

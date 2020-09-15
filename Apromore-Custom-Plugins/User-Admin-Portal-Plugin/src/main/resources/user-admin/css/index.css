@@ -40,9 +40,21 @@
     left: 8px;
 }
 
+.ap-usrmgt-win .z-auxheader {
+    border: none !important;
+}
+
+.ap-tristatelistbox .z-listheader {
+    border: none !important;
+}
+
 .ap-usrmgt-detail {
     background-color: var(--ap-c-grey-minor);
     padding: 8px 10px;
+}
+
+.ap-usrmgt-win .z-listheader-checkable {
+    visibility: hidden;
 }
 
 .ap-usrmgt-detail .z-label {

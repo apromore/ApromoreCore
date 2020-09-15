@@ -51,11 +51,15 @@
         <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
         <n:div class="ap-header-title">BPMN Editor</n:div>
         <n:div class="ap-header-actions">
-            <n:a href="https://apromore.org/documentation/features" target="_blank">
+            <n:a href="https://apromore.org/help/user-manual/getting-started/create-edit-process-model/" target="_blank">
               <n:button class="ap-icon ap-icon-help"/>
             </n:a>
         </n:div>
     </n:div>
+
+    <!-- User menu -->
+    <n:link rel="stylesheet" href="/themes/${theme}/portal/css/portal.css" type="text/css"/>
+    <z:menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
     
 	<n:div id="editorwrapper" style="display: none">
         <n:script>

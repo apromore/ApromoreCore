@@ -32,14 +32,42 @@ public class StringFormatterTest {
     @Test
     public void testShortenName() {
         try {
-            if (!stringFormatter.shortenName("Great WhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongString Shark", 0).equals("Great ... Shark")) {
+            if (!stringFormatter.shortenName("Great WhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongString Shark", 0)
+                    .equals("Great ... Shark")) { // first ... last
+                    // .equals("Great...")) { // first second ...
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("123456789012345678901234567890123456789012345678901234567890", 0)
+                    .equals("123456789012345...")) {
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("12345678901234 1234567890 1234567890 1234567890 1234567890 1234567890", 0)
+                    .equals("12345678901234 ... 1234567890")) { // first ... last
+                    // .equals("12345678901234 1234567890...")) { // first second ...
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("1234567890 1234567890 1234567890 1234567890 1234567890", 0)
+                    .equals("1234567890 1234567890 1234567890 1234567890 1234567890")) {
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("1234567890 1234567890 1234567890 1234567890", 30)
+                    .equals("1234567890 ... 1234567890")) { // first ... last
+                    // .equals("1234567890 1234567890...")) { // first second ...
                 fail("Shorten name is not correct");
             }
             if (!stringFormatter.shortenName("Great White", 0).equals("Great White")) {
                 fail("Shorten name is not correct");
             }
-            if (!stringFormatter.shortenName("GreatAlpineRoadGreatOceanRoadGreatWesternHighway", 30)
-                    .equals("GreatAlpineRoadGreatOceanRoadG...")) {
+            if (!stringFormatter.shortenName("12345678901234567890 12345678", 0)
+                    .equals("123456789012345...")) {
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("12345678 12345678901234567890", 0)
+                    .equals("12345678...")) {
+                fail("Shorten name is not correct");
+            }
+            if (!stringFormatter.shortenName("12345678901234567890", 0)
+                    .equals("123456789012345...")) {
                 fail("Shorten name is not correct");
             }
             System.out.println("Testing StringFormatter - shortenName()");

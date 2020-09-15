@@ -25,7 +25,7 @@
     TODO make a SaveAsDialogController
     listbox to choose native type implemented by the controller -->
 
-<window width="500px" closable="false" position="center">
+<window width="500px" closable="false" position="center" title="Save BPMN model">
     <vbox vflex="1">
         <grid id="saveAsGrid" >
             <columns sizable="true">
@@ -35,7 +35,7 @@
             <rows>
                 <row>
                     <label value="Name*" />
-                    <textbox id="modelName" width="100%" />
+                    <textbox id="modelName" width="100%" submitByEnter="true" />
                 </row>
                 <row>
                     <label value="Version Number*" />
@@ -47,7 +47,7 @@
                 </row>
                 <row spans="3">
                     <div align="center">
-                        <button label="Save" iconSclass="z-icon-check-circle" >
+                        <button label="OK" focus="true" iconSclass="z-icon-check-circle" >
                         </button>
                         <button label="Cancel" iconSclass="z-icon-times-circle">
                         </button>

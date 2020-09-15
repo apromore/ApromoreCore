@@ -254,12 +254,11 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public void deleteFolder(int folderId, String username) {
+    public void deleteFolder(int folderId, String username) throws Exception {
         try {
             workspaceSrv.deleteFolder(folderId, secSrv.getUserByName(username));
-
         } catch (NotAuthorizedException e) {
-            throw new RuntimeException(e);
+            throw e; // rethrow e
         }
     }
 
@@ -318,31 +317,6 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public NativeTypesType readNativeTypes() {
         return NativeTypeMapper.convertFromNativeType(frmSrv.findAllFormats());
-    }
-
-
-    /**
-     * Get the Process Summaries from the Apromore Manager.
-     * @param folderId the folder we are currently asking for the process Ids.
-     * @param userRowGuid the user to whom the processes must be visible
-     * @param searchCriteria the search criteria to restrict the results
-     * @return the ProcessSummaryType from the WebService
-     */
-    @Override
-    public SummariesType readProcessSummaries(Integer folderId, String userRowGuid, String searchCriteria) {
-        SummariesType processSummaries = null;
-
-        try {
-            processSummaries = uiHelper.buildProcessSummaryList(folderId, userRowGuid,
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "p", "processId", "process"),  // processes
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "l", "logId",     "log"),      // logs
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "f", "folderId",  "folder"));  // folders
-
-        } catch (UnsupportedEncodingException usee) {
-            LOGGER.error("Failed to get Process Summaries: " + usee.toString());
-        }
-
-        return processSummaries;
     }
 
     /**
@@ -662,17 +636,5 @@ public class ManagerServiceImpl implements ManagerService {
                 throw new Exception("Deletion not supported for " + entry.getKey());
             }
         }
-    }
-
-    /**
-     * Update the search history records for a User.
-     * @param currentUser the Current User to save the serches against.
-     * @param searchHist the list of searches we need to save.
-     * @throws Exception ... change to be something more relevant
-     */
-    @Override
-    public void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception {
-        userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(currentUser, secSrv),
-                                        SearchHistoryMapper.convertFromSearchHistoriesType(searchHist));
     }
 }

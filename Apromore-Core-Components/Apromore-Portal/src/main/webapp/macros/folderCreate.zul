@@ -28,7 +28,7 @@ and CreateProcessController.java for creating process purpose.
 
 <window width="400px" closable="false" position="center" id="winFolderCreate" title="Create folder" sclass="ap-add-folder" mode="modal">
 	<caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/documentation/features/create-folder" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/getting-started/create-new-folder/" target="_blank" />
     </caption>
     <vbox vflex="1">
         <grid sclass="ap-grid">
@@ -39,7 +39,7 @@ and CreateProcessController.java for creating process purpose.
             <rows>
                 <row tooltiptext="Enter folder name.">
                     <label value="Folder name" width="100%"/>
-                    <textbox id="txtName" width="100%" constraint="${labels.e.common.nameConstraint.text}" />
+                    <textbox id="txtName" width="100%" constraint="${labels.e.common.nameConstraint.text}" submitByEnter="true" />
                 </row>
 <!--
                 <row tooltiptext="GED Matrix Computation.">
@@ -49,7 +49,7 @@ and CreateProcessController.java for creating process purpose.
 -->
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button id="btnSave" label="Save" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnSave" focus="true" label="OK" iconSclass="z-icon-check-circle"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>

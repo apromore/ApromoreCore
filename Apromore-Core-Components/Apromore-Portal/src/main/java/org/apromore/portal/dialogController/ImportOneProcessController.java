@@ -36,6 +36,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,8 +146,9 @@ public class ImportOneProcessController extends BaseController {
     public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
         try {
             Integer folderId = 0;
-            if (UserSessionManager.getCurrentFolder() != null) {
-                folderId = UserSessionManager.getCurrentFolder().getId();
+            FolderType currentFolder = this.mainC.getPortalSession().getCurrentFolder();
+            if (currentFolder != null) {
+                folderId = currentFolder.getId();
             }
 
             ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),

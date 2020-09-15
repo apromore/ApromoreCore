@@ -29,18 +29,18 @@
                 <column width="100%"></column>
             </columns>
             <rows>
-				<row>
+                <row>
                     <label id="labelError" value="" width="100%" style="color:red;"/>
-                </row>			
-				<row>
+                </row>
+                <row>
                     <label id="labelMessage" value="" width="100%"/>
                 </row>
                 <row>
-                    <textbox id="txtValue" value="" width="100%"/>
+                    <textbox id="txtValue" value="" width="100%" submitByEnter="true"/>
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button id="btnOK" label="OK" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnOK" focus="true" label="OK" iconSclass="z-icon-check-circle"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>

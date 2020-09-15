@@ -62,7 +62,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     private MainController mainController;
 
-
     public SummaryItemRenderer(MainController main) {
         this.mainController = main;
     }
@@ -74,14 +73,18 @@ public class SummaryItemRenderer implements ListitemRenderer {
     public void render(Listitem listItem, Object obj, int index) {
         List<PortalProcessAttributePlugin> plugins = (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins");
 
-        listItem.setStyle("height: 25px");
+        // listItem.setStyle("height: 25px");
         if (obj instanceof ProcessSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-model");
             renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
         } else if (obj instanceof LogSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-log");
             renderLogSummary(listItem, (LogSummaryType) obj, plugins);
         } else if (obj instanceof FolderSummaryType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolderSummary(listItem, (FolderSummaryType) obj, plugins);
         } else if (obj instanceof FolderType) {
+            listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolder(listItem, (FolderType) obj, plugins);
         } else {
             LOGGER.error("Unknown item to render in the process summary list box.");
@@ -171,7 +174,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                // UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
+                mainController.getPortalSession().setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }
@@ -209,7 +213,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                UserSessionManager.setCurrentFolder(folder);
+                // UserSessionManager.setCurrentFolder(folder);
+                mainController.getPortalSession().setCurrentFolder(folder);
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }

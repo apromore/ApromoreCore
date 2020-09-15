@@ -21,8 +21,15 @@
  */
 package org.apromore.dao;
 
-public interface DashboardLayoutRepositoryCustom {
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.UsermetadataLog;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    void saveLayoutByLogId(Integer userId, Integer logId, String layout);
+import java.util.List;
 
+@Repository
+public interface UsermetadataLogRepository extends JpaRepository<UsermetadataLog, Integer> {
+
+    List<UsermetadataLog> findByLog(Log log);
 }

@@ -75,10 +75,10 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
 
         List<Listheader> listheaders = new ArrayList<>();
         if(rows.size() > 0 && rows.get(0).size() > 7) {
-            Listheader scoreHeader = new Listheader("Score", null);
-            scoreHeader.setWidth("50px");
-            scoreHeader.setVisible(true);
-            listheaders.add(scoreHeader);
+//            Listheader scoreHeader = new Listheader("Score", null);
+//            scoreHeader.setWidth("50px");
+//            scoreHeader.setVisible(true);
+//            listheaders.add(scoreHeader);
         }
         addListheader(listheaders, "Name",              true, null, null, "4");
         addListheader(listheaders, "ID",                true, "center", "80px", null);

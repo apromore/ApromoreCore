@@ -84,7 +84,7 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
     }
 
     @Override
-    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation) {
+    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
@@ -122,7 +122,7 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
     }
 
     @Override
-    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation) {
+    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:

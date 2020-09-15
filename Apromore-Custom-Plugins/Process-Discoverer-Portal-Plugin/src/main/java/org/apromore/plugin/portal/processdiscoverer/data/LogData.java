@@ -207,5 +207,4 @@ public class LogData {
     public String getFilteredMaxDuration() {
         return timeConverter.convertMilliseconds(attLogSummary.getTraceDurationMax());
     }
-    
 }

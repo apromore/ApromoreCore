@@ -1,6 +1,6 @@
 /*-
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
@@ -19,15 +19,10 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-/*
- * This file is part of "Apromore".
- *
- * Copyright (C) 2019 - 2020 The University of Melbourne. All Rights Reserved.
- *
- */
 package org.apromore.plugin.portal.useradmin.common;
 
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.*;
@@ -39,30 +34,31 @@ import java.util.*;
  */
 public class SearchableListbox {
 
+    public ListModelList sourceListModel;
+    public ListModelList listModel;
+
     private Listbox listbox;
-    private ListModelList sourceListmodel;
-    private ListModelList listmodel;
     private Listhead listhead;
     // private Auxhead auxead;
+    private String title = "";
 
-    private Listheader listheader;
-    private Checkbox selectAll;
+    public Listheader listheader;
 
-    private Textbox searchInput;
+    public Textbox searchInput;
     private Button searchBtn;
     private Button searchBtnClear;
     private Checkbox searchToggle;
-    private Label searchCount;
+    public Label searchCount;
 
-    public SearchableListbox(Listbox listbox, ListModelList sourceListmodel) {
+    public SearchableListbox(Listbox listbox, ListModelList sourceListModel, String title) {
+        this.title = title;
         this.listbox = listbox;
-        this.sourceListmodel = sourceListmodel;
-        this.listmodel = new ListModelList<>();
-        this.listmodel.setMultiple(true);
+        this.sourceListModel = sourceListModel;
+        this.listModel = new ListModelList<>();
+        this.listModel.setMultiple(true);
 
         // These selector must be custom and defined via sclass
         this.listheader = (Listheader)listbox.query(".z-listheader");
-        this.listheader.setSort("auto");
         this.searchToggle = (Checkbox)listbox.query(".ap-listbox-search-toggle");
         this.searchInput = (Textbox)listbox.query(".ap-listbox-search-input");
         this.searchBtn = (Button)listbox.query(".ap-listbox-search-btn");
@@ -70,26 +66,21 @@ public class SearchableListbox {
         this.searchCount = (Label) listbox.query(".ap-listbox-search-count");
         this.initEvents();
         this.initData();
-        this.listbox.setModel(this.listmodel);
+        this.listbox.setModel(this.listModel);
+        this.listbox.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Object o = event.getTarget();
+            }
+        });
+        this.updateCounts();
     }
 
     public ListModelList getSourceListmodel() {
-        return sourceListmodel;
+        return sourceListModel;
     }
 
     private void initEvents() {
-
-//        selectAll.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
-//            @Override
-//            public void onEvent(CheckEvent event) throws Exception {
-//                if (event.isChecked()) {
-//                    listbox.selectAll();
-//                } else {
-//                    listbox.clearSelection();
-//                }
-//                updateCounts();
-//            }
-//        });
 
         searchToggle.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
             @Override
@@ -128,43 +119,28 @@ public class SearchableListbox {
         listbox.addEventListener(Events.ON_SELECT, new EventListener<SelectEvent>() {
             @Override
             public void onEvent(SelectEvent e) throws Exception {
-                if (e.getSelectedItems().size() > 0) {
-                    if (searchToggle.isChecked()) {
-                        if (listbox.getSelectedCount() == listbox.getItems().size()) {
-                            // selectAll.setChecked(true);
-                        }
-                    } else {
-                        if (listbox.getSelectedCount() == listmodel.size()) {
-                            // selectAll.setChecked(true);
-                        }
-                    }
-                }
-
-                if (e.getUnselectedItems().size() > 0) {
-                    // selectAll.setChecked(false);
-                }
                 updateCounts();
             }
         });
     }
 
-    private void updateCounts() {
+    public void updateCounts() {
         if (searchInput.getValue().equals("")) {
             searchCount.setValue("");
         } else {
-            searchCount.setValue("(" + listmodel.size() + " / " + sourceListmodel.size() + ")");
+            searchCount.setValue("(" + listModel.size() + "/" + sourceListModel.size() + ")");
         }
-        listheader.setLabel("(" + listbox.getSelectedCount() + " / " + listbox.getItemCount() + ")");
+        listheader.setLabel(title + " (" + listbox.getSelectedCount() + "/" + listbox.getItemCount() + ")");
     }
 
-    private void doSearch(String input) {
+    public void doSearch(String input) {
         if (!input.equals("")) {
             unselectAll();
-            listmodel.clear();
-            for (int i = 0; i < sourceListmodel.size(); i++) {
+            listModel.clear();
+            for (int i = 0; i < sourceListModel.size(); i++) {
                 String value = getValue(i);
                 if (value.contains(input.toLowerCase())) {
-                    listmodel.add(sourceListmodel.get(i));
+                    listModel.add(sourceListModel.get(i));
                 }
             }
             updateCounts();
@@ -175,32 +151,38 @@ public class SearchableListbox {
         return "" + index;
     }
 
-    public void setSourceListmodel(ListModelList sourceListmodel) {
-        this.sourceListmodel = sourceListmodel;
+    public ListModelList getSourceListModel() {
+        return sourceListModel;
     }
 
-    public ListModelList getListmodel() {
-        return this.listmodel;
+    public void setSourceListModel(ListModelList sourceListModel) {
+        this.sourceListModel = sourceListModel;
+    }
+    
+    public ListModelList getListModel() {
+        return this.listModel;
     }
 
-    private void initData() {
-        listmodel.clear();
-        for (int i = 0; i < sourceListmodel.size(); i++) {
-            listmodel.add(sourceListmodel.get(i));
+    public void initData() {
+        listModel.clear();
+        for (int i = 0; i < sourceListModel.size(); i++) {
+            listModel.add(sourceListModel.get(i));
         }
     }
 
     public Set getSelection () {
-        return listmodel.getSelection();
+        return listModel.getSelection();
     }
 
     public void selectAll() {
         listbox.selectAll();
         listbox.getItemAtIndex(0).setFocus(true);
+        updateCounts();
     }
 
     public void unselectAll() {
         listbox.clearSelection();
+        updateCounts();
     }
 
     public Set<Listitem> getSelectedItems() {
@@ -218,5 +200,7 @@ public class SearchableListbox {
         showSearchDrawer(false);
         searchToggle.setChecked(false);
         searchInput.setValue("");
+        updateCounts();
     }
+
 }

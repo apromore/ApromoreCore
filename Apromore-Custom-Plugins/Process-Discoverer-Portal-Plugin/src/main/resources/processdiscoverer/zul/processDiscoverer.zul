@@ -30,6 +30,7 @@
 <?link rel="stylesheet" href="../../css/chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
 <?link rel="stylesheet" href="/processdiscoverer/css/ap/pd.css" type="text/css" ?>
+<?link rel="stylesheet" href="../../themes/${labels.theme}/portal/css/portal.css" type="text/css" ?>
 <?script src="../../themes/ap/common/js/index.js"?>
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -67,7 +68,7 @@
     </h:a>
     <h:div class="ap-header-title">Process Discoverer</h:div>
     <h:div class="ap-header-actions">
-      <h:a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+      <h:a href="https://apromore.org/help/user-manual/discovery/discover-model/" target="_blank">
         <h:button class="ap-icon ap-icon-help"/>
       </h:a>
     </h:div>
@@ -242,6 +243,7 @@
       <n:div id="ap-pd-process-model" style="background-color:none;"/>
       <div id="vizBridge" visible="false"></div>
     </n:div>
+    <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
   </window>
   <n:script type="text/javascript" defer="defer" src="/themes/ap/common/js/css-browser-selector.js"></n:script>
   <!-- Use the following to improve the performance of listbox dropdown display time -->

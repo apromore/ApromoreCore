@@ -153,6 +153,7 @@
     --ap-z-header-logo: 1010;
     --ap-z-header-help: 1020;
     --ap-z-header-title: 1030;
+    --ap-z-user-menu: 1040;
     --ap-z-editor-window: 900;
     --ap-z-editor-toolbar: 910;
 }
@@ -235,7 +236,7 @@
 .ap-header-actions {
     position: absolute;
     top: 4px;
-    right: 10px;
+    right: 34px;
     z-index: var(--ap-z-header-help);
 }
 

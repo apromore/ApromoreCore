@@ -84,18 +84,17 @@ public interface PortalPlugin extends ParameterAwarePlugin {
     void execute(PortalContext context);
 
     /**
-     * @param context which provides access to the portal (e.g., selected items, create windows, ..)
-     * @return whether the plugin function is available for use in the given <var>context</var>
+     * @return whether the plugin function is available for use by the calling session
      */
-    Availability getAvailability(PortalContext context);
+    Availability getAvailability();
 
     /**
      * Return value for {@link #getAvailability).
      *
      * <dl>
-     * <dt>AVAILABLE</dt>  <dd>The function can be used, and should have an enabled menu item.</dd>
-     * <dt>DISABLED</dt>   <dd>The function can't currently be used, but user action might make it available.  It should have a disabled menu item.</dd>
-     * <dt>UNAVILABLE</dt> <dd>The function can't be used.  It should not have a menu item.</dd>
+     * <dt>AVAILABLE</dt>   <dd>The function can be used, and should have an enabled menu item.</dd>
+     * <dt>DISABLED</dt>    <dd>The function can't currently be used, but user action might make it available.  It should have a disabled menu item.</dd>
+     * <dt>UNAVAILABLE</dt> <dd>The function can't be used.  It should not have a menu item.</dd>
      * </dl>
      */
     enum Availability {

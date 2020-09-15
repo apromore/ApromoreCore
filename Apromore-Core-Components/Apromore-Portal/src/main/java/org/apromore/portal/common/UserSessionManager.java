@@ -40,6 +40,8 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.ConfigBean;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.FolderType;
@@ -51,7 +53,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 
+/**
+ * Static methods for typed access to user session attributes.
+ *
+ * These methods are a type-safe way to manipulate the ZK {@link org.zkoss.zk.ui.Session).
+ */
 public abstract class UserSessionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionManager.class);
@@ -67,13 +76,10 @@ public abstract class UserSessionManager {
     public static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
     public static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
 
-    /**
-     * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
-     */
-    //static Map<String,ApromoreSession> editSessionMap = new HashMap<>();
-
     public static void setCurrentUser(UserType user) {
         setAttribute(USER, user);
+        EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, Sessions.getCurrent(), true)
+                   .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
     }
 
     private static Object getAttribute(String attribute) {
@@ -88,7 +94,7 @@ public abstract class UserSessionManager {
         return (UserType) getAttribute(USER);
     }
 
-    public static void initializeUser(ManagerService manager) {
+    public static void initializeUser(ManagerService manager, ConfigBean config) {
 
         // No initialization required if the user is already set
         if (getAttribute(USER) != null) {
@@ -105,7 +111,7 @@ public abstract class UserSessionManager {
                 UserType user = manager.readUserByUsername(username);
                 if (user == null) {
                     try {
-                        user = constructUserType(username);
+                        user = constructUserType(username, config);
                         manager.writeUser(user);
 
                     } catch (Exception e) {
@@ -131,26 +137,26 @@ public abstract class UserSessionManager {
     }
 
     // Lifted from NewUserRegistrationHttpServletRequestHandler.java
-    private static UserType constructUserType(String username) throws NamingException {
+    private static UserType constructUserType(String username, ConfigBean config) throws NamingException {
 
         // Obtain a JNDI context
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        env.put(Context.PROVIDER_URL, "ldaps://centaur.unimelb.edu.au");
+        env.put(Context.PROVIDER_URL, config.getLdapProviderURL());
         InitialDirContext context = new InitialDirContext(env);
 
         // Query the LDAP directory
         SearchControls constraints = new SearchControls();
         constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        String[] attributes = { "givenName", "sn", "mail" };
+        String[] attributes = { config.getLdapEmailAttribute(), config.getLdapFirstNameAttribute(), config.getLdapLastNameAttribute() };
         constraints.setReturningAttributes(attributes);
-        NamingEnumeration results = context.search("ou=people,o=unimelb", String.format("uid=%s", username), constraints);
+        NamingEnumeration results = context.search(config.getLdapUserContext(), String.format("%s=%s", config.getLdapUsernameAttribute(), username), constraints);
         SearchResult      result  = (SearchResult) results.next();
         Attributes        attrs   = result.getAttributes();
 
         // Create the user record
         MembershipType membership = new MembershipType();
-        membership.setEmail(findAttributeFieldByName(attrs, attributes[2]));
+        membership.setEmail(findAttributeFieldByName(attrs, config.getLdapEmailAttribute()));
         //membership.setPassword("password");  // Beware that if you specify a value here, it (in addition to the LDAP password) can be used to authenticate
         //membership.setPasswordQuestion("question");
         //membership.setPasswordAnswer("answer");
@@ -158,8 +164,8 @@ public abstract class UserSessionManager {
         //membership.setFailedAnswers(0);
 
         UserType user = new UserType();
-        user.setFirstName(findAttributeFieldByName(attrs, attributes[0]));
-        user.setLastName(findAttributeFieldByName(attrs, attributes[1]));
+        user.setFirstName(findAttributeFieldByName(attrs, config.getLdapFirstNameAttribute()));
+        user.setLastName(findAttributeFieldByName(attrs, config.getLdapLastNameAttribute()));
         user.setUsername(username);
         user.setMembership(membership);
 
@@ -191,6 +197,7 @@ public abstract class UserSessionManager {
         Sessions.getCurrent().removeAttribute(id);
     }
 
+    /*
     public static void setCurrentFolder(FolderType folder) {
         setAttribute(CURRENT_FOLDER, folder);
         if (folder != null && getMainController() != null) {
@@ -260,6 +267,7 @@ public abstract class UserSessionManager {
 
         return null;
     }
+    */
 
     public static void setMainController(MainController mainController) {
         setAttribute(MAIN_CONTROLLER, mainController);

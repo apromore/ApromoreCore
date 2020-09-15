@@ -90,7 +90,7 @@ public class UserServiceImplUnitTest {
 
         User serviceUsr = usrServiceImpl.findUserByLogin(username);
         verify(usrRepo);
-        assertThat(serviceUsr, equalTo(usr));
+        assertThat(serviceUsr.getId(), equalTo(usr.getId()));
     }
 
     @Test

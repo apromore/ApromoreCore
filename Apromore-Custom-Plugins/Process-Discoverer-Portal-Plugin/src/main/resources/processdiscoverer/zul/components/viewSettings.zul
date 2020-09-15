@@ -80,6 +80,8 @@
               value="${labels.e.agg.count.text}">
       <comboitem value="case"
                  label="${labels.e.agg.count.text}"/>
+      <comboitem value="case_relative"
+                 label="${labels.e.agg.count_relative.text}"/>
       <comboitem value="total"
                  label="${labels.e.agg.total.text}"/>
       <comboitem value="mean"

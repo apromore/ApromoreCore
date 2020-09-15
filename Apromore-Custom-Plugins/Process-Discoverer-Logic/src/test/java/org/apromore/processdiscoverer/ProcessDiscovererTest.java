@@ -29,6 +29,7 @@ import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.bpmn.TraceBPMNDiagram;
@@ -43,9 +44,9 @@ import org.junit.Test;
 public class ProcessDiscovererTest extends LogicDataSetup {
     
     private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
-                                        MeasureType structureType, MeasureAggregation structureAggregate,
-                                        MeasureType primaryType, MeasureAggregation primaryAggregate,
-                                        MeasureType secondaryType, MeasureAggregation secondaryAggregate,
+                            MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
+                                        MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
+                                        MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
                                         boolean bpmn) throws Exception {
         ALog log = new ALog(xlog);
         IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
@@ -62,10 +63,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 false,
                 structureType,
                 structureAggregate,
+                structureRelation,
                 primaryType,
                 primaryAggregate,
+                primaryRelation,
                 secondaryType,
                 secondaryAggregate,
+                secondaryRelation,
                 null,
                 null);
         
@@ -89,10 +93,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                             false,
                                             MeasureType.FREQUENCY,
                                             MeasureAggregation.CASES,
+                                            MeasureRelation.ABSOLUTE,
                                             MeasureType.FREQUENCY,
                                             MeasureAggregation.CASES,
+                                            MeasureRelation.ABSOLUTE,
                                             MeasureType.DURATION,
                                             MeasureAggregation.MEAN,
+                                            MeasureRelation.ABSOLUTE,
                                             null,
                                             null);
         Abstraction traceAbs = pd.generateTraceAbstraction(traceID, params);
@@ -109,10 +116,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false);
             BPMNDiagram d = this.readDFG_LogWithOneTraceOneEvent();
             if (!abs.getDiagram().checkSimpleEquality(d)) {
@@ -167,10 +177,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false);
             BPMNDiagram d = this.readDFG_LogWithCompleteEventsOnly();
             if (!abs.getDiagram().checkSimpleEquality(d)) {
@@ -283,10 +296,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 true);
             BPMNDiagram d = this.readBPMN_LogWithCompleteEventsOnly();
             if (!abs.getDiagram().checkSimpleEquality(d)) {
@@ -414,10 +430,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 false);
             BPMNDiagram d = this.readDFG_LogWithStartCompleteEventsOverlapping();
             if (!abs.getDiagram().checkSimpleEquality(d)) {
@@ -530,10 +549,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 1.0, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 true);
             BPMNDiagram d = this.readBPMN_LogWithStartCompleteEventsOverlapping();
             if (!abs.getDiagram().checkSimpleEquality(d)) {
@@ -660,10 +682,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 0.1, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 false);
             BPMNDiagram d = this.readDFG_Sepsis_100_10();
             if (!abs.getDiagram().checkSimpleEquality(d)) {
@@ -681,10 +706,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 1.0, 0.3, 0.4, 
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
                                                 true);
             BPMNDiagram d = this.readBPMN_Sepsis_100_30();
             if (!abs.getDiagram().checkSimpleEquality(d)) {

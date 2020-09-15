@@ -323,7 +323,7 @@
 
     cy.add(source);
     layout(layoutType);
-    Ap.pd.setupSearch(source);
+    Ap.pd.setupSearch(source, true);
 
     if (retain) {
       cy.zoom(zoom);

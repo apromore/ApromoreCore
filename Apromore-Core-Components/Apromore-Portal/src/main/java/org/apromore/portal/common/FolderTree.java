@@ -24,6 +24,7 @@
 
 package org.apromore.portal.common;
 
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
@@ -49,8 +50,10 @@ public class FolderTree {
     private int currentFolderId;
     private int autoSelectFolder;
     private FolderTreeNode currentFolder;
+    MainController mainController;
 
-    public FolderTree(boolean loadAll) {
+    public FolderTree(boolean loadAll, MainController mainController) {
+        this.mainController = mainController;
         this.loadAll = loadAll;
         this.autoSelectFolder = 0;
         root = new FolderTreeNode((FolderType) null, null, true, FolderTreeNodeTypes.Folder);
@@ -61,10 +64,11 @@ public class FolderTree {
         FolderTreeNode homeNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
 
         root.add(homeNode);
-        buildTree(homeNode, UserSessionManager.getTree(), 0, new HashSet<Integer>());
+        buildTree(homeNode, mainController.getPortalSession().getTree(), 0, new HashSet<Integer>());
     }
 
-    public FolderTree(boolean loadAll, int currentFolderId) {
+    public FolderTree(boolean loadAll, int currentFolderId, MainController mainController) {
+        this.mainController = mainController;
         this.loadAll = loadAll;
         this.currentFolderId = currentFolderId;
         this.autoSelectFolder = 1;
@@ -79,7 +83,7 @@ public class FolderTree {
         FolderTreeNode homeNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
 
         root.add(homeNode);
-        buildTree(homeNode, UserSessionManager.getTree(), 0, new HashSet<Integer>());
+        buildTree(homeNode, mainController.getPortalSession().getTree(), 0, new HashSet<Integer>());
     }
 
     public FolderTreeNode getCurrentFolder() {

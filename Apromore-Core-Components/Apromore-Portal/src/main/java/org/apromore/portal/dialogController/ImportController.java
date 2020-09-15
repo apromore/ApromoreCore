@@ -317,7 +317,7 @@ public class ImportController extends BaseController {
             fileName = StringUtil.contentDispositionFileName(contentDisposition);
         }
         if (StringUtil.isEmpty(fileName) && !StringUtil.isEmpty(contentDisposition)) {
-            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
+            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9);
         }
         if (StringUtil.isEmpty(fileName)) {
             fileName = url.substring(url.lastIndexOf('/') + 1);
@@ -353,6 +353,7 @@ public class ImportController extends BaseController {
         // Check whether any of the pluggable file importers can handle this file
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
+                //TODO isMatchedMapping NOT HERE, separate concern
                 fileImporterPlugin.importFile(importedMedia, isPublicCheckbox.isChecked());
                 return;
             }
@@ -379,8 +380,8 @@ public class ImportController extends BaseController {
     private void importLog(Media logMedia) {
         try {
             Integer folderId = 0;
-            if (UserSessionManager.getCurrentFolder() != null) {
-                folderId = UserSessionManager.getCurrentFolder().getId();
+            if (this.mainC.getPortalSession().getCurrentFolder() != null) {
+                folderId = this.mainC.getPortalSession().getCurrentFolder().getId();
             }
 
             String fileName = logMedia.getName();

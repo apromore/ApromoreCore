@@ -25,12 +25,13 @@
 
 package org.apromore.portal.common;
 
-public final class Constants {
+public abstract class Constants {
 
     // max number of searches kept for users
-    public static final Integer maxSearches = 10;
+    public static final int maxSearches = 10;
 
     public static final String EVENT_QUEUE_REFRESH_SCREEN = "UI_UPDATES";
+    public static final String EVENT_QUEUE_SESSION_ATTRIBUTES = "SESSION_ATTRIBUTES";
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
     public static final String EVENT_QUEUE_BPMN_EDITOR = "BPMN EDITOR";
 
@@ -55,7 +56,8 @@ public final class Constants {
     public static final String WEB_DAV = "http://apromore.qut.edu.au/filestore/dav";
     public static final String DEVELOPER_RESOURCES = "http://apromore-build.cis.unimelb.edu.au/";
 
-    public static final String FOLDER_ICON = "/img/icon/svg/folder_icons.svg";
+    // public static final String FOLDER_ICON = "/img/icon/svg/folder_icons.svg";
+    public static final String FOLDER_ICON = "/themes/ap/common/img/icons-2/folder-solid.svg";
     public static final String PROCESS_ICON = "/img/icon/svg/bpmn_model.svg";
     public static final String CLUSTER_ICON = "/img/icon/cluster-22x22.png";
     public static final String LOG_ICON = "/img/icon/svg/log_icon.svg";

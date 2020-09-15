@@ -396,6 +396,10 @@
             <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
     </listener>    
 
+    <listener>
+            <listener-class>org.apromore.zk.ApromoreDesktopCleanup</listener-class>
+    </listener>
+
     <!-- Configure the error page
     <error-page>
             <exception-type>java.lang.Throwable</exception-type>

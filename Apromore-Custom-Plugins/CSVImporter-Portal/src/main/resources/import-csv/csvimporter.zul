@@ -2,6 +2,8 @@
 <!--
   #%L
   This file is part of "Apromore Core".
+
+  Copyright (C) 2020 University of Tartu
   %%
   Copyright (C) 2018 - 2020 Apromore Pty Ltd.
   %%
@@ -30,6 +32,9 @@
         <style src="/themes/ap/csv-importer/css/index.css" />
         <style src="/themes/ap/common/css/utils.css" />
         <script type="text/javascript" src="/themes/ap/csv-importer/js/index.js"></script>
+        <caption>
+            <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/getting-started/upload-a-file/" target="_blank" />
+        </caption>
         <popup id="popUpHelp" style="padding:0px;">
             <vbox>
                 <html>
@@ -120,6 +125,9 @@
                         </div>
                         <div width="240px" style="text-align: right;">
                             <button id="toXESButton" label="${mainWindow$composer.labels.toXESButton_label}" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;padding-left:2px;" width="120px"  />
+                            <button id="matchedMapping" label="matchedMapping" visible="false"
+                                    iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true"
+                                    style="position:relative;padding-left:2px;" width="120px"  />
                             <button id="toPublicXESButton" label="${mainWindow$composer.labels.toPublicXESButton_label}" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" visible="false" style="position:relative;padding-left:2px;" width="120px"  />
                             <button id="cancelButton" label="${mainWindow$composer.labels.cancelButton_label}" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;padding-left:2px;" width="100px"  />
                         </div>

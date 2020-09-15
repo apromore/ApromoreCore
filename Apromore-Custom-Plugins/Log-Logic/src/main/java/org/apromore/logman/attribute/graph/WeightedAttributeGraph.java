@@ -33,7 +33,8 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * WeightedAttributeGraph is a subgraph of {@link AttributeMatrixGraph} with added weights for nodes/arcs.
+ * WeightedAttributeGraph is a subgraph of {@link AttributeMatrixGraph} (a base graph) 
+ * with added weights for nodes/arcs.
  * 
  * @author Bruce Nguyen
  *
@@ -50,6 +51,10 @@ public abstract class WeightedAttributeGraph {
     
     public WeightedAttributeGraph(IndexableAttribute attribute) {
         this.attMatrixGraph = attribute.getMatrixGraph();
+    }
+    
+    public AttributeMatrixGraph getBaseGraph() {
+        return this.attMatrixGraph;
     }
     
     public void resetToAttribute(IndexableAttribute attribute) {
@@ -196,96 +201,111 @@ public abstract class WeightedAttributeGraph {
     
     /////////////////////////// WEIGHTS ///////////////////////////////    
     
-    public abstract double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation);
+    public abstract double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation);
 
-    public abstract double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation);    
+    public abstract double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation);    
     
     // Shortcut methods
     public long getNodeTotalFrequency(int node) {
-        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
+        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
     }
     
     public long getNodeCaseFrequency(int node) {
-        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.CASES);
+        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
     }
     
     public long getNodeMinFrequency(int node) {
-        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MIN);
+        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE);
     }
     
     public long getNodeMaxFrequency(int node) {
-        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MAX);
+        return (long)getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE);
     }
     
     public double getNodeMeanFrequency(int node) {
-        return getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEAN);
+        return getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE);
     }
     
     public double getNodeMedianFrequency(int node) {
-        return getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN);
+        return getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE);
     }
     
     public long getNodeTotalDuration(int node) {
-        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.TOTAL);
+        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
     }
     
     public long getNodeMinDuration(int node) {
-        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MIN);
+        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE);
     }
     
     public long getNodeMaxDuration(int node) {
-        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MAX);
+        return (long)getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE);
     }
     
     public double getNodeMeanDuration(int node) {
-        return getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEAN);
+        return getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE);
     }
     
     public double getNodeMedianDuration(int node) {
-        return getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEDIAN);
+        return getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcTotalFrequency(int arc) {
-        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
+        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcCaseFrequency(int arc) {
-        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.CASES);
+        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcMinFrequency(int arc) {
-        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MIN);
+        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcMaxFrequency(int arc) {
-        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MAX);
+        return (long)getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE);
     }
     
     public double getArcMeanFrequency(int arc) {
-        return getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEAN);
+        return getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE);
     }
     
     public double getArcMedianFrequency(int arc) {
-        return getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN);
+        return getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcTotalDuration(int arc) {
-        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.TOTAL);
+        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcMinDuration(int arc) {
-        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MIN);
+        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE);
     }
     
     public long getArcMaxDuration(int arc) {
-        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MAX);
+        return (long)getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE);
     }
     
     public double getArcMeanDuration(int arc) {
-        return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEAN);
+        return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE);
     }
     
     public double getArcMedianDuration(int arc) {
-        return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEDIAN);
+        return getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE);
+    }
+    
+    @Override
+    public String toString() {
+        String toString = "Nodes: ";
+        for (int n : getNodes().toArray()) {
+            toString += this.getNodeName(n) + "(" + n + ")" + "|";
+        }
+        
+        toString += "\nArcs: ";
+        for (int a : getArcs().toArray()) {
+            toString += (getNodeName(getSource(a)) + "->" + getNodeName(getTarget(a)) + "(" + a + ")" + "!");
+        }
+        
+        return toString;
     }
 }
