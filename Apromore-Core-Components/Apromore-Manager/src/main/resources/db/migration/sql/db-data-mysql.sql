@@ -22,60 +22,25 @@ INSERT INTO `role` VALUES (8,'64e734a6-bfe1-11ea-b4cf-2bed596c2920','ROLE_OPERAT
 
 
 
-INSERT INTO `user` VALUES (1,'75f4a46a-bd32-4fbb-ba7a-c50d06414fac','james',   '2012-05-23 11:52:48','Cameron', 'James',       NULL,1,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `user` VALUES (2,'aaf24d0d-58f2-43b1-8dcc-bf99717b708f','chathura','2012-05-23 11:59:51','Chathura','Ekanayake',   NULL,2,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `user` VALUES (3,'a393f9c2-e2ee-49ed-9b6a-a1269811764c','arthur',  '2012-05-23 12:07:24','Arthur',  'Ter Hofstede',NULL,3,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `user` VALUES (4,'b6701ee5-227b-493e-9b01-85aa33acd53b','Macri',   '2012-05-23 20:08:03','Marie',   'Fauvet',      NULL,4,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `user` VALUES (5,'c81da91f-facc-4eff-b648-bdc1a2a5ebbe','larosa',  '2012-05-23 20:24:37','Marcello','La Rosa',     NULL,5,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `user` VALUES (6,'c03eff4d-3672-4c91-bfea-36c67e2423f5','felix',   '2012-05-23 20:37:44','Felix',   'Mannhardt',   NULL,6,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `user` VALUES (7,'fbcd5a9a-a224-40cb-8ab9-b12436d92835','raboczi', '2012-05-23 20:40:26','Simon',   'Raboczi',     NULL,7,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','admin',   '2012-05-28 16:51:05','Test',    'User',        NULL,8,NULL,NULL,NULL,NULL,NULL);
 
 
-
-INSERT INTO `membership` VALUES (1,1,'5f4dcc3b5aa765d61d8327deb882cf99','username','','cam.james@gmail.com','Test question','test',1,0,'2012-05-23 20:37:44',0,0);
-INSERT INTO `membership` VALUES (2,2,'5f4dcc3b5aa765d61d8327deb882cf99','username','','c.ekanayake@qut.edu.au','Test question','test',1,0,'2012-05-28 16:51:05',0,0);
-INSERT INTO `membership` VALUES (3,3,'5f4dcc3b5aa765d61d8327deb882cf99','username','','arthur@yawlfoundation.org','Test question','test',1,0,'2012-06-16 11:43:16',0,0);
-INSERT INTO `membership` VALUES (4,4,'5f4dcc3b5aa765d61d8327deb882cf99','username','','marie-christine.fauvet@qut.edu.au','Test question','test',1,0,'2012-06-16 11:56:00',0,0);
-INSERT INTO `membership` VALUES (5,5,'5f4dcc3b5aa765d61d8327deb882cf99','username','','m.larosa@qut.edu.au','Test question','test',1,0,'2012-06-16 12:01:35',0,0);
-INSERT INTO `membership` VALUES (6,6,'5f4dcc3b5aa765d61d8327deb882cf99','username','','felix.mannhardt@smail.wir.h-brs.de','Test question','test',1,0,'2012-06-16 12:08:50',0,0);
-INSERT INTO `membership` VALUES (7,7,'5f4dcc3b5aa765d61d8327deb882cf99','username','','raboczi@gmail.com','Test question','test',1,0,'2012-06-16 12:35:25',0,0);
 INSERT INTO `membership` VALUES (8,8,'5f4dcc3b5aa765d61d8327deb882cf99','username','','admin','Test question','test',1,0,'2012-06-16 14:10:14',0,0);
 
 
 
-INSERT INTO `group` VALUES (1,'uuid1-james',   'james',   'USER');
-INSERT INTO `group` VALUES (2,'uuid2-chathura','chathura','USER');
-INSERT INTO `group` VALUES (3,'uuid3-arthur',  'arthur',  'USER');
-INSERT INTO `group` VALUES (4,'uuid4-Macri',   'Macri',   'USER');
-INSERT INTO `group` VALUES (5,'uuid5-larosa',  'larosa',  'USER');
-INSERT INTO `group` VALUES (6,'uuid6-felix',   'felix',   'USER');
-INSERT INTO `group` VALUES (7,'uuid7-raboczi', 'raboczi', 'USER');
+
 INSERT INTO `group` VALUES (8,'uuid8-admin',   'admin',   'USER');
 INSERT INTO `group` VALUES (9,'uuid9-public',  'public',  'PUBLIC');
 
 
 
 
-INSERT INTO `user_group` VALUES (1,1),(1,9);
-INSERT INTO `user_group` VALUES (2,2),(2,9);
-INSERT INTO `user_group` VALUES (3,3),(3,9);
-INSERT INTO `user_group` VALUES (4,4),(4,9);
-INSERT INTO `user_group` VALUES (5,5),(5,9);
-INSERT INTO `user_group` VALUES (6,6),(6,9);
-INSERT INTO `user_group` VALUES (7,7),(7,9);
 INSERT INTO `user_group` VALUES (8,8),(8,9);
 
 
 
 INSERT INTO `user_role` VALUES (1,8);
-INSERT INTO `user_role` VALUES (2,1);
-INSERT INTO `user_role` VALUES (2,2);
-INSERT INTO `user_role` VALUES (2,3);
-INSERT INTO `user_role` VALUES (2,4);
-INSERT INTO `user_role` VALUES (2,5);
-INSERT INTO `user_role` VALUES (2,6);
-INSERT INTO `user_role` VALUES (2,7);
 INSERT INTO `user_role` VALUES (2,8);
 
 
