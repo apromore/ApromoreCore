@@ -1056,8 +1056,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     successMessage = MessageFormat.format(getLabels().getString("successful_upload"), logModel.getRowsCount());
                 }
 
-//                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
-//                portalContext.refreshContent();
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                portalContext.refreshContent();
 
             }
 
