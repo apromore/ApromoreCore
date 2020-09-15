@@ -354,14 +354,14 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
                             e.getTarget() instanceof Gateway) {
-                        assertEquals(4, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (e.getSource() instanceof Gateway && 
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.DATABASED &&
                             e.getTarget() instanceof Gateway && 
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.PARALLEL) {
-                        assertEquals(3, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
@@ -371,22 +371,22 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
                             ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
-                        assertEquals(3, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
                             ((BPMNNode)e.getTarget()).getLabel().equals("c")) {
-                        assertEquals(2, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("b") && 
                             ((BPMNNode)e.getTarget()).getLabel().equals("")) {
-                        assertEquals(2, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("c") && 
                             ((BPMNNode)e.getTarget()).getLabel().equals("")) {
-                        assertEquals(3, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("e") && 
@@ -398,12 +398,12 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.PARALLEL &&
                             e.getTarget() instanceof Gateway && 
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.DATABASED) {
-                        assertEquals(3, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
-                        assertEquals(4, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }                    
                     else if (((BPMNNode)e.getSource()).getLabel().equals("d") && 
@@ -614,7 +614,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.DATABASED &&
                             e.getTarget() instanceof Gateway && 
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.PARALLEL) {
-                        assertEquals(25000, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (e.getSource().getLabel().equals("") && 
@@ -651,7 +651,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.PARALLEL &&
                             e.getTarget() instanceof Gateway && 
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.DATABASED) {
-                        assertEquals(25000, abs.getArcPrimaryWeight(e), 0);
+                        assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                     else if (e.getSource().getLabel().equals("") && 
