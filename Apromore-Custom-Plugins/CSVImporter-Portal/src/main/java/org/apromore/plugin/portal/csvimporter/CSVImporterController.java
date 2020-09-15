@@ -326,8 +326,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
                 if (logModel != null) {
                     List<LogErrorReport> errorReport = logModel.getLogErrorReport();
-
-
                     boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
 
                     if (errorReport.isEmpty()) {
@@ -869,12 +867,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         return importMessage;
     }
 
-    private void handleInvalidData(LogModel xesModel, boolean isPublic) throws IOException {
+    private void handleInvalidData(LogModel logModel, boolean isPublic) throws IOException {
 
         Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/invalidData.zul", null, null);
         errorPopUp.doModal();
 
-        List<LogErrorReport> errorReport = xesModel.getLogErrorReport();
+        List<LogErrorReport> errorReport = logModel.getLogErrorReport();
 
 //      Since the log is imported as a stream, errorCount can be predicted at this stage
         Label errorCount = (Label) errorPopUp.getFellow(errorCountLblId);
@@ -1020,6 +1018,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         try {
             if (useParquet) {
+
                 String successMessage;
                 if (logModel.isRowLimitExceeded()) {
                     successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
@@ -1028,11 +1027,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 }
                 Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
                 portalContext.refreshContent();
+
             } else {
+
                 XLog xlog = logModel.getXLog();
-                if (xlog == null) {
+                if (xlog == null)
                     throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
-                }
+
                 String name = media.getName().replaceFirst("[.][^.]+$", "");
                 final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 eventLogService.exportToStream(outputStream, xlog);
