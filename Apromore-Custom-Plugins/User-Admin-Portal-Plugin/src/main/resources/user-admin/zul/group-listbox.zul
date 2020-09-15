@@ -21,7 +21,7 @@
   -->
 <listbox id="groupListbox" multiple="true" vflex="1" xmlns:ca="client/attribute">
   <listhead>
-    <listheader sclass="ap-listheader" label="Group name" style="cursor:pointer;">
+    <listheader sclass="ap-listheader" label="Group name" style="cursor:pointer;" sort="auto(UPPER(name))">
       <div sclass="ap-listheader-search">
         <checkbox
             sclass="ap-listbox-search-toggle"

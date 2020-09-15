@@ -448,7 +448,15 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     private void refreshAssignedRoles() {
+        Comparator<Role> compareRole = new Comparator<Role>() {
+            @Override
+            public int compare(Role el1, Role el2) {
+                return el1.getName().compareTo(el2.getName());
+            }
+        };
         List<Role> roles = securityService.getAllRoles();
+        Collections.sort(roles, compareRole);
+
         assignedRoleModel = new ListModelList<>();
         for (int i = 0; i < roles.size(); i++) {
             Role role = roles.get(i);
@@ -466,7 +474,15 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     private void refreshAssignedGroups() {
+        Comparator<Group> compareGroup = new Comparator<Group>() {
+            @Override
+            public int compare(Group el1, Group el2) {
+                return el1.getName().compareTo(el2.getName());
+            }
+        };
         List<Group> groups = securityService.findElectiveGroups();
+        Collections.sort(groups, compareGroup);
+
         assignedGroupModel = new ListModelList<>();
         for (int i = 0; i < groups.size(); i++) {
             Group group = groups.get(i);
@@ -489,16 +505,20 @@ public class UserAdminController extends SelectorComposer<Window> {
             int index = (int)entry.getValue();
             Integer count = tally.get(key);
             Integer state;
+            boolean twoStateOnly = false;
             if (count == null) { // no entry
                 state = TristateModel.UNCHECKED;
+                twoStateOnly = true;
             } else if (count < total) {
                 state = TristateModel.INDETERMINATE;
             } else {
                 state = TristateModel.CHECKED;
+                twoStateOnly = true;
             }
             ListModelList<TristateModel> listModel = list.getListModel();
             TristateModel model = listModel.get(index);
             model.setState(state);
+            model.setTwoStateOnly(twoStateOnly);
             listModel.set(index, model); // trigger change
         }
     }
@@ -599,6 +619,8 @@ public class UserAdminController extends SelectorComposer<Window> {
         confirmPasswordTextbox.setValue("");
         assignedRoleItemRenderer.setDisabled(false);
         assignedGroupItemRenderer.setDisabled(false);
+        assignedRoleList.reset();
+        assignedGroupList.reset();
         assignedRoleListbox.setDisabled(false);
         assignedGroupListbox.setDisabled(false);
         if (users == null || users.size() == 0 || users.size() > 1) {

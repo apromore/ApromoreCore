@@ -129,6 +129,7 @@ public class TristateItemRenderer implements ListitemRenderer {
                 checkbox.setChecked(false);
             }
         } else {
+            boolean twoStateOnly = model.isTwoStateOnly();
             if (model.getState() == INDETERMINATE) {
                 model.setState(UNCHECKED);
                 checkbox.setIndeterminate(false);
@@ -137,10 +138,16 @@ public class TristateItemRenderer implements ListitemRenderer {
                 model.setState(CHECKED);
                 checkbox.setIndeterminate(false);
                 checkbox.setChecked(true);
-            } else {
-                model.setState(INDETERMINATE);
-                checkbox.setIndeterminate(true);
-                checkbox.setChecked(false);
+            } else { // CHECKED
+                if (twoStateOnly) {
+                    model.setState(UNCHECKED);
+                    checkbox.setIndeterminate(false);
+                    checkbox.setChecked(false);
+                } else {
+                    model.setState(INDETERMINATE);
+                    checkbox.setIndeterminate(true);
+                    checkbox.setChecked(false);
+                }
             }
         }
         list.getListModel().set(index, model); // trigger change

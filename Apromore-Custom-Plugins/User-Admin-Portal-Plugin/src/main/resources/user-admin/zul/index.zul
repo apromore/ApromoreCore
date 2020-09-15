@@ -25,7 +25,7 @@
 <window xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:ca="client/attribute"
         sclass="ap-usrmgt-win"
-        width="90%" height="80%" position="center"
+        width="90%" height="90%" position="center"
         closable="true"
         title="User and group management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
   <script type="text/javascript" src="/user-admin/js/index.js"></script>
