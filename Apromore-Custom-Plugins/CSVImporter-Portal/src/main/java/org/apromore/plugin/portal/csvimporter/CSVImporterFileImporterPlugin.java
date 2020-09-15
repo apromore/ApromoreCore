@@ -142,7 +142,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
                     Iterator itr = usermetadataLogSet.iterator();
                     while (itr.hasNext()) {
-                        UsermetadataLog usermetadataLog = usermetadataLogSet.iterator().next();
+                        UsermetadataLog usermetadataLog = (UsermetadataLog) itr.next();
                         fileNameLabel.setValue("  This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
                                 formattedTime + " on " + formattedDate);
                     }
