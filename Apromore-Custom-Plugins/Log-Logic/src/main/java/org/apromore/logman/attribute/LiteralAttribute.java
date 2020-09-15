@@ -78,8 +78,14 @@ public class LiteralAttribute extends AbstractIndexableAttribute {
 		return values.size();
 	}
 	
-
-
+	@Override
+	public String toString() {
+		String toString = "";
+		for (int i=0; i<values.size(); i++) {
+			toString += "(" + i + ")" + values.get(i) + ", ";
+		}
+		return toString.substring(0, toString.length()-2);
+	}
 
 
 }

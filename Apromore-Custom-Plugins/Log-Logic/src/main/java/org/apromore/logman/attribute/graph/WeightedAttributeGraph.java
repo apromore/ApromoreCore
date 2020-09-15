@@ -303,7 +303,7 @@ public abstract class WeightedAttributeGraph {
         
         toString += "\nArcs: ";
         for (int a : getArcs().toArray()) {
-            toString += (getNodeName(getSource(a)) + "->" + getNodeName(getTarget(a)) + "(" + a + ")" + "!");
+            toString += (getNodeName(getSource(a)) + "->" + getNodeName(getTarget(a)) + "(" + a + ")" + "|");
         }
         
         return toString;
