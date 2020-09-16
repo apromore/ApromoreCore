@@ -117,14 +117,3 @@ INSERT INTO role_permission VALUES (4,1);
 INSERT INTO role_permission VALUES (4,3);
 INSERT INTO role_permission VALUES (4,4);
 
-
--- INSERT INTO search_history VALUES (1,12,'airport');
--- INSERT INTO search_history VALUES (2,14,'gold coast');
--- INSERT INTO search_history VALUES (3,14,'goldcoast');
-
-
-INSERT INTO batch_step_execution_seq VALUES (0);
-INSERT INTO batch_job_execution_seq VALUES (0);
-INSERT INTO batch_job_seq VALUES (0);
-
-COMMIT;

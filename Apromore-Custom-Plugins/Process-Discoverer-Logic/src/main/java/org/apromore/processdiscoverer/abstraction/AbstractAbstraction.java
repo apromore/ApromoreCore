@@ -43,7 +43,12 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 
 /**
- * Common properties/methods by different types of abstraction.
+ * Generic Abstraction for an {@link AttributeLog}.
+ * Uses a {@link BPMNDiagram} to commonly represent process maps and process models. 
+ * Two weights can be defined on nodes and arcs called primary and secondary weights. These weights
+ * are provided from the underlying AttributeLog. 
+ * The abstraction has a layout applied on the BPMNDiagram provided from a layout engine.
+ *   
  * @author Bruce Nguyen
  * 
  */

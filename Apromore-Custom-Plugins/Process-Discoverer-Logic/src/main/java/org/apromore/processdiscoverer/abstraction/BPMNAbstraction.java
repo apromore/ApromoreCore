@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
@@ -41,29 +42,34 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.apromore.splitminer.SplitMiner;
 import org.apromore.splitminer.dfgp.DirectlyFollowGraphPlus;
 import org.apromore.splitminer.log.SimpleLog;
 import org.apromore.splitminer.ui.miner.SplitMinerUIResult;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-
+ 
 /**
- * This class represents the BPMN abstraction of logs
- * It has a corresponding DFGAbstraction with the same type of nodes/arcs and weights.
- * This DFGAbstraction is used to calculate the weights on the model in matching them
- * with the weights on the DFG. 
- * In addition, it has another corresponding DFGAbstraction where weights of nodes
- * and arcs are frequency. This DFGAbstraction is needed for SplitMiner to discover 
- * a BPMN model. 
+ * This class represents a process model abstraction for an {@link AttributeLog}.
+ * The underlying diagram is a BPMNDiagram. This diagram is created based on two corresponding {@link DFGAbstraction}
+ * The diagram structure is always created based on a case-frequency DFGAbstraction where weights of nodes
+ * and arcs are case frequency. This DFGAbstraction is used for SplitMiner to discover 
+ * BPMN models consistently when changing abstraction.
+ * Another corresponding DFGAbstraction is kept to calculate the weights on the BPMN model in aligning them
+ * with the DFG. For example, when the selected weight is mean frequency, this DFGAbstraction contains mean 
+ * frequency weights and the weights on the model abstraction is also mean frequency. 
+ * 
  * @author Bruce Nguyen
  *
  */
 public class BPMNAbstraction extends AbstractAbstraction {
 	private DFGAbstraction dfgAbstraction;
-	private DFGAbstraction dfgAbsFreq;
 	
 	/**
 	 * Create a new BPMNAbstraction of logs.
+	 * It's important to note that the BPMNAbstraction is created based on a DFGAbstraction
+	 * Therefore, the BPMNAbstraction could be different if the DFGAbstraction has the same structure
+	 * but different weights.
 	 * @param logDfg
 	 * @param params
 	 * @param dfgAbstraction: the corresponding DFGAbstraction with the same types of nodes and weights
@@ -72,7 +78,18 @@ public class BPMNAbstraction extends AbstractAbstraction {
 	protected BPMNAbstraction(AttributeLog log, DFGAbstraction dfgAbstraction, AbstractionParams params) throws Exception {
 		super(log, params);
 		this.dfgAbstraction = dfgAbstraction;
-		this.diagram = mineBPMNDiagram(params, dfgAbstraction);
+		
+		//Mine BPMN diagram based on a case frequency DFG
+		DFGAbstraction dfgAbsFreq = null;
+		if (params.getPrimaryType() == MeasureType.FREQUENCY && 
+			params.getPrimaryAggregation() == MeasureAggregation.CASES &&
+			params.getPrimaryRelation() == MeasureRelation.ABSOLUTE) {
+			dfgAbsFreq = dfgAbstraction;
+		}
+		else {
+			dfgAbsFreq = this.createFrequencyBasedDFGAbstraction(dfgAbstraction);
+		}
+		this.diagram = mineBPMNDiagram(params, dfgAbsFreq);
 		this.updateWeights(params);
 	}
 	
@@ -80,8 +97,11 @@ public class BPMNAbstraction extends AbstractAbstraction {
 		return this.dfgAbstraction;
 	}
 	
-	public DFGAbstraction getFrequencyBasedDFGAbstraction() {
-		return this.dfgAbsFreq;
+	private DFGAbstraction createFrequencyBasedDFGAbstraction(DFGAbstraction dfgAbs) throws Exception {
+		AbstractionParams caseFreqParams = dfgAbs.getAbstractionParams().clone();
+		caseFreqParams.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
+		caseFreqParams.setSecondary(false); //secondary measure is not needed in mining BPMN
+		return new DFGAbstraction(dfgAbs, caseFreqParams);
 	}
 	
     /**
@@ -99,15 +119,11 @@ public class BPMNAbstraction extends AbstractAbstraction {
 		
 		if (params.getPrimaryType() == MeasureType.FREQUENCY) {
 			updateArcFrequencyWeights(params, nodePrimaryWeights, arcPrimaryWeights);
-			if (params.getSecondary()) {
-				updateArcDurationWeightFromDFG(params, arcSecondaryWeights);
-			}
+			if (params.getSecondary()) updateArcDurationWeightFromDFG(params, arcSecondaryWeights);
 		}
 		else {
 			updateArcDurationWeightFromDFG(params, arcPrimaryWeights);
-			if (params.getSecondary()) {
-				updateArcFrequencyWeights(params, nodeSecondaryWeights, arcSecondaryWeights);
-			}
+			if (params.getSecondary()) updateArcFrequencyWeights(params, nodeSecondaryWeights, arcSecondaryWeights);
 		}
 		
 		minArcPrimaryWeight = Double.MAX_VALUE;
@@ -121,35 +137,67 @@ public class BPMNAbstraction extends AbstractAbstraction {
 	private void updateArcDurationWeightFromDFG(AbstractionParams params,
 											Map<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>,Double> arcWeights) {
     	for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : this.diagram.getEdges()) {
-            BPMNNode source = edge.getSource();
-            BPMNNode target = edge.getTarget();
-            
-    	    if (source instanceof Gateway && diagram.getOutEdges(source).size() == 1 &&
-    	            target instanceof Activity) { // a merge gateway to an activity
-    	        arcWeights.put(edge, 0d);
-    	    }
-    	    else if (target instanceof Gateway && diagram.getInEdges(target).size() == 1 &&
-    	            source instanceof Activity) { // an activity to a split gateway
-                arcWeights.put(edge, 0d);
-            }
-            else {
-            	arcWeights.put(edge, this.getEdgeWeightFromDFG(edge, params, arcWeights==this.arcSecondaryWeights));
-            }
+    		arcWeights.put(edge, this.getEdgeDurationWeightFromDFG(edge, params, arcWeights==this.arcSecondaryWeights));
         }
     }
 	
 	/**
-	 * Compute edge weight by aligning it to the DFG.
-	 * If there are more than one DFG edges found to corresponding with the BPMN edge,
-	 * the returning result is the average weight of all DFG edges.
-	 * This alignment is approximate only.
-	 * @param edge
+	 * Duration weight is calculated with some exceptions (zero weights)
+	 * @param edge: BPMN edge
 	 * @param params
 	 * @param secondary: true if this is to compute secondary weights
-	 * @return
+	 * @return: weight of the BPMN edge taken from the DFG
 	 */
-	private double getEdgeWeightFromDFG(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge, AbstractionParams params,
+	private double getEdgeDurationWeightFromDFG(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge, AbstractionParams params,
 										boolean secondary) {
+		
+		BPMNNode source = edge.getSource();
+		BPMNNode target = edge.getTarget();
+		if (source instanceof Gateway && target instanceof Gateway) { // gateway to gateway
+			return 0d;
+		}
+		else if (source instanceof Gateway && diagram.getOutEdges(source).size() == 1 &&
+    	         target instanceof Activity) { // a merge gateway to an activity
+    	    return 0d;
+	    }
+	    else if (target instanceof Gateway && diagram.getInEdges(target).size() == 1 &&
+	             source instanceof Activity) { // an activity to a split gateway
+            return 0d;
+        }
+		
+		double[] weightResult = this.mapBPMNToDFGWeight(edge, params, secondary);
+		double weight = weightResult[0];
+		double count = weightResult[1];
+        return (count > 0) ? Math.ceil(1.0*weight/count) : 0d;
+        
+	}
+	
+	/**
+	 * Frequency weight is mapped to the DFG weights
+	 * @param edge: BPMN edge
+	 * @param params
+	 * @param secondary
+	 * @return weight of the BPMN edge taken from the DFG
+	 */
+	private double getEdgeFrequencyWeightFromDFG(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge, AbstractionParams params,
+										boolean secondary) {
+		double[] weightResult = this.mapBPMNToDFGWeight(edge, params, secondary);
+		return weightResult[0];
+	}
+	
+	
+	/**
+	 * Compute edge weight by aligning it to the DFG. This alignment is approximate only.
+	 * Note that duration has different rule than frequency weight. For example, duration 
+	 * at non-branching edge of gateways doesn't need to be the sum of all branching edges.
+	 * In addition, the duration weight is the average of all component weights.
+	 * @param edge
+	 * @param params
+	 * @param secondary
+	 * @return: Return a pair {weight, count} for the input edge
+	 */
+	private double[] mapBPMNToDFGWeight(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge, AbstractionParams params,
+			boolean secondary) {
 		Set<BPMNNode> sources = BPMNDiagramHelper.getSources(this.diagram, edge.getSource(), new UnifiedSet<>());
         Set<BPMNNode> targets = BPMNDiagramHelper.getTargets(this.diagram, edge.getTarget(), new UnifiedSet<>());
         double weight = 0d;
@@ -163,24 +211,13 @@ public class BPMNAbstraction extends AbstractAbstraction {
             	}
             }
         }
-        if (count > 0) { //absolute frequency must be always rounded number
-            boolean isAbsoluteFrequency = (!secondary && params.getPrimaryType()==MeasureType.FREQUENCY && 
-                                              params.getPrimaryRelation()==MeasureRelation.ABSOLUTE) ||
-                                          (secondary && params.getSecondaryType()==MeasureType.FREQUENCY && 
-                                              params.getSecondaryRelation()==MeasureRelation.ABSOLUTE);
-            return isAbsoluteFrequency ? Math.ceil(1.0*weight/count) : (1.0*weight/count);
-        }
-        else {
-        	return 0d;
-        }
-        
+        return new double[]{weight, count};
 	}
 	
 	/**
 	 * Update arc frequency weights.
-	 * Note that the weight of single output edge from the start event should be equal to
-	 * the total weights of corresponding edges on the corresponding DFG. It could be less
-	 * than the total starting weight of the start event on the corresponding DFG.
+	 * The current method starts from adjacent edges of activity nodes and then cascade
+	 * to all other edges until all the edges are calculated
 	 * @param params: abstraction parameters
 	 * @param nodeWeights: contains node weights already calculated
 	 * @param arcWeights: the arc weights to be updated
@@ -199,55 +236,157 @@ public class BPMNAbstraction extends AbstractAbstraction {
 		}
 		
 		// Update edges based on the corresponding DFG
-		// This is a rough alignment by matching an edge on the model with
-		// a set of edges on the DFG
-		// Note: this update ignores BPMN gateway semantics. All gateways
-		// are considered as XOR.
+		// This update ignores BPMN gateway semantics. All gateways are considered as XOR.
+		// Be caution of race condition: adjacent edges of nested gateways can create a circular
+		// dependency which enters an endless loop to calculate weights for all.
 		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : this.diagram.getEdges()) {
-			edgeWeights.put(edge, this.getEdgeWeightFromDFG(edge, params, edgeWeights==this.arcSecondaryWeights));
+			edgeWeights.put(edge, this.getEdgeFrequencyWeightFromDFG(edge, params, edgeWeights==this.arcSecondaryWeights));
 		}
 		
-		// Adjust weight of edges adjacent to activity nodes as the previous 
-		// step does not consider matching to activity frequency leading to 
-		// weight of edges could be higher than weight of the adjacent activities.
-		// Note that weight of edges is always less than weight of nodes on the 
-		// corresponding DFG due to arc filtering
+		// Adjust edges to have the same weight as the adjacent node.
+		// On the corresponding DFG, edge weight is always less than or equal to node weight due to arc filtering
 		for (BPMNNode node : diagram.getNodes()) {
 			if (node instanceof Activity) {
 				BPMNEdge<? extends BPMNNode, ? extends BPMNNode> inEdge = diagram.getInEdges(node).iterator().next();
 				BPMNEdge<? extends BPMNNode, ? extends BPMNNode> outEdge = diagram.getOutEdges(node).iterator().next();
-				if (edgeWeights.containsKey(inEdge) && edgeWeights.get(inEdge) > nodeWeights.get(node)) {
+				if (edgeWeights.containsKey(inEdge) && edgeWeights.get(inEdge) != nodeWeights.get(node)) {
 					edgeWeights.put(inEdge, nodeWeights.get(node));
 				}
-				if (edgeWeights.containsKey(outEdge) && edgeWeights.get(outEdge) > nodeWeights.get(node)) {
+				if (edgeWeights.containsKey(outEdge) && edgeWeights.get(outEdge) != nodeWeights.get(node)) {
 					edgeWeights.put(outEdge, nodeWeights.get(node));
 				}
 			}
 		}
 		
+		// Perform weight calculation for edges between gateways
+		// This is done based on cascading on the model starting from edges adjacent to activity nodes
+        List<BPMNNode> bfsGateways = this.getNodesByBFS(startEvent, new HashSet<BPMNNode>(diagram.getGateways()));
+        int totalNumberOfGateways = bfsGateways.size();
+        Set<BPMNNode> remainingGateways = new HashSet<>();
+        Set<BPMNNode> finishedGateways = new HashSet<>();
+        while (finishedGateways.size() < totalNumberOfGateways) {
+        	remainingGateways.clear();
+        	remainingGateways.addAll(bfsGateways);
+        	remainingGateways.removeAll(finishedGateways);
+        	for (BPMNNode node : remainingGateways) {
+        		UnweightedEdgeCheckResult result = calculateUnweightedEdge((Gateway)node, edgeWeights);
+	            if (result.hasUnweightedEdge && !result.hasTooManyUnweightedEdge) {
+	            	if (result.unWeightedEdge != null) {
+	            		edgeWeights.put(result.unWeightedEdge, result.weight);
+	            		finishedGateways.add(node);
+	            	}
+	            }
+	            else if (!result.hasUnweightedEdge) { // don't repeat for a gateway with fully weighted edges
+	            	finishedGateways.add(node);
+	            }
+        	}
+        }
 		
-		// Fix the merging or splitting edge of gateways to tally with the total weight on the branching edges
-		// This is because the previous step ignores the semantics of BPMN gateways
-		// Using bread-first search to do in order from the start event down to the end event. 
-		// This is to prioritize fixing the early gateways in the order first.
-		// If this step makes the input/output edges of activity nodes higher weight than the node itself,
-		// it's acceptable because the reason could be the DFG does not show full arcs or the model does not
-		// have fitness of 1.
-		List<BPMNNode> bfsGateways = this.getNodesByBFS(startEvent, new HashSet<BPMNNode>(diagram.getGateways()));
-		for (BPMNNode node: bfsGateways) {
-			double totalBranch = this.getBranchTotalSemanticWeight((Gateway)node, edgeWeights);		
-			BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge = 
-						(diagram.getInEdges(node).size() == 1) ? diagram.getInEdges(node).iterator().next() : diagram.getOutEdges(node).iterator().next();
-			if (edgeWeights.get(edge) != totalBranch) {
-				updateGatewayEdgeFrequency(edge, (Gateway)node, edgeWeights);
-			}
-		}
-		
-		// Finally, fix the gateway adjacent to the end event, if exist
+		// Fix the gateway adjacent to the end event, if exist
 		// This is to make the end event look nice
 		BPMNEdge<? extends BPMNNode, ? extends BPMNNode> endEdge = diagram.getInEdges(endEvent).iterator().next();
 		if (endEdge.getSource() instanceof Gateway) {
 			updateGatewayEdgeFrequency(endEdge, (Gateway)endEdge.getSource(), edgeWeights);
+		}
+	}
+	
+	private class UnweightedEdgeCheckResult {
+		public UnweightedEdgeCheckResult(boolean hasUnweightedEdge, boolean hasTooManyUnweightedEdge, 
+										BPMNEdge<? extends BPMNNode, ? extends BPMNNode> unWeightedEdge, double weight) {
+			this.hasUnweightedEdge = hasUnweightedEdge;
+			this.hasTooManyUnweightedEdge = hasTooManyUnweightedEdge;
+			this.unWeightedEdge = unWeightedEdge;
+			this.weight = weight;
+		}
+		public boolean hasUnweightedEdge = false;
+		public boolean hasTooManyUnweightedEdge = false;
+		public BPMNEdge<? extends BPMNNode, ? extends BPMNNode> unWeightedEdge = null;
+		public double weight = 0;
+	}
+	
+	// Calculate weight for an edge adjacent to a given gateway
+	// Only able to do if there is only one unweighted edge adjacent to the gateway
+	// Return a pair: {the edge to update weight, the calculated weight for the edge}
+	// Or an empty array if no recommended edge is found to update weight
+	private UnweightedEdgeCheckResult calculateUnweightedEdge(Gateway node, Map<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>,Double> edgeWeights) {
+		Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> unweightedEdges = new HashSet<>(); 
+		double totalBranchingEdgeWeight = 0;
+		double nonBranchingEdgeWeight = -1; // the merging or splitting edge
+		double maxBranchingEdgeWeight = 0;
+		
+		// Check input edges to the gateway
+		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getInEdges(node)) {
+			if (edgeWeights.containsKey(edge)) {
+				if (diagram.getInEdges(node).size()==1) { //non-branching edge
+					nonBranchingEdgeWeight = edgeWeights.get(edge); 
+				}
+				else {
+					totalBranchingEdgeWeight += edgeWeights.get(edge);
+					if (edgeWeights.get(edge) > maxBranchingEdgeWeight) {
+						maxBranchingEdgeWeight = edgeWeights.get(edge);
+					}
+				}
+			}
+			else {
+				unweightedEdges.add(edge);
+			}
+			
+			if (unweightedEdges.size() >= 2) { //not able to calculate edge weight if there are 2 or more unweighted edges
+				break;
+			}
+			
+		}
+		
+		// Check output edges from the gateway
+		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getOutEdges(node)) {
+			if (unweightedEdges.size() >= 2) {
+				break;
+			}	
+			
+			if (edgeWeights.containsKey(edge)) {
+				if (diagram.getOutEdges(node).size() == 1) { //non-branching edge
+					nonBranchingEdgeWeight = edgeWeights.get(edge); 
+				}
+				else {
+					totalBranchingEdgeWeight += edgeWeights.get(edge);
+					if (edgeWeights.get(edge) > maxBranchingEdgeWeight) {
+						maxBranchingEdgeWeight = edgeWeights.get(edge); 
+					}
+				}
+			}	
+			else {
+				unweightedEdges.add(edge);
+			}
+		}
+		
+		if (unweightedEdges.size() == 0) {
+			return new UnweightedEdgeCheckResult(false, false, null, 0);
+		}
+		else if (unweightedEdges.size() == 1) { // gateway semantics are considered here
+			BPMNEdge<? extends BPMNNode, ? extends BPMNNode> foundEdge = unweightedEdges.iterator().next();
+			double foundEdgeWeight = 0;
+			if (nonBranchingEdgeWeight == -1) { // the found edge is a non-branching edge
+				if (node.getGatewayType() == GatewayType.DATABASED || node.getGatewayType() == GatewayType.INCLUSIVE) {
+					foundEdgeWeight = totalBranchingEdgeWeight;
+				}
+				else if (node.getGatewayType() == GatewayType.PARALLEL) {
+					foundEdgeWeight = maxBranchingEdgeWeight;
+				}
+			}
+			else { // the found edge is a branching edge
+				if (node.getGatewayType() == GatewayType.DATABASED || node.getGatewayType() == GatewayType.INCLUSIVE) {
+					foundEdgeWeight = nonBranchingEdgeWeight - totalBranchingEdgeWeight;
+					if (foundEdgeWeight <= 0) foundEdgeWeight = 1d;
+				}
+				else if (node.getGatewayType() == GatewayType.PARALLEL) {
+					foundEdgeWeight = nonBranchingEdgeWeight;
+				}
+			}
+			
+			return new UnweightedEdgeCheckResult(true, false, foundEdge, foundEdgeWeight);
+		}
+		else {
+			return new UnweightedEdgeCheckResult(true, true, null, 0);
 		}
 	}
 		
