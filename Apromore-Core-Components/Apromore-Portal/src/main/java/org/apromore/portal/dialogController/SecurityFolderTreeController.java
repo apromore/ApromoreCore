@@ -43,7 +43,7 @@ public class SecurityFolderTreeController extends BaseController {
 
         MainController mainController = securitySetupController.getMainController();
 //        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
-        FolderTree folderTree = new FolderTree(true, currentFolderId, mainController);
+        FolderTree folderTree = new FolderTree(true, currentFolderId, mainController, true);
         FolderTreeModel model = new FolderTreeModel(folderTree.getRoot(), folderTree.getCurrentFolder());
         tree.setItemRenderer(new SecurityFolderTreeRenderer(securitySetupController));
         tree.setModel(model);

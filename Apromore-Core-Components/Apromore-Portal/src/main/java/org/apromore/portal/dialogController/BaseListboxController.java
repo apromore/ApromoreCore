@@ -405,7 +405,13 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void rename() throws InterruptedException {
         try {
-            // List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            if (getSelectionCount() == 0) {
+                Messagebox.show("Please select a file/folder to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            } else if (getSelectionCount() > 1) {
+                Messagebox.show("You can not rename multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
             List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 0) {
@@ -443,11 +449,11 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     public void cut() {
-        copyAndPasteController.cut(getSelection());
+        copyAndPasteController.cut(getSelection(), getSelectionCount());
     }
 
     public void copy() {
-        copyAndPasteController.copy(getSelection());
+        copyAndPasteController.copy(getSelection(), getSelectionCount());
     }
 
     public void paste() throws Exception {
@@ -503,6 +509,10 @@ public abstract class BaseListboxController extends BaseController {
 
     public Set<Object> getSelection() {
         return getListModel().getSelection();
+    }
+
+    public int getSelectionCount() {
+        return listBox.getSelectedCount();
     }
 
     /* Show the message tailored to deleting process model. */
