@@ -422,6 +422,186 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         }
     }      
     
+    // Test consistency of BPMN Diagram for different types of measures
+    @Test
+    public void testBPMNMining_SameAbstractionLeveDifferentWeightMeasures() {
+    	 try {
+    		 BPMNDiagram sourceDiagram = this.readBPMN_LogWithCompleteEventsOnly();
+    		 
+    		 Abstraction absCaseFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE, //absolute case frequency 
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);
+    		 
+    		 Abstraction absCaseRelativeFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.RELATIVE, //relative case frequency
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);    		 
+            
+    		 Abstraction absMinFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.MIN, //min frequency
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);   
+    		 
+    		 Abstraction absMaxFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.MAX, //max frequency
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);   
+    		 
+    		 Abstraction absMeanFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.MEAN, //max frequency
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);   
+    		 
+    		 Abstraction absMedianFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.MEDIAN, //median frequency
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);     		 
+    		 
+    		 Abstraction absMeanDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN, //mean duration
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);   
+    		 
+    		 Abstraction absMedianDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEDIAN, //median duration
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);     		 
+    		 
+    		 Abstraction absMinDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MIN, //min duration
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);  
+    		 
+    		 Abstraction absMaxDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
+                                                1.0, 1.0, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MAX, //max duration
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                true);     		 
+            
+            if (!absCaseFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Case Frequency meausure is different from the source!");
+            }
+            
+            if (!absCaseRelativeFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Case Relative Frequency meausure is different from the source!");
+            }      
+            
+            if (!absMinFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Min Frequency meausure is different from the source!");
+            }      
+            
+            if (!absMaxFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Max Frequency meausure is different from the source!");
+            }   
+            
+            if (!absMeanFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Mean Frequency meausure is different from the source!");
+            }             
+            
+            if (!absMedianFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Median Frequency meausure is different from the source!");
+            }             
+            
+            if (!absMeanDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Mean Duration meausure is different from the source!");
+            }       
+            
+            if (!absMinDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Min Duration meausure is different from the source!");
+            }      
+            
+            if (!absMaxDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Max Duration meausure is different from the source!");
+            }  
+            
+            if (!absMedianDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
+                fail("BPMN Diagram for Median Duration meausure is different from the source!");
+            }            
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
+    
     
     @Test
     public void testDFG_LogWithStartCompleteEventsOverlapping_Duration() {
