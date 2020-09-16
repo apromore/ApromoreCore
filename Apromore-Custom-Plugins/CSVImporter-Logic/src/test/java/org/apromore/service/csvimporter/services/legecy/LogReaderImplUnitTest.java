@@ -37,12 +37,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -79,6 +78,7 @@ public class LogReaderImplUnitTest {
         NumberFormat minutesFormat = new DecimalFormat("00");
 
         return in.replaceAll(testDataTimezone, "\\" + hoursFormat.format(offsetMinutes / 60) + ":" + minutesFormat.format(offsetMinutes % 60));
+//        return in.replaceAll(testDataTimezone, "\\+10:00");
     }
 
 
@@ -125,7 +125,7 @@ public class LogReaderImplUnitTest {
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
 
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("csv")
                 .createSampleLogGenerator()
@@ -142,6 +142,7 @@ public class LogReaderImplUnitTest {
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 
+
         // Validate result
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
@@ -156,7 +157,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest2 - Missing columns test");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -188,7 +189,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest3 - Invalid end timestamp");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -221,7 +222,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest4 - Invalid start timestamp");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -254,7 +255,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest5 - Empty caseID");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -287,7 +288,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest6 - different delimiters");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -320,7 +321,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest7 - Record invalid");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -398,7 +399,7 @@ public class LogReaderImplUnitTest {
         assertNotNull(logModel);
         assertEquals(13, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
-//
+
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 
@@ -417,7 +418,7 @@ public class LogReaderImplUnitTest {
         System.out.println("\n************************************\ntest10 - Event Attribute");
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
 
         // Perform the test
         LogSample sample = parquetFactoryProvider
@@ -448,7 +449,7 @@ public class LogReaderImplUnitTest {
 
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")),"\\+02:00");
 
         // Perform the test
 
