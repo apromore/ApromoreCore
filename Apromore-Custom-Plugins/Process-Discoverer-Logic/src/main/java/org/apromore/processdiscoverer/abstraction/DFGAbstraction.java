@@ -31,7 +31,9 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 
 /**
- * This class represents the directly-follows graph abstraction of logs
+ * This class represents the directly-follows graph abstraction (or process maps) 
+ * for an {@link AttributeLog}.
+ * 
  * @author Bruce Nguyen
  *
  */
@@ -45,9 +47,9 @@ public class DFGAbstraction extends AbstractAbstraction {
 		System.out.println("Update weights on BPMNDiagram: " + (System.currentTimeMillis() - timer1) + " ms.");
 	}
 	
-	// Create a DFGAbstraction based on an existing DFGAbstraction
-	// The diagram would be the same as the input DFGAbstraction, but the
-	// weights and other parameters are different
+	// Create a DFGAbstraction based on an existing DFGAbstraction with a new AbstractionParams
+	// The diagram structure is the same as the input DFGAbstraction, but the
+	// weights and other parameters are determined by the new AbstractionParams
 	protected DFGAbstraction(DFGAbstraction dfgAbs, AbstractionParams params) throws Exception {
 		super(dfgAbs.getLog(), params);
 		this.diagram = dfgAbs.getDiagram();

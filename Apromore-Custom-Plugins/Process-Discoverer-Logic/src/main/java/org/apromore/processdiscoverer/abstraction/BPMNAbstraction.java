@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.AbstractionParams;
@@ -48,22 +50,26 @@ import org.apromore.splitminer.ui.miner.SplitMinerUIResult;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
  
 /**
- * This class represents the BPMN abstraction of logs
- * It has a corresponding DFGAbstraction with the same type of nodes/arcs and weights.
- * This DFGAbstraction is used to calculate the weights on the model in matching them
- * with the weights on the DFG. 
- * In addition, it has another corresponding DFGAbstraction where weights of nodes
- * and arcs are frequency. This DFGAbstraction is needed for SplitMiner to discover 
- * a BPMN model. 
+ * This class represents a process model abstraction for an {@link AttributeLog}.
+ * The underlying diagram is a BPMNDiagram. This diagram is created based on two corresponding {@link DFGAbstraction}
+ * The diagram structure is always created based on a case-frequency DFGAbstraction where weights of nodes
+ * and arcs are case frequency. This DFGAbstraction is used for SplitMiner to discover 
+ * BPMN models consistently when changing abstraction.
+ * Another corresponding DFGAbstraction is kept to calculate the weights on the BPMN model in aligning them
+ * with the DFG. For example, when the selected weight is mean frequency, this DFGAbstraction contains mean 
+ * frequency weights and the weights on the model abstraction is also mean frequency. 
+ * 
  * @author Bruce Nguyen
  *
  */
 public class BPMNAbstraction extends AbstractAbstraction {
 	private DFGAbstraction dfgAbstraction;
-	private DFGAbstraction dfgAbsFreq;
 	
 	/**
 	 * Create a new BPMNAbstraction of logs.
+	 * It's important to note that the BPMNAbstraction is created based on a DFGAbstraction
+	 * Therefore, the BPMNAbstraction could be different if the DFGAbstraction has the same structure
+	 * but different weights.
 	 * @param logDfg
 	 * @param params
 	 * @param dfgAbstraction: the corresponding DFGAbstraction with the same types of nodes and weights
@@ -72,7 +78,18 @@ public class BPMNAbstraction extends AbstractAbstraction {
 	protected BPMNAbstraction(AttributeLog log, DFGAbstraction dfgAbstraction, AbstractionParams params) throws Exception {
 		super(log, params);
 		this.dfgAbstraction = dfgAbstraction;
-		this.diagram = mineBPMNDiagram(params, dfgAbstraction);
+		
+		//Mine BPMN diagram based on a case frequency DFG
+		DFGAbstraction dfgAbsFreq = null;
+		if (params.getPrimaryType() == MeasureType.FREQUENCY && 
+			params.getPrimaryAggregation() == MeasureAggregation.CASES &&
+			params.getPrimaryRelation() == MeasureRelation.ABSOLUTE) {
+			dfgAbsFreq = dfgAbstraction;
+		}
+		else {
+			dfgAbsFreq = this.createFrequencyBasedDFGAbstraction(dfgAbstraction);
+		}
+		this.diagram = mineBPMNDiagram(params, dfgAbsFreq);
 		this.updateWeights(params);
 	}
 	
@@ -80,8 +97,11 @@ public class BPMNAbstraction extends AbstractAbstraction {
 		return this.dfgAbstraction;
 	}
 	
-	public DFGAbstraction getFrequencyBasedDFGAbstraction() {
-		return this.dfgAbsFreq;
+	private DFGAbstraction createFrequencyBasedDFGAbstraction(DFGAbstraction dfgAbs) throws Exception {
+		AbstractionParams caseFreqParams = dfgAbs.getAbstractionParams().clone();
+		caseFreqParams.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
+		caseFreqParams.setSecondary(false); //secondary measure is not needed in mining BPMN
+		return new DFGAbstraction(dfgAbs, caseFreqParams);
 	}
 	
     /**
