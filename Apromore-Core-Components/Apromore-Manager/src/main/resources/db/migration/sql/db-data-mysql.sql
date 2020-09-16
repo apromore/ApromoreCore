@@ -41,7 +41,3 @@ INSERT INTO `role_permission` VALUES (1,3);
 INSERT INTO `role_permission` VALUES (1,4);
 INSERT INTO `role_permission` VALUES (2,1);
 INSERT INTO `role_permission` VALUES (3,3);
-
-INSERT INTO `search_history` VALUES (1,1,8,'airport');
-INSERT INTO `search_history` VALUES (2,2,8,'gold coast');
-INSERT INTO `search_history` VALUES (3,3,8,'goldcoast');
