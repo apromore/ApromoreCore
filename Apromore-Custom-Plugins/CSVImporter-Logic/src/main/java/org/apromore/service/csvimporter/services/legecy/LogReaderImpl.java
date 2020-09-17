@@ -64,6 +64,7 @@ public class LogReaderImpl implements LogReader, Constants {
         Reader readerin = new InputStreamReader(in, Charset.forName(charset));
         BufferedReader brReader = new BufferedReader(readerin);
         String firstLine = brReader.readLine();
+        firstLine = firstLine.replaceAll("\"", "");
         char separator = getMaxOccurringChar(firstLine);
         String[] header = firstLine.split("\\s*" + separator + "\\s*");
 

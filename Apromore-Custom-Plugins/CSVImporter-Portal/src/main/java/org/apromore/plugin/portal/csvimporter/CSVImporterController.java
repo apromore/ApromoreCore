@@ -320,7 +320,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             parquetFile,
                             false);
                 } else {
-                    logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                    logModel = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
                 }
 
 
@@ -923,7 +923,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                                     parquetFile,
                                     false);
                         } else {
-                            logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), false);
+                            logModelSkippedCol = logReader.readLogs(getInputSream(media), sample, getFileEncoding(), true);
                         }
 
                         if (logModelSkippedCol != null) {

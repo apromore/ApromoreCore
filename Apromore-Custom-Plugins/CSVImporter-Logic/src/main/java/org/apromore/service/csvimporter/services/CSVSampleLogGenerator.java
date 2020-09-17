@@ -67,6 +67,7 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
         Reader reader = new InputStreamReader(in, Charset.forName(charset));
         BufferedReader brReader = new BufferedReader(reader);
         String firstLine = brReader.readLine();
+        firstLine = firstLine.replaceAll("\"", "");
         char separator = getMaxOccurringChar(firstLine);
 
         if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
