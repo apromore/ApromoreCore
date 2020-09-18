@@ -52,6 +52,7 @@
 		<module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
 		<module>Apromore-OSGI-Bundles/zk-osgi</module>
 		<module>Apromore-OSGI-Bundles/jgraph-osgi</module>
+		<module>Apromore-OSGI-Bundles/parquet-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-models-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-widgets-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>
