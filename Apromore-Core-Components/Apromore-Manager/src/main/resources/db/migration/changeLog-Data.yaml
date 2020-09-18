@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20200916094800
+      author: Frank.ma
+      comment: "insert data into table"
+      changes:
+      - insert:
+          tableName: usermetadata_type
+          columns:
+          - column:
+              name: id
+              value: "1"
+          - column:
+              name: type
+              value: "FILTER"
+          - column:
+               name: version
+               value: "1"
+          - column:
+               name: is_valid
+               value: "1"
+
+      - insert:
+           tableName: usermetadata_type
+           columns:
+           - column:
+               name: id
+               value: "2"
+           - column:
+               name: type
+               value: "DASHBOARD"
+           - column:
+                name: version
+                value: "1"
+           - column:
+                name: is_valid
+                value: "1"
+
+      - insert:
+           tableName: usermetadata_type
+           columns:
+           - column:
+               name: id
+               value: "3"
+           - column:
+               name: type
+               value: "CSV_IMPORTER"
+           - column:
+                name: version
+                value: "1"
+           - column:
+                name: is_valid
+                value: "1"
+
+      - insert:
+           tableName: usermetadata_type
+           columns:
+           - column:
+               name: id
+               value: "4"
+           - column:
+               name: type
+               value: "LOG_ANIMATION"
+           - column:
+                name: version
+                value: "1"
+           - column:
+                name: is_valid
+                value: "1"
+        
+      - insert:
+           tableName: usermetadata_type
+           columns:
+           - column:
+               name: id
+               value: "5"
+           - column:
+               name: type
+               value: "DASH_TEMPLATE"
+           - column:
+                name: version
+                value: "1"
+           - column:
+                name: is_valid
+                value: "1"
+

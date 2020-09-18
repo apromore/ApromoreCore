@@ -156,27 +156,41 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         traceGraph.getArcs().forEach(arc -> updateArcWeights(arc, traceGraph));
     }
     
-    // Used to update other data after the log and graph has been fully updated. 
+    private void addZeros(MutableDoubleList list, int num) {
+    	for (int i=0; i<num; i++) {
+    		list.add(0d);
+    	}
+    }
+    
+    // Used to update other data after the log and graph has been fully updated.
+    // This final update is needed for mean, median and min frequency
     public void finalUpdate() {
+        final int NUM_OF_TRACES = attLog.getTraces().size();
         Median medianCalculator = new Median();
         graphNodes.forEach(node -> {
             nodeMeanFreqs.put(node, nodeTotalFreqs.get(node)/attLog.getTraces().size());
             nodeMeanDurs.put(node, nodeTotalDurs.get(node)/nodeTotalFreqs.get(node));
+            
+            // Add the same number of zeros as the number of traces that a node doesn't occur
+            if (nodeFreqs.get(node).size() < NUM_OF_TRACES) addZeros(nodeFreqs.get(node), NUM_OF_TRACES - nodeFreqs.get(node).size());
             nodeMedianFreqs.put(node, medianCalculator.evaluate(nodeFreqs.get(node).toArray()));
             nodeMedianDurs.put(node, medianCalculator.evaluate(nodeDurations.get(node).toArray()));
-            if (nodeCaseFreqs.get(node) != attLog.getTraces().size()) {// there's a case not containing the node
-                nodeMinFreqs.put(node, 0);
-            }
+            
+            // there's a case not containing the node, fix the min node frequency
+            if (nodeCaseFreqs.get(node) != NUM_OF_TRACES) nodeMinFreqs.put(node, 0);
         });
         
         graphArcs.forEach(arc -> {
             arcMeanFreqs.put(arc, arcTotalFreqs.getIfAbsentPut(arc, 0)/attLog.getTraces().size());
             arcMeanDurs.put(arc, arcTotalDurs.get(arc)/arcTotalFreqs.get(arc));
+            
+            // Add the same number of zeros as the number of traces that a node doesn't occur
+            if (arcFreqs.get(arc).size() < NUM_OF_TRACES) addZeros(arcFreqs.get(arc), NUM_OF_TRACES - arcFreqs.get(arc).size());
             arcMedianFreqs.put(arc, medianCalculator.evaluate(arcFreqs.get(arc).toArray()));
             arcMedianDurs.put(arc, medianCalculator.evaluate(arcDurations.get(arc).toArray()));
-            if (arcCaseFreqs.get(arc) != attLog.getTraces().size()) { // there's a case not containing the arc
-                arcMinFreqs.put(arc, 0);
-            }
+            
+            // there's a case not containing the arc, fix the min arc frequency
+            if (arcCaseFreqs.get(arc) != NUM_OF_TRACES) arcMinFreqs.put(arc, 0);
         });
         
         // Release data structures storing median values

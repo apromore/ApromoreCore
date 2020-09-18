@@ -105,6 +105,13 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         
+        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        
         Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -160,6 +167,16 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(1, graph.getArcWeight(17, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(20, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(24, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
+        
+        Assert.assertEquals(1, graph.getArcWeight(0, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(2, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(8, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(12, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(15, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(17, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(20, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
+        Assert.assertEquals(1, graph.getArcWeight(24, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);        
         
         Assert.assertEquals(2, graph.getArcWeight(0, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -390,6 +407,14 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(6, graph.getNodeWeight(5, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(6, graph.getNodeWeight(6, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         
+        Assert.assertEquals(1, graph.getNodeWeight(0, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.16667, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(2, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.83333, graph.getNodeWeight(3, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.83333, graph.getNodeWeight(4, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(5, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(6, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);        
+        
         Assert.assertEquals(1, graph.getNodeWeight(0, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getNodeWeight(2, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -414,13 +439,13 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(1, graph.getNodeWeight(5, MeasureType.FREQUENCY, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.001);
         Assert.assertEquals(1, graph.getNodeWeight(6, MeasureType.FREQUENCY, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.001);
         
-        Assert.assertEquals(1, graph.getNodeWeight(0, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(2, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(3, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(4, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(5, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(6, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(graph.getNodeFromName("a"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0, graph.getNodeWeight(graph.getNodeFromName("e"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(graph.getNodeFromName("d"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(graph.getNodeFromName("c"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(graph.getNodeFromName("b"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(graph.getNodeFromName("|>"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph.getNodeWeight(graph.getNodeFromName("[]"), MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
         
         Assert.assertEquals(0, graph.getNodeWeight(0, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getNodeWeight(1, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
@@ -471,6 +496,17 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(3, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(6, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0); 
         
+        Assert.assertEquals(0.16667, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.33333, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.5, graph.getArcWeight(4, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.16667, graph.getArcWeight(9, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(1, graph.getArcWeight(20, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.5, graph.getArcWeight(23, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.33333, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.33333, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(0.5, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
+        Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001); 
+        
         Assert.assertEquals(0, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getArcWeight(4, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -504,15 +540,15 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0.5, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.001);
         Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.001);
         
-        Assert.assertEquals(1, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(4, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(9, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0.5, graph.getArcWeight(4, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0, graph.getArcWeight(9, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
         Assert.assertEquals(1, graph.getArcWeight(20, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(23, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0.5, graph.getArcWeight(23, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(0.5, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
         Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
         
         Assert.assertEquals(60000, graph.getArcWeight(1, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
@@ -611,7 +647,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(3, graph.getNodeTotalFrequency(3));
         
         Assert.assertEquals(1, graph.getNodeMedianFrequency(0), 0.0);
-        Assert.assertEquals(1.5, graph.getNodeMedianFrequency(1), 0.0);
+        Assert.assertEquals(1, graph.getNodeMedianFrequency(1), 0.0);
         Assert.assertEquals(1, graph.getNodeMedianFrequency(2), 0.0);
         Assert.assertEquals(1, graph.getNodeMedianFrequency(3), 0.0);
         
@@ -621,8 +657,8 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0, graph.getNodeMedianDuration(3), 0.0);
         
         Assert.assertEquals(1, graph.getArcMedianFrequency(1), 0.0);
-        Assert.assertEquals(1, graph.getArcMedianFrequency(3), 0.0);
-        Assert.assertEquals(1, graph.getArcMedianFrequency(5), 0.0);
+        Assert.assertEquals(0, graph.getArcMedianFrequency(3), 0.0);
+        Assert.assertEquals(0, graph.getArcMedianFrequency(5), 0.0);
         Assert.assertEquals(1, graph.getArcMedianFrequency(7), 0.0);
         Assert.assertEquals(1, graph.getArcMedianFrequency(8), 0.0);
         

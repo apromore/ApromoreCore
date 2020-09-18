@@ -157,6 +157,12 @@ public class AbstractionParams {
     public MeasureRelation getPrimaryRelation() {
         return this.primaryRelation;
     }	
+    
+    public void setPrimaryMeasure(MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
+    	primaryType = type;
+    	primaryAggregation = aggregation;
+    	primaryRelation = relation;
+    }
 	
 	public MeasureType getSecondaryType() {
 		return this.secondaryType;
@@ -172,6 +178,10 @@ public class AbstractionParams {
 	
 	public boolean getSecondary() {
 		return this.secondary;
+	}
+	
+	public void setSecondary(boolean hasSecondary) {
+		this.secondary = hasSecondary;
 	}
 	
 	// Corresponding DFG is the related one of the to-be DFG

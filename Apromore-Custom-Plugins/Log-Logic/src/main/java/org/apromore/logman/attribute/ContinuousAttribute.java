@@ -63,6 +63,15 @@ public class ContinuousAttribute extends AbstractAttribute implements RangeAttri
 	public Object getMax() {
 		return values.isEmpty() ? null : values.max();
 	}
+	
+	@Override
+	public String toString() {
+		String toString = "";
+		for (int i=0; i<values.size(); i++) {
+			toString += "(" + i + ")" + values.get(i) + ", ";
+		}
+		return toString.substring(0, toString.length()-2);
+	}
 
 	
 }

@@ -19,10 +19,10 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer.test;
+package org.apromore.plugin.portal.processdiscoverer.vis;
 
 import static org.junit.Assert.fail;
-import org.apromore.plugin.portal.processdiscoverer.vis.StringFormatter;
+
 import org.junit.Test;
 
 public class StringFormatterTest {

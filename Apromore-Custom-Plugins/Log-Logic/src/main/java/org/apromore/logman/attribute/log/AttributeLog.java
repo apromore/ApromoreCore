@@ -390,4 +390,9 @@ public class AttributeLog {
         }
         return atts;
     }
+    
+    @Override
+	public String toString() {
+    	return this.attribute.toString();
+    }
 }
