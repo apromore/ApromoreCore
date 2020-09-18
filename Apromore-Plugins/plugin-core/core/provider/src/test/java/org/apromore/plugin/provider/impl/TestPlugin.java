@@ -42,7 +42,7 @@ public class TestPlugin implements Plugin {
 
     @Override
     public String getType() {
-        return "org.apromore.plugin.provider.impl.test";
+        return "org.apromore.plugin.provider.services.test";
     }
 
     @Override

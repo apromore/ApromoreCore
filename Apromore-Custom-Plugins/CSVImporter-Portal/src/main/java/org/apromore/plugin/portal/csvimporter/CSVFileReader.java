@@ -27,21 +27,23 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180ParserBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import org.apromore.service.csvimporter.InvalidCSVException;
+import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.Messagebox;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 
 public class CSVFileReader {
 
     CSVReader newCSVReader(Media media, String charset) {
         try{
+
             // Guess at ethe separator character
             Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
+
+//            InputStream in = media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData()) ;
+
+
             BufferedReader brReader = new BufferedReader(reader);
             String firstLine = brReader.readLine();
             if (firstLine == null || firstLine.isEmpty()) {
@@ -60,6 +62,7 @@ public class CSVFileReader {
                     .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
                     .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
                     .build();
+
         }catch (InvalidCSVException e){
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
             return null;
