@@ -46,6 +46,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
+@Ignore
 public class LogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImplUnitTest.class);
@@ -371,7 +372,6 @@ public class LogReaderImplUnitTest {
     }
 
 
-    @Ignore
     /**
      * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
@@ -441,7 +441,6 @@ public class LogReaderImplUnitTest {
         assertEquals(expectedXES, toString(xlog));
     }
 
-    @Ignore
     /**
      * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
