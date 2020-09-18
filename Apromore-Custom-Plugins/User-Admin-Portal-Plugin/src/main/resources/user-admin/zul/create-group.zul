@@ -33,7 +33,7 @@
         </rows>
     </grid>
     <div sclass="ap-window-footer-actions">
-        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
         <button id="createBtn" label="Create" focus="true" iconSclass="z-icon-check-circle" />
+        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
     </div>
 </window>
