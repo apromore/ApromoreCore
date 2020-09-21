@@ -257,22 +257,24 @@ public class CopyAndPasteController extends BaseController {
         Clients.evalJavaScript("Ap.common.notify('" + message + "','" + type + "');");
     }
 
-    public void cut(Set<Object> selections) {
-        isCut = true;
-        updateSelectedItems(selections);
-        if (selectedItems.isEmpty()) {
+    public void cut(Set<Object> selections, int selectionCount) {
+        if (selectionCount == 0) {
+            clearSelectedItems();
             notify("Select at least one item.", "error");
         } else {
+            isCut = true;
+            updateSelectedItems(selections);
             notify(getSelectedItemsSize() + " item(s) have been selected to be moved", "info");
         }
     }
 
-    public void copy(Set<Object> selections) {
-        isCut = false;
-        updateSelectedItems(selections);
-        if (selectedItems.isEmpty()) {
+    public void copy(Set<Object> selections, int selectionCount) {
+        if (selectionCount == 0) {
+            clearSelectedItems();
             notify("Select at least one item.", "error");
         } else {
+            isCut = false;
+            updateSelectedItems(selections);
             notify(getSelectedItemsSize() + " item(s) have been selected to be copied", "info");
         }
     }
