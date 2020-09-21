@@ -40,7 +40,7 @@ and CreateProcessController.java for creating process purpose.
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button id="btnSave" focus="true" label="OK" iconSclass="z-icon-check-circle" width="85px"></button>
+                        <button id="btnSave" label="OK" iconSclass="z-icon-check-circle" width="85px"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle" width="85px" ></button>
                     </div>
                 </row>
