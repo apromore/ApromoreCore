@@ -28,12 +28,12 @@
         <rows>
             <row>
                 <label>Group name</label>
-                <textbox id="groupNameTextbox" placeholder="Enter group name"/>
+                <textbox id="groupNameTextbox" value="New_group" constraint="no empty,/^[a-zA-Z0-9 \\._\-]{1,}$/: {Use only letters, numbers, and .-_}" placeholder="Enter group name"/>
             </row>
         </rows>
     </grid>
     <div sclass="ap-window-footer-actions">
-        <button id="createBtn" label="Create" focus="true" iconSclass="z-icon-check-circle" />
+        <button id="createBtn" label="Create" iconSclass="z-icon-check-circle" />
         <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
     </div>
 </window>
