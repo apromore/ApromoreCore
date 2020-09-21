@@ -28,7 +28,7 @@
         <rows>
             <row>
                 <label value="Username"/>
-                <textbox id="userNameTextbox" placeholder="Enter user name"/>
+                <textbox id="userNameTextbox" value="New_username" constraint="no empty,/^[a-zA-Z0-9 \\._\-]{1,}$/: {Use only letters, numbers, and .-_}" placeholder="Enter user name"/>
             </row>
             <row>
                 <label value="First Name"/>
@@ -44,12 +44,12 @@
             </row>
             <row>
                 <label value="Password"/>
-                <textbox id="passwordTextbox" placeholder="Enter password" type="password"/>
+                <textbox id="passwordTextbox" constraint="no empty" placeholder="Enter password" type="password"/>
             </row>
         </rows>
     </grid>
     <div sclass="ap-window-footer-actions">
-        <button id="createBtn" focus="true" label="Create" iconSclass="z-icon-check-circle" />
+        <button id="createBtn" label="Create" iconSclass="z-icon-check-circle" />
         <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
     </div>
 </window>
