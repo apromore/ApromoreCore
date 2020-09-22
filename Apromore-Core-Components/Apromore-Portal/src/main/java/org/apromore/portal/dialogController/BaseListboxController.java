@@ -80,7 +80,7 @@ public abstract class BaseListboxController extends BaseController {
     private final MainController mainController;
 
     private final Button refreshB;
-    private final Button btnUpload;
+//    private final Button btnUpload;
     private final Button btnDownload;
     private final Button btnCut;
     private final Button btnCopy;
@@ -113,7 +113,7 @@ public abstract class BaseListboxController extends BaseController {
         listBox.setItemRenderer(itemRenderer);
 
         refreshB = (Button) mainController.getFellow("refreshB");
-        btnUpload = (Button) mainController.getFellow("btnUpload");
+//        btnUpload = (Button) mainController.getFellow("btnUpload");
         btnDownload = (Button) mainController.getFellow("btnDownload");
         btnCut = (Button) mainController.getFellow("btnCut");
         btnCopy = (Button) mainController.getFellow("btnCopy");
@@ -154,12 +154,12 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
-        this.btnUpload.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                importFile();
-            }
-        });
+//        this.btnUpload.addEventListener("onClick", new EventListener<Event>() {
+//            @Override
+//            public void onEvent(Event event) throws Exception {
+//                importFile();
+//            }
+//        });
 
         this.btnDownload.addEventListener("onClick", new EventListener<Event>() {
             @Override

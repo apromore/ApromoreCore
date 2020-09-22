@@ -59,14 +59,15 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
-        MainController mainC = (MainController) portalContext.getMainController();
-
-        mainC.eraseMessage();
-        try {
-            new ImportController(mainC);
-
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
+        System.out.println("!!!Portal Context recieved!!!");
+//        MainController mainC = (MainController) portalContext.getMainController();
+//
+//        mainC.eraseMessage();
+//        try {
+//            new ImportController(mainC);
+//
+//        } catch (DialogException e) {
+//            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
     }
 }

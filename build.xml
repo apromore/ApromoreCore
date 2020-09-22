@@ -10,6 +10,8 @@
     
     <filter token="about-portal.bundle" value="org.apromore.plugin.about-portal-plugin"/>
     <filter token="csvimporter-logic.bundle" value="org.apromore.csvimporter-logic"/>
+    <filter token="etlplugin-logic.bundle" value="org.apromore.etlplugin-logic"/>
+    <filter token="etlplugin-portal.bundle" value="org.apromore.etlplugin-portal"/>
     <filter token="version.edition" value="Apromore Core"/>
     
     <target name="start-virgo" depends="deploy-virgo">
@@ -39,6 +41,14 @@
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <file file="target/classes/META-INF/git.properties"/>
             <file file="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
+        </copy>
+        <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <file file="target/classes/META-INF/git.properties"/>
+            <file file="Apromore-Custom-Plugins/ETLPlugin-Logic/target/etlplugin-logic-1.0.jar"/>
+        </copy>
+        <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <file file="target/classes/META-INF/git.properties"/>
+            <file file="Apromore-Custom-Plugins/ETLPlugin-Portal/target/etlplugin-portal-1.0.jar"/>
         </copy>
     </target>
 

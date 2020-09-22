@@ -100,6 +100,8 @@ public class PortalPluginResourceServlet extends HttpServlet {
                     label.equals(portalPlugin.getLabel(Locales.getCurrent()))) {
 
                     //log("Portal plugin " + portalPlugin);
+
+                    System.out.println("\n=======> " + portalPlugin.getLabel(Locales.getCurrent()));
                     
                     try (InputStream in = portalPlugin.getResourceAsStream(resource)) {
                         if (in == null) {

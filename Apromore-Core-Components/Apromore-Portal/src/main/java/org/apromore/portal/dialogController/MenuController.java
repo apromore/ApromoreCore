@@ -113,6 +113,7 @@ public class MenuController extends Menubar {
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
+                        System.out.println("===> portalContext for: " + plugin.getLabel(Locale.getDefault()));
                         plugin.execute(new PluginPortalContext(mainC));
                     }
                 });

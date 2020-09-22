@@ -75,7 +75,10 @@
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
-        
+
+        <module>Apromore-Custom-Plugins/ETLPlugin-Logic</module>
+        <module>Apromore-Custom-Plugins/ETLPlugin-Portal</module>
+
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
         
