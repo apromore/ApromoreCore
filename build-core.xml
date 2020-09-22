@@ -40,6 +40,7 @@
         <include name="lpsolve-osgi/target/lpsolve-osgi-1.1.jar"/>
         <include name="similaritysearch-osgi/target/similaritysearch-osgi-1.1.jar"/>
         <include name="jgraph-osgi/target/jgraph-osgi-1.0.jar"/>
+        <include name="parquet-osgi/target/parquet-osgi-1.0.jar"/>
         <include name="prom-models-osgi/target/prom-models-osgi-1.0.jar"/>
         <include name="prom-widgets-osgi/target/prom-widgets-osgi-1.0.jar"/>
         <include name="prom-bpmn-osgi/target/prom-bpmn-osgi-1.0.jar"/>

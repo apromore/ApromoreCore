@@ -187,7 +187,7 @@ public class ImportController extends BaseController {
         }
     }
 
-    private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport {
+    private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport, IOException {
         media = event.getMedia();
         fileNameLabel.setStyle("color: blue");
         fileNameLabel.setValue(media.getName());

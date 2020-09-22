@@ -83,6 +83,32 @@
         </dependency>
         -->
 
+        <!-- Required by parquet-osgi -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>5.0.3</version>  <!-- matches hadoop-project 3.3.0 -->
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>failureaccess</artifactId>
+            <version>1.0.1</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>stax2-api</artifactId>
+            <version>3.1.4</version>  <!-- matches hadoop-project 3.3.0 -->
+            <type>bundle</type>
+        </dependency>
+
         <!-- Contains the RemoveNonOSGIJars Maven plugin -->
         <dependency>
             <groupId>org.apromore</groupId>

@@ -126,7 +126,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.impl.XAttribute#getKey()
+	 * @see org.deckfour.xes.model.services.XAttribute#getKey()
 	 */
 	public String getKey() {
 		return key;
@@ -135,7 +135,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.impl.XAttribute#getExtension()
+	 * @see org.deckfour.xes.model.services.XAttribute#getExtension()
 	 */
 	public XExtension getExtension() {
 		return extension;
@@ -144,7 +144,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.impl.XAttribute#getAttributes()
+	 * @see org.deckfour.xes.model.services.XAttribute#getAttributes()
 	 */
 	public XAttributeMap getAttributes() {
 		// This is not thread-safe, but we don't give any thread safety guarantee anyway
@@ -159,7 +159,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.deckfour.xes.model.impl.XAttribute#setAttributes(org.deckfour.xes
+	 * org.deckfour.xes.model.services.XAttribute#setAttributes(org.deckfour.xes
 	 * .model.XAttributeMap)
 	 */
 	public void setAttributes(XAttributeMap attributes) {
@@ -177,7 +177,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.impl.XAttribute#getExtensions()
+	 * @see org.deckfour.xes.model.services.XAttribute#getExtensions()
 	 */
 	public Set<XExtension> getExtensions() {
 		if (attributes != null) {
@@ -190,7 +190,7 @@ public abstract class XAttributeImpl implements XAttribute  {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.impl.XAttribute#clone()
+	 * @see org.deckfour.xes.model.services.XAttribute#clone()
 	 */
 	public Object clone() {
 		XAttributeImpl clone = null;
