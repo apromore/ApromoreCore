@@ -11,7 +11,8 @@
     <filter token="about-portal.bundle" value="org.apromore.plugin.about-portal-plugin"/>
     <filter token="csvimporter-logic.bundle" value="org.apromore.csvimporter-logic"/>
     <filter token="etlplugin-logic.bundle" value="org.apromore.etlplugin-logic"/>
-    <filter token="etlplugin-portal.bundle" value="org.apromore.etlplugin-portal"/>
+<!--    <filter token="etlplugin-portal.bundle" value="org.apromore.etlplugin-portal"/>-->
+    <filter token="etlportal-plugin.bundle" value="org.apromore.etlportal-plugin"/>
     <filter token="version.edition" value="Apromore Core"/>
     
     <target name="start-virgo" depends="deploy-virgo">
@@ -32,7 +33,7 @@
     <target name="deploy-plan" depends="copy-virgo">
         <copy todir="${core-dir-virgo}/pickup" flatten="true" overwrite="true" filtering="true">
             <fileset dir="${basedir}">
-                <include name="apromore-core.plan" />        
+                <include name="apromore-core.plan" />
             </fileset>
         </copy>
     </target>
@@ -46,10 +47,15 @@
             <file file="target/classes/META-INF/git.properties"/>
             <file file="Apromore-Custom-Plugins/ETLPlugin-Logic/target/etlplugin-logic-1.0.jar"/>
         </copy>
-        <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
-            <file file="target/classes/META-INF/git.properties"/>
-            <file file="Apromore-Custom-Plugins/ETLPlugin-Portal/target/etlplugin-portal-1.0.jar"/>
-        </copy>
+<!--        <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
+<!--            <file file="target/classes/META-INF/git.properties"/>-->
+<!--            <file file="Apromore-Custom-Plugins/ETLPlugin-Portal/target/etlplugin-portal-1.0.jar"/>-->
+<!--        </copy>-->
+
+<!--        <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
+<!--            <file file="target/classes/META-INF/git.properties"/>-->
+<!--            <file file="Apromore-Custom-Plugins/ETLPortal-Plugin/target/etlportal-plugin-1.0.jar"/>-->
+<!--        </copy>-->
     </target>
 
 </project>
