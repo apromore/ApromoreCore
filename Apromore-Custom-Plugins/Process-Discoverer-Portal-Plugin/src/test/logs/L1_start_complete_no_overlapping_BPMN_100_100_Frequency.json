@@ -220,7 +220,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":1,
-         "label":"3",
+         "label":"5",
          "point-weights":"0.5",
          "target":9
       }
@@ -233,7 +233,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":9,
-         "label":"3",
+         "label":"5",
          "point-weights":"0.5",
          "target":10
       }
@@ -259,7 +259,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":10,
-         "label":"2",
+         "label":"5",
          "point-weights":"0.5",
          "target":2
       }
@@ -285,7 +285,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":4,
-         "label":"4",
+         "label":"6",
          "point-weights":"0.5",
          "target":1
       }
@@ -298,7 +298,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":3,
-         "label":"3",
+         "label":"5",
          "point-weights":"0.5",
          "target":2
       }
@@ -324,7 +324,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":2,
-         "label":"3",
+         "label":"5",
          "point-weights":"0.5",
          "target":8
       }
@@ -350,7 +350,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":9,
-         "label":"2",
+         "label":"5",
          "point-weights":"0.5",
          "target":3
       }
@@ -363,7 +363,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":8,
-         "label":"4",
+         "label":"6",
          "point-weights":"0.5",
          "target":5
       }

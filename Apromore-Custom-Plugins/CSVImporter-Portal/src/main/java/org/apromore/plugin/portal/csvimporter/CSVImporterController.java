@@ -77,6 +77,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
      */
     static final String SESSION_ATTRIBUTE_KEY = "csvimport";
 
+    private static final int ROW_INDEX_START_FROM = 2;
+
     // Fields injected from Spring beans/OSGi services
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
     private UserMetadataService userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
@@ -492,7 +494,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         Grid myGrid = (Grid) window.getFellow(myGridId);
         ListModelList<String[]> indexedResult = new ListModelList<>();
 
-        int index = 1;
+        int index = ROW_INDEX_START_FROM;
         for (List<String> myLine : sample.getLines()) {
             List<String> withIndex = new ArrayList<>();
             withIndex.add(String.valueOf(index));

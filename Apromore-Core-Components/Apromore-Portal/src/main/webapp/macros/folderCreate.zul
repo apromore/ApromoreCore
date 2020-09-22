@@ -39,7 +39,7 @@ and CreateProcessController.java for creating process purpose.
             <rows>
                 <row tooltiptext="Enter folder name.">
                     <label value="Folder name" width="100%"/>
-                    <textbox id="txtName" value="New folder" width="100%" constraint="${labels.e.common.nameConstraint.text}" submitByEnter="true" />
+                    <textbox id="txtName" value="New_folder" width="100%" constraint="${labels.e.common.nameConstraint.text}" submitByEnter="true" />
                 </row>
 <!--
                 <row tooltiptext="GED Matrix Computation.">

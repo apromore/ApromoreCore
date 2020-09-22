@@ -220,7 +220,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":4,
-         "label":"3\\n60 secs",
+         "label":"5\\n60 secs",
          "point-weights":"0.5",
          "target":7
       }
@@ -259,7 +259,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":9,
-         "label":"4\\ninstant",
+         "label":"6\\ninstant",
          "point-weights":"0.5",
          "target":5
       }
@@ -272,7 +272,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":8,
-         "label":"3\\n60 secs",
+         "label":"5\\n60 secs",
          "point-weights":"0.5",
          "target":2
       }
@@ -311,7 +311,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":3,
-         "label":"3\\n60 secs",
+         "label":"5\\ninstant",
          "point-weights":"0.5",
          "target":4
       }
@@ -324,7 +324,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":0,
-         "label":"4\\ninstant",
+         "label":"6\\ninstant",
          "point-weights":"0.5",
          "target":3
       }
@@ -337,7 +337,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":7,
-         "label":"2\\n60 secs",
+         "label":"5\\n60 secs",
          "point-weights":"0.5",
          "target":2
       }
@@ -350,7 +350,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":2,
-         "label":"3\\n60 secs",
+         "label":"5\\ninstant",
          "point-weights":"0.5",
          "target":9
       }
@@ -363,7 +363,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":4,
-         "label":"2\\n60 secs",
+         "label":"5\\n60 secs",
          "point-weights":"0.5",
          "target":8
       }
