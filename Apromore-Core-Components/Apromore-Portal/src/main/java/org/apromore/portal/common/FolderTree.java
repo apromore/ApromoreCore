@@ -47,6 +47,7 @@ public class FolderTree {
 
     private FolderTreeNode root;
     private boolean loadAll = false;
+    private boolean collapseAll = false;
     private int currentFolderId;
     private int autoSelectFolder;
     private FolderTreeNode currentFolder;
@@ -67,10 +68,11 @@ public class FolderTree {
         buildTree(homeNode, mainController.getPortalSession().getTree(), 0, new HashSet<Integer>());
     }
 
-    public FolderTree(boolean loadAll, int currentFolderId, MainController mainController) {
+    public FolderTree(boolean loadAll, int currentFolderId, MainController mainController, boolean collapseAll) {
         this.mainController = mainController;
         this.loadAll = loadAll;
         this.currentFolderId = currentFolderId;
+        this.collapseAll = collapseAll;
         this.autoSelectFolder = 1;
         root = new FolderTreeNode((FolderType) null, null, true, FolderTreeNodeTypes.Folder);
 
@@ -95,8 +97,14 @@ public class FolderTree {
         for (FolderType folder : folders) {
 
             if(!set.contains(folder.getId())) {
-
-                FolderTreeNode childNode = new FolderTreeNode(folder, null, !loadAll, FolderTreeNodeTypes.Folder);
+                boolean open = !loadAll;
+                if (loadAll && collapseAll) {
+                    open = false;
+                }
+                if (folderId == 0) {
+                    open = true;
+                }
+                FolderTreeNode childNode = new FolderTreeNode(folder, null, open, FolderTreeNodeTypes.Folder);
                 set.add(folder.getId());
                 if (this.autoSelectFolder == 1 && currentFolderId == folder.getId()) {
                     currentFolder = childNode;
