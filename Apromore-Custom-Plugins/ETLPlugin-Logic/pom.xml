@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <artifactId>etlplugin-logic</artifactId>
+    <version>1.0</version>
+    <packaging>bundle</packaging>
+    <name>ETLPlugin-Logic</name>
+
+    <properties>
+        <zk.version>9.0.0.1</zk.version>
+<!--        Maybe spring version mismatch is an issue ? -->
+        <spring.version>5.2.8.RELEASE</spring.version>
+        <easymock.version>3.2</easymock.version>
+        <powermock.version>2.0.7</powermock.version>
+        <jooq.version>3.13.4</jooq.version>
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+        <packname>-${project.version}-FL-${maven.build.timestamp}</packname>
+    </properties>
+   
+    <repositories>
+        <repository>
+            <id>cdh.repo</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+            <name>Cloudera Repositories</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Dependency>
+                            artifactId=retree
+                        </Embed-Dependency>
+                        <Import-Package>
+                            org.deckfour.xes.*;version="2.27",
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.etlplugin.logic.services,
+                            org.apromore.etlplugin.logic.services.impl
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

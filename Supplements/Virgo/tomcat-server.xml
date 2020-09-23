@@ -11,7 +11,7 @@
   <Listener className="org.eclipse.virgo.web.tomcat.support.ServerLifecycleLoggingListener"/>
 
   <Service name="Catalina">
-    <Connector port="9000" protocol="HTTP/1.1"
+    <Connector port="11000" protocol="HTTP/1.1"
                URIEncoding="UTF-8"
                connectionTimeout="20000"
                redirectPort="8443" maxHttpHeaderSize="10000" maxPostSize="67589953"/>
