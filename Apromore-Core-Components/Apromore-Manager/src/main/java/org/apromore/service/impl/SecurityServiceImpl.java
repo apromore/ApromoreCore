@@ -178,6 +178,11 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public List<Group> findAllGroups() {
+        return groupRepo.findAllGroups();
+    }
+
+    @Override
     public List<Group> findElectiveGroups() {
         return groupRepo.findElectiveGroups();
     }

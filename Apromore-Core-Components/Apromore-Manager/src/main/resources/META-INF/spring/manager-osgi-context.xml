@@ -34,7 +34,8 @@
  
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
     <osgi:reference id="apmLogService" interface="org.apromore.apmlog.APMLogService"/>
-    
+
+    <osgi:service ref="authorizationServiceImpl" interface="org.apromore.service.AuthorizationService" auto-export="interfaces"/>
     <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>
     <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>
     <osgi:service ref="formatServiceImpl" interface="org.apromore.service.FormatService" auto-export="interfaces"/>
