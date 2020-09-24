@@ -39,12 +39,6 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UploadFilePlugin.class);
 
-//    @Inject private ETLPluginLogic etlPluginLogic;
-
-//    public void setEtlPluginLogic(ETLPluginLogic etlPluginLogic) {
-//        this.etlPluginLogic = etlPluginLogic;
-//    }
-
     private String label = "Upload";
     private String groupLabel = "File";
     private MainController mainC;
@@ -68,8 +62,6 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
-//        System.out.println("!!!Portal Context recieved => " + etlPluginLogic.getTest());
-
         MainController mainC = (MainController) portalContext.getMainController();
 
         mainC.eraseMessage();

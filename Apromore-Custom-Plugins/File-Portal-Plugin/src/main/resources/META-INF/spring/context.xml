@@ -36,7 +36,6 @@
     <osgi:reference id="managerService" interface="org.apromore.manager.client.ManagerService"/>
     <osgi:reference id="securityService" interface="org.apromore.service.SecurityService"/>
 -->
-<!--    <osgi:reference id="etlPluginLogic" interface="org.apromore.etlplugin.logic.services.ETLPluginLogic"/>-->
 
     <!-- Other OSGi services this component consumes -->
     <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
