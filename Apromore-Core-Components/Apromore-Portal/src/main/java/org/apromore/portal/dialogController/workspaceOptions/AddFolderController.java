@@ -24,6 +24,8 @@
 
 package org.apromore.portal.dialogController.workspaceOptions;
 
+import org.apromore.exception.NotAuthorizedException;
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
@@ -33,6 +35,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
@@ -63,10 +66,14 @@ public class AddFolderController extends BaseController {
                     Clients.clearBusy();
                 }
             });
+            win.addEventListener("onOK", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    submit();
+                }
+            });
             btnSave.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    Clients.showBusy("Processing...");
-                    Events.echoEvent("onLater", folderEditWindow, null);
+                    submit();
                 }
             });
             btnCancel.addEventListener("onClick", new EventListener<Event>() {
@@ -80,13 +87,18 @@ public class AddFolderController extends BaseController {
         }
     }
 
+    private void submit() throws Exception {
+        Clients.showBusy("Processing...");
+        Events.echoEvent("onLater", folderEditWindow, null);
+    }
+
     private void cancel() throws IOException {
         this.folderEditWindow.detach();
     }
 
     private void save() throws InterruptedException {
         try {
-            String folderName = txtName.getValue();
+            String folderName = txtName.getValue().trim();
             if (folderName.isEmpty()) {
                 Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
                 return;
@@ -94,17 +106,23 @@ public class AddFolderController extends BaseController {
 
             LOGGER.warning("folderName " + folderName);
             String userId = UserSessionManager.getCurrentUser().getId();
-            int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+            FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
+            int currentParentFolderId = currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
             this.mainController.getService().createFolder(userId, folderName, currentParentFolderId);
             this.mainController.reloadSummaries();
-
         } catch (Exception ex) {
+            if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
+                Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            }
+            if (ex instanceof WrongValueException) {
+                // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
             LOGGER.warning("Exception ");
             StackTraceElement[] trace = ex.getStackTrace();
             for (StackTraceElement traceElement : trace)
                 LOGGER.warning("\tat " + traceElement);
         }
-
         this.folderEditWindow.detach();
     }
 }

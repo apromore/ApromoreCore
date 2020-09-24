@@ -31,7 +31,7 @@
             <rows>
                 <row>
                     <label value="Model Name" />
-                    <textbox id="modelName" width="100%" constraint="${labels.e.common.nameConstraint.text}" />
+                    <textbox id="modelName" width="100%" constraint="${labels.e.common.nameConstraint.text}" submitByEnter="true" />
                 </row>
                 <row>
                     <label value="Version Number" />
@@ -39,7 +39,7 @@
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button label="Save" iconSclass="z-icon-check-circle" >
+                        <button label="OK" iconSclass="z-icon-check-circle" >
                         </button>
                         <button label="Cancel" iconSclass="z-icon-times-circle">
                         </button>

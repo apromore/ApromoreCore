@@ -11,7 +11,7 @@
         <relativePath>../../Apromore-Plugins/</relativePath>
     </parent>
 
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <!-- Unique name of the plug-in -->
     <artifactId>log-animation-portal-plugin</artifactId>
     <version>1.0</version>
@@ -71,21 +71,7 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>lib</Embed-Directory>
                         -->
-                        <Web-ContextPath>loganimation</Web-ContextPath>
                     </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
-                        %regex[WEB-INF/lib/(?!jbpt-bpm).*jar]
-                    </packagingExcludes>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
                 </configuration>
             </plugin>
         </plugins>

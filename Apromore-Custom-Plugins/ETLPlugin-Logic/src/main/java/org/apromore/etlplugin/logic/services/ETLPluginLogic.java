@@ -21,6 +21,14 @@
  */
 package org.apromore.etlplugin.logic.services;
 
+/**
+ * ETL Plugin logic interface.
+ */
 public interface ETLPluginLogic {
+    /**
+     * Dummy.
+     *
+     * @return integer.
+     */
     int getTest();
 }

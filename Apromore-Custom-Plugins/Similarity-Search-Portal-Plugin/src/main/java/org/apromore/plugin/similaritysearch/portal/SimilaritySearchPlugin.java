@@ -25,6 +25,7 @@
 package org.apromore.plugin.similaritysearch.portal;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
@@ -77,7 +78,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analyze";
+        return "Redesign";
     }
 
     @Override
@@ -120,7 +121,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             e.printStackTrace();
         }
 
-        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW);
+        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW, ((PluginPortalContext)context).getMainController());
 
         Row algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
         Row buttonsR = (Row) this.similaritySearchW.getFellow("similaritySearchButtons");
@@ -232,7 +233,9 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             for(StackTraceElement element : e.getStackTrace()) {
                 sb.append(element.toString() + "\n");
             }
-            message = "Search failed (" + sb.toString() + ")";
+            // message = "Search failed (" + sb.toString() + ")";
+            // message = "The Apromore Repository has changed between versions. Please export and re-import this database to Apromore for additional support”;
+            message = "Search may fail if you have process models in your folder generated with the older version of this software. Please try to export and re-import the model";
             Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
         } finally {
             this.similaritySearchW.detach();

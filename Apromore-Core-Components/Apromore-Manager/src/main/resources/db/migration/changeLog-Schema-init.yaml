@@ -1,0 +1,1935 @@
+databaseChangeLog:
+ - changeSet:
+    id: 1599618934768-10
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_3c
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: userid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: logid
+            type: INT
+        - column:
+            name: layout
+            type: CLOB
+        tableName: dashboard_layout
+ - changeSet:
+    id: 1599618934768-11
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_1
+            name: id
+            type: INT
+        - column:
+            name: recordtime
+            type: TIMESTAMP
+        - column:
+            name: userid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: processmodelversionid
+            type: INT
+        - column:
+            name: processid
+            type: INT
+        - column:
+            name: folderid
+            type: INT
+        - column:
+            name: original_branch_name
+            type: VARCHAR(40)
+        - column:
+            name: new_branch_name
+            type: VARCHAR(40)
+        - column:
+            name: version_number
+            type: DOUBLE(17)
+        - column:
+            name: create_new_branch
+            type: BOOLEAN
+        - column:
+            name: nat_type
+            type: VARCHAR(20)
+        - column:
+            name: annotation
+            type: VARCHAR(40)
+        - column:
+            name: remove_fake_events
+            type: BOOLEAN
+        - column:
+            name: createdate
+            type: VARCHAR(40)
+        - column:
+            name: lastupdatedate
+            type: VARCHAR(40)
+        tableName: edit_session
+ - changeSet:
+    id: 1599618934768-12
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_7b
+            name: id
+            type: INT
+        - column:
+            name: parentid
+            type: INT
+        - column:
+            defaultValueNumeric: 1
+            name: workspaceid
+            type: INT
+        - column:
+            name: folder_name
+            type: VARCHAR(100)
+        - column:
+            name: folder_description
+            type: CLOB
+        - column:
+            name: creatorid
+            type: INT
+        - column:
+            name: date_created
+            type: TIMESTAMP
+        - column:
+            name: modifiedbyid
+            type: INT
+        - column:
+            name: date_modified
+            type: TIMESTAMP
+        - column:
+            defaultValueComputed: '0'
+            name: ged_matrix_computation
+            type: BOOLEAN
+        tableName: folder
+ - changeSet:
+    id: 1599618934768-13
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_2
+            defaultValueNumeric: 0
+            name: folderid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_2
+            defaultValueNumeric: 0
+            name: processid
+            type: INT
+        tableName: folder_process
+ - changeSet:
+    id: 1599618934768-14
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_eb
+            name: parentid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_eb
+            name: childid
+            type: INT
+        tableName: folder_subfolder
+ - changeSet:
+    id: 1599618934768-15
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_4a
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: groupid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: folderid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_read
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_write
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_ownership
+            type: BOOLEAN
+        tableName: group_folder
+ - changeSet:
+    id: 1599618934768-16
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_4d
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: groupid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: logid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_read
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_write
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_ownership
+            type: BOOLEAN
+        tableName: group_log
+ - changeSet:
+    id: 1599618934768-17
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_a
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: groupid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: processid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_read
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_write
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '0'
+            name: has_ownership
+            type: BOOLEAN
+        tableName: group_process
+ - changeSet:
+    id: 1599618934768-18
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_c
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: VARCHAR(50)
+        - column:
+            constraints:
+              nullable: false
+            name: type
+            type: VARCHAR(50)
+        - column:
+            defaultValueComputed: 'NULL'
+            name: occurdate
+            type: TIMESTAMP
+        - column:
+            defaultValueComputed: 'NULL'
+            name: userid
+            type: INT
+        tableName: history_event
+ - changeSet:
+    id: 1599618934768-19
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_12
+            name: id
+            type: INT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: folderid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: file_path
+            type: VARCHAR(255)
+        - column:
+            name: domain
+            type: VARCHAR(255)
+        - column:
+            name: ranking
+            type: VARCHAR(10)
+        - column:
+            name: createdate
+            type: VARCHAR(40)
+        - column:
+            name: owner
+            type: INT
+        tableName: log
+ - changeSet:
+    id: 1599618934768-20
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_cd
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: userid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: password
+            type: VARCHAR(100)
+        - column:
+            constraints:
+              nullable: false
+            name: password_salt
+            type: VARCHAR(100)
+        - column:
+            name: mobile_pin
+            type: VARCHAR(100)
+        - column:
+            constraints:
+              nullable: false
+            name: email
+            type: VARCHAR(200)
+        - column:
+            name: password_question
+            type: VARCHAR(50)
+        - column:
+            name: password_answer
+            type: VARCHAR(50)
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '1'
+            name: is_approved
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            defaultValueComputed: '1'
+            name: is_locked
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: date_created
+            type: TIMESTAMP
+        - column:
+            constraints:
+              nullable: false
+            defaultValueNumeric: 0
+            name: failed_password_attempts
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            defaultValueNumeric: 0
+            name: failed_answer_attempts
+            type: INT
+        tableName: membership
+ - changeSet:
+    id: 1599618934768-21
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_8
+            name: id
+            type: INT
+        - column:
+            name: content
+            type: CLOB
+        - column:
+            name: lastupdatedate
+            type: VARCHAR(40)
+        - column:
+            name: nativetypeid
+            type: INT
+        tableName: native
+ - changeSet:
+    id: 1599618934768-22
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_ea
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: nat_type
+            type: VARCHAR(20)
+        - column:
+            name: extension
+            type: VARCHAR(10)
+        tableName: native_type
+ - changeSet:
+    id: 1599618934768-23
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_f
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: row_guid
+            type: CLOB
+        - column:
+            constraints:
+              nullable: false
+            name: permission_name
+            type: VARCHAR(45)
+        - column:
+            name: permission_description
+            type: VARCHAR(45)
+        tableName: permission
+ - changeSet:
+    id: 1599618934768-24
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_18
+            name: id
+            type: INT
+        - column:
+            name: name
+            type: VARCHAR(100)
+        - column:
+            name: domain
+            type: VARCHAR(40)
+        - column:
+            name: owner
+            type: INT
+        - column:
+            name: nativetypeid
+            type: INT
+        - column:
+            name: folderid
+            type: INT
+        - column:
+            name: ranking
+            type: VARCHAR(10)
+        - column:
+            name: createdate
+            type: VARCHAR(40)
+        tableName: process
+ - changeSet:
+    id: 1599618934768-25
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_1a
+            name: id
+            type: INT
+        - column:
+            name: branch_name
+            type: VARCHAR(255)
+        - column:
+            name: processid
+            type: INT
+        - column:
+            name: createdate
+            type: VARCHAR(40)
+        - column:
+            name: lastupdatedate
+            type: VARCHAR(40)
+        - column:
+            name: sourceprocessmodelversion
+            type: INT
+        - column:
+            name: currentprocessmodelversion
+            type: INT
+        tableName: process_branch
+ - changeSet:
+    id: 1599618934768-26
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_79
+            name: id
+            type: INT
+        - column:
+            name: processmodelversionid
+            type: INT
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: value
+            type: CLOB
+        - column:
+            name: any
+            type: CLOB
+        tableName: process_model_attribute
+ - changeSet:
+    id: 1599618934768-27
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_31
+            name: id
+            type: INT
+        - column:
+            name: branchid
+            type: INT
+        - column:
+            name: rootfragmentversionid
+            type: INT
+        - column:
+            name: nativeid
+            type: INT
+        - column:
+            name: canonicalid
+            type: INT
+        - column:
+            name: nativetypeid
+            type: INT
+        - column:
+            name: originalid
+            type: VARCHAR(200)
+        - column:
+            name: version_number
+            type: DOUBLE(17)
+        - column:
+            name: change_propagation
+            type: INT
+        - column:
+            name: lock_status
+            type: INT
+        - column:
+            name: num_nodes
+            type: INT
+        - column:
+            name: num_edges
+            type: INT
+        - column:
+            name: createdate
+            type: VARCHAR(40)
+        - column:
+            name: lastupdatedate
+            type: VARCHAR(40)
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-28
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_26
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: row_guid
+            type: CLOB
+        - column:
+            constraints:
+              nullable: false
+            name: role_name
+            type: VARCHAR(45)
+        - column:
+            name: description
+            type: VARCHAR(200)
+        tableName: role
+ - changeSet:
+    id: 1599618934768-29
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_9
+            name: roleid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_9
+            name: permissionid
+            type: INT
+        tableName: role_permission
+ - changeSet:
+    id: 1599618934768-30
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_ba
+            name: id
+            type: INT
+        - column:
+            name: userid
+            type: INT
+        - column:
+            name: position
+            type: INT
+        - column:
+            name: search
+            type: VARCHAR(200)
+        tableName: search_history
+ - changeSet:
+    id: 1599618934768-31
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_27
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: row_guid
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: username
+            type: VARCHAR(45)
+        - column:
+            constraints:
+              nullable: false
+            name: date_created
+            type: TIMESTAMP
+        - column:
+            constraints:
+              nullable: false
+            name: first_name
+            type: VARCHAR(45)
+        - column:
+            constraints:
+              nullable: false
+            name: last_name
+            type: VARCHAR(45)
+        - column:
+            name: last_activity_date
+            type: TIMESTAMP
+        - column:
+            constraints:
+              nullable: false
+            name: groupid
+            type: INT
+        - column:
+            name: organization
+            type: VARCHAR(255)
+        - column:
+            name: role
+            type: VARCHAR(255)
+        - column:
+            name: country
+            type: VARCHAR(255)
+        - column:
+            name: phone
+            type: VARCHAR(255)
+        - column:
+            name: subscription
+            type: VARCHAR(255)
+        tableName: user
+ - changeSet:
+    id: 1599618934768-32
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_c6
+            name: userid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_c6
+            name: groupid
+            type: INT
+        tableName: user_group
+ - changeSet:
+    id: 1599618934768-33
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_bc
+            name: roleid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_bc
+            name: userid
+            type: INT
+        tableName: user_role
+ - changeSet:
+    id: 1599618934768-34
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_e8
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: workspace_name
+            type: VARCHAR(45)
+        - column:
+            name: workspace_description
+            type: CLOB
+        - column:
+            constraints:
+              nullable: false
+            name: userid
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: date_created
+            type: TIMESTAMP
+        tableName: workspace
+ - changeSet:
+    id: 1599618934768-35
+    author: nolantellis (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: constraint_5
+            name: id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: row_guid
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(45)
+        - column:
+            constraints:
+              nullable: false
+            name: type
+            type: VARCHAR(10)
+        tableName: group
+ - changeSet:
+    id: 1599618934768-36
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: currentprocessmodelversion
+        indexName: FK_CURRENT_VERSION_INDEX_1
+        tableName: process_branch
+ - changeSet:
+    id: 1599618934768-37
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: processmodelversionid
+        indexName: FK_EDIT_SESSION
+        tableName: edit_session
+ - changeSet:
+    id: 1599618934768-38
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: FK_EDIT_SESSION1
+        tableName: edit_session
+ - changeSet:
+    id: 1599618934768-39
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: folderid
+        indexName: FK_EDIT_SESSION_FOLDER
+        tableName: edit_session
+ - changeSet:
+    id: 1599618934768-40
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: processid
+        indexName: FK_EDIT_SESSION_PROCESS
+        tableName: edit_session
+ - changeSet:
+    id: 1599618934768-41
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: folderid
+        indexName: FK_FOLDER
+        tableName: process
+ - changeSet:
+    id: 1599618934768-42
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: nativetypeid
+        indexName: FK_NATIVE
+        tableName: native
+ - changeSet:
+    id: 1599618934768-43
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: processmodelversionid
+        indexName: FK_PMV_ATT_PMV
+        tableName: process_model_attribute
+ - changeSet:
+    id: 1599618934768-44
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: owner
+        indexName: FK_PROCESS1_INDEX_1
+        tableName: process
+ - changeSet:
+    id: 1599618934768-45
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: nativetypeid
+        indexName: FK_PROCESS2
+        tableName: process
+ - changeSet:
+    id: 1599618934768-46
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: processid
+        indexName: FK_PROCESS_BRANCH
+        tableName: process_branch
+ - changeSet:
+    id: 1599618934768-47
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: rootfragmentversionid
+        indexName: FK_PROCESS_BRANCH_MODEL_VERSION1
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-48
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: branchid
+        indexName: FK_PROCESS_BRANCH_MODEL_VERSION_INDEX_3
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-49
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: canonicalid
+        indexName: FK_PROCESS_CANONICAL
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-50
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: nativeid
+        indexName: FK_PROCESS_NATIVE
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-51
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: nativetypeid
+        indexName: FK_PROCESS_NATIVE_TYPE
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-52
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: permissionid
+        indexName: FK_ROLE_PERMISSION_PERMISSION_INDEX_9
+        tableName: role_permission
+ - changeSet:
+    id: 1599618934768-53
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: roleid
+        indexName: FK_ROLE_PERMISSION_ROLE
+        tableName: role_permission
+ - changeSet:
+    id: 1599618934768-54
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: FK_SEARCH_INDEX_B
+        tableName: search_history
+ - changeSet:
+    id: 1599618934768-55
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: sourceprocessmodelversion
+        indexName: FK_SOURCE_VERSION_INDEX_1
+        tableName: process_branch
+ - changeSet:
+    id: 1599618934768-56
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: FK_USERS_INDEX_C
+        tableName: membership
+ - changeSet:
+    id: 1599618934768-57
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: groupid
+        indexName: FK_USER_GROUP_GROUP_INDEX_C
+        tableName: user_group
+ - changeSet:
+    id: 1599618934768-58
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: FK_USER_GROUP_USER_INDEX_C
+        tableName: user_group
+ - changeSet:
+    id: 1599618934768-59
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: roleid
+        indexName: FK_USER_ROLE_ROLE
+        tableName: user_role
+ - changeSet:
+    id: 1599618934768-60
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: FK_USER_ROLE_USERS_INDEX_B
+        tableName: user_role
+ - changeSet:
+    id: 1599618934768-61
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: creatorid
+        indexName: FOLDER_CREATOR_INDEX_7
+        tableName: folder
+ - changeSet:
+    id: 1599618934768-62
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: parentid
+        indexName: FOLDER_FOLDER
+        tableName: folder
+ - changeSet:
+    id: 1599618934768-63
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: modifiedbyid
+        indexName: FOLDER_MODIFIED_BY
+        tableName: folder
+ - changeSet:
+    id: 1599618934768-64
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            defaultValueNumeric: !!float '0'
+            name: folderid
+        indexName: FOLDER_PROCESS_FOLDER
+        tableName: folder_process
+ - changeSet:
+    id: 1599618934768-65
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            defaultValueNumeric: !!float '0'
+            name: processid
+        indexName: FOLDER_PROCESS_PROCESS_INDEX_2
+        tableName: folder_process
+ - changeSet:
+    id: 1599618934768-66
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: childid
+        indexName: FOLDER_SUBFOLDER_CHILD
+        tableName: folder_subfolder
+ - changeSet:
+    id: 1599618934768-67
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: parentid
+        indexName: FOLDER_SUBFOLDER_PARENT
+        tableName: folder_subfolder
+ - changeSet:
+    id: 1599618934768-68
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            defaultValueNumeric: !!float '1'
+            name: workspaceid
+        indexName: FOLDER_WORKSPACE_INDEX_7
+        tableName: folder
+ - changeSet:
+    id: 1599618934768-69
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: branch_name
+        indexName: IDX_BRANCH_NAME
+        tableName: process_branch
+ - changeSet:
+    id: 1599618934768-72
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: nat_type
+        - column:
+            name: extension
+        indexName: IDX_NATIVE_TYPE
+        tableName: native_type
+ - changeSet:
+    id: 1599618934768-73
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: lock_status
+        indexName: IDX_PMV_LOCK
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-74
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: version_number
+        indexName: IDX_PMV_VERSION
+        tableName: process_model_version
+ - changeSet:
+    id: 1599618934768-75
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: name
+        indexName: IDX_PROCESS_NAME
+        tableName: process
+ - changeSet:
+    id: 1599618934768-80
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: row_guid
+        indexName: ROW_GUID_UNIQUE
+        tableName: user
+        unique: true
+ - changeSet:
+    id: 1599618934768-81
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: logid
+        indexName: UN_DASHBOARD_LAYOUT_LOGID
+        tableName: dashboard_layout
+        unique: true
+ - changeSet:
+    id: 1599618934768-82
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: UN_DASHBOARD_LAYOUT_USERID
+        tableName: dashboard_layout
+        unique: true
+ - changeSet:
+    id: 1599618934768-83
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: email
+        indexName: UN_EMAIL
+        tableName: membership
+        unique: true
+ - changeSet:
+    id: 1599618934768-84
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        - column:
+            name: search
+        indexName: UN_SEARCH
+        tableName: search_history
+        unique: true
+ - changeSet:
+    id: 1599618934768-85
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: username
+        indexName: USERNAME_UNIQUE
+        tableName: user
+        unique: true
+ - changeSet:
+    id: 1599618934768-86
+    author: nolantellis (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: userid
+        indexName: WORKSPACE_USER_INDEX_E
+        tableName: workspace
+ - changeSet:
+    id: 1599618934768-87
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: dashboard_layout
+        constraintName: DASHBOARD_LAYOUT_IBFK_1
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-88
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: logid
+        baseTableName: dashboard_layout
+        constraintName: DASHBOARD_LAYOUT_IBFK_2
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: log
+        validate: true
+ - changeSet:
+    id: 1599618934768-89
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: currentprocessmodelversion
+        baseTableName: process_branch
+        constraintName: FK_CURRENT_VERSION
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process_model_version
+        validate: true
+ - changeSet:
+    id: 1599618934768-90
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: processmodelversionid
+        baseTableName: edit_session
+        constraintName: FK_EDIT_SESSION
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process_model_version
+        validate: true
+ - changeSet:
+    id: 1599618934768-91
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: edit_session
+        constraintName: FK_EDIT_SESSION1
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-92
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: folderid
+        baseTableName: edit_session
+        constraintName: fk_edit_session_folder
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: folder
+        validate: true
+ - changeSet:
+    id: 1599618934768-93
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: processid
+        baseTableName: edit_session
+        constraintName: FK_EDIT_SESSION_PROCESS
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process
+        validate: true
+ - changeSet:
+    id: 1599618934768-94
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: folderid
+        baseTableName: process
+        constraintName: FK_FOLDER
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: folder
+        validate: true
+ - changeSet:
+    id: 1599618934768-95
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: nativetypeid
+        baseTableName: native
+        constraintName: FK_NATIVE
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: native_type
+        validate: true
+ - changeSet:
+    id: 1599618934768-96
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: processmodelversionid
+        baseTableName: process_model_attribute
+        constraintName: FK_PMV_ATT_PMV
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process_model_version
+        validate: true
+ - changeSet:
+    id: 1599618934768-97
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: owner
+        baseTableName: process
+        constraintName: FK_PROCESS1
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-98
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: nativetypeid
+        baseTableName: process
+        constraintName: FK_PROCESS2
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: native_type
+        validate: true
+ - changeSet:
+    id: 1599618934768-99
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: processid
+        baseTableName: process_branch
+        constraintName: FK_PROCESS_BRANCH
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process
+        validate: true
+ - changeSet:
+    id: 1599618934768-100
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: branchid
+        baseTableName: process_model_version
+        constraintName: FK_PROCESS_BRANCH_MODEL_VERSION
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process_branch
+        validate: true
+ - changeSet:
+    id: 1599618934768-101
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: nativeid
+        baseTableName: process_model_version
+        constraintName: FK_PROCESS_NATIVE
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: native
+        validate: true
+ - changeSet:
+    id: 1599618934768-102
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: nativetypeid
+        baseTableName: process_model_version
+        constraintName: FK_PROCESS_NATIVE_TYPE
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: native_type
+        validate: true
+ - changeSet:
+    id: 1599618934768-103
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: permissionid
+        baseTableName: role_permission
+        constraintName: FK_ROLE_PERMISSION_PERMISSION
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: permission
+        validate: true
+ - changeSet:
+    id: 1599618934768-104
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: roleid
+        baseTableName: role_permission
+        constraintName: FK_ROLE_PERMISSION_ROLE
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: role
+        validate: true
+ - changeSet:
+    id: 1599618934768-105
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: search_history
+        constraintName: FK_SEARCH
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-106
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: sourceprocessmodelversion
+        baseTableName: process_branch
+        constraintName: FK_SOURCE_VERSION
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process_model_version
+        validate: true
+ - changeSet:
+    id: 1599618934768-107
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: membership
+        constraintName: FK_USERS
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-108
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: groupid
+        baseTableName: user_group
+        constraintName: FK_USER_GROUP_GROUP
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: group
+        validate: true
+ - changeSet:
+    id: 1599618934768-109
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: user_group
+        constraintName: FK_USER_GROUP_USER
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-110
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: roleid
+        baseTableName: user_role
+        constraintName: FK_USER_ROLE_ROLE
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: role
+        validate: true
+ - changeSet:
+    id: 1599618934768-111
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: user_role
+        constraintName: FK_USER_ROLE_USERS
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-112
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: creatorid
+        baseTableName: folder
+        constraintName: FOLDER_CREATOR
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-113
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parentid
+        baseTableName: folder
+        constraintName: FOLDER_FOLDER
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: folder
+        validate: true
+ - changeSet:
+    id: 1599618934768-114
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: modifiedbyid
+        baseTableName: folder
+        constraintName: FOLDER_MODIFIED_BY
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+ - changeSet:
+    id: 1599618934768-115
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: folderid
+        baseTableName: folder_process
+        constraintName: FOLDER_PROCESS_FOLDER
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: folder
+        validate: true
+ - changeSet:
+    id: 1599618934768-116
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: processid
+        baseTableName: folder_process
+        constraintName: FOLDER_PROCESS_PROCESS
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: process
+        validate: true
+ - changeSet:
+    id: 1599618934768-117
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: childid
+        baseTableName: folder_subfolder
+        constraintName: FOLDER_SUBFOLDER_CHILD
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: folder
+        validate: true
+ - changeSet:
+    id: 1599618934768-118
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parentid
+        baseTableName: folder_subfolder
+        constraintName: FOLDER_SUBFOLDER_PARENT
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: folder
+        validate: true
+ - changeSet:
+    id: 1599618934768-119
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: workspaceid
+        baseTableName: folder
+        constraintName: FOLDER_WORKSPACE
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: workspace
+        validate: true
+ - changeSet:
+    id: 1599618934768-125
+    author: nolantellis (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: userid
+        baseTableName: workspace
+        constraintName: WORKSPACE_USER
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: CASCADE
+        onUpdate: CASCADE
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+
+ - changeSet:
+    id: 1599618934768-127
+    author: nolantellis (generated)
+    context: MYSQL,H2
+    changes:
+    - createView:
+        fullDefinition: false
+        remarks: ''
+        selectQuery: |2-
+            select process.id
+            as value, 'process' as type, process.id as processid, null as logid, null as folderid
+            from process union
+          select process.name
+            as value, 'process' as type, process.id as processid, null as logid, null as folderid
+            from process union
+          select process.domain
+            as value, 'process' as type, process.id as processid, null as logid, null as folderid
+            from process union
+          select native_type.nat_type
+            as value, 'process' as type, process.id as processid, null as logid, null as folderid
+            from process join native_type on (process.nativetypeid = native_type.id) union
+          select `user`.first_name
+            as value, 'process' as type, process.id as processid, null as logid, null as folderid
+            from process join `user` on (process.owner = `user`.username) union
+          select `user`.last_name
+            as value, 'process' as type, process.id as processid, null as logid, null as folderid
+            from process join `user` on (process.owner = `user`.username) union
+          select process_branch.branch_name
+            as value, 'process' as type, process_branch.processid as processid, null as logid, null as folderid
+            from process_branch union
+          select `log`.id
+            as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+            from `log` union
+          select `log`.name
+            as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+            from `log` union
+          select `log`.domain
+            as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+            from `log` union
+          select folder.folder_name
+            as value, 'folder' as type, null as processid, null as logid, folder.id as folderid
+            from folder;
+        viewName: keywords

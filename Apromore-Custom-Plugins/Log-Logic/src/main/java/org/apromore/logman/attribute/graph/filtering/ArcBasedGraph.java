@@ -25,11 +25,13 @@ package org.apromore.logman.attribute.graph.filtering;
 import java.util.BitSet;
 
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.graph.WeightedAttributeGraph;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.factory.Lists;
 
 /**
- * ArcBasedGraph is FilteredGraph based on filtering out arcs
+ * ArcBasedGraph is a {@link WeightedAttributeGraph} created by filtering out arcs
+ * on an original {@link AttributeLogGraph}.
  * 
  * @author Bruce Nguyen
  *

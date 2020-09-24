@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.MiscFolderTreeRenderer;
@@ -37,11 +38,11 @@ import org.zkoss.zul.Window;
  */
 public class FolderTreeController extends BaseController {
 
-    public FolderTreeController(Window win) throws DialogException {
+    public FolderTreeController(Window win, MainController mainController) throws DialogException {
         Tree tree = (Tree) win.getFellow("mainTree").getFellow("folderTree");
 
-        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
-        tree.setItemRenderer(new MiscFolderTreeRenderer());
+        FolderTreeModel model = new FolderTreeModel(new FolderTree(false, mainController).getRoot(), null);
+        tree.setItemRenderer(new MiscFolderTreeRenderer(mainController));
         tree.setModel(model);
     }
 }

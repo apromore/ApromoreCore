@@ -28,13 +28,17 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.PermissionType;
+import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -77,7 +81,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/users.zul", null, arg);
+            Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/index.zul", null, arg);
             window.doModal();
 
         } catch(Exception e) {
@@ -87,12 +91,15 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     }
 
     @Override
-    public Availability getAvailability(PortalContext portalContext) {
+    public Availability getAvailability() {
 
         // Require that the caller has the "Edit users" permission
-        for (PermissionType permission: portalContext.getCurrentUser().getPermissions()) {
-            if (Permissions.VIEW_USERS.getRowGuid().equals(permission.getId())) {
-                return Availability.AVAILABLE;
+        UserType user = UserSessionManager.getCurrentUser();
+        if (user != null) {
+            for (PermissionType permission: user.getPermissions()) {
+                if (Permissions.VIEW_USERS.getRowGuid().equals(permission.getId())) {
+                    return Availability.AVAILABLE;
+                }
             }
         }
 

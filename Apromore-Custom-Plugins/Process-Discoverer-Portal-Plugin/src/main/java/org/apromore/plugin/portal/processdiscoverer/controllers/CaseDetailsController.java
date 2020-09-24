@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.CaseInfo;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
@@ -80,7 +81,7 @@ public class CaseDetailsController extends DataListController {
 
     @Override
     public void onEvent(Event event) throws Exception {
-        caseDetailsWindow = (Window) Executions.createComponents("/zul/caseDetails.zul", null, null);
+        caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
         caseDetailsWindow.setTitle("Cases");
 
         caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
@@ -102,8 +103,8 @@ public class CaseDetailsController extends DataListController {
                     String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
                     AbstractionParams params = parent.genAbstractionParamsSimple(
                         false, true, false,
-                        MeasureType.DURATION, MeasureAggregation.CASES,
-                        MeasureType.FREQUENCY, MeasureAggregation.CASES
+                        MeasureType.DURATION, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE,
+                        MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE
                     );
                     Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
                     String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);

@@ -33,7 +33,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
- * ProcessBPMNDiagram is a <b>SimpleBPMNDiagram</b> that is used to visualize an <b>AttributeGraph</b>.
+ * ProcessBPMNDiagram is a {@link SimpleBPMNDiagram} that is used to visualize an <b>AttributeGraph</b>.
  * It contains the following elements:
  *  - One start event
  *  - One end event

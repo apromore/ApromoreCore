@@ -26,6 +26,7 @@ import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.relation.DirectFollowReader;
 import org.apromore.logman.attribute.log.relation.RelationReader;
@@ -53,12 +54,15 @@ public class UserOptionsData {
    
     private MeasureType fixedType = ConfigData.DEFAULT_MEASURE_TYPE;
     private MeasureAggregation fixedAggregation = ConfigData.DEFAULT_MEASURE_AGGREGATE;
+    private MeasureRelation fixedRelation = MeasureRelation.ABSOLUTE;
     
     private MeasureType primaryType = FREQUENCY;
     private MeasureAggregation primaryAggregation = MeasureAggregation.CASES;
+    private MeasureRelation primaryRelation = MeasureRelation.ABSOLUTE;
     
     private MeasureType secondaryType = DURATION;
     private MeasureAggregation secondaryAggregation = MeasureAggregation.MEAN;
+    private MeasureRelation secondaryRelation = MeasureRelation.ABSOLUTE;
     
     private String mainAttributeKey = "";
     
@@ -130,6 +134,14 @@ public class UserOptionsData {
         this.fixedAggregation = fixed;
     }
     
+    public MeasureRelation getFixedRelation() {
+        return this.fixedRelation;
+    }
+    
+    public void setFixedRelation(MeasureRelation newRelation) {
+        this.fixedRelation = newRelation;
+    }
+    
     public MeasureType getPrimaryType() {
         return this.primaryType;
     }
@@ -146,6 +158,14 @@ public class UserOptionsData {
         this.primaryAggregation = newAggregate;
     }
     
+    public MeasureRelation getPrimaryRelation() {
+        return this.primaryRelation;
+    }
+    
+    public void setPrimaryRelation(MeasureRelation newRelation) {
+        this.primaryRelation = newRelation;
+    }
+    
     public MeasureType getSecondaryType() {
         return this.secondaryType;
     }
@@ -160,6 +180,14 @@ public class UserOptionsData {
     
     public void setSecondaryAggregation(MeasureAggregation newAggregate) {
         this.secondaryAggregation = newAggregate;
+    }
+    
+    public MeasureRelation getSecondaryRelation() {
+        return this.secondaryRelation;
+    }
+    
+    public void setSecondaryRelation(MeasureRelation newRelation) {
+        this.secondaryRelation = newRelation;
     }
     
     public boolean getBPMNMode() {

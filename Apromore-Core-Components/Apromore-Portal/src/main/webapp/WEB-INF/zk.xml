@@ -54,6 +54,7 @@
     <label-location>/WEB-INF/ui.properties</label-location>
     <label-location>/WEB-INF/brand.properties</label-location>
     <label-location>/WEB-INF/msg.properties</label-location>
+    <web-app-class>org.apromore.portal.ApromoreWebApp</web-app-class>
   </system-config>
 
   <library-property>
@@ -394,6 +395,10 @@
     <listener>
             <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
     </listener>    
+
+    <listener>
+            <listener-class>org.apromore.zk.ApromoreDesktopCleanup</listener-class>
+    </listener>
 
     <!-- Configure the error page
     <error-page>

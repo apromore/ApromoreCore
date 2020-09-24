@@ -1,0 +1,132 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<vlayout
+    id="viewSettings"
+    xmlns:ca="client/attribute"
+    xmlns:w="client"
+    xmlns:n="native"
+    width="300px"
+    spacing="5px"
+    sclass="ap-pd-view-settings">
+  <n:div class="section">Visualization settings</n:div>
+  <n:div class="title" style="transform: rotate(-90deg);position:absolute;top:22px;left:-9px;">View</n:div>
+  <div sclass="ap-switch">
+    <n:span class="start">${labels.e.pd.viewProcess.text}</n:span>
+    <checkbox id="gateways"
+              checked="false"
+              mold="switch"/>
+    <n:span class="end">${labels.e.pd.viewBPMN.text}</n:span>
+  </div>
+  <div>
+    <div sclass="sublabel"
+         id="defaultPerspective" ca:title="Reset to Activity perspective">
+      <span class="ap-icon ap-icon-perspective"></span>
+      <label>Perspective</label>
+      <!--<label value="Perspective" sclass="sublabel" />-->
+    </div>
+    <combobox id="perspectiveSelector"
+              readonly="true"
+              width="126px">
+    </combobox>
+  </div>
+  <n:div class="title" style="transform: rotate(-90deg);position:absolute;top:38px;left:-18px;">Overlay</n:div>
+  <n:div class="ap-line-sep-hz" style="width: calc(100% - 10px); margin-bottom: 6px;"></n:div>
+  <!--
+  <n:div class="ap-switch" style="display: none;">
+    <n:span class="start">Single stats</n:span>
+    <checkbox id="includeSecondary" checked="false" mold="switch" />
+    <n:span class="end">Dual stats</n:span>
+  </n:div>
+  -->
+  <checkbox id="includeSecondary"
+            checked="false"
+            mold="switch"
+            visible="false"/>
+  <div sclass="ap-pd-view-option ap-state-on" id="freqOption">
+    <div sclass="sublabel" id="defaultFrequency" ca:title="Reset to Case frequency">
+      <!--<span class="ap-icon ap-icon-check-circle"></span>-->
+      <label sclass="stat-rank"
+             id="freqRank"
+             visible="false">1
+      </label>
+      <div sclass="ap-icon ap-icon-tally"></div>
+      <label>Frequency</label>
+    </div>
+    <!--<label value="Frequency" sclass="sublabel" />-->
+    <combobox id="frequencyAggSelector"
+              width="126px"
+              readonly="true"
+              sclass="ap-pd-freq-selector"
+              value="${labels.e.agg.count.text}">
+      <comboitem value="case"
+                 label="${labels.e.agg.count.text}"/>
+      <comboitem value="case_relative"
+                 label="${labels.e.agg.count_relative.text}"/>
+      <comboitem value="total"
+                 label="${labels.e.agg.total.text}"/>
+      <comboitem value="mean"
+                 label="${labels.e.agg.mean.text}"/>
+      <comboitem value="median"
+                 label="${labels.e.agg.median.text}"/>
+      <comboitem value="max"
+                 label="${labels.e.agg.max.text}"/>
+      <comboitem value="min"
+                 label="${labels.e.agg.min.text}"/>
+    </combobox>
+    <span
+        id="freqShow"
+        class="ap-icon ap-pd-toggle-secondary ap-icon-eye-close"></span>
+  </div>
+  <div sclass="ap-pd-view-option ap-state-off" id="durationOption">
+    <div sclass="sublabel" id="defaultDuration" ca:title="Reset to Average duration">
+      <!--<span class="ap-icon ap-icon-check-circle"></span>-->
+      <label sclass="stat-rank"
+             id="durationRank"
+             visible="false">2
+      </label>
+      <div sclass="ap-icon ap-icon-hourglass"></div>
+      <label>Duration</label>
+    </div>
+    <!--<label value="Duration" sclass="sublabel" />-->
+    <combobox id="durationAggSelector"
+              width="126px"
+              readonly="true"
+              sclass="ap-pd-duration-selector"
+              value="${labels.e.agg.mean.text}">
+      <comboitem value="total"
+                 label="${labels.e.agg.total.text}"/>
+      <comboitem value="mean"
+                 label="${labels.e.agg.mean.text}"/>
+      <comboitem value="median"
+                 label="${labels.e.agg.median.text}"/>
+      <comboitem value="max"
+                 label="${labels.e.agg.max.text}"/>
+      <comboitem value="min"
+                 label="${labels.e.agg.min.text}"/>
+    </combobox>
+    <span ca:title="Show as secondary metric"
+          id="durationShow"
+          class="ap-icon ap-pd-toggle-secondary ap-icon-eye-close">
+    </span>
+  </div>
+</vlayout>

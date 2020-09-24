@@ -48,5 +48,12 @@
     <osgi:service ref="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" auto-export="interfaces"/>
     <osgi:service ref="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository" auto-export="interfaces"/>
     <osgi:service ref="folderRepository" interface="org.apromore.dao.FolderRepository" auto-export="interfaces"/>
+    <osgi:service ref="groupUsermetadataRepository" interface="org.apromore.dao.GroupUsermetadataRepository"
+                  auto-export="interfaces"/>
+    <osgi:service ref="usermetadataRepository" interface="org.apromore.dao.UsermetadataRepository"
+                  auto-export="interfaces"/>
+    <osgi:service ref="userMetadataServiceImpl" interface="org.apromore.service.UserMetadataService"
+                  auto-export="interfaces"/>
+
 
 </beans:beans>

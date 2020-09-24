@@ -57,30 +57,29 @@
     <artifact type="bundle" name="org.apromore.plugin.generic-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
-    <artifact type="bundle" name="@about-portal.bundle@" version="[1.0.0, 2)"/>
+<!--    <artifact type="bundle" name="@about-portal.bundle@" version="[1.0.0, 2)"/>-->
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
-    <!--<artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/> -->
+    <artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="@csvimporter-logic.bundle@" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.csvimporter-portal" version="[1.0.0, 2)"/>
 
     <artifact type="bundle" name="org.apromore.etlplugin-logic" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.etlplugin-portal" version="[1.0.0, 2)"/>
-<!--    <artifact type="bundle" name="org.apromore.etlportal-plugin" version="[1.0.0, 2)"/>-->
 
     <artifact type="bundle" name="org.apromore.csvexporter-logic" version="[1.0.0, 2)"/>
-    <!--<artifact type="bundle" name="org.apromore.csvexporter-portal-plugin" version="[1.0.0, 2)"/>-->
+<!--    <artifact type="bundle" name="org.apromore.csvexporter-portal-plugin" version="[1.0.0, 2)"/>-->
     
     <artifact type="bundle" name="org.apromore.plugin.log-filter-portal-plugin-generic" version="[1.0.0, 2)"/>
     
-    <artifact type="bundle" name="org.apromore.plugin.apromore-bpmneditor" version="[1.1.0, 2)"/>
+<!--    <artifact type="bundle" name="org.apromore.plugin.apromore-bpmneditor" version="[1.1.0, 2)"/>-->
     
     <artifact type="bundle" name="org.apromore.log-animation-logic" version="[1.0.0,1.0.0]"/>
 	<artifact type="bundle" name="org.apromore.plugin.log-animation-portal-plugin" version="[1.0.0,1.0.0]"/>
     
     <artifact type="bundle" name="org.apromore.log-logic" version="[1.0.0,1.0.0]"/>
-	<artifact type="bundle" name="org.apromore.process-discoverer-logic" version="[2.0.0,2.0.0]"/>
-	<artifact type="bundle" name="org.apromore.process-discoverer-portal-plugin" version="[2.0.0,2.0.0]"/>    
+<!--	<artifact type="bundle" name="org.apromore.process-discoverer-logic" version="[2.0.0,2.0.0]"/>-->
+<!--	<artifact type="bundle" name="org.apromore.process-discoverer-portal-plugin" version="[2.0.0,2.0.0]"/>-->
 
 </plan>

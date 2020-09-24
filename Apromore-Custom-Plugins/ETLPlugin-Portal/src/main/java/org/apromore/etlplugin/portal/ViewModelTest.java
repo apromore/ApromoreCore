@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,22 +26,26 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.json.JSONObject;
-import org.zkoss.zhtml.Map;
+import java.util.*;
 import org.zkoss.zk.ui.Sessions;
 
+/**
+ * No need to document.
+ */
 public class ViewModelTest {
     private int count;
-    private ETLPluginLogic etlPluginLogic = ((Map) Sessions.getCurrent().getAttribute("mappingJSON")).get("etlPluginLogic");
+    private ETLPluginLogic etlPluginLogic;
 
     @Init
     public void init() {
-        count = 100;
+        etlPluginLogic = (ETLPluginLogic) ((Map) Sessions.getCurrent().getAttribute(ETLPluginPortal.SESSION_ATTRIBUTE_KEY)).get("etlPluginLogic");
+        count = 0;
     }
 
     @Command
     @NotifyChange("count")
     public void cmd() {
-        ++count;
+        count = 100+etlPluginLogic.getTest();
     }
 
     public int getCount() {

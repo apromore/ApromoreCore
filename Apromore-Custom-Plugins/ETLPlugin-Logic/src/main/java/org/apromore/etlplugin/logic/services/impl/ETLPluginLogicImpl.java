@@ -23,7 +23,16 @@ package org.apromore.etlplugin.logic.services.impl;
 
 import org.apromore.etlplugin.logic.services.ETLPluginLogic;
 
+/**
+ * ETL Plugin logic dummy.
+ */
 public class ETLPluginLogicImpl implements ETLPluginLogic {
+
+    /**
+     * Dummy test.
+     *
+     * @return random integer.
+     */
     public int getTest() {
         return 109;
     }

@@ -47,7 +47,7 @@ public class InputDialog {
                                 String valuePattern,
                                 String allowedValues, 
                                 EventListener<Event> returnValueHander) {
-        Window win = (Window) Executions.createComponents("/zul/inputDialog.zul", null, null);
+        Window win = (Window) Executions.createComponents("inputDialog.zul", null, null);
         Window dialog = (Window) win.getFellow("inputDialog");
         dialog.setTitle(title);
         Label labelMessage = (Label)dialog.getFellow("labelMessage"); 
@@ -67,21 +67,33 @@ public class InputDialog {
              }
          });
          
-         ((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
+        ((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
              @Override
              public void onEvent(Event event) throws Exception {
-                 if (txtValue.getValue().trim().isEmpty()) {
-                     labelError.setValue("Please enter a value!");
-                 }
-                 else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
-                     labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
-                 }
-                 else {
-                     dialog.detach();
-                     returnValueHander.onEvent( new Event("onOK", null, txtValue.getValue()));
-                 }
+                 okHandler(txtValue, labelError, valuePattern, allowedValues, dialog, returnValueHander);
              }
         });
+
+        win.addEventListener("onOK", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                okHandler(txtValue, labelError, valuePattern, allowedValues, dialog, returnValueHander);
+            }
+        });
         
+    }
+
+    public static void okHandler(Textbox txtValue, Label labelError, String valuePattern, String allowedValues, Window dialog, EventListener<Event> returnValueHander) throws Exception {
+        if (txtValue.getValue().trim().isEmpty()) {
+            labelError.setValue("Please enter a value!");
+        }
+        else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
+            labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
+        }
+        else {
+            dialog.detach();
+            returnValueHander.onEvent( new Event("onOK", null, txtValue.getValue()));
+        }
+
     }
 }

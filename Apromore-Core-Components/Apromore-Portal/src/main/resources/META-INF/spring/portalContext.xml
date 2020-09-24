@@ -50,6 +50,14 @@
         <constructor-arg type="String" value="${git.commit.id.describe}"/>
         <constructor-arg type="String" value="${version.edition}"/>
         <constructor-arg type="String" value="${git.commit.time}"/>
+
+        <constructor-arg type="String" value="${ldap.providerURL}"/>
+        <constructor-arg type="String" value="${ldap.userContext}"/>
+        <constructor-arg type="String" value="${ldap.usernameAttribute}"/>
+        <constructor-arg type="String" value="${ldap.emailAttribute}"/>
+        <constructor-arg type="String" value="${ldap.firstNameAttribute}"/>
+        <constructor-arg type="String" value="${ldap.lastNameAttribute}"/>
+
         <constructor-arg type="boolean" value="${security.publish.enable}"/>
         <constructor-arg type="boolean" value="${security.tcagree.enable}"/>
         <constructor-arg type="boolean" value="${security.ppagree.enable}"/>
@@ -73,6 +81,6 @@
 
     <import resource="portal-osgi-context.xml" />
     <import resource="portalContext-services.xml" />
-    <import resource="portalContext-security.xml" />
+    <import resource="file:configuration/portalContext-security.xml" />
 
 </beans>

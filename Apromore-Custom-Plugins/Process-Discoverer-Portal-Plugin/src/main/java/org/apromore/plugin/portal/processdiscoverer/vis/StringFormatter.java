@@ -24,13 +24,16 @@ package org.apromore.plugin.portal.processdiscoverer.vis;
 
 public class StringFormatter {
     private final int MAXLEN = 60;
-    private final int MAXWORDLEN = 25;
+    private final int MAXWORDLEN = 15;
 
     public String escapeChars(String value) {
     	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
     }
 
     public String fixCutName(String name, int len) {
+        name = name.replace('_', ' ');
+        name = name.replace('-', ' ');
+
         if (len <= 0) {
             len = MAXLEN;
         }
@@ -42,25 +45,34 @@ public class StringFormatter {
     }
 
     public String shortenName(String name, int len) {
-        boolean needEllipsis = false;
+        name = name.replace('_', ' ');
+        name = name.replace('-', ' ');
+
         if (len <= 0) {
             len = MAXLEN;
         }
         String[] parts = name.split(" ");
-        if (parts.length > 2) {
-            if (parts[0].length() > MAXWORDLEN || parts[parts.length - 1].length() > MAXWORDLEN) {
+        if (parts.length >= 2) {
+            int toCheck = parts.length - 1; // first ... last
+            // int toCheck = 1; // first second ...
+            if (parts[0].length() > MAXWORDLEN || parts[toCheck].length() > MAXWORDLEN) {
                 name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
-                needEllipsis = true;
-            } else {
-                name = parts[0] + " ... " + parts[parts.length - 1];
+                return name + "...";
+            } else if (parts.length > 2) {
+                if (name.length() > len) {
+                    name = parts[0] + " ... " + parts[toCheck]; // first ... last
+                    // name = parts[0] + " " + parts[toCheck] + "..."; // first second ...
+                    if (name.length() > len) {
+                        return name.substring(0, len)  + "...";
+                    }
+                    return name;
+                } else {
+                    return name;
+                }
             }
-        }
-        if (name.length() > len) {
-            name = name.substring(0, len);
-            needEllipsis = true;
-        }
-        if (needEllipsis) {
-            name += "...";
+        } else if (parts[0].length() > MAXWORDLEN) {
+            name = parts[0].substring(0, Math.min(MAXWORDLEN, parts[0].length()));
+            return name + "...";
         }
         return name;
     }

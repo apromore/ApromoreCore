@@ -27,7 +27,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:beans="http://www.springframework.org/schema/beans"
    xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.eclipse.org/gemini/blueprint/schema/blueprint
        http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
@@ -37,8 +37,8 @@
     <context:spring-configured />
 
     <!-- Other OSGi services this component consumes -->
-	<list id="bpmnEditorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
-	<reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
+    <list id="bpmnEditorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
+    <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
 
@@ -50,8 +50,29 @@
         <beans:property name="label" value="Edit BPMN Model" />
     </beans:bean>
     -->
-	
-	<!-- <context:component-scan base-package="org.apromore.plugin.portal.bpmneditor" /> -->
+
+    <!-- <context:component-scan base-package="org.apromore.plugin.portal.bpmneditor" /> -->
     <!-- <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" /> -->
+
+    <!-- Exposes the component's resources as web content -->
+    <service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.bpmneditor.BPMNEditorWebContentService"/>
+    </service>
+
+    <!-- Editor plugins handler servlet -->
+    <beans:bean id="pluginsHandlerServlet" class="org.apromore.plugin.portal.bpmneditor.PluginsHandlerServlet"/>
+    <service ref="pluginsHandlerServlet" interface="javax.servlet.http.HttpServlet">
+        <service-properties>
+            <beans:entry key="osgi.http.whiteboard.servlet.pattern" value="/bpmneditor/bpmneditor_plugins" />
+        </service-properties>
+    </service>
+
+    <!-- PDF export servlet -->
+    <beans:bean id="pdfServlet" class="org.apromore.editor.server.AlternativesRenderer"/>
+    <service ref="pdfServlet" interface="javax.servlet.http.HttpServlet">
+        <service-properties>
+            <beans:entry key="osgi.http.whiteboard.servlet.pattern" value="/bpmneditor/editor/pdf" />
+        </service-properties>
+    </service>
 
 </beans:beans>

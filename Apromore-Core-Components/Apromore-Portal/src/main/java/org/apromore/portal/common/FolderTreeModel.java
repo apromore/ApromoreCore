@@ -27,6 +27,9 @@ package org.apromore.portal.common;
 import org.zkoss.zul.DefaultTreeModel;
 import org.zkoss.zul.DefaultTreeNode;
 
+import java.util.Set;
+import java.util.HashSet;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Igor
@@ -42,9 +45,14 @@ public class FolderTreeModel extends DefaultTreeModel {
 
     DefaultTreeNode _root;
 
-    public FolderTreeModel(FolderTreeNode contactTreeNode) {
+    public FolderTreeModel(FolderTreeNode contactTreeNode, FolderTreeNode currentFolder) {
         super(contactTreeNode);
         _root = contactTreeNode;
+        if (currentFolder != null) {
+            Set<FolderTreeNode> selectedFolder = new HashSet<FolderTreeNode>();
+            selectedFolder.add(currentFolder);
+            this.setSelection(selectedFolder);
+        }
     }
 
     /**

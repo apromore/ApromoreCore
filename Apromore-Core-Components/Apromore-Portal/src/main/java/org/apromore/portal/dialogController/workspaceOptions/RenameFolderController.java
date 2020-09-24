@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
@@ -43,15 +44,12 @@ public class RenameFolderController extends BaseController {
     private Window folderEditWindow;
     private Button btnSave;
     private Button btnCancel;
-    private Button btnReset;
     private Textbox txtName;
-    private String prevName;
     private int folderId;
     private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
 
     public RenameFolderController(MainController mainController, int folderId, String name) throws DialogException {
         this.mainController = mainController;
-        this.prevName = name;
 
         try {
             final Window win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
@@ -60,7 +58,6 @@ public class RenameFolderController extends BaseController {
             this.txtName.setValue(name);
             this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
             this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
-            this.btnReset = (Button) this.folderEditWindow.getFellow("btnReset");
             this.folderId = folderId;
 
             folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
@@ -71,18 +68,17 @@ public class RenameFolderController extends BaseController {
             });
             btnSave.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    Clients.showBusy("Processing...");
-                    Events.echoEvent("onLater", folderEditWindow, null);
+                    submit();
+                }
+            });
+            win.addEventListener("onOK", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    submit();
                 }
             });
             btnCancel.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     cancel();
-                }
-            });
-            btnReset.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    reset();
                 }
             });
             win.doModal();
@@ -91,17 +87,18 @@ public class RenameFolderController extends BaseController {
         }
     }
 
+    private void submit() throws Exception {
+        Clients.showBusy("Processing...");
+        Events.echoEvent("onLater", folderEditWindow, null);
+    }
+
     private void cancel() throws IOException {
         this.folderEditWindow.detach();
     }
 
-    private void reset() {
-        this.txtName.setValue(prevName);
-    }
-
     private void save() throws InterruptedException {
         try {
-            String folderName = txtName.getValue();
+            String folderName = txtName.getValue().trim();
             if (folderName.isEmpty()) {
                 Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
                 return;
@@ -110,9 +107,14 @@ public class RenameFolderController extends BaseController {
             LOGGER.warning("folderName " + folderName);
             this.mainController.getService().updateFolder(this.folderId, folderName, UserSessionManager.getCurrentUser().getUsername());
             this.mainController.reloadSummaries();
+            this.folderEditWindow.detach();
         } catch (Exception ex) {
-            if (ex.getCause() instanceof NotAuthorizedException) {
+            if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
                 Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            }
+            if (ex instanceof WrongValueException) {
+                // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                return;
             }
             LOGGER.warning("Exception ");
             StackTraceElement[] trace = ex.getStackTrace();

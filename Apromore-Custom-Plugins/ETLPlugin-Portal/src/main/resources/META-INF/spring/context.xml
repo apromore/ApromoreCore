@@ -26,22 +26,25 @@
              xmlns:osgi="http://www.springframework.org/schema/osgi"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="
-            http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-            http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+                http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                http://www.springframework.org/schema/osgi
+                http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-
+  <!-- Reference ETLPluginLogic bean -->
   <osgi:reference id="etlPluginLogic" interface="org.apromore.etlplugin.logic.services.ETLPluginLogic"/>
 
-  <osgi:service interface="org.apromore.plugin.portal.PortalPlugin">
-    <beans:bean id="etlPluginPortal" class="org.apromore.etlplugin.portal.ETLPluginPortal">
-      <beans:property name="etlPluginLogic" ref="etlPluginLogic"/>
-    </beans:bean>
-  </osgi:service>
+  <!-- ETL Portal Bean -->
+  <beans:bean scope="bundle" id="etlPluginPortal" class="org.apromore.etlplugin.portal.ETLPluginPortal">
+    <beans:property name="etlPluginLogic" ref="etlPluginLogic"/>
+  </beans:bean>
 
+  <!-- SERVICE: Portal Plugin bean -->
+  <osgi:service ref="etlPluginPortal" interface="org.apromore.plugin.portal.PortalPlugin"/>
+
+  <!-- SERVICE: Webcontent to create /etlplugin route. -->
   <osgi:service interface="org.apromore.plugin.portal.WebContentService">
-    <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
-      <beans:constructor-arg type="Object" ref="etlPluginPortal"/>
-    </beans:bean>
+    <beans:bean class="org.apromore.etlplugin.portal.ETLWebContentService"/>
   </osgi:service>
 
 </beans:beans>

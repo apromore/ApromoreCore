@@ -97,9 +97,9 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
         switch (ctn.getType()) {
         case Folder:
             FolderType folder = (FolderType) ctn.getData();
-            FolderType currentFolder = UserSessionManager.getCurrentFolder();
+            FolderType currentFolder = this.securitySetupController.getMainController().getPortalSession().getCurrentFolder();
 
-            if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, currentFolder)) {
+            if (folder.getId() == 0 || checkOpenFolderTree(folder, currentFolder)) {
                 treeItem.setOpen(true);
                 if (currentFolder != null && folder.getId().equals(currentFolder.getId())) {
                     treeItem.setSelected(true);
@@ -131,6 +131,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
                 hl.appendChild(new Label(processName));
                 dataRow.setSclass("ap-tree-leave");
+                dataRow.setTooltiptext(processName);
             }
             break;
 
@@ -144,6 +145,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 // hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
                 hl.appendChild(new Label(processName));
                 dataRow.setSclass("ap-tree-leave");
+                dataRow.setTooltiptext(processName);
             }
             break;
 

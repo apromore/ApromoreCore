@@ -88,7 +88,8 @@ public class ProcessListboxController extends BaseListboxController {
                 }
 
                 // Set the selected folders
-                UserSessionManager.setSelectedFolderIds(folderIdList);
+                // UserSessionManager.setSelectedFolderIds(folderIdList);
+                getMainController().getPortalSession().setSelectedFolderIds(folderIdList);
             }
         });
     }
@@ -111,7 +112,8 @@ public class ProcessListboxController extends BaseListboxController {
      */
     @SuppressWarnings("unchecked")
     public void displaySummaries(List<FolderType> subFolders, SummariesType summaries, Boolean isQueryResult) {
-        this.columnScore.setVisible(isQueryResult);
+        // this.columnScore.setVisible(isQueryResult);
+        this.columnScore.setVisible(false);
 
         getListBox().clearSelection();
         getListBox().setModel(new ListModelList<>());
@@ -119,13 +121,14 @@ public class ProcessListboxController extends BaseListboxController {
 
         //getListModel().addAll(subFolders);
         getListModel().addAll(summaries.getSummary());
-        if (isQueryResult && getListBox().getItemCount() > 0) {
-            getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
-        }
+        // if (isQueryResult && getListBox().getItemCount() > 0) {
+        //    getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
+        // }
     }
 
     public SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult) {
-        this.columnScore.setVisible(isQueryResult);
+        // this.columnScore.setVisible(isQueryResult);
+        this.columnScore.setVisible(false);
 
         getListBox().clearSelection();
         SummaryListModel model = new SummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
@@ -218,7 +221,8 @@ public class ProcessListboxController extends BaseListboxController {
     public void displayNewProcess(ProcessSummaryType process) {
        // getListModel().add(process);  // This will trigger a UiException from ZK do to the additional complexity of paged result fetching
 
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
         SummaryListModel model = displaySummaries(subFolders, false);
     }

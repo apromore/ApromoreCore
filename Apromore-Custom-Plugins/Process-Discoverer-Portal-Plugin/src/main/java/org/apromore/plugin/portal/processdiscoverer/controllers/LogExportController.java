@@ -58,7 +58,7 @@ public class LogExportController extends AbstractController {
         }
         
         InputDialog.showInputDialog(
-                Labels.getLabel("e.pd.saveLogWin.text"), //"Save filtered log",
+            Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
             "Enter a log name (no more than 60 characters)", 
             contextData.getLogName() + "_filtered", 
             "^[a-zA-Z0-9_\\(\\)\\-\\s\\.]{1,60}$",
