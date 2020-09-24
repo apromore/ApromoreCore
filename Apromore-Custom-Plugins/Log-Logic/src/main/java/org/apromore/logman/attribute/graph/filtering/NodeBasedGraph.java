@@ -26,6 +26,7 @@ import java.util.BitSet;
 import java.util.LinkedList;
 
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.graph.WeightedAttributeGraph;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -39,7 +40,8 @@ import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.eclipse.collections.impl.factory.primitive.IntStacks;
 
 /**
- * NodeBasedGraph is FilteredGraph based on filtering out nodes
+ * NodeBasedGraph is a {@link WeightedAttributeGraph} created by filtering out nodes
+ * on an original {@link AttributeLogGraph}.
  * 
  * @author Bruce Nguyen
  *
@@ -368,4 +370,5 @@ public class NodeBasedGraph extends AbstractFilteredGraph {
     public IntList getSortedRemovableArcs() {
         return originalGraph.getSortedArcs().select(arc -> arcBitMask.get(arc) && !forwardArcs.containArc(arc) && !backwardArcs.containArc(arc));
     }
+    
 }

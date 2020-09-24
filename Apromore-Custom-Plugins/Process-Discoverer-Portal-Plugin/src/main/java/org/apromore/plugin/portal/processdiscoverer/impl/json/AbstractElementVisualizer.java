@@ -22,6 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
+import org.apromore.logman.attribute.graph.MeasureRelation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
@@ -51,6 +53,25 @@ public abstract class AbstractElementVisualizer implements ElementVisualizer {
 	public void setVisualSettings(VisualSettings visSettings) {
 	    this.visSettings = visSettings;
 	}
+	
+    protected String getWeightString(double weightValue, String separator, MeasureType measureType, 
+                                        MeasureRelation measureRelation) {
+        if (measureRelation == MeasureRelation.ABSOLUTE) {
+            if (measureType == MeasureType.FREQUENCY) {
+                return separator + visSettings.getDecimalFormatter().format(weightValue);
+            }
+            else if (measureType == MeasureType.DURATION) {
+                return separator + visSettings.getTimeConverter().convertMilliseconds("" + weightValue);
+            }
+            else {
+                return "";
+            }
+        }
+        else {
+            return separator + visSettings.getDecimalFormatter().format(weightValue*100) + "%";
+        }
+    }
+	
 	
 	@Override
     public abstract JSONObject generateJSON(ContainableDirectedGraphElement element) 

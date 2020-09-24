@@ -1,0 +1,276 @@
+databaseChangeLog:
+ - changeSet:
+    id: 20200915024502
+    author: nolantellis
+    changes:
+      - createTable:
+           tableName: usermetadata_type
+           columns: 
+             - column:
+                  name: id
+                  type: INT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_usermetadata_type_id                  
+             - column:                
+                constraints:
+                   nullable: true
+                name: type
+                type: VARCHAR(255)
+                remarks: 'Metadata type'
+             - column:
+                constraints:
+                   nullable: false
+                name: version
+                type: INT
+                remarks: 'Metadata type'
+             - column:
+                  constraints:
+                     nullable: false
+                  name: is_valid
+                  type: TINYINT
+                  remarks: 'Indicate whether this record is valid'           
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_usermetadata_id
+                name: id
+                type: INT
+            - column:
+                constraints:
+                  nullable: false
+                name: type_id
+                type: INT
+                remarks: 'FK User mtadata type id'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: created_by
+                 type: VARCHAR(255)
+                 remarks: 'The user create this metadata'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: created_time
+                 type: VARCHAR(40)
+                 remarks: 'Create time'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: updated_by
+                 type: VARCHAR(255)
+                 remarks: 'The user updated this metadata'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: updated_time
+                 type: VARCHAR(40)
+                 remarks: 'Update time'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: content
+                 type: MEDIUMTEXT
+                 remarks: 'Content of user metadata'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: revision
+                 type: INT
+                 remarks: 'reserve for optimistic lock'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: is_valid
+                 type: TINYINT
+                 remarks: 'Indicate whether this record is valid'        
+         tableName: usermetadata
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: type_id
+         baseTableName: usermetadata
+         constraintName: FK_usermetadata_type_id
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata_type
+         validate: true
+      
+      - createIndex:
+         columns:
+            - column:
+                name: type_id
+         indexName: IDX_type_id
+         tableName: usermetadata
+      
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_usermetadata_log_id
+                name: id
+                type: INT
+            - column:
+                 constraints:
+                   nullable: true
+                 name: usermetadata_id
+                 type: INT
+                 remarks: 'FK USERMETADATA ID'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: log_id
+                 type: INT
+                 remarks: 'FK LOGID ID'
+         tableName: usermetadata_log
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: log_id
+         baseTableName: usermetadata_log
+         constraintName: FK_usermetadata_log_id
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: log
+         validate: true
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: usermetadata_id
+         baseTableName: usermetadata_log
+         constraintName: FK_usermetadata_usermetadata_id
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata
+         validate: true
+
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_usermetadata_process_id
+                name: id
+                type: INT
+            - column:
+                 constraints:
+                   nullable: true
+                 name: usermetadata_id
+                 type: INT
+                 remarks: 'FK USERMETADATA ID'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: process_id
+                 type: INT
+                 remarks: 'FK PROCESS ID'
+         tableName: usermetadata_process
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: usermetadata_id
+         baseTableName: usermetadata_process
+         constraintName: usermetadata_process_ibfk_1
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata
+         validate: true
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: process_id
+         baseTableName: usermetadata_process
+         constraintName: usermetadata_process_ibfk_2
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: process
+         validate: true
+
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_group_usermetadata_id
+                name: id
+                type: INT
+            - column:
+                 constraints:
+                   nullable: false
+                 name: group_id
+                 type: INT
+                 remarks: 'FK GROUP ID'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: usermetadata_id
+                 type: INT
+                 remarks: 'FK USER METADATA ID'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: has_read
+                 type: TINYINT
+                 remarks: 'Has read permission'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: has_write
+                 type: TINYINT
+                 remarks: 'Has write permission'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: has_ownership
+                 type: TINYINT
+                 remarks: 'Has ownership permission'
+         tableName: group_usermetadata
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: group_id
+         baseTableName: group_usermetadata
+         constraintName: group_usermetadata_ibfk_1
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: group
+         validate: true
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: usermetadata_id
+         baseTableName: group_usermetadata
+         constraintName: group_usermetadata_ibfk_2
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata
+         validate: true
+                           
+ 

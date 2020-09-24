@@ -1,0 +1,50 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+
+<window width="400px" closable="false" position="center" id="inputDialog" sclass="ap-input-dialog">
+    <vbox vflex="1">
+        <grid sclass="ap-grid ap-form">
+            <columns sizable="true">
+                <!--<column width="30%"></column>-->
+                <column width="100%"></column>
+            </columns>
+            <rows>
+                <row>
+                    <label id="labelError" value="" width="100%" style="color:red;"/>
+                </row>
+                <row>
+                    <label id="labelMessage" value="" width="100%"/>
+                </row>
+                <row>
+                    <textbox id="txtValue" value="" width="100%" submitByEnter="true"/>
+                </row>
+                <row spans="3" sclass="ap-window-footer-actions">
+                    <div align="center">
+                        <button id="btnOK" label="OK" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>

@@ -26,6 +26,7 @@ import java.util.BitSet;
 
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -53,8 +54,8 @@ public interface FilteredGraph {
     public int getSource(int arc);    
     public int getTarget(int arc);    
     public IntSet getArcs();    
-    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation);    
-    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation);
+    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation);    
+    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation);
     public boolean isPerfectSequence();
     public ListIterable<FilteredGraph> getSubGraphs();
 }

@@ -48,6 +48,12 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     Group findByRowGuid(String rowGuid);
 
     /**
+     * @param name  the name of an existing group
+     * @return the group with the specified <var>name</var>
+     */
+    Group findByName(String name);
+
+    /**
      * Search for groups by name.
      *
      * @param searchString the username of the user we are searching for.

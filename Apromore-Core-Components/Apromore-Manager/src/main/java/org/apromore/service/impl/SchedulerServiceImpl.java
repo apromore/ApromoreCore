@@ -3,6 +3,7 @@
  * This file is part of "Apromore Core".
  * 
  * Copyright (C) 2013 - 2017 Queensland University of Technology.
+ * Copyright (C) 2016 Adriano Augusto.
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%

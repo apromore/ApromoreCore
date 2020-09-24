@@ -1,0 +1,73 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+.ap-usrmgt-win .z-tabpanel {
+    padding: 0;
+}
+
+.ap-usrmgt-win .ap-mini-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.ap-usrmgt-win .ap-listheader-search input[type="checkbox"] {
+    display: none;
+}
+
+.ap-usrmgt-win .z-listheader-checkable {
+    position:absolute;
+    top: 5px;
+    left: 8px;
+}
+
+.ap-usrmgt-win .z-auxheader {
+    border: none !important;
+}
+
+.ap-tristatelistbox .z-listheader {
+    border: none !important;
+}
+
+.ap-usrmgt-detail {
+    background-color: var(--ap-c-grey-minor);
+    padding: 8px 10px;
+}
+
+.ap-usrmgt-win .z-listheader-checkable {
+    visibility: hidden;
+}
+
+.ap-usrmgt-detail .z-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: black;
+}
+
+.ap-form-sublist .z-label {
+    font-weight: normal !important;
+    color: white !important;
+}
+
+.ap-form-sublist table td:first-child .z-listcell-content {
+    text-align: left !important;
+}

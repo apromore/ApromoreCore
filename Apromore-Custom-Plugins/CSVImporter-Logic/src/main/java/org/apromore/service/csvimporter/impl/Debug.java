@@ -1,6 +1,8 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
+ *
+ * Copyright (C) 2020 University of Tartu
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
@@ -56,8 +58,12 @@ public class Debug {
 
 
         Parse parse = new Parse();
+        System.out.println(parse.getPreferMonthFirst());
         System.out.println(parse.tryParsingWithFormat("1/1/16 20:51", "ssss"));
         System.out.println(parse.tryParsing("2019-10-14 08:09"));
+        System.out.println(parse.tryParsing("25/06/2020 12:16:05"));
+        System.out.println(parse.tryParsing("06/01/2022 12:16:05"));
+        System.out.println(parse.tryParsing("06/05/2022 12:16:05"));
 
     }
 }

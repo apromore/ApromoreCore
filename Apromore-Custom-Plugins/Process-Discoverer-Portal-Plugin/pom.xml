@@ -16,7 +16,7 @@
 
     <artifactId>process-discoverer-portal-plugin</artifactId>
     <version>2.0.0</version>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <name>Process Discoverer Portal Plugin</name>
 
     <build>
@@ -57,24 +57,10 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.portal.processdiscoverer.plugins,
-                            org.apromore.plugin.portal.processdiscoverer.servlets
+                            org.apromore.plugin.portal.processdiscoverer,
+                            org.apromore.plugin.portal.processdiscoverer.plugins
                         </Export-Package>
-                        <Web-ContextPath>processdiscoverer</Web-ContextPath>
                     </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
-                        %regex[WEB-INF/lib/(?!jbpt-bpm).*jar]
-                    </packagingExcludes>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
                 </configuration>
             </plugin>
 
@@ -167,7 +153,6 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>log-animation-portal-plugin</artifactId>
             <version>1.0</version>
-            <classifier>classes</classifier>
         </dependency>
 
         <dependency>

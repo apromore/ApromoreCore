@@ -25,7 +25,7 @@ package org.apromore.logman.attribute.graph;
 import java.util.Comparator;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
-import org.apromore.logman.attribute.IndexableAttribute;
+import org.apromore.logman.attribute.AttributeMatrixGraph;
 import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.graph.filtering.NodeBasedGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
@@ -50,13 +50,13 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
- * AttributeLogGraph is an {@link WeightedAttributeGraph} implementation for AttributeLog.
- * AttributeLogGraph can be created by adding graphs of all {@link AttributeTrace}. 
+ * AttributeLogGraph is a {@link WeightedAttributeGraph} for an {@link AttributeLog}.
+ * Thus, AttributeLogGraph is a subgraph of an {@link AttributeMatrixGraph} (a base graph).
+ * AttributeLogGraph is created from an AttributeLog by merging all the graphs of {@link AttributeTrace} in the log. 
  * AttributeLogGraph can be filtered on nodes and arcs to create subgraphs. 
- * This is filtering at the graph level, not at the log level.
  * 
  * @author Bruce Nguyen
- *
+ * 
  */
 public class AttributeLogGraph extends WeightedAttributeGraph {
     private AttributeLog attLog;
@@ -93,15 +93,13 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private MutableIntObjectMap<MutableDoubleList> arcFreqs = IntObjectMaps.mutable.empty();
     private MutableIntObjectMap<MutableDoubleList> arcDurations = IntObjectMaps.mutable.empty();
     
-    // Sub-graphs and related data and parameters
-    private MutableList<FilteredGraph> subGraphs = Lists.mutable.empty();
     private IntList sortedNodes;
     private IntList sortedArcs;
-    private IndexableAttribute subGraphsSortedAttribute;
-    private MeasureType weightType;
-    private MeasureAggregation weightAggregation;
-    private IntDoubleMap nodeWeightsForGraphStructure;
-    private IntDoubleMap arcWeightsForGraphStructure;
+    
+    // Sub-graphs and related data and parameters
+    private MutableList<FilteredGraph> subGraphs = Lists.mutable.empty();
+    private IntDoubleMap nodeWeightsForGraphStructure = nodeCaseFreqs;
+    private IntDoubleMap arcWeightsForGraphStructure = arcCaseFreqs;
     private boolean nodeInverted = false; 
     private boolean arcInverted = false;
     
@@ -155,28 +153,45 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         traceGraph.getArcs().forEach(arc -> updateArcWeights(arc, traceGraph));
     }
     
-    // Used to update other data after the log and graph has been fully updated. 
+    private void addZeros(MutableDoubleList list, int num) {
+    	for (int i=0; i<num; i++) {
+    		list.add(0d);
+    	}
+    }
+    
+    // Used to update other data after the log and graph has been fully updated.
+    // This final update is needed for mean, median and min frequency
     public void finalUpdate() {
+        final int NUM_OF_TRACES = attLog.getTraces().size();
         Median medianCalculator = new Median();
         graphNodes.forEach(node -> {
             nodeMeanFreqs.put(node, nodeTotalFreqs.get(node)/attLog.getTraces().size());
             nodeMeanDurs.put(node, nodeTotalDurs.get(node)/nodeTotalFreqs.get(node));
+            
+            // Add the same number of zeros as the number of traces that a node doesn't occur
+            if (nodeFreqs.get(node).size() < NUM_OF_TRACES) addZeros(nodeFreqs.get(node), NUM_OF_TRACES - nodeFreqs.get(node).size());
             nodeMedianFreqs.put(node, medianCalculator.evaluate(nodeFreqs.get(node).toArray()));
             nodeMedianDurs.put(node, medianCalculator.evaluate(nodeDurations.get(node).toArray()));
-            if (nodeCaseFreqs.get(node) != attLog.getTraces().size()) {// there's a case not containing the node
-                nodeMinFreqs.put(node, 0);
-            }
+            
+            // there's a case not containing the node, fix the min node frequency
+            if (nodeCaseFreqs.get(node) != NUM_OF_TRACES) nodeMinFreqs.put(node, 0);
         });
         
         graphArcs.forEach(arc -> {
             arcMeanFreqs.put(arc, arcTotalFreqs.getIfAbsentPut(arc, 0)/attLog.getTraces().size());
             arcMeanDurs.put(arc, arcTotalDurs.get(arc)/arcTotalFreqs.get(arc));
+            
+            // Add the same number of zeros as the number of traces that a node doesn't occur
+            if (arcFreqs.get(arc).size() < NUM_OF_TRACES) addZeros(arcFreqs.get(arc), NUM_OF_TRACES - arcFreqs.get(arc).size());
             arcMedianFreqs.put(arc, medianCalculator.evaluate(arcFreqs.get(arc).toArray()));
             arcMedianDurs.put(arc, medianCalculator.evaluate(arcDurations.get(arc).toArray()));
-            if (arcCaseFreqs.get(arc) != attLog.getTraces().size()) { // there's a case not containing the arc
-                arcMinFreqs.put(arc, 0);
-            }
+            
+            // there's a case not containing the arc, fix the min arc frequency
+            if (arcCaseFreqs.get(arc) != NUM_OF_TRACES) arcMinFreqs.put(arc, 0);
         });
+        
+        sortedNodes = graphNodes.toList();
+        sortedArcs = graphArcs.toList();
         
         // Release data structures storing median values
         nodeFreqs.clear();
@@ -188,16 +203,16 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     ////////////////////////////  Node measure ///////////////////////////////////
     
     private void updateNodeWeights(int node, AttributeTraceGraph traceGraph) {
-        incrementNodeTotalFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        incrementNodeCaseFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.CASES));
-        updateNodeMinFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        updateNodeMaxFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        incrementNodeTotalFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        incrementNodeCaseFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE));
+        updateNodeMinFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateNodeMaxFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         
-        incrementNodeTotalDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.TOTAL));
-        updateNodeMinDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MIN));
-        updateNodeMaxDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MAX));
+        incrementNodeTotalDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateNodeMinDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE));
+        updateNodeMaxDuration(node, traceGraph.getNodeWeight(node, MeasureType.DURATION, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE));
         
-        collectNodeFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        collectNodeFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectNodeDuration(node, traceGraph.getNodeDurations(node));
     }    
     
@@ -242,16 +257,16 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     //////////////////////////// Arc measure ///////////////////////////////////
     
     private void updateArcWeights(int arc, AttributeTraceGraph traceGraph) {
-        incrementArcTotalFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        incrementArcCaseFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.CASES));
-        updateArcMinFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
-        updateArcMaxFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        incrementArcTotalFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        incrementArcCaseFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE));
+        updateArcMinFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateArcMaxFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         
-        incrementArcTotalDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.TOTAL));
-        updateArcMinDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MIN));
-        updateArcMaxDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MAX));
+        incrementArcTotalDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
+        updateArcMinDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE));
+        updateArcMaxDuration(arc, traceGraph.getArcWeight(arc, MeasureType.DURATION, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE));
         
-        collectArcFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL));
+        collectArcFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectArcDuration(arc, traceGraph.getArcDurations(arc));
     }    
     
@@ -296,19 +311,37 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     
     ///////////////////////////// MEAUSURES ////////////////////////////////////////
     
-    public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation) {
+    public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
         int node = this.getNodeFromName(nodeName);
-        return (node >= 0) ? this.getNodeWeight(node, type, aggregation) : 0;
+        return (node >= 0) ? this.getNodeWeight(node, type, aggregation, measureRelation) : 0;
     }
     
     @Override
-    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation) {
-        return (!containNode(node) ? 0d : getNodeWeightMap(type, aggregation).get(node));
+    public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
+        if (!containNode(node)) {
+            return 0d;
+        }
+        else if (measureRelation == MeasureRelation.ABSOLUTE) {
+            return getNodeWeightMap(type, aggregation).get(node);
+        }
+        else {
+            double totalWeight = getTotalWeight(type, aggregation);
+            return totalWeight==0 ? 0d : getNodeWeightMap(type, aggregation).get(node)/totalWeight;
+        }
     }
     
     @Override
-    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation) {
-        return (!containArc(arc) ? 0d : getArcWeightMap(type, aggregation).get(arc));
+    public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
+        if (!containArc(arc)) {
+            return 0d;
+        }
+        else if (measureRelation == MeasureRelation.ABSOLUTE) {
+            return getArcWeightMap(type, aggregation).get(arc);
+        }
+        else {
+            double totalWeight = getTotalWeight(type, aggregation);
+            return totalWeight==0 ? 0d : getArcWeightMap(type, aggregation).get(arc)/totalWeight;
+        }
     }
     
     public double getArcStructuralWeight(int arc) {
@@ -393,52 +426,64 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         }
     }
     
+    // The total weight is used for calculating relative measures 
+    // Only used for Case Frequency atm, can extend for other types of measures if needed
+    private double getTotalWeight(MeasureType type, MeasureAggregation aggregation) {
+        if (type == MeasureType.FREQUENCY) {
+            switch (aggregation) {
+            case TOTAL:
+                return 1;
+            case CASES:
+                return this.attLog.getTraces().size();                
+            case MEAN:
+                return 1;
+            case MIN:
+                return 1;
+            case MAX:
+                return 1;
+            case MEDIAN:
+                return 1;
+            default:
+                return 1;
+            }
+        }
+        else {
+            switch (aggregation) {
+            case TOTAL:
+                return 1;
+            case MEAN:
+                return 1;
+            case MIN:
+                return 1;
+            case MAX:
+                return 1;
+            case MEDIAN:
+                return 1;
+            default:
+                return 1;
+            }
+        }
+    }
+    
     ///////////////////////////// FILTER ////////////////////////////////////////
     
-    // The sorted nodes are sequenced: A (disconnected) B (connected) C (disconnected) D (connected, weight changes a lot) E (connected)
-    // Disconnected means removing the node would make the graph disconnected, the same for connected. 
-    // The batches would be: {A,B}, {C,D,E} 
-    public void buildSubGraphs(IndexableAttribute sortedAttribute, MeasureType newWeightType, MeasureAggregation newWeightAggregation, 
-            boolean newNodeInverted, boolean newArcInverted) {
+    /**
+     * Build a list of subgraphs from this graph.
+     * The subgraphs range from small to large (the largest one is this graph)
+     * This is done by selecting nodes/arcs to remove from a graph to produce smaller ones, starting from this graph.
+     * Selecting nodes and arcs is done on a sorted list of nodes and arcs ({@link AttributeLogGraph#sortNodesAndArcs})
+     * The selection can be made from the start of the list and forward or from the end of the list and backward. 
+     * 
+     * @param invertedElementSelection: if true, nodes and arcs are selected from the end of the list and backward
+     */
+    public void buildSubGraphs(boolean invertedElementSelection) {
         System.out.println("Total Number of nodes: " + this.getNodes().size());
         System.out.println("Total Number of arcs: " + this.getArcs().size());
         
         long timer = System.currentTimeMillis();
         
-        boolean buildSubgraphs = false;
-        boolean sortNodesArcs = false;
-        
-        if (subGraphs.isEmpty()) {
-            sortNodesArcs = true;
-        }
-        else if (subGraphsSortedAttribute != sortedAttribute) {
-            sortNodesArcs = true;
-        }
-        else if (weightType != newWeightType || weightAggregation != newWeightAggregation) {
-            nodeWeightsForGraphStructure = getNodeWeightMap(weightType, weightAggregation);
-            arcWeightsForGraphStructure = getArcWeightMap(weightType, weightAggregation);
-            sortNodesArcs = true;
-        }
-        else if (nodeInverted != newNodeInverted || arcInverted != newArcInverted) {
-            buildSubgraphs = true;
-        }
-        
-        subGraphsSortedAttribute = sortedAttribute;
-        weightType = newWeightType;
-        weightAggregation = newWeightAggregation;
-        nodeInverted = newNodeInverted;
-        arcInverted = newArcInverted;
-        
-        if (!sortNodesArcs && !buildSubgraphs) {
-            return;
-        }
-        
-        // Start building sub-graphs
-        if (sortNodesArcs) {
-            nodeWeightsForGraphStructure = getNodeWeightMap(weightType, weightAggregation);
-            arcWeightsForGraphStructure = getArcWeightMap(weightType, weightAggregation);
-            sortNodesAndArcs();
-        }
+        this.nodeInverted = invertedElementSelection;
+        this.arcInverted = invertedElementSelection;
         
         // Select nodes
         //MutableList<MutableIntList> removableBins = buildRemovaleNodes();
@@ -456,18 +501,16 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             subGraphs.add(nodeBasedGraph);
         }
         
-        //System.out.println("Build all node slider graphs: " + (System.currentTimeMillis() - timer) + " ms.");
-        
         // Build arc-based graphs from the smallest one first
         //timer = System.currentTimeMillis();
         NodeBasedGraph preGraph = null;
         for (FilteredGraph nodeGraph: subGraphs.toReversed()) {
-            ((NodeBasedGraph)nodeGraph).buildSubGraphs(preGraph, arcInverted);
+            ((NodeBasedGraph)nodeGraph).buildSubGraphs(preGraph, this.arcInverted);
             preGraph = (NodeBasedGraph)nodeGraph;
         }
         
         System.out.println("Build all graphs: " + (System.currentTimeMillis() - timer) + " ms.");
-    }  
+    }
     
     // This method only builds bins of nodes based on one single connected node
     // (i.e. the node that after removing them the graph remains connected).
@@ -584,8 +627,18 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         return arcBasedGraph;
     }
     
-    
-    private void sortNodesAndArcs() {
+    /**
+     * Sort the graph nodes and arcs based on the increasing order of a chosen weight
+     * @param weightType
+     * @param weightAggregation
+     */
+    public void sortNodesAndArcs(MeasureType weightType, MeasureAggregation weightAggregation) {
+    	nodeWeightsForGraphStructure = getNodeWeightMap(weightType, weightAggregation);
+        arcWeightsForGraphStructure = getArcWeightMap(weightType, weightAggregation);
+        if (nodeWeightsForGraphStructure.isEmpty() || arcWeightsForGraphStructure.isEmpty()) {
+        	return;
+        }
+    	
         // The ordering must be deterministic
         MutableSortedSet<Integer> tempSortedNodes = SortedSets.mutable.of(new Comparator<Integer>() {
             @Override

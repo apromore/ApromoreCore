@@ -76,7 +76,7 @@ public class NavigationController extends BaseController {
      * Loads the workspace.
      */
     public void loadWorkspace() {
-        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
+        FolderTreeModel model = new FolderTreeModel(new FolderTree(false, mainC).getRoot(), null);
         tree.setItemRenderer(new FolderTreeRenderer(mainC));
         tree.setModel(model);
     }
@@ -97,7 +97,7 @@ public class NavigationController extends BaseController {
     }
  
     public void currentFolderChanged() {
-        updateFolders(tree, UserSessionManager.getCurrentFolder());
+        updateFolders(tree, mainC.getPortalSession().getCurrentFolder());
     }
 
     /**

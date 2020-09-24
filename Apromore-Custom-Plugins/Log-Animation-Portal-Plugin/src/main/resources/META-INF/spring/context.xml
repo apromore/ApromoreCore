@@ -26,7 +26,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:beans="http://www.springframework.org/schema/beans"
    xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.eclipse.org/gemini/blueprint/schema/blueprint
        http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
@@ -37,7 +37,7 @@
 
     <!-- Other OSGi services this component consumes -->
     <list id="editorPluginsSignavio" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional"/>
-	<list id="editorPluginsBPMN" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
+    <list id="editorPluginsBPMN" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="logAnimationService" interface="org.apromore.service.loganimation.LogAnimationService"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
@@ -47,17 +47,28 @@
     <beans:bean id="plugin" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="Analyze" />
         <beans:property name="label" value="Animate logs" />
-    </beans:bean>		
-	
-	<beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
+    </beans:bean>
+
+    <beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="" />
         <beans:property name="label" value="" />
-    </beans:bean>			
+    </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
     <!-- <context:component-scan base-package="org.apromore.plugin.editor.loganimation" /> -->
 
     <!-- <context:component-scan base-package="org.apromore.plugin.portal.loganimation" /> -->
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" />
-	<service ref="plugin2" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
+    <service ref="plugin2" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
+
+    <!-- Exposes the component's resources as web content -->
+    <service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.loganimation.LogAnimationWebContentService"/>
+    </service>
+
+    <!-- Garbage collect the ZK desktop -->
+    <service interface="org.zkoss.zk.ui.util.DesktopCleanup">
+        <beans:bean class="org.apromore.plugin.portal.loganimation.LogAnimationCleaner"/>
+    </service>
+
 </beans:beans>

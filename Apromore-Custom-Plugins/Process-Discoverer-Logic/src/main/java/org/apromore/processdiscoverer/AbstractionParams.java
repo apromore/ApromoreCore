@@ -24,6 +24,7 @@ package org.apromore.processdiscoverer;
 
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.relation.RelationReader;
 
@@ -42,22 +43,29 @@ public class AbstractionParams {
 	private boolean preserve_connectivity;
 	private boolean inverted_nodes;
 	private boolean inverted_arcs;
+	boolean secondary;
+	
 	private MeasureType fixedType;
 	private MeasureAggregation fixedAggregation;
+	private MeasureRelation fixedRelation;
+	
 	private MeasureType primaryType;
 	private MeasureAggregation primaryAggregation;
-	boolean secondary;
+	private MeasureRelation primaryRelation;
+	
 	private MeasureType secondaryType;
 	private MeasureAggregation secondaryAggregation;
+	private MeasureRelation secondaryRelation;
+	
 	private Abstraction correspondingDFG; 
 	private RelationReader relationReader;
 	
 	public AbstractionParams(IndexableAttribute IndexableAttribute, double nodeSelectThreshold, double arcSelectThreshold, double parallelism, 
 							boolean prioritizeParallelism, boolean preserve_connectivity, 
-							boolean inverted_nodes, boolean inverted_arcs, boolean secondary, MeasureType fixedType, 
-							MeasureAggregation fixedAggregation, MeasureType primaryType, 
-							MeasureAggregation primaryAggregation, MeasureType secondaryType, 
-							MeasureAggregation secondaryAggregation,
+							boolean inverted_nodes, boolean inverted_arcs, boolean secondary, 
+							MeasureType fixedType, MeasureAggregation fixedAggregation, MeasureRelation fixedRelation, 
+							MeasureType primaryType, MeasureAggregation primaryAggregation, MeasureRelation primaryRelation,  
+							MeasureType secondaryType, MeasureAggregation secondaryAggregation, MeasureRelation secondaryRelation,
 							RelationReader relationReader,
 							Abstraction correspondingDFG) {
 		this.IndexableAttribute = IndexableAttribute;
@@ -68,13 +76,20 @@ public class AbstractionParams {
 		this.preserve_connectivity = preserve_connectivity;
 		this.inverted_nodes = inverted_nodes;
 		this.inverted_arcs = inverted_arcs;
+		this.secondary = secondary;
+		
 		this.fixedType = fixedType;
 		this.fixedAggregation = fixedAggregation;
+		this.fixedRelation = fixedRelation;
+		
 		this.primaryType = primaryType;
 		this.primaryAggregation = primaryAggregation;
+		this.primaryRelation = primaryRelation;
+		
 		this.secondaryType = secondaryType;
 		this.secondaryAggregation= secondaryAggregation;
-		this.secondary = secondary;
+		this.secondaryRelation = secondaryRelation;
+		
 		this.correspondingDFG = correspondingDFG;
 		this.relationReader = relationReader;
 	}
@@ -127,6 +142,10 @@ public class AbstractionParams {
 		return this.fixedAggregation;
 	}
 	
+    public MeasureRelation getFixedRelation() {
+        return this.fixedRelation;
+    } 
+	
 	public MeasureType getPrimaryType() {
 		return this.primaryType;
 	}
@@ -135,6 +154,16 @@ public class AbstractionParams {
 		return this.primaryAggregation;
 	}
 	
+    public MeasureRelation getPrimaryRelation() {
+        return this.primaryRelation;
+    }	
+    
+    public void setPrimaryMeasure(MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
+    	primaryType = type;
+    	primaryAggregation = aggregation;
+    	primaryRelation = relation;
+    }
+	
 	public MeasureType getSecondaryType() {
 		return this.secondaryType;
 	}
@@ -142,9 +171,17 @@ public class AbstractionParams {
 	public MeasureAggregation getSecondaryAggregation() {
 		return this.secondaryAggregation;
 	}
+
+    public MeasureRelation getSecondaryRelation() {
+        return this.secondaryRelation;
+    }   
 	
 	public boolean getSecondary() {
 		return this.secondary;
+	}
+	
+	public void setSecondary(boolean hasSecondary) {
+		this.secondary = hasSecondary;
 	}
 	
 	// Corresponding DFG is the related one of the to-be DFG
@@ -174,12 +211,19 @@ public class AbstractionParams {
 	            this.invertedNodes(), 
 	            this.invertedArcs(), 
 	            this.getSecondary(), 
+	            
 	            this.getFixedType(), 
-	            this.getFixedAggregation(), 
+	            this.getFixedAggregation(),
+	            this.getFixedRelation(),
+	            
 	            this.getPrimaryType(), 
-	            this.getPrimaryAggregation(), 
+	            this.getPrimaryAggregation(),
+	            this.getPrimaryRelation(),
+	            
 	            this.getSecondaryType(), 
-	            this.getSecondaryAggregation(), 
+	            this.getSecondaryAggregation(),
+	            this.getSecondaryRelation(),
+	            
 	            this.getRelationReader(), 
 	            this.getCorrepondingDFG());
 	}

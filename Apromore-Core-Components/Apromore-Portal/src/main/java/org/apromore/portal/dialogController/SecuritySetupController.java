@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.Executions;
@@ -47,16 +48,18 @@ public class SecuritySetupController extends BaseController {
         this.mainController = mainController;
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, null);
+            // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+            FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
             this.permissionsController = new SecurityPermissionsController(this, win);
             this.findGroupsController = new SecurityFindGroupsController(this, win);
-            this.folderTreeController = new SecurityFolderTreeController(this, win);
+            this.folderTreeController = new SecurityFolderTreeController(this, win, currentFolder.getId());
 
             win.doModal();
 
             win.addEventListener("onClose", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    UserSessionManager.getMainController().loadWorkspace();
+                    getMainController().loadWorkspace();
                 }
             });
 

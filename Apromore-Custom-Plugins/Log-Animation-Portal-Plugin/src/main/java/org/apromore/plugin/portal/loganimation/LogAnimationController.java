@@ -25,16 +25,19 @@
 package org.apromore.plugin.portal.loganimation;
 
 // Java 2 Standard packages
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.EditorPluginResolver;
+//import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
@@ -45,10 +48,13 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.loganimation.LogAnimationService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WebApps;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -166,7 +172,12 @@ public class LogAnimationController extends BaseController {
                 }
             }
 
-            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("editorPluginsBPMN");
+            BundleContext bundleContext = (BundleContext) WebApps.getCurrent().getServletContext().getAttribute("osgi-bundlecontext");
+            ServiceReference[] references = bundleContext.getServiceReferences(EditorPlugin.class.getName(), "(org.apromore.plugin.editor=bpmn.io)");
+            List<EditorPlugin> editorPlugins = (references == null)
+                ? Collections.emptyList()
+                : Arrays.stream(references).map(ref -> (EditorPlugin) bundleContext.getService(ref)).collect(Collectors.toList());
+            //List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("editorPluginsBPMN");
             param.put("plugins", editorPlugins);
 
             Executions.getCurrent().pushArg(param);

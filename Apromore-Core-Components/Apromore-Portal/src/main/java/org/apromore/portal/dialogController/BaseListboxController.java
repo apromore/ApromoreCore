@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 
 import javax.xml.datatype.DatatypeFactory;
 
@@ -51,6 +52,8 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.SecurityService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -60,6 +63,7 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listhead;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
@@ -82,6 +86,8 @@ public abstract class BaseListboxController extends BaseController {
     private final Button refreshB;
     private final Button btnUpload;
     private final Button btnDownload;
+    private final Button btnSelectAll;
+    private final Button btnSelectNone;
     private final Button btnCut;
     private final Button btnCopy;
     private final Button btnPaste;
@@ -90,7 +96,10 @@ public abstract class BaseListboxController extends BaseController {
     //private final Button btnGEDFolder;
     private final Button btnRenameFolder;
     private final Button btnRemoveFolder;
+    private final Button btnListView;
+    private final Button btnTileView;
     private final Button btnSecurity;
+    private final Button btnUserMgmt;
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -115,6 +124,8 @@ public abstract class BaseListboxController extends BaseController {
         refreshB = (Button) mainController.getFellow("refreshB");
         btnUpload = (Button) mainController.getFellow("btnUpload");
         btnDownload = (Button) mainController.getFellow("btnDownload");
+        btnSelectAll = (Button) mainController.getFellow("btnSelectAll");
+        btnSelectNone = (Button) mainController.getFellow("btnSelectNone");
         btnCut = (Button) mainController.getFellow("btnCut");
         btnCopy = (Button) mainController.getFellow("btnCopy");
         btnPaste = (Button) mainController.getFellow("btnPaste");
@@ -123,11 +134,15 @@ public abstract class BaseListboxController extends BaseController {
         //btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
         btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
         btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
+        btnListView = (Button) mainController.getFellow("btnListView");
+        btnTileView = (Button) mainController.getFellow("btnTileView");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
+        btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
 
         attachEvents();
 
         appendChild(listBox);
+        setTileView(true);
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     }
@@ -165,6 +180,20 @@ public abstract class BaseListboxController extends BaseController {
             @Override
             public void onEvent(Event event) throws Exception {
                 exportFile();
+            }
+        });
+
+        this.btnSelectAll.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectAll();
+            }
+        });
+
+        this.btnSelectNone.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                unselectAll();
             }
         });
 
@@ -225,12 +254,59 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        this.btnListView.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setTileView(false);
+            }
+        });
+
+        this.btnTileView.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                setTileView(true);
+            }
+        });
+
+
         this.btnSecurity.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 security();
             }
         });
+
+        this.btnUserMgmt.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                userMgmt();
+            }
+        });
+
+    }
+
+    public void setTileView(boolean tileOn) {
+        Listhead listHead = (Listhead)this.listBox.query(".ap-listbox-process-head");
+        String sclass = Objects.requireNonNull(this.listBox.getSclass(), "");
+        if (tileOn) {
+            if (!sclass.contains("ap-tiles-view")) {
+                this.listBox.setSclass(sclass.trim() + " ap-tiles-view");
+            }
+            if (listHead != null) {
+                listHead.setVisible(false);
+            }
+            toggleComponentSclass(btnTileView, true, "ap-btn-off", "ap-btn-on");
+            toggleComponentSclass(btnListView, false, "ap-btn-off", "ap-btn-on");
+        } else {
+            if (sclass.contains("ap-tiles-view")) {
+                this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
+            }
+            if (listHead != null) {
+                listHead.setVisible(true);
+            }
+            toggleComponentSclass(btnListView, true, "ap-btn-off", "ap-btn-on");
+            toggleComponentSclass(btnTileView, false, "ap-btn-off", "ap-btn-on");
+        }
     }
 
     /**
@@ -290,12 +366,16 @@ public abstract class BaseListboxController extends BaseController {
     public void renameFolder() throws DialogException {
         getMainController().eraseMessage();
         try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            // List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 1) {
                 int selectedFolderId = folderIds.get(0);
                 String selectedFolderName = "";
-                List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
+                List<FolderType> availableFolders = getMainController().getPortalSession().getCurrentFolder() == null ||
+                        getMainController().getPortalSession().getCurrentFolder().getId() == 0 ?
+                        getMainController().getPortalSession().getTree() :
+                        getMainController().getPortalSession().getCurrentFolder().getFolders();
                 for (FolderType folder : availableFolders) {
                     if (folder.getId() == selectedFolderId) {
                         selectedFolderName = folder.getFolderName();
@@ -325,7 +405,14 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void rename() throws InterruptedException {
         try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+            if (getSelectionCount() == 0) {
+                Messagebox.show("Please select a file/folder to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            } else if (getSelectionCount() > 1) {
+                Messagebox.show("You can not rename multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
+            List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() == 0) {
                 renameLogOrProcess();
@@ -362,15 +449,16 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     public void cut() {
-        copyAndPasteController.cut(getSelection());
+        copyAndPasteController.cut(getSelection(), getSelectionCount());
     }
 
     public void copy() {
-        copyAndPasteController.copy(getSelection());
+        copyAndPasteController.copy(getSelection(), getSelectionCount());
     }
 
     public void paste() throws Exception {
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
         try {
             copyAndPasteController.paste(targetFolderId);
@@ -421,6 +509,10 @@ public abstract class BaseListboxController extends BaseController {
 
     public Set<Object> getSelection() {
         return getListModel().getSelection();
+    }
+
+    public int getSelectionCount() {
+        return listBox.getSelectedCount();
     }
 
     /* Show the message tailored to deleting process model. */
@@ -524,6 +616,21 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    protected void userMgmt() throws InterruptedException {
+        PortalPlugin userMgmtPlugin;
+
+        getMainController().eraseMessage();
+        try {
+            userMgmtPlugin = portalPluginMap.get("Manage user permissions");
+            userMgmtPlugin.execute(portalContext);
+        } catch(Exception e) {
+            LOGGER.error("Unable to create user administration dialog", e);
+            Messagebox.show("Unable to create user administration dialog");
+        }
+    }
+
+
+
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {
         //mainController.getMenu().deleteSelectedElements();
@@ -540,8 +647,17 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Removes all the selected folders and the containing folders and processes. */
     private void deleteFolders(ArrayList<FolderType> folders, MainController mainController) {
+        int failures = 0;
+
         for (FolderType folderId : folders) {
-            mainController.getService().deleteFolder(folderId.getId(), UserSessionManager.getCurrentUser().getUsername());
+            try {
+                mainController.getService().deleteFolder(folderId.getId(), UserSessionManager.getCurrentUser().getUsername());
+            } catch (Exception e) {
+                failures += 1;
+            }
+        }
+        if (failures > 0) {
+            Messagebox.show("Could not perform all delete operations. You may not be authorized to delete some of the resources.", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
         mainController.reloadSummaries();
     }
@@ -607,7 +723,8 @@ public abstract class BaseListboxController extends BaseController {
         private SummariesType getSummaries(int pageIndex) {
             if (summaries == null || currentPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
-                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
                 summaries = getService().getProcessSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentPageIndex = pageIndex;
             }
@@ -617,7 +734,8 @@ public abstract class BaseListboxController extends BaseController {
         private SummariesType getLogSummaries(int pageIndex) {
             if (logSummaries == null || currentLogPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
-                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
                 logSummaries = getService().getLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentLogPageIndex = pageIndex;
             }

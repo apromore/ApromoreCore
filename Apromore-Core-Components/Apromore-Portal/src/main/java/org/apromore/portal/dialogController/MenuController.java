@@ -36,6 +36,8 @@ import java.util.TreeMap;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -43,31 +45,46 @@ import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuseparator;
 
-public class MenuController extends Menubar {
+public class MenuController extends SelectorComposer<Menubar> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
-    private final MainController mainC;
-    private Menubar menuB;
-    private Menubar userMenu;
     private Menuitem aboutMenuitem;
     private Menuitem targetMenuitem;
-    private PortalContext portalContext;
 
-    public MenuController(final MainController mainController) throws ExceptionFormats {
-        MenuController me = this;
-        this.mainC = mainController;
-        this.portalContext = new PluginPortalContext(mainC);
-        this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
-        this.userMenu = (Menubar) this.mainC.getFellow("userMenu");
+    @Override
+    public void doAfterCompose(Menubar menubar) {
+
+        // Recreate the menubar when the authenticated user changes
+        EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true).subscribe(new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (Constants.EVENT_QUEUE_SESSION_ATTRIBUTES.equals(event.getName())) {
+                    if (UserSessionManager.USER.equals(event.getData())) {
+                        getSelf().getChildren().clear();
+                        populateMenubar(getSelf());
+                    }
+                }
+            }
+        });
+
+        // Create the menubar initially
+        populateMenubar(menubar);
+    }
+
+    private void populateMenubar(Menubar menubar) {
+
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
             
@@ -77,12 +94,15 @@ public class MenuController extends Menubar {
 
             SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
             for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
-                if (plugin.getAvailability(portalContext) == PortalPlugin.Availability.UNAVAILABLE) {
+                if (plugin.getAvailability() == PortalPlugin.Availability.UNAVAILABLE) {
                     continue;
                 }
 
                 String menuName = plugin.getGroupLabel(Locale.getDefault());
 
+                if (menuName == "Settings") {
+                    continue;
+                }
                 // Create a new menu if this is the first menu item within it
                 if (!menuMap.containsKey(menuName)) {
                     Menu menu = new Menu(menuName);
@@ -109,11 +129,12 @@ public class MenuController extends Menubar {
                 }
                 String label = plugin.getLabel(Locale.getDefault());
                 menuitem.setLabel(label);
-                menuitem.setDisabled(plugin.getAvailability(portalContext) == PortalPlugin.Availability.DISABLED);
+                menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        plugin.execute(new PluginPortalContext(mainC));
+                        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+                        plugin.execute(portalContext);
                     }
                 });
 
@@ -147,27 +168,14 @@ public class MenuController extends Menubar {
             for (final Menu menu: menuMap.values()) {
                 if (!"Account".equals(menu.getLabel()) &&
                     !"About".equals(menu.getLabel())) {
-                    menuB.appendChild(menu);
+                    menubar.appendChild(menu);
                 }
             }
 
-            Menuseparator separator = new Menuseparator();
-            separator.setHflex("1");
-            separator.setStyle("border-width: 0");
-            menuB.appendChild(separator);
-
             for (final Menu menu: menuMap.values()) {
                 if ("Account".equals(menu.getLabel())) {
-                    try {
-                        // menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
-                        // menu.setSclass("ap-user-menu");
-                        // menuB.appendChild(menu);
-                        Menupopup userMenupopup = menu.getMenupopup();
-                        userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
-                        this.userMenu.appendChild(menu);
-                    } catch (Exception e) {
-                        LOGGER.warn("Unable to set Account menu to current user name", e);
-                    }
+                    // ignore; belongs to the user menu
+
                 } else if ("File".equals(menu.getLabel())) {
                     try {
                         Menupopup fileMenupopup = menu.getMenupopup();
@@ -181,7 +189,7 @@ public class MenuController extends Menubar {
                         item.addEventListener("onClick", new EventListener<Event>() {
                             @Override
                             public void onEvent(Event event) throws Exception {
-                                me.mainC.geBaseListboxController().cut();
+                                getBaseListboxController().cut();
                             }
                         });
                         fileMenupopup.insertBefore(item, targetMenuitem);
@@ -192,7 +200,7 @@ public class MenuController extends Menubar {
                         item.addEventListener("onClick", new EventListener<Event>() {
                             @Override
                             public void onEvent(Event event) throws Exception {
-                                me.mainC.geBaseListboxController().copy();
+                                getBaseListboxController().copy();
                             }
                         });
                         fileMenupopup.insertBefore(item, targetMenuitem);
@@ -203,7 +211,7 @@ public class MenuController extends Menubar {
                         item.addEventListener("onClick", new EventListener<Event>() {
                             @Override
                             public void onEvent(Event event) throws Exception {
-                                me.mainC.geBaseListboxController().paste();
+                                getBaseListboxController().paste();
                             }
                         });
                         fileMenupopup.insertBefore(item, targetMenuitem);
@@ -212,13 +220,17 @@ public class MenuController extends Menubar {
                         fileMenupopup.insertBefore(sep, targetMenuitem);
 
                     } catch (Exception e) {
+                        LOGGER.error("Ignored exception during main menu construction", e);
                     }
                 }
             }
         }
     }
 
-    public Menubar getMenuB() {
-        return menuB;
+    private BaseListboxController getBaseListboxController() {
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        MainController mainController = (MainController) portalContext.getMainController();
+
+        return mainController.getBaseListboxController();
     }
 }

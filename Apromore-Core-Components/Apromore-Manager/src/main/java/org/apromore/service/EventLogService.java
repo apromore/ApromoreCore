@@ -30,12 +30,14 @@ import org.apromore.exception.*;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.util.StatType;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.model.XLog;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -70,6 +72,12 @@ public interface EventLogService {
     Log importLog(String username, Integer folderId, String logName, InputStream log, String extension,
                   String domain, String created, boolean publicModel)
             throws Exception;
+    /**
+     * @param username  a username
+     * @param logId identifier for a log
+     * @return whether the <var>user</var> should be allowed to update the log identified by <var>logId</var>
+     */
+    boolean canUserWriteLog(String username, Integer logId) throws UserNotFoundException;
 
     ExportLogResultType exportLog(Integer logId)
             throws Exception;
@@ -91,64 +99,10 @@ public interface EventLogService {
     boolean isPublicLog(Integer logId);
 
     /**
-     * Get XLog and append statistics as log level metadata
-     * @param logId
-     */
-    XLog getXLogWithStats(Integer logId);
-
-
-    /**
-     * Persist statistics of XLog into DB
-     * @param map nested map that represent statistics
-     * @param logId logID of the XLog
-     */
-    void storeStats(Map<String, Map<String, Integer>> map, Integer logId);
-
-    /**
-     * @param logId logID of the XLog
-     * @return List of statistic entities
-     */
-    List<Statistic> getStats(Integer logId);
-
-
-    /**
-     * Persist statistics of XLog into DB by stat types
-     * TODO: explain the format of input nested map
-     *
-     * @param map  {String statUID {[String stat_key, String stat_value]}}
-     *             The statUID is a unique identifier that is associated with a set of statistics of the same type.
-     *             For example, it can be the caseID which is used to identify a set of attributes of one case.
-     *             {caseID, {[attrKey, attrValue] [attrKey, attrValue]}}
-     * @param logId logID of XES log file
-     * @param statType enum that store all the types of statistic
-     * @throws IllegalArgumentException
-     */
-    void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType);
-
-    /**
-     * Check if this log has this type of statistic in the database.
-     *
-     * @param logId logID of XES log file
-     * @param statType enum that store all the types of statistic
-     * @return
-     */
-    boolean isStatsExists(Integer logId, StatType statType);
-
-    /**
      * Get aggregated log.
      *
      * @param logId
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
     APMLog getAggregatedLog(Integer logId);
-
-    /**
-     * Get dashboard layout data
-     * @param logId
-     * @param userId
-     * @return
-     */
-    String getLayoutByLogId(Integer logId, Integer userId);
-
-    void saveLayoutByLogId(Integer logId, Integer userId, String layout);
 }

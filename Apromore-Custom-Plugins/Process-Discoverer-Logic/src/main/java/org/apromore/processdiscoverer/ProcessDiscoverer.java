@@ -45,7 +45,8 @@ public class ProcessDiscoverer {
     	return absManager.createBPMNAbstraction(params.clone(), dfgAbstraction);
     }
     
-    // This method does not affect the internal status of ProcessDiscoverer object
+    // This method does not affect the internal state of ProcessDiscoverer object
+    // It is a one-off use to view a trace
     public Abstraction generateTraceAbstraction(String traceID, AbstractionParams params) throws Exception {
         AttributeLog log = absManager.getLog();
     	if(log == null || log.getTraces().size() == 0) {

@@ -97,7 +97,7 @@ public class TimeUtil {
             if (mthPart == 1) output += mthPart + " month ";
             if (mthPart > 1) output += mthPart + " months ";
             if (dPart == 1) output += dPart + " day";
-            if (dPart > 1) output += dPart + " dayss";
+            if (dPart > 1) output += dPart + " days";
 
             return output;
         }
