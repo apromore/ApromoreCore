@@ -120,7 +120,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.etlplugin.portal
+                            org.apromore.etlplugin.portal.*
                         </Export-Package>
                     </instructions>
                 </configuration>
