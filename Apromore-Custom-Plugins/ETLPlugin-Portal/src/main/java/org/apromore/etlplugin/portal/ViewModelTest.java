@@ -42,10 +42,13 @@ public class ViewModelTest {
         count = 0;
     }
 
+    /**
+     * Dummy.
+     */
     @Command
     @NotifyChange("count")
     public void cmd() {
-        count = 100+etlPluginLogic.getTest();
+        count = count+etlPluginLogic.getTest();
     }
 
     public int getCount() {
