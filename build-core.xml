@@ -117,6 +117,7 @@
         </copy>
 
         <copy file="${core-dir}/target/classes/META-INF/git.properties" tofile="${core-dir-virgo}/repository/usr/git-core.properties" overwrite="true" />
+        <copy file="${core-dir}/target/classes/META-INF/git.properties" tofile="${core-dir-virgo}/repository/usr/git.properties" overwrite="true" />
     </target>
 
     <!-- Virgo Related -->
