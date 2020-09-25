@@ -45,7 +45,7 @@ public class ParquetUtilities {
         if (sample.getActivityPos() != -1)
             sb.append("required binary activity;\n");
         if (sample.getStartTimestampPos() != -1)
-            sb.append("required binary startTimestamp;\n");
+            sb.append("optional binary startTimestamp;\n");
         if (sample.getEndTimestampPos() != -1)
             sb.append("required binary endTimestamp;\n");
 
@@ -59,7 +59,7 @@ public class ParquetUtilities {
         }
 
         if (sample.getResourcePos() != -1)
-            sb.append("required binary resource;\n");
+            sb.append("optional binary resource;\n");
 
         // Case Attributes
         if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
