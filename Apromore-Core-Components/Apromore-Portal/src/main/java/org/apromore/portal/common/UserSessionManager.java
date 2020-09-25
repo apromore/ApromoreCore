@@ -107,7 +107,7 @@ public abstract class UserSessionManager {
             Object details = authentication.getDetails();
             if (details instanceof ApromoreWebAuthenticationDetails) {  // LDAP login
                 String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                LOGGER.debug("LDAP login, user=" + username);
+                LOGGER.info("LDAP login, user=" + username);
                 UserType user = manager.readUserByUsername(username);
                 if (user == null) {
                     try {
@@ -122,8 +122,9 @@ public abstract class UserSessionManager {
                 setCurrentUser(user);
 
             } else if (details instanceof UserType) {  // Locally created user
-                LOGGER.debug("Local login, user=" + details);
-                setCurrentUser((UserType) details);
+                UserType user = (UserType) details;
+                LOGGER.info("Local login, user=" + user.getUsername());
+                setCurrentUser(user);
 
             } else if (details != null) {
                 LOGGER.warn("Unsupported details class " + details.getClass());
