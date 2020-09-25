@@ -669,7 +669,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedUserAddView.setVisible(false);
         if (group == null) {
             groupNameTextbox.setValue("");
-            groupDetail.setValue("");
+            groupDetail.setValue("No group is selected");
             assignedUserModel = new ListModelList<>();
             nonAssignedUserModel = new ListModelList<>();
             groupSaveBtn.setDisabled(true);
