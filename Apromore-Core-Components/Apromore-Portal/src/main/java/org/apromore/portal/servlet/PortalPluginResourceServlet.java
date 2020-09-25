@@ -98,10 +98,6 @@ public class PortalPluginResourceServlet extends HttpServlet {
             for (PortalPlugin portalPlugin: (List<PortalPlugin>) beanFactory.getBean("portalPlugins")){
                 if (groupLabel.equals(portalPlugin.getGroupLabel(Locales.getCurrent())) &&
                     label.equals(portalPlugin.getLabel(Locales.getCurrent()))) {
-
-                    //log("Portal plugin " + portalPlugin);
-
-                    System.out.println("\n=======> " + portalPlugin.getLabel(Locales.getCurrent()));
                     
                     try (InputStream in = portalPlugin.getResourceAsStream(resource)) {
                         if (in == null) {
