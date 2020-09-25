@@ -51,7 +51,6 @@
                             !org.zkoss.zkex.theme,
                             !org.zkoss.zkmax.theme,
                             !org.zkoss.zsoup.*,
-                            org.apromore.etlplugin.portal.*,
                             *
                         </Import-Package>
                         <DynamicImport-Package>

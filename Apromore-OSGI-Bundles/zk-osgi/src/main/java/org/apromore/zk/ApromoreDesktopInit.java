@@ -38,5 +38,4 @@ public class ApromoreDesktopInit implements DesktopInit {
             desktop.getWebApp().removeAttribute("org.zkoss.zk.ui.client.notice");
         }
     }
-    
 }
