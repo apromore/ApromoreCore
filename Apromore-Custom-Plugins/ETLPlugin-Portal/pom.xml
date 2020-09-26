@@ -60,10 +60,23 @@
             <artifactId>com.springsource.javax.inject</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>zk-osgi</artifactId>
-            <version>8.6.0.1</version>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zk</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zul</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
+
         <!-- jooq dependencies -->
         <dependency>
             <groupId>org.jooq</groupId>
@@ -80,10 +93,7 @@
             <artifactId>jooq-codegen</artifactId>
             <version>${jooq.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-plugin-api</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>

@@ -19,7 +19,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?link rel="stylesheet" type="text/css" href="/etlplugin/css/multi-event-log-plugin.css"?>
+<?link rel="stylesheet" type="text/css" href="css/multi-event-log-plugin.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
@@ -45,7 +45,6 @@
                          src="/etlplugin/views/transform-panel.zul" vflex="1"/>
 
             </vlayout>
-
         </hlayout>
         <div sclass="banner-footer" hflex="1"></div>
     </vlayout>

@@ -19,7 +19,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?link rel="stylesheet" type="text/css" href="/css/multi-event-log-plugin.css"?>
+<?link rel="stylesheet" type="text/css" href="css/multi-event-log-plugin.css"?>
 <zk>
     <window title="@load(vm.title)" border="normal" width="70%" mode="modal"
         apply="org.zkoss.bind.BindComposer" id="addRulesModal" contentStyle="overflow:auto"

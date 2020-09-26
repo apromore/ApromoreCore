@@ -126,7 +126,9 @@ public class ETLPluginPortal extends DefaultPortalPlugin {
             ETLPluginPortal.SESSION_ATTRIBUTE_KEY, etlLogicBeanMap
         );
 
-        String zul = "/etlplugin/etl.zul";
+        System.out.println("===> execute etl portal.");
+
+        String zul = "/etlplugin/index.zul";
         try {
             // Create the page.
             Executions.getCurrent().sendRedirect(zul, "etlPlugin");

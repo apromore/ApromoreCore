@@ -20,7 +20,7 @@
   #L%
   -->
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<?link rel="stylesheet" type="text/css" href="etlplugin/css/multi-event-log-plugin.css"?>
+<?link rel="stylesheet" type="text/css" href="css/multi-event-log-plugin.css"?>
 <zk xmlns:h="native">
 <!--    <style src="../css/multi-event-log-plugin.css"/>-->
     <tabbox height="100%" apply="org.zkoss.bind.BindComposer"

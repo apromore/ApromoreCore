@@ -19,7 +19,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?link rel="stylesheet" type="text/css" href="/css/multi-event-log-plugin.css"?>
+<?link rel="stylesheet" type="text/css" href="css/multi-event-log-plugin.css"?>
 <zk>
     <div apply="org.zkoss.bind.BindComposer"
             viewModel="@id('vm1') @init('org.apromore.etlplugin.portal.viewModels.ConditionViewModel')">
