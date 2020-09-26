@@ -1,0 +1,75 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?link rel="stylesheet" type="text/css" href="/css/multi-event-log-plugin.css"?>
+<zk>
+    <window title="@load(vm.title)" border="normal" width="70%" mode="modal"
+        apply="org.zkoss.bind.BindComposer" id="addRulesModal" contentStyle="overflow:auto"
+        viewModel="@id('vm') @init('org.apromore.etlplugin.portal.viewModels.AddRulesViewModel')"
+        position="top,center" sizable="true" closable="true" onCancel="self.detach();" height="50%">
+
+        <!--Top row buttons (IF/ELSE etc.) for add Rule Modal-->
+        <hlayout>
+            <button label="IF" onClick="@command('onClickIf')"/>
+            <button label="DEFAULT" onClick="@command('onClickElse')"/>
+            <button label="CLEAR" onClick="@command('clearContent')"/>
+        </hlayout>
+
+        <separator />
+
+        <vlayout id="addRulesContent">
+            <grid model="@load(vm.cases) @template(each.type eq 'IF' ? 'ifCaseTemplate' : 'elseCaseTemplate')">
+                <rows>
+                <template name="ifCaseTemplate">
+                    <row>
+                        <cell>
+                            <hlayout>
+                                <button label="x" onClick="@command('removeIfCase', index=forEachStatus.index)"
+                                sclass="redButton"/>
+                                <include ifElseCase="@load(each)" src="@load('etlplugin/views/if-condition-view.zul')"/>
+                            </hlayout>
+                        </cell>
+                    </row>
+                </template>
+                <template name="elseCaseTemplate">
+                    <row>
+                        <cell>
+                            <hlayout>
+                                <button label="x" onClick="@command('removeElseCase')"
+                                sclass="redButton"/>
+                                <include ifElseCase="@load(each)" src="@load('etlplugin/views/else-condition-view.zul')"/>
+                            </hlayout>
+                        </cell>
+                    </row>
+                </template>
+                </rows>
+            </grid>
+        </vlayout>
+
+        <separator />
+
+        <!--Bottom row buttons (Cancel/Done etc.) for add Rule Modal-->
+        <hlayout sclass="right-align">
+            <button id="cancel" label="Cancel" autodisable="done,cancel" onClick="addRulesModal.detach()"/>
+            <button id="done" label="Done" autodisable="done,cancel" onClick="@command('onSubmit', target=addRulesModal)"/>
+        </hlayout>
+    </window>
+</zk>

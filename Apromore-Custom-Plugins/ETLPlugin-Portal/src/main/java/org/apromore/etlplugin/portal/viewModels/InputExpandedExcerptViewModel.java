@@ -8,50 +8,55 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.etlplugin.portal;
+package org.apromore.etlplugin.portal.viewModels;
 
-import org.apromore.etlplugin.logic.services.ETLPluginLogic;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.json.JSONObject;
-import java.util.*;
-import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zul.Window;
+
+import java.util.HashMap;
 
 /**
- * No need to document.
+ * Model for the expand window.
  */
-public class ViewModelTest {
-    private int count;
-    private ETLPluginLogic etlPluginLogic;
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+public class InputExpandedExcerptViewModel {
 
+    HashMap<String, String> map = new HashMap<>();
+
+    /**
+     * Initialise.
+     */
     @Init
     public void init() {
-        etlPluginLogic = (ETLPluginLogic) ((Map) Sessions.getCurrent().getAttribute(ETLPluginPortal.SESSION_ATTRIBUTE_KEY)).get("etlPluginLogic");
-        count = 0;
+
     }
 
     /**
-     * Dummy.
+     * Create a modal to add rules to a given column.
+     * @param filename the column the rules will be added to
      */
     @Command
-    @NotifyChange("count")
-    public void cmd() {
-        count = count+etlPluginLogic.getTest();
+    public void openExpandedWindow(@BindingParam("filename") String filename) {
+        map.put("filename", filename);
+        Window inputExpandedModal = (Window) Executions.createComponents(
+                "/views/input-expanded-modal.zul", null, map);
+        inputExpandedModal.setMode("modal");
+        inputExpandedModal.doModal();
     }
 
-    public int getCount() {
-        return count;
-    }
 }

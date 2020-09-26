@@ -32,11 +32,13 @@
                 http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
   <!-- Reference ETLPluginLogic bean -->
-  <osgi:reference id="etlPluginLogic" interface="org.apromore.etlplugin.logic.services.ETLPluginLogic"/>
+  <osgi:reference id="fileHandlerService" interface="org.apromore.etlplugin.logic.services.FileHandlerService"/>
+  <osgi:reference id="transaction" interface="org.apromore.etlplugin.logic.services.Transaction"/>
 
   <!-- ETL Portal Bean -->
   <beans:bean scope="bundle" id="etlPluginPortal" class="org.apromore.etlplugin.portal.ETLPluginPortal">
-    <beans:property name="etlPluginLogic" ref="etlPluginLogic"/>
+    <beans:property name="fileHandlerService" ref="fileHandlerService"/>
+    <beans:property name="transaction" ref="transaction"/>
   </beans:bean>
 
   <!-- SERVICE: Portal Plugin bean -->

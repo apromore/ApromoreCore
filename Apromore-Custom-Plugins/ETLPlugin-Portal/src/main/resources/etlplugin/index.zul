@@ -19,11 +19,34 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
+<?link rel="stylesheet" type="text/css" href="/etlplugin/css/multi-event-log-plugin.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
-	<window apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm')@init('org.apromore.etlplugin.portal.ViewModelTest')"
-		validationMessages="@id('vmsgs')">
-		<hlayout>count: <label value="@load(vm.count)" /></hlayout>
-		<button label="add" onClick="@command('cmd')"/>
-	</window>
+
+    <vlayout sclass="main-window" hflex="1" vflex="1" spacing="0.7em">
+        <!-- Apromore banner -->
+        <div sclass="banner-header" hflex="1">
+            <image src="https://apromore.org/wp-content/uploads/2019/10/Logo-white@2x.png"
+                sclass = "banner-logo"/>
+        </div>
+
+        <hlayout spacing="0.3em" hflex="1" vflex="1">
+            <include src="/etlplugin/views/import-panel.zul" vflex="1" hflex="12"/>
+            <vlayout spacing="1em" hflex="88" vflex="1" apply="org.zkoss.bind.BindComposer"
+                     viewModel="@id('vm_rightPanel') @init('org.apromore.etlplugin.portal.viewModels.RightPanelViewModel')">
+
+                <include visible="@load(vm_rightPanel.joinTab)"
+                         src="/etlplugin/views/join-panel.zul" vflex="4"/>
+
+                <include visible="@load(vm_rightPanel.joinTab)"
+                         src="/etlplugin/views/join-excerpt.zul" vflex="6"/>
+
+                <include visible="@load(vm_rightPanel.transformTab)"
+                         src="/etlplugin/views/transform-panel.zul" vflex="1"/>
+
+            </vlayout>
+
+        </hlayout>
+        <div sclass="banner-footer" hflex="1"></div>
+    </vlayout>
 </zk>

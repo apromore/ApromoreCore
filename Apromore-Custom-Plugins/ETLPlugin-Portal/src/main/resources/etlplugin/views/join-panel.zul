@@ -1,0 +1,94 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?link rel="stylesheet" type="text/css" href="/css/multi-event-log-plugin.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+	<window sclass="card" vflex="6" apply="org.zkoss.bind.BindComposer"
+            viewModel="@id('vm_joinPanel') @init('org.apromore.etlplugin.portal.viewModels.JoinPanelViewModel')"
+           	contentStyle="overflow:auto;">
+		<!-- Top panel section -->
+		<vlayout vflex="1" hflex="10">
+			<grid model="@load(vm_joinPanel.joinQueryModels)" vflex="100">
+				<columns sclass="join-panel-columns">
+					<column hflex="5" sclass="join-panel-column-list" align="center">Table A</column>
+					<column hflex="5" sclass="join-panel-column-list" align="center">Table B</column>
+					<column hflex="5" sclass="join-panel-column-list" align="center">Join Type</column>
+					<column hflex="5" sclass="join-panel-column-list" align="center">Key A</column>
+					<column hflex="5" sclass="join-panel-column-list" align="center">Key B</column>
+					<column hflex="1" sclass="join-panel-column-list" align="center"> </column>
+				</columns>
+				<rows>
+					<template name="model">
+						<row>
+							<combobox model="@load(fileMetaData.fileMetaMap.keySet())"
+								selectedItem="@bind(each.selectedTableA)"
+								onSelect="@command('onTableASelected', index=forEachStatus.index)">
+								<template name="model" var="fileName">
+									<comboitem label="@load(fileName)" />
+								</template>
+							</combobox>
+							<combobox model="@load(fileMetaData.fileMetaMap.keySet())"
+								selectedItem="@bind(each.selectedTableB)"
+								onSelect="@command('onTableBSelected', index=forEachStatus.index)">
+								<template name="model" var="fileName">
+									<comboitem label="@load(fileName)" />
+								</template>
+							</combobox>
+							<combobox model="@load(vm_joinPanel.joins)"
+								selectedItem="@bind(each.selectedJoin)">
+
+								<template name="model" var="join">
+									<comboitem label="@load(join)" />
+								</template>
+							</combobox>
+							<combobox model="@load(each.tableAKeys)"
+								selectedItem="@bind(each.selectedKeyA)">
+
+								<template name="model" var="keyA">
+									<comboitem label="@load(keyA)" />
+								</template>
+							</combobox>
+							<combobox model="@load(each.tableBKeys)"
+								selectedItem="@bind(each.selectedKeyB)">
+								<template name="model" var="keyB">
+									<comboitem label="@load(keyB)" />
+								</template>
+							</combobox>
+							<button label="X"
+									onClick="@command('removeJoinQuery', index=forEachStatus.index)"
+									sclass="join-remove-button"
+							/>
+						</row>
+					</template>
+				</rows>
+			</grid>
+			<space/>
+			<hlayout sclass="right-align" vflex="20">
+				<button label="Submit" onClick="@command('submitQuery')"/>
+				<button label="+"
+						onClick="@command('addJoinQuery')"
+						sclass="join-add-button"
+				/>
+            </hlayout>
+        </vlayout>
+	</window>
+</zk>

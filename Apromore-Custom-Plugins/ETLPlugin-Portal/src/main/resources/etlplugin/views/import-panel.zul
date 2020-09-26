@@ -1,0 +1,148 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?link rel="stylesheet" type="text/css" href="etlplugin/css/multi-event-log-plugin.css"?>
+<zk xmlns:h="native">
+<!--    <style src="../css/multi-event-log-plugin.css"/>-->
+    <tabbox height="100%" apply="org.zkoss.bind.BindComposer"
+            onSelect="@global-command('newTabSelected', tabPanelId=self.getSelectedPanel().getId())">
+        <tabs id="joinTabs" width="100%">
+            <tab label="Data Join" width="50%" />
+            <tab label="Transform" width="50%" />
+        </tabs>
+        <tabpanels id="joinPanels" sclass="left-panel">
+            <tabpanel id="dataJoin">
+                <vlayout apply="org.zkoss.bind.BindComposer"
+                            viewModel="@id('vm_fileUpload') @init('org.apromore.etlplugin.portal.viewModels.FileUploadViewModel')">
+                    <!-- Left panel section -->
+
+                    <button id="btnUpload" label="Upload"
+                        onClick="@command('onFileUpload')"
+                        mold="trendy" hflex="1"
+                    />
+
+                    <space/>
+
+                    <label sclass="heading" value="Tables"/>
+                    <space/>
+                    <!-- Add list of input tables here -->
+
+                    <label sclass="no-files-label"
+                           value="No Files Uploaded!"
+                           visible="@load(vm_fileUpload.noFilesCheck)"
+                    />
+
+                    <div children="@load(fileMetaData.fileMetaMap.keySet())"
+                         id="inputFileList" sclass="file-list-div" hflex="1"
+                         fulfill="self.onCreate"
+                    >
+                        <template name="children" var="filename">
+                            <hlayout hflex="1" sclass="file-list-row">
+                                <h:i class="z-icon-table"/>
+                                <label hflex="1" sclass="file-label"
+                                       value="@load(filename)"
+                                />
+                                <popup id="${filename}_snippet">
+                                    <div id="expand_${filename}_snippet"
+                                         apply="org.zkoss.bind.BindComposer"
+                                         viewModel="@id('vm_expanded') @init('org.apromore.etlplugin.portal.viewModels.InputExpandedExcerptViewModel')"
+                                         onClick="@command('openExpandedWindow', filename=filename)">
+                                        <h:i class="z-icon-external-link-square"/>
+                                    </div>
+                                    <div id="scroll_area_${filename}"
+                                         sclass="input-table-scroll-area">
+                                        <include src="etlplugin/views/input-excerpt.zul" filename="${filename}"/>
+                                    </div>
+                                </popup>
+                                <space spacing="3px"/>
+                                <div id="view_${filename}_snippet"
+                                     popup="${filename}_snippet, type=toggle"
+                                     sclass="eye-button"
+                                >
+                                    <h:i class="z-icon-eye"/>
+                                </div>
+                            </hlayout>
+                        </template>
+                        <!-- List of input files will be generated here -->
+                    </div>
+                </vlayout>
+            </tabpanel>
+            <tabpanel id="transform">
+                <vlayout apply="org.zkoss.bind.BindComposer"
+                            viewModel="@id('vm_transform') @init('org.apromore.etlplugin.portal.viewModels.TransformPanelViewModel')">
+
+                    <label sclass="heading" value="List"/>
+                    <space/>
+
+                    <tree fulfill="self.onCreate" id="tree" hflex="1" style="overflow: auto" nonselectableTags="*">
+                        <treechildren children="@load(fileMetaData.inputFileMeta.entrySet())">
+                            <template name="children" var="tableName">
+                                <treeitem >
+
+                                    <treerow>
+                                        <treecell>
+                                            <label sclass="table-tree-label" value="@load(tableName.key)"/>
+                                            <button
+                                                    sclass="tree-button"
+                                                    label="+"
+                                                    onClick="@command('addWholeTable', originTable=tableName.key,
+                                                            columnNames=tableName.value)"
+                                            />
+                                        </treecell>
+                                    </treerow>
+
+                                    <treechildren children="@load(tableName.value)">
+
+                                        <template name="children" var="columnName">
+                                            <treeitem >
+                                                <treerow>
+                                                    <treecell>
+                                                        <label value="@load(columnName)" sclass="tree-label"/>
+                                                        <button
+                                                                sclass="tree-button"
+                                                                label="+"
+                                                                onClick="@command('addColumn', columnName=columnName,
+                                                                        originTable=tableName.key)"
+                                                        />
+                                                    </treecell>
+                                                </treerow>
+                                            </treeitem>
+                                        </template>
+
+                                    </treechildren>
+
+                                </treeitem>
+                            </template>
+                        </treechildren>
+                    </tree>
+
+                </vlayout>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <script type="text/javascript">
+        function doTest () {
+            zAu.send(new zk.Event(zk.Widget.$('$btn'), 'onTest', null), 10);
+        }
+    </script>
+</zk>

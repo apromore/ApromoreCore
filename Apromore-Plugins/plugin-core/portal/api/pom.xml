@@ -32,7 +32,6 @@
 
 
     <dependencies>
-
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>

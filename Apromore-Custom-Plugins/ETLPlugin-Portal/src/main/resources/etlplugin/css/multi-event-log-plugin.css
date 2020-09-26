@@ -1,0 +1,412 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+@charset "ISO-8859-1";
+
+.main-window{
+	background: #e6e6e6;
+}
+
+.banner-header{
+	background-image:url('https://apromore.org/wp-content/uploads/2019/10/cropped-main-banner-img.png');
+}
+
+.banner-footer{
+	background-image:url('https://apromore.org/wp-content/uploads/2019/10/cropped-main-banner-img.png');
+	height: 1em;
+}
+
+.banner-logo{
+	height: 2%;
+	width: 8%;
+	padding: 10px;
+}
+
+.card{
+	background: white;
+	box-shadow: 0 3px 7px 1px rgba(0,0,0,0.05);
+	border-radius: 3px;
+	width: 99%;
+	margin: auto;
+	padding: 10px;
+	position: relative;
+}
+
+.left-panel{
+	background: #b2b2b2;
+	text-align: center;
+	box-shadow: 0 3px 7px 1px rgba(0,0,0,0.05);
+	border-radius: 3px;
+	height: 100%;
+	margin: auto;
+	padding: 10px;
+	position: relative;
+}
+
+.top-right-panel{
+	height: 200px;
+	width: 900px;
+	background: #F2F2F2;
+	text-align: center;
+}
+
+.bottom-right-panel{
+	height: 300px;
+	width: 900px;
+	background: #FFFFFF;
+	text-align: center;
+}
+
+.button-area{
+	padding-bottom:40px;
+}
+
+.heading{
+	font-size: 18pt;
+}
+
+.input-table-scroll-area{
+	height: 350px;
+	max-width: 900px;
+	overflow: auto;
+}
+
+.input-excerpt-grid-new {
+	overflow: auto;
+}
+
+.consolidated-excerpt-grid{
+	overflow: visible;
+}
+
+.input-excerpt-grid{
+	border: 1px solid black;
+	overflow: visible;
+}
+
+.expand-window{
+	max-width: 90%;
+	max-height: 90%;
+	margin: auto;
+	position: relative;
+}
+
+.file-list-div{
+	text-align: left;
+	border: 0 solid #F2F2F2;
+}
+
+.file-list-row{
+	padding-bottom: 7px;
+}
+
+.file-list-cell{
+	background: #b2b2b2;
+	border: 0;
+}
+
+.z-listitem .z-listcell {
+	border: 0 solid #F2F2F2;
+	overflow: hidden;
+	cursor: pointer;
+	position: relative;
+	pointer-events: none;
+	background: #b2b2b2;
+	z-index: 0;
+}
+
+.file-label{
+	padding-left: 4px;
+}
+
+.eye-button{
+	padding-right: 20%
+}
+
+.columns-class{
+	background-color: #6D878A;
+	border: 0;
+	font-weight: bold;
+}
+
+.no-files-label {
+	font-weight: bold;
+	color: #6f6f6f;
+}
+
+.row-cell{
+	border: 0;
+}
+
+.right-align{
+	float: right;
+}
+
+.z-button{
+	background-color: #416581;
+}
+
+.z-button:hover {
+	color: #FFFFFF;
+	border-color: transparent;
+	background-color: #35595f;
+}
+
+.z-button:focus {
+	color: #FFFFFF;
+	border-color: #FFA516;
+	background-color: #416581;
+}
+
+.join-panel-columns{
+	border-style: none;
+	font-weight: bold;
+	background-color: #6D878A;
+}
+
+.join-panel-column-list{
+	border-style: none;
+	font-weight: bold;
+	background-color: #6D878A;
+}
+
+.z-tab {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 12px;
+	display: block;
+	border-bottom: 4px solid transparent;
+	margin: auto;
+	line-height: 30px;
+	background: #919191;
+	text-align: center;
+	position: relative;
+	cursor: pointer;
+	float: left;
+	padding: 10px 16px;
+}
+
+.z-tabs-content {
+	display: flex;
+	min-height: 48px;
+	border-collapse: separate;
+	border-spacing: 0;
+	background: #636363;
+	margin: auto;
+	padding-left: 0;
+	padding-top: 0;
+	list-style: none outside none;
+	zoom: 1;
+	clear: both;
+}
+
+.z-tab-selected {
+	background: #4a5e63;
+}
+
+.z-tab-selected:hover {
+	background: #4a5e63;
+}
+
+.z-tab:hover {
+	background: #919191;
+}
+
+.z-tab-selected .z-tab-text {
+	color: #ffffff;
+}
+
+.z-tab-selected .z-tab-text:hover {
+	color: #ffffff;
+}
+
+.z-tab-text:hover {
+	color: #ffffff;
+}
+
+.z-tab-text {
+	font-style: normal;
+	color: #ffffff;
+	display: block;
+	line-height: 24px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.z-tabpanel {
+	border-top: 1px solid #D9D9D9;
+	padding: 10px 0;
+	zoom: 1;
+	color: rgba(0,0,0,0.9);
+}
+
+.join-grid-wrapper {
+	background-color: #6D878A;
+}
+
+.z-grid-header {
+	background-color: #6D878A;
+}
+
+.z-columns-bar {
+	background-color: #6D878A;
+	border-left: 0;
+	border-bottom: 0;
+}
+
+.z-column {
+	background: #6D878A;
+	border-left: 1px solid #6D878A;
+	border-bottom: 1px solid #0064ED;
+	padding: 0;
+	position: relative;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.tree-label {
+	font-size: 14px;
+	float: left;
+	color: white;
+}
+
+.table-tree-label{
+	float: left;
+	color: white;
+	font-weight: bold;
+}
+
+.tree-button {
+	float: right;
+	line-height: 20%;
+	font-size: 14px;
+	background-color: #228B22;
+}
+
+.tree-button:hover {
+	background-color: #008000;
+}
+
+.join-add-button {
+	background-color: #228B22;
+}
+
+.join-add-button:hover {
+	background-color: #008000;
+}
+
+.grid-button {
+	line-height: 20%;
+	font-size: 14px;
+	background-color: OrangeRed;
+}
+
+.grid-button:hover {
+	background-color: #B22222;
+}
+
+.join-remove-button {
+	background-color: OrangeRed;
+}
+
+.join-remove-button:hover {
+	background-color: #B22222;
+}
+
+.grid-column-headers {
+	font-weight: bold;
+	text-align: center;
+}
+
+.z-grid-header-border {
+	border-bottom: 1px solid #54696c;
+	margin-top: -1px;
+	position: relative;
+}
+
+.z-loading-indicator {
+	padding: 24px 16px;
+	text-align: center;
+}
+.z-treerow.z-treerow-selected>.z-treecell {
+	background: #6d878a;
+	position: relative;
+}
+
+.z-treecell-content {
+	text-align: left;
+	font-size: 14px;
+	line-height: 16px;
+}
+.z-treerow:hover>.z-treecell {
+	background: #6d878a;
+}
+
+.z-tree-header table th {
+	text-align: center;
+}
+.z-treecols-bar {
+	background: #0093F9;
+	border-bottom: 1px solid #0064ED;
+}
+
+.z-treecol {
+	background: #6d878a;
+	border-left: 1px solid #0064ED;
+	border-bottom: #6d878a;
+	padding: 0;
+	position: relative;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.z-treerow .z-treecell {
+	border-top: 1px solid #F2F2F2;
+	overflow: hidden;
+	cursor: pointer;
+	background: #4a5e63;
+	position: relative;
+	z-index: 0;
+}
+
+.addRulesModalComponent{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.redButton{
+	background-color: #d11a2a;
+}
+
+.redButton:hover{
+	background-color: #b80010;
+}
+
+.ruleCombobox {
+	font-size: 16px;
+	width: 190px;
+}
+
+.popupWarningMessage {
+	font-size: 15px;
+	color: orangered;
+	padding-left: 2em;
+}

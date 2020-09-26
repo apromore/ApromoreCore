@@ -23,7 +23,8 @@ package org.apromore.etlplugin.portal;
 
 import java.util.*;
 
-import org.apromore.etlplugin.logic.services.ETLPluginLogic;
+import org.apromore.etlplugin.logic.services.FileHandlerService;
+import org.apromore.etlplugin.logic.services.Transaction;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;
@@ -41,21 +42,40 @@ import javax.inject.Inject;
  */
 public class ETLPluginPortal extends DefaultPortalPlugin {
 
-    @Inject
-    private ETLPluginLogic etlPluginLogic;
+    @Inject private FileHandlerService fileHandlerService;
+    @Inject private Transaction transaction;
     private static Logger LOGGER = LoggerFactory
             .getLogger(ETLPluginPortal.class);
     private String label = "ETLPlugin";
     private String groupLabel = "File";
-    static final String SESSION_ATTRIBUTE_KEY = "etlplugin";
+    public static final String SESSION_ATTRIBUTE_KEY = "etlplugin";
 
     /**
-     * Inject ETL plugin logic bean.
+     * Inject File Handler services.
      *
-     * @param newEtlPluginLogic is the injected bean from the context.
+     * @param fileHandlerService is the injected bean from the context.
      */
-    public void setEtlPluginLogic(ETLPluginLogic newEtlPluginLogic) {
-        this.etlPluginLogic = newEtlPluginLogic;
+    public void setFileHandlerService(FileHandlerService fileHandlerService) {
+        this.fileHandlerService = fileHandlerService;
+        if(fileHandlerService != null) {
+            System.out.println("==> Good fileHandler");
+        } else {
+            System.out.println("==> Bad fileHandler");
+        }
+    }
+
+    /**
+     * Inject Transaction service.
+     *
+     * @param transaction is the query service.
+     */
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+        if(transaction != null) {
+            System.out.println("==> Good transaction");
+        } else {
+            System.out.println("==> Bad transaction");
+        }
     }
 
     /**
@@ -99,10 +119,12 @@ public class ETLPluginPortal extends DefaultPortalPlugin {
     public void execute(PortalContext portalContext) {
 
         // Configure the arguments to pass the ETL logic bean.
-        Map inputMap = new HashMap<>();
-        inputMap.put("etlPluginLogic", etlPluginLogic);
+        Map etlLogicBeanMap = new HashMap<>();
+        etlLogicBeanMap.put("fileHandlerService", fileHandlerService);
+        etlLogicBeanMap.put("transaction", transaction);
         Sessions.getCurrent().setAttribute(
-                ETLPluginPortal.SESSION_ATTRIBUTE_KEY, inputMap);
+            ETLPluginPortal.SESSION_ATTRIBUTE_KEY, etlLogicBeanMap
+        );
 
         String zul = "/etlplugin/etl.zul";
         try {

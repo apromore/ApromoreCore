@@ -13,68 +13,76 @@
     <version>1.0</version>
     <packaging>bundle</packaging>
     <name>ETLPlugin-Portal</name>
-
+    <properties>
+        <zk.version>8.6.0.1</zk.version>
+        <spring.version>3.1.0.RELEASE</spring.version>
+        <commons-io>2.8.0</commons-io>
+        <easymock.version>3.2</easymock.version>
+        <powermock.version>2.0.7</powermock.version>
+        <jooq.version>3.13.4</jooq.version>
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+        <packname>-${project.version}-FL-${maven.build.timestamp}</packname>
+    </properties>
     <repositories>
         <repository>
             <id>ZK CE</id>
             <name>ZK CE Repository</name>
-            <url>http://mavensync.zkoss.org/maven2</url>
+            <url>https://mavensync.zkoss.org/maven2</url>
+        </repository>
+
+        <!-- YOUR LOCAL REPO -->
+        <repository>
+            <id>nexus.local</id>
+            <url>http://techtailors.sytes.net:8500/repository/maven-public/</url>
+            <name>Nexus Local</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
-            <id>ZK EVAL</id>
-            <name>ZK Evaluation Repository</name>
-            <url>http://mavensync.zkoss.org/eval</url>
+            <id>cdh.repo</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+            <name>Cloudera Repositories</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>zkmaven</id>
-            <name>ZK Maven Plugin Repository</name>
-            <url>http://mavensync.zkoss.org/maven2/</url>
-        </pluginRepository>
-    </pluginRepositories>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>etlplugin-logic</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>com.springsource.javax.inject</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>1.1</version>
+            <artifactId>zk-osgi</artifactId>
+            <version>8.6.0.1</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+        <!-- jooq dependencies -->
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-            <version>4.0</version>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>etlplugin-logic</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 
@@ -90,12 +98,15 @@
                             artifactId=retree
                         </Embed-Dependency>
                         <Import-Package>
-                            org.deckfour.xes.*;version="2.27",
-                            org.apromore.plugin.portal,
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.etlplugin.portal.*
+                            org.apromore.etlplugin.portal,
+                            org.apromore.etlplugin.portal.viewModels,
+                            org.apromore.etlplugin.portal.models,
+                            org.apromore.etlplugin.portal.utils,
+                            org.jooq.*,
+                            org.reactivestreams
                         </Export-Package>
                     </instructions>
                 </configuration>

@@ -41,8 +41,6 @@
   -->
 
 
-<window closable="true" id="errorWindow" maximizable="false" hflex="min" vflex="min" height="230px" width="672px"
-        position="center" title="Invalid Data Encountered!">
-    <label value="Testing ETL portal portal"/>
+<window closable="false" id="etl" maximizable="true">
     <include id="index" src="index.zul"/>
 </window>
