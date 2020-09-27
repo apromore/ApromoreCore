@@ -57,11 +57,6 @@ public class ETLPluginPortal extends DefaultPortalPlugin {
      */
     public void setFileHandlerService(FileHandlerService fileHandlerService) {
         this.fileHandlerService = fileHandlerService;
-        if(fileHandlerService != null) {
-            System.out.println("==> Good fileHandler");
-        } else {
-            System.out.println("==> Bad fileHandler");
-        }
     }
 
     /**
@@ -71,11 +66,6 @@ public class ETLPluginPortal extends DefaultPortalPlugin {
      */
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
-        if(transaction != null) {
-            System.out.println("==> Good transaction");
-        } else {
-            System.out.println("==> Bad transaction");
-        }
     }
 
     /**
@@ -125,8 +115,6 @@ public class ETLPluginPortal extends DefaultPortalPlugin {
         Sessions.getCurrent().setAttribute(
             ETLPluginPortal.SESSION_ATTRIBUTE_KEY, etlLogicBeanMap
         );
-
-        System.out.println("===> execute etl portal.");
 
         String zul = "/etlplugin/index.zul";
         try {

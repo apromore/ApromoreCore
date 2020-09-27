@@ -76,11 +76,6 @@ public class FileUploadViewModel {
      */
     @Init
     public void init() {
-        if(transaction == null || fileHandlerService == null) {
-            System.out.println("Bad FileUpload view");
-        } else {
-            System.out.println("Good FileUpload view");
-        }
         noFilesCheck = true;
     }
 
@@ -91,17 +86,13 @@ public class FileUploadViewModel {
     @Command("onFileUpload")
     public void onFileUpload() {
 
-        System.out.println("---> before");
         Media[] medias = Fileupload.get(MAX_FILES_NUMBER);
-        System.out.println("---> done");
 
         if (medias != null && medias.length > 0 && medias.length <= 10) {
             String returnMessage;
 
             try {
-                System.out.println("---> 1");
                 returnMessage = fileHandlerService.writeFiles(medias);
-                System.out.println("---> 2");
 
                 // If the file was written then load in impala and get snippet
                 if (returnMessage.equals("Upload Success")) {
@@ -110,9 +101,7 @@ public class FileUploadViewModel {
                     for (int i = 0; i < medias.length; i++) {
                         Media media = medias[i];
                         try {
-                            System.out.println("---> 3");
                             transaction.addTable(media.getName());
-                            System.out.println("---> 4");
 
                             resultsList = transaction.executeQuery(
                                 select(field("*"))
@@ -122,7 +111,6 @@ public class FileUploadViewModel {
                                     .getSQL(ParamType.INLINED),
                                 false
                             );
-                            System.out.println("---> 5");
 
                         } catch (SQLException e) {
                             e.printStackTrace();
@@ -132,7 +120,6 @@ public class FileUploadViewModel {
                         // in the list twice
                         if (!fileMetaData.getFileMetaMap().containsKey(
                                 media.getName())) {
-                            System.out.println("---> 6");
                             //Store file metadata (name and column names)
                             fileMetaData.putNewFile(
                                 FilenameUtils.removeExtension(media.getName()),
@@ -145,7 +132,6 @@ public class FileUploadViewModel {
                                     "fileMetaMap");
                             HashMap<String, List<String>> newInputFileMeta =
                                     new HashMap<>();
-                            System.out.println("---> 7");
                             if (fileMetaData.getFileMetaMap().keySet()
                                     .size() == 1) {
 
@@ -155,7 +141,6 @@ public class FileUploadViewModel {
                                         .keySet()
                                         .toArray()[0])
                                 );
-                                System.out.println("---> 8");
                                 try {
                                     newInputFileMeta.put(FilenameUtils
                                             .removeExtension(media.getName()),
@@ -174,7 +159,6 @@ public class FileUploadViewModel {
                                         fileMetaData, "inputFileMeta");
 
                                 templateTableBean.removeAllColumns();
-                                System.out.println("---> 9");
                                 templateTableBean.updateTemplateTable();
                                 BindUtils.postNotifyChange(
                                         null,
@@ -183,7 +167,6 @@ public class FileUploadViewModel {
                                         "*"
                                 );
                             }
-                            System.out.println("---> 10");
 
                             noFilesCheck = false;
                         }
@@ -198,7 +181,6 @@ public class FileUploadViewModel {
             }
 
         } else {
-            System.out.println("===> Error! in FileUpload else.");
             Messagebox.show(
                 NULL_UPLOAD_MESSAGE,
                 ERROR,

@@ -97,7 +97,6 @@ public class FileHandlerServiceImpl implements FileHandlerService {
      * @throws IllegalFileTypeException if file type is not supported
      */
     public String writeFiles(Media[] medias) throws IllegalFileTypeException {
-        System.out.println("---> write files");
         for (int i = 0; i < medias.length; i++) {
             Media media = medias[i];
             String fileName = media.getName();
