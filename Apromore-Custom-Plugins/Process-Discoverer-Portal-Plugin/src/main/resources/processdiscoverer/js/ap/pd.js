@@ -171,7 +171,7 @@
   });
 
   zk.afterMount(function() {
-    Ap.pd.init();
+    // Ap.pd.init();
     setTimeout(function() {
       try {
         Ap.pd.installComboitemHandlers();
