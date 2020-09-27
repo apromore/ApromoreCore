@@ -38,8 +38,6 @@ import java.util.List;
  */
 public class ClassUtils {
 
-    //TODO - complete JavaDoc
-
     /**
      * Private internal log instance.
      */
@@ -146,44 +144,6 @@ public class ClassUtils {
         return clazz;
     }
 
-    public static boolean isAvailable(String fullyQualifiedClassName) {
-        try {
-            forName(fullyQualifiedClassName);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static Object newInstance(String fqcn) throws Exception {
-        return newInstance(forName(fqcn));
-    }
-
-    public static Object newInstance(String fqcn, Object... args) throws Exception {
-        return newInstance(forName(fqcn), args);
-    }
-
-    public static Object newInstance(Class clazz) throws InstantiationException {
-        if (clazz == null) {
-            String msg = "Class method parameter cannot be null.";
-            throw new IllegalArgumentException(msg);
-        }
-        try {
-            return clazz.newInstance();
-        } catch (Exception e) {
-            throw new InstantiationException("Unable to instantiate class [" + clazz.getName() + "]");
-        }
-    }
-
-    public static Object newInstance(Class clazz, Object... args) throws InstantiationException {
-        Class[] argTypes = new Class[args.length];
-        for (int i = 0; i < args.length; i++) {
-            argTypes[i] = args[i].getClass();
-        }
-        Constructor ctor = getConstructor(clazz, argTypes);
-        return instantiate(ctor, args);
-    }
-
     public static Constructor getConstructor(Class clazz, Class... argTypes) {
         try {
             return clazz.getConstructor(argTypes);
@@ -202,29 +162,7 @@ public class ClassUtils {
         }
     }
 
-    /**
-     *
-     * @param type
-     * @param annotation
-     * @return
-     */
-    public static List<Method> getAnnotatedMethods(final Class<?> type, final Class<? extends Annotation> annotation) {
-        final List<Method> methods = new ArrayList<Method>();
-        Class<?> clazz = type;
-        while (!Object.class.equals(clazz)) {
-            Method[] currentClassMethods = clazz.getDeclaredMethods();
-            for (final Method method : currentClassMethods) {
-                if (annotation == null || method.isAnnotationPresent(annotation)) {
-                    methods.add(method);
-                }
-            }
-            // move to the upper class in the hierarchy in search for more methods
-            clazz = clazz.getSuperclass();
-        }
-        return methods;
-    }
-
-    private static interface ClassLoaderAccessor {
+    private interface ClassLoaderAccessor {
         Class loadClass(String fqcn);
         InputStream getResourceStream(String name);
     }
