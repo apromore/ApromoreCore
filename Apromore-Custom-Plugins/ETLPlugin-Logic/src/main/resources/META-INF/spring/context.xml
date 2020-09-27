@@ -38,10 +38,6 @@
             http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
     <!-- SERVICE: ETL plugin Logic -->
-    <osgi:service interface="org.apromore.etlplugin.logic.services.ETLPluginLogic">
-        <bean class="org.apromore.etlplugin.logic.services.impl.ETLPluginLogicImpl"/>
-    </osgi:service>
-
     <osgi:service interface="org.apromore.etlplugin.logic.services.FileHandlerService">
         <bean class="org.apromore.etlplugin.logic.services.impl.FileHandlerServiceImpl"/>
     </osgi:service>
