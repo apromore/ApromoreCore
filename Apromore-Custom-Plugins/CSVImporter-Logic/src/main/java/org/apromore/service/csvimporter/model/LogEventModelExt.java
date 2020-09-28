@@ -19,15 +19,18 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services;
+package org.apromore.service.csvimporter.model;
 
-import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogEventModelExt;
-import org.apromore.service.csvimporter.model.LogSample;
+import lombok.Data;
 
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.Map;
 
-public interface LogProcessor {
-
-    LogEventModelExt processLog(List<String> line, List<String> header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport);
+@Data
+public class LogEventModelExt extends LogEventModel{
+    private boolean valid;
+    public LogEventModelExt(String caseID, String activity, Timestamp endTimestamp, Timestamp startTimestamp, Map<String, Timestamp> otherTimestamps, String resource, Map<String, String> eventAttributes, Map<String, String> caseAttributes, boolean valid) {
+        super(caseID, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes);
+        this.valid = valid;
+    }
 }

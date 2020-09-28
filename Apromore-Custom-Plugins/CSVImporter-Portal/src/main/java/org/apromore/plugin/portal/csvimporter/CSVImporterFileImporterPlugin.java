@@ -91,7 +91,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         boolean useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
 
         if (useParquet) {
-            return new HashSet<>(Arrays.asList("csv", "parquet"));
+            return new HashSet<>(Arrays.asList("csv", "parquet", "XLSX"));
         } else {
             return Collections.singleton("csv");
         }

@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.ParquetFileWriter;
 import org.apromore.service.csvimporter.io.XLSReader;
 import org.apromore.service.csvimporter.model.*;
@@ -41,9 +40,7 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.create
 
 public class XLSToParquetExporterRF implements ParquetExporter {
 
-    private final Parse parse = new Parse();
     private List<LogErrorReport> logErrorReport;
-    private boolean validRow;
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
     private LogProcessor logProcessor;
@@ -94,7 +91,7 @@ public class XLSToParquetExporterRF implements ParquetExporter {
         int lineIndex = 1; // set to 1 since first line is the header
         int numOfValidEvents = 0;
         ArrayList<String> line;
-        LogEventModel logEventModel;
+        LogEventModelExt logEventModelExt;
         boolean rowLimitExceeded = false;
 
         for (Row r : sheet) {
@@ -103,7 +100,6 @@ public class XLSToParquetExporterRF implements ParquetExporter {
                 break;
 
             // new row, new event.
-            validRow = true;
             lineIndex++;
             line = new ArrayList<>();
 
@@ -122,10 +118,10 @@ public class XLSToParquetExporterRF implements ParquetExporter {
                 continue;
             }
 
-            logEventModel = logProcessor.processLog(line, header, sample, lineIndex, logErrorReport, parse, validRow);
+            logEventModelExt = logProcessor.processLog(line, header, sample, lineIndex, logErrorReport);
 
             // If row is invalid, continue to next row.
-            if (!validRow) {
+            if (!logEventModelExt.isValid()) {
                 if (skipInvalidRow) {
                     continue;
                 } else {
@@ -133,7 +129,7 @@ public class XLSToParquetExporterRF implements ParquetExporter {
                 }
             }
 
-            writer.write(logEventModel);
+            writer.write(logEventModelExt);
             numOfValidEvents++;
         }
         writer.close();

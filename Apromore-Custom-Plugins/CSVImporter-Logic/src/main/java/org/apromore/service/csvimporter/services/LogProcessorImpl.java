@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,10 +22,7 @@
 package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.dateparser.Parse;
-import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogErrorReportImpl;
-import org.apromore.service.csvimporter.model.LogEventModel;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.model.*;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -33,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LogProcessorImpl implements LogProcessor {
-
+    private final Parse parse = new Parse();
     private String caseId;
     private String activity;
     private Timestamp endTimestamp;
@@ -43,10 +40,11 @@ public class LogProcessorImpl implements LogProcessor {
     private HashMap<String, String> eventAttributes;
     private HashMap<String, Timestamp> otherTimestamps;
     private final String errorMessage = "Field is empty or has a null value!";
+    private boolean validRow;
 
 
     @Override
-    public LogEventModel processLog(List<String> line, List<String> header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport, Parse parse, boolean validRow) {
+    public LogEventModelExt processLog(List<String> line, List<String> header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport) {
 
         //Construct an event
         startTimestamp = null;
@@ -54,6 +52,7 @@ public class LogProcessorImpl implements LogProcessor {
         caseAttributes = new HashMap<>();
         eventAttributes = new HashMap<>();
         otherTimestamps = new HashMap<>();
+        validRow = true;
 
         // Case id:
         caseId = line.get(sample.getCaseIdPos());
@@ -70,13 +69,14 @@ public class LogProcessorImpl implements LogProcessor {
         }
 
         // End Timestamp
-        endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat(), parse);
+        endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat());
         if (endTimestamp == null) {
             logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header.get(sample.getEndTimestampPos()), parse.getParseFailMess()));
+            validRow = false;
         }
         // Start Timestamp
         if (sample.getStartTimestampPos() != -1) {
-            startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat(), parse);
+            startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat());
             if (startTimestamp == null) {
                 logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header.get(sample.getStartTimestampPos()), parse.getParseFailMess()));
                 validRow = false;
@@ -86,7 +86,7 @@ public class LogProcessorImpl implements LogProcessor {
         // Other timestamps
         if (!sample.getOtherTimestamps().isEmpty()) {
             for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()), otherTimestamp.getValue(), parse);
+                Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()), otherTimestamp.getValue());
                 if (tempTimestamp != null) {
                     otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
                 } else {
@@ -120,10 +120,10 @@ public class LogProcessorImpl implements LogProcessor {
             }
         }
 
-        return new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes);
+        return new LogEventModelExt(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes, validRow);
     }
 
-    private Timestamp parseTimestampValue(String theValue, String format, Parse parse) {
+    private Timestamp parseTimestampValue(String theValue, String format) {
         Timestamp stamp;
         if (format != null && !format.isEmpty()) {
             stamp = parse.tryParsingWithFormat(theValue, format);
