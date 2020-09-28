@@ -27,33 +27,26 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.ParquetFileWriter;
 import org.apromore.service.csvimporter.io.XLSReader;
 import org.apromore.service.csvimporter.model.*;
 
 import java.io.File;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 
 public class XLSToParquetExporter implements ParquetExporter {
 
-    private final Parse parse = new Parse();
-    boolean preferMonthFirstChanged;
     private List<LogErrorReport> logErrorReport;
-    private boolean validRow;
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
+    private LogProcessor logProcessor;
 
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
-
 
         sample.validateSample();
         //If file exist, delete it
@@ -64,7 +57,7 @@ public class XLSToParquetExporter implements ParquetExporter {
         if (workbook == null)
             throw new Exception("Unable to import file");
 
-        List<String> headerList = new ArrayList<>();
+        List<String> header = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(0);
 
         //Get the header
@@ -73,15 +66,13 @@ public class XLSToParquetExporter implements ParquetExporter {
 
         for (Row r : sheet) {
             for (Cell c : r) {
-                headerList.add(c.getStringCellValue());
+                header.add(c.getStringCellValue());
             }
             break;
         }
-        String[] header = headerList.toArray(new String[0]);
 
-        MessageType parquetSchema = createParquetSchema(header, sample);
+        MessageType parquetSchema = createParquetSchema(header.toArray(new String[0]), sample);
         ParquetFileWriter writer;
-
         // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
         Thread thread = Thread.currentThread();
         synchronized (thread) {
@@ -94,31 +85,20 @@ public class XLSToParquetExporter implements ParquetExporter {
             }
         }
 
+        logProcessor = new LogProcessorImpl();
         logErrorReport = new ArrayList<>();
         int lineIndex = 1; // set to 1 since first line is the header
         int numOfValidEvents = 0;
-        boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
-
         ArrayList<String> line;
-
-        String caseId;
-        String activity;
-        Timestamp endTimestamp;
-        Timestamp startTimestamp;
-        String resource;
-        HashMap<String, String> caseAttributes;
-        HashMap<String, String> eventAttributes;
-        HashMap<String, Timestamp> otherTimestamps;
-
-        String errorMessage = "Field is empty or has a null value!";
+        LogEventModelExt logEventModelExt;
         boolean rowLimitExceeded = false;
+
         for (Row r : sheet) {
 
             if (!isValidLineCount(lineIndex - 1))
                 break;
 
             // new row, new event.
-            validRow = true;
             lineIndex++;
             line = new ArrayList<>();
 
@@ -132,71 +112,15 @@ public class XLSToParquetExporter implements ParquetExporter {
                 continue;
 
             //Validate num of column
-            if (header.length != line.size()) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.size() + ")"));
+            if (header.size() != line.size()) {
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.size() + "). Number of columns: (" + line.size() + ")"));
                 continue;
             }
 
-            //Construct an event
-            startTimestamp = null;
-            resource = null;
-            caseAttributes = new HashMap<>();
-            eventAttributes = new HashMap<>();
-            otherTimestamps = new HashMap<>();
-
-
-            // Case id:
-            caseId = line.get(sample.getCaseIdPos());
-            if (caseId == null || caseId.isEmpty()) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
-            }
-
-            // Activity
-            activity = line.get(sample.getActivityPos());
-            if (activity == null || activity.isEmpty()) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
-            }
-
-            // End Timestamp
-            endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat());
-            if (endTimestamp == null) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
-            }
-            // Start Timestamp
-            if (sample.getStartTimestampPos() != -1) {
-                startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat());
-                if (startTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
-                }
-            }
-
-            // Other timestamps
-            if (!sample.getOtherTimestamps().isEmpty()) {
-                for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                    Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()), otherTimestamp.getValue());
-                    if (tempTimestamp != null) {
-                        otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
-                    } else {
-                        invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
-                    }
-                }
-            }
-
-            // If PreferMonthFirst changed to True, we have to start over.
-            if (!preferMonthFirst && preferMonthFirstChanged)
-                generateParqeuetFile(in, sample, charset, outputParquet, skipInvalidRow);
-
-
-            // Resource
-            if (sample.getResourcePos() != -1) {
-                resource = line.get(sample.getResourcePos());
-                if (resource == null || resource.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
-                }
-            }
+            logEventModelExt = logProcessor.processLog(line, header, sample, lineIndex, logErrorReport);
 
             // If row is invalid, continue to next row.
-            if (!validRow) {
+            if (!logEventModelExt.isValid()) {
                 if (skipInvalidRow) {
                     continue;
                 } else {
@@ -204,21 +128,7 @@ public class XLSToParquetExporter implements ParquetExporter {
                 }
             }
 
-            // Case Attributes
-            if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
-                for (int columnPos : sample.getCaseAttributesPos()) {
-                    caseAttributes.put(header[columnPos], line.get(columnPos));
-                }
-            }
-
-            // Event Attributes
-            if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
-                for (int columnPos : sample.getEventAttributesPos()) {
-                    eventAttributes.put(header[columnPos], line.get(columnPos));
-                }
-            }
-
-            writer.write(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
+            writer.write(logEventModelExt);
             numOfValidEvents++;
         }
         writer.close();
@@ -231,29 +141,5 @@ public class XLSToParquetExporter implements ParquetExporter {
 
     public boolean isValidLineCount(int lineCount) {
         return true;
-    }
-
-    private Timestamp parseTimestampValue(String theValue, String format) {
-        Timestamp stamp;
-        if (format != null && !format.isEmpty()) {
-            stamp = parse.tryParsingWithFormat(theValue, format);
-            if (stamp == null) {
-                stamp = parse.tryParsing(theValue);
-                if (!preferMonthFirstChanged) {
-                    preferMonthFirstChanged = parse.getPreferMonthFirst();
-                }
-            }
-        } else {
-            stamp = parse.tryParsing(theValue);
-            if (!preferMonthFirstChanged) {
-                preferMonthFirstChanged = parse.getPreferMonthFirst();
-            }
-        }
-        return stamp;
-    }
-
-    private void invalidRow(LogErrorReportImpl error) {
-        logErrorReport.add(error);
-        validRow = false;
     }
 }

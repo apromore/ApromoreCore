@@ -96,7 +96,6 @@ public class LogProcessorImpl implements LogProcessor {
             }
         }
 
-
         // Resource
         if (sample.getResourcePos() != -1) {
             resource = line.get(sample.getResourcePos());

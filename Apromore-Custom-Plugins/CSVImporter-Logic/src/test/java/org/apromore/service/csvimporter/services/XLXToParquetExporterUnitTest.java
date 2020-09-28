@@ -73,7 +73,7 @@ public class XLXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter } to convert to CSVReader.
+     * Test {@link XLSToParquetExporterLegecy } to convert to CSVReader.
      */
     @Test
     public void test1_valid() throws Exception {

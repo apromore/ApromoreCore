@@ -26,5 +26,5 @@ public class XLSFactory implements ConvertToParquetFactory {
     public SampleLogGenerator createSampleLogGenerator() {return new XLSSampleLogGenerator(); }
 
     @Override
-    public ParquetExporter createParquetExporter() {return new XLSToParquetExporterRF();}
+    public ParquetExporter createParquetExporter() {return new XLSToParquetExporter();}
 }
