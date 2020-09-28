@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2016 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,11 +33,17 @@ import org.apromore.common.ConfigBean;
 import org.apromore.dao.CacheRepository;
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
+import org.deckfour.xes.classification.XEventClasses;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.XLogInfoFactory;
+import org.deckfour.xes.info.impl.XTimeBoundsImpl;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +115,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     }
 
     /**
-     * @see org.apromore.dao.LogRepositoryCustom#findAllLogsByFolder(Integer, String)
+     * @see org.apromore.dao.LogRepositoryCustom#findAllLogsByFolder(Integer, String, String)
      * {@inheritDoc}
      */
     @Override
@@ -146,28 +152,26 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             try {
                 final String name = logNameId + "_" + logName + ".xes.gz";
-                exportToFile(config.getLogsDir()+ "/", name, log);
+                exportToFile(config.getLogsDir() + "/", name, log);
 
                 LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
 
-                // Store corresponding object into cache
-                cacheRepo.put(logNameId, log);
-                cacheRepo.put(logNameId + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(log));
-                LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
-                        "using Key [" + logNameId + "]. ");
-                LOGGER.info("Put APMLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
-                        "using Key [" + logNameId + "APMLog]. ");
+                if (shouldCache(log)) {
+                    // Store corresponding object into cache
+                    cacheRepo.put(logNameId, log);
+                    cacheRepo.put(logNameId + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(log));
+                    LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() +
+                            "] using Key [" + logNameId + "]. ");
+                    LOGGER.info("Put APMLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
+                            "using Key [" + logNameId + "APMLog]. ");
+                    LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                    LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
+                            "MB ");
+                    LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
+                } else {
+                    LOGGER.info("The total number of events in this log exceed cache threshold");
+                }
 
-//                System.gc();
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                }
-
-                LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
-                LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
-                        "MB ");
-                LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
                 return logNameId;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage(), e);
@@ -188,6 +192,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 String key = log.getFilePath();
                 cacheRepo.evict(key);
                 cacheRepo.evict(key + APMLOG_CACHE_KEY_SUFFIX);
+                System.gc(); // Force GC after cache eviction
                 LOGGER.info("Delete XLog [ KEY: " + key + "] from cache [" + cacheRepo.getCacheName() + "]");
                 LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
 
@@ -233,31 +238,25 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     startTime = System.nanoTime();
                     // *******  profiling code end here ********
 
-                    // Log POJO has one constraint that span 2 columns (@UniqueConstraint(columnNames = {"name",
-                    // "folderId"}))
-                    cacheRepo.put(key, xlog);
-                    elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Cache XLog [KEY:" + key + "]. " + "Elapsed time: " + elapsedNanos / 1000000 +
-                            " ms.");
+                    if (shouldCache(xlog)) {
+                        cacheRepo.put(key, xlog);
+                        elapsedNanos = System.nanoTime() - startTime;
+                        LOGGER.info("Cache XLog [KEY:" + key + "]. " + "Elapsed time: " + elapsedNanos / 1000000 +
+                                " ms.");
 
-                    startTime = System.nanoTime();
-                    cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(xlog));
-                    elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Construct and cache APMLog [KEY:" + key + APMLOG_CACHE_KEY_SUFFIX + "]. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+                        startTime = System.nanoTime();
+                        cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(xlog));
+                        elapsedNanos = System.nanoTime() - startTime;
+                        LOGGER.info("Construct and cache APMLog [KEY:" + key + APMLOG_CACHE_KEY_SUFFIX + "]. Elapsed " +
+                                "time: " + elapsedNanos / 1000000 + " ms.");
 
-//                    System.gc();
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                    }
-
-                    LOGGER.info("Memory Used: "  + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
-                    LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
-                            "MB ");
-                    LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
-//                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
-//                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
-//                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
+                        LOGGER.info("Memory Used: " + getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                        LOGGER.info("Memory Available: " + (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024 + " " +
+                                "MB ");
+                        LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
+                    } else {
+                        LOGGER.info("The total number of events in this log exceed cache threshold");
+                    }
 
                     return xlog;
                 } catch (Exception e) {
@@ -275,8 +274,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     }
 
 
-
-
     protected MemoryUsage getMemoryUsage() {
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         return memoryMXBean.getHeapMemoryUsage();
@@ -287,7 +284,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      * @param log
      * @return
      */
-    public APMLog getAggregatedLog(Log log) {
+    public APMLog getAggregatedLog(Log log, XLog xLog) {
         if (log != null) {
 
             // *******  profiling code start here ********
@@ -305,17 +302,16 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 try {
                     APMLog apmLog = apmLogService.findAPMLogForXLog(getProcessLog(log, null));
 
-                    cacheRepo.put(key, apmLog);
-                    elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Put APMLog [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 +
-                            " ms.");
-//                    LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
-                    LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
-//                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
-//                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
-//                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
+                    if (shouldCache(xLog)) {
+                        cacheRepo.put(key, apmLog);
+                        elapsedNanos = System.nanoTime() - startTime;
+                        LOGGER.info("Put APMLog [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 +
+                                " ms.");
+                        LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
+                    }
 
                     return apmLog;
+
                 } catch (Exception e) {
                     LOGGER.error("Error " + e.getMessage());
                 }
@@ -327,6 +323,42 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             }
         }
         return null;
+    }
+
+    private boolean shouldCache(XLog xLog) {
+
+        /**
+         * The total number of events in this log.
+         */
+        int numberOfEvents = 0;
+        /**
+         * The number of traces in this log.
+         */
+        int numberOfTraces = 0;
+
+        int numOfEventsLimit = 0;
+        int numOfTracesLimit = 0;
+
+        for(XTrace trace : xLog) {
+            numberOfTraces++;
+            for(XEvent event : trace) {
+                numberOfEvents++;
+            }
+        }
+
+        try {
+            numOfEventsLimit = Integer.parseInt(config.getNumOfEvent().replaceAll(",", ""));
+            numOfTracesLimit = Integer.parseInt(config.getNumOfTrace().replaceAll(",", ""));
+
+        } catch (NumberFormatException e) {
+            LOGGER.error("Cache threshold value is wrong, please check the setting in config file " + e.getMessage());
+        }
+
+        if ((numOfEventsLimit != 0 && numberOfEvents > numOfEventsLimit) || (numOfTracesLimit != 0  && numberOfTraces > numOfTracesLimit)) {
+            return false;
+        }
+
+        return true;
     }
 
     private XFactory getXFactory(String factoryName) {
@@ -426,6 +458,13 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             outputStream = new FileOutputStream(file);
             serializer.serialize(log, outputStream);
             outputStream.close();
+
+            if (file.exists() && file.isFile()){
+                LOGGER.info(String.valueOf(file.length()));
+            }else{
+                LOGGER.info("file doesn't exist or is not a file");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error");
