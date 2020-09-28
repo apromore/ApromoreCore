@@ -33,6 +33,9 @@ import java.util.Set;
 import java.util.Objects;
 
 import javax.xml.datatype.DatatypeFactory;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -60,6 +63,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -78,6 +82,9 @@ public abstract class BaseListboxController extends BaseController {
     private static final String LOG_DELETE = "Are you sure you want to delete selected log(s)?";
     private static final String PROCESS_DELETE = "Are you sure you want to delete the selected process model(s)? If no version has been selected, the latest version will be removed.";
     private static final String MIXED_DELETE = "Are you sure you want to delete the selected file(s)? For a process model, if no version has been selected, the latest version will be removed.";
+
+    private static final String TILE_VIEW = "tile";
+    private static final String LIST_VIEW = "list";
 
     private final Listbox listBox;
 
@@ -142,9 +149,29 @@ public abstract class BaseListboxController extends BaseController {
         attachEvents();
 
         appendChild(listBox);
-        setTileView(true);
+        if (LIST_VIEW.equals(getPersistedView())) {
+            setTileView(false);
+        } else {
+            setTileView(true);
+        }
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+    }
+
+    public void setPersistedView(String view) {
+        Clients.evalJavaScript("Ap.common.setCookie('view','" + view + "')");
+    }
+
+    public String getPersistedView() {
+        Cookie[] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if("view".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     protected void attachEvents() {
@@ -297,6 +324,7 @@ public abstract class BaseListboxController extends BaseController {
             }
             toggleComponentSclass(btnTileView, true, "ap-btn-off", "ap-btn-on");
             toggleComponentSclass(btnListView, false, "ap-btn-off", "ap-btn-on");
+            setPersistedView(TILE_VIEW);
         } else {
             if (sclass.contains("ap-tiles-view")) {
                 this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
@@ -306,6 +334,7 @@ public abstract class BaseListboxController extends BaseController {
             }
             toggleComponentSclass(btnListView, true, "ap-btn-off", "ap-btn-on");
             toggleComponentSclass(btnTileView, false, "ap-btn-off", "ap-btn-on");
+            setPersistedView(LIST_VIEW);
         }
     }
 
