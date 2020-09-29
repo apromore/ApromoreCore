@@ -194,16 +194,7 @@ public class GraphSettingsController extends VisualController {
                 parent.generateViz();
             }
         };
-        EventListener<Event> nodeChangingListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String val = ((InputEvent) event).getValue();
-                ensureSlider(nodeSlider, nodeInput, val);
-                parent.generateViz();
-            }
-        };
         this.nodeInput.addEventListener("onChange", nodeChangeListener);
-        this.nodeInput.addEventListener("onChanging", nodeChangingListener);
 
         EventListener<Event> arcChangeListener = new EventListener<Event>() {
             @Override
@@ -213,16 +204,7 @@ public class GraphSettingsController extends VisualController {
                 parent.generateViz();
             }
         };
-        EventListener<Event> arcChangingListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String val = ((InputEvent) event).getValue();
-                ensureSlider(arcSlider, arcInput, val);
-                parent.generateViz();
-            }
-        };
         this.arcInput.addEventListener("onChange", arcChangeListener);
-        this.arcInput.addEventListener("onChanging", arcChangingListener);
 
         EventListener<Event> parallelismChangeListener = new EventListener<Event>() {
             @Override
