@@ -272,5 +272,12 @@ databaseChangeLog:
          referencedColumnNames: id
          referencedTableName: usermetadata
          validate: true
-                           
- 
+
+ - changeSet:
+     id: 20200928103000
+     author: frankm
+     changes:
+       - modifyDataType:
+           columnName:  content
+           newDataType:  LONGTEXT
+           tableName:  usermetadata
