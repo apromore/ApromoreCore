@@ -21,17 +21,18 @@
  */
 package org.apromore.config;
 
-import org.h2.jdbcx.JdbcDataSource;
+import javax.sql.DataSource;
+
+import org.apromore.apmlog.impl.APMLogServiceImpl;
+import org.apromore.common.ConfigBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
-
-import javax.persistence.Basic;
-import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -40,6 +41,8 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
+@ImportResource({ "classpath:META-INF/spring/managerContext-jpa.xml","classpath:database/test-jpa.xml" })
+//@EnableJpaRepositories(repositoryImplementationPostfix = "CustomImpl", basePackages = "org.apromore.dao", entityManagerFactoryRef = "entityManagerFactory", transactionManagerRef = "transactionManager")
 public class TestConfig {
 
 	@Value("${jdbc.username}")
@@ -53,11 +56,9 @@ public class TestConfig {
 
 	@Value("${jdbc.driver}")
 	private String driver;
-	
+
 	@Value("${jdbc.context}")
 	private String context;
-	
-	
 
 	@Bean
 	public DataSource dataSource() {
@@ -93,6 +94,16 @@ public class TestConfig {
 		ppc.setLocations(resources);
 		ppc.setIgnoreUnresolvablePlaceholders(true);
 		return ppc;
+	}
+
+	@Bean
+	public APMLogServiceImpl apmLogService() {
+		return new APMLogServiceImpl();
+	}
+
+	@Bean
+	public ConfigBean config() {
+		return new ConfigBean();
 	}
 
 }

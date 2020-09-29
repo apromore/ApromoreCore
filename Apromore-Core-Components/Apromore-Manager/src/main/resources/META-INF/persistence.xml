@@ -54,6 +54,10 @@
         <class>org.apromore.dao.model.UsermetadataProcess</class>
         <class>org.apromore.dao.model.UsermetadataType</class>
         <class>org.apromore.dao.model.GroupUsermetadata</class>
+        
+        <class>org.apromore.dao.model.CustomCalender</class>
+        <class>org.apromore.dao.model.WorkDay</class>
+        <class>org.apromore.dao.model.Holiday</class>
     </persistence-unit>
 
 </persistence>
