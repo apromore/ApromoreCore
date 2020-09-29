@@ -523,7 +523,7 @@ public class PDController extends BaseController {
 
     }
 
-    private void clearFilter() throws Exception {
+    public void clearFilter() throws Exception {
         this.getFilterController().clearFilter();
     }
 

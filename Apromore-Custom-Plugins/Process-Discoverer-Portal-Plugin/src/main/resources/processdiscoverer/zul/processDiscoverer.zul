@@ -47,6 +47,7 @@
   <script type="text/javascript" src="/processdiscoverer/js/jquery.js"></script>
   <script type="text/javascript" src="/processdiscoverer/js/minisearch/index.js"></script>
   <script type="text/javascript" src="/processdiscoverer/js/file-saver/filesaver.js"></script>
+  <script type="text/javascript" src="/processdiscoverer/js/undoo/undoo.min.js"></script>
   <script src="/processdiscoverer/js/jspdf.v1.4.1.debug.js"></script>
   <script src="/processdiscoverer/js/cytoscape.v3.2.18.min.js"></script>
   <script src="/processdiscoverer/js/cytoscape-svg-convertor.js"></script>
