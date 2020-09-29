@@ -50,6 +50,7 @@
 		<module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
 		<module>Apromore-OSGI-Bundles/json-osgi</module>
 		<module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
+		<module>Apromore-OSGI-Bundles/xlsx-streamer-osgi</module>
 		<module>Apromore-OSGI-Bundles/zk-osgi</module>
 		<module>Apromore-OSGI-Bundles/jgraph-osgi</module>
 		<module>Apromore-OSGI-Bundles/parquet-osgi</module>
