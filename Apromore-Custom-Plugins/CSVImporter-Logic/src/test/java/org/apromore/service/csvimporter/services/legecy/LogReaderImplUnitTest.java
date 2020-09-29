@@ -28,7 +28,6 @@ import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,11 +41,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-@Ignore
+//@Ignore
 public class LogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImplUnitTest.class);
@@ -126,7 +125,6 @@ public class LogReaderImplUnitTest {
 
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
-
         String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("csv")
@@ -134,6 +132,7 @@ public class LogReaderImplUnitTest {
                 .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test1-valid.csv"), 100, "UTF-8");
 
         LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test1-valid.csv"), sample, "UTF-8", false);
+
 
         // Validate result
         assertNotNull(logModel);
@@ -451,7 +450,7 @@ public class LogReaderImplUnitTest {
 
 
         // Set up inputs and expected outputs
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")),"\\+02:00");
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
 
         // Perform the test
 

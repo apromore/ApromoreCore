@@ -44,6 +44,7 @@ public class XLSToParquetExporter implements ParquetExporter {
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
     private LogProcessor logProcessor;
+    private ParquetFileWriter writer;
 
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
@@ -53,90 +54,92 @@ public class XLSToParquetExporter implements ParquetExporter {
         if (outputParquet.exists())
             outputParquet.delete();
 
-        Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE);
-        if (workbook == null)
-            throw new Exception("Unable to import file");
+        try(Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)){
+            if (workbook == null)
+                throw new Exception("Unable to import file");
 
-        List<String> header = new ArrayList<>();
-        Sheet sheet = workbook.getSheetAt(0);
+            List<String> header = new ArrayList<>();
+            Sheet sheet = workbook.getSheetAt(0);
 
-        //Get the header
-        if (sheet == null)
-            throw new Exception("Unable to import file");
+            //Get the header
+            if (sheet == null)
+                throw new Exception("Unable to import file");
 
-        for (Row r : sheet) {
-            for (Cell c : r) {
-                header.add(c.getStringCellValue());
-            }
-            break;
-        }
-
-        MessageType parquetSchema = createParquetSchema(header.toArray(new String[0]), sample);
-        ParquetFileWriter writer;
-        // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
-        Thread thread = Thread.currentThread();
-        synchronized (thread) {
-            ClassLoader originalContextClassLoader = thread.getContextClassLoader();
-            try {
-                thread.setContextClassLoader(Path.class.getClassLoader());
-                writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
-            } finally {
-                thread.setContextClassLoader(originalContextClassLoader);
-            }
-        }
-
-        logProcessor = new LogProcessorImpl();
-        logErrorReport = new ArrayList<>();
-        int lineIndex = 1; // set to 1 since first line is the header
-        int numOfValidEvents = 0;
-        ArrayList<String> line;
-        LogEventModelExt logEventModelExt;
-        boolean rowLimitExceeded = false;
-
-        for (Row r : sheet) {
-
-            if (!isValidLineCount(lineIndex - 1))
+            for (Row r : sheet) {
+                for (Cell c : r) {
+                    header.add(c.getStringCellValue());
+                }
                 break;
-
-            // new row, new event.
-            lineIndex++;
-            line = new ArrayList<>();
-
-            //Get the rows
-            for (Cell c : r) {
-                line.add(c.getStringCellValue());
             }
 
-            //empty row
-            if (line.size() == 0 || (line.size() == 1 && (line.get(0).trim().equals("") || line.get(0).trim().equals("\n"))))
-                continue;
-
-            //Validate num of column
-            if (header.size() != line.size()) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.size() + "). Number of columns: (" + line.size() + ")"));
-                continue;
-            }
-
-            logEventModelExt = logProcessor.processLog(line, header, sample, lineIndex, logErrorReport);
-
-            // If row is invalid, continue to next row.
-            if (!logEventModelExt.isValid()) {
-                if (skipInvalidRow) {
-                    continue;
-                } else {
-                    return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            MessageType parquetSchema = createParquetSchema(header.toArray(new String[0]), sample);
+            // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
+            Thread thread = Thread.currentThread();
+            synchronized (thread) {
+                ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+                try {
+                    thread.setContextClassLoader(Path.class.getClassLoader());
+                    writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
+                } finally {
+                    thread.setContextClassLoader(originalContextClassLoader);
                 }
             }
 
-            writer.write(logEventModelExt);
-            numOfValidEvents++;
+            logProcessor = new LogProcessorImpl();
+            logErrorReport = new ArrayList<>();
+            int lineIndex = 1; // set to 1 since first line is the header
+            int numOfValidEvents = 0;
+            ArrayList<String> line;
+            LogEventModelExt logEventModelExt;
+            boolean rowLimitExceeded = false;
+
+            for (Row r : sheet) {
+
+                if (!isValidLineCount(lineIndex - 1))
+                    break;
+
+                // new row, new event.
+                lineIndex++;
+                line = new ArrayList<>();
+
+                //Get the rows
+                for (Cell c : r) {
+                    line.add(c.getStringCellValue());
+                }
+
+                //empty row
+                if (line.size() == 0 || (line.size() == 1 && (line.get(0).trim().equals("") || line.get(0).trim().equals("\n"))))
+                    continue;
+
+                //Validate num of column
+                if (header.size() != line.size()) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.size() + "). Number of columns: (" + line.size() + ")"));
+                    continue;
+                }
+
+                logEventModelExt = logProcessor.processLog(line, header, sample, lineIndex, logErrorReport);
+
+                // If row is invalid, continue to next row.
+                if (!logEventModelExt.isValid()) {
+                    if (skipInvalidRow) {
+                        continue;
+                    } else {
+                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                    }
+                }
+
+                writer.write(logEventModelExt);
+                numOfValidEvents++;
+            }
+
+            if (!isValidLineCount(lineIndex - 1))
+                rowLimitExceeded = true;
+
+            return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+        } finally {
+            writer.close();
+            in.close();
         }
-        writer.close();
-
-        if (!isValidLineCount(lineIndex - 1))
-            rowLimitExceeded = true;
-
-        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
     }
 
     public boolean isValidLineCount(int lineCount) {

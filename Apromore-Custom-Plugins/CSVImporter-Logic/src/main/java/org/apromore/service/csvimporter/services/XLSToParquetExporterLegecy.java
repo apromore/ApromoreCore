@@ -221,6 +221,8 @@ public class XLSToParquetExporterLegecy implements ParquetExporter {
             writer.write(new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes));
             numOfValidEvents++;
         }
+
+        workbook.close();
         writer.close();
 
         if (!isValidLineCount(lineIndex - 1))

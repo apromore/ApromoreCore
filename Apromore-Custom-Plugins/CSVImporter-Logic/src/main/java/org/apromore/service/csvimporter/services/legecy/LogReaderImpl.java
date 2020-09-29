@@ -38,10 +38,7 @@ import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
@@ -55,190 +52,199 @@ public class LogReaderImpl implements LogReader, Constants {
     private List<LogErrorReport> logErrorReport;
     private boolean validRow;
 
+    private Reader readerin;
+    private BufferedReader brReader;
+    private InputStream in2;
+    private CSVReader reader;
 
     @Override
     public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
 
-        sample.validateSample();
+        try {
+            sample.validateSample();
+            // Read the header
+            readerin = new InputStreamReader(in, Charset.forName(charset));
+            brReader = new BufferedReader(readerin);
+            String firstLine = brReader.readLine();
+            firstLine = firstLine.replaceAll("\"", "");
+            char separator = getMaxOccurringChar(firstLine);
+            String[] header = firstLine.split("\\s*" + separator + "\\s*");
 
-        Reader readerin = new InputStreamReader(in, Charset.forName(charset));
-        BufferedReader brReader = new BufferedReader(readerin);
-        String firstLine = brReader.readLine();
-        firstLine = firstLine.replaceAll("\"", "");
-        char separator = getMaxOccurringChar(firstLine);
-        String[] header = firstLine.split("\\s*" + separator + "\\s*");
+            // Read the reset of the log
+            in2 = new ReaderInputStream(brReader, charset);
+            reader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
-        InputStream in2 = new ReaderInputStream(brReader, charset);
-        CSVReader reader = new CSVFileReader().newCSVReader(in2, charset, separator);
+            if (reader == null)
+                return null;
 
-        if (reader == null)
-            return null;
+            logErrorReport = new ArrayList<>();
+            int lineIndex = 1; // set to 1 since first line is the header
+            int numOfValidEvents = 0;
+            boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
-        logErrorReport = new ArrayList<>();
-        int lineIndex = 1; // set to 1 since first line is the header
-        int numOfValidEvents = 0;
-        boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
+            String[] line;
 
-        String[] line;
+            String caseId;
+            String activity;
+            Timestamp endTimestamp;
+            Timestamp startTimestamp;
+            String resource;
+            HashMap<String, String> caseAttributes;
+            HashMap<String, String> eventAttributes;
+            HashMap<String, Timestamp> otherTimestamps;
 
-        String caseId;
-        String activity;
-        Timestamp endTimestamp;
-        Timestamp startTimestamp;
-        String resource;
-        HashMap<String, String> caseAttributes;
-        HashMap<String, String> eventAttributes;
-        HashMap<String, Timestamp> otherTimestamps;
+            TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
 
-        TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
+            String errorMessage = "Field is empty or has a null value!";
+            boolean rowLimitExceeded = false;
 
-        String errorMessage = "Field is empty or has a null value!";
-        boolean rowLimitExceeded = false;
+            //XES
+            XFactory xFactory = new XFactoryNaiveImpl();
+            XConceptExtension concept = XConceptExtension.instance();
+            XLifecycleExtension lifecycle = XLifecycleExtension.instance();
+            XTimeExtension timestamp = XTimeExtension.instance();
+            XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
 
-        //XES
-        XFactory xFactory = new XFactoryNaiveImpl();
-        XConceptExtension concept = XConceptExtension.instance();
-        XLifecycleExtension lifecycle = XLifecycleExtension.instance();
-        XTimeExtension timestamp = XTimeExtension.instance();
-        XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
+            XLog xLog;
+            xLog = xFactory.createLog();
+            xLog.getExtensions().add(concept);
+            xLog.getExtensions().add(lifecycle);
+            xLog.getExtensions().add(timestamp);
+            xLog.getExtensions().add(resourceXes);
 
-        XLog xLog = xFactory.createLog();
-        xLog.getExtensions().add(concept);
-        xLog.getExtensions().add(lifecycle);
-        xLog.getExtensions().add(timestamp);
-        xLog.getExtensions().add(resourceXes);
+            lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
-        lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
+            while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
-        while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
+                // new row, new event.
+                validRow = true;
+                lineIndex++;
 
-            // new row, new event.
-            validRow = true;
-            lineIndex++;
+                //empty row
+                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
+                    continue;
 
-            //empty row
-            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
-                continue;
-
-            //Validate num of column
-            if (header.length != line.length) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
-                continue;
-            }
-
-            //Construct an event
-            startTimestamp = null;
-            resource = null;
-            caseAttributes = new HashMap<>();
-            eventAttributes = new HashMap<>();
-            otherTimestamps = new HashMap<>();
-
-
-            // Case id:
-            caseId = line[sample.getCaseIdPos()];
-            if (caseId == null || caseId.isEmpty()) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
-            }
-
-            // Activity
-            activity = line[sample.getActivityPos()];
-            if (activity == null || activity.isEmpty()) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
-            }
-
-            // End Timestamp
-            endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
-            if (endTimestamp == null) {
-                invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
-            }
-            // Start Timestamp
-            if (sample.getStartTimestampPos() != -1) {
-                startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
-                if (startTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
+                //Validate num of column
+                if (header.length != line.length) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                    continue;
                 }
-            }
 
-            // Other timestamps
-            if (!sample.getOtherTimestamps().isEmpty()) {
-                for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                    Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue());
-                    if (tempTimestamp != null) {
-                        otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
-                    } else {
-                        invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
+                //Construct an event
+                startTimestamp = null;
+                resource = null;
+                caseAttributes = new HashMap<>();
+                eventAttributes = new HashMap<>();
+                otherTimestamps = new HashMap<>();
+
+
+                // Case id:
+                caseId = line[sample.getCaseIdPos()];
+                if (caseId == null || caseId.isEmpty()) {
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
+                }
+
+                // Activity
+                activity = line[sample.getActivityPos()];
+                if (activity == null || activity.isEmpty()) {
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
+                }
+
+                // End Timestamp
+                endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
+                if (endTimestamp == null) {
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
+                }
+                // Start Timestamp
+                if (sample.getStartTimestampPos() != -1) {
+                    startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
+                    if (startTimestamp == null) {
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
                     }
                 }
-            }
 
-            // If PreferMonthFirst changed to True, we have to start over.
-            if (!preferMonthFirst && preferMonthFirstChanged)
-                readLogs(in, sample, charset, skipInvalidRow);
-
-            // Resource
-            if (sample.getResourcePos() != -1) {
-                resource = line[sample.getResourcePos()];
-                if (resource == null || resource.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
+                // Other timestamps
+                if (!sample.getOtherTimestamps().isEmpty()) {
+                    for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
+                        Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue());
+                        if (tempTimestamp != null) {
+                            otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
+                        } else {
+                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
+                        }
+                    }
                 }
-            }
 
-            // If row is invalid, continue to next row.
-            if (!validRow) {
-                if (skipInvalidRow) {
-                    continue;
+                // If PreferMonthFirst changed to True, we have to start over.
+                if (!preferMonthFirst && preferMonthFirstChanged)
+                    readLogs(in, sample, charset, skipInvalidRow);
+
+                // Resource
+                if (sample.getResourcePos() != -1) {
+                    resource = line[sample.getResourcePos()];
+                    if (resource == null || resource.isEmpty()) {
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
+                    }
+                }
+
+                // If row is invalid, continue to next row.
+                if (!validRow) {
+                    if (skipInvalidRow) {
+                        continue;
+                    } else {
+                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                    }
+                }
+
+                // Case Attributes
+                if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
+                    for (int columnPos : sample.getCaseAttributesPos()) {
+                        caseAttributes.put(header[columnPos], line[columnPos]);
+                    }
+                }
+
+                // Event Attributes
+                if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
+                    for (int columnPos : sample.getEventAttributesPos()) {
+                        eventAttributes.put(header[columnPos], line[columnPos]);
+                    }
+                }
+
+                //Construct a Trace if it's not exists
+                if (tracesHistory.isEmpty() || !tracesHistory.containsKey(caseId)) {
+                    XTrace xT = xFactory.createTrace();
+                    concept.assignName(xT, caseId);
+                    assignEventsToTrace(
+                            new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
+                            xT);
+                    assignMyCaseAttributes(caseAttributes, xT);
+                    tracesHistory.put(caseId, xT);
+                    numOfValidEvents++;
+
                 } else {
-                    return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                    XTrace xT = tracesHistory.get(caseId);
+                    assignEventsToTrace(
+                            new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
+                            xT);
+                    assignMyCaseAttributes(caseAttributes, xT);
+                    numOfValidEvents++;
                 }
             }
 
-            // Case Attributes
-            if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
-                for (int columnPos : sample.getCaseAttributesPos()) {
-                    caseAttributes.put(header[columnPos], line[columnPos]);
-                }
-            }
+            //Sort and feed xLog
+            tracesHistory.forEach((k, v) -> {
+                v.sort(new XEventComparator());
+                xLog.add(v);
+            });
 
-            // Event Attributes
-            if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
-                for (int columnPos : sample.getEventAttributesPos()) {
-                    eventAttributes.put(header[columnPos], line[columnPos]);
-                }
-            }
+            if (!isValidLineCount(lineIndex - 1))
+                rowLimitExceeded = true;
 
-            //Construct a Trace if it's not exists
-            if (tracesHistory.isEmpty() || !tracesHistory.containsKey(caseId)) {
-                XTrace xT = xFactory.createTrace();
-                concept.assignName(xT, caseId);
-                assignEventsToTrace(
-                        new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
-                        xT);
-                assignMyCaseAttributes(caseAttributes, xT);
-                tracesHistory.put(caseId, xT);
-                numOfValidEvents++;
-
-            } else {
-                XTrace xT = tracesHistory.get(caseId);
-                assignEventsToTrace(
-                        new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
-                        xT);
-                assignMyCaseAttributes(caseAttributes, xT);
-                numOfValidEvents++;
-            }
+            return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
+        } finally {
+            closeQuietly(in);
         }
-
-        //Sort and feed xLog
-        tracesHistory.forEach((k, v) -> {
-            v.sort(new XEventComparator());
-            xLog.add(v);
-        });
-
-        if (!isValidLineCount(lineIndex - 1))
-            rowLimitExceeded = true;
-
-        return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
     }
-
 
     public boolean isValidLineCount(int lineCount) {
         return true;
@@ -338,5 +344,18 @@ public class LogReaderImpl implements LogReader, Constants {
             }
         }
         return xEvent;
+    }
+
+    private void closeQuietly(InputStream in) throws IOException {
+        if (in != null)
+            in.close();
+        if (this.readerin != null)
+            this.readerin.close();
+        if (this.brReader != null)
+            this.brReader.close();
+        if (this.reader != null)
+            this.reader.close();
+        if (this.in2 != null)
+            this.in2.close();
     }
 }

@@ -44,89 +44,114 @@ class CSVToParqeutExporter implements ParquetExporter {
 
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
+    private Reader readerin;
+    private BufferedReader brReader;
+    private InputStream in2;
+    private CSVReader reader;
+    private ParquetFileWriter writer;
+
 
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
-        sample.validateSample();
-        //If file exist, delete it
-        if (outputParquet.exists())
-            outputParquet.delete();
+        try {
+            sample.validateSample();
+            //If file exist, delete it
+            if (outputParquet.exists())
+                outputParquet.delete();
 
-        Reader readerin = new InputStreamReader(in, Charset.forName(charset));
-        BufferedReader brReader = new BufferedReader(readerin);
-        String firstLine = brReader.readLine();
-        char separator = getMaxOccurringChar(firstLine);
-        String[] header = firstLine.split("\\s*" + separator + "\\s*");
+            readerin = new InputStreamReader(in, Charset.forName(charset));
+            brReader = new BufferedReader(readerin);
+            String firstLine = brReader.readLine();
+            char separator = getMaxOccurringChar(firstLine);
+            String[] header = firstLine.split("\\s*" + separator + "\\s*");
 
-        InputStream in2 = new ReaderInputStream(brReader, charset);
-        CSVReader reader = new CSVFileReader().newCSVReader(in2, charset, separator);
+            in2 = new ReaderInputStream(brReader, charset);
+            reader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
-        if (reader == null)
-            return null;
-
-        MessageType parquetSchema = createParquetSchema(header, sample);
-        ParquetFileWriter writer;
-
-        // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
-        Thread thread = Thread.currentThread();
-        synchronized (thread) {
-            ClassLoader originalContextClassLoader = thread.getContextClassLoader();
-            try {
-                thread.setContextClassLoader(Path.class.getClassLoader());
-                writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
-            } finally {
-                thread.setContextClassLoader(originalContextClassLoader);
-            }
-        }
-
-        logProcessor = new LogProcessorImpl();
-        logErrorReport = new ArrayList<>();
-        int lineIndex = 1; // set to 1 since first line is the header
-        int numOfValidEvents = 0;
-        String[] line;
-        boolean rowLimitExceeded = false;
-        LogEventModelExt logEventModelExt;
-
-        while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
-
-            // new row, new event.
-            lineIndex++;
-
-            //empty row
-            if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
-                continue;
-
-            //Validate num of column
-            if (header.length != line.length) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
-                continue;
+            if (reader == null) {
+                return null;
             }
 
-            //Construct an event
-            logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+            MessageType parquetSchema = createParquetSchema(header, sample);
 
-            // If row is invalid, continue to next row.
-            if (!logEventModelExt.isValid()) {
-                if (skipInvalidRow) {
-                    continue;
-                } else {
-                    return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
+            Thread thread = Thread.currentThread();
+            synchronized (thread) {
+                ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+                try {
+                    thread.setContextClassLoader(Path.class.getClassLoader());
+                    writer = new ParquetFileWriter(new Path(outputParquet.toURI()), parquetSchema, true);
+                } finally {
+                    thread.setContextClassLoader(originalContextClassLoader);
                 }
             }
 
-            writer.write(logEventModelExt);
-            numOfValidEvents++;
+            logProcessor = new LogProcessorImpl();
+            logErrorReport = new ArrayList<>();
+            int lineIndex = 1; // set to 1 since first line is the header
+            int numOfValidEvents = 0;
+            String[] line;
+            boolean rowLimitExceeded = false;
+            LogEventModelExt logEventModelExt;
+
+            while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
+
+                // new row, new event.
+                lineIndex++;
+
+                //empty row
+                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
+                    continue;
+
+                //Validate num of column
+                if (header.length != line.length) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                    continue;
+                }
+
+                //Construct an event
+                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+
+                // If row is invalid, continue to next row.
+                if (!logEventModelExt.isValid()) {
+                    if (skipInvalidRow) {
+                        continue;
+                    } else {
+                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                    }
+                }
+
+                writer.write(logEventModelExt);
+                numOfValidEvents++;
+            }
+
+            if (!isValidLineCount(lineIndex - 1))
+                rowLimitExceeded = true;
+
+            return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+
+        } finally {
+            closeQuietly(in);
         }
-        writer.close();
-
-        if (!isValidLineCount(lineIndex - 1))
-            rowLimitExceeded = true;
-
-        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
     }
 
-    public boolean isValidLineCount(int lineCount) {
+    private boolean isValidLineCount(int lineCount) {
         return true;
+    }
+
+    private void closeQuietly(InputStream in) throws IOException {
+        if (in != null)
+            in.close();
+        if (this.writer != null)
+            this.writer.close();
+        if (this.readerin != null)
+            this.readerin.close();
+        if (this.brReader != null)
+            this.brReader.close();
+        if (this.reader != null)
+            this.reader.close();
+        if (this.in2 != null)
+            this.in2.close();
     }
 }

@@ -57,6 +57,9 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
             if (header == null || header.isEmpty())
                 throw new Exception("header must have non-empty value!");
 
+            workbook.close();
+            in.close();
+
         } catch (Exception e) {
             throw new Exception("Unable to import file");
         }
@@ -65,34 +68,38 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-        List<String> header = new ArrayList<>();
-        List<List<String>> lines = new ArrayList<>();
-        Workbook workbook = new XLSReader().readXLS(in, sampleSize + 1, BUFFER_SIZE);
+        try (Workbook workbook = new XLSReader().readXLS(in, sampleSize + 1, BUFFER_SIZE);) {
+            List<String> header = new ArrayList<>();
+            List<List<String>> lines = new ArrayList<>();
 
-        if (workbook == null)
-            return null;
+            if (workbook == null)
+                return null;
 
-        Sheet sheet = workbook.getSheetAt(0);
-        //Get the header
-        if (sheet != null) {
-            for (Row r : sheet) {
-                for (Cell c : r) {
-                    header.add(c.getStringCellValue());
+            Sheet sheet = workbook.getSheetAt(0);
+            //Get the header
+            if (sheet != null) {
+                for (Row r : sheet) {
+                    for (Cell c : r) {
+                        header.add(c.getStringCellValue());
+                    }
+                    break;
                 }
-                break;
-            }
 
-            //Get the rows
-            for (Row r : sheet) {
-                if (lines.size() == sampleSize) break;
-                if (r.getLastCellNum() != header.size()) continue;
-                List<String> line = new ArrayList<>();
-                for (Cell c : r) {
-                    line.add(c.getStringCellValue());
+                //Get the rows
+                for (Row r : sheet) {
+                    if (lines.size() == sampleSize) break;
+                    if (r.getLastCellNum() != header.size()) continue;
+                    List<String> line = new ArrayList<>();
+                    for (Cell c : r) {
+                        line.add(c.getStringCellValue());
+                    }
+                    lines.add(line);
                 }
-                lines.add(line);
             }
+            return new LogSampleImpl(header, lines);
+
+        } finally {
+            in.close();
         }
-        return new LogSampleImpl(header, lines);
     }
 }

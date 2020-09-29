@@ -29,6 +29,9 @@ import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 
 public class Utilities {
     public static String convertParquetToCSV(File parquetFile, char delimdelimiters) throws IOException {
@@ -61,4 +64,16 @@ public class Utilities {
         stringBuilder.append('\n');
         return stringBuilder;
     }
+
+    public MemoryUsage getMemoryUsage() {
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        return memoryMXBean.getHeapMemoryUsage();
+    }
+//    Utilities utilities = new Utilities();
+//        System.out.println("Memory Used: " + utilities.getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+//        System.out.println("Memory Available: " + (utilities.getMemoryUsage().getMax() - utilities.getMemoryUsage().getUsed()) / 1024 / 1024 + " " + "MB ");
+//                        System.gc();
+//        try { Thread.sleep(1000);} catch (InterruptedException e) { }
+//            System.out.println("Memory Used: " + utilities.getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+//        System.out.println("Memory Available: " + (utilities.getMemoryUsage().getMax() - utilities.getMemoryUsage().getUsed()) / 1024 / 1024 + " " + "MB ");
 }
