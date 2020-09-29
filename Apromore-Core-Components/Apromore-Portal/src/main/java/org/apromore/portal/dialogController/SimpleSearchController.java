@@ -211,9 +211,9 @@ public class SimpleSearchController {
 
         try {
             processSummaries = uiHelper.buildProcessSummaryList(folderId, userRowGuid,
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "p", "processId", "process"),  // processes
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "l", "logId",     "log"),      // logs
-                SearchExpressionBuilder.buildSearchConditions(searchCriteria, "f", "folderId",  "folder"));  // folders
+                SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "p", "processId", "process"),  // processes
+                SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "l", "logId",     "log"),      // logs
+                SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "f", "folderId",  "folder"));  // folders
 
         } catch (UnsupportedEncodingException usee) {
             throw new Exception("Failed to get Process Summaries: " + usee.toString(), usee);

@@ -401,7 +401,7 @@ public class User implements Serializable {
      *
      * @return Returns the searchHistories.
      */
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("index ASC")
     public List<SearchHistory> getSearchHistories() {
         return this.searchHistories;
