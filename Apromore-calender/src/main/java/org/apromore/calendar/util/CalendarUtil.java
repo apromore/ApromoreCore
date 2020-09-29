@@ -19,23 +19,21 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore;
+package org.apromore.calendar.util;
 
-import org.apromore.config.TestConfig;
-import org.apromore.dao.UserRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+import java.time.DayOfWeek;
+import java.util.function.Predicate;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
-@PropertySource("classpath:database/test-config.properties")
-public class BaseTestClass {
+// This is temporary as spring 3 does not support lamba functions in spring beans
+public class CalendarUtil {
 
-	
-	
+  public static Predicate<DayOfWeek> getWeekendOffPRedicate(boolean weekendsOff) {
+    Predicate<DayOfWeek> isWeekendOff = (DayOfWeek dayOfWeek) -> {
+      return (weekendsOff
+          && (dayOfWeek.equals(DayOfWeek.SATURDAY) ||
+              dayOfWeek.equals(DayOfWeek.SUNDAY)));
+    };
+    return isWeekendOff;
+  }
+  
 }
