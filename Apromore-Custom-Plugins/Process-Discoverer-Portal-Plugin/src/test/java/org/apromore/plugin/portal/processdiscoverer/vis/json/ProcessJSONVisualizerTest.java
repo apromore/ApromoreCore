@@ -44,12 +44,15 @@ import org.junit.Test;
 
 public class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape"; 
-    private String[] nodeCompareKeys = new String[] {"shape", "color", "borderwidth", 
-                                                    "name", "oriname", 
-                                                    "textsize", "textwidth", "textcolor",
-                                                    "width", "height"};
-    private String[] edgeCompareKeys = new String[] {"strength", "color", "edge-style", 
-                                                    "style", "label"};
+//    private String[] nodeCompareKeys = new String[] {"shape", "color", "borderwidth", 
+//                                                    "name", "oriname", 
+//                                                    "textsize", "textwidth", "textcolor",
+//                                                    "width", "height"};
+//    private String[] edgeCompareKeys = new String[] {"strength", "color", "edge-style", 
+//                                                    "style", "label"};    
+    private String[] nodeCompareKeys = new String[] {"name", "oriname"};
+    private String[] edgeCompareKeys = new String[] {"style", "label"};    
+
     
     private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
                         MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
@@ -102,9 +105,9 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         return false;
     }
     
-    private boolean findSimilarEdgeObject(JSONObject edge, JSONArray array) throws JSONException {
-        for (int i=0; i<array.length(); i++) {
-            JSONObject data = array.getJSONObject(i).getJSONObject("data");
+    private boolean findSimilarEdgeObject(JSONObject edge, JSONArray result, JSONArray expected) throws JSONException {
+        for (int i=0; i<expected.length(); i++) {
+            JSONObject data = expected.getJSONObject(i).getJSONObject("data");
             if (!data.has(NODE_KEY)) {
                 boolean found = true;
                 for (String key: edgeCompareKeys) {
@@ -112,10 +115,35 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                         found = false;
                     }
                 }
-                if (found) return true;
+                if (found) { //find edge, now check the source and target nodes
+			        String edgeSourceId = edge.get("source").toString();
+			        String edgeTargetId = edge.get("target").toString();
+			        JSONObject edgeTargetObject = findNodeObjectWithId(edgeTargetId, result);
+			    	JSONObject edgeSourceObject = findNodeObjectWithId(edgeSourceId, result);
+			    	if (edgeTargetObject != null && edgeSourceObject != null) {
+				    	boolean findSourceNode = findSimilarNodeObject(edgeSourceObject, expected);
+				    	boolean findTargetNode = findSimilarNodeObject(edgeTargetObject, expected);
+				    	if (findSourceNode && findTargetNode) {
+				    		return true;
+				    	}
+			    	}
+                }
             }
         }
-        return false;
+        
+    	return false;
+    }
+    
+    
+    
+    private JSONObject findNodeObjectWithId(String id, JSONArray data) throws JSONException {
+    	for (int i=0; i<data.length(); i++) {
+            JSONObject elementObject = data.getJSONObject(i).getJSONObject("data");
+            if (elementObject.has(NODE_KEY) && elementObject.get("id").toString().equals(id)) { //this is a node
+            	return elementObject;
+            }
+    	}
+    	return null;
     }
     
     private boolean isSimilar(JSONArray array1, JSONArray array2) throws JSONException {
@@ -123,13 +151,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
             JSONObject data = array1.getJSONObject(i).getJSONObject("data");
             if (data.has(NODE_KEY)) {
                 if (!findSimilarNodeObject(data, array2)) {
-                    System.out.println("Different JSONObject: " + data.toString());
+                    System.out.println("Failed to find this JSON data in the expected result: " + data.toString());
                     return false;
                 }
             }
             else {
-                if (!findSimilarEdgeObject(data, array2)) {
-                    System.out.println("Different JSONObject: " + data.toString());
+                if (!findSimilarEdgeObject(data, array1, array2)) {
+                    System.out.println("Failed to find this JSON data in the expected result: " + data.toString());
                     return false;
                 }
             }
@@ -139,13 +167,13 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
             JSONObject data = array2.getJSONObject(i).getJSONObject("data");
             if (data.has(NODE_KEY)) {
                 if (!findSimilarNodeObject(data, array1)) {
-                    System.out.println("Different JSONObject: " + data.toString());
+                    System.out.println("Failed to find an expected JSON data in the result: " + data.toString());
                     return false;
                 }
             }
             else {
-                if (!findSimilarEdgeObject(data, array1)) {
-                    System.out.println("Different JSONObject: " + data.toString());
+                if (!findSimilarEdgeObject(data, array2, array1)) {
+                    System.out.println("Failed to find an expected JSON data in the result: " + data.toString());
                     return false;
                 }
             }
