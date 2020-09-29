@@ -54,6 +54,15 @@ public abstract class SearchExpressionBuilder {
     }
 
     /**
+     * A variant of {@link #buildSearchConditions} which bypasses the support for boolean search logic.
+     */
+    public static String buildSimpleSearchConditions(String searchExpression, String tableVar, String keywordsTableIdField, String type) throws UnsupportedEncodingException {
+        return (searchExpression != null && !searchExpression.isEmpty())
+            ? " " + tableVar + ".id in (select k." + keywordsTableIdField + " FROM Keywords k WHERE k.value like '%" + mapSimpleQuery(searchExpression) + "%' AND k.type = '" + type + "')"
+            : "";
+    }
+
+    /**
      * Interpretation of the query received by customer
      * "," => and
      * ";" => or
@@ -104,6 +113,11 @@ public abstract class SearchExpressionBuilder {
             res.add(term);
         }
         return res;
+    }
+
+    private static String mapSimpleQuery(String keywordSearch) {
+        return keywordSearch.replaceAll("%", "_")    // SQL doesn't have an escape for %, so just match any single character instead
+                            .replaceAll("'", "''");  // JPQL escape for apostrophes
     }
 
     /**
