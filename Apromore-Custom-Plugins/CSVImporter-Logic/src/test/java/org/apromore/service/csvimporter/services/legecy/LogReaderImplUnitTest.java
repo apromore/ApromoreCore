@@ -46,7 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-@Ignore
+//@Ignore
 public class LogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImplUnitTest.class);
@@ -126,7 +126,7 @@ public class LogReaderImplUnitTest {
 
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
-        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("csv")
                 .createSampleLogGenerator()
@@ -150,329 +150,329 @@ public class LogReaderImplUnitTest {
         assertEquals(expectedXES, toString(xlog));
     }
 
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test2_missing_columns() throws Exception {
-//
-//        System.out.println("\n************************************\ntest2 - Missing columns test");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test2-missing-columns.csv"), 100, "UTF-8");
-//
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test2-missing-columns.csv"), sample, "UTF-8", false);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(2, logModel.getRowsCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
-//
-//        System.out.println("\n************************************\ntest3 - Invalid end timestamp");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test3-invalid-end-timestamp.csv"), 2, "UTF-8");
-//
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test3-invalid-end-timestamp.csv"), sample, "UTF-8", true);
-//
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(3, logModel.getRowsCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
-//
-//        System.out.println("\n************************************\ntest4 - Invalid start timestamp");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test4-invalid-start-timestamp.csv"), 2, "UTF-8");
-//
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test4-invalid-start-timestamp.csv"), sample, "UTF-8", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(3, logModel.getRowsCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
-//
-//        System.out.println("\n************************************\ntest5 - Empty caseID");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test5-empty-caseID.csv"), 100, "UTF-8");
-//
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test5-empty-caseID.csv"), sample, "UTF-8", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(2, logModel.getRowsCount());
-//        assertEquals(1, logModel.getLogErrorReport().size());
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//
-//    }
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test6_different_delimiters() throws Exception {
-//
-//        System.out.println("\n************************************\ntest6 - different delimiters");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test6-different-delimiters.csv"), 100, "UTF-8");
-//
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test6-different-delimiters.csv"), sample, "UTF-8", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(3, logModel.getRowsCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test7_record_invalid() throws Exception {
-//
-//        System.out.println("\n************************************\ntest7 - Record invalid");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test7-record-invalid.csv"), 100, "UTF-8");
-//        sample.setStartTimestampPos(2);
-//        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test7-record-invalid.csv"), sample, "UTF-8", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(1, logModel.getRowsCount());
-//        assertEquals(2, logModel.getLogErrorReport().size());
-//
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        //Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test8_all_invalid() throws Exception {
-//
-//        System.out.println("\n************************************\ntest8 - All invalid");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test8-all-invalid.csv"), 2, "UTF-8");
-//
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test8-all-invalid.csv"), sample, "UTF-8", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(0, logModel.getRowsCount());
-//        assertEquals(3, logModel.getLogErrorReport().size());
-//    }
-//
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
-//
-//        System.out.println("\n************************************\ntest9 - Differentiate dates");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test9-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test9-differentiate-dates.csv"), 100, "UTF-8");
-//
-//        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-//        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-//        sample.setEndTimestampPos(3);
-//        sample.setStartTimestampPos(2);
-//        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-//        sample.getEventAttributesPos().remove(Integer.valueOf(3));
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test9-differentiate-dates.csv"), sample, "UTF-8", true);
-//
-//
-//        assertNotNull(logModel);
-//        assertEquals(13, logModel.getRowsCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test10_detect_name() throws Exception {
-//
-//        System.out.println("\n************************************\ntest10 - Event Attribute");
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8")).replaceAll("\\+03:00", "\\+10:00");
-//
-//        // Perform the test
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test10-eventAttribute.csv"), 100, "UTF-8");
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test10-eventAttribute.csv"), sample, "UTF-8", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(3, logModel.getRowsCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
-//
-//    /**
-//     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
-//     */
-//    @Test
-//    public void testPrepareXesModel_test11_encoding() throws Exception {
-//
-//        System.out.println("\n************************************\ntest11 - Encoding");
-//
-//
-//        // Set up inputs and expected outputs
-//        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
-//
-//        // Perform the test
-//
-//
-//        LogSample sample = parquetFactoryProvider
-//                .getParquetFactory("csv")
-//                .createSampleLogGenerator()
-//                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test11-encoding.csv"), 100, "windows-1255");
-//        sample.setActivityPos(1);
-//        sample.getEventAttributesPos().remove(Integer.valueOf(1));
-//        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test11-encoding.csv"), sample, "windows-1255", true);
-//
-//        // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(5, logModel.getRowsCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-//
-//        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
-//    }
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test2_missing_columns() throws Exception {
+
+        System.out.println("\n************************************\ntest2 - Missing columns test");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test2-missing-columns.csv"), 100, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test2-missing-columns.csv"), sample, "UTF-8", false);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
+
+        System.out.println("\n************************************\ntest3 - Invalid end timestamp");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test3-invalid-end-timestamp.csv"), 2, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test3-invalid-end-timestamp.csv"), sample, "UTF-8", true);
+
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
+
+        System.out.println("\n************************************\ntest4 - Invalid start timestamp");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test4-invalid-start-timestamp.csv"), 2, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test4-invalid-start-timestamp.csv"), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+
+        System.out.println("\n************************************\ntest5 - Empty caseID");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test5-empty-caseID.csv"), 100, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test5-empty-caseID.csv"), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+
+    }
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test6_different_delimiters() throws Exception {
+
+        System.out.println("\n************************************\ntest6 - different delimiters");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test6-different-delimiters.csv"), 100, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test6-different-delimiters.csv"), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test7_record_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest7 - Record invalid");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test7-record-invalid.csv"), 100, "UTF-8");
+        sample.setStartTimestampPos(2);
+        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test7-record-invalid.csv"), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(1, logModel.getRowsCount());
+        assertEquals(2, logModel.getLogErrorReport().size());
+
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        //Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test8_all_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest8 - All invalid");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test8-all-invalid.csv"), 2, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test8-all-invalid.csv"), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(0, logModel.getRowsCount());
+        assertEquals(3, logModel.getLogErrorReport().size());
+    }
+
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
+
+        System.out.println("\n************************************\ntest9 - Differentiate dates");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test9-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test9-differentiate-dates.csv"), 100, "UTF-8");
+
+        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setEndTimestampPos(3);
+        sample.setStartTimestampPos(2);
+        sample.getEventAttributesPos().remove(Integer.valueOf(2));
+        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test9-differentiate-dates.csv"), sample, "UTF-8", true);
+
+
+        assertNotNull(logModel);
+        assertEquals(13, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test10_detect_name() throws Exception {
+
+        System.out.println("\n************************************\ntest10 - Event Attribute");
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test10-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test10-eventAttribute.csv"), 100, "UTF-8");
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test10-eventAttribute.csv"), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+    /**
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test11_encoding() throws Exception {
+
+        System.out.println("\n************************************\ntest11 - Encoding");
+
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream("/test11-expected.xes")), Charset.forName("utf-8")), "\\+02:00");
+
+        // Perform the test
+
+
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("csv")
+                .createSampleLogGenerator()
+                .generateSampleLog(LogReaderImplUnitTest.class.getResourceAsStream("/test11-encoding.csv"), 100, "windows-1255");
+        sample.setActivityPos(1);
+        sample.getEventAttributesPos().remove(Integer.valueOf(1));
+        LogModel logModel = logReader.readLogs(LogReaderImplUnitTest.class.getResourceAsStream("/test11-encoding.csv"), sample, "windows-1255", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(5, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
 }
