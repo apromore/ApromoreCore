@@ -41,10 +41,10 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
 
     @Override
     public void validateLog(InputStream in, String charset) throws Exception {
-        try {
+
+        try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE);) {
 
             List<String> header = new ArrayList<>();
-            Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE);
             Sheet sheet = workbook.getSheetAt(0);
 
             //Get the header
@@ -62,6 +62,8 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
 
         } catch (Exception e) {
             throw new Exception("Unable to import file");
+        } finally {
+            in.close();
         }
     }
 
