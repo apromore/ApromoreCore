@@ -23,12 +23,17 @@
  */
 package org.apromore.service.impl;
 
-import com.google.common.collect.Sets;
 import org.apromore.apmlog.APMLog;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
-import org.apromore.dao.*;
-import org.apromore.dao.model.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
@@ -38,15 +43,10 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.util.StatType;
-import org.apromore.util.UserMetadataTypeEnum;
-import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
@@ -61,8 +61,6 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 //import javax.annotation.Resource;
@@ -78,8 +76,6 @@ import java.util.*;
 //@EnableCaching
 public class EventLogServiceImpl implements EventLogService {
 
-    public static final String PARENT_NODE_FLAG = "0";
-    public static final String STAT_NODE_NAME = "apromore:stat";
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
     private LogRepository logRepo;
     private GroupRepository groupRepo;
@@ -198,8 +194,8 @@ public class EventLogServiceImpl implements EventLogService {
 
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(factory, inputStreamLog, extension)
-                , user.getId(), domain, created);
+        XLog xLog = importFromStream(factory, inputStreamLog, extension);
+        String path = logRepo.storeProcessLog(folderId, logName, xLog, user.getId(), domain, created);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
@@ -355,9 +351,9 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
-    public APMLog getAggregatedLog(Integer logId) {
+    public APMLog getAggregatedLog(Integer logId, XLog xLog) {
         Log log = logRepo.findUniqueByID(logId);
-        return logRepo.getAggregatedLog(log);
+        return logRepo.getAggregatedLog(log, xLog);
     }
 
 }

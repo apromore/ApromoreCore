@@ -28,3 +28,11 @@ Ap.common.notify = (message, type) => {
         });
     }, 2000);
 }
+
+Ap.common.setCookie = (name, value, days) => {
+    let d = new Date();
+    days = days || 90;
+    d.setTime(d.getTime() + (days * 24 * 3600000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}

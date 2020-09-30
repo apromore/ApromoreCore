@@ -1387,6 +1387,7 @@
 					<generateGitPropertiesFilename>${project.build.outputDirectory}/META-INF/git.properties</generateGitPropertiesFilename>
 					<skipPoms>false</skipPoms>
 				</configuration>
+				<inherited>false</inherited>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

@@ -104,5 +104,5 @@ public interface EventLogService {
      * @param logId
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
-    APMLog getAggregatedLog(Integer logId);
+    APMLog getAggregatedLog(Integer logId, XLog xLog);
 }

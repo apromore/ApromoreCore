@@ -26,6 +26,7 @@ package org.apromore.service.impl;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,21 +125,22 @@ public class UserServiceImpl implements UserService {
             Set<String> existingSearchTerms = new HashSet<>();
             for (int position = 0; history.size() < 10 && position < searchHistories.size(); position++) {
                  SearchHistory searchHistory = searchHistories.get(position);
-                 if (!existingSearchTerms.contains(searchHistory.getSearch())) {
+                 String term = searchHistory.getSearch().trim();
+                 if (!existingSearchTerms.contains(term)) {
                      searchHistory.setIndex(history.size());
                      searchHistory.setUser(dbUser);
                      history.add(searchHistory);
-                     existingSearchTerms.add(searchHistory.getSearch());
+                     existingSearchTerms.add(term);
                  }
             }
         }
         user.setSearchHistories(history);
 
         // Delete existing search history
-        List<SearchHistory> existingSearchHistory = searchHistoryRepo.findByUserOrderByIndexDesc(dbUser);
-        searchHistoryRepo.deleteInBatch(existingSearchHistory);
+        dbUser.setSearchHistories(Collections.emptyList());
+        userRepo.saveAndFlush(dbUser);
 
-        searchHistoryRepo.save(history);
+        // Replace with updated search history
         dbUser.setSearchHistories(history);
         userRepo.save(dbUser);
     }

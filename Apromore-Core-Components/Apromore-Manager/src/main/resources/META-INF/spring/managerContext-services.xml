@@ -31,6 +31,8 @@
 
     <bean id="config" class="org.apromore.common.ConfigBean">
         <property name="logsDir" value="${logs.dir}"/>
+        <property name="numOfEvent" value="${cache.numOfEvent}"/>
+        <property name="numOfTrace" value="${cache.numOfTrace}"/>
     </bean>
 
     <context:component-scan base-package="org.apromore.security"/>
