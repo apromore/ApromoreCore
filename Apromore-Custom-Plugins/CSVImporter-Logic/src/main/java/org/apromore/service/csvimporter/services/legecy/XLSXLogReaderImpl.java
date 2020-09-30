@@ -68,7 +68,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
             //Get the header
             if (sheet == null)
-                throw new Exception("Unable to import file");
+                return null;
 
             for (Row r : sheet) {
                 for (Cell c : r) {
@@ -238,7 +238,6 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     assignMyCaseAttributes(caseAttributes, xT);
                     numOfValidEvents++;
                 }
-
             }
 
             //Sort and feed xLog
@@ -252,7 +251,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
 
         } catch (Exception e) {
-            throw e;
+            return null;
         } finally {
             in.close();
         }

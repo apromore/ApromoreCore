@@ -19,41 +19,47 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services;
+package org.apromore.service.csvimporter.services.legecy;
 
 import com.google.common.io.ByteStreams;
-import org.apache.parquet.hadoop.ParquetFileReader;
-import org.apache.parquet.schema.MessageType;
-import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.services.legecy.LogReaderImplUnitTest;
+import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
+import org.apromore.service.csvimporter.services.XLXToParquetExporterUnitTest;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XesXmlSerializer;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.hadoop.conf.Configuration;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
-import static org.apromore.service.csvimporter.services.Utilities.convertParquetToCSV;
-import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class XLXToParquetExporterUnitTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVToParquetExporterUnitTest.class);
+public class XLSXLogReaderImplUnitTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXLogReaderImplUnitTest.class);
     ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
+    private LogReader logReader = new XLSXLogReaderImpl();
 
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
     private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
+
+    private static String toString(XLog xlog) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        (new XesXmlSerializer()).serialize(xlog, baos);
+        return baos.toString();
+    }
 
     /**
      * This is hack to convert the test case CSV documents from the time zone where they were created to the
@@ -73,7 +79,7 @@ public class XLXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporterLegecy } to convert to CSVReader.
+     * Test {@link XLSXLogReaderImpl } to convert to CSVReader.
      */
     @Test
     public void test1_valid() throws Exception {
@@ -82,47 +88,28 @@ public class XLXToParquetExporterUnitTest {
 
         //Xlsx file input
         String testFile = "/test1-valid.xlsx";
-        String expectedTestFile = "/test1-valid-expected.csv";
 
-        InputStream in = XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
-        String expectedCsv = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream(expectedTestFile))), "\\+03:00");
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(XLXToParquetExporterUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
-        //Create an output parquet file
-        File tempOutput = File.createTempFile("test", "parquet");
-//
         //Generate sample
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("xlsx")
                 .createSampleLogGenerator()
-                .generateSampleLog(in, 3, "UTF-8");
+                .generateSampleLog(XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile), 3, "UTF-8");
 
-        //Construct an expected schema
-        MessageType expectedParquetSchema = createParquetSchema(TEST1_EXPECTED_HEADER.toArray(new String[0]), sample);
-        in = XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
-        //Export parquet
-        LogModel logModel = parquetFactoryProvider
-                .getParquetFactory("xlsx")
-                .createParquetExporter()
-                .generateParqeuetFile(
-                        in,
-                        sample,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+        LogModel logModel = logReader.readLogs(XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile), sample, "UTF-8", false);
 
-        //Read Parquet file
-        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempOutput);
-        MessageType schema = parquetLocalFileReader.getSchema();
-        ParquetFileReader parquetFileReader = parquetLocalFileReader.getParquetFileReader();
-
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
-
-        System.out.println("parquetToCSV " + parquetToCSV);
         // Validate result
-        assertEquals(3, parquetFileReader.getRecordCount());
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         assertEquals(false, logModel.isRowLimitExceeded());
-        assertEquals(expectedParquetSchema, schema);
-        assertEquals(expectedCsv, parquetToCSV);
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
     }
 }

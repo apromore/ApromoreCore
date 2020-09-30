@@ -39,6 +39,7 @@ import org.apromore.service.csvimporter.services.ParquetExporter;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.legecy.LogReader;
+import org.apromore.service.csvimporter.services.legecy.LogReaderProvider;
 import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -94,7 +95,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     // Fields injected from the ZK session
     private ParquetFactoryProvider parquetFactoryProvider = (ParquetFactoryProvider) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("parquetFactoryProvider");
-    private LogReader logReader = (LogReader) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("logReader");
+    private LogReaderProvider logReaderProvider = (LogReaderProvider) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("logReaderProvider");
     private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
     private JSONObject mappingJSON = (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("mappingJSON");
@@ -127,6 +128,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     SampleLogGenerator sampleLogGenerator;
     ParquetExporter parquetExporter;
 
+    LogReader logReader;
+
     @Override
     public void doFinally() throws Exception {
         super.doFinally();
@@ -136,6 +139,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             convertToParquetFactory = parquetFactoryProvider.getParquetFactory(getMediaFormat(media));
             sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
             parquetExporter = convertToParquetFactory.createParquetExporter();
+            logReader = logReaderProvider.getLogReader(getMediaFormat(media));
 
             Properties props = new Properties();
             props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));

@@ -42,4 +42,8 @@
         <bean class="org.apromore.service.csvimporter.services.legecy.LogReaderImpl"/>
     </osgi:service>
 
+    <osgi:service interface="org.apromore.service.csvimporter.services.legecy.LogReaderProvider">
+        <bean class="org.apromore.service.csvimporter.services.legecy.LogReaderProvider"/>
+    </osgi:service>
+
 </beans>
