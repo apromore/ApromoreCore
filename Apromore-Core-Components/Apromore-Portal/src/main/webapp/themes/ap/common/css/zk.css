@@ -880,3 +880,7 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 .z-menuitem-image {
     max-height: 18px;
 }
+
+.z-messagebox-window .z-window-close {
+    display: none;
+}
