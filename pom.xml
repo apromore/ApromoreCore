@@ -184,7 +184,7 @@
 		<inject.version>1.0.0</inject.version>
 		<sardine.version>5.0.1</sardine.version>
 		<jackson.version>1.9.12</jackson.version>
-		<xmlbeans.version>2.4.0</xmlbeans.version>
+		<xmlbeans.version>3.1.0</xmlbeans.version>
 
 		<zk.version>8.6.0.1</zk.version>
 		<zk.spring.version>3.1</zk.spring.version>
@@ -1074,7 +1074,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xmlbeans</groupId>
-				<artifactId>com.springsource.org.apache.xmlbeans</artifactId>
+				<artifactId>xmlbeans</artifactId>
 				<version>${xmlbeans.version}</version>
 			</dependency>
 

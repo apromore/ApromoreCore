@@ -133,6 +133,12 @@
             <type>bundle</type>
         </dependency>
         <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.xmlbeans</artifactId>
+            <version>3.1.0_2</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>xlsx-streamer-osgi</artifactId>
             <version>1.0</version>
