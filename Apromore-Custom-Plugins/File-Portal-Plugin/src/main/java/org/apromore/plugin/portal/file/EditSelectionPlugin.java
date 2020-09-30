@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.MainController;
@@ -68,17 +69,17 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
             
             Map<SummaryType, List<VersionSummaryType>> selectedProcesses = mainC.getSelectedElementsAndVersions();
             if (selectedProcesses.isEmpty()) {
-                Messagebox.show("Please select one process model.");
+                Notification.info("Please select one process model.");
                 return;
             }
             else if (selectedProcesses.size() > 1) {
-                Messagebox.show("Please select only one process model.");
+                Notification.info("Please select only one process model.");
                 return;
             }
             else {
                 ProcessSummaryType process = (ProcessSummaryType)selectedProcesses.keySet().iterator().next();
                 if (selectedProcesses.get(process).size() > 1) {
-                    Messagebox.show("Please select only one process model version.");
+                    Notification.info("Please select only one process model version.");
                     return;
                 }
                 else {
@@ -88,7 +89,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
             }
         } catch (Exception e) {
             LOGGER.error("Unable to edit selection", e);
-            Messagebox.show("Unable to edit selection");
+            Notification.error("Unable to edit selection");
         }
     }
 }

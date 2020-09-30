@@ -117,6 +117,7 @@
                         <Export-Package>
                             org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.common.notification,
                             org.apromore.portal.context,
                             org.apromore.portal.dialogController.workspaceOptions,
                             org.apromore.portal.dialogController,

@@ -498,7 +498,9 @@ div.ap-window-footer-actions {
     position: fixed;
     left: 50%;
     top: 10px;
-    padding: 2px 23px 5px 8px;
+    width: fit-content;
+    max-width: 80%;
+    padding: 5px 25px 8px 8px;
     border-radius: 5px;
     background-color: rgba(240, 250, 230, 0.9);
     border: 1px solid rgb(183, 235, 143);

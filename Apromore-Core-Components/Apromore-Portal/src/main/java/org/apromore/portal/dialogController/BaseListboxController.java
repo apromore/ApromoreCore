@@ -39,6 +39,7 @@ import javax.servlet.http.Cookie;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
@@ -413,7 +414,7 @@ public abstract class BaseListboxController extends BaseController {
                 }
                 new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
-                Messagebox.show("Only one item can be renamed at a time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("Only one item can be renamed at a time.");
             }
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -435,10 +436,10 @@ public abstract class BaseListboxController extends BaseController {
     protected void rename() throws InterruptedException {
         try {
             if (getSelectionCount() == 0) {
-                Messagebox.show("Please select a file/folder to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("Please select a file/folder to rename");
                 return;
             } else if (getSelectionCount() > 1) {
-                Messagebox.show("You can not rename multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("You can not rename multiple selections");
                 return;
             }
             List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();

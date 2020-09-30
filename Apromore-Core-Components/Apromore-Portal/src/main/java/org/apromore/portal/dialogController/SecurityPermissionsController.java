@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.FolderTreeNodeTypes;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.GroupAccessType;
@@ -140,7 +141,7 @@ public class SecurityPermissionsController extends BaseController {
                                 break;
                             }
                             if (message.isEmpty()){
-                                Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+                                Notification.info("Successfully saved permissions.");
                             } else {
                                 Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
                             }
@@ -170,7 +171,7 @@ public class SecurityPermissionsController extends BaseController {
                             break;
                         }
                         if (message.isEmpty()){
-                            Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+                            Notification.info("Successfully removed permissions.");
                             loadUsers(id, type);
                         } else {
                             Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
