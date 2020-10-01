@@ -28,6 +28,9 @@
         width="90%" height="90%" position="center"
         closable="true"
         title="User and group management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
+  <caption>
+    <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/getting-started/manage-users-and-groups/" target="_blank" />
+  </caption>
   <script type="text/javascript" src="/user-admin/js/index.js"></script>
   <style src="/user-admin/css/index.css"/>
   <vbox vflex="1" hflex="1" spacing="0">
