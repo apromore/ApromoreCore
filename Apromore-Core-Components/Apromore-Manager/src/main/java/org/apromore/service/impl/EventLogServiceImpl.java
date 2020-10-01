@@ -254,9 +254,9 @@ public class EventLogServiceImpl implements EventLogService {
 
     private void updateLogName(Log log, String newName) {
         String file_name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
-        File file = new File("../Event-Logs-Repository/" + file_name);
+        File file = new File(logsDir, file_name);
         String new_file_name = log.getFilePath() + "_" + newName + ".xes.gz";
-        file.renameTo(new File("../Event-Logs-Repository/" + new_file_name));
+        file.renameTo(new File(logsDir, new_file_name));
         log.setName(newName);
     }
 
