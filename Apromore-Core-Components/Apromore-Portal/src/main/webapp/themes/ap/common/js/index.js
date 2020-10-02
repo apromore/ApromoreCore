@@ -23,7 +23,7 @@ Ap.common.notify = (message, type) => {
     notification.appendTo('body');
     notification.fadeIn(400);
     setTimeout(() => {
-        notification.fadeOut(400, function() {
+        notification.fadeOut(2000, function() {
             notification.remove();
         });
     }, 2000);

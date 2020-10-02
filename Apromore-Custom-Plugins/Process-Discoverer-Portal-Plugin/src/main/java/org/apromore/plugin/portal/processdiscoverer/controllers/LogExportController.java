@@ -33,6 +33,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
+import org.apromore.portal.common.notification.Notification;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
@@ -85,9 +86,7 @@ public class LogExportController extends AbstractController {
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     contextData.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     false);
-            
-            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + contextData.getFolderName() + "' folder.", Labels.getLabel("brand.name"), Messagebox.OK, Messagebox.NONE);
-
+            Notification.info("A new log named <strong>" + logName + "</strong> has been saved in the <strong>" + contextData.getFolderName() + "</strong> folder.");
             contextData.getPortalContext().refreshContent();
         } catch (Exception e) {
             e.printStackTrace();

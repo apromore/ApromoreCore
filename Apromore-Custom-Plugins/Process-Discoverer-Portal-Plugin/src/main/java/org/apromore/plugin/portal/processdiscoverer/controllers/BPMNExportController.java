@@ -33,6 +33,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.helper.Version;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
@@ -275,7 +276,7 @@ public class BPMNExportController extends AbstractController {
 				                now,  // creation timestamp
 				                now,  // last update timestamp
 				                publicModel);
-				        Messagebox.show("A new BPMN model named '" + modelName + "' has been saved in the '" + controller.getContextData().getFolderName() + "' folder.", Labels.getLabel("brand.name"), Messagebox.OK, Messagebox.NONE); //portalContext.getCurrentFolder().getFolderName() + "' folder.");
+                        Notification.info("A new BPMN model named <strong>" + modelName + "</strong> has been saved in the <strong>" + controller.getContextData().getFolderName() + "</strong> folder.");
 				        portalContext.refreshContent();
 					}
             	}
