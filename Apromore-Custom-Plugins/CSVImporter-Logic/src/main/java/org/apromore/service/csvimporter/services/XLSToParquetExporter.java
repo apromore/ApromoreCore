@@ -54,7 +54,7 @@ public class XLSToParquetExporter implements ParquetExporter {
         if (outputParquet.exists())
             outputParquet.delete();
 
-        try(Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)){
+        try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
             if (workbook == null)
                 throw new Exception("Unable to import file");
 
@@ -67,7 +67,7 @@ public class XLSToParquetExporter implements ParquetExporter {
 
             for (Row r : sheet) {
                 for (Cell c : r) {
-                    header.add(c.getStringCellValue());
+                    header.add(c.getColumnIndex(), c.getStringCellValue());
                 }
                 break;
             }
@@ -104,7 +104,7 @@ public class XLSToParquetExporter implements ParquetExporter {
 
                 //Get the rows
                 for (Cell c : r) {
-                    line.add(c.getStringCellValue());
+                    line.add(c.getColumnIndex(), c.getStringCellValue());
                 }
 
                 //empty row

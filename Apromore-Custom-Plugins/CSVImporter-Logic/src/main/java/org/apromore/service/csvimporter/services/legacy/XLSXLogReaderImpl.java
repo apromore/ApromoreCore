@@ -72,7 +72,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
             for (Row r : sheet) {
                 for (Cell c : r) {
-                    headerList.add(c.getStringCellValue());
+                    headerList.add(c.getColumnIndex(), c.getStringCellValue());
                 }
                 break;
             }
@@ -126,7 +126,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
                 //Get the rows
                 for (Cell c : r) {
-                    line.add(c.getStringCellValue());
+                    line.add(c.getColumnIndex(), c.getStringCellValue());
                 }
 
                 //empty row

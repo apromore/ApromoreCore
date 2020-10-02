@@ -50,7 +50,7 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
             //Get the header
             for (Row r : sheet) {
                 for (Cell c : r) {
-                    header.add(c.getStringCellValue());
+                    header.add(c.getColumnIndex(), c.getStringCellValue());
                 }
                 break;
             }
@@ -82,7 +82,7 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
             if (sheet != null) {
                 for (Row r : sheet) {
                     for (Cell c : r) {
-                        header.add(c.getStringCellValue());
+                        header.add(c.getColumnIndex(), c.getStringCellValue());
                     }
                     break;
                 }
@@ -93,7 +93,7 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
                     if (r.getLastCellNum() != header.size()) continue;
                     List<String> line = new ArrayList<>();
                     for (Cell c : r) {
-                        line.add(c.getStringCellValue());
+                        line.add(c.getColumnIndex(), c.getStringCellValue());
                     }
                     lines.add(line);
                 }

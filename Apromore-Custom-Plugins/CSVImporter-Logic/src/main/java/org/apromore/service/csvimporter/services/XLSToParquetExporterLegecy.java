@@ -73,7 +73,7 @@ public class XLSToParquetExporterLegecy implements ParquetExporter {
 
         for (Row r : sheet) {
             for (Cell c : r) {
-                headerList.add(c.getStringCellValue());
+                headerList.add(c.getColumnIndex(), c.getStringCellValue());
             }
             break;
         }
@@ -124,7 +124,7 @@ public class XLSToParquetExporterLegecy implements ParquetExporter {
 
             //Get the rows
             for (Cell c : r) {
-                line.add(c.getStringCellValue());
+                line.add(c.getColumnIndex(), c.getStringCellValue());
             }
 
             //empty row
