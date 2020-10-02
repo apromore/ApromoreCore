@@ -33,7 +33,7 @@
 
     <reference id="parquetFactoryProvider"
                interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
-    <reference id="logReaderProvider" interface="org.apromore.service.csvimporter.services.legecy.LogReaderProvider"/>
+    <reference id="logReaderProvider" interface="org.apromore.service.csvimporter.services.legacy.LogReaderProvider"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="userMetadataService" interface="org.apromore.service.UserMetadataService"/>
 

@@ -28,7 +28,7 @@ import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.services.legecy.LogReaderImplUnitTest;
+import org.apromore.service.csvimporter.services.legacy.LogReaderImplUnitTest;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +164,7 @@ public class ParquetToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test2_missing_columns() throws Exception {
@@ -217,7 +217,7 @@ public class ParquetToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test3_invalid_end_timestamp() throws Exception {
@@ -270,7 +270,7 @@ public class ParquetToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test4_invalid_start_timestamp() throws Exception {
@@ -322,7 +322,7 @@ public class ParquetToParquetExporterUnitTest {
         assertEquals(expectedCsv, parquetToCSV);
     }
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test5_empty_caseID() throws Exception {
@@ -374,7 +374,7 @@ public class ParquetToParquetExporterUnitTest {
         assertEquals(expectedCsv, parquetToCSV);
     }
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test7_all_invalid() throws Exception {
@@ -420,7 +420,7 @@ public class ParquetToParquetExporterUnitTest {
         assertEquals(expectedParquetSchema, schema);
     }
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test8_differentiate_dates() throws Exception {
@@ -478,7 +478,7 @@ public class ParquetToParquetExporterUnitTest {
         assertEquals(expectedCsv, parquetToCSV);
     }
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test9_detect_name() throws Exception {
@@ -530,7 +530,7 @@ public class ParquetToParquetExporterUnitTest {
         assertEquals(expectedCsv, parquetToCSV);
     }
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test10_encoding() throws Exception {

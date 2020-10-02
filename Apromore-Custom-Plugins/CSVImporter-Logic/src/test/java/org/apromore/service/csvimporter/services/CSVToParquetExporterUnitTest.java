@@ -29,7 +29,7 @@ import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.services.legecy.LogReaderImplUnitTest;
+import org.apromore.service.csvimporter.services.legacy.LogReaderImplUnitTest;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +75,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile } to convert to CSVReader.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile } to convert to CSVReader.
      */
     @Test
     public void testPrepareXesModel_test1_valid() throws Exception {
@@ -127,7 +127,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void _test2_missing_columns() throws Exception {
@@ -178,7 +178,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test3_invalid_end_timestamp() throws Exception {
@@ -230,7 +230,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void test4_invalid_start_timestamp() throws Exception {
@@ -283,7 +283,7 @@ public class CSVToParquetExporterUnitTest {
 
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
@@ -334,7 +334,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test6_different_delimiters() throws Exception {
@@ -386,7 +386,7 @@ public class CSVToParquetExporterUnitTest {
 
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test7_record_invalid() throws Exception {
@@ -441,7 +441,7 @@ public class CSVToParquetExporterUnitTest {
 
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test8_all_invalid() throws Exception {
@@ -487,7 +487,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
@@ -545,7 +545,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test10_detect_name() throws Exception {
@@ -598,7 +598,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParqeutExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link CSVToParquetExporter.generateParqeuetFile} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test11_encoding() throws Exception {

@@ -40,7 +40,7 @@ import java.util.List;
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 
-class CSVToParqeutExporter implements ParquetExporter {
+class CSVToParquetExporter implements ParquetExporter {
 
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;

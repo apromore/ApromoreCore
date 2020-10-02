@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services.legecy;
+package org.apromore.service.csvimporter.services.legacy;
 
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
@@ -176,8 +176,13 @@ public class LogReaderImpl implements LogReader, Constants {
                 }
 
                 // If PreferMonthFirst changed to True, we have to start over.
-                if (!preferMonthFirst && preferMonthFirstChanged)
-                    readLogs(in, sample, charset, skipInvalidRow);
+                if (!preferMonthFirst && preferMonthFirstChanged) {
+                    if(in.markSupported()){
+                        in.mark(0);
+                        in.reset();
+                        readLogs(in, sample, charset, skipInvalidRow);
+                    }
+                }
 
                 // Resource
                 if (sample.getResourcePos() != -1) {
@@ -287,7 +292,6 @@ public class LogReaderImpl implements LogReader, Constants {
 
     private void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xTrace) {
 
-
         XAttributeMap xAttributeMap = xTrace.getAttributes();
 
         if (caseAttributes != null && !caseAttributes.isEmpty()) {
@@ -299,7 +303,6 @@ public class LogReaderImpl implements LogReader, Constants {
                     xTrace.getAttributes().put(entry.getKey(), attribute);
                 }
             }
-
         }
     }
 

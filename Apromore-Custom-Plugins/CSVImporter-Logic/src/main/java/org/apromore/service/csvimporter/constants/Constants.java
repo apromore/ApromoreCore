@@ -37,8 +37,8 @@ public interface Constants {
     String timestampPattern = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2}.*)$";
 
 
-    String CSV_FILE_EXTENTION = "csv";
-    String PARQUET_FILE_EXTENTION = "parquet";
-    String XLS_FILE_EXTENTION = "xls" ;
-    String XLSX_FILE_EXTENTION = "xlsx" ;
+    String CSV_FILE_EXTENSION = "csv";
+    String PARQUET_FILE_EXTENSION = "parquet";
+    String XLS_FILE_EXTENSION = "xls" ;
+    String XLSX_FILE_EXTENSION = "xlsx" ;
 }

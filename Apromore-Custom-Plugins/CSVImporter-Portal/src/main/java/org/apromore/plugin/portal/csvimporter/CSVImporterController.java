@@ -38,8 +38,8 @@ import org.apromore.service.csvimporter.services.ConvertToParquetFactory;
 import org.apromore.service.csvimporter.services.ParquetExporter;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
-import org.apromore.service.csvimporter.services.legecy.LogReader;
-import org.apromore.service.csvimporter.services.legecy.LogReaderProvider;
+import org.apromore.service.csvimporter.services.legacy.LogReader;
+import org.apromore.service.csvimporter.services.legacy.LogReaderProvider;
 import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -1118,6 +1118,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private InputStream getInputSream(Media media) {
+
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
 

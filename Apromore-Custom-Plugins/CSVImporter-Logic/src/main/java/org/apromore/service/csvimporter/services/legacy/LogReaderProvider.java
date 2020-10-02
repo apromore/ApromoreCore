@@ -19,23 +19,23 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services.legecy;
+package org.apromore.service.csvimporter.services.legacy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apromore.service.csvimporter.constants.Constants.CSV_FILE_EXTENTION;
-import static org.apromore.service.csvimporter.constants.Constants.XLSX_FILE_EXTENTION;
+import static org.apromore.service.csvimporter.constants.Constants.CSV_FILE_EXTENSION;
+import static org.apromore.service.csvimporter.constants.Constants.XLSX_FILE_EXTENSION;
 
 public class LogReaderProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderProvider.class);
 
-    public LogReader getLogReader(String fileExtention) {
+    public LogReader getLogReader(String fileExtension) {
 
-        LOGGER.info("File Format: " + fileExtention);
-        if (fileExtention.equalsIgnoreCase(CSV_FILE_EXTENTION)) {
+        LOGGER.info("File Format: " + fileExtension);
+        if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
             return new LogReaderImpl();
-        } else if (fileExtention.equalsIgnoreCase(XLSX_FILE_EXTENTION)) {
+        } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
             return new XLSXLogReaderImpl();
         } else {
             return null;

@@ -22,11 +22,10 @@
  * #L%
  */
 
-package org.apromore.service.csvimporter.services.legecy;
+package org.apromore.service.csvimporter.services.legacy;
 
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
-import org.deckfour.xes.model.XLog;
 
 import java.io.IOException;
 import java.io.InputStream;

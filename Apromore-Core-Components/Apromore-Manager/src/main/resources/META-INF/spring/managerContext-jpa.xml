@@ -107,12 +107,12 @@
         <property name="configLocation" value="${manager.ehcache.config.url}"/>
     </bean>
     
-     <!--<bean id="liquibase"
+     <bean id="liquibase"
           class="liquibase.integration.spring.SpringLiquibase">
         <property name="changeLog" value="classpath:db/migration/changeLog.yaml"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="contexts" value="${jpa.database}"/>
-    </bean> -->
-     
+    </bean>
+
 
 </beans>

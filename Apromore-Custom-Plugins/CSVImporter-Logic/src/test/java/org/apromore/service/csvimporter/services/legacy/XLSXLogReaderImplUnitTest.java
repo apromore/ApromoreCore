@@ -19,22 +19,22 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services.legecy;
+package org.apromore.service.csvimporter.services.legacy;
 
 import com.google.common.io.ByteStreams;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.XLXToParquetExporterUnitTest;
+import org.apromore.service.csvimporter.services.XLSXToParquetExporterUnitTest;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -45,6 +45,7 @@ import java.util.TimeZone;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@Ignore
 public class XLSXLogReaderImplUnitTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(XLSXLogReaderImplUnitTest.class);
     ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
@@ -89,15 +90,15 @@ public class XLSXLogReaderImplUnitTest {
         //Xlsx file input
         String testFile = "/test1-valid.xlsx";
 
-        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(XLXToParquetExporterUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(XLSXToParquetExporterUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8")), "\\+03:00");
 
         //Generate sample
         LogSample sample = parquetFactoryProvider
                 .getParquetFactory("xlsx")
                 .createSampleLogGenerator()
-                .generateSampleLog(XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile), 3, "UTF-8");
+                .generateSampleLog(XLSXToParquetExporterUnitTest.class.getResourceAsStream(testFile), 3, "UTF-8");
 
-        LogModel logModel = logReader.readLogs(XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile), sample, "UTF-8", false);
+        LogModel logModel = logReader.readLogs(XLSXToParquetExporterUnitTest.class.getResourceAsStream(testFile), sample, "UTF-8", false);
 
         // Validate result
         assertNotNull(logModel);

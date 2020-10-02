@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services.legecy;
+package org.apromore.service.csvimporter.services.legacy;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -184,8 +184,13 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 }
 
                 // If PreferMonthFirst changed to True, we have to start over.
-                if (!preferMonthFirst && preferMonthFirstChanged)
-                    readLogs(in, sample, charset, skipInvalidRow);
+                if (!preferMonthFirst && preferMonthFirstChanged) {
+                    if(in.markSupported()){
+                        in.mark(0);
+                        in.reset();
+                        readLogs(in, sample, charset, skipInvalidRow);
+                    }
+                }
 
 
                 // Resource

@@ -22,16 +22,16 @@
 package org.apromore.service.csvimporter.services;
 
 import com.google.common.io.ByteStreams;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.services.legecy.LogReaderImplUnitTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.hadoop.conf.Configuration;
 
 import java.io.File;
 import java.io.InputStream;
@@ -45,9 +45,10 @@ import static org.apromore.service.csvimporter.services.Utilities.convertParquet
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 import static org.junit.Assert.assertEquals;
 
-public class XLXToParquetExporterUnitTest {
+@Ignore
+public class XLSXToParquetExporterUnitTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVToParquetExporterUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXToParquetExporterUnitTest.class);
     ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
 
     /**
@@ -84,8 +85,8 @@ public class XLXToParquetExporterUnitTest {
         String testFile = "/test1-valid.xlsx";
         String expectedTestFile = "/test1-valid-expected.csv";
 
-        InputStream in = XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
-        String expectedCsv = correctTimeZone(new String(ByteStreams.toByteArray(LogReaderImplUnitTest.class.getResourceAsStream(expectedTestFile))), "\\+03:00");
+        InputStream in = XLSXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
+        String expectedCsv = correctTimeZone(new String(ByteStreams.toByteArray(XLSXToParquetExporterUnitTest.class.getResourceAsStream(expectedTestFile))), "\\+03:00");
 
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
@@ -98,7 +99,7 @@ public class XLXToParquetExporterUnitTest {
 
         //Construct an expected schema
         MessageType expectedParquetSchema = createParquetSchema(TEST1_EXPECTED_HEADER.toArray(new String[0]), sample);
-        in = XLXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
+        in = XLSXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
         //Export parquet
         LogModel logModel = parquetFactoryProvider
                 .getParquetFactory("xlsx")
