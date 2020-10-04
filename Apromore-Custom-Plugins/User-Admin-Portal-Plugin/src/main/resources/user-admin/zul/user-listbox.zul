@@ -54,7 +54,7 @@
     </auxheader>
   </auxhead>
   <template name="model">
-    <listitem>
+    <listitem ca:onClick="Ap.userAdmin.toggleUserClick('${each.username}', ${forEachStatus.index}, event)">
       <listcell label="${each.username}"/>
       <listcell label="${c:formatDate(each.dateCreated, 'dd MMM yyyy')}"/>
       <listcell>
