@@ -107,6 +107,7 @@ public class SimpleSearchController {
         previousSearchesCB.addEventListener("onSelect", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 setVisibility(clearSearchBtn, true);
+                processSearch();
             }
         });
         previousSearchesCB.addEventListener("onChanging", new EventListener<InputEvent>() {
