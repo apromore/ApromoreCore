@@ -284,7 +284,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      * @param log
      * @return
      */
-    public APMLog getAggregatedLog(Log log, XLog xLog) {
+    public APMLog getAggregatedLog(Log log) {
         if (log != null) {
 
             // *******  profiling code start here ********
@@ -300,7 +300,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 LOGGER.info("Cache for [KEY: " + key + "] is null.");
 
                 try {
-                    APMLog apmLog = apmLogService.findAPMLogForXLog(getProcessLog(log, null));
+                    XLog xLog = getProcessLog(log, null);
+                    APMLog apmLog = apmLogService.findAPMLogForXLog(xLog);
 
                     if (shouldCache(xLog)) {
                         cacheRepo.put(key, apmLog);

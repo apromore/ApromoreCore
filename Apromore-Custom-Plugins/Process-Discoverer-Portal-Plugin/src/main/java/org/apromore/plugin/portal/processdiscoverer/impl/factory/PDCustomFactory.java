@@ -39,7 +39,7 @@ public class PDCustomFactory extends PDStandardFactory {
     @Override
     public LogData createLogData(ContextData contextData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
-        APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId(), xlog);
+        APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         if (xlog == null) {
             throw new InvalidDataException("XLog data of this log is missing");
         }
