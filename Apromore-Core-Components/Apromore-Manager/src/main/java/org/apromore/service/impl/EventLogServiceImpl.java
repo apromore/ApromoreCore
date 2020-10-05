@@ -351,9 +351,9 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
-    public APMLog getAggregatedLog(Integer logId, XLog xLog) {
+    public APMLog getAggregatedLog(Integer logId) {
         Log log = logRepo.findUniqueByID(logId);
-        return logRepo.getAggregatedLog(log, xLog);
+        return logRepo.getAggregatedLog(log);
     }
 
 }

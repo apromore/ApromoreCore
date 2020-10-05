@@ -75,6 +75,6 @@ public interface LogRepositoryCustom {
      * @param log
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
-    APMLog getAggregatedLog(Log log, XLog xLog);
+    APMLog getAggregatedLog(Log log);
 
 }
