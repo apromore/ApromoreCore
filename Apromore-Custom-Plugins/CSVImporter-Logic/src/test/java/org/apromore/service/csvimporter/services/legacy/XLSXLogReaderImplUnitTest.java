@@ -86,6 +86,7 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.csv</code>.
      */
+    @Ignore
     @Test
     public void testSampleCSV_undersample() throws Exception {
 
@@ -104,6 +105,7 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.csv</code>.
      */
+    @Ignore
     @Test
     public void testSampleCSV_oversample() throws Exception {
 
@@ -123,6 +125,7 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl } to convert to CSVReader.
      */
+    @Ignore
     @Test
     public void test1_valid() throws Exception {
 
@@ -163,6 +166,7 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
      */
+    @Ignore
     @Test
     public void testPrepareXesModel_test2_missing_columns() throws Exception {
 
@@ -199,6 +203,7 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
+    @Ignore
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
@@ -231,6 +236,148 @@ public class XLSXLogReaderImplUnitTest {
         assertNotNull(xlog);
         assertEquals(expectedXES, toString(xlog));
     }
+
+    /**
+     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
+     */
+    @Ignore
+    @Test
+    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
+
+        System.out.println("\n************************************\ntest4 - Invalid start timestamp");
+
+        String testFile = "/test4-invalid-start-timestamp.xlsx";
+        String expectedFile = "/test4-expected.xes";
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("xlsx")
+                .createSampleLogGenerator()
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+    /**
+     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
+     */
+    @Ignore
+    @Test
+    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+
+        System.out.println("\n************************************\ntest5 - Empty caseID");
+
+        String testFile = "/test5-empty-caseID.xlsx";
+        String expectedFile = "/test5-expected.xes";
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("xlsx")
+                .createSampleLogGenerator()
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+
+    }
+
+    /**
+     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test7_record_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest7 - Record invalid");
+
+        String testFile = "/test7-record-invalid.xlsx";
+        String expectedFile = "/test7-expected.xes";
+
+        // Set up inputs and expected outputs
+        String expectedXES = correctTimeZone(new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8")), "\\+03:00");
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("xlsx")
+                .createSampleLogGenerator()
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+
+        sample.setStartTimestampPos(2);
+        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+
+        System.out.println("getHeader " + sample.getHeader());
+        System.out.println("sample " + sample.getLines());
+
+        LogModel logModel = logReader.readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(1, logModel.getRowsCount());
+        assertEquals(2, logModel.getLogErrorReport().size());
+
+
+        // Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
+
+        //Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+
+    /**
+     * Test {@link XLSXLogReaderImpl } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
+     */
+    @Test
+    public void testPrepareXesModel_test8_all_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest8 - All invalid");
+        String testFile = "/test8-all-invalid.xlsx";
+
+        // Perform the test
+        LogSample sample = parquetFactoryProvider
+                .getParquetFactory("xlsx")
+                .createSampleLogGenerator()
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        LogModel logModel = logReader.readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(0, logModel.getRowsCount());
+        assertEquals(3, logModel.getLogErrorReport().size());
+    }
+
 
 
 }

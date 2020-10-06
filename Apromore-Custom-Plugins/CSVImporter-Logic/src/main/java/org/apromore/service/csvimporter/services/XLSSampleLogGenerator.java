@@ -97,6 +97,8 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
                 //Get the rows
                 for (Row r : sheet) {
                     if (lines.size() == sampleSize) break;
+                    if (r.getPhysicalNumberOfCells() > header.size()) continue;
+
                     line = new String[header.size()];
                     for (Cell c : r) {
                         line[c.getColumnIndex()] = c.getStringCellValue();

@@ -121,11 +121,11 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 validRow = true;
                 lineIndex++;
 
-//                //Validate num of column
-//                if (r.getLastCellNum() != header.length) {
-//                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getLastCellNum() + ")"));
-//                    continue;
-//                }
+                //Validate num of column
+                if (r.getPhysicalNumberOfCells() > header.length) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
+                    continue;
+                }
 
                 line = new String[header.length];
                 //Get the rows

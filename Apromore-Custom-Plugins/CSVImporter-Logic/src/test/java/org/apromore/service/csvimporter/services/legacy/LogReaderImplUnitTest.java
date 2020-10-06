@@ -283,7 +283,7 @@ public class LogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link LogReaderImpl.readLogs} against an invalid CSV log <code>test6-different-delimiters.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test6_different_delimiters() throws Exception {
