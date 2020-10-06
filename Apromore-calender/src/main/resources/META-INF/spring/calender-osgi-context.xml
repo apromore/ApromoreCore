@@ -28,7 +28,7 @@
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
    
-   <import resource="calender-service.xml"/>
+  
     <osgi:reference id="customCalenderRepository" interface="org.apromore.dao.CustomCalenderRepository"/>
   
 

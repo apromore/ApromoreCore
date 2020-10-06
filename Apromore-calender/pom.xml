@@ -84,7 +84,7 @@
 			<artifactId>com.springsource.net.sf.cglib</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+	
 	</dependencies>
 
 	<build>

@@ -39,80 +39,65 @@ import lombok.Data;
 @Data
 public class CustomCalenderService {
 
-  @Autowired
-  public CustomCalenderRepository calenderRepo;
+    @Autowired
+    public CustomCalenderRepository calenderRepo;
 
-  public Long createGenericCalender(String description, boolean weekendsOff)
-      throws CalenderAlreadyExistsException {
+    public Long createGenericCalender(String description, boolean weekendsOff)
+            throws CalenderAlreadyExistsException {
 
-
-    OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
-    OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.UTC);
-
-
-    return createCalender(description, weekendsOff, startTime, endTime);
-
-  }
-
-  public Long createBusinessCalender(String description, boolean weekendsOff)
-      throws CalenderAlreadyExistsException {
-
-    OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
-    OffsetTime endTime = OffsetTime.of(LocalTime.of(5, 0), ZoneOffset.UTC);
-
-    return createCalender(description, weekendsOff, startTime, endTime);
-
-  }
-
-
-
-  private Long createCalender(String description, boolean weekendsOff, OffsetTime start,
-      OffsetTime end)
-      throws CalenderAlreadyExistsException {
-
-    validateCalenderExists(calenderRepo.findByDescription(description));
-
-    final CustomCalender calender = new CustomCalender(description);
-
-    for(WorkDay workDay : getWorkDays(start, end, weekendsOff))
-    {
-        calender.addWorkDay(workDay);
-    }
-    CustomCalender newcalender = calenderRepo.saveAndFlush(calender);
-    return newcalender.getId();
-
-
-  }
-
-  private List<WorkDay> getWorkDays(OffsetTime start, OffsetTime end, boolean weekendOff) {
-
-    Predicate<DayOfWeek> isWeekendOff = CalenderUtil.getWeekendOffPRedicate(weekendOff);
-    List<WorkDay> workDaysList = new ArrayList<WorkDay>();
-    
-    for(DayOfWeek dayOfWeek : DayOfWeek.values())
-    {
-      workDaysList.add(new WorkDay(dayOfWeek, start, end, isWeekendOff.test(dayOfWeek)));
-    }
-    return workDaysList;
-
-  }
-
-  
-
-
-  public CustomCalender getCalender(Long id) {
-
-    return calenderRepo.findById(id);
-
-  }
-
-  private void validateCalenderExists(CustomCalender calender)
-      throws CalenderAlreadyExistsException {
-
-    if (calender != null) {
-      throw new CalenderAlreadyExistsException("Calender already exists");
+        OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
+        OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.UTC);
+        return createCalender(description, weekendsOff, startTime, endTime);
     }
 
-  }
+    public Long createBusinessCalender(String description, boolean weekendsOff)
+            throws CalenderAlreadyExistsException {
+        OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
+        OffsetTime endTime = OffsetTime.of(LocalTime.of(5, 0), ZoneOffset.UTC);
+        return createCalender(description, weekendsOff, startTime, endTime);
+
+    }
+
+    private Long createCalender(String description, boolean weekendsOff, OffsetTime start,
+            OffsetTime end)
+            throws CalenderAlreadyExistsException {
+
+        validateCalenderExists(calenderRepo.findByDescription(description));
+        
+        final CustomCalender calender = new CustomCalender(description);
+        for (WorkDay workDay : getWorkDays(start, end, weekendsOff)) {
+            calender.addWorkDay(workDay);
+        }
+        CustomCalender newcalender = calenderRepo.saveAndFlush(calender);
+        return newcalender.getId();
+
+    }
+
+    private List<WorkDay> getWorkDays(OffsetTime start, OffsetTime end, boolean weekendOff) {
+
+        Predicate<DayOfWeek> isWeekendOff = CalenderUtil.getWeekendOffPRedicate(weekendOff);
+        List<WorkDay> workDaysList = new ArrayList<WorkDay>();
+
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            workDaysList.add(new WorkDay(dayOfWeek, start, end, isWeekendOff.test(dayOfWeek)));
+        }
+        return workDaysList;
+
+    }
+
+    public CustomCalender getCalender(Long id) {
+
+        return calenderRepo.findById(id);
+
+    }
+
+    private void validateCalenderExists(CustomCalender calender)
+            throws CalenderAlreadyExistsException {
+
+        if (calender != null) {
+            throw new CalenderAlreadyExistsException("Calender already exists");
+        }
+
+    }
 
 }
