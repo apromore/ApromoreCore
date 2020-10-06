@@ -21,11 +21,14 @@
  */
 package org.apromore.apmlog;
 
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Chii Chang (11/2019)
+ * Modified: Chii Chang (07/10/2020) - "schedule" event included; added start time method.
  */
 public class AActivity  {
     private String name;
@@ -36,7 +39,7 @@ public class AActivity  {
 
     public AActivity(String name, List<AEvent> eventList, long startTimeMilli, long endTimeMilli,
                      long duration) {
-        this.name = name;
+        this.name = name.intern();
         this.eventList = eventList;
         this.startTimeMilli = startTimeMilli;
         this.endTimeMilli = endTimeMilli;
@@ -44,15 +47,35 @@ public class AActivity  {
     }
 
     public AActivity(List<AEvent> eventList) {
-        this.name = eventList.get(0).getName();
+        this.name = eventList.get(0).getName().intern();
         this.eventList = eventList;
-        this.startTimeMilli = eventList.get(0).getTimestampMilli();
+        this.startTimeMilli = getStartEvent(eventList).getTimestampMilli();
         this.endTimeMilli = eventList.get(eventList.size()-1).getTimestampMilli();
         if(endTimeMilli > startTimeMilli) this.duration = endTimeMilli - startTimeMilli;
     }
 
+    private AEvent getStartEvent(List<AEvent> events) {
+
+        if (events.size() > 1) {
+            for (int i = 0; i < events.size(); i++) {
+                AEvent iEvent = events.get(i);
+                if (iEvent.getLifecycle().toLowerCase().equals("start")) return iEvent;
+            }
+        }
+        return events.get(0);
+
+    }
+
     public String getName() {
         return name;
+    }
+
+    public String getResource() {
+        return eventList.get(0).getResource();
+    }
+
+    public UnifiedMap<String, String> getAttributeMap() {
+        return eventList.get(0).getAttributeMap();
     }
 
     public List<AEvent> getEventList() {
@@ -72,7 +95,7 @@ public class AActivity  {
     }
 
     public AActivity clone() {
-        String clnName = this.name;
+        String clnName = this.name.intern();
         List<AEvent> clnEventList = new ArrayList<>();
         for(int i = 0; i<this.eventList.size(); i++) {
             AEvent aEvent = this.eventList.get(i).clone();
