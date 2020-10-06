@@ -63,27 +63,21 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             if (workbook == null)
                 throw new Exception("Unable to import file");
 
-            List<String> headerList = new ArrayList<>();
+            // Process first sheet only
             Sheet sheet = workbook.getSheetAt(0);
 
             //Get the header
             if (sheet == null)
-                return null;
+                throw new Exception("Unable to import file");
 
-            for (Row r : sheet) {
-                for (Cell c : r) {
-                    headerList.add(c.getColumnIndex(), c.getStringCellValue());
-                }
-                break;
-            }
-            String[] header = headerList.toArray(new String[0]);
+            String[] header = sample.getHeader().toArray(new String[0]);
 
             logErrorReport = new ArrayList<>();
-            int lineIndex = 1; // set to 1 since first line is the header
+            int lineIndex = 0;
             int numOfValidEvents = 0;
             boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
-            ArrayList<String> line;
+            String[] line;
 
             String caseId;
             String activity;
@@ -116,28 +110,32 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
             for (Row r : sheet) {
 
+                //Skip header
+                if (r.getRowNum() == 0)
+                    continue;
+
                 if (!isValidLineCount(lineIndex - 1))
                     break;
 
                 // new row, new event.
                 validRow = true;
                 lineIndex++;
-                line = new ArrayList<>();
 
+//                //Validate num of column
+//                if (r.getLastCellNum() != header.length) {
+//                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getLastCellNum() + ")"));
+//                    continue;
+//                }
+
+                line = new String[header.length];
                 //Get the rows
                 for (Cell c : r) {
-                    line.add(c.getColumnIndex(), c.getStringCellValue());
+                    line[c.getColumnIndex()] = c.getStringCellValue();
                 }
 
                 //empty row
-                if (line.size() == 0 || (line.size() == 1 && (line.get(0).trim().equals("") || line.get(0).trim().equals("\n"))))
+                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
                     continue;
-
-                //Validate num of column
-                if (header.length != line.size()) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.size() + ")"));
-                    continue;
-                }
 
                 //Construct an event
                 startTimestamp = null;
@@ -147,25 +145,25 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 otherTimestamps = new HashMap<>();
 
                 // Case id:
-                caseId = line.get(sample.getCaseIdPos());
+                caseId = line[sample.getCaseIdPos()];
                 if (caseId == null || caseId.isEmpty()) {
                     invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
                 }
 
                 // Activity
-                activity = line.get(sample.getActivityPos());
+                activity = line[sample.getActivityPos()];
                 if (activity == null || activity.isEmpty()) {
                     invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
                 }
 
                 // End Timestamp
-                endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat());
+                endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
                 if (endTimestamp == null) {
                     invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
                 }
                 // Start Timestamp
                 if (sample.getStartTimestampPos() != -1) {
-                    startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat());
+                    startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                     if (startTimestamp == null) {
                         invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
                     }
@@ -174,7 +172,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 // Other timestamps
                 if (!sample.getOtherTimestamps().isEmpty()) {
                     for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                        Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()), otherTimestamp.getValue());
+                        Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue());
                         if (tempTimestamp != null) {
                             otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
                         } else {
@@ -183,19 +181,18 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     }
                 }
 
-                // If PreferMonthFirst changed to True, we have to start over.
-                if (!preferMonthFirst && preferMonthFirstChanged) {
-                    if(in.markSupported()){
-                        in.mark(0);
-                        in.reset();
-                        readLogs(in, sample, charset, skipInvalidRow);
-                    }
-                }
-
+//                // If PreferMonthFirst changed to True, we have to start over.
+//                if (!preferMonthFirst && preferMonthFirstChanged) {
+//                    if(in.markSupported()){
+//                        in.mark(0);
+//                        in.reset();
+//                        readLogs(in, sample, charset, skipInvalidRow);
+//                    }
+//                }
 
                 // Resource
                 if (sample.getResourcePos() != -1) {
-                    resource = line.get(sample.getResourcePos());
+                    resource = line[sample.getResourcePos()];
                     if (resource == null || resource.isEmpty()) {
                         invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
                     }
@@ -213,14 +210,14 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 // Case Attributes
                 if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
                     for (int columnPos : sample.getCaseAttributesPos()) {
-                        caseAttributes.put(header[columnPos], line.get(columnPos));
+                        caseAttributes.put(header[columnPos], line[columnPos]);
                     }
                 }
 
                 // Event Attributes
                 if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
                     for (int columnPos : sample.getEventAttributesPos()) {
-                        eventAttributes.put(header[columnPos], line.get(columnPos));
+                        eventAttributes.put(header[columnPos], line[columnPos]);
                     }
                 }
 
@@ -256,7 +253,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
 
         } catch (Exception e) {
-            return null;
+            throw e;
         } finally {
             in.close();
         }

@@ -34,6 +34,7 @@ import org.apromore.service.csvimporter.model.*;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
@@ -49,30 +50,26 @@ public class XLSToParquetExporter implements ParquetExporter {
     @Override
     public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
-        sample.validateSample();
         //If file exist, delete it
         if (outputParquet.exists())
             outputParquet.delete();
 
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
+
+            sample.validateSample();
+
             if (workbook == null)
                 throw new Exception("Unable to import file");
 
-            List<String> header = new ArrayList<>();
             Sheet sheet = workbook.getSheetAt(0);
 
             //Get the header
             if (sheet == null)
                 throw new Exception("Unable to import file");
 
-            for (Row r : sheet) {
-                for (Cell c : r) {
-                    header.add(c.getColumnIndex(), c.getStringCellValue());
-                }
-                break;
-            }
+            String[] header = sample.getHeader().toArray(new String[0]);
 
-            MessageType parquetSchema = createParquetSchema(header.toArray(new String[0]), sample);
+            MessageType parquetSchema = createParquetSchema(header, sample);
             // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
             Thread thread = Thread.currentThread();
             synchronized (thread) {
@@ -87,37 +84,35 @@ public class XLSToParquetExporter implements ParquetExporter {
 
             logProcessor = new LogProcessorImpl();
             logErrorReport = new ArrayList<>();
-            int lineIndex = 1; // set to 1 since first line is the header
+            int lineIndex = 0;
             int numOfValidEvents = 0;
-            ArrayList<String> line;
+            String[] line;
             LogEventModelExt logEventModelExt;
             boolean rowLimitExceeded = false;
 
             for (Row r : sheet) {
+
+                //Skip header
+                if (r.getRowNum() == 0)
+                    continue;
 
                 if (!isValidLineCount(lineIndex - 1))
                     break;
 
                 // new row, new event.
                 lineIndex++;
-                line = new ArrayList<>();
+                line = new String[header.length];
 
                 //Get the rows
                 for (Cell c : r) {
-                    line.add(c.getColumnIndex(), c.getStringCellValue());
+                    line[c.getColumnIndex()] = c.getStringCellValue();
                 }
 
                 //empty row
-                if (line.size() == 0 || (line.size() == 1 && (line.get(0).trim().equals("") || line.get(0).trim().equals("\n"))))
+                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
                     continue;
 
-                //Validate num of column
-                if (header.size() != line.size()) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.size() + "). Number of columns: (" + line.size() + ")"));
-                    continue;
-                }
-
-                logEventModelExt = logProcessor.processLog(line, header, sample, lineIndex, logErrorReport);
+                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!logEventModelExt.isValid()) {

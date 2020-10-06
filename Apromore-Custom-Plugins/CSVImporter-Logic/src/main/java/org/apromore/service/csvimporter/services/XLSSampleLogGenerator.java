@@ -31,6 +31,7 @@ import org.apromore.service.csvimporter.model.LogSampleImpl;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -50,7 +51,9 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
             //Get the header
             for (Row r : sheet) {
                 for (Cell c : r) {
-                    header.add(c.getColumnIndex(), c.getStringCellValue());
+                    if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
+                        throw new Exception("header must have non-empty value!");
+                    header.add(c.getStringCellValue());
                 }
                 break;
             }
@@ -73,16 +76,20 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
         try (Workbook workbook = new XLSReader().readXLS(in, sampleSize + 1, BUFFER_SIZE);) {
             List<String> header = new ArrayList<>();
             List<List<String>> lines = new ArrayList<>();
+            String[] line;
 
             if (workbook == null)
                 return null;
 
             Sheet sheet = workbook.getSheetAt(0);
+
             //Get the header
             if (sheet != null) {
                 for (Row r : sheet) {
                     for (Cell c : r) {
-                        header.add(c.getColumnIndex(), c.getStringCellValue());
+                        if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
+                            throw new Exception("header must have non-empty value!");
+                        header.add(c.getStringCellValue());
                     }
                     break;
                 }
@@ -90,12 +97,12 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
                 //Get the rows
                 for (Row r : sheet) {
                     if (lines.size() == sampleSize) break;
-                    if (r.getLastCellNum() != header.size()) continue;
-                    List<String> line = new ArrayList<>();
+                    line = new String[header.size()];
                     for (Cell c : r) {
-                        line.add(c.getColumnIndex(), c.getStringCellValue());
+                        line[c.getColumnIndex()] = c.getStringCellValue();
                     }
-                    lines.add(line);
+                    Arrays.asList(line).replaceAll(val -> val == null ? "" : val);
+                    lines.add(Arrays.asList(line));
                 }
             }
             return new LogSampleImpl(header, lines);
