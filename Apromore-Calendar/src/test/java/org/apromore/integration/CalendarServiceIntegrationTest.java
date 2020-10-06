@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class CalenderServiceIntegrationTest extends BaseTestClass {
+public class CalendarServiceIntegrationTest extends BaseTestClass {
   
   @Autowired
   CustomCalendarService calenderService;

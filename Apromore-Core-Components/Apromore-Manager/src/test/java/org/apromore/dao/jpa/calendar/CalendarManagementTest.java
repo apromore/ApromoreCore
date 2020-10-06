@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.dao.jpa.calender;
+package org.apromore.dao.jpa.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +37,7 @@ import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CalenderManagementTest extends BaseTestClass {
+public class CalendarManagementTest extends BaseTestClass {
 
 	@Autowired
 	CustomCalendarRepository customCal;
