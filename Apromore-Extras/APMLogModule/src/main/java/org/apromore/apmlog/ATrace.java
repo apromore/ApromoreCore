@@ -42,11 +42,9 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.util.Util;
-import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -57,7 +55,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -74,8 +72,9 @@ import java.util.List;
  * Modified: Chii Chang (24/05/2020)
  * Modified: Chii Chang (01/06/2020)
  * Modified: Chii Chang (05/06/2020)
+ * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
  */
-public class ATrace implements Serializable, LaTrace {
+public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializable, LaTrace {
 
     private String caseId = "";
     public long caseIdDigit = 0;
@@ -104,7 +103,7 @@ public class ATrace implements Serializable, LaTrace {
 
     private List<Integer> activityNameIndexList;
 
-    private IntArrayList markedIndex;
+//    private IntArrayList markedIndex;
 
 //    private APMLog apmLog;
 
@@ -193,7 +192,7 @@ public class ATrace implements Serializable, LaTrace {
 
         for (int i = 0; i < xTrace.size(); i++) {
             XEvent xEvent = xTrace.get(i);
-            eventList.add(new AEvent(xEvent));
+            eventList.add(new AEvent(xEvent, i));
 //            xEventList.add(xEvent);
         }
 
@@ -252,9 +251,9 @@ public class ATrace implements Serializable, LaTrace {
                 long actEndTime = iAEvent.getTimestampMilli();
                 long actDur = 0;
 
-                if (lifecycle.equals("start") && i < eventList.size()-1) {
+                if ( (lifecycle.equals("start") || lifecycle.equals("schedule") ) && i < eventList.size()-1) {
                     this.hasActivity = true;
-                    IntArrayList followup = getFollowUpIndexList(eventList, i, iAEvent.getName());
+                    IntArrayList followup = getFollowUpIndexList(eventList, i, iAEvent);
 
                     if (followup != null) {
                         for (int j = 0; j < followup.size(); j++) {
@@ -298,30 +297,49 @@ public class ATrace implements Serializable, LaTrace {
     }
 
 
-    private IntArrayList getFollowUpIndexList(List<AEvent> eventList, int fromIndex, String conceptName) {
-        IntArrayList followUpIndex = new IntArrayList();
-
-        if ( (fromIndex + 1) < eventList.size()) {
-            for (int i = (fromIndex + 1); i < eventList.size(); i++) {
-                if (!markedIndex.contains(i)) {
-                    AEvent aEvent = eventList.get(i);
-                    String lifecycle = aEvent.getLifecycle();
-
-                    if (aEvent.getName().equals(conceptName)) {
-                        if (!lifecycle.equals("start")) {
-                            followUpIndex.add(i);
-                            if (lifecycle.equals("complete") ||
-                                    lifecycle.equals("manualskip") ||
-                                    lifecycle.equals("autoskip")) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            return followUpIndex;
-        } else return null;
-    }
+//    private IntArrayList getFollowUpIndexList(List<AEvent> eventList, int fromIndex, AEvent baseEvent) {
+//        IntArrayList followUpIndex = new IntArrayList();
+//
+//        if ( (fromIndex + 1) < eventList.size()) {
+//            for (int i = (fromIndex + 1); i < eventList.size(); i++) {
+//                if (!markedIndex.contains(i)) {
+//                    AEvent aEvent = eventList.get(i);
+//                    String lifecycle = aEvent.getLifecycle();
+//
+//                    if (haveCommonMainAttributes(aEvent, baseEvent)) {
+////                        if (!lifecycle.equals("start")) {
+////                            followUpIndex.add(i);
+////                            if (lifecycle.equals("complete") ||
+////                                    lifecycle.equals("manualskip") ||
+////                                    lifecycle.equals("autoskip")) {
+////                                break;
+////                            }
+////                        }
+//                        followUpIndex.add(i);
+//                        if (lifecycle.equals("complete") ||
+//                                lifecycle.equals("manualskip") ||
+//                                lifecycle.equals("autoskip")) {
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//            return followUpIndex;
+//        } else return null;
+//    }
+//
+//    private boolean haveCommonMainAttributes(AEvent event1, AEvent event2) {
+//        if (!event1.getName().equals(event2.getName())) return false;
+//        if (!event1.getResource().equals(event2.getResource())) return false;
+//        UnifiedMap<String, String> attrMap1 = event1.getAttributeMap();
+//        UnifiedMap<String, String> attrMap2 = event2.getAttributeMap();
+//        for (String key : attrMap1.keySet()) {
+//            String val1 = attrMap1.get(key);
+//            String val2 = attrMap2.get(key);
+//            if (!val1.equals(val2)) return false;
+//        }
+//        return true;
+//    }
 
     private void fillEventAttributeValueFreqMap(AEvent aEvent) {
         for(String key : aEvent.getAttributeMap().keySet()) {
@@ -604,5 +622,16 @@ public class ATrace implements Serializable, LaTrace {
                 actNameList,
                 eNameSet,
                 this.activityNameIndexList);
+    }
+
+    @Override
+    public int compareTo(ATrace o) {
+        if (Util.isNumeric(this.caseId) && Util.isNumeric(o.getCaseId())) {
+            if (caseIdDigit > o.caseIdDigit) return 1;
+            else if (caseIdDigit < o.caseIdDigit) return -1;
+            else return 0;
+        } else {
+            return getCaseId().compareTo(o.getCaseId());
+        }
     }
 }

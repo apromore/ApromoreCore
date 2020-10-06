@@ -24,9 +24,6 @@ package org.apromore.apmlog;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.impl.XAttributeDiscreteImpl;
-import org.deckfour.xes.model.impl.XAttributeIDImpl;
-import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -41,6 +38,7 @@ import java.util.Date;
  * Modified: Chii Chang (04/02/2020)
  */
 public class AEvent implements Serializable {
+    private int index;
     private String name = "";
     private long timestampMilli = 0;
     private String lifecycle = "complete";
@@ -49,35 +47,38 @@ public class AEvent implements Serializable {
     private UnifiedSet<String> attributeNameSet;
     private String timeZone = "";
 
-    public AEvent(String name, long timestampMilli, String lifecycle, String resource,
+    public AEvent(int index, String name, long timestampMilli, String lifecycle, String resource,
                   UnifiedMap<String, String> attributeMap,
                   UnifiedSet<String> attributeNameSet,
                   String timeZone) {
-        this.name = name;
+        this.index = index;
+        this.name = name.intern();
         this.timestampMilli = timestampMilli;
-        this.lifecycle = lifecycle;
-        this.resource = resource;
+        this.lifecycle = lifecycle.intern();
+        this.resource = resource.intern();
         this.attributeMap = attributeMap;
         this.attributeNameSet = attributeNameSet;
         this.timeZone = timeZone;
     }
 
-    public AEvent(XEvent xEvent) {
+    public AEvent(XEvent xEvent, int index) {
+        this.index = index;
+
         XAttributeMap xAttributeMap = xEvent.getAttributes();
 
 
         attributeMap = new UnifiedMap<>();
 
         if (xAttributeMap.keySet().contains("concept:name")) {
-            this.name = xAttributeMap.get("concept:name").toString();
+            this.name = xAttributeMap.get("concept:name").toString().intern();
         }
 
         if (xAttributeMap.keySet().contains("lifecycle:transition")) {
-            this.lifecycle = xAttributeMap.get("lifecycle:transition").toString();
+            this.lifecycle = xAttributeMap.get("lifecycle:transition").toString().intern();
         }
 
         if (xAttributeMap.keySet().contains("org:resource")) {
-            this.resource = xAttributeMap.get("org:resource").toString();
+            this.resource = xAttributeMap.get("org:resource").toString().intern();
         }
 
         for(String key : xAttributeMap.keySet()) {
@@ -86,14 +87,13 @@ public class AEvent implements Serializable {
                     !key.equals("org:resource") &&
                     !key.equals("time:timestamp")) {
 //                if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
-//                    this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()));
+//                    this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()).intern());
 //                } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
-//                    this.attributeMap.put(key, String.valueOf(((XAttributeDiscreteImpl) xAttributeMap.get(key)).getValue()));
+//                    this.attributeMap.put(key, String.valueOf(((XAttributeDiscreteImpl) xAttributeMap.get(key)).getValue()).intern());
 //                } else if (xAttributeMap.get(key) instanceof XAttributeIDImpl) {
-//                    this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()));
+//                    this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()).intern());
 //                }
                 this.attributeMap.put(key, xAttributeMap.get(key).toString());
-
             }
 
         }
@@ -111,7 +111,12 @@ public class AEvent implements Serializable {
         attributeNameSet = new UnifiedSet<>(attributeMap.keySet());
     }
 
-
+    public UnifiedMap<String, String> getAllAttributes() {
+        UnifiedMap<String, String> allAttr = new UnifiedMap<>(attributeMap);
+        allAttr.put("concept:name", this.name);
+        if (!this.resource.equals("")) allAttr.put("org:resource", this.resource);
+        return allAttr;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -161,8 +166,12 @@ public class AEvent implements Serializable {
         return timeZone;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     public AEvent clone()  {
-        String clnName = this.name;
+        String clnName = this.name.intern();
         long clnTimestampMilli = this.timestampMilli;
         String clnLifecycle = this.lifecycle;
         String clnResource = this.resource;
@@ -170,7 +179,7 @@ public class AEvent implements Serializable {
         UnifiedSet<String> clnAttributeNameSet = new UnifiedSet<>(this.attributeNameSet);
         String clnTimeZone = this.timeZone;
 
-        AEvent clnEvent = new AEvent(clnName, clnTimestampMilli, clnLifecycle, clnResource,
+        AEvent clnEvent = new AEvent(this.index, clnName, clnTimestampMilli, clnLifecycle, clnResource,
                 clnAttributeMap, clnAttributeNameSet, clnTimeZone);
         return clnEvent;
     }
