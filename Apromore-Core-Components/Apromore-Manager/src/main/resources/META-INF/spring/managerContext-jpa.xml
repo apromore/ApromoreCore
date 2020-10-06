@@ -92,20 +92,6 @@
     </bean>
 
     <tx:annotation-driven  />
-
-    <bean id="cacheRepo" class="org.apromore.dao.jpa.CacheRepositoryImpl">
-        <property name="cacheName" value="xlog"/> <!-- cache name defined in ehcache.xml -->
-        <property name="ehCacheCacheManager" ref="ehCacheCacheManager"/>
-    </bean>
-
-    <bean id="ehCacheCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="ehcache"/>
-    </bean>
-
-    <bean id="ehcache"
-          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="${manager.ehcache.config.url}"/>
-    </bean>
     
      <bean id="liquibase"
           class="liquibase.integration.spring.SpringLiquibase">

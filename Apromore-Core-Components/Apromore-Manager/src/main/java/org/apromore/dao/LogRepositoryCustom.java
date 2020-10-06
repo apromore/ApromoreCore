@@ -56,25 +56,4 @@ public interface LogRepositoryCustom {
      */
     List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions);
 
-    /* ************************** JDBC Template / native SQL Queries ******************************* */
-
-    String storeProcessLog(final Integer folderId, String logName, XLog log, Integer userID, String domain, String created);
-
-    void deleteProcessLog(Log log);
-
-    /**
-     * Load XES log file from cache, if not found then load from Event Logs Repository
-     * @param log
-     * @return
-     */
-    XLog getProcessLog(Log log, String factoryName);
-
-    /**
-     * Get aggregated log.
-     *
-     * @param log
-     * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
-     */
-    APMLog getAggregatedLog(Log log);
-
 }

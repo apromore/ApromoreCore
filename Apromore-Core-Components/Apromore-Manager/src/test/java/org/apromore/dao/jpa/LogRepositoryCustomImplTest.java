@@ -22,6 +22,7 @@
 
 package org.apromore.dao.jpa;
 
+import org.apromore.cache.ehcache.TemporaryCacheService;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.info.XLogInfo;
@@ -41,6 +42,8 @@ import static org.junit.Assert.assertNotNull;
 public class LogRepositoryCustomImplTest {
 
     LogRepositoryCustomImpl logRepo = new LogRepositoryCustomImpl();
+    
+    TemporaryCacheService temporaryCacheService=new TemporaryCacheService();
 
 
     @Before
@@ -76,7 +79,7 @@ public class LogRepositoryCustomImplTest {
 //            XFactory factory = new XFactoryLiteImpl();
             XFactory factory = XFactoryRegistry.instance().currentDefault();
 
-            XLog log = logRepo.importFromFile(factory, name);
+            XLog log = temporaryCacheService.importFromFile(factory, name);
 
 //            XFactory factory = new XFactoryNaiveImpl();
 //            XLog log = logRepo.importFromInputStream(fis, new XesXmlParser(factory));

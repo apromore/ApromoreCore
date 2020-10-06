@@ -24,6 +24,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.cache.ehcache.TemporaryCacheService;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.FolderRepository;
@@ -85,6 +86,7 @@ public class EventLogServiceImpl implements EventLogService {
     private UserInterfaceHelper ui;
     private File logsDir;
     private UserMetadataService userMetadataService;
+    private TemporaryCacheService tempCacheService;
 
 //    @javax.annotation.Resource
 //    private Set<EventLogPlugin> eventLogPlugins;
@@ -100,7 +102,7 @@ public class EventLogServiceImpl implements EventLogService {
                                final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
                                final UserService userSrv, final UserInterfaceHelper ui,
                                final ConfigBean configBean,
-                               final UserMetadataService userMetadataService) {
+                               final UserMetadataService userMetadataService,final TemporaryCacheService temporaryCacheService) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.groupLogRepo = groupLogRepository;
@@ -109,6 +111,7 @@ public class EventLogServiceImpl implements EventLogService {
         this.ui = ui;
         this.logsDir = new File(configBean.getLogsDir());
         this.userMetadataService = userMetadataService;
+        this.tempCacheService=temporaryCacheService;
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -195,7 +198,7 @@ public class EventLogServiceImpl implements EventLogService {
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
         XLog xLog = importFromStream(factory, inputStreamLog, extension);
-        String path = logRepo.storeProcessLog(folderId, logName, xLog, user.getId(), domain, created);
+        String path = tempCacheService.storeProcessLog(folderId, logName, xLog, user.getId(), domain, created);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
@@ -294,7 +297,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public ExportLogResultType exportLog(Integer logId) throws Exception {
         Log log = logRepo.findUniqueByID(logId);
-        XLog xlog = logRepo.getProcessLog(log, null);
+        XLog xlog = tempCacheService.getProcessLog(log, null);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         exportToStream(outputStream, xlog);
         ExportLogResultType exportLogResultType = new ExportLogResultType();
@@ -310,7 +313,7 @@ public class EventLogServiceImpl implements EventLogService {
                   String domain, String created, boolean publicModel)
             throws Exception {
         Log log = logRepo.findUniqueByID(sourceLogId);
-        XLog xlog = logRepo.getProcessLog(log, null);
+        XLog xlog = tempCacheService.getProcessLog(log, null);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         exportToStream(outputStream, xlog);
         ByteArrayInputStream inputStreamLog = new ByteArrayInputStream(outputStream.toByteArray());
@@ -325,7 +328,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public XLog getXLog(Integer logId, String factoryName) {
         Log log = logRepo.findUniqueByID(logId);
-        XLog xLog = logRepo.getProcessLog(log, factoryName);
+        XLog xLog = tempCacheService.getProcessLog(log, factoryName);
         LOGGER.info("[--IMPORTANT--] Plugin take over control ");
         return xLog;
     }
@@ -339,7 +342,7 @@ public class EventLogServiceImpl implements EventLogService {
             Log realLog = logRepo.findUniqueByID(log.getId());
             userMetadataService.deleteUserMetadataByLog(realLog, user);
             logRepo.delete(realLog);
-            logRepo.deleteProcessLog(realLog);
+            tempCacheService.deleteProcessLog(realLog);
             LOGGER.info("Delete XES log " + log.getId() + " from repository.");
         }
     }
@@ -353,7 +356,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public APMLog getAggregatedLog(Integer logId) {
         Log log = logRepo.findUniqueByID(logId);
-        return logRepo.getAggregatedLog(log);
+        return tempCacheService.getAggregatedLog(log);
     }
 
 }
