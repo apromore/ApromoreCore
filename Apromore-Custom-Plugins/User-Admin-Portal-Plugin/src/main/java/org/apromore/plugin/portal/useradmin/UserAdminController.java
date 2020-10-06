@@ -71,6 +71,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModels;
 import org.zkoss.zul.ListModelList;
@@ -292,6 +293,38 @@ public class UserAdminController extends SelectorComposer<Window> {
         // Set default to nothing
         setSelectedUsers(null);
         setSelectedGroup(null);
+
+        /**
+         * Enable toggle selection in user Listbox on individual row
+         */
+        userEditBtn.addEventListener("onToggleClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                JSONObject param = (JSONObject) event.getData();
+                int index = (Integer) param.get("index");
+                Listitem item = userListbox.getItemAtIndex(index);
+                if (item.isSelected() && userListbox.getSelectedCount() == 1) {
+                    userListbox.clearSelection();
+                    setSelectedUsers(null);
+                }
+            }
+        });
+
+        /**
+         * Enable toggle selection in group Listbox on individual row
+         */
+        groupEditBtn.addEventListener("onToggleClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                JSONObject param = (JSONObject) event.getData();
+                int index = (Integer) param.get("index");
+                Listitem item = groupListbox.getItemAtIndex(index);
+                if (item.isSelected() && groupListbox.getSelectedCount() == 1) {
+                    groupListbox.clearSelection();
+                    setSelectedGroup(null);
+                }
+            }
+        });
 
         /*
         // Park this for now in case in-cell editing is required later
@@ -703,15 +736,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             throw new Exception("Cannot view users without permission");
         }
         Set<User> users = event.getSelectedObjects();
-        if (users.size() == 1) {
-            Set<User> prevUsers = event.getPreviousSelectedObjects();
-            if (prevUsers.equals(users)) {
-                userListbox.clearSelection();
-                setSelectedUsers(null);
-            } else {
-                setSelectedUsers(users);
-            }
-        } else if (users.size() > 1) {
+        if (users.size() >= 1) {
             setSelectedUsers(users);
         } else {
             setSelectedUsers(null);
