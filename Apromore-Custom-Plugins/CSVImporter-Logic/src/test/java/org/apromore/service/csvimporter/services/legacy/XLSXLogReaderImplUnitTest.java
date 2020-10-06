@@ -72,7 +72,9 @@ public class XLSXLogReaderImplUnitTest {
      */
     private String correctTimeZone(String in, String testDataTimezone) {
         TimeZone tz = TimeZone.getDefault();
-        int offsetMinutes = (tz.getRawOffset() + tz.getDSTSavings()) / 60000;
+
+//        int offsetMinutes = (tz.getRawOffset() + tz.getDSTSavings()) / 60000;
+        int offsetMinutes = (tz.getRawOffset()) / 60000;
         NumberFormat hoursFormat = new DecimalFormat("+00;-00)");
         NumberFormat minutesFormat = new DecimalFormat("00");
 
@@ -80,6 +82,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     // Test cases
+
     /**
      * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.csv</code>.
      */
@@ -116,6 +119,7 @@ public class XLSXLogReaderImplUnitTest {
         assertEquals(TEST1_EXPECTED_HEADER, sample.getHeader());
         assertEquals(3, sample.getLines().size());
     }
+
     /**
      * Test {@link XLSXLogReaderImpl } to convert to CSVReader.
      */
@@ -142,25 +146,18 @@ public class XLSXLogReaderImplUnitTest {
                 "UTF-8",
                 true);
 
-//        System.out.println("getLogErrorReport " + logModel.getLogErrorReport().size());
-//        System.out.println("getLogErrorReport " + logModel.getLogErrorReport());
-//        System.out.println("getRowsCount " + logModel.getRowsCount());
-//        for (List<String> line : sample.getLines())
-//            System.out.println("line " + line);
-//        System.out.println("lines " + toString(logModel.getXLog()));
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+
+        //  Continue with the XES conversion
+        XLog xlog = logModel.getXLog();
 
         // Validate result
-//        assertNotNull(logModel);
-//        assertEquals(3, logModel.getRowsCount());
-//        assertEquals(0, logModel.getLogErrorReport().size());
-//        assertEquals(false, logModel.isRowLimitExceeded());
-
-        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-
-        // Validate result
-//        assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
     }
 
     /**
@@ -194,17 +191,14 @@ public class XLSXLogReaderImplUnitTest {
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 
-        System.out.println("xlog " + toString(xlog));
-        System.out.println("expected " + expectedXES);
         // Validate result
         assertNotNull(xlog);
-//        assertEquals(expectedXES, toString(xlog));
+        assertEquals(expectedXES, toString(xlog));
     }
 
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
