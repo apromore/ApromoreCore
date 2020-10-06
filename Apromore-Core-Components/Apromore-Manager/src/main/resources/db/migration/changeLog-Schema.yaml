@@ -281,3 +281,182 @@ databaseChangeLog:
            columnName:  content
            newDataType:  LONGTEXT
            tableName:  usermetadata
+           
+ - changeSet:
+    id: 20200929015111
+    author: nolantellis
+    changes:
+      - createTable:
+           tableName: custom_calendar
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_custom_calendar_id                  
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: true
+                name: name
+                type: VARCHAR(100)
+                remarks: 'Description for the calender'
+             - column:
+                constraints:
+                   nullable: false
+                name: created
+                type: VARCHAR(100)
+                remarks: 'creation time for the calender'
+             
+             - column:
+                constraints:
+                   nullable: false
+                name: updated
+                type: VARCHAR(100)
+                remarks: 'update time for the calender'
+ 
+             - column:                
+                constraints:
+                   nullable: true
+                name: created_by
+                type: VARCHAR(100)    
+                
+             - column:                
+                constraints:
+                   nullable: true
+                name: updated_by
+                type: VARCHAR(100)
+                
+      - createTable:
+           tableName: work_day
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_work_day_id                  
+             - column:                
+                constraints:
+                   nullable: false
+                name: day_of_week
+                type: VARCHAR(10)
+                remarks: 'Description for the work_day'
+             - column:
+                constraints:
+                   nullable: false
+                name: start_time
+                type: VARCHAR(100)
+                remarks: 'start_time time for the work_day'
+             
+             - column:
+                constraints:
+                   nullable: false
+                name: end_time
+                type: VARCHAR(100)
+                remarks: 'end_time for the work_day'
+ 
+             - column:                
+                constraints:
+                   nullable: false
+                name: is_working_day
+                type: BOOLEAN
+                
+             - column:                
+                constraints:
+                   nullable: false
+                   referencedTableName: custom_calendar
+                   referencedColumnNames: id
+                   foreignKeyName: fk_work_day_custom_calendar_idk
+                   deleteCascade: true
+                name: calendar_id
+                type: BIGINT    
+                
+             - column:
+                constraints:
+                   nullable: true
+                name: created_by
+                type: VARCHAR(100)
+                remarks: 'created_by time for the work_day'
+             
+             - column:
+                constraints:
+                   nullable: true
+                name: updated_by
+                type: VARCHAR(100)
+                remarks: 'updated_by for the work_day'
+                
+      - addUniqueConstraint:  
+         clustered:  true  
+         columnNames:  day_of_week,calendar_id,start_time
+         constraintName:  work_day_constraint  
+         deferrable:  true  
+         disabled:  false  
+         initiallyDeferred:  false   
+         tableName:  work_day
+         validate:  true
+         
+      - createTable:
+           tableName: holiday
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_holiday_id
+                    
+             - column:
+                constraints:
+                   nullable: true
+                name: created_by
+                type: VARCHAR(100)
+                remarks: 'created_by time for the holiday'
+             
+             - column:
+                constraints:
+                   nullable: true
+                name: updated_by
+                type: VARCHAR(100)
+                remarks: 'updated_by for the holiday'   
+                
+             - column:                
+                constraints:
+                   nullable: false
+                   referencedTableName: custom_calendar
+                   referencedColumnNames: id
+                   foreignKeyName: fk_holiday_custom_calendar_idk
+                   deleteCascade: true
+                name: calendar_id
+                type: BIGINT 
+                
+             - column:
+                constraints:
+                   nullable: false
+                name: name
+                type: VARCHAR(100)
+               
+             - column:
+                constraints:
+                   nullable: true
+                name: description
+                type: VARCHAR(100)
+                
+             - column:
+                constraints:
+                   nullable: false
+                name: holiday_date
+                type: VARCHAR(20)
+                
+             - column:
+                constraints:
+                   nullable: true
+                name: reference_id
+                type: BIGINT         

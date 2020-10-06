@@ -19,23 +19,19 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore;
 
-import org.apromore.config.TestConfig;
-import org.apromore.dao.UserRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+package org.apromore.dao;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
-@PropertySource("classpath:database/test-config.properties")
-public class BaseTestClass {
+import org.apromore.dao.model.CustomCalendar;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-	
-	
+@Repository
+public interface CustomCalendarRepository extends JpaRepository<CustomCalendar, Long>{
+
+	CustomCalendar findByName(String name);
+
+    CustomCalendar findById(Long id);
+
+
 }

@@ -78,6 +78,12 @@
 			<artifactId>com.springsource.net.sf.cglib</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>apromore-calendar</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

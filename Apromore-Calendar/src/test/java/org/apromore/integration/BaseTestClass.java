@@ -19,23 +19,19 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore;
+package org.apromore.integration;
 
-import org.apromore.config.TestConfig;
-import org.apromore.dao.UserRepository;
-import org.junit.Test;
+import org.apromore.integration.config.TestConfig;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
-@PropertySource("classpath:database/test-config.properties")
+@ContextConfiguration(classes  = {TestConfig.class})
 public class BaseTestClass {
 
-	
-	
+
+
 }
