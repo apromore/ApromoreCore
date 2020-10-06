@@ -13,7 +13,7 @@ This document is relevant to both editions, but if you have checked out this Cor
 ## System requirements
 * Windows 7 or newer or Mac OSX 10.8 or newer (other users - check out our [Docker-based version](https://github.com/apromore/ApromoreDocker))
 * Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or
-  ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8.
+  ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. For Ubuntu, it can be installed as `sudo apt install openjdk-8-jdk`
   Note that newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer
 * [Apache Ant](https://ant.apache.org/bindownload.cgi) 1.10.1 or newer
@@ -29,7 +29,7 @@ This document is relevant to both editions, but if you have checked out this Cor
 
 > Server fails to start.
 * If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
-* If you already run another server (e.g. OS X Server) you may need to change the port number 8443 in `Supplements/Virgo/tomcat-server.xml`.
+* If you already run another server (e.g. OS X Server) you may need to change the port number in `Supplements/Virgo/tomcat-server.xml`.
 
 > Login screen appears, but "admin" / "password" doesn't work.
 * You may need to run `ant create-h2` to populate the H2 database.
@@ -152,7 +152,5 @@ It can be configured to instead allow login based on an external LDAP directory.
 * Unless you're using the University of Melbourne's central authentication, you will need to additionally edit the following files to match your local LDAP installation:
   - `virgo-tomcat-server-3.6.4.RELEASE/repository/usr/site.properties` (section marked "LDAP")
   - `virgo-tomcat-server-3.6.4.RELEASE/configuration/login.conf`
-
-* Since accounts will now be created automatically, you might want to remove the "Forgot password?" and "No account yet? Register for free!" buttons on the login screen by editing `Apromore-Core-Components/Apromore-Portal/src/main/webapp/login.zul`
 
 When the server starts with the reconfigured portal, it will automatically create new accounts for valid LDAP logins.
