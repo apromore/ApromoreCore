@@ -34,8 +34,16 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <osgi:service interface="org.apromore.service.csvimporter.CSVImporterLogic">
-        <bean class="org.apromore.service.csvimporter.impl.CSVImporterLogicImpl"/>
+    <osgi:service interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider">
+        <bean class="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
+    </osgi:service>
+
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogReader">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogReaderImpl"/>
+    </osgi:service>
+
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogReaderProvider">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogReaderProvider"/>
     </osgi:service>
 
 </beans>

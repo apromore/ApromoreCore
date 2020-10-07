@@ -83,6 +83,77 @@
         </dependency>
         -->
 
+        <!-- Required by parquet-osgi -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>5.0.3</version>  <!-- matches hadoop-project 3.3.0 -->
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>failureaccess</artifactId>
+            <version>1.0.1</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>stax2-api</artifactId>
+            <version>3.1.4</version>  <!-- matches hadoop-project 3.3.0 -->
+            <type>bundle</type>
+        </dependency>
+
+        <!-- Required by poi-osgi -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>2.2.0</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.poi</artifactId>
+            <version>4.1.2_1</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.xmlbeans</artifactId>
+            <version>3.1.0_2</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>xlsx-streamer-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15to18</artifactId>
+            <version>1.66</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.66</version>
+        </dependency>
+
         <!-- Contains the RemoveNonOSGIJars Maven plugin -->
         <dependency>
             <groupId>org.apromore</groupId>

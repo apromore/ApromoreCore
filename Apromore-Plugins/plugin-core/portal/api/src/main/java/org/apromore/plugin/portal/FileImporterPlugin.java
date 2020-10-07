@@ -21,6 +21,7 @@
  */
 package org.apromore.plugin.portal;
 
+import java.io.IOException;
 import java.util.Set;
 import org.zkoss.util.media.Media;
 
@@ -34,7 +35,7 @@ public interface FileImporterPlugin {
     /**
      * @return the file extensions handled by this plugin; may be empty but should not be null
      */
-    Set<String> getFileExtensions();
+    Set<String> getFileExtensions() throws IOException;
 
     /**
      * Call-back that is called when this plug-in is executed.

@@ -29,7 +29,8 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.UserMetadataService;
-import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
+import org.apromore.service.csvimporter.services.legacy.LogReaderProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +52,21 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
-    private CSVImporterLogic csvImporterLogic;
+    private ParquetFactoryProvider parquetFactoryProvider;
+    LogReaderProvider logReaderProvider;
     private UserMetadataService userMetadataService;
 
-    public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
-        LOGGER.info("Injected CSV importer logic {}", newCSVImporterLogic);
-        this.csvImporterLogic = newCSVImporterLogic;
+    public ParquetFactoryProvider getParquetFactoryProvider() {
+        return parquetFactoryProvider;
     }
+
+    public void setParquetFactoryProvider(ParquetFactoryProvider parquetFactoryProvider) {
+        this.parquetFactoryProvider = parquetFactoryProvider;
+    }
+
+    public LogReaderProvider getLogReaderProvider() {return logReaderProvider;}
+
+    public void setLogReaderProvider(LogReaderProvider logReaderProvider) {this.logReaderProvider = logReaderProvider;}
 
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
         LOGGER.info("Injected CSV importer logic {}", newUserMetadataService);
@@ -68,7 +77,20 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
     @Override
     public Set<String> getFileExtensions() {
-        return Collections.singleton("csv");
+
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream("datalayer.config"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boolean useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
+
+        if (useParquet) {
+            return new HashSet<>(Arrays.asList("csv", "parquet", "xlsx"));
+        } else {
+            return new HashSet<>(Arrays.asList("csv"));
+        }
     }
 
     @Override
@@ -76,7 +98,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
-        arg.put("csvImporterLogic", csvImporterLogic);
+        arg.put("parquetFactoryProvider", parquetFactoryProvider);
+        arg.put("logReaderProvider", logReaderProvider);
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
 
@@ -155,44 +178,46 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                                 arg.put("mappingJSON", jsonObject);
                                 matchedMappingPopUp.detach();
 
-                        // Create a CSV importer view
-                        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
-                            case "page":  // create the view in its own page
-                                Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
-                                break;
+                                // Create a CSV importer view
+                                switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+                                    case "page":  // create the view in its own page
+                                        Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
+                                        break;
 
-                            case "modal": default:  // create the view in a modal popup within the current page
-                                try {
-                                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
-                                    window.doModal();
+                                    case "modal":
+                                    default:  // create the view in a modal popup within the current page
+                                        try {
+                                            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
+                                            window.doModal();
 
-                                } catch (IOException e) {
-                                    LOGGER.error("Unable to create window", e);
+                                        } catch (IOException e) {
+                                            LOGGER.error("Unable to create window", e);
+                                        }
+                                        break;
                                 }
-                                break;
-                        }
                             }
                     );
                     uploadAsNewBtn.addEventListener("onClick", event -> {
                                 arg.put("mappingJSON", null);
                                 matchedMappingPopUp.detach();
 
-                        // Create a CSV importer view
-                        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
-                            case "page":  // create the view in its own page
-                                Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
-                                break;
+                                // Create a CSV importer view
+                                switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+                                    case "page":  // create the view in its own page
+                                        Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
+                                        break;
 
-                            case "modal": default:  // create the view in a modal popup within the current page
-                                try {
-                                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
-                                    window.doModal();
+                                    case "modal":
+                                    default:  // create the view in a modal popup within the current page
+                                        try {
+                                            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
+                                            window.doModal();
 
-                                } catch (IOException e) {
-                                    LOGGER.error("Unable to create window", e);
+                                        } catch (IOException e) {
+                                            LOGGER.error("Unable to create window", e);
+                                        }
+                                        break;
                                 }
-                                break;
-                        }
                             }
                     );
                     // only match the last schema mapping if there are multiple
@@ -213,7 +238,9 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                 Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
                 break;
 
-            case "modal": default:  // create the view in a modal popup within the current page
+            case "modal":
+            default:  // create the view in a modal popup within the current page
+
                 try {
                     Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
                     window.doModal();
@@ -223,7 +250,5 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                 }
                 break;
         }
-
-
     }
 }

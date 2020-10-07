@@ -98,7 +98,7 @@
         <property name="changeLog" value="classpath:db/migration/changeLog.yaml"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="contexts" value="${jpa.database}"/>
-    </bean> 
-     
+    </bean>
+
 
 </beans>
