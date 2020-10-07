@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.cache.ehcache;
+package org.apromore.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +35,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
+import org.apromore.cache.ehcache.CacheRepository;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.jpa.LogRepositoryCustomImpl;
 import org.apromore.dao.model.Log;

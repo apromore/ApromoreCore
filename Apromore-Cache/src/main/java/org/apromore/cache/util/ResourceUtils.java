@@ -19,9 +19,8 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.util;
+package org.apromore.cache.util;
 
-import org.apromore.dao.jpa.LogRepositoryCustomImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

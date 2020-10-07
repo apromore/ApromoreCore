@@ -24,7 +24,6 @@
 package org.apromore.service.impl;
 
 import org.apromore.apmlog.APMLog;
-import org.apromore.cache.ehcache.TemporaryCacheService;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.FolderRepository;

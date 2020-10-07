@@ -48,10 +48,6 @@
         <property name="configLocation" value="${manager.ehcache.config.url}"/>
     </bean> 
 
-	<bean id="tempCacheService" class="org.apromore.cache.ehcache.TemporaryCacheService">
-        <property name="cacheRepo" ref="cacheRepo"/> <!-- cache name defined in ehcache.xml -->
-        <property name="config" ref="config"/>
-        <property name="apmLogService" ref="apmLogService"/>
-    </bean>
+	
     
 </beans>

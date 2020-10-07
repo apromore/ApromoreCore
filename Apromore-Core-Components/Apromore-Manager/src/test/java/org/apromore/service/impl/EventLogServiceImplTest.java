@@ -23,7 +23,6 @@
 package org.apromore.service.impl;
 
 import com.google.common.collect.Sets;
-import org.apromore.cache.ehcache.TemporaryCacheService;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.service.UserMetadataService;

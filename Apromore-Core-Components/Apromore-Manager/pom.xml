@@ -89,6 +89,7 @@
                             org.apromore.apmlog;version="[1.0,2)",
                             org.apromore.apmlog.util;version="[1.0,2)",
                             org.apromore.apmlog.impl;version="[1.0,2)",
+                            org.apromore.cache.ehcache;version="[1.0,2)",
                             *
                         </Import-Package>
                         <Export-Package>
@@ -505,6 +506,11 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apmlog</artifactId>
+        </dependency>
+        
+         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-cache</artifactId>
         </dependency>
 		
 		<!-- GUI related dependencies -->

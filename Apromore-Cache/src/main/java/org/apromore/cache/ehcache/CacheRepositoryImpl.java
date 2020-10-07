@@ -24,7 +24,7 @@
 
 package org.apromore.cache.ehcache;
 
-import org.apromore.exception.CacheException;
+import org.apromore.cache.exception.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

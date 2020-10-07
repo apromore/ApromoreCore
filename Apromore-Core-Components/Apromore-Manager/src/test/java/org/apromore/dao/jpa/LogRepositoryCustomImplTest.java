@@ -22,7 +22,7 @@
 
 package org.apromore.dao.jpa;
 
-import org.apromore.cache.ehcache.TemporaryCacheService;
+import org.apromore.service.impl.TemporaryCacheService;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.info.XLogInfo;

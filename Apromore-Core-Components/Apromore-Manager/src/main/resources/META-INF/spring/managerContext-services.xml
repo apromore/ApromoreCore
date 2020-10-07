@@ -35,6 +35,14 @@
         <property name="numOfTrace" value="${cache.numOfTrace}"/>
     </bean>
 
+
+	<bean id="tempCacheService" class="org.apromore.service.impl.TemporaryCacheService">
+        <property name="cacheRepo" ref="cacheRepo"/>
+        <property name="config" ref="config"/>
+        <property name="apmLogService" ref="apmLogService"/>
+    </bean>
+    
+    
     <context:component-scan base-package="org.apromore.security"/>
     <context:component-scan base-package="org.apromore.service"/>
     <context:component-scan base-package="org.apromore.toolbox"/>

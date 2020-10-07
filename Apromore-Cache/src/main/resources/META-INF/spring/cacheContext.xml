@@ -38,20 +38,13 @@
             http://www.springframework.org/schema/cache           http://www.springframework.org/schema/cache/spring-cache.xsd"
 >
 
-    <context:property-placeholder properties-ref="managerProperties"/>
+	<context:property-placeholder properties-ref="managerProperties"/>
     <osgi-compendium:cm-properties id="managerProperties" persistent-id="site" init-timeout="60"/>
-
-    <context:annotation-config/>
-    <context:spring-configured/>
-
-    <aop:aspectj-autoproxy/>
-
-    <bean id="historyEventAspect" class="org.apromore.aop.HistoryEventAspect"/>
+  
 
     <!-- Import other Application Context used to construct the Spring context. -->
-    <import resource="manager-osgi-context.xml"/>
-    <import resource="managerContext-jpa.xml"/>
-    <import resource="managerContext-services.xml"/>
-    <import resource="managerContext-scheduler.xml"/>
+    <import resource="cache-osgi-context.xml"/>
+    <import resource="cache-config.xml"/>
+    
 
 </beans>

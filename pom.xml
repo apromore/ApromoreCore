@@ -109,6 +109,7 @@
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
 
 	  	<module>Apromore-Calendar</module>
+    <module>Apromore-Cache</module>
   </modules>
 
 	<properties>
@@ -130,6 +131,7 @@
 		<apromore.plugin.version>1.1</apromore.plugin.version>
 		<apromore.plugin.custom.gui.version>1.1.0</apromore.plugin.custom.gui.version>
 		<apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
+		<apromore-cache.version>1.0</apromore-cache.version>
 
 		<gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 		<httpcomponents.version>4.2.1</httpcomponents.version>
@@ -494,6 +496,14 @@
 				<groupId>org.apromore</groupId>
 				<artifactId>filestore-client</artifactId>
 				<version>${filestore-client.version}</version>
+			</dependency>
+
+			<!-- Apromore Cache -->
+		
+			<dependency>
+				<groupId>org.apromore</groupId>
+				<artifactId>apromore-cache</artifactId>
+				<version>${apromore-cache.version}</version>
 			</dependency>
 
 			<!-- Plugin API -->
