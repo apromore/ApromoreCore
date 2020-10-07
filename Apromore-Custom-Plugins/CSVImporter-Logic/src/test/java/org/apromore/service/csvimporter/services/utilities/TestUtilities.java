@@ -19,21 +19,22 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.csvimporter.services;
+package org.apromore.service.csvimporter.services.utilities;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XesXmlSerializer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
+import java.util.regex.Pattern;
 
-public class Utilities {
+public class TestUtilities {
     public static String convertParquetToCSV(File parquetFile, char delimdelimiters) throws IOException {
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -65,15 +66,15 @@ public class Utilities {
         return stringBuilder;
     }
 
-    public MemoryUsage getMemoryUsage() {
-        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-        return memoryMXBean.getHeapMemoryUsage();
+    public String removeTimezone(String logString) {
+        // regex for the timezone used in the test data  e.g. +03:00
+        Pattern p = Pattern.compile("(\\+\\d{2}:\\d{2})");
+        return logString.replaceAll(p.pattern(), "");
     }
-//    Utilities utilities = new Utilities();
-//        System.out.println("Memory Used: " + utilities.getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
-//        System.out.println("Memory Available: " + (utilities.getMemoryUsage().getMax() - utilities.getMemoryUsage().getUsed()) / 1024 / 1024 + " " + "MB ");
-//                        System.gc();
-//        try { Thread.sleep(1000);} catch (InterruptedException e) { }
-//            System.out.println("Memory Used: " + utilities.getMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
-//        System.out.println("Memory Available: " + (utilities.getMemoryUsage().getMax() - utilities.getMemoryUsage().getUsed()) / 1024 / 1024 + " " + "MB ");
+
+    public String xlogToString(XLog xlog) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        (new XesXmlSerializer()).serialize(xlog, baos);
+        return baos.toString();
+    }
 }

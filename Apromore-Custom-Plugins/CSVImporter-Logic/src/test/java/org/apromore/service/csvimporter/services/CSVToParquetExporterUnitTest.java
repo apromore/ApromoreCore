@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static org.apache.parquet.format.converter.ParquetMetadataConverter.NO_FILTER;
-import static org.apromore.service.csvimporter.services.Utilities.convertParquetToCSV;
+import static org.apromore.service.csvimporter.services.utilities.TestUtilities.convertParquetToCSV;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 import static org.junit.Assert.assertEquals;
 
