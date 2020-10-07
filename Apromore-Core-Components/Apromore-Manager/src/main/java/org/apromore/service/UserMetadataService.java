@@ -76,7 +76,7 @@ public interface UserMetadataService {
      * @param logId log ID
      * @param groupRowGuid group guid
      */
-    void removeUserMetadataPermissions(Integer logId, String groupRowGuid);
+    void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
 
     /**
      * Update a user metadata.

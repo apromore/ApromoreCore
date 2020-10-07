@@ -61,6 +61,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
@@ -341,13 +342,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public String removeLogPermissions(Integer logId, String groupRowGuid) {
+    public String removeLogPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
         Log log = logRepo.findOne(logId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupLog(group, log);
 
         // Sync permission with user metadata that linked to specified log
-//        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid);
+        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid, username);
 
         return "";
     }
