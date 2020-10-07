@@ -20,13 +20,13 @@
  * #L%
  */
 
-package org.apromore.dao;
+package org.apromore.cache.ehcache;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.stereotype.Repository;
 
-@Repository
+
 public interface CacheRepository {
 
 

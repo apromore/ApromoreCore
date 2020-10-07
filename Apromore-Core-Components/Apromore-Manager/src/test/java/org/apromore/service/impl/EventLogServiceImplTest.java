@@ -23,6 +23,7 @@
 package org.apromore.service.impl;
 
 import com.google.common.collect.Sets;
+import org.apromore.cache.ehcache.TemporaryCacheService;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.service.UserMetadataService;
@@ -72,6 +73,7 @@ public class EventLogServiceImplTest {
     private GroupUsermetadataRepository groupUsermetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;
+    private TemporaryCacheService temporaryCacheService;
 
     private static void walkLog(XLog log) {
         walkAttributes(log);
@@ -114,12 +116,12 @@ public class EventLogServiceImplTest {
         userSrv = createMock(UserService.class);
         ui = createMock(UserInterfaceHelper.class);
         userMetadataService = createMock(UserMetadataService.class);
-
+        temporaryCacheService=createMock(TemporaryCacheService.class);
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
                 userSrv, ui, config,
-                userMetadataService);
+                userMetadataService,temporaryCacheService);
     }
 
     @Test
