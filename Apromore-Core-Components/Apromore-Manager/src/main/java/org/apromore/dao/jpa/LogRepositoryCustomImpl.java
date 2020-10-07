@@ -27,43 +27,15 @@
  */
 package org.apromore.dao.jpa;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogService;
-import org.apromore.cache.ehcache.CacheRepository;
-import org.apromore.common.ConfigBean;
-import org.apromore.dao.LogRepositoryCustom;
-import org.apromore.dao.model.Log;
-import org.deckfour.xes.classification.XEventClasses;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.in.*;
-import org.deckfour.xes.info.XLogInfo;
-import org.deckfour.xes.info.XLogInfoFactory;
-import org.deckfour.xes.info.impl.XTimeBoundsImpl;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.out.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import org.apromore.dao.LogRepositoryCustom;
+import org.apromore.dao.model.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * implementation of the org.apromore.dao.LogRepositoryCustom interface.

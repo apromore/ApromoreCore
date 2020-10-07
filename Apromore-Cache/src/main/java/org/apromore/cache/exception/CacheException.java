@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.exception;
+package org.apromore.cache.exception;
 
 /**
  * Root exception for all Apromore runtime exceptions.  This class is used as the root instead

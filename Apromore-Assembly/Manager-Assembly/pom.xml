@@ -84,6 +84,13 @@
 			<artifactId>apromore-calendar</artifactId>
 			<version>1.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>apromore-cache</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
