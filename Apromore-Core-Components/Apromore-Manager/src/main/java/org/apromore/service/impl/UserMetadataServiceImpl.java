@@ -182,7 +182,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid) {
+    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+
+        // Remove all the ACLs that linked to specified Log and Group
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
@@ -198,9 +200,10 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                 // Get all the user metadata that can be accessed by group
                 List<GroupUsermetadata> groupUsermetadataList = groupUsermetadataRepo.findByUsermetadataId(u.getId());
 
-                // Remove permissions assigned to specified group
+                // Remove permissions assigned to specified group, and metadata itself
                 for (GroupUsermetadata g : groupUsermetadataList) {
                     if (g.getGroup().equals(group)) {
+                        deleteUserMetadata(g.getUsermetadata().getId(), username);
                         groupUsermetadataRepo.delete(g);
                     }
                 }
