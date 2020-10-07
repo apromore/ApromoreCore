@@ -89,7 +89,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         if (useParquet) {
             return new HashSet<>(Arrays.asList("csv", "parquet", "xlsx"));
         } else {
-            return new HashSet<>(Arrays.asList("csv", "xlsx"));
+            return new HashSet<>(Arrays.asList("csv"));
         }
     }
 
