@@ -19,11 +19,31 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+/*
+ * This file is part of "Apromore".
+ *
+ * Copyright (C) 2019 - 2020 The University of Melbourne.
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
 package org.apromore.apmlog.util;
 
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -32,7 +52,6 @@ import java.time.format.DateTimeFormatter;
 /**
  * @author Chii Chang (created: 2019)
  * Modified: Chii Chang (23/03/2020)
- * Modified: Chii Chang (11/04/2020)
  */
 public class TimeUtil {
 
@@ -168,6 +187,38 @@ public class TimeUtil {
 
         if (millis > 0) {
             return millis + " millis";
+        }
+
+        return "instant";
+    }
+
+    public static String durationStringOf(double millis, String unit) {
+        DecimalFormat df2 = new DecimalFormat("###############.##");
+
+        double yr = Double.valueOf("31536000000");
+        double mth = Double.valueOf("2678400000");
+        double wks = Double.valueOf("604800000");
+        double days = Double.valueOf("86400000");
+        double hrs = Double.valueOf("3600000");
+        double mins = Double.valueOf("60000");
+        double secs = Double.valueOf("1000");
+
+        if (unit.toLowerCase().contains("year") || unit.toLowerCase().contains("yr")) {
+            return df2.format(millis / yr) + " years";
+        } else if (unit.toLowerCase().contains("month") || unit.toLowerCase().contains("mth")) {
+            return df2.format(millis / mth) + " months";
+        } else if (unit.toLowerCase().contains("week") || unit.toLowerCase().contains("wk")) {
+            return df2.format(millis / wks) + " weeks";
+        } else if (unit.toLowerCase().contains("day")) {
+            return df2.format(millis / days) + " days";
+        } else if (unit.toLowerCase().contains("hour") || unit.toLowerCase().contains("hr")) {
+            return df2.format(millis / hrs) + " hours";
+        } else if (unit.toLowerCase().contains("minute") || unit.toLowerCase().contains("min")) {
+            return df2.format(millis / mins) + " minutes";
+        } else if (unit.toLowerCase().contains("second") || unit.toLowerCase().contains("sec")) {
+            return df2.format(millis / secs) + " seconds";
+        } else if (unit.toLowerCase().contains("milli")) {
+            return df2.format(millis ) + " milliseconds";
         }
 
         return "instant";

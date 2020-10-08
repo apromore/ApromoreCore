@@ -248,6 +248,12 @@ public class APMLogFilter {
                 return PathFilter.toKeep(trace, logFilterRule);
             case REWORK_REPETITION:
                 return ReworkFilter.toKeep(trace, logFilterRule);
+            case CASE_SECTION_ATTRIBUTE_COMBINATION:
+                return CaseSectionAttributeCombinationFilter.toKeep(trace, logFilterRule);
+            case EVENT_ATTRIBUTE_DURATION:
+                return EventAttributeDurationFilter.toKeep(trace, logFilterRule);
+            case ATTRIBUTE_ARC_DURATION:
+                return AttributeArcDurationFilter.toKeep(trace, logFilterRule);
             default:
                 return false;
         }
