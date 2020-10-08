@@ -46,11 +46,10 @@
 
     <aop:aspectj-autoproxy/>
 
-    <bean id="historyEventAspect" class="org.apromore.aop.HistoryEventAspect"/>
+    <!-- <bean id="historyEventAspect" class="org.apromore.aop.HistoryEventAspect"/> -->
 
     <!-- Import other Application Context used to construct the Spring context. -->
-    <import resource="manager-osgi-context.xml"/>
-    <import resource="managerContext-jpa.xml"/>
+    <import resource="manager-osgi-context.xml"/>    
     <import resource="managerContext-services.xml"/>
     <import resource="managerContext-scheduler.xml"/>
 

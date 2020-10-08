@@ -24,15 +24,47 @@
 
 package org.apromore.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Resource;
+import javax.inject.Inject;
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.*;
-import org.apromore.dao.dataObject.FolderTreeNode;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.UserRepository;
+import org.apromore.dao.WorkspaceRepository;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelAttribute;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Workspace;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.model.FolderTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -41,12 +73,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
@@ -66,6 +92,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupLogRepository groupLogRepo;
     private EventLogFileService logFileService;
     private UserMetadataService userMetadataServ;
+    private FolderServiceImpl folderService;
 
     @Resource
     private ConfigBean config;
@@ -90,7 +117,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final GroupProcessRepository groupProcessRepository,
                                 final GroupLogRepository groupLogRepository,
                                 final EventLogFileService eventLogFileService,
-                                final UserMetadataService userMetadataService) {
+                                final UserMetadataService userMetadataService,
+                                final FolderServiceImpl folderService) {
 
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
@@ -104,6 +132,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupLogRepo = groupLogRepository;
         logFileService = eventLogFileService;
         userMetadataServ = userMetadataService;
+        this.folderService=folderService;
     }
 
 
@@ -228,7 +257,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<FolderTreeNode> getWorkspaceFolderTree(String userId) {
-        return folderRepo.getFolderTreeByUser(0, userId);
+        return folderService.getFolderTreeByUser(0, userId);
     }
 
     @Override
