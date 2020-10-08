@@ -141,6 +141,42 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     }
 
+    /**
+     *
+     * Find UserMetadata that linked to specified Log and Group
+     * @param logId logId
+     * @param groupRowGuid GroupId
+     * @return Set of GroupUsermetadata
+     */
+    private  Set<GroupUsermetadata> findByLogAndGroup(Integer logId, String groupRowGuid) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Set<GroupUsermetadata> result = new HashSet<>();
+
+        // All the user metadata that linked to this log
+        Set<UsermetadataLog> usermetadataLogSet =
+                new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+
+        if (usermetadataLogSet.size() != 0) {
+
+            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                Usermetadata u = usermetadataLog.getUsermetadata();
+
+                // Get all the user metadata that can be accessed by group
+                List<GroupUsermetadata> groupUsermetadataList = groupUsermetadataRepo.findByUsermetadataId(u.getId());
+
+                // Remove permissions assigned to specified group, and metadata itself
+                for (GroupUsermetadata g : groupUsermetadataList) {
+                    if (g.getGroup().equals(group)) {
+                        result.add(g);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
     @Override
     @Transactional
     public void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
@@ -184,29 +220,16 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Transactional
     public void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
-        // Remove all the ACLs that linked to specified Log and Group
+        Set<GroupUsermetadata> groupUsermetadataSet;
 
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        groupUsermetadataSet = findByLogAndGroup(logId, groupRowGuid);
 
-        // All the user metadata that linked to this log
-        List<UsermetadataLog> usermetadataLogList =
-                usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId));
+        for (GroupUsermetadata g : groupUsermetadataSet) {
 
-        if (null != usermetadataLogList && usermetadataLogList.size() != 0) {
-
-            for (UsermetadataLog usermetadataLog : usermetadataLogList) {
-                Usermetadata u = usermetadataLog.getUsermetadata();
-
-                // Get all the user metadata that can be accessed by group
-                List<GroupUsermetadata> groupUsermetadataList = groupUsermetadataRepo.findByUsermetadataId(u.getId());
-
-                // Remove permissions assigned to specified group, and metadata itself
-                for (GroupUsermetadata g : groupUsermetadataList) {
-                    if (g.getGroup().equals(group)) {
-                        deleteUserMetadata(g.getUsermetadata().getId(), username);
-                        groupUsermetadataRepo.delete(g);
-                    }
-                }
+            if(g.getUsermetadata().getGroupUserMetadata().size() == 1) { // if this metadata will be an orphan
+                deleteUserMetadata(g.getUsermetadata().getId(), username);
+            } else {
+                groupUsermetadataRepo.delete(g);
             }
         }
     }
@@ -243,11 +266,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
         usermetadataLogSet.clear();
         userMetadata.setUsermetadataLog(usermetadataLogSet);
+        usermetadataLogRepo.delete(usermetadataLogSet);
 
         // Delete all GroupUsermetadata
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
         groupUserMetadataSet.clear();
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+        groupUsermetadataRepo.delete(groupUserMetadataSet);
 
         // Invalidate Usermetadata
         userMetadataRepo.saveAndFlush(userMetadata);
