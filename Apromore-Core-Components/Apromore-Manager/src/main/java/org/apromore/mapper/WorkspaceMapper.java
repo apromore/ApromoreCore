@@ -24,12 +24,12 @@
 
 package org.apromore.mapper;
 
-import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.GroupAccessType;
+import org.apromore.service.model.FolderTreeNode;
 import org.apromore.dao.model.GroupLog;
 
 import java.util.ArrayList;

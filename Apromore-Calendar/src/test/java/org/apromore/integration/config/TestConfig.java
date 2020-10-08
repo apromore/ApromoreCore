@@ -21,8 +21,7 @@
  */
 package org.apromore.integration.config;
 
-import org.apromore.apmlog.impl.APMLogServiceImpl;
-import org.apromore.common.ConfigBean;
+
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,7 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 @ImportResource(value = {"classpath:META-INF/spring/calender-service.xml",
-    "classpath:META-INF/spring/managerContext-jpa.xml"})
+    "classpath:META-INF/spring/database-jpa.xml"})
 public class TestConfig {
   
   
@@ -45,14 +44,6 @@ public class TestConfig {
       return ppc;
   }
   
-  @Bean
-  public APMLogServiceImpl apmLogService() {
-      return new APMLogServiceImpl();
-  }
-
-  @Bean
-  public ConfigBean config() {
-      return new ConfigBean();
-  }
+ 
   
 }

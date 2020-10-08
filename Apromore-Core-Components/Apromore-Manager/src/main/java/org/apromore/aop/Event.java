@@ -24,7 +24,7 @@
 
 package org.apromore.aop;
 
-import org.apromore.dao.model.HistoryEnum;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

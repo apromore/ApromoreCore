@@ -72,7 +72,7 @@ public interface FormatService {
      * @throws JAXBException if it fails....
      * @throws IOException is resetting the input streams fails.
      */
-    void storeNative(String procName, ProcessModelVersion processId, String created, String lastUpdate, User user,
+    Native storeNative(String procName, String created, String lastUpdate, User user,
         NativeType nativeType, String AnnotationVerion, InputStream original) throws JAXBException, IOException;
     
     void updateNative(Native nativeData);
