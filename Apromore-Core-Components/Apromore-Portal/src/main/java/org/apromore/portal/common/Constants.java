@@ -86,4 +86,10 @@ public abstract class Constants {
     public static final String STAR_FULL_CLS = "ap-star-full";
     public static final String STAR_HALF_CLS = "ap-star-half";
     public static final String STAR_NONE_CLS = "ap-star-none";
+
+    // Original regex used in PD: "^[a-zA-Z0-9_\\(\\)\\-\\s\\.]{1,60}$"
+    // Sync with ApromoreCore/Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF/ui.properties
+    public static final String VALID_FILENAME_REGEX = "^[a-zA-Z0-9 &\\u0080-\\u9fff\\u005B\\u005D\\._\\+\\-\\(\\)]{1,60}$";
+    public static final String VALID_FILENAME_MESSAGE = "Use only letters, numbers, space and .-_[]()&. No more than 60 chars.";
+
 }
