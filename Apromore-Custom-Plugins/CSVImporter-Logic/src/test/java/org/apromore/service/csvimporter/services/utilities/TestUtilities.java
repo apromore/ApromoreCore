@@ -62,7 +62,7 @@ public class TestUtilities {
             String valueToString = g.getValueToString(j, 0);
             stringBuilder.append(valueToString);
         }
-        stringBuilder.append('\n');
+        stringBuilder.append(System.getProperty("line.separator"));
         return stringBuilder;
     }
 

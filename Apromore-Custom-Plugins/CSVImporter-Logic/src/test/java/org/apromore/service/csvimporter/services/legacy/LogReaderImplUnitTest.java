@@ -42,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-//@Ignore
 public class LogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImplUnitTest.class);

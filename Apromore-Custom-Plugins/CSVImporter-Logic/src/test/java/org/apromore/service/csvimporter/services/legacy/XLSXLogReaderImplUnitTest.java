@@ -100,7 +100,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test1-valid.xlsx</code>.
+     * Test {@link XLSXLogReaderImpl} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
     @Test
     public void test1_valid() throws Exception {

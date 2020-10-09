@@ -44,7 +44,6 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHea
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-//@Ignore
 public class XLSXToParquetExporterUnitTest {
 
 
@@ -111,7 +110,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter } to convert to CSVReader.
+     * Test {@link XLSToParquetExporter} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
 //    @Ignore
     @Test
