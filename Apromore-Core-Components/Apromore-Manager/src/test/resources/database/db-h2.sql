@@ -742,3 +742,77 @@ CREATE VIEW keywords AS
   SELECT log.domain AS value, 'log' AS type, NULL AS processId, log.id AS logId, NULL AS folderId FROM log UNION
   SELECT folder.folder_name AS value, 'folder' AS type, NULL AS processId, NULL AS logId, folder.id AS folderId FROM folder
 ;
+
+CREATE TABLE usermetadata_type(
+   id      bigint PRIMARY KEY NOT NULL,
+   type    varchar(255),
+   version bigint,
+   is_valid bit
+);
+
+CREATE TABLE usermetadata(
+   id           bigint PRIMARY KEY NOT NULL,
+   type_id      bigint NOT NULL,
+   created_by   varchar(255),
+   created_time varchar(40),
+   updated_by   varchar(255),
+   updated_time varchar(40),
+   content      longtext,
+   revision int,
+   is_valid tinyint(1)NOT NULL
+);
+
+CREATE TABLE usermetadata_log(
+   id bigint PRIMARY KEY NOT NULL,
+   usermetadata_id int,
+   log_id int(11)
+);
+
+CREATE TABLE usermetadata_process(
+   id              bigint PRIMARY KEY NOT NULL,
+   usermetadata_id bigint,
+   process_id      bigint
+);
+
+CREATE TABLE group_usermetadata(
+   id              bigint PRIMARY KEY NOT NULL,
+   group_id        bigint NOT NULL,
+   usermetadata_id bigint NOT NULL,
+   has_read        bit DEFAULT 0 NOT NULL,
+   has_write       bit DEFAULT 0 NOT NULL,
+   has_ownership   bit DEFAULT 0 NOT NULL
+);
+
+ALTER TABLE usermetadata ADD CONSTRAINT usermetadata_ibfk_2
+FOREIGN KEY(type_id)
+REFERENCES usermetadata_type(id)ON
+DELETE CASCADE ON
+UPDATE CASCADE;
+CREATE UNIQUE INDEX IDX_type_id ON usermetadata(type_id);
+
+ALTER TABLE usermetadata_log ADD CONSTRAINT usermetadata_log_ibfk_1
+FOREIGN KEY(log_id)
+REFERENCES log(id)ON
+DELETE CASCADE ON
+UPDATE CASCADE;
+ALTER TABLE usermetadata_log ADD CONSTRAINT usermetadata_log_ibfk_2
+FOREIGN KEY(usermetadata_id)
+REFERENCES usermetadata(id)ON
+DELETE CASCADE ON
+UPDATE CASCADE;
+CREATE UNIQUE INDEX FK_usermetadata_log_id ON usermetadata_log(log_id);
+CREATE UNIQUE INDEX FK_usermetadata_usermetadata_id ON usermetadata_log(usermetadata_id);
+
+ALTER TABLE usermetadata_process ADD CONSTRAINT usermetadata_process_ibfk_1
+FOREIGN KEY(usermetadata_id)
+REFERENCES usermetadata(id)ON
+DELETE CASCADE ON
+UPDATE CASCADE;
+ALTER TABLE usermetadata_process ADD CONSTRAINT usermetadata_process_ibfk_2
+FOREIGN KEY(process_id)
+REFERENCES process(id)ON
+DELETE CASCADE ON
+UPDATE CASCADE;
+CREATE UNIQUE INDEX usermetadata_process_ibfk_1 ON usermetadata_process(usermetadata_id);
+CREATE UNIQUE INDEX usermetadata_process_ibfk_2 ON usermetadata_process(process_id);
+

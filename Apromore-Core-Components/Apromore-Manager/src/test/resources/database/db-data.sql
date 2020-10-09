@@ -117,3 +117,8 @@ INSERT INTO role_permission VALUES (4,1);
 INSERT INTO role_permission VALUES (4,3);
 INSERT INTO role_permission VALUES (4,4);
 
+INSERT INTO usermetadata_type VALUES (1,'FILTER',1,1);
+INSERT INTO usermetadata_type VALUES (2,'DASHBOARD',1,1);
+INSERT INTO usermetadata_type VALUES (3,'CSV_IMPORTER',1,1);
+INSERT INTO usermetadata_type VALUES (4,'LOG_ANIMATION',1,1);
+INSERT INTO usermetadata_type VALUES (5,'DASH_TEMPLATE',1,1);
