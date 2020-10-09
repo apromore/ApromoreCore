@@ -68,7 +68,7 @@ public class TestUtilities {
 
     public String removeTimezone(String logString) {
         // regex for the timezone used in the test data  e.g. +03:00
-        Pattern p = Pattern.compile("(\\+\\d{2}:\\d{2})");
+        Pattern p = Pattern.compile("([\\+-]\\d{2}:\\d{2})|Z");
         return logString.replaceAll(p.pattern(), "");
     }
 

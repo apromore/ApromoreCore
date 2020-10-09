@@ -42,6 +42,7 @@ import static org.apromore.service.csvimporter.services.utilities.TestUtilities.
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 import static org.junit.Assert.assertEquals;
 
+
 public class ParquetToParquetExporterUnitTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetToParquetExporterUnitTest.class);
     /**
