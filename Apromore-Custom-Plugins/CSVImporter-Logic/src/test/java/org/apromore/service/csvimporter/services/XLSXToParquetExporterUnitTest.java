@@ -23,107 +23,503 @@ package org.apromore.service.csvimporter.services;
 
 import com.google.common.io.ByteStreams;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.services.utilities.TestUtilities;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TimeZone;
 
 import static org.apromore.service.csvimporter.services.utilities.TestUtilities.convertParquetToCSV;
-import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
+import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-@Ignore
+//@Ignore
 public class XLSXToParquetExporterUnitTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXToParquetExporterUnitTest.class);
-    ParquetFactoryProvider parquetFactoryProvider = new ParquetFactoryProvider();
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXToParquetExporterUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
-    private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
+    private final List<String> SAMPLE_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
+    private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("caseID", "activity", "startTimestamp", "endTimestamp", "processtype");
+    ;
+    private TestUtilities utilities;
+    private ParquetFactoryProvider parquetFactoryProvider;
+    private SampleLogGenerator sampleLogGenerator;
+    private ParquetExporter parquetExporter;
 
-    /**
-     * This is hack to convert the test case CSV documents from the time zone where they were created to the
-     * time zone where the test is running.
-     *
-     * @param in               the XML text of the test data
-     * @param testDataTimezone a regex for the timezone used in the test data, e.g. <code>"\\+03:00"</code>
-     * @return the XML text with the local time zone substituted
-     */
-    private String correctTimeZone(String in, String testDataTimezone) {
-        TimeZone tz = TimeZone.getDefault();
-        int offsetMinutes = (tz.getRawOffset() + tz.getDSTSavings()) / 60000;
-        NumberFormat hoursFormat = new DecimalFormat("+00;-00)");
-        NumberFormat minutesFormat = new DecimalFormat("00");
-
-        return in.replaceAll(testDataTimezone, "\\" + hoursFormat.format(offsetMinutes / 60) + ":" + minutesFormat.format(offsetMinutes % 60));
+    @Before
+    public void init() {
+        utilities = new TestUtilities();
+        parquetFactoryProvider = new ParquetFactoryProvider();
+        sampleLogGenerator = parquetFactoryProvider
+                .getParquetFactory("xlsx")
+                .createSampleLogGenerator();
+        parquetExporter = parquetFactoryProvider
+                .getParquetFactory("xlsx")
+                .createParquetExporter();
     }
 
     /**
-     * Test {@link XLSToParquetExporterLegecy } to convert to CSVReader.
+     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
      */
+//    @Ignore
+    @Test
+    public void testSampleCSV_undersample() throws Exception {
+
+        LOGGER.info("\n************************************\ntest - sampling fewer lines than contained in test1-valid.xlsx");
+
+        // Test file data
+        String testFile = "/test1-valid.xlsx";
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        // Validate result
+        assertEquals(SAMPLE_EXPECTED_HEADER, sample.getHeader());
+        assertEquals(2, sample.getLines().size());
+    }
+
+    /**
+     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testSampleCSV_oversample() throws Exception {
+
+        LOGGER.info("\n************************************\ntest - sampling more lines than contained in test1-valid.xlsx");
+
+        // Test file data
+        String testFile = "/test1-valid.xlsx";
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
+
+        // Validate result
+        assertEquals(SAMPLE_EXPECTED_HEADER, sample.getHeader());
+        assertEquals(3, sample.getLines().size());
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter } to convert to CSVReader.
+     */
+//    @Ignore
     @Test
     public void test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1 - Valid parquet test");
 
-        //Xlsx file input
+        // Test file data
         String testFile = "/test1-valid.xlsx";
         String expectedTestFile = "/test1-valid-expected.csv";
-
-        InputStream in = XLSXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
-        String expectedCsv = correctTimeZone(new String(ByteStreams.toByteArray(XLSXToParquetExporterUnitTest.class.getResourceAsStream(expectedTestFile))), "\\+03:00");
-
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
-//
-        //Generate sample
-        LogSample sample = parquetFactoryProvider
-                .getParquetFactory("xlsx")
-                .createSampleLogGenerator()
-                .generateSampleLog(in, 3, "UTF-8");
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
 
-        //Construct an expected schema
-        MessageType expectedParquetSchema = createParquetSchema(TEST1_EXPECTED_HEADER.toArray(new String[0]), sample);
-        in = XLSXToParquetExporterUnitTest.class.getResourceAsStream(testFile);
+        //Generate sample
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+
         //Export parquet
-        LogModel logModel = parquetFactoryProvider
-                .getParquetFactory("xlsx")
-                .createParquetExporter()
+        LogModel logModel = parquetExporter
                 .generateParqeuetFile(
-                        in,
+                        this.getClass().getResourceAsStream(testFile),
                         sample,
                         "UTF-8",
                         tempOutput,
                         true);
 
         //Read Parquet file
-        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempOutput);
-        MessageType schema = parquetLocalFileReader.getSchema();
-        ParquetFileReader parquetFileReader = parquetLocalFileReader.getParquetFileReader();
-
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
         String parquetToCSV = convertParquetToCSV(tempOutput, ',');
 
-        System.out.println("parquetToCSV " + parquetToCSV);
         // Validate result
-        assertEquals(3, parquetFileReader.getRecordCount());
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         assertEquals(false, logModel.isRowLimitExceeded());
-        assertEquals(expectedParquetSchema, schema);
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test2_missing_columns() throws Exception {
+
+        System.out.println("\n************************************\ntest2 - Missing columns test");
+
+        String testFile = "/test2-missing-columns.xlsx";
+        String expectedFile = "/test2-missing-columns-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        //Generate sample
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(2, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
+
+        System.out.println("\n************************************\ntest3 - Invalid end timestamp");
+
+        String testFile = "/test3-invalid-end-timestamp.xlsx";
+        String expectedFile = "/test3-invalid-end-timestamp-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
+
+        System.out.println("\n************************************\ntest4 - Invalid start timestamp");
+
+        String testFile = "/test4-invalid-start-timestamp.xlsx";
+        String expectedFile = "/test4-invalid-start-timestamp-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test5-expected.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+
+        System.out.println("\n************************************\ntest5 - Empty caseID");
+
+        String testFile = "/test5-empty-caseID.xlsx";
+        String expectedFile = "/test5-empty-caseID-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test6_record_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest6 - Record invalid");
+
+        String testFile = "/test7-record-invalid.xlsx";
+        String expectedFile = "/test7-record-invalid-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+
+        sample.setStartTimestampPos(2);
+        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(1, logModel.getRowsCount());
+        assertEquals(2, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test7_all_invalid() throws Exception {
+
+        System.out.println("\n************************************\ntest7 - All invalid");
+        String testFile = "/test8-all-invalid.xlsx";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(0, logModel.getRowsCount());
+        assertEquals(3, logModel.getLogErrorReport().size());
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
+
+        System.out.println("\n************************************\ntest8 - Differentiate dates");
+
+        String testFile = "/test9-differentiate-dates.xlsx";
+        String expectedFile = "/test9-differentiate-dates-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+
+        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setEndTimestampPos(3);
+        sample.setStartTimestampPos(2);
+        sample.getEventAttributesPos().remove(Integer.valueOf(2));
+        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        assertNotNull(logModel);
+        assertEquals(13, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
+     */
+//    @Ignore
+    @Test
+    public void testPrepareXesModel_test9_detect_name() throws Exception {
+
+        System.out.println("\n************************************\ntest9 - Event Attribute");
+
+        String testFile = "/test10-eventAttribute.xlsx";
+        String expectedFile = "/test10-eventAttribute-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "UTF-8",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
+        assertEquals(expectedCsv, parquetToCSV);
+    }
+
+    /**
+     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
+     */
+    @Ignore
+    @Test
+    public void testPrepareXesModel_test10_encoding() throws Exception {
+
+        System.out.println("\n************************************\ntest10 - Encoding");
+
+        String testFile = "/test11-encoding.xlsx";
+        String expectedFile = "/test11-encoding-expected.csv";
+        //Create an output parquet file
+        File tempOutput = File.createTempFile("test", "parquet");
+        // Set up inputs and expected outputs
+        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
+
+        sample.setActivityPos(1);
+        sample.getEventAttributesPos().remove(Integer.valueOf(1));
+
+        //Export parquet
+        LogModel logModel = parquetExporter
+                .generateParqeuetFile(
+                        this.getClass().getResourceAsStream(testFile),
+                        sample,
+                        "windows-1255",
+                        tempOutput,
+                        true);
+
+        //Read Parquet file
+        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(5, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
         assertEquals(expectedCsv, parquetToCSV);
     }
 }

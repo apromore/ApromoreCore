@@ -41,7 +41,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore
 public class XLSXLogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XLSXLogReaderImplUnitTest.class);
@@ -65,13 +64,12 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.csv</code>.
+     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testSampleCSV_undersample() throws Exception {
 
-        LOGGER.info("\n************************************\ntest - sampling fewer lines than contained in test1-valid.csv");
+        LOGGER.info("\n************************************\ntest sample generator - undersample");
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
@@ -84,13 +82,12 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.csv</code>.
+     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testSampleCSV_oversample() throws Exception {
 
-        LOGGER.info("\n************************************\ntest - sampling more lines than contained in test1-valid.csv");
+        LOGGER.info("\n************************************\ntest sample generator - oversample");
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
@@ -103,18 +100,17 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl } to convert to CSVReader.
+     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test1-valid.xlsx</code>.
      */
-    @Ignore
     @Test
     public void test1_valid() throws Exception {
 
-        LOGGER.info("\n************************************\ntest1 - Valid parquet test");
+        LOGGER.info("\n************************************\ntest1-valid.xlsx");
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
         String expectedFile = "/test1-expected.xes";
-
+        // Set up inputs and expected outputs
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         //Generate sample
@@ -143,15 +139,13 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test2_missing_columns() throws Exception {
 
-        System.out.println("\n************************************\ntest2 - Missing columns test");
+        LOGGER.info("\n************************************\ntest2 - Missing columns test");
 
         String testFile = "/test2-missing-columns.xlsx";
         String expectedFile = "/test2-expected.xes";
-
         // Set up inputs and expected outputs
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
@@ -181,11 +175,10 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
-        System.out.println("\n************************************\ntest3 - Invalid end timestamp");
+        LOGGER.info("\n************************************\ntest3 - Invalid end timestamp");
 
         String testFile = "/test3-invalid-end-timestamp.xlsx";
         String expectedFile = "/test3-expected.xes";
@@ -219,11 +212,10 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
 
-        System.out.println("\n************************************\ntest4 - Invalid start timestamp");
+        LOGGER.info("\n************************************\ntest4 - Invalid start timestamp");
 
         String testFile = "/test4-invalid-start-timestamp.xlsx";
         String expectedFile = "/test4-expected.xes";
@@ -256,11 +248,10 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
-        System.out.println("\n************************************\ntest5 - Empty caseID");
+        LOGGER.info("\n************************************\ntest5 - Empty caseID");
 
         String testFile = "/test5-empty-caseID.xlsx";
         String expectedFile = "/test5-expected.xes";
@@ -294,11 +285,10 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
      */
-    @Ignore
     @Test
-    public void testPrepareXesModel_test7_record_invalid() throws Exception {
+    public void testPrepareXesModel_test6_record_invalid() throws Exception {
 
-        System.out.println("\n************************************\ntest7 - Record invalid");
+        LOGGER.info("\n************************************\ntest6 - Record invalid");
 
         String testFile = "/test7-record-invalid.xlsx";
         String expectedFile = "/test7-expected.xes";
@@ -334,11 +324,10 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
      */
-    @Ignore
     @Test
-    public void testPrepareXesModel_test8_all_invalid() throws Exception {
+    public void testPrepareXesModel_test7_all_invalid() throws Exception {
 
-        System.out.println("\n************************************\ntest8 - All invalid");
+        LOGGER.info("\n************************************\ntest7 - All invalid");
         String testFile = "/test8-all-invalid.xlsx";
 
         // Perform the test
@@ -357,11 +346,10 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
      */
-    @Ignore
     @Test
-    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
+    public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
 
-        System.out.println("\n************************************\ntest9 - Differentiate dates");
+        LOGGER.info("\n************************************\ntest8 - Differentiate dates");
 
         String testFile = "/test9-differentiate-dates.xlsx";
         String expectedFile = "/test9-expected.xes";
@@ -375,8 +363,6 @@ public class XLSXLogReaderImplUnitTest {
 
         sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
         sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-//        sample.setEndTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-//        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         sample.setEndTimestampPos(3);
         sample.setStartTimestampPos(2);
         sample.getEventAttributesPos().remove(Integer.valueOf(2));
@@ -392,22 +378,21 @@ public class XLSXLogReaderImplUnitTest {
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
-//        System.out.println("expectedXES " + expectedXES);
-//        System.out.println("toString(xlog) " + toString(xlog));
+
         // Validate result
         assertNotNull(xlog);
         assertEquals(
                 utilities.removeTimezone(expectedXES),
                 utilities.removeTimezone(utilities.xlogToString(xlog)));
     }
+
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
      */
-    @Ignore
     @Test
-    public void testPrepareXesModel_test10_detect_name() throws Exception {
+    public void testPrepareXesModel_test9_detect_name() throws Exception {
 
-        System.out.println("\n************************************\ntest10 - Event Attribute");
+        LOGGER.info("\n************************************\ntest9 - Event Attribute");
 
         String testFile = "/test10-eventAttribute.xlsx";
         String expectedFile = "/test10-expected.xes";
@@ -441,16 +426,15 @@ public class XLSXLogReaderImplUnitTest {
      */
     @Ignore
     @Test
-    public void testPrepareXesModel_test11_encoding() throws Exception {
+    public void testPrepareXesModel_test10_encoding() throws Exception {
 
-        System.out.println("\n************************************\ntest11 - Encoding");
+        LOGGER.info("\n************************************\ntest10 - Encoding");
 
         String testFile = "/test11-encoding.xlsx";
         String expectedFile = "/test11-expected.xes";
 
         // Set up inputs and expected outputs
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
-
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -469,8 +453,8 @@ public class XLSXLogReaderImplUnitTest {
         //Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 
-//        System.out.println("expectedXES " + expectedXES);
-//        System.out.println("toString(xlog) " + toString(xlog));
+//        LOGGER.info("expectedXES " + expectedXES);
+//        LOGGER.info("toString(xlog) " + toString(xlog));
 //         Validate result
         assertNotNull(xlog);
 //        assertEquals(
