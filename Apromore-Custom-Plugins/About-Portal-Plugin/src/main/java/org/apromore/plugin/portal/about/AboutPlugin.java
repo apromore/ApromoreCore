@@ -22,9 +22,9 @@
 
 package org.apromore.plugin.portal.about;
 
-import java.util.*;
-
-import org.apromore.portal.model.PluginInfo;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.ConfigBean;
@@ -33,29 +33,41 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 public class AboutPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AboutPlugin.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AboutPlugin.class);
 
     private String label = "About Apromore";
     private String groupLabel = "About";
-    public String commitId = "";
-    public String buildDate = "";
+    private String commitId;
+    private String buildDate;
+
+    public AboutPlugin(final String newCommitId, final String newBuildDate) {
+        this.commitId = newCommitId;
+        this.buildDate = newBuildDate;
+    }
+
+    public String getCommitId() {
+        return this.commitId;
+    }
+
+    public String getBuildDate() {
+        return this.buildDate;
+    }
 
     // PortalPlugin overrides
 
-    public String getCommitId() { return this.commitId; }
-    public String getBuildDate() { return this.buildDate; }
-
     @Override
-    public String getLabel(Locale locale) {
+    public String getLabel(final Locale locale) {
         return label;
     }
 
     @Override
-    public String getGroupLabel(Locale locale) {
+    public String getGroupLabel(final Locale locale) {
         return groupLabel;
     }
 
@@ -65,7 +77,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
     }
 
     @Override
-    public void execute(PortalContext portalContext) {
+    public void execute(final PortalContext portalContext) {
         LOGGER.info("Debug");
 
         try {
@@ -79,7 +91,8 @@ public class AboutPlugin extends DefaultPortalPlugin {
                     config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() +
                 ")"
             );
-            final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/about.zul", null, args);
+            final Window pluginWindow = (Window)
+                portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/about.zul", null, args);
             pluginWindow.setAttribute("version", "dummy");
 
             Button buttonOk = (Button) pluginWindow.getFellow("ok");
