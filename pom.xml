@@ -237,7 +237,7 @@
 		<maven.build.helper.plugin>1.8</maven.build.helper.plugin>
 		<maven.bundle.plugin>3.0.1</maven.bundle.plugin>
 		<maven.changelog.plugin>2.2</maven.changelog.plugin>
-		<maven.checkstyle.plugin>2.10</maven.checkstyle.plugin>
+		<maven.checkstyle.plugin>3.1.1</maven.checkstyle.plugin>
 		<maven.clean.plugin>2.5</maven.clean.plugin>
 		<maven.compiler.plugin>3.0</maven.compiler.plugin>
 		<maven.dependency.plugin>2.8</maven.dependency.plugin>
@@ -1468,20 +1468,26 @@
 						<artifactId>build-tools</artifactId>
 						<version>${build-tools.version}</version>
 					</dependency>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>8.36.2</version>
+					</dependency>
 				</dependencies>
-				<configuration>
-					<skip>${checkstyle.skip}</skip>
-					<configLocation>${checkstyle.ruleset.location}</configLocation>
-					<failsOnError>false</failsOnError>
-					<enableRulesSummary>true</enableRulesSummary>
-					<includeTestSourceDirectory>true</includeTestSourceDirectory>
-				</configuration>
 				<executions>
 					<execution>
-						<id>run-checkstyle</id>
-						<phase>verify</phase>
+						<id>checkstyle</id>
+						<phase>process-sources</phase>
+						<configuration>
+							<configLocation>${checkstyle.ruleset.location}</configLocation>
+							<encoding>UTF-8</encoding>
+							<consoleOutput>true</consoleOutput>
+							<failsOnError>true</failsOnError>
+							<linkXRef>false</linkXRef>
+							<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+						</configuration>
 						<goals>
-							<goal>checkstyle</goal>
+							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>

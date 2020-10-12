@@ -18,6 +18,10 @@
     <description>About plugin</description>
     <packaging>bundle</packaging>
 
+    <properties>
+        <checkstyle.skip>false</checkstyle.skip>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
