@@ -252,9 +252,7 @@ public class BPMNExportController extends AbstractController {
         InputDialog.showInputDialog(
 			"Save BPMN model",
 			"Enter a name for the BPMN model (no more than 60 characters)",
-			defaultProcessName, 
-			"^[a-zA-Z0-9_\\(\\)\\-\\s\\.]{1,60}$",
-			"a-z, A-Z, 0-9, hyphen, underscore, space and dot. No more than 60 chars.",
+			defaultProcessName,
 			new EventListener<Event>() {
 				@Override
             	public void onEvent(Event event) throws Exception {
