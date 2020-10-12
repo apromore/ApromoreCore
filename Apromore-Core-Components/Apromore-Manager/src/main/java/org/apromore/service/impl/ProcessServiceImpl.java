@@ -39,8 +39,7 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
-
-
+import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -181,7 +180,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = false)
-//    @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
+    @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
     public ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, 
             final Version version, final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {
@@ -227,7 +226,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = false)
-//    @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
+    @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
     public ProcessModelVersion createProcessModelVersion(final Integer processId, final String branchName, 
             final Version newVersion, final Version originalVersion, final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {

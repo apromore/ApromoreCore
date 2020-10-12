@@ -40,7 +40,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class CalendarServiceTest {
+public class CalendarServiceUnitTest {
 
   @Mock
   CustomCalendarRepository calendarRepository;
