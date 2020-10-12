@@ -65,6 +65,7 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.util.AccessType;
 import org.apromore.service.model.FolderTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -696,26 +697,125 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
-    // TODO: whether should I put this logic here or in a separate service?
-//    private void createGroupUsermetadata(Group group, UserMetadata userMetadata, boolean hasRead, boolean hasWrite,
-//                                         boolean hasOwnership) {
-//        GroupUserMetadata groupUserMetadata = groupUserMetadataRepo.findByGroupAndUserMetadata(group, userMetadata);
-//        if (groupUserMetadata == null) {
-//            groupLog= new GroupLog(group, log, hasRead, hasWrite, hasOwnership);
-//            log.getGroupLogs().add(groupLog);
-//            //group.getGroupLogs().add(groupLog);
-//        } else {
-//            groupLog.setHasRead(hasRead);
-//            groupLog.setHasWrite(hasWrite);
-//            groupLog.setHasOwnership(hasOwnership);
-//        }
-//        groupLogRepo.save(groupLog);
-//    }
-//
-//    private void removeGroupUsermetadata(Group group, UserMetadata usermetadata) {
-//        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
-//        if (groupLog != null) {
-//            groupLogRepo.delete(groupLog);
-//        }
-//    }
+    public Map<Group, AccessType> getLogAcl(Integer logId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupLog g : getGroupLogs(logId)) {
+            if (g.getHasRead() && g.getHasWrite() && g.getHasOwnership()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.OWNER);
+            } else if (g.getHasRead() && g.getHasWrite()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.EDITOR);
+            } else if (g.getHasRead()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.VIEWER);
+            } else {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.NONE);
+            }
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    public Map<Group, AccessType> getProcessAcl(Integer processId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupProcess g : getGroupProcesses(processId)) {
+            if (g.getHasRead() && g.getHasWrite() && g.getHasOwnership()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.OWNER);
+            } else if (g.getHasRead() && g.getHasWrite()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.EDITOR);
+            } else if (g.getHasRead()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.VIEWER);
+            } else {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.NONE);
+            }
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    public Map<Group, AccessType> getFolderAcl(Integer processId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupFolder g : getGroupFolders(processId)) {
+            if (g.isHasRead() && g.isHasWrite() && g.isHasOwnership()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.OWNER);
+            } else if (g.isHasRead() && g.isHasWrite()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.EDITOR);
+            } else if (g.isHasRead()) {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.VIEWER);
+            } else {
+                groupAccessTypeMap.put(g.getGroup(), AccessType.NONE);
+            }
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    public void saveLogAcl(Integer logId, String groupRowGuid, AccessType accessType) {
+        switch (accessType) {
+            case OWNER:
+                saveLogPermissions(logId, groupRowGuid, true, true, true);
+                break;
+            case EDITOR:
+                saveLogPermissions(logId, groupRowGuid, true, true, false);
+                break;
+            case VIEWER:
+                saveLogPermissions(logId, groupRowGuid, true, false, false);
+                break;
+            case NONE:
+                break;
+        }
+    }
+
+    public void saveProcessAcl(Integer logId, String groupRowGuid, AccessType accessType) {
+        switch (accessType) {
+            case OWNER:
+                saveProcessPermissions(logId, groupRowGuid, true, true, true);
+                break;
+            case EDITOR:
+                saveProcessPermissions(logId, groupRowGuid, true, true, false);
+                break;
+            case VIEWER:
+                saveProcessPermissions(logId, groupRowGuid, true, false, false);
+                break;
+            case NONE:
+                break;
+        }
+    }
+
+    public void saveFolderAcl(Integer logId, String groupRowGuid, AccessType accessType) {
+        switch (accessType) {
+            case OWNER:
+                saveFolderPermissions(logId, groupRowGuid, true, true, true);
+                break;
+            case EDITOR:
+                saveFolderPermissions(logId, groupRowGuid, true, true, false);
+                break;
+            case VIEWER:
+                saveFolderPermissions(logId, groupRowGuid, true, false, false);
+                break;
+            case NONE:
+                break;
+        }
+    }
+
+    // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
+    // field
+    public void deleteLogAcl(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+
+        removeLogPermissions(logId, groupRowGuid, username);
+    }
+
+    public void deleteProcessAcl(Integer processId, String groupRowGuid) {
+
+        removeProcessPermissions(processId, groupRowGuid);
+    }
+
+    public void deleteFolderAcl(Integer folderId, String groupRowGuid) {
+
+        removeFolderPermissions(folderId, groupRowGuid);
+    }
 }

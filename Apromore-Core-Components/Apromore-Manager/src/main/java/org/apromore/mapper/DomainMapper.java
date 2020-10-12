@@ -28,6 +28,8 @@ import java.util.List;
 
 import org.apromore.portal.model.DomainsType;
 
+// TODO: fix the circular dependency by remove all the Mappers to client
+
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.
  *
