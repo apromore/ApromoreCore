@@ -24,9 +24,20 @@ package org.apromore.util;
 /**
  * Permission type for the {@link org.apromore.service.impl.EventLogServiceImpl#storeStatsByType} method.
  */
-public enum PermissionType {
+public enum AccessType {
 
-    VIEWER,
-    EDITOR,
-    OWNER
+    NONE(0),
+    VIEWER(1),
+    EDITOR(2),
+    OWNER(3);
+
+    private final Integer flagId;
+
+    AccessType(Integer flagId) {
+        this.flagId = flagId;
+    }
+
+    public Integer getFlogId() {
+        return flagId;
+    }
 }

@@ -26,6 +26,7 @@ import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
+import org.apromore.util.SecurityUtils;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

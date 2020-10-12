@@ -25,16 +25,14 @@
 package org.apromore.service;
 
 import java.util.List;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import java.util.Map;
+
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.model.FolderTreeNode;
+import org.apromore.util.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -176,5 +174,72 @@ public interface WorkspaceService {
      */
     Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
 
+    /**
+     * Get list of Group and AccessType pair of Log
+     * @param logId Log ID
+     * @return list of Group and AccessType pair
+     */
+    Map<Group, AccessType> getLogAcl(Integer logId);
+
+    /**
+     * Get list of Group and AccessType pair of Log
+     * @param processId Process ID
+     * @return list of Group and AccessType pair
+     */
+    Map<Group, AccessType> getProcessAcl(Integer processId);
+
+    /**
+     * Get list of Group and AccessType pair of Log
+     * @param folderId Folder ID
+     * @return list of Group and AccessType pair
+     */
+    Map<Group, AccessType> getFolderAcl(Integer folderId);
+
+    /**
+     * Save new GroupLog or update existing one
+     * @param logId Log ID
+     * @param groupRowGuid Group UID
+     * @param accessType AccessType
+     */
+    void saveLogAcl(Integer logId, String groupRowGuid, AccessType accessType);
+
+    /**
+     * Save new GroupProcess or update existing one
+     * @param logId Log ID
+     * @param groupRowGuid Group UID
+     * @param accessType AccessType
+     */
+    void saveProcessAcl(Integer logId, String groupRowGuid, AccessType accessType);
+
+    /**
+     * Save new GroupFolder or update existing one
+     * @param logId Log ID
+     * @param groupRowGuid Group UID
+     * @param accessType AccessType
+     */
+    void saveFolderAcl(Integer logId, String groupRowGuid, AccessType accessType);
+
+    /**
+     * Delete one GroupLog record
+     * @param logId Log ID
+     * @param groupRowGuid Group UID
+     * @param username User username
+     * @throws UserNotFoundException Client side should handle this exception and prompt user as error
+     */
+    void deleteLogAcl(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
+
+    /**
+     * Delete one GroupLog record
+     * @param processId Process ID
+     * @param groupRowGuid Group UID
+     */
+    void deleteProcessAcl(Integer processId, String groupRowGuid);
+
+    /**
+     * Delete one GroupLog record
+     * @param folderId Process ID
+     * @param groupRowGuid Group UID
+     */
+    void deleteFolderAcl(Integer folderId, String groupRowGuid);
 
 }
