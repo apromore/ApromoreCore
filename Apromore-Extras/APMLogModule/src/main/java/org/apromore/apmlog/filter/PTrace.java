@@ -1,8 +1,6 @@
 /*-
  * #%L
- * Process Discoverer Logic
- * 
- * This file is part of "Apromore".
+ * This file is part of "Apromore Core".
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
@@ -10,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,6 +24,7 @@
 package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.*;
+import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.util.Util;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -486,6 +485,43 @@ public class PTrace extends LaTraceImpl implements Comparable<PTrace>, LaTrace {
         }
     }
 
+    public void updateAttributeGraph(int pTraceIndex, PLog pLog) {
+        AAttributeGraph aAttributeGraph = pLog.getAttributeGraph();
+
+        for (int i = activityList.size()-1; i > 0; i--) {
+            int lastIndex = i;
+            int prevIndex = lastIndex - 1;
+            AActivity lastAct = activityList.get(lastIndex);
+            AActivity prevAct = activityList.size() > 1 ? activityList.get(lastIndex-1) : null;
+            UnifiedMap<String, String> lastActAttrMap = lastAct.getAllAttributes();
+            UnifiedMap<String, String> prevActAttrMap = prevAct != null ? prevAct.getAllAttributes() : null;
+
+            String baseTAI = pTraceIndex + ":" + lastIndex;
+            String prevTAI = prevActAttrMap!=null ? pTraceIndex + ":" + prevIndex : null;
+
+            for (String key : lastActAttrMap.keySet()) {
+                String val = lastActAttrMap.get(key);
+
+                aAttributeGraph.add(key, val, baseTAI, lastAct.getDuration());
+
+                if (prevActAttrMap != null) {
+
+                    String indexPair = prevTAI + ">" + baseTAI;
+
+                    if (prevActAttrMap.containsKey(key)) {
+                        String prevVal = prevActAttrMap.get(key);
+
+                        aAttributeGraph.addNext(key, prevVal, val, indexPair);
+
+                        aAttributeGraph.addPrevious(key, val, prevVal, indexPair);
+                    }
+                }
+            }
+        }
+
+
+    }
+
     private void appendActivity(UnifiedMap<Long, List<AActivity>> startTimeActivitiesMap, AActivity activity) {
         long actStartTime = activity.getEventList().get(activity.getEventList().size()-1).getTimestampMilli();
         if (!startTimeActivitiesMap.containsKey(actStartTime)) {
@@ -689,6 +725,14 @@ public class PTrace extends LaTraceImpl implements Comparable<PTrace>, LaTrace {
 
     public boolean isHasActivity() {
         return hasActivity;
+    }
+
+//    public AAttributeGraph getOriginalAttributeGraph() {
+//        return aTrace.getaAttributeGraph();
+//    }
+
+    public List<AActivity> getOriginalActivityList() {
+        return aTrace.getActivityList();
     }
 
     public List<AActivity> getActivityList() {
