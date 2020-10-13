@@ -159,7 +159,7 @@ public class ProcessServiceImpl implements ProcessService {
                 throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
 
-            Native nat=formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
+            Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
             pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType,nat);
             LOGGER.info("Process model version: " + pmv);
             
@@ -617,7 +617,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, 
-            NativeType nativeType, final String netId,Native nat) {
+            NativeType nativeType, final String netId, Native nat) {
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
 

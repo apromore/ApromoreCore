@@ -132,7 +132,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupLogRepo = groupLogRepository;
         logFileService = eventLogFileService;
         userMetadataServ = userMetadataService;
-        this.folderService=folderService;
+        this.folderService = folderService;
     }
 
 

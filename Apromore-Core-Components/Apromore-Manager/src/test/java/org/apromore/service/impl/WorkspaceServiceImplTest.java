@@ -115,7 +115,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupProcessRepo,
                                                 groupLogRepo,
                                                 logFileService,
-                                                userMetadataServ,folderServiceImpl);
+                                                userMetadataServ, folderServiceImpl);
     }
 
     @Test
