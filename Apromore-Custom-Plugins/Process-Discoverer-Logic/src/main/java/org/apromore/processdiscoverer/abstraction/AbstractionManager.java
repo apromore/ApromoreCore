@@ -62,40 +62,37 @@ public class AbstractionManager {
     }
     
     public DFGAbstraction createDFGAbstraction(AbstractionParams params) throws Exception {
-        if (dfgAbstraction != null) {
-            AbstractionParams currentParams = dfgAbstraction.getAbstractionParams();
-            
-            // The diagram is unchanged, only need to update weights
-            if (!log.isDataStatusChanged() &&
-                
-                currentParams.getAttribute() == params.getAttribute() &&
-                
-                currentParams.getNodeSelectThreshold() == params.getNodeSelectThreshold() &&
-                currentParams.getArcSelectThreshold() == params.getArcSelectThreshold() &&
-                
-                currentParams.getFixedType() == params.getFixedType() &&
-                currentParams.getFixedAggregation() == params.getFixedAggregation() &&
-                
-                currentParams.invertedNodes() == params.invertedNodes() &&
-                currentParams.invertedArcs() == params.invertedArcs()) {
-                        
-                dfgAbstraction.updateWeights(params);
-                return dfgAbstraction;
-            }
+    	boolean attributeChanged = true;
+    	boolean thresholdChanged = true;
+    	boolean structuralWeightChanged = true;
+    	boolean elementSelectionOrderChanged = true;
+    	
+    	if (dfgAbstraction != null) {
+    		AbstractionParams currentParams = dfgAbstraction.getAbstractionParams();
+	    	attributeChanged = (currentParams.getAttribute() != params.getAttribute());
+	    	thresholdChanged  = (currentParams.getNodeSelectThreshold() != params.getNodeSelectThreshold() ||
+        					currentParams.getArcSelectThreshold() != params.getArcSelectThreshold());
+	    	structuralWeightChanged = (currentParams.getFixedType() != params.getFixedType() ||
+        							currentParams.getFixedAggregation() != params.getFixedAggregation());
+	    	elementSelectionOrderChanged = (currentParams.invertedNodes() != params.invertedNodes());
+	    	
+    		if (!log.isDataStatusChanged() && !attributeChanged && !thresholdChanged && !structuralWeightChanged && 
+    				!elementSelectionOrderChanged) {
+    			dfgAbstraction.updateWeights(params);
+    			return dfgAbstraction;
+    		}
         }
         
-        graph.buildSubGraphs(params.getAttribute(), params.getFixedType(), params.getFixedAggregation(), 
-                params.invertedNodes(), params.invertedArcs());
-
+    	if (structuralWeightChanged || attributeChanged) {
+    		graph.sortNodesAndArcs(params.getFixedType(), params.getFixedAggregation());
+    	}
+    	graph.buildSubGraphs(params.invertedNodes());
         long timer = System.currentTimeMillis();
         FilteredGraph filteredGraph = graph.filter(params.getNodeSelectThreshold(), params.getArcSelectThreshold());
-        
         this.dfgAbstraction = new DFGAbstraction(log, filteredGraph, params);
         log.resetDataStatus();
-        
         System.out.println("Select a graph based on node/arc sliders and convert it to BPMNDiagram: " + 
                 (System.currentTimeMillis() - timer) + " ms.");
-        
         return dfgAbstraction;
     }
     

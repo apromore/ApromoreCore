@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -109,11 +110,11 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
                     exportProcessModel(mainController, portalContext);
                 }
             } else {
-                Messagebox.show("Please, select exactly one file.", "Too many selections", Messagebox.OK, Messagebox.INFORMATION);
+                Notification.info("Please select exactly one file");
             }
         } catch (Exception e) {
             LOGGER.error("Unable to download selection", e);
-            Messagebox.show("Unable to download selection");
+            Notification.error("Unable to download selection");
         }
     }
 
@@ -142,7 +143,8 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
                 Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         } else {
-            mainC.displayMessage("Please select one process model");
+            Notification.error("Please select one process model");
+            // mainC.displayMessage("Please select one process model");
         }
     }
 

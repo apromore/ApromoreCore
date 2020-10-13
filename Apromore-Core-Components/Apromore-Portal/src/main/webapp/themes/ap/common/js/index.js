@@ -23,8 +23,16 @@ Ap.common.notify = (message, type) => {
     notification.appendTo('body');
     notification.fadeIn(400);
     setTimeout(() => {
-        notification.fadeOut(400, function() {
+        notification.fadeOut(2000, function() {
             notification.remove();
         });
     }, 2000);
+}
+
+Ap.common.setCookie = (name, value, days) => {
+    let d = new Date();
+    days = days || 90;
+    d.setTime(d.getTime() + (days * 24 * 3600000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }

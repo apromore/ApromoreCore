@@ -31,7 +31,7 @@ CREATE TABLE `usermetadata` (
   `created_time` varchar(40) DEFAULT NULL COMMENT 'Create time',
   `updated_by` varchar(255) DEFAULT NULL COMMENT 'The user updated this metadata',
   `updated_time` varchar(40) DEFAULT NULL COMMENT 'Last update time',
-  `content` mediumtext COMMENT 'Content of user metadata',
+  `content` longtext COMMENT 'Content of user metadata',
   `revision` int(11) DEFAULT NULL COMMENT 'reserve for optimistic lock',
   `is_valid` tinyint(1) NOT NULL COMMENT 'Indicate whether this record is valid',
   PRIMARY KEY (`id`),

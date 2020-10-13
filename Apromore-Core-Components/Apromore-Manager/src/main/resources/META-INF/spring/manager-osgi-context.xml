@@ -2,8 +2,6 @@
 <!--
   #%L
   This file is part of "Apromore Core".
-  Copyright (C) 2013 - 2017 Queensland University of Technology.
-  Copyright (C) 2016 Adriano Augusto.
   %%
   Copyright (C) 2018 - 2020 Apromore Pty Ltd.
   %%
@@ -22,6 +20,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
+
 <beans:beans xmlns="http://www.eclipse.org/gemini/blueprint/schema/blueprint" xmlns:beans="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
        xsi:schemaLocation="
@@ -29,12 +28,13 @@
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-    <osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin"/>
+    <osgi:reference id="cacheRepo" interface="org.apromore.cache.ehcache.CacheRepository"/>
 
+ 	<osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin"/>
+ 
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
     <osgi:reference id="apmLogService" interface="org.apromore.apmlog.APMLogService"/>
-
-    <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
+    
     <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>
     <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>
     <osgi:service ref="formatServiceImpl" interface="org.apromore.service.FormatService" auto-export="interfaces"/>
@@ -46,14 +46,43 @@
     <osgi:service ref="eventLogServiceImpl" interface="org.apromore.service.EventLogService" auto-export="interfaces"/>
     <osgi:service ref="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService" auto-export="interfaces"/>
     <osgi:service ref="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" auto-export="interfaces"/>
-    <osgi:service ref="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository" auto-export="interfaces"/>
-    <osgi:service ref="folderRepository" interface="org.apromore.dao.FolderRepository" auto-export="interfaces"/>
-    <osgi:service ref="groupUsermetadataRepository" interface="org.apromore.dao.GroupUsermetadataRepository"
-                  auto-export="interfaces"/>
-    <osgi:service ref="usermetadataRepository" interface="org.apromore.dao.UsermetadataRepository"
-                  auto-export="interfaces"/>
+    
+    <osgi:service ref="folderServiceImpl" interface="org.apromore.service.FolderService" auto-export="interfaces"/>
+                      
     <osgi:service ref="userMetadataServiceImpl" interface="org.apromore.service.UserMetadataService"
                   auto-export="interfaces"/>
+
+
+	<osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
+     
+    <osgi:reference id="folderRepository" interface="org.apromore.dao.FolderRepository"/>
+    <osgi:reference id="groupFolderRepository.java" interface="org.apromore.dao.GroupFolderRepository"/>
+    <osgi:reference id="groupLogRepository" interface="org.apromore.dao.GroupLogRepository"/>
+    <osgi:reference id="groupProcessRepository" interface="org.apromore.dao.GroupProcessRepository"/>
+    <osgi:reference id="groupRepository" interface="org.apromore.dao.GroupRepository"/>
+    
+    
+    <osgi:reference id="groupUsermetadataRepository" interface="org.apromore.dao.GroupUsermetadataRepository"/>
+    <osgi:reference id="historyEventRepository" interface="org.apromore.dao.HistoryEventRepository"/>
+    <osgi:reference id="logRepository" interface="org.apromore.dao.LogRepository"/>
+    <osgi:reference id="membershipRepository" interface="org.apromore.dao.MembershipRepository"/>
+    <osgi:reference id="nativeRepository" interface="org.apromore.dao.NativeRepository"/>
+    <osgi:reference id="nativeTypeRepository" interface="org.apromore.dao.NativeTypeRepository"/>
+    <osgi:reference id="permissionRepository" interface="org.apromore.dao.PermissionRepository"/>
+    <osgi:reference id="processBranchRepository" interface="org.apromore.dao.ProcessBranchRepository"/>
+    
+    <osgi:reference id="processModelAttributeRepository" interface="org.apromore.dao.ProcessModelAttributeRepository"/>
+    <osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
+    
+    <osgi:reference id="processRepository" interface="org.apromore.dao.ProcessRepository"/>
+    
+    <osgi:reference id="roleRepository" interface="org.apromore.dao.RoleRepository"/>
+    <osgi:reference id="searchHistoryRepository" interface="org.apromore.dao.SearchHistoryRepository"/>
+    <osgi:reference id="usermetadataLogRepository" interface="org.apromore.dao.UsermetadataLogRepository"/>
+    <osgi:reference id="usermetadataRepository" interface="org.apromore.dao.UsermetadataRepository"/>
+    <osgi:reference id="usermetadataTypeRepository" interface="org.apromore.dao.UsermetadataTypeRepository"/>
+    <osgi:reference id="userRepository" interface="org.apromore.dao.UserRepository"/>
+    <osgi:reference id="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository"/>
 
 
 </beans:beans>

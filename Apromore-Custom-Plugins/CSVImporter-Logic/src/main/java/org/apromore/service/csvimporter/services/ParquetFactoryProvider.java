@@ -24,20 +24,20 @@ package org.apromore.service.csvimporter.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apromore.service.csvimporter.constants.Constants.CSV_FILE_EXTENTION;
-import static org.apromore.service.csvimporter.constants.Constants.PARQUET_FILE_EXTENTION;
+import static org.apromore.service.csvimporter.constants.Constants.*;
 
 public class ParquetFactoryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetFactoryProvider.class);
 
-    public ConvertToParquetFactory getParquetFactory(String fileExtention) {
+    public ConvertToParquetFactory getParquetFactory(String fileExtension) {
 
-        LOGGER.info("File Format: " + fileExtention);
-        if (fileExtention.equalsIgnoreCase(CSV_FILE_EXTENTION)) {
-
+        LOGGER.info("File Format: " + fileExtension);
+        if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
             return new CsvFactory();
-        } else if (fileExtention.equalsIgnoreCase(PARQUET_FILE_EXTENTION)) {
+        } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
             return new ParquetFactory();
+        } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
+            return new XLSFactory();
         } else {
             return null;
         }

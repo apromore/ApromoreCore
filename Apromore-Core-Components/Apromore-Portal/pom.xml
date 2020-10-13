@@ -65,7 +65,6 @@
                         <Import-Bundle>
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
-                            com.springsource.org.apache.xmlbeans;version="[2.4.0,2.4.0]",
                             com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
                             jackson-core-lgpl;version="[1.9.12,2.0.0]",
                             jackson-mapper-lgpl;version="[1.9.12,2.0.0]",
@@ -90,10 +89,7 @@
                         </Import-Bundle>
                         <Import-Package>
                             org.eclipse.virgo.web.dm,
-                            org.aopalliance.aop,
-                            net.sf.cglib.proxy,
-                            net.sf.cglib.core,
-                            net.sf.cglib.reflect,
+                            org.aopalliance.aop,                            
                             com.google.common.base,
                             org.deckfour.xes.classification,
                             org.deckfour.xes.extension,
@@ -117,6 +113,7 @@
                         <Export-Package>
                             org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.common.notification,
                             org.apromore.portal.context,
                             org.apromore.portal.dialogController.workspaceOptions,
                             org.apromore.portal.dialogController,
@@ -161,7 +158,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>com.springsource.org.apache.xmlbeans</artifactId>
+            <artifactId>xmlbeans</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.xml</groupId>

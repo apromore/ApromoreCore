@@ -29,6 +29,6 @@ class CsvFactory implements ConvertToParquetFactory{
 
     @Override
     public ParquetExporter createParquetExporter() {
-        return new CSVToParqeutExporter();
+        return new CSVToParquetExporter();
     }
 }

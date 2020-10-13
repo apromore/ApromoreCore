@@ -57,6 +57,7 @@
                         <DynamicImport-Package>
                             org.apromore.plugin.portal.*,
                             dashboard,
+                            org.apache.poi.ooxml,
                             zul.*
                         </DynamicImport-Package>                        
                         <Export-Package>

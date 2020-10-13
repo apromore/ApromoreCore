@@ -54,7 +54,7 @@
     </auxheader>
   </auxhead>
   <template name="model">
-    <listitem>
+    <listitem ca:onClick="Ap.userAdmin.toggleGroupClick('${each.name}', ${forEachStatus.index}, event)">
       <listcell label="${each.name}"/>
       <!--
       <listcell>

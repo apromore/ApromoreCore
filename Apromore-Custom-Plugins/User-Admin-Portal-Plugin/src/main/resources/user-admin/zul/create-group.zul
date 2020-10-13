@@ -28,7 +28,7 @@
         <rows>
             <row>
                 <label>Group name</label>
-                <textbox id="groupNameTextbox" value="new_group" constraint="no empty,/^[a-zA-Z0-9 \\._\-]{1,}$/: {Use only letters, numbers, and .-_}" placeholder="Enter group name"/>
+                <textbox id="groupNameTextbox" value="New_group" constraint="no empty,/^[a-zA-Z0-9 \\._\-]{1,}$/: {Use only letters, numbers, and .-_}" placeholder="Enter group name"/>
             </row>
         </rows>
     </grid>

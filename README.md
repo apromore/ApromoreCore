@@ -56,7 +56,7 @@ For earnest use or development, Apromore should be configured to use MySQL inste
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 * Create a database named 'apromore' in your MySQL server
 ```bash
-mysqladmin -u root -p create apromore
+mysql -u root -p -e 'CREATE DATABASE apromore CHARACTER SET utf8 COLLATE utf8_general_ci;'
 ```
 You will be prompted to enter the root password of MySQL
 * Create a user named 'apromore' with the required permissions
