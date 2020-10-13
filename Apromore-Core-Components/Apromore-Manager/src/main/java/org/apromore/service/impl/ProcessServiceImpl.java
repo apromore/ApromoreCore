@@ -257,7 +257,7 @@ public class ProcessServiceImpl implements ProcessService {
                         throw new RepositoryException(message);
                     }
                     else {
-                        Native nat=formatSrv.storeNative(processName, now, now, user, nativeType, newVersion.toString(), nativeStream);
+                        Native nat = formatSrv.storeNative(processName, now, now, user, nativeType, newVersion.toString(), nativeStream);
                         pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null,nat);
                         LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                         return pmv;
