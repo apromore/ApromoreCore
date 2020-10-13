@@ -68,6 +68,9 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
             MainController mainC = (MainController) portalContext.getMainController();
 
             mainC.eraseMessage();
+            if (!mainC.getBaseListboxController().hasOnlyOneSelection()) {
+                return;
+            }
             List<Integer> folderIds = mainC.getPortalSession().getSelectedFolderIds();
 
             if (folderIds.size() > 0) {
