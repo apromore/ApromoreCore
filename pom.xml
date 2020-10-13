@@ -195,7 +195,7 @@
         <jaxb2-basics.version>0.5.3.MR1</jaxb2-basics.version>
         <jaxb2-basics-runtime.version>0.5.3</jaxb2-basics-runtime.version>
 
-        <junit.version>4.10</junit.version>
+        <junit.version>4.13.1</junit.version>
         <clover.version>3.1.10</clover.version>
         <easymock.version>3.1</easymock.version>
         <powermock.version>1.4.12</powermock.version>
