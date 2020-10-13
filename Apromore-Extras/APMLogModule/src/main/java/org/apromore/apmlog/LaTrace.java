@@ -23,6 +23,7 @@ package org.apromore.apmlog;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -53,4 +54,6 @@ public interface LaTrace {
     long getMaxWaitingTime();
 
     double getCaseUtilization();
+
+    BitSet getValidEventIndexBitSet();
 }

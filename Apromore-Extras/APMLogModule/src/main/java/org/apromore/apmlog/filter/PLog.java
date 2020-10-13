@@ -23,6 +23,7 @@
 package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.*;
+import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -107,6 +108,10 @@ public class PLog {
 
     private ActivityNameMapper activityNameMapper;
 
+    private AAttributeGraph originalAttributeGraph;
+    private AAttributeGraph previousAttributeGraph;
+    private AAttributeGraph attributeGraph;
+
     public APMLog getApmLog() {
         return apmLog;
     }
@@ -118,6 +123,7 @@ public class PLog {
 
     public PLog(APMLog apmLog) {
         this.apmLog = apmLog;
+        originalAttributeGraph = apmLog.getAAttributeGraph();
 
         this.defaultChartDataCollection = apmLog.getDefaultChartDataCollection();
 
@@ -231,6 +237,8 @@ public class PLog {
 
     public void reset() {
 
+        attributeGraph = originalAttributeGraph;
+
         for(int i=0; i<this.originalPTraceList.size(); i++) {
             this.originalPTraceList.get(i).reset();
         }
@@ -252,6 +260,8 @@ public class PLog {
     public void resetPrevious() {
 
         if(previousPTraceList != null) {
+            attributeGraph = previousAttributeGraph;
+
             this.pTraceList = previousPTraceList;
             for (int i = 0; i < pTraceList.size(); i++) {
                 pTraceList.get(i).resetPrevious();
@@ -275,6 +285,7 @@ public class PLog {
     }
 
     public void updatePrevious() {
+        previousAttributeGraph = this.attributeGraph;
 
         previousPTraceList = this.pTraceList;
 
@@ -455,6 +466,12 @@ public class PLog {
         this.validTraceIndexBS = validTraceIndexBS;
     }
 
+    public void setAttributeGraph(AAttributeGraph attributeGraph) {
+        this.attributeGraph = attributeGraph;
+    }
+
+
+
     /* ----------------- GET methods ------------------ */
 
     public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueCasesFreqMap() {
@@ -611,6 +628,10 @@ public class PLog {
         return pTraceUnifiedMap;
     }
 
+    public AAttributeGraph getAttributeGraph() {
+        return attributeGraph;
+    }
+
     /**
      * A custom PTrace list that maintains the original PTrace list
      * while each PTrace contains up-to-date event BitSet.
@@ -630,38 +651,10 @@ public class PLog {
             if(!currentBS.get(i)) {
                 pt.getValidEventIndexBitSet().clear();
             } else {
-//                pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
             }
             theCusPTraceList.add(pt);
         }
 
-//        List<HashBiMap.Entry<PTrace, Integer> > list =
-//                new ArrayList<HashBiMap.Entry<PTrace, Integer> >(caseIndexMap.entrySet());
-//
-//
-//        Collections.sort(list, new Comparator<HashBiMap.Entry<PTrace, Integer>>() {
-//            @Override
-//            public int compare(HashBiMap.Entry<PTrace, Integer> o1, HashBiMap.Entry<PTrace, Integer> o2) {
-//                return o1.getValue().compareTo(o2.getValue());
-//            }
-//        });
-//
-//        List<PTrace> theCusPTraceList = new ArrayList<>();
-//
-//        for (int i=0; i<list.size(); i++) {
-//            PTrace pTrace = list.get(i).getKey();
-//            if(!currentBS.get(i)) {
-//                pTrace.getValidEventIndexBitSet().clear();
-//            } else {
-//                String theId = pTrace.getCaseId();
-//                if (this.pTraceUnifiedMap.containsKey(theId)) {
-//                    PTrace pt = this.pTraceUnifiedMap.get(theId);
-//                    pTrace.setValidEventIndexBS(pt.getValidEventIndexBitSet());
-//                }
-//            }
-//
-//            theCusPTraceList.add(pTrace);
-//        }
 
         return theCusPTraceList;
     }

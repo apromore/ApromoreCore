@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
@@ -49,6 +50,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (06/03/2020) - public APMLog(List<ATrace> inputTraceList)
  * Modified: Chii Chang (12/05/2020)
+ * Modified: Chii Chang (13/10/2020)
  */
 public class APMLog implements Serializable {
 
@@ -74,6 +76,7 @@ public class APMLog implements Serializable {
 
     private DefaultChartDataCollection defaultChartDataCollection;
 
+    private AAttributeGraph aAttributeGraph = new AAttributeGraph();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMLog.class);
 
@@ -935,5 +938,9 @@ public class APMLog implements Serializable {
 
     public XLog toXLog() {
         return APMLogToXLog.getXLog(this);
+    }
+
+    public AAttributeGraph getAAttributeGraph() {
+        return aAttributeGraph;
     }
 }

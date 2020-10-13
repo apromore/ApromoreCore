@@ -94,6 +94,10 @@ public class AActivity  {
         return duration;
     }
 
+    public UnifiedMap<String, String> getAllAttributes() {
+        return eventList.get(0).getAllAttributes();
+    }
+
     public AActivity clone() {
         String clnName = this.name.intern();
         List<AEvent> clnEventList = new ArrayList<>();

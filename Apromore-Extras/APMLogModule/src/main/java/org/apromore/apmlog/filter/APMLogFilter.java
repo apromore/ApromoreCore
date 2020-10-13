@@ -28,6 +28,7 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
@@ -131,6 +132,8 @@ public class APMLogFilter {
 
         List<PTrace> originalPTraceList = pLog.getOriginalPTraceList();
 
+        pLog.setAttributeGraph(new AAttributeGraph());
+
         for (int i = 0; i < originalPTraceList.size(); i++) {
 
 //            System.out.println(i + " / " + (originalPTraceList.size() - 1));
@@ -148,6 +151,8 @@ public class APMLogFilter {
 
                 if (filteredPTrace != null) {
                     if (filteredPTrace.getEventSize() > 0) {
+                        int pTraceIndex = filteredPTraceList.size();
+                        filteredPTrace.updateAttributeGraph(pTraceIndex, pLog);
                         filteredPTraceList.add(filteredPTrace);
                         validTraceBS.set(i, true);
                         pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
@@ -248,6 +253,12 @@ public class APMLogFilter {
                 return PathFilter.toKeep(trace, logFilterRule);
             case REWORK_REPETITION:
                 return ReworkFilter.toKeep(trace, logFilterRule);
+            case CASE_SECTION_ATTRIBUTE_COMBINATION:
+                return CaseSectionAttributeCombinationFilter.toKeep(trace, logFilterRule);
+            case EVENT_ATTRIBUTE_DURATION:
+                return EventAttributeDurationFilter.toKeep(trace, logFilterRule);
+            case ATTRIBUTE_ARC_DURATION:
+                return AttributeArcDurationFilter.toKeep(trace, logFilterRule);
             default:
                 return false;
         }
