@@ -339,7 +339,6 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             timestamp.assignTimestamp(xEvent, myEvent.getStartTimestamp());
         }
 
-
         XAttribute attribute;
         if (myEvent.getOtherTimestamps() != null) {
             Map<String, Timestamp> otherTimestamps = myEvent.getOtherTimestamps();

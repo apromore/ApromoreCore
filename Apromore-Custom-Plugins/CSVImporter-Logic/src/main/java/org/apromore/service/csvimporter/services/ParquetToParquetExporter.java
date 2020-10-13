@@ -122,6 +122,10 @@ class ParquetToParquetExporter implements ParquetExporter {
                 numOfValidEvents++;
             }
 
+            //If file empty, delete it
+            if (numOfValidEvents == 0)
+                outputParquet.delete();
+
             if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;
 

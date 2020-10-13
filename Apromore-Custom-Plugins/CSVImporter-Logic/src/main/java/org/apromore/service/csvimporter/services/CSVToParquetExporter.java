@@ -126,6 +126,10 @@ class CSVToParquetExporter implements ParquetExporter {
                 numOfValidEvents++;
             }
 
+            //If file empty, delete it
+            if (numOfValidEvents == 0)
+                outputParquet.delete();
+
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 

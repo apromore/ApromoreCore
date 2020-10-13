@@ -133,6 +133,9 @@ public class XLSToParquetExporter implements ParquetExporter {
                 writer.write(logEventModelExt);
                 numOfValidEvents++;
             }
+            //If file empty, delete it
+            if (numOfValidEvents == 0)
+                outputParquet.delete();
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;

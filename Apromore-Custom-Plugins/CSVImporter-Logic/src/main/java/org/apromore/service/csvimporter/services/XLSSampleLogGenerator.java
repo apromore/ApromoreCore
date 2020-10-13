@@ -66,14 +66,15 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
         } catch (Exception e) {
             throw new Exception("Unable to import file");
         } finally {
-            in.close();
+            if (in != null)
+                in.close();
         }
     }
 
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-        try (Workbook workbook = new XLSReader().readXLS(in, sampleSize + 1, BUFFER_SIZE);) {
+        try (Workbook workbook = new XLSReader().readXLS(in, sampleSize + 1, BUFFER_SIZE)) {
             List<String> header = new ArrayList<>();
             List<List<String>> lines = new ArrayList<>();
             String[] line;
@@ -110,7 +111,8 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
             return new LogSampleImpl(header, lines);
 
         } finally {
-            in.close();
+            if (in != null)
+                in.close();
         }
     }
 }
