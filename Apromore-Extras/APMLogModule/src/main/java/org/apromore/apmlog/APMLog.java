@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -796,6 +797,8 @@ public class APMLog implements Serializable {
     public String getEndTimeString() {
         return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.endTime));
     }
+
+
 
 
     private void resetDuration() {
