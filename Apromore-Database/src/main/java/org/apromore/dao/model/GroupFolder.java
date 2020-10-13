@@ -64,6 +64,17 @@ public class GroupFolder implements Serializable {
     public GroupFolder() {
     }
 
+    /**
+     * Convenient constructor.
+     */
+    public GroupFolder(Group newGroup, Folder newFolder, boolean newHasRead, boolean newHasWrite,
+                       boolean newHasOwnership) {
+        this.group        = newGroup;
+        this.folder       = newFolder;
+        this.hasRead      = newHasRead;
+        this.hasWrite     = newHasWrite;
+        this.hasOwnership = newHasOwnership;
+    }
 
     /**
      * Get the Primary Key for the Object.

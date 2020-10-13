@@ -179,21 +179,21 @@ public interface WorkspaceService {
      * @param logId Log ID
      * @return list of Group and AccessType pair
      */
-    Map<Group, AccessType> getLogAcl(Integer logId);
+    Map<Group, AccessType> getLogACL(Integer logId);
 
     /**
      * Get list of Group and AccessType pair of Log
      * @param processId Process ID
      * @return list of Group and AccessType pair
      */
-    Map<Group, AccessType> getProcessAcl(Integer processId);
+    Map<Group, AccessType> getProcessACL(Integer processId);
 
     /**
      * Get list of Group and AccessType pair of Log
      * @param folderId Folder ID
      * @return list of Group and AccessType pair
      */
-    Map<Group, AccessType> getFolderAcl(Integer folderId);
+    Map<Group, AccessType> getFolderACL(Integer folderId);
 
     /**
      * Save new GroupLog or update existing one
@@ -201,7 +201,7 @@ public interface WorkspaceService {
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveLogAcl(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveLogACL(Integer logId, String groupRowGuid, AccessType accessType);
 
     /**
      * Save new GroupProcess or update existing one
@@ -209,7 +209,7 @@ public interface WorkspaceService {
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveProcessAcl(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveProcessACL(Integer logId, String groupRowGuid, AccessType accessType);
 
     /**
      * Save new GroupFolder or update existing one
@@ -217,7 +217,7 @@ public interface WorkspaceService {
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveFolderAcl(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveFolderACL(Integer logId, String groupRowGuid, AccessType accessType);
 
     /**
      * Delete one GroupLog record
@@ -226,20 +226,22 @@ public interface WorkspaceService {
      * @param username User username
      * @throws UserNotFoundException Client side should handle this exception and prompt user as error
      */
-    void deleteLogAcl(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
+    void deleteLogACL(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
 
     /**
      * Delete one GroupLog record
      * @param processId Process ID
      * @param groupRowGuid Group UID
      */
-    void deleteProcessAcl(Integer processId, String groupRowGuid);
+    void deleteProcessACL(Integer processId, String groupRowGuid);
 
     /**
      * Delete one GroupLog record
      * @param folderId Process ID
      * @param groupRowGuid Group UID
      */
-    void deleteFolderAcl(Integer folderId, String groupRowGuid);
+    void deleteFolderACL(Integer folderId, String groupRowGuid);
+
+
 
 }

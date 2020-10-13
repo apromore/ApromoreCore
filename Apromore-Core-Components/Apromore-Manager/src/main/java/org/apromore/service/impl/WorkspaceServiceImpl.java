@@ -697,7 +697,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
-    public Map<Group, AccessType> getLogAcl(Integer logId) {
+    public Map<Group, AccessType> getLogACL(Integer logId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
@@ -716,7 +716,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return groupAccessTypeMap;
     }
 
-    public Map<Group, AccessType> getProcessAcl(Integer processId) {
+    public Map<Group, AccessType> getProcessACL(Integer processId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
@@ -735,7 +735,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return groupAccessTypeMap;
     }
 
-    public Map<Group, AccessType> getFolderAcl(Integer processId) {
+    public Map<Group, AccessType> getFolderACL(Integer processId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
@@ -754,7 +754,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return groupAccessTypeMap;
     }
 
-    public void saveLogAcl(Integer logId, String groupRowGuid, AccessType accessType) {
+    public void saveLogACL(Integer logId, String groupRowGuid, AccessType accessType) {
         switch (accessType) {
             case OWNER:
                 saveLogPermissions(logId, groupRowGuid, true, true, true);
@@ -770,7 +770,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
-    public void saveProcessAcl(Integer logId, String groupRowGuid, AccessType accessType) {
+    public void saveProcessACL(Integer logId, String groupRowGuid, AccessType accessType) {
         switch (accessType) {
             case OWNER:
                 saveProcessPermissions(logId, groupRowGuid, true, true, true);
@@ -786,7 +786,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
-    public void saveFolderAcl(Integer logId, String groupRowGuid, AccessType accessType) {
+    public void saveFolderACL(Integer logId, String groupRowGuid, AccessType accessType) {
         switch (accessType) {
             case OWNER:
                 saveFolderPermissions(logId, groupRowGuid, true, true, true);
@@ -804,17 +804,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
     // field
-    public void deleteLogAcl(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+    public void deleteLogACL(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
         removeLogPermissions(logId, groupRowGuid, username);
     }
 
-    public void deleteProcessAcl(Integer processId, String groupRowGuid) {
+    public void deleteProcessACL(Integer processId, String groupRowGuid) {
 
         removeProcessPermissions(processId, groupRowGuid);
     }
 
-    public void deleteFolderAcl(Integer folderId, String groupRowGuid) {
+    public void deleteFolderACL(Integer folderId, String groupRowGuid) {
 
         removeFolderPermissions(folderId, groupRowGuid);
     }
