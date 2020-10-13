@@ -222,7 +222,7 @@ public class EventLogServiceImpl implements EventLogService {
             }
         }
 
-        log.setGroupLogs(groupLogs);
+//        log.setGroupLogs(groupLogs);
 
         // Perform the update
         logRepo.saveAndFlush(log);

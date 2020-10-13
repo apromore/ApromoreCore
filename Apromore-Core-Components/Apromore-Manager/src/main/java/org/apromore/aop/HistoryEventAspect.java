@@ -83,15 +83,15 @@ public class HistoryEventAspect {
     private HistoryEventService historyEventService;
 
 
-    @Around(value = "@annotation(event)", argNames = "pjp,event")
+    @Around("@annotation(event)")
     public Object logMessage(ProceedingJoinPoint pjp, Event event) throws Throwable {
         try {
-            historyEventService.addNewEvent(StatusEnum.START, event.message());
+            historyEventService.addNewEvent(StatusEnum.START, org.apromore.dao.model.HistoryEnum.valueOf(event.message().toString()));
             Object returned = pjp.proceed();
-            historyEventService.addNewEvent(StatusEnum.FINISHED, event.message());
+            historyEventService.addNewEvent(StatusEnum.FINISHED, org.apromore.dao.model.HistoryEnum.valueOf(event.message().toString()));
             return returned;
         } catch (Throwable t) {
-            historyEventService.addNewEvent(StatusEnum.ERROR, event.message());
+            historyEventService.addNewEvent(StatusEnum.ERROR, org.apromore.dao.model.HistoryEnum.valueOf(event.message().toString()));
             throw t;
         }
     }

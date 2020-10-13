@@ -42,6 +42,7 @@
     <!-- Import OSGi service -->
     <osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
     <osgi:reference id="folderRepository" interface="org.apromore.dao.FolderRepository"/>
+    <osgi:reference id="folderServiceImpl" interface="org.apromore.service.FolderService"/>
     <osgi:reference id="uiHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
 
     <!-- Exposes the component as OSGI service -->

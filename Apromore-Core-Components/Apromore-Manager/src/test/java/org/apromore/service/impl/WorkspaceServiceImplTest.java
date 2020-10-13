@@ -70,6 +70,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private FolderRepository folderRepo;
     private LogRepository logRepo;
     private EventLogFileService logFileService;
+    private FolderServiceImpl folderServiceImpl;
     
     private GroupRepository groupRepo;
     private GroupFolderRepository groupFolderRepo;
@@ -99,6 +100,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         pmvRepo = createMock(ProcessModelVersionRepository.class);
         userRepo = createMock(UserRepository.class);
         userMetadataServ = createMock(UserMetadataService.class);
+        folderServiceImpl = createMock(FolderServiceImpl.class);
         
         config = new ConfigBean();
 
@@ -113,7 +115,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupProcessRepo,
                                                 groupLogRepo,
                                                 logFileService,
-                                                userMetadataServ);
+                                                userMetadataServ, folderServiceImpl);
     }
 
     @Test
