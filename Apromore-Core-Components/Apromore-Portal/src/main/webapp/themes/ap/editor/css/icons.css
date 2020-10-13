@@ -51,6 +51,11 @@
     width: 26px !important;
 }
 
+.x-panel-editor-north .x-toolbar button[title='Toggle simulation parameters panel'] {
+    background-image: url('../../common/img/icons/simulate-model.svg') !important;
+    width: 26px !important;
+}
+
 .x-panel-editor-north .x-toolbar button[title='Redo the last undone action'] {
     background-image: url('../../common/img/icons/redo.svg') !important;
     width: 26px !important;
