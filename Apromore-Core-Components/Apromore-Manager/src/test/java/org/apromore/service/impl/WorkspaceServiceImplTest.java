@@ -23,8 +23,7 @@ package org.apromore.service.impl;
 
 import static org.easymock.EasyMock.expect;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.apromore.AbstractTest;
 import org.apromore.TestData;
@@ -39,20 +38,12 @@ import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.WorkspaceRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.util.AccessType;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -362,5 +353,122 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Assert.assertEquals(folder.getName(), movedFolder.getName());
         Assert.assertEquals(newParentFolder, movedFolder.getParentFolder());
     }
-    
+
+    @Test
+    public void getLogACL() {
+
+        // Set up test data
+        Group group1 = createGroup(1, Group.Type.GROUP);
+        Group group2 = createGroup(2, Group.Type.GROUP);
+        Group group3 = createGroup(3, Group.Type.USER);
+        Group group4 = createGroup(4, Group.Type.USER);
+
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group1, createSet(group1), createSet(role));
+
+        Workspace wp = createWorkspace(user);
+        Log log = createLog(user, createFolder("testFolder", null, wp));
+
+        List<GroupLog> groupLogs = new ArrayList<>();
+        groupLogs.add(new GroupLog(group1, log, true, true, true));
+        groupLogs.add(new GroupLog(group2, log, true, true, false));
+        groupLogs.add(new GroupLog(group3, log, true, false, false));
+        groupLogs.add(new GroupLog(group4, log, false, false, false));
+
+        // Mock recording
+        expect(workspaceService.getGroupLogs(123)).andReturn(groupLogs);
+        replayAll();
+
+        // Mock call
+        Map<Group, AccessType> groupAccessTypeMap = workspaceService.getLogACL(123);
+
+        // Verify Mock and result
+        verifyAll();
+        Map<Group, AccessType> result = new HashMap<>();
+        result.put(group1, AccessType.OWNER);
+        result.put(group2, AccessType.EDITOR);
+        result.put(group3, AccessType.VIEWER);
+        result.put(group4, AccessType.NONE);
+        Assert.assertEquals(groupAccessTypeMap, result);
+
+    }
+
+    @Test
+    public void getProcessACL() {
+
+        // Set up test data
+        Group group1 = createGroup(1, Group.Type.GROUP);
+        Group group2 = createGroup(2, Group.Type.GROUP);
+        Group group3 = createGroup(3, Group.Type.USER);
+        Group group4 = createGroup(4, Group.Type.USER);
+
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group1, createSet(group1), createSet(role));
+        NativeType nativeType = createNativeType();
+
+        Workspace wp = createWorkspace(user);
+        Folder folder = createFolder("sourceFolder", null, wp);
+        Process process = createProcess(user, nativeType, folder);
+
+        List<GroupProcess> groupProcesses = new ArrayList<>();
+        groupProcesses.add(new GroupProcess(process, group1, true, true, true));
+        groupProcesses.add(new GroupProcess(process, group2, true, true, false));
+        groupProcesses.add(new GroupProcess(process, group3, true, false, false));
+        groupProcesses.add(new GroupProcess(process, group4, false, false, false));
+
+        // Mock recording
+        expect(workspaceService.getGroupProcesses(123)).andReturn(groupProcesses);
+        replayAll();
+
+        // Mock call
+        Map<Group, AccessType> groupAccessTypeMap = workspaceService.getProcessACL(123);
+
+        // Verify Mock and result
+        verifyAll();
+        Map<Group, AccessType> result = new HashMap<>();
+        result.put(group1, AccessType.OWNER);
+        result.put(group2, AccessType.EDITOR);
+        result.put(group3, AccessType.VIEWER);
+        result.put(group4, AccessType.NONE);
+        Assert.assertEquals(groupAccessTypeMap, result);
+    }
+
+    @Test
+    public void getFolderACL() {
+
+        // Set up test data
+        Group group1 = createGroup(1, Group.Type.GROUP);
+        Group group2 = createGroup(2, Group.Type.GROUP);
+        Group group3 = createGroup(3, Group.Type.USER);
+        Group group4 = createGroup(4, Group.Type.USER);
+
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group1, createSet(group1), createSet(role));
+
+        Workspace wp = createWorkspace(user);
+        Folder folder = createFolder("movedFolder", null, wp);
+
+        List<GroupFolder> groupFolders = new ArrayList<>();
+        groupFolders.add(new GroupFolder(group1, folder, true, true, true));
+        groupFolders.add(new GroupFolder(group2, folder, true, true, false));
+        groupFolders.add(new GroupFolder(group3, folder, true, false, false));
+        groupFolders.add(new GroupFolder(group4, folder, false, false, false));
+
+        // Mock recording
+        expect(workspaceService.getGroupFolders(123)).andReturn(groupFolders);
+        replayAll();
+
+        // Mock call
+        Map<Group, AccessType> groupAccessTypeMap = workspaceService.getFolderACL(123);
+
+        // Verify Mock and result
+        verifyAll();
+        Map<Group, AccessType> result = new HashMap<>();
+        result.put(group1, AccessType.OWNER);
+        result.put(group2, AccessType.EDITOR);
+        result.put(group3, AccessType.VIEWER);
+        result.put(group4, AccessType.NONE);
+        Assert.assertEquals(groupAccessTypeMap, result);
+    }
+
 }
