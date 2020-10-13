@@ -8,21 +8,39 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+/*
+ * This file is part of "Apromore".
+ *
+ * Copyright (C) 2019 - 2020 The University of Melbourne.
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
@@ -85,21 +103,9 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
 
     private List<Integer> activityNameIndexList;
 
-//    private UnifiedMap<String, UnifiedMap<String, List<TraceActivityIndex>>> attributeOccurMap;
-
 //    private IntArrayList markedIndex;
 
-    private APMLog apmLog;
-
-    private int index = -1;
-//    private AAttributeGraph aAttributeGraph = new AAttributeGraph();
-
-    public ATrace(int index, XTrace xTrace, APMLog apmLog) {
-        this.index = index;
-        setEventList(xTrace);
-        setCaseAttributes(xTrace);
-        initStats(apmLog);
-    }
+//    private APMLog apmLog;
 
     public ATrace(XTrace xTrace, APMLog apmLog) {
         setEventList(xTrace);
@@ -121,8 +127,6 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
     }
 
     private void initStats(APMLog apmLog) {
-        this.apmLog = apmLog;
-
         activityNameIndexList = new ArrayList<>();
         activityList = new ArrayList<>();
         eventAttributeValueFreqMap = new UnifiedMap<>();
@@ -188,7 +192,7 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
 
         for (int i = 0; i < xTrace.size(); i++) {
             XEvent xEvent = xTrace.get(i);
-            eventList.add(new AEvent(i, xEvent));
+            eventList.add(new AEvent(xEvent, i));
 //            xEventList.add(xEvent);
         }
 
@@ -262,64 +266,18 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
                         actEndTime = actEvents.get(actEvents.size() - 1).getTimestampMilli();
                         actDur = actEndTime - actStartTime;
                     }
-
-                    addNewActivity(iAEvent.getName(), actEvents, actStartTime, actEndTime, actDur);
+                    AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
+                            actEndTime, actDur);
+                    this.activityList.add(aActivity);
                 } else {
                     if (!lifecycle.equals("schedule") &&
                             !lifecycle.equals("assign") &&
                             !lifecycle.equals("reassign")) {
 
-                        addNewActivity(iAEvent.getName(), actEvents, actStartTime, actEndTime, actDur);
+                        AActivity aActivity = new AActivity(iAEvent.getName(), actEvents, actStartTime,
+                                actEndTime, actDur);
+                        this.activityList.add(aActivity);
                     }
-                }
-            }
-        }
-    }
-
-    private void addNewActivity(String name, List<AEvent> eventsList, long startTime, long endTime, long duration) {
-        AActivity aActivity = new AActivity(name, eventsList, startTime, endTime, duration);
-//        int aActIndex = 0;
-//        int prevActIndex = -1;
-//
-//        if (activityList.size() > 1) {
-//            prevActIndex = activityList.size() - 1;
-//            aActIndex = activityList.size();
-//        }
-
-        activityList.add(aActivity);
-
-        updateAttributeGraph();
-    }
-
-    private void updateAttributeGraph() {
-        AAttributeGraph aAttributeGraph = apmLog.getAAttributeGraph();
-
-        int lastIndex = activityList.size()-1;
-        int prevIndex = lastIndex - 1;
-        AActivity lastAct = activityList.get(lastIndex);
-        AActivity prevAct = activityList.size() > 1 ? activityList.get(lastIndex-1) : null;
-        UnifiedMap<String, String> lastActAttrMap = lastAct.getAllAttributes();
-        UnifiedMap<String, String> prevActAttrMap = prevAct != null ? prevAct.getAllAttributes() : null;
-
-        String baseTAI = this.index + ":" + lastIndex;
-        String prevTAI = prevActAttrMap!=null ? this.index + ":" + prevIndex : null;
-
-        for (String key : lastActAttrMap.keySet()) {
-            String val = lastActAttrMap.get(key);
-
-            aAttributeGraph.add(key, val, baseTAI, lastAct.getDuration());
-
-            if (prevActAttrMap != null) {
-
-//                TraceActivityIndexPair indexPair = new TraceActivityIndexPair(prevTAI, baseTAI);
-                String indexPair = prevTAI + ">" + baseTAI;
-
-                if (prevActAttrMap.containsKey(key)) {
-                    String prevVal = prevActAttrMap.get(key);
-
-                    aAttributeGraph.addNext(key, prevVal, val, indexPair);
-
-                    aAttributeGraph.addPrevious(key, val, prevVal, indexPair);
                 }
             }
         }
@@ -408,13 +366,6 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
         return eventAttributeValueFreqMap;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public int getIndex() {
-        return index;
-    }
 
     public String getCaseId() {
         return caseId;
@@ -513,7 +464,6 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
         return caseUtilization;
     }
 
-
     public String getStartTimeString() {
         return startTimeString;
     }
@@ -603,14 +553,6 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
         return caseVariantIdForDisplay;
     }
 
-//    public void setaAttributeGraph(AAttributeGraph aAttributeGraph) {
-//        this.aAttributeGraph = aAttributeGraph;
-//    }
-//
-//    public AAttributeGraph getaAttributeGraph() {
-//        return aAttributeGraph;
-//    }
-
     public ATrace clone() {
 
         List<AEvent> aEventList = new ArrayList<>();
@@ -661,7 +603,7 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
         }
 
 
-        ATrace aTrace = new ATrace(this.caseId, this.caseVariantId,
+        return new ATrace(this.caseId, this.caseVariantId,
                 this.startTimeMilli,
                 this.endTimeMilli,
                 this.hasActivity,
@@ -680,9 +622,6 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
                 actNameList,
                 eNameSet,
                 this.activityNameIndexList);
-        aTrace.setIndex(this.index);
-//        aTrace.setaAttributeGraph(this.aAttributeGraph.clone());
-        return aTrace;
     }
 
     @Override

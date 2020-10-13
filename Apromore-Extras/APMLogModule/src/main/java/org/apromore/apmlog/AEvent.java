@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,12 +25,12 @@ import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * @author Chii Chang (11/2019)
@@ -44,10 +44,12 @@ public class AEvent implements Serializable {
     private String lifecycle = "complete";
     private String resource = "";
     private UnifiedMap<String, String> attributeMap;
+    private UnifiedSet<String> attributeNameSet;
     private String timeZone = "";
 
     public AEvent(int index, String name, long timestampMilli, String lifecycle, String resource,
                   UnifiedMap<String, String> attributeMap,
+                  UnifiedSet<String> attributeNameSet,
                   String timeZone) {
         this.index = index;
         this.name = name.intern();
@@ -55,10 +57,11 @@ public class AEvent implements Serializable {
         this.lifecycle = lifecycle.intern();
         this.resource = resource.intern();
         this.attributeMap = attributeMap;
+        this.attributeNameSet = attributeNameSet;
         this.timeZone = timeZone;
     }
 
-    public AEvent(int index, XEvent xEvent) {
+    public AEvent(XEvent xEvent, int index) {
         this.index = index;
 
         XAttributeMap xAttributeMap = xEvent.getAttributes();
@@ -104,6 +107,8 @@ public class AEvent implements Serializable {
             this.timestampMilli = Util.epochMilliOf(zdt);
             this.timeZone = zdt.getZone().getId();
         }
+
+        attributeNameSet = new UnifiedSet<>(attributeMap.keySet());
     }
 
     public UnifiedMap<String, String> getAllAttributes() {
@@ -153,8 +158,8 @@ public class AEvent implements Serializable {
         return attributeMap;
     }
 
-    public Set<String> getAttributeNameSet() {
-        return attributeMap.keySet();
+    public UnifiedSet<String> getAttributeNameSet() {
+        return attributeNameSet;
     }
 
     public String getTimeZone() { //2019-10-20
@@ -171,10 +176,11 @@ public class AEvent implements Serializable {
         String clnLifecycle = this.lifecycle;
         String clnResource = this.resource;
         UnifiedMap<String, String> clnAttributeMap = new UnifiedMap<>(this.attributeMap);
+        UnifiedSet<String> clnAttributeNameSet = new UnifiedSet<>(this.attributeNameSet);
         String clnTimeZone = this.timeZone;
 
         AEvent clnEvent = new AEvent(this.index, clnName, clnTimestampMilli, clnLifecycle, clnResource,
-                clnAttributeMap, clnTimeZone);
+                clnAttributeMap, clnAttributeNameSet, clnTimeZone);
         return clnEvent;
     }
 }

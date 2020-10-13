@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -28,7 +28,6 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
@@ -116,6 +115,8 @@ public class APMLogFilter {
 
     public void filter(List<LogFilterRule> logFilterRuleList) {
 
+//        pLog.updatePrevious();
+
         // reset all
         for (String caseId : pLog.getPTraceUnifiedMap().keySet()) {
             PTrace pTrace = pLog.getPTraceUnifiedMap().get(caseId);
@@ -124,11 +125,11 @@ public class APMLogFilter {
 
         List<PTrace> filteredPTraceList = new ArrayList<>();
 
+//        BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
+
         BitSet validTraceBS = pLog.getValidTraceIndexBS();
 
         List<PTrace> originalPTraceList = pLog.getOriginalPTraceList();
-
-        pLog.setAttributeGraph(new AAttributeGraph());
 
         for (int i = 0; i < originalPTraceList.size(); i++) {
 
@@ -147,8 +148,6 @@ public class APMLogFilter {
 
                 if (filteredPTrace != null) {
                     if (filteredPTrace.getEventSize() > 0) {
-                        int pTraceIndex = filteredPTraceList.size();
-                        filteredPTrace.updateAttributeGraph(pTraceIndex, pLog);
                         filteredPTraceList.add(filteredPTrace);
                         validTraceBS.set(i, true);
                         pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
@@ -163,17 +162,7 @@ public class APMLogFilter {
 
 
         pLog.setValidTraceIndexBS(validTraceBS);
-
         updatePLogStats(filteredPTraceList);
-
-//        List<PTrace> list= pLog.getCustomPTraceList();
-//        System.out.println("");
-//        for (PTrace pTrace : list) {
-//            if (pTrace.getCaseId().equals("2042")) {
-//                System.out.println("");
-//            }
-//        }
-
     }
 
     private PTrace getFilteredPTrace(PTrace pTrace, List<LogFilterRule> logFilterRules) {
@@ -196,6 +185,7 @@ public class APMLogFilter {
             } else { //Event section
 
                 BitSet validEventBS = pTrace.getValidEventIndexBitSet();
+//                BitSet validEventBS = new BitSet(pTrace.getOriginalEventList().size());
 
                 List<AEvent> eventList = pTrace.getOriginalEventList();
 
@@ -258,16 +248,6 @@ public class APMLogFilter {
                 return PathFilter.toKeep(trace, logFilterRule);
             case REWORK_REPETITION:
                 return ReworkFilter.toKeep(trace, logFilterRule);
-//            case ACTIVITY_DURATION:
-//                return ActivityDurationFilter.toKeep(trace, logFilterRule);
-//            case RESOURCE_DURATION:
-//                return ResourceDurationFilter.toKeep(trace, logFilterRule);
-            case CASE_SECTION_ATTRIBUTE_COMBINATION:
-                return CaseSectionAttributeCombinationFilter.toKeep(trace, logFilterRule);
-            case EVENT_ATTRIBUTE_DURATION:
-                return EventAttributeDurationFilter.toKeep(trace, logFilterRule);
-            case ATTRIBUTE_ARC_DURATION:
-                return AttributeArcDurationFilter.toKeep(trace, logFilterRule);
             default:
                 return false;
         }
@@ -285,23 +265,16 @@ public class APMLogFilter {
         }
     }
 
-
     private void updatePLogStats(List<PTrace> pTraceList) {
         this.pLog.setPTraceList(pTraceList);
-
+        this.pLog.updateActivityOccurMaxMap();
 
         this.pLog.setMinDuration(0);
         this.pLog.setMaxDuration(0);
         this.pLog.setStartTime(-1);
         this.pLog.setEndTime(-1);
 
-
-
-
         UnifiedSet<Integer> variSet = new UnifiedSet<>();
-
-
-
         for(PTrace pTrace : pTraceList) {
 
             long dur = pTrace.getDuration();
@@ -324,8 +297,6 @@ public class APMLogFilter {
 
         for(int i=0; i < this.pLog.getPTraceList().size(); i++) {
             newEventSize += this.pLog.getPTraceList().get(i).getEventSize();
-
-
         }
 
         this.pLog.setEventSize(newEventSize);
@@ -333,22 +304,11 @@ public class APMLogFilter {
 
         resetDuration();
         updateCaseVariants();
-
-        this.pLog.updateActivityOccurMaxMap();
     }
 
 
 
     private void resetDuration() {
-
-        this.pLog.durFreqMap = new UnifiedMap<>();
-        this.pLog.ttlProcTimeFreqMap = new UnifiedMap<>();
-        this.pLog.avgProcTimeFreqMap = new UnifiedMap<>();
-        this.pLog.maxProcTimeFreqMap = new UnifiedMap<>();
-        this.pLog.ttlWaitTimeFreqMap = new UnifiedMap<>();
-        this.pLog.avgWaitTimeFreqMap = new UnifiedMap<>();
-        this.pLog.maxWaitTimeFreqMap = new UnifiedMap<>();
-
         this.pLog.setMinDuration(0);
         this.pLog.setMaxDuration(0);
         for(int i=0; i<this.pLog.getPTraceList().size(); i++) {
@@ -359,14 +319,6 @@ public class APMLogFilter {
             if(pTrace.getDuration() > this.pLog.getMaxDuration()) {
                 this.pLog.setMaxDuration(pTrace.getDuration());
             }
-
-            this.pLog.addToPerfMap(pTrace, "duration");
-            this.pLog.addToPerfMap(pTrace, "totalProcessingTime");
-            this.pLog.addToPerfMap(pTrace, "averageProcessingTime");
-            this.pLog.addToPerfMap(pTrace, "maxProcessingTime");
-            this.pLog.addToPerfMap(pTrace, "totalWaitingTime");
-            this.pLog.addToPerfMap(pTrace, "averageWaitingTime");
-            this.pLog.addToPerfMap(pTrace, "maxWaitingTime");
         }
     }
 

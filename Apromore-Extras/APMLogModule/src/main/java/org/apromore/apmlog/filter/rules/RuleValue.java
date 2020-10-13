@@ -26,8 +26,6 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RuleValue implements Comparable<RuleValue>, Serializable {
 
@@ -38,7 +36,6 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
     private long longVal = 0;
     private double doubleVal = 0;
     private int intVal = 0;
-    private Map<String, String> customAttributes;
 
     public RuleValue(FilterType filterType, OperationType operationType, String key, String stringVal) {
         this.filterType = filterType;
@@ -69,32 +66,6 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         this.key = key;
         this.intVal = intVal;
         this.stringVal = intVal + "";
-    }
-
-    public Map<String, String> getCustomAttributes() {
-        if (customAttributes == null) customAttributes = new HashMap<>();
-
-        return customAttributes;
-    }
-
-    public void setCustomAttributes(Map<String, String> customAttributes) {
-        this.customAttributes = customAttributes;
-    }
-
-    public void setStringVal(String stringVal) {
-        this.stringVal = stringVal;
-    }
-
-    public void setLongVal(long longVal) {
-        this.longVal = longVal;
-    }
-
-    public void setDoubleVal(double doubleVal) {
-        this.doubleVal = doubleVal;
-    }
-
-    public void setIntVal(int intVal) {
-        this.intVal = intVal;
     }
 
     public FilterType getFilterType() {
@@ -134,26 +105,10 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         double doubleValCopy = doubleVal;
         int intValCopy = intVal;
 
-        Map<String, String> customAttrCopy = null;
-
-        if (customAttributes != null) {
-            if (customAttributes.size() > 0) {
-                customAttrCopy = new HashMap<>();
-                for (String key : customAttributes.keySet()) {
-                    customAttrCopy.put(key, customAttributes.get(key));
-                }
-            }
-        }
-
-        RuleValue rv = null;
-
-        if (longValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, longValCopy );
-        else if (doubleValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, doubleValCopy );
-        else if (intValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, intValCopy );
-        else rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, stringValCopy );
-        if (customAttrCopy != null) rv.setCustomAttributes(customAttrCopy);
-
-        return rv;
+        if (longValCopy != 0) return new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, longValCopy );
+        else if (doubleValCopy != 0) return new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, doubleValCopy );
+        else if (intValCopy != 0) return new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, intValCopy );
+        else return new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, stringValCopy );
     }
 
 

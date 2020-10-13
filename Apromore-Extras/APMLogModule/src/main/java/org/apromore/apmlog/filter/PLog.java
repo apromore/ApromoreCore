@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,7 +23,6 @@
 package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.*;
-import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -108,107 +107,6 @@ public class PLog {
 
     private ActivityNameMapper activityNameMapper;
 
-    public UnifiedMap<Long, Integer> originalDurFreqMap;
-    public UnifiedMap<Long, Integer> originalTtlProcTimeFreqMap;
-    public UnifiedMap<Long, Integer> originalAvgProcTimeFreqMap;
-    public UnifiedMap<Long, Integer> originalMaxProcTimeFreqMap;
-    public UnifiedMap<Long, Integer> originalTtlWaitTimeFreqMap;
-    public UnifiedMap<Long, Integer> originalAvgWaitTimeFreqMap;
-    public UnifiedMap<Long, Integer> originalMaxWaitTimeFreqMap;
-
-    public UnifiedMap<Long, Integer> durFreqMap;
-    public UnifiedMap<Long, Integer> ttlProcTimeFreqMap;
-    public UnifiedMap<Long, Integer> avgProcTimeFreqMap;
-    public UnifiedMap<Long, Integer> maxProcTimeFreqMap;
-    public UnifiedMap<Long, Integer> ttlWaitTimeFreqMap;
-    public UnifiedMap<Long, Integer> avgWaitTimeFreqMap;
-    public UnifiedMap<Long, Integer> maxWaitTimeFreqMap;
-
-    public void addToOriginalPerfMap(PTrace pTrace, String code) {
-        long dur = 0;
-        UnifiedMap<Long, Integer> theMap = null;
-        switch (code) {
-            case "duration":
-                theMap = originalDurFreqMap;
-                dur = pTrace.getDuration();
-                break;
-            case "totalProcessingTime":
-                theMap = originalTtlProcTimeFreqMap;
-                dur = pTrace.getTotalProcessingTime();
-                break;
-            case "averageProcessingTime":
-                theMap = originalAvgProcTimeFreqMap;
-                dur = pTrace.getAverageProcessingTime();
-                break;
-            case "maxProcessingTime":
-                theMap = originalMaxProcTimeFreqMap;
-                dur = pTrace.getMaxProcessingTime();
-                break;
-            case "totalWaitingTime":
-                theMap = originalTtlWaitTimeFreqMap;
-                dur = pTrace.getTotalWaitingTime();
-                break;
-            case "averageWaitingTime":
-                theMap = originalAvgWaitTimeFreqMap;
-                dur = pTrace.getAverageWaitingTime();
-                break;
-            case "maxWaitingTime":
-                theMap = originalMaxWaitTimeFreqMap;
-                dur = pTrace.getMaxWaitingTime();
-                break;
-        }
-
-        if (theMap.containsKey(dur)) {
-            int freq = theMap.get(dur) + 1;
-            theMap.put(dur, freq);
-        } else theMap.put(dur, 1);
-    }
-
-    public void addToPerfMap(PTrace pTrace, String code) {
-        long dur = 0;
-        UnifiedMap<Long, Integer> theMap = null;
-        switch (code) {
-            case "duration":
-                theMap = durFreqMap;
-                dur = pTrace.getDuration();
-                break;
-            case "totalProcessingTime":
-                theMap = ttlProcTimeFreqMap;
-                dur = pTrace.getTotalProcessingTime();
-                break;
-            case "averageProcessingTime":
-                theMap = avgProcTimeFreqMap;
-                dur = pTrace.getAverageProcessingTime();
-                break;
-            case "maxProcessingTime":
-                theMap = maxProcTimeFreqMap;
-                dur = pTrace.getMaxProcessingTime();
-                break;
-            case "totalWaitingTime":
-                theMap = ttlWaitTimeFreqMap;
-                dur = pTrace.getTotalWaitingTime();
-                break;
-            case "averageWaitingTime":
-                theMap = avgWaitTimeFreqMap;
-                dur = pTrace.getAverageWaitingTime();
-                break;
-            case "maxWaitingTime":
-                theMap = maxWaitTimeFreqMap;
-                dur = pTrace.getMaxWaitingTime();
-                break;
-        }
-
-        if (theMap.containsKey(dur)) {
-            int freq = theMap.get(dur) + 1;
-            theMap.put(dur, freq);
-        } else theMap.put(dur, 1);
-    }
-
-    private AAttributeGraph originalAttributeGraph;
-    private AAttributeGraph previousAttributeGraph;
-    private AAttributeGraph attributeGraph;
-
-
     public APMLog getApmLog() {
         return apmLog;
     }
@@ -220,24 +118,6 @@ public class PLog {
 
     public PLog(APMLog apmLog) {
         this.apmLog = apmLog;
-
-        originalAttributeGraph = apmLog.getAAttributeGraph();
-
-        originalDurFreqMap = new UnifiedMap<>();
-        originalTtlProcTimeFreqMap = new UnifiedMap<>();
-        originalAvgProcTimeFreqMap = new UnifiedMap<>();
-        originalMaxProcTimeFreqMap = new UnifiedMap<>();
-        originalTtlWaitTimeFreqMap = new UnifiedMap<>();
-        originalAvgWaitTimeFreqMap = new UnifiedMap<>();
-        originalMaxWaitTimeFreqMap = new UnifiedMap<>();
-
-        durFreqMap = new UnifiedMap<>();
-        ttlProcTimeFreqMap = new UnifiedMap<>();
-        avgProcTimeFreqMap = new UnifiedMap<>();
-        maxProcTimeFreqMap = new UnifiedMap<>();
-        ttlWaitTimeFreqMap = new UnifiedMap<>();
-        avgWaitTimeFreqMap = new UnifiedMap<>();
-        maxWaitTimeFreqMap = new UnifiedMap<>();
 
         this.defaultChartDataCollection = apmLog.getDefaultChartDataCollection();
 
@@ -271,23 +151,9 @@ public class PLog {
         for(int i=0; i < apmTraceList.size(); i++) {
             ATrace aTrace = apmTraceList.get(i);
 
+
+
             PTrace pTrace = new PTrace(aTrace, apmLog);
-
-            addToPerfMap(pTrace, "duration");
-            addToPerfMap(pTrace, "totalProcessingTime");
-            addToPerfMap(pTrace, "averageProcessingTime");
-            addToPerfMap(pTrace, "maxProcessingTime");
-            addToPerfMap(pTrace, "totalWaitingTime");
-            addToPerfMap(pTrace, "averageWaitingTime");
-            addToPerfMap(pTrace, "maxWaitingTime");
-
-            addToOriginalPerfMap(pTrace, "duration");
-            addToOriginalPerfMap(pTrace, "totalProcessingTime");
-            addToOriginalPerfMap(pTrace, "averageProcessingTime");
-            addToOriginalPerfMap(pTrace, "maxProcessingTime");
-            addToOriginalPerfMap(pTrace, "totalWaitingTime");
-            addToOriginalPerfMap(pTrace, "averageWaitingTime");
-            addToOriginalPerfMap(pTrace, "maxWaitingTime");
 
             caseIndexMap.put(pTrace, i);
 
@@ -297,7 +163,6 @@ public class PLog {
                 if(pTrace.caseIdDigit > maxCaseIdDigit) maxCaseIdDigit = pTrace.caseIdDigit;
                 if(minCaseIdDigit == 0 || pTrace.caseIdDigit < minCaseIdDigit) minCaseIdDigit = pTrace.caseIdDigit;
             }
-
         }
 
         this.originalPTraceList = new ArrayList<>(this.pTraceList);
@@ -366,27 +231,8 @@ public class PLog {
 
     public void reset() {
 
-        attributeGraph = originalAttributeGraph;
-
-        durFreqMap = new UnifiedMap<>();
-        ttlProcTimeFreqMap = new UnifiedMap<>();
-        avgProcTimeFreqMap = new UnifiedMap<>();
-        maxProcTimeFreqMap = new UnifiedMap<>();
-        ttlWaitTimeFreqMap = new UnifiedMap<>();
-        avgWaitTimeFreqMap = new UnifiedMap<>();
-        maxWaitTimeFreqMap = new UnifiedMap<>();
-
         for(int i=0; i<this.originalPTraceList.size(); i++) {
             this.originalPTraceList.get(i).reset();
-
-            PTrace pTrace = this.originalPTraceList.get(i);
-            addToPerfMap(pTrace, "duration");
-            addToPerfMap(pTrace, "totalProcessingTime");
-            addToPerfMap(pTrace, "averageProcessingTime");
-            addToPerfMap(pTrace, "maxProcessingTime");
-            addToPerfMap(pTrace, "totalWaitingTime");
-            addToPerfMap(pTrace, "averageWaitingTime");
-            addToPerfMap(pTrace, "maxWaitingTime");
         }
         pTraceList = originalPTraceList;
         caseVariantSize = originalCaseVariantSize;
@@ -406,7 +252,6 @@ public class PLog {
     public void resetPrevious() {
 
         if(previousPTraceList != null) {
-            attributeGraph = previousAttributeGraph;
             this.pTraceList = previousPTraceList;
             for (int i = 0; i < pTraceList.size(); i++) {
                 pTraceList.get(i).resetPrevious();
@@ -431,7 +276,6 @@ public class PLog {
 
     public void updatePrevious() {
 
-        previousAttributeGraph = this.attributeGraph;
         previousPTraceList = this.pTraceList;
 
         for (int i = 0; i < previousPTraceList.size(); i++) {
@@ -529,13 +373,6 @@ public class PLog {
         return variFreqMap.size();
     }
 
-    public void setAttributeGraph(AAttributeGraph attributeGraph) {
-        this.attributeGraph = attributeGraph;
-    }
-
-    public AAttributeGraph getAttributeGraph() {
-        return attributeGraph;
-    }
 
     /**
      * This method creates a new APMLog. It should be used only after filter editing is completed.
@@ -570,23 +407,6 @@ public class PLog {
                 activityMaxOccurMap);
 
         return apmLog;
-//        List<ATrace> validTraceList = new ArrayList<>();
-//        for (int i = 0; i < apmLog.size(); i++) {
-//            if (validTraceIndexBS.get(i)) {
-//                ATrace aTrace = apmLog.get(i);
-//                PTrace pTrace = originalPTraceList.get(i);
-//                List<AEvent> validEvents = new ArrayList<>();
-//                for (int j = 0; j < aTrace.size(); j++) {
-//                    if (pTrace.getValidEventIndexBitSet().get(j)) {
-//                        validEvents.add(aTrace.get(j));
-//                    }
-//                }
-//                ATrace validATrace = new ATrace(aTrace.getCaseId(), validEvents,
-//                        aTrace.getAttributeMap(), apmLog);
-//                validTraceList.add(validATrace);
-//            }
-//        }
-//        return new APMLog(validTraceList);
     }
 
     /* ----------------- SET methods ------------------ */
@@ -809,9 +629,40 @@ public class PLog {
             PTrace pt = this.pTraceUnifiedMap.get(theId);
             if(!currentBS.get(i)) {
                 pt.getValidEventIndexBitSet().clear();
+            } else {
+//                pt.getValidEventIndexBitSet().set(0, originalPTraceList.size());
             }
             theCusPTraceList.add(pt);
         }
+
+//        List<HashBiMap.Entry<PTrace, Integer> > list =
+//                new ArrayList<HashBiMap.Entry<PTrace, Integer> >(caseIndexMap.entrySet());
+//
+//
+//        Collections.sort(list, new Comparator<HashBiMap.Entry<PTrace, Integer>>() {
+//            @Override
+//            public int compare(HashBiMap.Entry<PTrace, Integer> o1, HashBiMap.Entry<PTrace, Integer> o2) {
+//                return o1.getValue().compareTo(o2.getValue());
+//            }
+//        });
+//
+//        List<PTrace> theCusPTraceList = new ArrayList<>();
+//
+//        for (int i=0; i<list.size(); i++) {
+//            PTrace pTrace = list.get(i).getKey();
+//            if(!currentBS.get(i)) {
+//                pTrace.getValidEventIndexBitSet().clear();
+//            } else {
+//                String theId = pTrace.getCaseId();
+//                if (this.pTraceUnifiedMap.containsKey(theId)) {
+//                    PTrace pt = this.pTraceUnifiedMap.get(theId);
+//                    pTrace.setValidEventIndexBS(pt.getValidEventIndexBitSet());
+//                }
+//            }
+//
+//            theCusPTraceList.add(pTrace);
+//        }
+
         return theCusPTraceList;
     }
 }
