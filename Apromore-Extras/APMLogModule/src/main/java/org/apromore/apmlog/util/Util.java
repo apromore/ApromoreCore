@@ -53,18 +53,6 @@ public class Util {
     }
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-//        XAttribute da =
-//                xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
-//        Date d = ((XAttributeTimestamp) da).getValue();
-//        ZonedDateTime z =
-//                ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
-//        return z;
-//        String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
-//        Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
-//        ZonedDateTime z = millisecondToZonedDateTime(calendar.getTimeInMillis());
-//        return z;
-
-
 
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
 
