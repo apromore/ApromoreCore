@@ -117,12 +117,6 @@ public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializa
         initStats(apmLog);
     }
 
-    public ATrace(XTrace xTrace, APMLog apmLog) {
-        setEventList(xTrace);
-        setCaseAttributes(xTrace);
-        initStats(apmLog);
-    }
-
     public ATrace(String caseIdString, List<AEvent> inputEventList,
                   UnifiedMap<String, String> caseAttributes, APMLog apmLog) {
         if (!caseIdString.equals("")) {
