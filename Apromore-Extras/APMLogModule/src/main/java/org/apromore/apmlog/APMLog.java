@@ -133,7 +133,7 @@ public class APMLog implements Serializable {
 
         LOGGER.info(">>> Create ATrace list");
         for(int i=0; i<xLog.size(); i++) {
-            ATrace aTrace = new ATrace(xLog.get(i), this);
+            ATrace aTrace = new ATrace(i, xLog.get(i), this);
 
             if (aTrace.size() > 0) {
 

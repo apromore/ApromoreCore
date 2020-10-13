@@ -75,6 +75,7 @@ import java.util.List;
  * Modified: Chii Chang (01/06/2020)
  * Modified: Chii Chang (05/06/2020)
  * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
+ * Modified: Chii Chang (13/10/2020)
  */
 public class ATrace extends LaTraceImpl implements Comparable<ATrace>, Serializable, LaTrace {
 
