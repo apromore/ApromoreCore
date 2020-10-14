@@ -38,7 +38,7 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.portal.util.DateTimeNormalizer;
+import org.apromore.commons.datetime.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
@@ -287,7 +287,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         String lastUpdate = summaries.get(lastIndex).getLastUpdate();
 
         if (lastUpdate != null) {
-            lastUpdate = DateTimeNormalizer.parse(lastUpdate);
+            lastUpdate = DateTimeUtil.normalize(lastUpdate);
         }
         return wrapIntoListCell(new Label(lastUpdate));
     }

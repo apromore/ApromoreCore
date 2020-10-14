@@ -6,7 +6,7 @@
          "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"a",
-         "name":"a\\n\\n60 secs",
+         "name":"a\\n\\n1 min",
          "textcolor":"black",
          "width":"160px",
          "id":0,
@@ -25,7 +25,7 @@
          "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"b",
-         "name":"b\\n\\n60 secs",
+         "name":"b\\n\\n1 min",
          "textcolor":"black",
          "width":"160px",
          "id":1,
@@ -63,7 +63,7 @@
          "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"e",
-         "name":"e\\n\\n60 secs",
+         "name":"e\\n\\n1 min",
          "textcolor":"black",
          "width":"160px",
          "id":3,
@@ -82,7 +82,7 @@
          "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"d",
-         "name":"d\\n\\n60 secs",
+         "name":"d\\n\\n1 min",
          "textcolor":"black",
          "width":"160px",
          "id":4,
@@ -101,7 +101,7 @@
          "textsize":"14px",
          "borderwidth":"1px",
          "oriname":"c",
-         "name":"c\\n\\n60 secs",
+         "name":"c\\n\\n1 min",
          "textcolor":"black",
          "width":"160px",
          "id":5,
@@ -140,7 +140,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":1,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.49",
          "target":4
       }
@@ -153,7 +153,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":0,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.5",
          "target":1
       }
@@ -166,7 +166,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":5,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.5",
          "target":4
       }
@@ -179,7 +179,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":3,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.49",
          "target":4
       }
@@ -192,7 +192,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":0,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.5",
          "target":3
       }
@@ -218,7 +218,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":0,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.50",
          "target":5
       }
@@ -231,7 +231,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":5,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.50",
          "target":1
       }
@@ -244,7 +244,7 @@
          "edge-style":"unbundled-bezier",
          "style":"solid",
          "source":1,
-         "label":"60 secs",
+         "label":"1 min",
          "point-weights":"0.50",
          "target":5
       }
