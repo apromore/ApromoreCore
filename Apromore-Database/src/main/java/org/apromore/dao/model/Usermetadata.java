@@ -33,7 +33,7 @@ import java.util.Set;
 @Entity
 @Table(name = "usermetadata")
 @Configurable("usermetadata")
-//@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Usermetadata implements Serializable {
     /**
      * ID
