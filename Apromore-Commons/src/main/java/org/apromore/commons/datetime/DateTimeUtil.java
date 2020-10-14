@@ -29,6 +29,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +56,6 @@ public final class DateTimeUtil {
       .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
       .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
       .appendOptional(Constants.DATE_TIME_FORMATTER_HUMANIZED).toFormatter();
-
-  
 
   /**
    * Parse a date string in various predefined formats to a LocalDateTime
@@ -110,7 +109,6 @@ public final class DateTimeUtil {
   public static String humanize(long milliseconds) {
     return format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
   }
-  
- 
+
 
 }
