@@ -24,50 +24,50 @@ package org.apromore.commons.datetime;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+
 import org.apromore.commons.datetime.Constants;
 
 /**
  * Various duration utility functions
- *
+ * <p>
  * TO DO: Need to refactor further these duplicates
- *
+ * <p>
  * ApromoreCore/Apromore-Extras/APMLogModule/src/main/java/org/apromore/apmlog/util/TimeUtil.java
  * ApromoreEE/Dashboard/src/main/java/dashboard/util/Util.java
  * ApromoreEE/FilterEE/src/main/java/org/apromore/plugin/portal/logfilteree/util/Util.java
  */
 public final class DurationUtil {
 
-
   /**
    * Humanize duration
    *
    * @param milliseconds Source duration
-   * @param unit ChronoUnit for fixed unit, otherwise set null for automatic
+   * @param unit         ChronoUnit for fixed unit, otherwise set null for automatic
    * @param forceDecimal Force the last two decimal digit, set false to avoid decimal for whole
-   *        number.
+   *                     number.
    * @return Humanized duration
    */
   public static String humanize(double milliseconds, ChronoUnit unit, boolean forceDecimal) {
-    DecimalFormat decimalFormat = (forceDecimal) ? new DecimalFormat("##############0.00")
-        : new DecimalFormat("##############0.##");
-
     double duration = 0;
     String label = "";
 
-    
-    Optional<DurationUnit> optionalDurationUnit=(unit==null) ?
-        DurationUnit.getDurationUnit(milliseconds): DurationUnit.getDurationUnit(unit);      
- 
-      if (optionalDurationUnit.isPresent()) {
-        
-        DurationUnit durationUnit = optionalDurationUnit.get();
-        duration = durationUnit.getDurationValue(milliseconds);
-        
-        label = (forceDecimal || duration > 1.0D)
-            ? durationUnit.getPluralString()
-            : durationUnit.getSingularString();
-      }
- 
+    DecimalFormat decimalFormat = (forceDecimal)
+        ? new DecimalFormat("##############0.00")
+        : new DecimalFormat("##############0.##");
+
+    Optional<DurationUnit> optionalDurationUnit = (unit == null)
+        ? DurationUnit.getDurationUnit(milliseconds)
+        : DurationUnit.getDurationUnit(unit);
+
+    if (optionalDurationUnit.isPresent()) {
+      DurationUnit durationUnit = optionalDurationUnit.get();
+      duration = durationUnit.getDurationValue(milliseconds);
+
+      label = (forceDecimal || duration > 1.0D)
+          ? durationUnit.getPluralString()
+          : durationUnit.getSingularString();
+    }
+
     if (duration != 0) {
       return decimalFormat.format(duration) + " " + label;
     }

@@ -40,28 +40,28 @@ import static org.junit.Assert.fail;
 
 public class DateTimeUtilUnitTest {
 
-    private static Stream<Arguments> TEST_CASES() {
-        return Stream.of(
-                Arguments.of("25/05/2020", "25 May 20, 00:00"),
-                Arguments.of("25-05-2020 22:37:55", "25 May 20, 22:37"),
-                Arguments.of("25/05/2020 22:37:05", "25 May 20, 22:37")
-        );
-    }
+  private static Stream<Arguments> TEST_CASES() {
+    return Stream.of(
+        Arguments.of("25/05/2020", "25 May 20, 00:00"),
+        Arguments.of("25-05-2020 22:37:55", "25 May 20, 22:37"),
+        Arguments.of("25/05/2020 22:37:05", "25 May 20, 22:37")
+    );
+  }
 
-    @ParameterizedTest
-    @MethodSource("TEST_CASES")
-    void normalize_ShouldGenerateNormalizedDate(String input, String expected) {
-        String normalizedDate = DateTimeUtil.normalize(input);
-        assertEquals(expected, normalizedDate);
-    }
+  @ParameterizedTest
+  @MethodSource("TEST_CASES")
+  void normalize_ShouldGenerateNormalizedDate(String input, String expected) {
+    String normalizedDate = DateTimeUtil.normalize(input);
+    assertEquals(expected, normalizedDate);
+  }
 
-    @ParameterizedTest
-    @MethodSource("TEST_CASES")
-    void format_ShouldGenerateSimpleFormattedDate(String input, String expected) {
-        LocalDateTime localDateTime = DateTimeUtil.parse(input);
-        ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
-        long milliseconds = zdt.toInstant().toEpochMilli();
-        String formattedDate = DateTimeUtil.format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
-        assertEquals(expected, formattedDate);
-    }
+  @ParameterizedTest
+  @MethodSource("TEST_CASES")
+  void format_ShouldGenerateSimpleFormattedDate(String input, String expected) {
+    LocalDateTime localDateTime = DateTimeUtil.parse(input);
+    ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
+    long milliseconds = zdt.toInstant().toEpochMilli();
+    String formattedDate = DateTimeUtil.format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
+    assertEquals(expected, formattedDate);
+  }
 }

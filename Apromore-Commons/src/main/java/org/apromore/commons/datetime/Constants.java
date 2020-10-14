@@ -26,9 +26,9 @@ import java.time.format.DateTimeFormatter;
 
 public interface Constants {
 
-    public static final String DATE_TIME_FORMAT_DEFAULT = "dd.MM.yyyy HH:mm:ss";
-    public static final String DATE_TIME_FORMAT_MS = "dd.MM.yyyy HH:mm:ss.SSS";
-    public static final String DATE_TIME_FORMAT_HUMANIZED = "dd MMM yy, HH:mm";
+  public static final String DATE_TIME_FORMAT_DEFAULT = "dd.MM.yyyy HH:mm:ss";
+  public static final String DATE_TIME_FORMAT_MS = "dd.MM.yyyy HH:mm:ss.SSS";
+  public static final String DATE_TIME_FORMAT_HUMANIZED = "dd MMM yy, HH:mm";
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER_HUMANIZED = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_HUMANIZED);
+  public static final DateTimeFormatter DATE_TIME_FORMATTER_HUMANIZED = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_HUMANIZED);
 }

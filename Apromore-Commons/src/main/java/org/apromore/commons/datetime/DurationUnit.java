@@ -23,60 +23,55 @@ package org.apromore.commons.datetime;
 
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.time.temporal.ChronoUnit;
+import lombok.Getter;
 
 /**
  * Duration unit
  */
 @Getter
 public enum DurationUnit {
-  
-    YEARS(ChronoUnit.YEARS,"yrs","yr",new Double(1000.0D * 60 * 60 * 24 * 365)),
-    MONTHS(ChronoUnit.MONTHS,"mths","mth",new Double(1000.0D * 60 * 60 * 24 * 30.42)),
-    WEEKS(ChronoUnit.WEEKS,"wks","wk",new Double(1000.0D * 60 * 60 * 24 * 7)),
-    DAYS(ChronoUnit.DAYS,"days","day",new Double(1000.0D * 60 * 60 * 24)),
-    HOURS(ChronoUnit.HOURS,"hrs","hr",new Double(1000.0D * 60 * 60)),
-    MINUTES(ChronoUnit.MINUTES,"mins","min",new Double(1000.0D * 60)),
-    SECONDS(ChronoUnit.SECONDS,"secs","sec",new Double(1000.0D)),
-    MILLIS(ChronoUnit.MILLIS,"millis","milli",new Double(1D));
 
-    ChronoUnit unit;
-    String pluralString;
-    String singularString;
-    Double unitValue;
-    
-    DurationUnit(ChronoUnit unit, String pluralString, String singularString, Double unitValue) {
-      this.unit=unit;
-      this.pluralString=pluralString;
-      this.singularString=singularString;
-      this.unitValue=unitValue;
-     
-    }
-   
-    public static Optional<DurationUnit> getDurationUnit(double value) {
-     
-      Optional<DurationUnit> findFirst = Arrays.asList(DurationUnit.values()).stream()
-      .filter(unit -> unit.getDurationValue(value)>= 1.0D)
-      .findFirst();
-      return findFirst;
-         
-    }
-    
-    public static Optional<DurationUnit> getDurationUnit(ChronoUnit chronoUnit) {
-      
-      Optional<DurationUnit> findFirst = Arrays.asList(DurationUnit.values()).stream()
-      .filter(unit -> unit.getUnit().equals(chronoUnit))
-      .findFirst();
-      return findFirst;   
-    }
+  YEARS(ChronoUnit.YEARS, "yrs", "yr", new Double(1000.0D * 60 * 60 * 24 * 365)),
+  MONTHS(ChronoUnit.MONTHS, "mths", "mth", new Double(1000.0D * 60 * 60 * 24 * 30.42)),
+  WEEKS(ChronoUnit.WEEKS, "wks", "wk", new Double(1000.0D * 60 * 60 * 24 * 7)),
+  DAYS(ChronoUnit.DAYS, "days", "day", new Double(1000.0D * 60 * 60 * 24)),
+  HOURS(ChronoUnit.HOURS, "hrs", "hr", new Double(1000.0D * 60 * 60)),
+  MINUTES(ChronoUnit.MINUTES, "mins", "min", new Double(1000.0D * 60)),
+  SECONDS(ChronoUnit.SECONDS, "secs", "sec", new Double(1000.0D)),
+  MILLIS(ChronoUnit.MILLIS, "millis", "milli", new Double(1D));
 
-    public  double getDurationValue(double value) {
-      return value / this.getUnitValue();
-    }
- 
+  ChronoUnit unit;
+  String pluralString;
+  String singularString;
+  Double unitValue;
+
+  DurationUnit(ChronoUnit unit, String pluralString, String singularString, Double unitValue) {
+    this.unit = unit;
+    this.pluralString = pluralString;
+    this.singularString = singularString;
+    this.unitValue = unitValue;
+  }
+
+  public static Optional<DurationUnit> getDurationUnit(double value) {
+    Optional<DurationUnit> findFirst = Arrays.asList(DurationUnit.values()).stream()
+        .filter(unit -> unit.getDurationValue(value) >= 1.0D)
+        .findFirst();
+    return findFirst;
+  }
+
+  public static Optional<DurationUnit> getDurationUnit(ChronoUnit chronoUnit) {
+    Optional<DurationUnit> findFirst = Arrays.asList(DurationUnit.values()).stream()
+        .filter(unit -> unit.getUnit().equals(chronoUnit))
+        .findFirst();
+    return findFirst;
+  }
+
+  public double getDurationValue(double value) {
+    return value / this.getUnitValue();
+  }
 }
 
 
