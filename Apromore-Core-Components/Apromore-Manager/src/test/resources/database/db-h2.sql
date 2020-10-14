@@ -744,14 +744,14 @@ CREATE VIEW keywords AS
 ;
 
 CREATE TABLE usermetadata_type(
-   id      bigint PRIMARY KEY NOT NULL,
+   id      bigint auto_increment PRIMARY KEY NOT NULL,
    type    varchar(255),
    version bigint,
    is_valid bit
 );
 
 CREATE TABLE usermetadata(
-   id           bigint PRIMARY KEY NOT NULL,
+   id           bigint auto_increment PRIMARY KEY NOT NULL,
    type_id      bigint NOT NULL,
    created_by   varchar(255),
    created_time varchar(40),
@@ -763,19 +763,19 @@ CREATE TABLE usermetadata(
 );
 
 CREATE TABLE usermetadata_log(
-   id bigint PRIMARY KEY NOT NULL,
+   id bigint auto_increment PRIMARY KEY NOT NULL,
    usermetadata_id int,
    log_id int(11)
 );
 
 CREATE TABLE usermetadata_process(
-   id              bigint PRIMARY KEY NOT NULL,
+   id              bigint auto_increment PRIMARY KEY NOT NULL,
    usermetadata_id bigint,
    process_id      bigint
 );
 
 CREATE TABLE group_usermetadata(
-   id              bigint PRIMARY KEY NOT NULL,
+   id              bigint auto_increment PRIMARY KEY NOT NULL,
    group_id        bigint NOT NULL,
    usermetadata_id bigint NOT NULL,
    has_read        bit DEFAULT 0 NOT NULL,
@@ -788,7 +788,6 @@ FOREIGN KEY(type_id)
 REFERENCES usermetadata_type(id)ON
 DELETE CASCADE ON
 UPDATE CASCADE;
-CREATE UNIQUE INDEX IDX_type_id ON usermetadata(type_id);
 
 ALTER TABLE usermetadata_log ADD CONSTRAINT usermetadata_log_ibfk_1
 FOREIGN KEY(log_id)
@@ -800,8 +799,6 @@ FOREIGN KEY(usermetadata_id)
 REFERENCES usermetadata(id)ON
 DELETE CASCADE ON
 UPDATE CASCADE;
-CREATE UNIQUE INDEX FK_usermetadata_log_id ON usermetadata_log(log_id);
-CREATE UNIQUE INDEX FK_usermetadata_usermetadata_id ON usermetadata_log(usermetadata_id);
 
 ALTER TABLE usermetadata_process ADD CONSTRAINT usermetadata_process_ibfk_1
 FOREIGN KEY(usermetadata_id)
@@ -813,6 +810,4 @@ FOREIGN KEY(process_id)
 REFERENCES process(id)ON
 DELETE CASCADE ON
 UPDATE CASCADE;
-CREATE UNIQUE INDEX usermetadata_process_ibfk_1 ON usermetadata_process(usermetadata_id);
-CREATE UNIQUE INDEX usermetadata_process_ibfk_2 ON usermetadata_process(process_id);
 
