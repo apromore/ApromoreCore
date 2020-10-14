@@ -22,7 +22,14 @@
 package org.apromore.util;
 
 /**
- * Permission type for the {@link org.apromore.service.impl.EventLogServiceImpl#storeStatsByType} method.
+ * Access types in ACL, which can map to flags in Group_[artifact] POJOs.
+ *
+ |        | has_read | has_write | has_ownership |
+ |--------|----------|-----------|---------------|
+ | Viewer | 1        | 0         | 0             |
+ | Editor | 1        | 1         | 0             |
+ | Owner  | 1        | 1         | 1             |
+ *
  */
 public enum AccessType {
 
