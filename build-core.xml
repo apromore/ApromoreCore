@@ -3,8 +3,6 @@
 
     <description>Apromore Core Distribution</description>
 
-    <property name="startup.java.opts" value="-server -Xmx14g -Xmn1g"/>
-
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <property name="core-dir" location="${basedir}/ApromoreCore"/>
     <property name="core-dir-sups" location="${core-dir}/Supplements"/>
@@ -22,6 +20,8 @@
     <property name="core-dir-portal-templates" location="${core-dir}/Apromore-Plugins/plugin-templates/"/>
     <property name="core-dir-osgi" location="${core-dir}/Apromore-OSGI-Bundles/"/>
     
+    <property name="startup.java.opts" value='-server -Xmx14g -Xmn1g -Dhadoop.home.dir="${core-dir-virgo}/hadoop.home.dir"'/>
+
     <fileset id="fileset-core-lpsolve-lib" dir="${core-dir-sups}">
         <include name="liblpsolve55.jnilib" />
         <include name="liblpsolve55.lib" />
@@ -104,6 +104,10 @@
     <target name="copy-core" depends="clean-virgo, setup-virgo, create-repository-dirs">
         <copy todir="${core-dir-virgo}" flatten="true" overwrite="true">
             <fileset refid="fileset-core-lpsolve-lib" />
+        </copy>
+
+        <copy todir="${core-dir-virgo}/hadoop.home.dir" overwrite="true">
+            <fileset dir="${core-dir-sups}/hadoop-3.2.1"/>
         </copy>
         
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
