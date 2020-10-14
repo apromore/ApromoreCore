@@ -38,43 +38,45 @@ import static org.junit.Assert.fail;
 
 public class DurationUtilUnitTest {
 
-    private static Stream<Arguments> TEST_CASES() {
-        return Stream.of(
-                Arguments.of(ChronoUnit.SECONDS),
-                Arguments.of(ChronoUnit.MINUTES),
-                Arguments.of(ChronoUnit.HOURS),
-                Arguments.of(ChronoUnit.DAYS),
-                Arguments.of(ChronoUnit.WEEKS),
-                Arguments.of(ChronoUnit.MONTHS),
-                Arguments.of(ChronoUnit.YEARS)
-        );
-    }
+  private static Stream<Arguments> TEST_CASES() {
+    return Stream.of(
+        Arguments.of(ChronoUnit.SECONDS),
+        Arguments.of(ChronoUnit.MINUTES),
+        Arguments.of(ChronoUnit.HOURS),
+        Arguments.of(ChronoUnit.DAYS),
+        Arguments.of(ChronoUnit.WEEKS),
+        Arguments.of(ChronoUnit.MONTHS),
+        Arguments.of(ChronoUnit.YEARS));
+  }
 
-    @ParameterizedTest
-    @MethodSource("TEST_CASES")
-    void humanize_ShouldGenerateHumanizedDurationAtBorderCases(ChronoUnit unit) {
-        double milliseconds = DurationUnit.getMilliseconds(unit);
-        String label = DurationUnit.getShortLabelPlural(unit);
-        String humanized = DurationUtil.humanize(milliseconds, true);
-        assertEquals("1.00 " + label, humanized);
-    }
+  @ParameterizedTest
+  @MethodSource("TEST_CASES")
+  void humanize_ShouldGenerateHumanizedDurationAtBorderCases(ChronoUnit unit) {
+    DurationUnit durationUnit = DurationUnit.getDurationUnit(unit).get();
+    double milliseconds = durationUnit.getUnitValue();
+    String label = durationUnit.getPluralString();
+    String humanized = DurationUtil.humanize(milliseconds, true);
+    assertEquals("1.00 " + label, humanized);
+  }
 
-    @ParameterizedTest
-    @MethodSource("TEST_CASES")
-    void humanize_ShouldGenerateHumanizedDurationSingular(ChronoUnit unit) {
-        double milliseconds = DurationUnit.getMilliseconds(unit);
-        String label = DurationUnit.getShortLabelPlural(unit);
-        String humanized = DurationUtil.humanize(milliseconds, false);
-        assertEquals("1 " + label, humanized);
-    }
+  @ParameterizedTest
+  @MethodSource("TEST_CASES")
+  void humanize_ShouldGenerateHumanizedDurationSingular(ChronoUnit unit) {
+    DurationUnit durationUnit = DurationUnit.getDurationUnit(unit).get();
+    double milliseconds = durationUnit.getUnitValue();
+    String label = durationUnit.getSingularString();
+    String humanized = DurationUtil.humanize(milliseconds, false);
+    assertEquals("1 " + label, humanized);
+  }
 
-    @ParameterizedTest
-    @MethodSource("TEST_CASES")
-    void humanize_ShouldGenerateHumanizedDuration(ChronoUnit unit) {
-        double milliseconds = 2.34789D * DurationUnit.getMilliseconds(unit);
-        String label = DurationUnit.getShortLabelPlural(unit);
-        String humanized = DurationUtil.humanize(milliseconds, false);
-        assertEquals("2.35 " + label, humanized);
-    }
+  @ParameterizedTest
+  @MethodSource("TEST_CASES")
+  void humanize_ShouldGenerateHumanizedDuration(ChronoUnit unit) {
+    DurationUnit durationUnit = DurationUnit.getDurationUnit(unit).get();
+    double milliseconds = 2.34789D * durationUnit.getUnitValue();
+    String label = durationUnit.getPluralString();
+    String humanized = DurationUtil.humanize(milliseconds, false);
+    assertEquals("2.35 " + label, humanized);
+  }
 
 }

@@ -22,78 +22,61 @@
 package org.apromore.commons.datetime;
 
 import java.util.Map;
+import java.util.Optional;
+import lombok.Getter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.time.temporal.ChronoUnit;
 
 /**
  * Duration unit
  */
-public final class DurationUnit {
+@Getter
+public enum DurationUnit {
+  
+    YEARS(ChronoUnit.YEARS,"yrs","yr",new Double(1000.0D * 60 * 60 * 24 * 365)),
+    MONTHS(ChronoUnit.MONTHS,"mths","mth",new Double(1000.0D * 60 * 60 * 24 * 30.42)),
+    WEEKS(ChronoUnit.WEEKS,"wks","wk",new Double(1000.0D * 60 * 60 * 24 * 7)),
+    DAYS(ChronoUnit.DAYS,"days","day",new Double(1000.0D * 60 * 60 * 24)),
+    HOURS(ChronoUnit.HOURS,"hrs","hr",new Double(1000.0D * 60 * 60)),
+    MINUTES(ChronoUnit.MINUTES,"mins","min",new Double(1000.0D * 60)),
+    SECONDS(ChronoUnit.SECONDS,"secs","sec",new Double(1000.0D)),
+    MILLIS(ChronoUnit.MILLIS,"millis","milli",new Double(1D));
 
-    private static Map<ChronoUnit, String> shortLabelPluralMap = new HashMap<ChronoUnit, String>() {
-        {
-            put(ChronoUnit.MILLIS, "millis");
-            put(ChronoUnit.SECONDS, "secs");
-            put(ChronoUnit.MINUTES, "mins");
-            put(ChronoUnit.HOURS, "hrs");
-            put(ChronoUnit.DAYS, "days");
-            put(ChronoUnit.WEEKS, "wks");
-            put(ChronoUnit.MONTHS, "mths");
-            put(ChronoUnit.YEARS, "yrs");
-        }
-    };
-
-    private static Map<ChronoUnit, String> shortLabelSingularMap = new HashMap<ChronoUnit, String>() {
-        {
-            put(ChronoUnit.MILLIS, "milli");
-            put(ChronoUnit.SECONDS, "sec");
-            put(ChronoUnit.MINUTES, "min");
-            put(ChronoUnit.HOURS, "hr");
-            put(ChronoUnit.DAYS, "day");
-            put(ChronoUnit.WEEKS, "wk");
-            put(ChronoUnit.MONTHS, "mth");
-            put(ChronoUnit.YEARS, "yr");
-        }
-    };
-
-    /**
-     * Unit to milliseconds ratio
-     */
-    private static Map<ChronoUnit, Double> toMillisecondMap = new HashMap<ChronoUnit, Double>() {
-        {
-            put(ChronoUnit.MILLIS, new Double(1.0D));
-            put(ChronoUnit.SECONDS, new Double(1000.0D));
-            put(ChronoUnit.MINUTES, new Double(1000.0D * 60));
-            put(ChronoUnit.HOURS, new Double(1000.0D * 60 * 60));
-            put(ChronoUnit.DAYS, new Double(1000.0D * 60 * 60 * 24));
-            put(ChronoUnit.WEEKS, new Double(1000.0D * 60 * 60 * 24 * 7));
-            put(ChronoUnit.MONTHS, new Double(1000.0D * 60 * 60 * 24 * 30.42));
-            put(ChronoUnit.YEARS, new Double(1000.0D * 60 * 60 * 24 * 365));
-        }
-    };
-
-    public static String getShortLabel(ChronoUnit unit, double value) {
-        if (Double.compare(new Double(value), 1.0D) == 0) {
-            return getShortLabelSingular(unit);
-        }
-        return getShortLabelPlural(unit);
+    ChronoUnit unit;
+    String pluralString;
+    String singularString;
+    Double unitValue;
+    
+    DurationUnit(ChronoUnit unit, String pluralString, String singularString, Double unitValue) {
+      this.unit=unit;
+      this.pluralString=pluralString;
+      this.singularString=singularString;
+      this.unitValue=unitValue;
+     
+    }
+   
+    public static Optional<DurationUnit> getDurationUnit(double value) {
+     
+      Optional<DurationUnit> findFirst = Arrays.asList(DurationUnit.values()).stream()
+      .filter(unit -> unit.getDurationValue(value)>= 1.0D)
+      .findFirst();
+      return findFirst;
+         
+    }
+    
+    public static Optional<DurationUnit> getDurationUnit(ChronoUnit chronoUnit) {
+      
+      Optional<DurationUnit> findFirst = Arrays.asList(DurationUnit.values()).stream()
+      .filter(unit -> unit.getUnit().equals(chronoUnit))
+      .findFirst();
+      return findFirst;   
     }
 
-    public static String getShortLabelPlural(ChronoUnit unit) {
-        return shortLabelPluralMap.get(unit);
+    public  double getDurationValue(double value) {
+      return value / this.getUnitValue();
     }
-
-    public static String getShortLabelSingular(ChronoUnit unit) {
-        return shortLabelSingularMap.get(unit);
-    }
-
-    public static double getMilliseconds(ChronoUnit unit) {
-        return (double) toMillisecondMap.get(unit);
-    }
-
-    public static String getLabel(ChronoUnit unit) {
-        return unit.toString().toLowerCase();
-    }
+ 
 }
 
 

@@ -23,14 +23,13 @@ package org.apromore.commons.datetime;
 
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
-
+import java.util.Optional;
 import org.apromore.commons.datetime.Constants;
 
 /**
  * Various duration utility functions
  *
- * TO DO:
- * Need to refactor further these duplicates
+ * TO DO: Need to refactor further these duplicates
  *
  * ApromoreCore/Apromore-Extras/APMLogModule/src/main/java/org/apromore/apmlog/util/TimeUtil.java
  * ApromoreEE/Dashboard/src/main/java/dashboard/util/Util.java
@@ -38,84 +37,48 @@ import org.apromore.commons.datetime.Constants;
  */
 public final class DurationUtil {
 
-    public static double convert(double milliseconds, ChronoUnit unit) {
-        return milliseconds / DurationUnit.getMilliseconds(unit);
+
+  /**
+   * Humanize duration
+   *
+   * @param milliseconds Source duration
+   * @param unit ChronoUnit for fixed unit, otherwise set null for automatic
+   * @param forceDecimal Force the last two decimal digit, set false to avoid decimal for whole
+   *        number.
+   * @return Humanized duration
+   */
+  public static String humanize(double milliseconds, ChronoUnit unit, boolean forceDecimal) {
+    DecimalFormat decimalFormat = (forceDecimal) ? new DecimalFormat("##############0.00")
+        : new DecimalFormat("##############0.##");
+
+    double duration = 0;
+    String label = "";
+
+    
+    Optional<DurationUnit> optionalDurationUnit=(unit==null) ?
+        DurationUnit.getDurationUnit(milliseconds): DurationUnit.getDurationUnit(unit);      
+ 
+      if (optionalDurationUnit.isPresent()) {
+        
+        DurationUnit durationUnit = optionalDurationUnit.get();
+        duration = durationUnit.getDurationValue(milliseconds);
+        
+        label = (forceDecimal || duration > 1.0D)
+            ? durationUnit.getPluralString()
+            : durationUnit.getSingularString();
+      }
+ 
+    if (duration != 0) {
+      return decimalFormat.format(duration) + " " + label;
     }
+    return "instant";
+  }
 
-    /**
-     * Humanize duration
-     *
-     * @param milliseconds Source duration
-     * @param unit ChronoUnit for fixed unit, otherwise set null for automatic
-     * @param forceDecimal Force the last two decimal digit, set false to avoid decimal for whole number.
-     * @return Humanized duration
-     */
-    public static String humanize(double milliseconds, ChronoUnit unit, boolean forceDecimal) {
-        DecimalFormat decimalFormat = (forceDecimal) ?
-                new DecimalFormat("##############0.00") : new DecimalFormat("##############0.##");
+  public static String humanize(double milliseconds, boolean forceDecimal) {
+    return humanize(milliseconds, null, forceDecimal);
+  }
 
-        double duration = 0;
-        String label = "";
-        double seconds = convert(milliseconds, ChronoUnit.SECONDS);
-        double minutes = convert(milliseconds, ChronoUnit.MINUTES);
-        double hours = convert(milliseconds, ChronoUnit.HOURS);
-        double days = convert(milliseconds, ChronoUnit.DAYS);
-        double weeks = convert(milliseconds, ChronoUnit.WEEKS);
-        double months = convert(milliseconds, ChronoUnit.MONTHS);
-        double years = convert(milliseconds, ChronoUnit.YEARS);
-
-        if (unit == null) {
-            if (years >= 1.0D) {
-                duration = years;
-                unit = ChronoUnit.YEARS;
-            } else if (months >= 1.0D) {
-                duration = months;
-                unit = ChronoUnit.MONTHS;
-            } else if (weeks >= 1.0D) {
-                duration = weeks;
-                unit = ChronoUnit.WEEKS;
-            } else if (days >= 1.0D) {
-                duration = days;
-                unit = ChronoUnit.DAYS;
-            } else if (hours >= 1.0D) {
-                duration = hours;
-                unit = ChronoUnit.HOURS;
-            } else if (minutes >= 1.0D) {
-                duration = minutes;
-                unit = ChronoUnit.MINUTES;
-            } else if (seconds >= 1.0D) {
-                duration = seconds;
-                unit = ChronoUnit.SECONDS;
-            } else if (milliseconds >= 1.0D) {
-                duration = milliseconds;
-                unit = ChronoUnit.MILLIS;
-            }
-            if (unit != null) {
-                if (forceDecimal) {
-                    label = DurationUnit.getShortLabelPlural(unit);
-                } else {
-                    label = DurationUnit.getShortLabel(unit, duration);
-                }
-            }
-        } else {
-            duration = convert(milliseconds, unit);
-            if (forceDecimal) {
-                label = DurationUnit.getShortLabelPlural(unit);
-            } else {
-                label = DurationUnit.getShortLabel(unit, duration);
-            }
-        }
-        if (duration != 0) {
-            return decimalFormat.format(duration) + " " + label;
-        }
-        return "instant";
-    }
-
-    public static String humanize(double milliseconds, boolean forceDecimal) {
-        return humanize(milliseconds, null, forceDecimal);
-    }
-
-    public static String humanize(long milliseconds, boolean forceDecimal) {
-        return humanize((double)milliseconds, forceDecimal);
-    }
+  public static String humanize(long milliseconds, boolean forceDecimal) {
+    return humanize((double) milliseconds, forceDecimal);
+  }
 }
