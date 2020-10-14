@@ -225,7 +225,7 @@
             <arg value="-url"/>
             <arg value="jdbc:h2:${core-dir-assembly}/Manager-Repository"/>
             <arg value="-script"/>
-            <arg file="${core-dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
+            <arg file="${core-dir}/Apromore-Database/src/test/resources/database/db-h2.sql"/>
         </java>
         <java classname="org.h2.tools.RunScript">
             <classpath>
@@ -234,7 +234,7 @@
             <arg value="-url"/>
             <arg value="jdbc:h2:${core-dir-assembly}/Manager-Repository"/>
             <arg value="-script"/>
-            <arg file="${core-dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
+            <arg file="${core-dir}/Apromore-Database/src/test/resources/database/db-data.sql"/>
         </java>
     </target>
 </project>
