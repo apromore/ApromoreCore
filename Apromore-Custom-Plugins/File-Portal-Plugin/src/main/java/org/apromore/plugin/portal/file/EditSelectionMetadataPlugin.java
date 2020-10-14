@@ -29,6 +29,7 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.file.impl.EditListMetadataController;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -68,7 +69,8 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
             MainController mainC = (MainController) portalContext.getMainController();
 
             mainC.eraseMessage();
-            if (!mainC.getBaseListboxController().hasOnlyOneSelection()) {
+            if (!mainC.getBaseListboxController().isSingleFileSelected()) {
+                Notification.error("Please select single file or folder to rename");
                 return;
             }
             List<Integer> folderIds = mainC.getPortalSession().getSelectedFolderIds();
