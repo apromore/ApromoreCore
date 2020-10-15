@@ -411,7 +411,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Process process = createProcess(user, nativeType, folder);
 
         List<GroupProcess> groupProcesses = new ArrayList<>();
-        groupProcesses.add(new GroupProcess(process, group1, true, true, true));
+        groupProcesses.add(new GroupProcess(process, group1, new AccessRights(true,true,true)));
         groupProcesses.add(new GroupProcess(process, group2, true, true, false));
         groupProcesses.add(new GroupProcess(process, group3, true, false, false));
         groupProcesses.add(new GroupProcess(process, group4, false, false, false));

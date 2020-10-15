@@ -49,6 +49,7 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Native;
@@ -285,7 +286,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     private boolean canUserWriteProcess(User user, Integer processId) {
         for (GroupProcess gp: groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())) {
-            if (gp.getHasWrite()) {
+            if (gp.getAccessRights().isWriteOnly()) {
                  return true;
             }
         }
@@ -359,7 +360,7 @@ public class ProcessServiceImpl implements ProcessService {
                 boolean isCurrentPublic = !publicGroupProcesses.isEmpty();
 
                 if (!isCurrentPublic && tobePublic) {
-                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
+                    groupProcesses.add(new GroupProcess(process, publicGroup, new AccessRights(true,true,false)));
                     process.setGroupProcesses(groupProcesses);
                     workspaceSrv.createPublicStatusForUsers(process);
 
@@ -566,7 +567,7 @@ public class ProcessServiceImpl implements ProcessService {
             Set<GroupProcess> groupProcesses = process.getGroupProcesses();
 
             // Add the user's personal group
-            groupProcesses.add(new GroupProcess(process, user.getGroup(), true, true, true));
+            groupProcesses.add(new GroupProcess(process, user.getGroup(),new AccessRights(true,true,true)));
             process.setGroupProcesses(groupProcesses);
 
             process = processRepo.save(process);
@@ -582,7 +583,7 @@ public class ProcessServiceImpl implements ProcessService {
                 if (publicGroup == null) {
                     LOGGER.warn("No public group present in repository");
                 } else {
-                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
+                    groupProcesses.add(new GroupProcess(process, publicGroup, new AccessRights(true,true,false)));
                 }
             }            
 

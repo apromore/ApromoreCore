@@ -40,123 +40,102 @@ import java.util.logging.Logger;
 @Entity
 @Table(name = "group_log")
 @Configurable("group_log")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 100,
+    coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class GroupLog implements Serializable {
 
-    private static Logger LOGGER = Logger.getLogger(GroupLog.class.getCanonicalName());
+  private static Logger LOGGER = Logger.getLogger(GroupLog.class.getCanonicalName());
 
-    private Integer id;
+  private Integer id;
 
-    private boolean hasRead;
-    private boolean hasWrite;
-    private boolean hasOwnership;
+  private AccessRights accessRights;
 
-    private Group   group;
-    private Log log;
+  private Group group;
+  private Log log;
 
-    /**
-     * Default Constructor.
-     */
-    public GroupLog() {
-    }
+  /**
+   * Default Constructor.
+   */
+  public GroupLog() {}
 
-    /**
-     * Convenient constructor.
-     */
-    public GroupLog(Group newGroup, Log newLog, boolean newHasRead, boolean newHasWrite, boolean newHasOwnership) {
-        this.group        = newGroup;
-        this.log          = newLog;
-        this.hasRead      = newHasRead;
-        this.hasWrite     = newHasWrite;
-        this.hasOwnership = newHasOwnership;
-    }
+  /**
+   * Convenient constructor.
+   */
+  public GroupLog(Group newGroup, Log newLog, AccessRights accessRights) {
+    this.group = newGroup;
+    this.log = newLog;
+    this.accessRights = accessRights;
+  }
 
-    /**
-     * Get the Primary Key for the Object.
-     * @return Returns the Id.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Integer getId() {
-        return id;
-    }
+  public GroupLog(Group group, Log log, boolean isRead, boolean isWrite, boolean isOwnerShip) {
+     this(group, log, new  AccessRights(isRead,isWrite,isOwnerShip));
+  }
 
-    /**
-     * Set the id for the Object.
-     * @param newId The role name to set.
-     */
-    public void setId(final Integer newId) {
-        this.id = newId;
-    }
+  /**
+   * Get the Primary Key for the Object.
+   * 
+   * @return Returns the Id.
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", unique = true, nullable = false)
+  public Integer getId() {
+    return id;
+  }
 
-
-    /**
-     * @return whether the group has read access to the process model
-     */
-    @Column(name = "has_read")
-    public boolean getHasRead() {
-        return this.hasRead;
-    }
-
-    /**
-     * @param newHasRead  whether the group should have read access to the process model
-     */
-    public void setHasRead(final boolean newHasRead) {
-        this.hasRead = newHasRead;
-    }
+  /**
+   * Set the id for the Object.
+   * 
+   * @param newId The role name to set.
+   */
+  public void setId(final Integer newId) {
+    this.id = newId;
+  }
 
 
-    /**
-     * @return whether the group has write access to the process model
-     */
-    @Column(name = "has_write")
-    public boolean getHasWrite() {
-        return this.hasWrite;
-    }
 
-    /**
-     * @param newHasWrite  whether the group should have write access to the process model
-     */
-    public void setHasWrite(final boolean newHasWrite) {
-        this.hasWrite = newHasWrite;
-    }
+  @Embedded
+  public AccessRights getAccessRights() {
+    return accessRights;
+  }
 
+  public void setAccessRights(AccessRights accessRights) {
+    this.accessRights = accessRights;
+  }
 
-    /**
-     * @return whether the group has ownership of the process model
-     */
-    @Column(name = "has_ownership")
-    public boolean getHasOwnership() {
-        return this.hasOwnership;
-    }
+  @ManyToOne
+  @JoinColumn(name = "groupId")
+  public Group getGroup() {
+    return this.group;
+  }
 
-    /**
-     * @param newHasOwnership  whether the group should have ownership of the process model
-     */
-    public void setHasOwnership(final boolean newHasOwnership) {
-        this.hasOwnership = newHasOwnership;
-    }
+  public void setGroup(Group group) {
+    this.group = group;
+  }
 
+  @ManyToOne
+  @JoinColumn(name = "logId")
+  public Log getLog() {
+    return this.log;
+  }
 
-    @ManyToOne
-    @JoinColumn(name = "groupId")
-    public Group getGroup() {
-        return this.group;
-    }
+  public void setLog(Log log) {
+    this.log = log;
+  }
 
-    public void setGroup(Group group) {
-        this.group = group;
-    }
+  public Boolean getHasRead() {
+    // TODO Auto-generated method stub
+    return getAccessRights().isReadOnly();
+  }
 
-    @ManyToOne
-    @JoinColumn(name = "logId")
-    public Log getLog() {
-        return this.log;
-    }
+  public Boolean getHasWrite() {
+    // TODO Auto-generated method stub
+    return getAccessRights().isWriteOnly();
+  }
 
-    public void setLog(Log log) {
-        this.log = log;
-    }
+  public Boolean getHasOwnership() {
+    // TODO Auto-generated method stub
+    return getAccessRights().isOwnerShip();
+  }
 
 }

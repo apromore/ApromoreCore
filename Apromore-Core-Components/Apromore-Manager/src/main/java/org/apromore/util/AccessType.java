@@ -21,30 +21,40 @@
  */
 package org.apromore.util;
 
+import java.util.Arrays;
+import lombok.Getter;
+
 /**
  * Access types in ACL, which can map to flags in Group_[artifact] POJOs.
  *
- |        | has_read | has_write | has_ownership |
- |--------|----------|-----------|---------------|
- | Viewer | 1        | 0         | 0             |
- | Editor | 1        | 1         | 0             |
- | Owner  | 1        | 1         | 1             |
+ * | | has_read | has_write | has_ownership | |--------|----------|-----------|---------------| |
+ * Viewer | 1 | 0 | 0 | | Editor | 1 | 1 | 0 | | Owner | 1 | 1 | 1 |
  *
  */
+@Getter
 public enum AccessType {
 
-    NONE(0),
-    VIEWER(1),
-    EDITOR(2),
-    OWNER(3);
+  NONE(false, false, false), VIEWER(true, false, false), EDITOR(true, true, false), OWNER(true,
+      true, true);
 
-    private final Integer flagId;
+  boolean isRead;
+  boolean isWrite;
+  boolean isOwner;
 
-    AccessType(Integer flagId) {
-        this.flagId = flagId;
-    }
+  private AccessType(boolean isRead, boolean isWrite, boolean isOwner) {
+    this.isRead = isRead;
+    this.isWrite = isWrite;
+    this.isOwner = isOwner;
+  }
 
-    public Integer getFlogId() {
-        return flagId;
-    }
+  public static AccessType getAccessType(boolean isRead, boolean isWrite, boolean isOwner) {
+
+    return Arrays.asList(AccessType.values()).stream().filter(accessType -> {
+      return accessType.isRead == isRead && 
+          accessType.isWrite == isWrite&& 
+          accessType.isOwner == isOwner;
+    }).findFirst().orElse(AccessType.NONE);
+  }
+
+
 }
