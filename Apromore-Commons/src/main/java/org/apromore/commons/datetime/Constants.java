@@ -20,20 +20,15 @@
  * #L%
  */
 
-package org.apromore.portal.util;
+package org.apromore.commons.datetime;
 
-import org.apromore.portal.common.Constants;
-import java.util.regex.Pattern;
+import java.time.format.DateTimeFormatter;
 
-/**
- * Various item utility functions
- */
-public final class ItemUtil {
+public interface Constants {
 
-    /**
-     * Check if the name an item (filename, folder) is valid
-     */
-    public static final boolean hasValidName(String filename) {
-        return Pattern.matches(Constants.VALID_FILENAME_REGEX, filename);
-    }
+  public static final String DATE_TIME_FORMAT_DEFAULT = "dd.MM.yyyy HH:mm:ss";
+  public static final String DATE_TIME_FORMAT_MS = "dd.MM.yyyy HH:mm:ss.SSS";
+  public static final String DATE_TIME_FORMAT_HUMANIZED = "dd MMM yy, HH:mm";
+
+  public static final DateTimeFormatter DATE_TIME_FORMATTER_HUMANIZED = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_HUMANIZED);
 }

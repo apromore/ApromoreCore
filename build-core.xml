@@ -221,16 +221,7 @@
             <arg value="-url"/>
             <arg value="jdbc:h2:${core-dir-assembly}/Manager-Repository"/>
             <arg value="-script"/>
-            <arg file="${core-dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
-        </java>
-        <java classname="org.h2.tools.RunScript">
-            <classpath>
-                <pathelement location="${core-dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.3.171.jar"/>
-            </classpath>
-            <arg value="-url"/>
-            <arg value="jdbc:h2:${core-dir-assembly}/Manager-Repository"/>
-            <arg value="-script"/>
-            <arg file="${core-dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
+            <arg file="${core-dir-sups}/database/create-h2.sql"/>
         </java>
     </target>
 </project>
