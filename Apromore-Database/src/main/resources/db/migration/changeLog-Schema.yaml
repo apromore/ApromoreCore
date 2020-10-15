@@ -464,7 +464,16 @@ databaseChangeLog:
  - changeSet:
      id: 20201014123300
      author: frankm
-     failOnError: false
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+           - or:
+               - foreignKeyConstraintExists:
+                   foreignKeyName: fk_user_group
+               - indexExists:
+                   indexName: idx_search_history
+               - indexExists:
+                   indexName: group_row_guid_UNIQUE
      changes:
        - addForeignKeyConstraint:
            baseColumnNames: groupId
@@ -499,6 +508,10 @@ databaseChangeLog:
  - changeSet:
      id: 20201014125100
      author: frankm
+     preConditions:
+       - onFail: MARK_RAN
+       - tableExists:
+           tableName: dashboard_layout
      changes:
        - dropTable:
            cascadeConstraints:  true
