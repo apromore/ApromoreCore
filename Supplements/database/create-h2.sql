@@ -1,0 +1,2 @@
+CREATE USER apromore PASSWORD 'MAcri' ADMIN
+;
