@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -80,6 +81,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         this.usermetadataTypeRepo = usermetadataTypeRepo;
         this.usermetadataLogRepo = usermetadataLogRepo;
         this.groupRepo = groupRepository;
+       
     }
 
     @Override
@@ -115,16 +117,17 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Assign OWNER permission to the user's personal group
         groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
 
-        for (Integer logId : logIds) {
+        
             // Assign READ permission to all groups that have read permission to the linked artifact
-            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
-                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
+            for (GroupLog gl : groupLogRepo.findByLogIds(logIds)) {
+                if (gl.getAccessRights().isReadOnly() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
                     groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
                 }
             }
 
+            for (Integer logId : logIds) {
             // Add linked artifact to the UsermetadataLog linked table
-            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.getLogReference(logId)));
         }
 
         // Assemble Usermetadata
@@ -158,8 +161,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Set<UsermetadataLog> usermetadataLogSet =
                 new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
 
-        if (usermetadataLogSet.size() != 0) {
-
+    
             for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
                 Usermetadata u = usermetadataLog.getUsermetadata();
 
@@ -173,7 +175,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                     }
                 }
             }
-        }
 
         return result;
     }

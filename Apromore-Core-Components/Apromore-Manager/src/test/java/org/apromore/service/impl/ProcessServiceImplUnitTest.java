@@ -46,6 +46,7 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
@@ -1067,9 +1068,8 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     gp.setId(123);
     gp.setGroup(group);
     gp.setProcess(process);
-    gp.setHasOwnership(hasOwnership);
-    gp.setHasRead(hasRead);
-    gp.setHasWrite(hasWrite);
+    AccessRights accessRights=new AccessRights(hasRead,hasWrite,hasOwnership);
+    gp.setAccessRights(accessRights);
     return gp;
   }
 

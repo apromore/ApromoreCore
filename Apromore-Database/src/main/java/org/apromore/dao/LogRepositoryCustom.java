@@ -54,5 +54,7 @@ public interface LogRepositoryCustom {
      * @return the list of processes.
      */
     List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions);
+    
+    Log getLogReference(Integer logId);
 
 }

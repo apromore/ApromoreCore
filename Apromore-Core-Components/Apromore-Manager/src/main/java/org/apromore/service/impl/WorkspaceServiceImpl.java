@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.persistence.GenerationType;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
@@ -48,6 +49,7 @@ import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.WorkspaceRepository;
+import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupFolder;
@@ -203,9 +205,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         GroupFolder gf = new GroupFolder();
         gf.setFolder(folder);
         gf.setGroup(user.getGroup());
-        gf.setHasOwnership(true);
-        gf.setHasWrite(true);
-        gf.setHasRead(true);
+        AccessRights accessRights=new AccessRights();
+        accessRights.setOwnerShip(true);
+        accessRights.setWriteOnly(true);
+        accessRights.setReadOnly(true);
+        gf.setAccessRights(accessRights);
 
         groupFolderRepo.save(gf);
     }
@@ -238,7 +242,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      */
     private boolean canUserWriteFolder(User user, Integer folderId) {
         for (GroupFolder gf: groupFolderRepo.findByFolderAndUser(folderId, user.getRowGuid())) {
-            if (gf.isHasWrite()) {
+            if (gf.getAccessRights().isWriteOnly()) {
                  return true;
             }
         }
@@ -289,16 +293,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 fu = new GroupFolder();
                 fu.setGroup(gf.getGroup());
                 fu.setFolder(gf.getFolder());
-                fu.setHasRead(gf.isHasRead());
-                fu.setHasWrite(gf.isHasWrite());
-                fu.setHasOwnership(gf.isHasOwnership());
+                fu.setAccessRights(gf.getAccessRights());
                 folderUsers.add(fu);
                 map.put(gf.getFolder().getId(), fu);
-            } else {
-                fu.setHasRead(fu.isHasRead()           || gf.isHasRead());
-                fu.setHasWrite(fu.isHasWrite()         || gf.isHasWrite());
-                fu.setHasOwnership(fu.isHasOwnership() || gf.isHasOwnership());
-            }
+            } 
         }
         return folderUsers;
     }
@@ -463,13 +461,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Set access group
         Set<GroupLog> groupLogs = newLog.getGroupLogs();
         groupLogs.clear();
-        groupLogs.add(new GroupLog(newUser.getGroup(), newLog, true, true, true));
+        groupLogs.add(new GroupLog(newUser.getGroup(), newLog, new AccessRights(true,true,true)));
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
             } else {
-                groupLogs.add(new GroupLog(publicGroup, newLog, true, true, false));
+                groupLogs.add(new GroupLog(publicGroup, newLog, new AccessRights(true,true,false)));
             }
         }
         newLog.setGroupLogs(groupLogs);
@@ -535,13 +533,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Set access group
         Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
         groupProcesses.clear();
-        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), true, true, true));
+        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), new AccessRights(true,true,true)));
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
             } else {
-                groupProcesses.add(new GroupProcess(newProcess, publicGroup, true, true, false));
+                groupProcesses.add(new GroupProcess(newProcess, publicGroup, new AccessRights(true,true,false)));
             }
         }
         newProcess.setGroupProcesses(groupProcesses);
@@ -641,37 +639,35 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupFolder.setFolder(folder);
         }
         assert groupFolder != null;
-        groupFolder.setHasRead(hasRead);
-        groupFolder.setHasWrite(hasWrite);
-        groupFolder.setHasOwnership(hasOwnership);
+        AccessRights accessRights=new AccessRights(hasRead,hasWrite,hasOwnership);
+        groupFolder.setAccessRights(accessRights);
 
         groupFolderRepo.save(groupFolder);
     }
 
     private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
+        AccessRights accessRights = new AccessRights(hasRead,hasWrite,hasOwnership);
         if (groupProcess == null) {
-            groupProcess = new GroupProcess(process, group, hasRead, hasWrite, hasOwnership);
+         
+          groupProcess = new GroupProcess(process, group, accessRights);
             process.getGroupProcesses().add(groupProcess);
             //group.getGroupProcesses().add(groupProcess);
         } else {
-            groupProcess.setHasRead(hasRead);
-            groupProcess.setHasWrite(hasWrite);
-            groupProcess.setHasOwnership(hasOwnership);
+            groupProcess.setAccessRights(accessRights);
         }
         groupProcessRepo.save(groupProcess);
     }
 
     private void createGroupLog(Group group, Log log, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+        AccessRights accessRights = new AccessRights(hasRead,hasWrite,hasOwnership);
         if (groupLog == null) {
-            groupLog= new GroupLog(group, log, hasRead, hasWrite, hasOwnership);
+            groupLog= new GroupLog(group, log, accessRights);
             log.getGroupLogs().add(groupLog);
             //group.getGroupLogs().add(groupLog);
         } else {
-            groupLog.setHasRead(hasRead);
-            groupLog.setHasWrite(hasWrite);
-            groupLog.setHasOwnership(hasOwnership);
+            groupLog.setAccessRights(accessRights);
         }
         groupLogRepo.save(groupLog);
     }
@@ -701,19 +697,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
-        for (GroupLog g : getGroupLogs(logId)) {
-            if (g.getHasRead() && g.getHasWrite() && g.getHasOwnership()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.OWNER);
-            } else if (g.getHasRead() && g.getHasWrite()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.EDITOR);
-            } else if (g.getHasRead()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.VIEWER);
-            } else {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.NONE);
-            }
+        for (GroupLog g : getGroupLogs(logId)) {     
+          AccessRights accessRights=g.getAccessRights();   
+          groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));        
         }
 
         return groupAccessTypeMap;
+    }
+
+
+    private AccessType getAccessType(AccessRights accessRights) {
+      AccessType accessType;
+      accessType=accessRights.hasAll()?
+          AccessType.OWNER : accessRights.hasReadWrite() ? 
+              AccessType.EDITOR : accessRights.isReadOnly() ?
+                  AccessType.VIEWER : AccessType.NONE;
+      return accessType;
     }
 
     public Map<Group, AccessType> getProcessACL(Integer processId) {
@@ -721,15 +720,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
         for (GroupProcess g : getGroupProcesses(processId)) {
-            if (g.getHasRead() && g.getHasWrite() && g.getHasOwnership()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.OWNER);
-            } else if (g.getHasRead() && g.getHasWrite()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.EDITOR);
-            } else if (g.getHasRead()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.VIEWER);
-            } else {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.NONE);
-            }
+          AccessRights accessRights=g.getAccessRights();      
+          groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));  
         }
 
         return groupAccessTypeMap;
@@ -740,66 +732,36 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
         for (GroupFolder g : getGroupFolders(processId)) {
-            if (g.isHasRead() && g.isHasWrite() && g.isHasOwnership()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.OWNER);
-            } else if (g.isHasRead() && g.isHasWrite()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.EDITOR);
-            } else if (g.isHasRead()) {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.VIEWER);
-            } else {
-                groupAccessTypeMap.put(g.getGroup(), AccessType.NONE);
-            }
+          AccessRights accessRights=g.getAccessRights();      
+          groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));  
         }
 
         return groupAccessTypeMap;
     }
 
     public void saveLogACL(Integer logId, String groupRowGuid, AccessType accessType) {
-        switch (accessType) {
-            case OWNER:
-                saveLogPermissions(logId, groupRowGuid, true, true, true);
-                break;
-            case EDITOR:
-                saveLogPermissions(logId, groupRowGuid, true, true, false);
-                break;
-            case VIEWER:
-                saveLogPermissions(logId, groupRowGuid, true, false, false);
-                break;
-            case NONE:
-                break;
-        }
+      
+      if(!accessType.equals(AccessType.NONE))
+      {
+        saveLogPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
+      }
+       
     }
 
     public void saveProcessACL(Integer logId, String groupRowGuid, AccessType accessType) {
-        switch (accessType) {
-            case OWNER:
-                saveProcessPermissions(logId, groupRowGuid, true, true, true);
-                break;
-            case EDITOR:
-                saveProcessPermissions(logId, groupRowGuid, true, true, false);
-                break;
-            case VIEWER:
-                saveProcessPermissions(logId, groupRowGuid, true, false, false);
-                break;
-            case NONE:
-                break;
-        }
+      
+      if(!accessType.equals(AccessType.NONE))
+      {
+        saveProcessPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
+      }
     }
 
     public void saveFolderACL(Integer logId, String groupRowGuid, AccessType accessType) {
-        switch (accessType) {
-            case OWNER:
-                saveFolderPermissions(logId, groupRowGuid, true, true, true);
-                break;
-            case EDITOR:
-                saveFolderPermissions(logId, groupRowGuid, true, true, false);
-                break;
-            case VIEWER:
-                saveFolderPermissions(logId, groupRowGuid, true, false, false);
-                break;
-            case NONE:
-                break;
-        }
+      
+      if(!accessType.equals(AccessType.NONE))
+      {
+        saveFolderPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
+      }
     }
 
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy

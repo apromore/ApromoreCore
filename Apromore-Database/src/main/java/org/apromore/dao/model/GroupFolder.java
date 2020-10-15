@@ -25,6 +25,7 @@
 package org.apromore.dao.model;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -50,9 +51,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class GroupFolder implements Serializable {
 
     private Integer id;
-    private boolean hasRead;
-    private boolean hasWrite;
-    private boolean hasOwnership;
+    private AccessRights accessRights;
 
     private Group  group;
     private Folder folder;
@@ -67,13 +66,14 @@ public class GroupFolder implements Serializable {
     /**
      * Convenient constructor.
      */
-    public GroupFolder(Group newGroup, Folder newFolder, boolean newHasRead, boolean newHasWrite,
-                       boolean newHasOwnership) {
+    public GroupFolder(Group newGroup, Folder newFolder, AccessRights accessRights) {
         this.group        = newGroup;
         this.folder       = newFolder;
-        this.hasRead      = newHasRead;
-        this.hasWrite     = newHasWrite;
-        this.hasOwnership = newHasOwnership;
+        this.accessRights=accessRights;
+    }
+
+    public GroupFolder(Group group, Folder folder, boolean hasRead, boolean hasWrite, boolean hasOwnerShip  ) {
+     this(group, folder, new AccessRights(hasRead,hasWrite,hasOwnerShip));
     }
 
     /**
@@ -116,33 +116,30 @@ public class GroupFolder implements Serializable {
         this.folder = folder;
     }
 
+    @Embedded
+    public AccessRights getAccessRights() {
+      return accessRights;
+    }
 
-    @Column(name = "has_read")
+    public void setAccessRights(AccessRights accessRights) {
+      this.accessRights = accessRights;
+    }
+
     public boolean isHasRead() {
-        return this.hasRead;
+      // TODO Auto-generated method stub
+      return accessRights.isReadOnly();
     }
 
-    public void setHasRead(boolean hasRead) {
-        this.hasRead = hasRead;
-    }
-
-
-    @Column(name = "has_write")
     public boolean isHasWrite() {
-        return this.hasWrite;
+      // TODO Auto-generated method stub
+       return accessRights.isWriteOnly();
     }
 
-    public void setHasWrite(boolean hasWrite) {
-        this.hasWrite = hasWrite;
-    }
-
-
-    @Column(name = "has_ownership")
     public boolean isHasOwnership() {
-        return this.hasOwnership;
+      // TODO Auto-generated method stub
+      return  accessRights.isOwnerShip();
     }
 
-    public void setHasOwnership(boolean hasOwnership) {
-        this.hasOwnership = hasOwnership;
-    }
+
+    
 }
