@@ -459,4 +459,47 @@ databaseChangeLog:
                 constraints:
                    nullable: true
                 name: reference_id
-                type: BIGINT         
+                type: BIGINT
+
+ - changeSet:
+     id: 20201014123300
+     author: frankm
+     failOnError: false
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: groupId
+           baseTableName: user
+           constraintName: fk_user_group
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: group
+           validate: true
+
+       - createIndex:
+           columns:
+             - column:
+                 name: position
+             - column:
+                 name: search
+           indexName: idx_search_history
+           tableName: search_history
+           unique: true
+
+       - createIndex:
+           columns:
+             - column:
+                 name: row_guid
+           indexName: group_row_guid_UNIQUE
+           tableName: group
+           unique: true
+
+ - changeSet:
+     id: 20201014125100
+     author: frankm
+     changes:
+       - dropTable:
+           cascadeConstraints:  true
+           tableName:  dashboard_layout

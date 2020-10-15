@@ -91,8 +91,9 @@
                             org.apromore.service.helper,
                             org.apromore.service.model,
                             org.apromore.service.search,
-                            org.apromore.util
-                        </Export-Package>                        
+                            org.apromore.util,
+                            org.apromore.util.datetime
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
