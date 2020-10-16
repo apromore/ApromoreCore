@@ -28,6 +28,7 @@ import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -86,7 +87,4 @@ public interface GroupLogRepository extends JpaRepository<GroupLog, Integer> {
            "               User u JOIN u.groups g2 " +
            "WHERE (gp.log.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupLog> findByLogAndUser(final Integer logId, final String userRowGuid);
-    
-    @Query("SELECT gp FROM GroupLog gp WHERE gp.log.id in (?1)")
-    List<GroupLog> findByLogIds(final List<Integer> logId);
 }

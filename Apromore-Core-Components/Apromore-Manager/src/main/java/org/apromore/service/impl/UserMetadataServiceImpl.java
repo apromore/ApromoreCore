@@ -117,15 +117,19 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Assign OWNER permission to the user's personal group
         groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
 
-        
+        for (Integer logId : logIds) {
             // Assign READ permission to all groups that have read permission to the linked artifact
-            for (GroupLog gl : groupLogRepo.findByLogIds(logIds)) {
-                if (gl.getAccessRights().isReadOnly() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
+            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
+                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
                     groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
                 }
             }
 
-            for (Integer logId : logIds) {
+            // Add linked artifact to the UsermetadataLog linked table
+            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+        }
+
+        for (Integer logId : logIds) {
             // Add linked artifact to the UsermetadataLog linked table
             usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.getLogReference(logId)));
         }
