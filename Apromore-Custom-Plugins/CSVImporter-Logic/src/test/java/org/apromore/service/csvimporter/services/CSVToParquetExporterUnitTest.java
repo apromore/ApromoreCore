@@ -21,7 +21,6 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import com.google.common.io.ByteStreams;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
@@ -34,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,7 +78,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -121,7 +119,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -162,7 +160,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -203,7 +201,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -244,7 +242,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -284,7 +282,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -325,7 +323,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -400,7 +398,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -447,7 +445,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -488,7 +486,7 @@ public class CSVToParquetExporterUnitTest {
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedTestFile)), Charset.forName("utf-8"));
+        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
