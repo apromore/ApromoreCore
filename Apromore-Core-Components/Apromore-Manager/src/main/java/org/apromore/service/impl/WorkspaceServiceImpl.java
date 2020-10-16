@@ -24,51 +24,17 @@
 
 package org.apromore.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.persistence.GenerationType;
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.WorkspaceRepository;
-import org.apromore.dao.model.AccessRights;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
+import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
-import org.apromore.util.AccessType;
 import org.apromore.service.model.FolderTreeNode;
+import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -77,6 +43,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
@@ -691,93 +663,5 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         if (groupLog != null) {
             groupLogRepo.delete(groupLog);
         }
-    }
-
-    public Map<Group, AccessType> getLogACL(Integer logId) {
-
-        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
-
-        for (GroupLog g : getGroupLogs(logId)) {     
-          AccessRights accessRights=g.getAccessRights();   
-          groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));        
-        }
-
-        return groupAccessTypeMap;
-    }
-
-
-    private AccessType getAccessType(AccessRights accessRights) {
-      AccessType accessType;
-      accessType=accessRights.hasAll()?
-          AccessType.OWNER : accessRights.hasReadWrite() ? 
-              AccessType.EDITOR : accessRights.isReadOnly() ?
-                  AccessType.VIEWER : AccessType.NONE;
-      return accessType;
-    }
-
-    public Map<Group, AccessType> getProcessACL(Integer processId) {
-
-        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
-
-        for (GroupProcess g : getGroupProcesses(processId)) {
-          AccessRights accessRights=g.getAccessRights();      
-          groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));  
-        }
-
-        return groupAccessTypeMap;
-    }
-
-    public Map<Group, AccessType> getFolderACL(Integer processId) {
-
-        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
-
-        for (GroupFolder g : getGroupFolders(processId)) {
-          AccessRights accessRights=g.getAccessRights();      
-          groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));  
-        }
-
-        return groupAccessTypeMap;
-    }
-
-    public void saveLogACL(Integer logId, String groupRowGuid, AccessType accessType) {
-      
-      if(!accessType.equals(AccessType.NONE))
-      {
-        saveLogPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
-      }
-       
-    }
-
-    public void saveProcessACL(Integer logId, String groupRowGuid, AccessType accessType) {
-      
-      if(!accessType.equals(AccessType.NONE))
-      {
-        saveProcessPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
-      }
-    }
-
-    public void saveFolderACL(Integer logId, String groupRowGuid, AccessType accessType) {
-      
-      if(!accessType.equals(AccessType.NONE))
-      {
-        saveFolderPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
-      }
-    }
-
-    // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
-    // field
-    public void deleteLogACL(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
-
-        removeLogPermissions(logId, groupRowGuid, username);
-    }
-
-    public void deleteProcessACL(Integer processId, String groupRowGuid) {
-
-        removeProcessPermissions(processId, groupRowGuid);
-    }
-
-    public void deleteFolderACL(Integer folderId, String groupRowGuid) {
-
-        removeFolderPermissions(folderId, groupRowGuid);
     }
 }

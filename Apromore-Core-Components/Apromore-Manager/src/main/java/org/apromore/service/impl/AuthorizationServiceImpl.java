@@ -1,0 +1,139 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+package org.apromore.service.impl;
+
+import org.apromore.dao.model.*;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.service.AuthorizationService;
+import org.apromore.service.WorkspaceService;
+import org.apromore.util.AccessType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+public class AuthorizationServiceImpl implements AuthorizationService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
+
+    private WorkspaceService workspaceService;
+
+    @Inject
+    public AuthorizationServiceImpl(final WorkspaceService workspaceService) {
+        this.workspaceService = workspaceService;
+    }
+
+    public Map<Group, AccessType> getLogAccessType(Integer logId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupLog g : workspaceService.getGroupLogs(logId)) {
+            AccessRights accessRights = g.getAccessRights();
+            groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    private AccessType getAccessType(AccessRights accessRights) {
+        AccessType accessType;
+        accessType = accessRights.hasAll() ?
+                AccessType.OWNER  : accessRights.hasReadWrite() ?
+                AccessType.EDITOR : accessRights.isReadOnly() ?
+                AccessType.VIEWER : AccessType.NONE;
+        return accessType;
+    }
+
+    public Map<Group, AccessType> getProcessAccessType(Integer processId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupProcess g : workspaceService.getGroupProcesses(processId)) {
+            AccessRights accessRights = g.getAccessRights();
+            groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    public Map<Group, AccessType> getFolderAccessType(Integer processId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupFolder g : workspaceService.getGroupFolders(processId)) {
+            AccessRights accessRights = g.getAccessRights();
+            groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
+
+        if (!accessType.equals(AccessType.NONE)) {
+            workspaceService.saveLogPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+                    accessType.isOwner());
+        }
+
+    }
+
+    public void saveProcessAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
+
+        if (!accessType.equals(AccessType.NONE)) {
+            workspaceService.saveProcessPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+                    accessType.isOwner());
+        }
+    }
+
+    public void saveFolderAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
+
+        if (!accessType.equals(AccessType.NONE)) {
+            workspaceService.saveFolderPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+                    accessType.isOwner());
+        }
+    }
+
+    // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
+    // field
+    public void deleteLogAccessType(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+
+        workspaceService.removeLogPermissions(logId, groupRowGuid, username);
+    }
+
+    public void deleteProcessAccessType(Integer processId, String groupRowGuid) {
+
+        workspaceService.removeProcessPermissions(processId, groupRowGuid);
+    }
+
+    public void deleteFolderAccessType(Integer folderId, String groupRowGuid) {
+
+        workspaceService.removeFolderPermissions(folderId, groupRowGuid);
+    }
+}

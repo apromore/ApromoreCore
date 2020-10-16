@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,7 +26,11 @@ import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.jpa.usermanagement.UserManagementBuilder;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.Process;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +38,7 @@ import org.springframework.test.annotation.Rollback;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroupLogUnitTest extends BaseTestClass {
+public class GroupProcessUnitTest extends BaseTestClass {
 
 
     private UserManagementBuilder userManagementBuilder;
@@ -54,11 +58,14 @@ public class GroupLogUnitTest extends BaseTestClass {
     }
 
     @Test
+    @Rollback
     public void testCreateGroupLog() {
 
         // Given
         AccessRights accessRights = new AccessRights(true, false, true);
         Group group = userManagementBuilder.withGroup("test GroupLog2", "GROUP").buildGroup();
+
+        Process process = new Process();
         Log log = new Log();
         log.setName("Test Log");
         log.setFilePath("filePath");
