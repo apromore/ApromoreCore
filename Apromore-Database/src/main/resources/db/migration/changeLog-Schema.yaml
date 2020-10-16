@@ -464,7 +464,18 @@ databaseChangeLog:
  - changeSet:
      id: 20201014123300
      author: frankm
-     failOnError: false
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+           - or:
+               - foreignKeyConstraintExists:
+                   foreignKeyName: fk_user_group
+               - indexExists:
+                   indexName: idx_search_history_position_search
+                   tableName: search_history
+               - indexExists:
+                   indexName: idx_group_row_guid
+                   tableName: group
      changes:
        - addForeignKeyConstraint:
            baseColumnNames: groupId
@@ -484,7 +495,7 @@ databaseChangeLog:
                  name: position
              - column:
                  name: search
-           indexName: idx_search_history
+           indexName: idx_search_history_position_search
            tableName: search_history
            unique: true
 
@@ -492,13 +503,17 @@ databaseChangeLog:
            columns:
              - column:
                  name: row_guid
-           indexName: group_row_guid_UNIQUE
+           indexName: idx_group_row_guid
            tableName: group
            unique: true
 
  - changeSet:
      id: 20201014125100
      author: frankm
+     preConditions:
+       - onFail: MARK_RAN
+       - tableExists:
+           tableName: dashboard_layout
      changes:
        - dropTable:
            cascadeConstraints:  true
