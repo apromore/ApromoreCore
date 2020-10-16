@@ -221,6 +221,7 @@
   let currentLayout = 0;
   let isCtrlPressed = false;
   let isAltPressed = false;
+  let isShiftPressed = false;
 
   let currentNodeTooltip;
   let currentZoomLevel = 1;
@@ -279,13 +280,16 @@
     if (!eventRegistered) {
       eventRegistered = true;
       $(document).keydown(function(evt) {
+        if (evt.shiftKey || 16 === evt.keyCode || 16 === evt.which) {
+          isShiftPressed = true;
+        }
         if (evt.ctrlKey || 17 === evt.keyCode || 17 === evt.which) {
           isCtrlPressed = true;
         }
         if (evt.altKey || 18 === evt.keyCode || 18 === evt.which) {
           isAltPressed = true;
         }
-        if (evt.ctrlKey && evt.which === 90) {
+        if (evt.ctrlKey && evt.which === 90) { // "Z" key
           if (cy.undoRedo().isUndoStackEmpty()) {
             history.undo((hist) => {
               if (hist) {
@@ -295,7 +299,7 @@
           } else {
             cy.undoRedo().undo();
           }
-        } else if (evt.ctrlKey && evt.which === 89) {
+        } else if (evt.ctrlKey && evt.which === 89) { // "Y" key
           if (cy.undoRedo().isRedoStackEmpty()) {
             let hist = history.redo((hist) => {
               if (hist) {
@@ -308,7 +312,7 @@
         }
       })
       $(document).keyup(function() {
-        isAltPressed = isCtrlPressed = false;
+        isAltPressed = isCtrlPressed = isShiftPressed = false;
       });
     }
   }
@@ -459,7 +463,9 @@
     if (source === '') { source = '|>'; }
     if (target === '') { target = '[]'; }
     let payload = source.concat(' => ', target);
-    if (isCtrlPressed) {
+    if (isShiftPressed) {
+      zkSendEvent('$filter', 'onInvokeExt', { type: 'ATTRIBUTE_ARC_DURATION', source, target  });
+    } else if (isCtrlPressed) {
       zkSendEvent(vizBridgeId, 'onEdgeRetained', payload);
     } else {
       zkSendEvent(vizBridgeId, 'onEdgeRemoved', payload);
@@ -471,7 +477,15 @@
     let graphEvent;
     let data = evTarget.data(NAME_PROP);
     if (data !== '') {
-      if (isCtrlPressed || isAltPressed) {
+      if (isShiftPressed) {
+        if  (isCtrlPressed) {
+          zkSendEvent('$filter', 'onInvokeExt', { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data });
+        } else {
+          zkSendEvent('$filter', 'onInvokeExt', { type: 'EVENT_ATTRIBUTE_DURATION', data });
+        }
+        // skip the history
+        return;
+      } else if (isCtrlPressed || isAltPressed) {
         if (isCtrlPressed && !isAltPressed) {
           graphEvent = 'onNodeRetainedTrace'
         } else if (!isCtrlPressed && isAltPressed) {
@@ -487,9 +501,7 @@
         event: graphEvent,
         data: data
       });
-
     }
-
   }
 
   function zkSendEvent(widgetId, event, payload) {

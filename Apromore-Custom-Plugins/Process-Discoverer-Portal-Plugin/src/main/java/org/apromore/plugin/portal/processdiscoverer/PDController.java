@@ -28,7 +28,6 @@ import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
@@ -63,8 +62,10 @@ import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -111,13 +112,14 @@ public class PDController extends BaseController {
     private final String FREQ_LABEL = "frequency";
     private final String DURATION_LABEL = "duration";
 
+    private final String CASE_SECTION_ATTRIBUTE_COMBINATION = "CASE_SECTION_ATTRIBUTE_COMBINATION";
+    private final String EVENT_ATTRIBUTE_DURATION = "EVENT_ATTRIBUTE_DURATION";
+    private final String ATTRIBUTE_ARC_DURATION = "ATTRIBUTE_ARC_DURATION";
 
     ///////////////////// UI CONTROLS /////////////////////////////
 
-
     private Checkbox layoutHierarchy;
     private Checkbox layoutDagreTopBottom;
-
 
     private Button filter;
     private Button filterClear;
@@ -478,6 +480,41 @@ public class PDController extends BaseController {
                     EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
                     eqFilteredView.publish(new Event("ctrl", null, payload));
                     Clients.clearBusy();
+                }
+            });
+            filter.addEventListener("onInvokeExt", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    Clients.showBusy("Launch Filter Dialog ...");
+                    try {
+                        JSONObject param = (JSONObject) event.getData();
+                        String type = (String) param.get("type");
+                        String data, source, target;
+                        UnifiedMap<String, String> parameters = new UnifiedMap<>();
+                        String mainAttribute = me.getUserOptions().getMainAttributeKey();
+                        if (CASE_SECTION_ATTRIBUTE_COMBINATION.equals(type) || EVENT_ATTRIBUTE_DURATION.equals(type)) {
+                            data = (String) param.get("data");
+                            parameters.put("filterType", type);
+                            parameters.put("attributeKey", mainAttribute);
+                            parameters.put("attributeValue", data);
+                        } else if (ATTRIBUTE_ARC_DURATION.equals(type)) {
+                            source = (String) param.get("source");
+                            target = (String) param.get("target");
+                            parameters.put("filterType", type);
+                            parameters.put("attributeKey", mainAttribute);
+                            parameters.put("indegreeValue", target);
+                            parameters.put("outdegreeValue", source);
+                        } else {
+                            return;
+                        }
+                        LogFilterController logFilterController = me.getFilterController();
+                        logFilterController.onEvent(event);
+                        EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
+                        eqFilteredView.publish(new Event("ctrl", null, parameters));
+                        Clients.clearBusy();
+                    } catch (Exception e) {
+                        LOGGER.error("Error occurred while launching quick filter: " + e.getMessage(), e);
+                    }
                 }
             });
             filter.addEventListener("onClick", this.getFilterController());
