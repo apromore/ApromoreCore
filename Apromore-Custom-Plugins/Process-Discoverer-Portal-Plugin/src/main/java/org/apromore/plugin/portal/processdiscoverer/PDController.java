@@ -485,7 +485,6 @@ public class PDController extends BaseController {
             filter.addEventListener("onInvokeExt", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    Clients.showBusy("Launch Filter Dialog ...");
                     try {
                         JSONObject param = (JSONObject) event.getData();
                         String type = (String) param.get("type");
@@ -494,19 +493,28 @@ public class PDController extends BaseController {
                         String mainAttribute = me.getUserOptions().getMainAttributeKey();
                         if (CASE_SECTION_ATTRIBUTE_COMBINATION.equals(type) || EVENT_ATTRIBUTE_DURATION.equals(type)) {
                             data = (String) param.get("data");
+                            if (EVENT_ATTRIBUTE_DURATION.equals(type) && !me.logData.hasSufficientDurationVariant(mainAttribute, data)) {
+                                Messagebox.show("The selected node leads to insufficient duration variant", "Filter error", Messagebox.OK, Messagebox.ERROR);
+                                return;
+                            }
                             parameters.put("filterType", type);
                             parameters.put("attributeKey", mainAttribute);
                             parameters.put("attributeValue", data);
                         } else if (ATTRIBUTE_ARC_DURATION.equals(type)) {
                             source = (String) param.get("source");
                             target = (String) param.get("target");
+                            if (!me.logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
+                                Messagebox.show("The selected arc leads to insufficient duration variant", "Filter error", Messagebox.OK, Messagebox.ERROR);
+                                return;
+                            }
                             parameters.put("filterType", type);
                             parameters.put("attributeKey", mainAttribute);
-                            parameters.put("indegreeValue", target);
-                            parameters.put("outdegreeValue", source);
+                            parameters.put("indegreeValue", source);
+                            parameters.put("outdegreeValue", target);
                         } else {
                             return;
                         }
+                        Clients.showBusy("Launch Filter Dialog ...");
                         LogFilterController logFilterController = me.getFilterController();
                         logFilterController.onEvent(event);
                         EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
