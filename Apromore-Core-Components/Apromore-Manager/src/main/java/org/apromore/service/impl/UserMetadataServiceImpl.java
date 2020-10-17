@@ -129,11 +129,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
         }
 
-        for (Integer logId : logIds) {
-            // Add linked artifact to the UsermetadataLog linked table
-            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.getLogReference(logId)));
-        }
-
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
         userMetadata.setUsermetadataLog(usermetadataLogSet);
@@ -312,13 +307,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Get all the user metadata that linked to specified logs
         List<Set<Usermetadata>> lists = new ArrayList<>();
         for (Integer logId : logIds) {
-            Set<Usermetadata> usermetadataList2 = new HashSet<>();
+            Set<Usermetadata> usermetadataSet = new HashSet<>();
             Set<UsermetadataLog> usermetadataLogSet =
                     new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
             for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
-                usermetadataList2.add(usermetadataLog.getUsermetadata());
+                usermetadataSet.add(usermetadataLog.getUsermetadata());
             }
-            lists.add(usermetadataList2);
+            lists.add(usermetadataSet);
         }
         // Find intersection of user metadata lists that get from specified logIds
         Set<Usermetadata> result = new HashSet<>();
@@ -327,7 +322,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                 if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
                     int count = 0;
                     Set<UsermetadataLog> umlSet = u.getUsermetadataLog();
-                    if (umlSet.size() == logIds.size()) {
+                    if (umlSet.size() == logIds.size()) {  // May have duplicated UsermetadataLog umlSet.size()
                         for (UsermetadataLog uml : umlSet) {
                             if (logIds.contains(uml.getLog().getId())) {
                                 count += 1;

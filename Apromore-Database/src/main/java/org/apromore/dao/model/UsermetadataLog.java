@@ -80,7 +80,7 @@ public class UsermetadataLog implements Serializable {
     /**
      * FK USERMETADATA ID
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "usermetadata_id")
     public Usermetadata getUsermetadata() {
         return this.usermetadata;
