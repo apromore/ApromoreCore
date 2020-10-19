@@ -105,6 +105,16 @@
           <n:div>retain <n:u>only</n:u> cases containing the selected directly-follows relation
           </n:div>
         </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="shift" class="shift-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>
+            retain <n:u>only</n:u> cases based on event attribute to attribute duration performance measure
+            containing the selected directly-follows relation
+          </n:div>
+        </n:div>
         <n:div class="ap-key-help-header">
           <n:div>
             <n:strong>On a node:</n:strong>
@@ -142,6 +152,26 @@
             <n:span>+ right-click</n:span>
           </n:div>
           <n:div>retain <n:u>only</n:u> events containing the selected attribute
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="shift" class="shift-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>
+            retain <n:u>only</n:u> cases containing the selected event attribute to attribute duration performance measure
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="shift" class="shift-kbd"></n:kbd>
+            <n:span>+</n:span>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span>+ right-click</n:span>
+          </n:div>
+          <n:div>
+            retain <n:u>only</n:u> cases containing the selected secondary attribute
           </n:div>
         </n:div>
       </div>

@@ -42,6 +42,8 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.AAttributeGraph;
+import org.apromore.apmlog.stats.AAttributeValue;
 import org.apromore.logman.ALog;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.log.AttributeInfo;
@@ -54,6 +56,7 @@ import org.apromore.commons.datetime.DateTimeUtil;
 import org.apromore.commons.datetime.DurationUtil;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 /**
  * LogDataWithAPMLog is {@link LogData} but uses APMLog to do filtering and some statistics data.
@@ -186,7 +189,20 @@ public class LogDataWithAPMLog extends LogData {
                 getDirectFollowRuleValue(value, attKey)));
     }
 
-    
+    @Override
+    public boolean hasSufficientDurationVariant(String attribute, String value) {
+        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
+        AAttributeValue aAttributeValue = aAttributeGraph.getAttributeValue(attribute, value);
+        return (aAttributeValue.getDurationsIndexMap().size() > 1);
+    }
+
+    @Override
+    public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
+        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
+        UnifiedSet<Double> durations = aAttributeGraph.getDurations(attribute, inDegree, outDegree, this.originalAPMLog);
+        return (durations.size() > 1);
+    }
+
     @Override
     public List<CaseDetails> getCaseDetails() {
         UnifiedMap<List<Integer>, Integer> actNameListCaseSizeMap = new UnifiedMap<>();
