@@ -58,9 +58,10 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     public List<Folder> findSubfolders(final int parentFolderId, final String userId, final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
         if (parentFolderId == 0) {
-            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.hasRead = TRUE) AND f.parentFolder IS NULL");
+            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.accessRights.readOnly = TRUE) AND f.parentFolder IS NULL");
         } else {
-            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g JOIN f.parentFolder fp, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.hasRead = TRUE) AND fp.id = ").append(parentFolderId);
+            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g JOIN f.parentFolder fp, User" +
+                    " u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.accessRights.readOnly = TRUE) AND fp.id = ").append(parentFolderId);
         }
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" AND ").append(conditions);
