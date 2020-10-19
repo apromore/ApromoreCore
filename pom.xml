@@ -109,8 +109,6 @@
 		<module>Apromore-Assembly/Manager-Assembly</module>
 		<module>Apromore-Assembly/Portal-Assembly</module>
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
-
-	  	<module>Apromore-Calendar</module>
     	<module>Apromore-Cache</module>
     	<module>Apromore-Database</module>
 

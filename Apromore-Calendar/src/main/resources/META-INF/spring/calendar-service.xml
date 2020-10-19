@@ -26,6 +26,10 @@
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
+            
+            
+
+	<context:component-scan base-package="org.apromore.calendar.mapper"/>
 
     <bean id="calendarService" class="org.apromore.calendar.service.CustomCalendarService">
         <property name="calendarRepo" ref="customCalendarRepository"/>

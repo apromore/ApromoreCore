@@ -30,7 +30,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-@ImportResource(value = {"classpath:META-INF/spring/calender-service.xml",
+@ImportResource(value = {"classpath:META-INF/spring/calendar-service.xml",
     "classpath:META-INF/spring/database-jpa.xml"})
 public class TestConfig {
   
