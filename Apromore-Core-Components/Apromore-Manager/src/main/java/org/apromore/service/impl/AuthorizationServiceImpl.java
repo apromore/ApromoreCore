@@ -104,35 +104,35 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     }
 
-    public void saveProcessAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
+    public void saveProcessAccessType(Integer processId, String groupRowGuid, AccessType accessType) {
 
         if (!accessType.equals(AccessType.NONE)) {
-            workspaceService.saveProcessPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+            workspaceService.saveProcessPermissions(processId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
                     accessType.isOwner());
         }
     }
 
-    public void saveFolderAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
+    public void saveFolderAccessType(Integer folderId, String groupRowGuid, AccessType accessType) {
 
         if (!accessType.equals(AccessType.NONE)) {
-            workspaceService.saveFolderPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+            workspaceService.saveFolderPermissions(folderId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
                     accessType.isOwner());
         }
     }
 
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
     // field
-    public void deleteLogAccessType(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+    public void deleteLogAccess(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
         workspaceService.removeLogPermissions(logId, groupRowGuid, username);
     }
 
-    public void deleteProcessAccessType(Integer processId, String groupRowGuid) {
+    public void deleteProcessAccess(Integer processId, String groupRowGuid) {
 
         workspaceService.removeProcessPermissions(processId, groupRowGuid);
     }
 
-    public void deleteFolderAccessType(Integer folderId, String groupRowGuid) {
+    public void deleteFolderAccess(Integer folderId, String groupRowGuid) {
 
         workspaceService.removeFolderPermissions(folderId, groupRowGuid);
     }

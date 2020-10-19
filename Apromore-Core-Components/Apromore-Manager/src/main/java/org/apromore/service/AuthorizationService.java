@@ -60,40 +60,40 @@ public interface AuthorizationService {
 
     /**
      * Save new GroupProcess or update existing one
-     * @param logId Log ID
+     * @param processId Process ID
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveProcessAccessType(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveProcessAccessType(Integer processId, String groupRowGuid, AccessType accessType);
 
     /**
      * Save new GroupFolder or update existing one
-     * @param logId Log ID
+     * @param folderId Log ID
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveFolderAccessType(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveFolderAccessType(Integer folderId, String groupRowGuid, AccessType accessType);
 
     /**
      * Delete one GroupLog record
-     * @param logId Log ID
+     * @param logId Folder ID
      * @param groupRowGuid Group UID
      * @param username User username
      * @throws UserNotFoundException Client side should handle this exception and prompt user as error
      */
-    void deleteLogAccessType(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
+    void deleteLogAccess(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
 
     /**
      * Delete one GroupLog record
      * @param processId Process ID
      * @param groupRowGuid Group UID
      */
-    void deleteProcessAccessType(Integer processId, String groupRowGuid);
+    void deleteProcessAccess(Integer processId, String groupRowGuid);
 
     /**
      * Delete one GroupLog record
      * @param folderId Process ID
      * @param groupRowGuid Group UID
      */
-    void deleteFolderAccessType(Integer folderId, String groupRowGuid);
+    void deleteFolderAccess(Integer folderId, String groupRowGuid);
 }
