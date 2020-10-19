@@ -75,6 +75,7 @@ public class Log implements Serializable {
     private Folder folder;
 
     private Set<GroupLog> groupLogs = new HashSet<>();
+    private Set<UsermetadataLog> usermetadataLogs = new HashSet<>();
 //    private List<ProcessBranch> processBranches = new ArrayList<>();
 
 
@@ -174,6 +175,15 @@ public class Log implements Serializable {
 
     public void setGroupLogs(Set<GroupLog> newGroupLogs) {
         this.groupLogs = newGroupLogs;
+    }
+
+    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<UsermetadataLog> getUsermetadataLogs() {
+        return this.usermetadataLogs;
+    }
+
+    public void setUsermetadataLogs(Set<UsermetadataLog> newUsermetadataLogs) {
+        this.usermetadataLogs = newUsermetadataLogs;
     }
     
     @Override

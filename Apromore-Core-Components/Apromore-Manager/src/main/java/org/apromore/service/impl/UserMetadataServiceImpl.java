@@ -26,6 +26,7 @@ import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
+import org.apromore.util.SecurityUtils;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -79,6 +81,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         this.usermetadataTypeRepo = usermetadataTypeRepo;
         this.usermetadataLogRepo = usermetadataLogRepo;
         this.groupRepo = groupRepository;
+       
     }
 
     @Override
@@ -141,6 +144,40 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     }
 
+    /**
+     *
+     * Find UserMetadata that linked to specified Log and Group
+     * @param logId logId
+     * @param groupRowGuid GroupId
+     * @return Set of GroupUsermetadata
+     */
+    private  Set<GroupUsermetadata> findByLogAndGroup(Integer logId, String groupRowGuid) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Set<GroupUsermetadata> result = new HashSet<>();
+
+        // All the user metadata that linked to this log
+        Set<UsermetadataLog> usermetadataLogSet =
+                new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+
+    
+            for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                Usermetadata u = usermetadataLog.getUsermetadata();
+
+                // Get all the user metadata that can be accessed by group
+                List<GroupUsermetadata> groupUsermetadataList = groupUsermetadataRepo.findByUsermetadataId(u.getId());
+
+                // Remove permissions assigned to specified group, and metadata itself
+                for (GroupUsermetadata g : groupUsermetadataList) {
+                    if (g.getGroup().equals(group)) {
+                        result.add(g);
+                    }
+                }
+            }
+
+        return result;
+    }
+
     @Override
     @Transactional
     public void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
@@ -182,28 +219,18 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid) {
+    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Set<GroupUsermetadata> groupUsermetadataSet;
 
-        // All the user metadata that linked to this log
-        List<UsermetadataLog> usermetadataLogList =
-                usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId));
+        groupUsermetadataSet = findByLogAndGroup(logId, groupRowGuid);
 
-        if (null != usermetadataLogList && usermetadataLogList.size() != 0) {
+        for (GroupUsermetadata g : groupUsermetadataSet) {
 
-            for (UsermetadataLog usermetadataLog : usermetadataLogList) {
-                Usermetadata u = usermetadataLog.getUsermetadata();
-
-                // Get all the user metadata that can be accessed by group
-                List<GroupUsermetadata> groupUsermetadataList = groupUsermetadataRepo.findByUsermetadataId(u.getId());
-
-                // Remove permissions assigned to specified group
-                for (GroupUsermetadata g : groupUsermetadataList) {
-                    if (g.getGroup().equals(group)) {
-                        groupUsermetadataRepo.delete(g);
-                    }
-                }
+            if(g.getUsermetadata().getGroupUserMetadata().size() == 1) { // if this metadata will be an orphan
+                deleteUserMetadata(g.getUsermetadata().getId(), username);
+            } else {
+                groupUsermetadataRepo.delete(g);
             }
         }
     }
@@ -240,11 +267,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
         usermetadataLogSet.clear();
         userMetadata.setUsermetadataLog(usermetadataLogSet);
+        usermetadataLogRepo.delete(usermetadataLogSet);
 
         // Delete all GroupUsermetadata
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
         groupUserMetadataSet.clear();
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+        groupUsermetadataRepo.delete(groupUserMetadataSet);
 
         // Invalidate Usermetadata
         userMetadataRepo.saveAndFlush(userMetadata);
@@ -278,13 +307,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Get all the user metadata that linked to specified logs
         List<Set<Usermetadata>> lists = new ArrayList<>();
         for (Integer logId : logIds) {
-            Set<Usermetadata> usermetadataList2 = new HashSet<>();
+            Set<Usermetadata> usermetadataSet = new HashSet<>();
             Set<UsermetadataLog> usermetadataLogSet =
                     new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
             for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
-                usermetadataList2.add(usermetadataLog.getUsermetadata());
+                usermetadataSet.add(usermetadataLog.getUsermetadata());
             }
-            lists.add(usermetadataList2);
+            lists.add(usermetadataSet);
         }
         // Find intersection of user metadata lists that get from specified logIds
         Set<Usermetadata> result = new HashSet<>();
@@ -293,7 +322,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                 if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
                     int count = 0;
                     Set<UsermetadataLog> umlSet = u.getUsermetadataLog();
-                    if (umlSet.size() == logIds.size()) {
+                    if (umlSet.size() == logIds.size()) {  // May have duplicated UsermetadataLog umlSet.size()
                         for (UsermetadataLog uml : umlSet) {
                             if (logIds.contains(uml.getLog().getId())) {
                                 count += 1;

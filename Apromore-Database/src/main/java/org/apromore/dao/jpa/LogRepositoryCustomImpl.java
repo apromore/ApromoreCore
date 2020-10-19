@@ -97,5 +97,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
         return query.getResultList();
     }
+    
+    public Log getLogReference(Integer logId)
+    {
+      return em.getReference(Log.class, logId);
+    }
 
 }

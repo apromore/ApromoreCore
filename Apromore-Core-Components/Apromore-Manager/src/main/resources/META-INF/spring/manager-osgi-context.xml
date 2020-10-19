@@ -84,5 +84,4 @@
     <osgi:reference id="userRepository" interface="org.apromore.dao.UserRepository"/>
     <osgi:reference id="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository"/>
 
-
 </beans:beans>

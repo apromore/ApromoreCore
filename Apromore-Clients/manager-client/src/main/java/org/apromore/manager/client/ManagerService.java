@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.model.DomainsType;
 import org.apromore.portal.model.ExportFormatResultType;
@@ -137,7 +138,7 @@ public interface ManagerService {
 
     String removeProcessPermissions(int processId, String userId);
 
-    String removeLogPermissions(int logId, String userId);
+    String removeLogPermissions(int logId, String userId, String username) throws UserNotFoundException;
 
     /**
      * Read all the users from the apromore manager.

@@ -24,39 +24,14 @@
 
 package org.apromore.service.impl;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.activation.DataHandler;
-import javax.xml.bind.JAXBException;
-import org.apache.tools.ant.taskdefs.Length.When;
+import com.google.common.io.CharStreams;
+import junit.framework.Assert;
 import org.apromore.TestData;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.NativeRepository;
-import org.apromore.dao.ProcessBranchRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Permission;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.*;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UserNotFoundException;
@@ -72,12 +47,18 @@ import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
 import org.eclipse.persistence.internal.oxm.ByteArrayDataSource;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.common.io.CharStreams;
+import javax.activation.DataHandler;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import junit.framework.Assert;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
 
 /**
  * 
@@ -1062,14 +1043,13 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
   }
 
   private GroupProcess createGroupProcess(Group group, Process process,
-      boolean hasOwnership, boolean hasRead, boolean hasWrite) {
+                                          boolean hasOwnership, boolean hasRead, boolean hasWrite) {
     GroupProcess gp = new GroupProcess();
     gp.setId(123);
     gp.setGroup(group);
     gp.setProcess(process);
-    gp.setHasOwnership(hasOwnership);
-    gp.setHasRead(hasRead);
-    gp.setHasWrite(hasWrite);
+    AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+    gp.setAccessRights(accessRights);
     return gp;
   }
 

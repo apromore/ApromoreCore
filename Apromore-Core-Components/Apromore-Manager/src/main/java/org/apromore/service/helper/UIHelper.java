@@ -207,16 +207,16 @@ public class UIHelper implements UserInterfaceHelper {
             if (processSummaryType == null) {
                 // New process, so create a new process summary entry
                 processSummaryType = buildProcessList(proIds, similarProcesses, groupProcess.getProcess());
-                processSummaryType.setHasRead(groupProcess.getHasRead());
-                processSummaryType.setHasWrite(groupProcess.getHasWrite());
-                processSummaryType.setHasOwnership(groupProcess.getHasOwnership());
+                processSummaryType.setHasRead(groupProcess.getAccessRights().isReadOnly());
+                processSummaryType.setHasWrite(groupProcess.getAccessRights().isWriteOnly());
+                processSummaryType.setHasOwnership(groupProcess.getAccessRights().isOwnerShip());
                 processSummaries.getSummary().add(processSummaryType);
                 map.put(groupProcess.getProcess().getId(), processSummaryType);
             } else {
                 // Existing process for a different group, so merge permissions in existing process summary entry
-                processSummaryType.setHasRead(processSummaryType.isHasRead()           || groupProcess.getHasRead());
-                processSummaryType.setHasWrite(processSummaryType.isHasWrite()         || groupProcess.getHasWrite());
-                processSummaryType.setHasOwnership(processSummaryType.isHasOwnership() || groupProcess.getHasOwnership());
+                processSummaryType.setHasRead(processSummaryType.isHasRead()           || groupProcess.getAccessRights().isReadOnly());
+                processSummaryType.setHasWrite(processSummaryType.isHasWrite()         || groupProcess.getAccessRights().isWriteOnly());
+                processSummaryType.setHasOwnership(processSummaryType.isHasOwnership() || groupProcess.getAccessRights().isOwnerShip());
             }
         }
 
@@ -298,9 +298,9 @@ public class UIHelper implements UserInterfaceHelper {
         List<GroupProcess> groupProcesses = gpRepository.findByProcessId(process.getId());
         boolean hasRead = false, hasWrite = false, hasOwnership = false;
         for (GroupProcess groupProcess: groupProcesses) {
-            hasRead = hasRead || groupProcess.getHasRead();
-            hasWrite = hasWrite || groupProcess.getHasWrite();
-            hasOwnership = hasOwnership || groupProcess.getHasOwnership();
+            hasRead = hasRead || groupProcess.getAccessRights().isReadOnly();
+            hasWrite = hasWrite || groupProcess.getAccessRights().isWriteOnly();
+            hasOwnership = hasOwnership || groupProcess.getAccessRights().isOwnerShip();
         }
         processSummary.setHasRead(hasRead);
         processSummary.setHasWrite(hasWrite);
@@ -320,9 +320,9 @@ public class UIHelper implements UserInterfaceHelper {
         List<GroupLog> groupLogs = glRepository.findByLogId(log.getId());
         boolean hasRead = true, hasWrite = true, hasOwnership = true;
         for (GroupLog groupLog: groupLogs) {
-            hasRead = hasRead || groupLog.getHasRead();
-            hasWrite = hasWrite || groupLog.getHasWrite();
-            hasOwnership = hasOwnership || groupLog.getHasOwnership();
+          hasRead = hasRead || groupLog.getAccessRights().isReadOnly();
+          hasWrite = hasWrite || groupLog.getAccessRights().isWriteOnly();
+          hasOwnership = hasOwnership || groupLog.getAccessRights().isOwnerShip();
         }
         logSummaryType.setHasRead(hasRead);
         logSummaryType.setHasWrite(hasWrite);
