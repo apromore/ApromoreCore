@@ -106,6 +106,7 @@
             <fileset refid="fileset-core-lpsolve-lib" />
         </copy>
 
+        <!-- Most recent version of the precompiled Window native Hadoop support files from https://github.com/cdarlint/winutils -->
         <copy todir="${core-dir-virgo}/hadoop.home.dir" overwrite="true">
             <fileset dir="${core-dir-sups}/hadoop-3.2.1"/>
         </copy>
