@@ -44,9 +44,9 @@ import org.apromore.commons.datetime.Constants;
  * ApromoreEE/Dashboard/src/main/java/dashboard/util/Util.java
  * ApromoreEE/FilterEE/src/main/java/org/apromore/plugin/portal/logfilteree/util/Util.java
  */
-public final class DateTimeUtil {
+public final class DateTimeUtils {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtil.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class.getName());
 
   private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
       .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
@@ -110,7 +110,4 @@ public final class DateTimeUtil {
   public static String humanize(long milliseconds) {
     return format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
   }
-  
-
-
 }

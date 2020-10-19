@@ -22,8 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.utils;
 
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.util.ItemUtil;
+import org.apromore.commons.io.Constants;
+import org.apromore.commons.io.FilenameUtils;
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -88,7 +88,7 @@ public class InputDialog {
         if (txtValue.getValue().trim().isEmpty()) {
             labelError.setValue("Please enter a value!");
         }
-        else if (!ItemUtil.hasValidName(txtValue.getValue())) {
+        else if (!FilenameUtils.hasValidName(txtValue.getValue())) {
             labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
         }
         else {

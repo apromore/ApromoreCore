@@ -20,20 +20,13 @@
  * #L%
  */
 
-package org.apromore.portal.util;
+package org.apromore.commons.io;
 
-import org.apromore.portal.common.Constants;
-import java.util.regex.Pattern;
+public interface Constants {
 
-/**
- * Various item utility functions
- */
-public final class ItemUtil {
-
-    /**
-     * Check if the name an item (filename, folder) is valid
-     */
-    public static final boolean hasValidName(String filename) {
-        return Pattern.matches(Constants.VALID_FILENAME_REGEX, filename);
-    }
+  // Original regex used in PD: "^[a-zA-Z0-9_\\(\\)\\-\\s\\.]{1,60}$"
+  // Sync with ApromoreCore/Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF/ui.properties
+  public static final String VALID_FILENAME_REGEX = "^[a-zA-Z0-9 &\\u0080-\\u9fff\\u005B\\u005D\\._\\+\\-\\(\\)]{1,60}$";
+  public static final String VALID_FILENAME_MESSAGE = "Use only letters, numbers, space and .-_[]()&. No more than 60 chars.";
+  public static final int VALID_FILENAME_MAX_LENGTH = 60;
 }

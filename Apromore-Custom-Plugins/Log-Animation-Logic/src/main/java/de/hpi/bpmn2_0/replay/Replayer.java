@@ -50,7 +50,7 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
+import org.joda.time.DateTimeUtilss;
 /**
  *
  * @author Administrator

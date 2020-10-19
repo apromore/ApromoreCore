@@ -31,7 +31,7 @@ import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.commons.datetime.DateTimeUtil;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -65,7 +65,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
             String lastUpdate = version.getLastUpdate();
 
             if (lastUpdate != null) {
-                lastUpdate = DateTimeUtil.normalize(lastUpdate);
+                lastUpdate = DateTimeUtils.normalize(lastUpdate);
             }
             version.setLastUpdate(lastUpdate);
             details.add(new VersionDetailType(data, version));
