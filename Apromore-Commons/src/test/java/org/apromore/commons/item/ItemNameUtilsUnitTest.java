@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.commons.io;
+package org.apromore.commons.item;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apromore.commons.io.FilenameUtils;
+import org.apromore.commons.item.ItemNameUtils;
 
 /**
  * Test filename validation
@@ -41,7 +41,7 @@ import org.apromore.commons.io.FilenameUtils;
  * Implicitly test the regex used by zk validation
  * in ApromoreCore/Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF/ui.properties
  */
-public class FilenameUtilsUnitTest {
+public class ItemNameUtilsUnitTest {
 
     private static Stream<Arguments> VALID_FILENAMES() {
         return Stream.of(
@@ -96,7 +96,7 @@ public class FilenameUtilsUnitTest {
     @ParameterizedTest
     @MethodSource("VALID_FILENAMES")
     public void hasValidName_ShouldPassValidFilename(String filename) {
-        if (!FilenameUtils.hasValidName(filename)) {
+        if (!ItemNameUtils.hasValidName(filename)) {
             fail("Invalid name " + filename);
         }
     }
@@ -104,7 +104,7 @@ public class FilenameUtilsUnitTest {
     @ParameterizedTest
     @MethodSource("INVALID_FILENAMES")
     public void hasValidName_ShouldNotPassInvalidFilename(String filename) {
-        if (FilenameUtils.hasValidName(filename)) {
+        if (ItemNameUtils.hasValidName(filename)) {
             fail("Invalid name " + filename);
         }
     }
@@ -112,13 +112,13 @@ public class FilenameUtilsUnitTest {
     @ParameterizedTest
     @MethodSource("MERGE_CASES")
     public void mergeNames_ShouldProvideValidMergedNames(String filename1, String filename2, String expected) {
-        assertEquals(FilenameUtils.mergeNames(filename1, filename2), expected);
+        assertEquals(ItemNameUtils.mergeNames(filename1, filename2), expected);
     }
 
     @ParameterizedTest
     @MethodSource("MERGE_LIST_CASES")
     public void mergeNames_ShouldProvideValidMergedNames(List<String> filenames, String expected) {
-        assertEquals(FilenameUtils.mergeNames(filenames), expected);
+        assertEquals(ItemNameUtils.mergeNames(filenames), expected);
     }
 
 }

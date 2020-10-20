@@ -35,7 +35,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apromore.commons.io.FilenameUtils;
+import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -126,7 +126,7 @@ public class MergePlugin extends DefaultPortalPlugin {
                     selectedProcessVersions.put((ProcessSummaryType) processSummaryType, entry.getValue());
                 }
             }
-            mergedProcessName = FilenameUtils.mergeNames(filenames);
+            mergedProcessName = ItemNameUtils.mergeNames(filenames);
             Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
 
             // At least 2 process versions must be selected. Not necessarily of different processes

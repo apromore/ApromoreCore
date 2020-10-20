@@ -20,9 +20,9 @@
  * #L%
  */
 
-package org.apromore.commons.io;
+package org.apromore.commons.item;
 
-import org.apromore.commons.io.Constants;
+import org.apromore.commons.item.Constants;
 
 import java.lang.Math;
 import java.util.regex.Pattern;
@@ -31,17 +31,17 @@ import java.util.List;
 /**
  * Various filename utility functions
  */
-public final class FilenameUtils {
+public final class ItemNameUtils {
 
     private static final String DELIMITERS = "\\._\\+\\- ";
     private static final String MERGED = "_merged";
-    private static final int MAX_LENGTH = Constants.VALID_FILENAME_MAX_LENGTH - MERGED.length();
+    private static final int MAX_LENGTH = Constants.VALID_NAME_MAX_LENGTH - MERGED.length();
 
     /**
      * Check if the name an item (filename, folder) is valid based on default regex
      */
     public static final boolean hasValidName(String filename) {
-        return Pattern.matches(Constants.VALID_FILENAME_REGEX, filename);
+        return Pattern.matches(Constants.VALID_NAME_REGEX, filename);
     }
 
     public static final boolean hasValidName(String filename, String pattern) {
@@ -63,7 +63,7 @@ public final class FilenameUtils {
                 if (i == 0) {
                     break;
                 }
-                if (FilenameUtils.DELIMITERS.indexOf(filename1.charAt(i - 1)) >= 0) {
+                if (ItemNameUtils.DELIMITERS.indexOf(filename1.charAt(i - 1)) >= 0) {
                     i = i - 1;
                 }
                 mergedName = filename1.substring(0, i);
@@ -73,10 +73,10 @@ public final class FilenameUtils {
         if (mergedName == null) {
             mergedName = filename1 + "_" + filename2;
         }
-        if (mergedName.length() > FilenameUtils.MAX_LENGTH) {
-            mergedName = mergedName.substring(0, FilenameUtils.MAX_LENGTH);
+        if (mergedName.length() > ItemNameUtils.MAX_LENGTH) {
+            mergedName = mergedName.substring(0, ItemNameUtils.MAX_LENGTH);
         }
-        return mergedName + FilenameUtils.MERGED;
+        return mergedName + ItemNameUtils.MERGED;
     }
 
     /**
@@ -104,7 +104,7 @@ public final class FilenameUtils {
                 if (i == 0) {
                     break;
                 }
-                if (FilenameUtils.DELIMITERS.indexOf(filenames.get(0).charAt(i - 1)) >= 0) {
+                if (ItemNameUtils.DELIMITERS.indexOf(filenames.get(0).charAt(i - 1)) >= 0) {
                     i = i - 1;
                 }
                 mergedName = filenames.get(0).substring(0, i);
@@ -114,9 +114,9 @@ public final class FilenameUtils {
         if (mergedName == null) {
             mergedName = String.join("_", filenames);
         }
-        if (mergedName.length() > FilenameUtils.MAX_LENGTH) {
-            mergedName = mergedName.substring(0, FilenameUtils.MAX_LENGTH);
+        if (mergedName.length() > ItemNameUtils.MAX_LENGTH) {
+            mergedName = mergedName.substring(0, ItemNameUtils.MAX_LENGTH);
         }
-        return mergedName + FilenameUtils.MERGED;
+        return mergedName + ItemNameUtils.MERGED;
     }
 }

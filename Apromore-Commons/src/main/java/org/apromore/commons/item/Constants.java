@@ -20,13 +20,13 @@
  * #L%
  */
 
-package org.apromore.commons.io;
+package org.apromore.commons.item;
 
 public interface Constants {
 
   // Original regex used in PD: "^[a-zA-Z0-9_\\(\\)\\-\\s\\.]{1,60}$"
   // Sync with ApromoreCore/Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF/ui.properties
-  public static final String VALID_FILENAME_REGEX = "^[a-zA-Z0-9 &\\u0080-\\u9fff\\u005B\\u005D\\._\\+\\-\\(\\)]{1,60}$";
-  public static final String VALID_FILENAME_MESSAGE = "Use only letters, numbers, space and .-_[]()&. No more than 60 chars.";
-  public static final int VALID_FILENAME_MAX_LENGTH = 60;
+  public static final String VALID_NAME_REGEX = "^[a-zA-Z0-9 &\\u0080-\\u9fff\\u005B\\u005D\\._\\+\\-\\(\\)]{1,60}$";
+  public static final String VALID_NAME_MESSAGE = "Use only letters, numbers, space and .-_[]()&. No more than 60 chars.";
+  public static final int VALID_NAME_MAX_LENGTH = 60;
 }

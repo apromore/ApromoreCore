@@ -22,8 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.utils;
 
-import org.apromore.commons.io.Constants;
-import org.apromore.commons.io.FilenameUtils;
+import org.apromore.commons.item.Constants;
+import org.apromore.commons.item.ItemNameUtils;
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -83,12 +83,12 @@ public class InputDialog {
     }
 
     public static void okHandler(Textbox txtValue, Label labelError, Window dialog, EventListener<Event> returnValueHander) throws Exception {
-        String allowedValues = Constants.VALID_FILENAME_MESSAGE;
+        String allowedValues = Constants.VALID_NAME_MESSAGE;
 
         if (txtValue.getValue().trim().isEmpty()) {
             labelError.setValue("Please enter a value!");
         }
-        else if (!FilenameUtils.hasValidName(txtValue.getValue())) {
+        else if (!ItemNameUtils.hasValidName(txtValue.getValue())) {
             labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
         }
         else {
