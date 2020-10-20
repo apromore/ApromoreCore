@@ -52,10 +52,11 @@ public final class DateTimeUtil {
       .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
       .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
       .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm:ss]"))
+      .appendOptional(Constants.DATE_TIME_FORMATTER_HUMANIZED)
       .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
       .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
       .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-      .appendOptional(Constants.DATE_TIME_FORMATTER_HUMANIZED).toFormatter();
+      .toFormatter();
 
   /**
    * Parse a date string in various predefined formats to a LocalDateTime
@@ -109,6 +110,7 @@ public final class DateTimeUtil {
   public static String humanize(long milliseconds) {
     return format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
   }
+  
 
 
 }
