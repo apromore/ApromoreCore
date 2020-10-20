@@ -79,6 +79,10 @@ public class Usermetadata implements Serializable {
      * Set of UserMetadataLog from linked table
      */
     private Set<UsermetadataLog> usermetadataLogSet = new HashSet<>();
+    /**
+     * Set of UserMetadataLog from linked table
+     */
+    private Set<UsermetadataProcess> usermetadataProcessSet = new HashSet<>();
 
     /**
      * ID
@@ -240,6 +244,18 @@ public class Usermetadata implements Serializable {
 
     public void setUsermetadataLog(Set<UsermetadataLog> newUsermetadataLogSet) {
         this.usermetadataLogSet = newUsermetadataLogSet;
+    }
+
+    /**
+     * Set of UserMetadataProcess from linked table
+     */
+    @OneToMany(mappedBy = "usermetadata", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<UsermetadataProcess> getUsermetadataProcess() {
+        return this.usermetadataProcessSet;
+    }
+
+    public void setUsermetadataProcess(Set<UsermetadataProcess> newUsermetadataProcessSet) {
+        this.usermetadataProcessSet = newUsermetadataProcessSet;
     }
 
     /**

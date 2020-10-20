@@ -216,7 +216,7 @@
 			<groupId>org.apromore</groupId>
 			<artifactId>apromore-database</artifactId>			
 		</dependency>
-				
+
 
         <!-- Spring dependencies -->
         <dependency>
