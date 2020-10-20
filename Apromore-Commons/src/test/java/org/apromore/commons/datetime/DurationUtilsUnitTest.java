@@ -31,12 +31,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.ParameterizedTest;
 
 import org.apromore.commons.datetime.DurationUnit;
-import org.apromore.commons.datetime.DurationUtil;
+import org.apromore.commons.datetime.DurationUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DurationUtilUnitTest {
+public class DurationUtilsUnitTest {
 
   private static Stream<Arguments> TEST_CASES() {
     return Stream.of(
@@ -55,7 +54,7 @@ public class DurationUtilUnitTest {
     DurationUnit durationUnit = DurationUnit.getDurationUnit(unit).get();
     double milliseconds = durationUnit.getUnitValue();
     String label = durationUnit.getPluralString();
-    String humanized = DurationUtil.humanize(milliseconds, true);
+    String humanized = DurationUtils.humanize(milliseconds, true);
     assertEquals("1.00 " + label, humanized);
   }
 
@@ -65,7 +64,7 @@ public class DurationUtilUnitTest {
     DurationUnit durationUnit = DurationUnit.getDurationUnit(unit).get();
     double milliseconds = durationUnit.getUnitValue();
     String label = durationUnit.getSingularString();
-    String humanized = DurationUtil.humanize(milliseconds, false);
+    String humanized = DurationUtils.humanize(milliseconds, false);
     assertEquals("1 " + label, humanized);
   }
 
@@ -75,7 +74,7 @@ public class DurationUtilUnitTest {
     DurationUnit durationUnit = DurationUnit.getDurationUnit(unit).get();
     double milliseconds = 2.34789D * durationUnit.getUnitValue();
     String label = durationUnit.getPluralString();
-    String humanized = DurationUtil.humanize(milliseconds, false);
+    String humanized = DurationUtils.humanize(milliseconds, false);
     assertEquals("2.35 " + label, humanized);
   }
 

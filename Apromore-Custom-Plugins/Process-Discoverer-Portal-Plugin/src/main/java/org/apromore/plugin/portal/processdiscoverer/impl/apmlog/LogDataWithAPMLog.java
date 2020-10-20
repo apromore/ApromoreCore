@@ -52,8 +52,8 @@ import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.commons.datetime.DateTimeUtil;
-import org.apromore.commons.datetime.DurationUtil;
+import org.apromore.commons.datetime.DateTimeUtils;
+import org.apromore.commons.datetime.DurationUtils;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -254,32 +254,32 @@ public class LogDataWithAPMLog extends LogData {
     
     @Override
     public String getFilteredStartTime() {
-        return DateTimeUtil.humanize(this.filteredAPMLog.getStartTime());
+        return DateTimeUtils.humanize(this.filteredAPMLog.getStartTime());
     }
 
     @Override
     public String getFilteredEndTime() {
-        return DateTimeUtil.humanize(this.filteredAPMLog.getEndTime());
+        return DateTimeUtils.humanize(this.filteredAPMLog.getEndTime());
     }
 
     @Override
     public String getFilteredMinDuration() {
-        return DurationUtil.humanize(this.filteredAPMLog.getMinDuration(), true);
+        return DurationUtils.humanize(this.filteredAPMLog.getMinDuration(), true);
     }
 
     @Override
     public String getFilteredMedianDuration() {
-        return DurationUtil.humanize(this.filteredAPMLog.getMedianDuration(), true);
+        return DurationUtils.humanize(this.filteredAPMLog.getMedianDuration(), true);
     }
 
     @Override
     public String getFilteredMeanDuration() {
-        return DurationUtil.humanize(this.filteredAPMLog.getAverageDuration(), true);
+        return DurationUtils.humanize(this.filteredAPMLog.getAverageDuration(), true);
     }
 
     @Override
     public String getFilteredMaxDuration() {
-        return DurationUtil.humanize(this.filteredAPMLog.getMaxDuration(), true);
+        return DurationUtils.humanize(this.filteredAPMLog.getMaxDuration(), true);
     }
     
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {

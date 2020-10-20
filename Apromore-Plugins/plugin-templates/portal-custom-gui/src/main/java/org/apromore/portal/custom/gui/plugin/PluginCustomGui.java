@@ -24,7 +24,7 @@
 
 package org.apromore.portal.custom.gui.plugin;
 
-import org.apromore.commons.datetime.DateTimeUtil;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.SessionTab;
@@ -140,7 +140,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         processSummaryRowValue.add(processSummaryType.getDomain());
         processSummaryRowValue.add(processSummaryType.getRanking());
         processSummaryRowValue.add(processSummaryType.getLastVersion());
-        processSummaryRowValue.add(DateTimeUtil.normalize(versionSummaryType.getLastUpdate()));
+        processSummaryRowValue.add(DateTimeUtils.normalize(versionSummaryType.getLastUpdate()));
 
         Boolean isMakePublic = processSummaryType.isMakePublic();
         String label;

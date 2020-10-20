@@ -33,12 +33,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.ParameterizedTest;
 
 import org.apromore.commons.datetime.Constants;
-import org.apromore.commons.datetime.DateTimeUtil;
+import org.apromore.commons.datetime.DateTimeUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DateTimeUtilUnitTest {
+public class DateTimeUtilsUnitTest {
 
   private static Stream<Arguments> TEST_CASES() {
     return Stream.of(
@@ -51,17 +50,17 @@ public class DateTimeUtilUnitTest {
   @ParameterizedTest
   @MethodSource("TEST_CASES")
   void normalize_ShouldGenerateNormalizedDate(String input, String expected) {
-    String normalizedDate = DateTimeUtil.normalize(input);
+    String normalizedDate = DateTimeUtils.normalize(input);
     assertEquals(expected, normalizedDate);
   }
 
   @ParameterizedTest
   @MethodSource("TEST_CASES")
   void format_ShouldGenerateSimpleFormattedDate(String input, String expected) {
-    LocalDateTime localDateTime = DateTimeUtil.parse(input);
+    LocalDateTime localDateTime = DateTimeUtils.parse(input);
     ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
     long milliseconds = zdt.toInstant().toEpochMilli();
-    String formattedDate = DateTimeUtil.format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
+    String formattedDate = DateTimeUtils.format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
     assertEquals(expected, formattedDate);
   }
 }

@@ -21,7 +21,7 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.vis;
 
-import org.apromore.commons.datetime.DurationUtil;
+import org.apromore.commons.datetime.DurationUtils;
 
 /**
  * Abstract time conversion in this class
@@ -32,7 +32,7 @@ public class TimeConverter {
      * This is used for the node duration, so forceDecimal is set to false to conserve space
      */
     public String convertMilliseconds(String number) {
-        return DurationUtil.humanize(Double.parseDouble(number), false);
+        return DurationUtils.humanize(Double.parseDouble(number), false);
     }
 
     /**
@@ -40,6 +40,6 @@ public class TimeConverter {
      * e.g. all displayed in 0.00 format.
      */
     public String convertMilliseconds(double milliseconds) {
-        return DurationUtil.humanize(milliseconds, true);
+        return DurationUtils.humanize(milliseconds, true);
     }
 }

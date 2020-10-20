@@ -36,7 +36,7 @@ import org.apromore.commons.datetime.Constants;
  * ApromoreEE/Dashboard/src/main/java/dashboard/util/Util.java
  * ApromoreEE/FilterEE/src/main/java/org/apromore/plugin/portal/logfilteree/util/Util.java
  */
-public final class DurationUtil {
+public final class DurationUtils {
 
   /**
    * Humanize duration
