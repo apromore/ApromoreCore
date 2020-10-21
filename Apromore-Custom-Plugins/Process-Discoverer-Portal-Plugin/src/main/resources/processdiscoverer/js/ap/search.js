@@ -211,11 +211,13 @@
             searchOptions.empty();
             currentOptionIndex = null;
             searchResults.forEach(function (result, index) {
+              const label = result.label;
               searchOptions.append(
                   $("<div></div>")
                   .attr('data-id', result.id)
                   .attr('data-index', index)
-                  .text(result.label)
+                  .attr('title', label)
+                  .text(label)
                   .click(
                       function (e) {
                         currentOptionIndex = index;
