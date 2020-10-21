@@ -74,10 +74,24 @@ public class TestUtilities {
         return logString.replaceAll(p.pattern(), "");
     }
 
-    public String xlogToString(XLog xlog) throws IOException {
+    public static String xlogToString(XLog xlog, String charset) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         (new XesXmlSerializer()).serialize(xlog, baos);
-        return baos.toString();
+        return baos.toString(charset);
+    }
+
+    public static String xlogToString(XLog xlog) throws IOException {
+        return xlogToString(xlog, "utf-8");
+    }
+
+    /**
+     * @param resource  the classpath of a test document, e.g. "/test1-expected.xes"
+     * @param charset  the name of the {@link Charset} used to encode the <var>resource</var>
+     * @return the content of the document, with line endings normalized to LF (i.e. unix convention)
+     * @throws IOException if the <var>resource</var> cannot be read
+     */
+    public static String resourceToString(String resource, String charset) throws IOException {
+        return new String(ByteStreams.toByteArray(TestUtilities.class.getResourceAsStream(resource)), Charset.forName(charset));
     }
 
     /**
@@ -86,6 +100,6 @@ public class TestUtilities {
      * @throws IOException if the <var>resource</var> cannot be read
      */
     public static String resourceToString(String resource) throws IOException {
-        return new String(ByteStreams.toByteArray(TestUtilities.class.getResourceAsStream(resource)), Charset.forName("utf-8"));
+        return resourceToString(resource, "utf-8");
     }
 }

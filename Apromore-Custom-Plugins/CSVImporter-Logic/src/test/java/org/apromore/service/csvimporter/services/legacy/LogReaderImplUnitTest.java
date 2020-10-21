@@ -447,7 +447,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test11-encoding.csv";
         String expectedFile = "/test11-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
+        String expectedXES = TestUtilities.resourceToString(expectedFile, "windows-1255").replaceAll("\\r\\n?", "\n");
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
@@ -467,6 +467,6 @@ public class LogReaderImplUnitTest {
         assertNotNull(xlog);
         assertEquals(
                 utilities.removeTimezone(expectedXES),
-                utilities.removeTimezone(utilities.xlogToString(xlog)));
+                utilities.removeTimezone(TestUtilities.xlogToString(xlog, "windows-1255")));
     }
 }
