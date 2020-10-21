@@ -40,7 +40,11 @@ public class Usermetadata implements Serializable {
      */
     private Integer id;
     /**
-     * FK User mtadata type id
+     * The name of user metadata
+     */
+    private String name;
+    /**
+     * FK User metadata type id
      */
     private UsermetadataType usermetadataType;
     /**
@@ -102,7 +106,22 @@ public class Usermetadata implements Serializable {
     }
 
     /**
-     * FK User mtadata type id
+     * The name of user metadata
+     */
+    @Column(name = "name")
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * The name of user metadata
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * FK User metadata type id
      */
     @ManyToOne
     @JoinColumn(name = "type_id")
@@ -111,7 +130,7 @@ public class Usermetadata implements Serializable {
     }
 
     /**
-     * FK User mtadata type id
+     * FK User metadata type id
      */
     public void setUsermetadataType(UsermetadataType usermetadataType) {
         this.usermetadataType = usermetadataType;
