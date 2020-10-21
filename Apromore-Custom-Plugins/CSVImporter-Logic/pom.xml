@@ -80,6 +80,16 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin}</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <hadoop.home.dir>${project.parent.basedir}/Supplements/hadoop-3.2.1</hadoop.home.dir>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
