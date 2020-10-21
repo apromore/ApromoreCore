@@ -21,11 +21,10 @@
  */
 package org.apromore.service;
 
-import org.apromore.dao.model.Log;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 
 import java.util.List;
@@ -172,6 +171,8 @@ public interface UserMetadataService {
      * @throws UserNotFoundException Can't find a user with specified username
      */
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
+
+    AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata);
 
     /**
      * Find a set of user metadata which is not linked to log.

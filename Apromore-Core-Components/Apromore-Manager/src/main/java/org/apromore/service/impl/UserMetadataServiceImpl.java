@@ -27,6 +27,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
+import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -381,6 +382,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             }
         }
         return false;
+    }
+
+    @Override
+    public AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata) {
+
+        GroupUsermetadata gu = groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+        return AccessType.getAccessType(gu.getHasRead(), gu.getHasWrite(), gu.getHasOwnership());
     }
 
     @Override

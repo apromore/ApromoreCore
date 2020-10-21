@@ -28,6 +28,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
+import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 
 import org.junit.Assert;
@@ -824,5 +825,53 @@ public class UserMetadataServiceImplTest {
 
         em.getTransaction().commit();
         em.close();
+    }
+
+    @Test
+    public void getUserMetadataAccessType() {
+
+        Group g1 = new Group(1);
+        Group g2 = new Group(2);
+        Group g3 = new Group(3);
+
+        UsermetadataType usermetadataType1 = new UsermetadataType();
+        usermetadataType1.setIsValid(true);
+        usermetadataType1.setType("FILTER");
+        usermetadataType1.setVersion(1);
+        usermetadataType1.setId(1);
+
+        Usermetadata um = new Usermetadata();
+        um.setId(1);
+        um.setContent("test content");
+        um.setCreatedBy("user_UUID");
+        um.setCreatedTime(now);
+        um.setIsValid(true);
+        um.setRevision(1);
+        um.setUsermetadataType(usermetadataType1);
+        um.setUpdatedBy("user_UUID");
+        um.setUpdatedTime(now);
+
+        GroupUsermetadata gu = new GroupUsermetadata(g1, um, true, true, true);
+        GroupUsermetadata gu2 = new GroupUsermetadata(g2, um, true, true, false);
+        GroupUsermetadata gu3 = new GroupUsermetadata(g3, um, true, false, false);
+        Set<GroupUsermetadata> groupUsermetadataSet = new HashSet<>();
+        groupUsermetadataSet.add(gu);
+        groupUsermetadataSet.add(gu2);
+        groupUsermetadataSet.add(gu3);
+
+        um.setGroupUserMetadata(groupUsermetadataSet);
+
+        AccessType expectedResult = AccessType.OWNER;
+
+        expect(groupUsermetadataRepo.findByGroupAndUsermetadata(g1, um)).andReturn(gu);
+        expect(groupUsermetadataRepo.findByGroupAndUsermetadata(g2, um)).andReturn(gu2);
+        expect(groupUsermetadataRepo.findByGroupAndUsermetadata(g3, um)).andReturn(gu3);
+        replayAll();
+
+        AccessType result = userMetadataService.getUserMetadataAccessType(g1, um);
+        assertThat(result, equalTo(expectedResult));
+        assertThat(userMetadataService.getUserMetadataAccessType(g2, um), equalTo(AccessType.EDITOR));
+        assertThat(userMetadataService.getUserMetadataAccessType(g3, um), equalTo(AccessType.VIEWER));
+
     }
 }
