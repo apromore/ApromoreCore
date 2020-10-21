@@ -109,7 +109,7 @@ public class XLSXLogReaderImplUnitTest {
         String testFile = "/test1-valid.xlsx";
         String expectedFile = "/test1-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         //Generate sample
         LogSample sample = sampleLogGenerator
@@ -145,7 +145,7 @@ public class XLSXLogReaderImplUnitTest {
         String testFile = "/test2-missing-columns.xlsx";
         String expectedFile = "/test2-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         //Generate sample
         LogSample sample = sampleLogGenerator
@@ -182,7 +182,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test3-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -219,7 +219,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test4-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -255,7 +255,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test5-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -292,7 +292,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test7-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -353,7 +353,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test9-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -396,7 +396,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test10-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
