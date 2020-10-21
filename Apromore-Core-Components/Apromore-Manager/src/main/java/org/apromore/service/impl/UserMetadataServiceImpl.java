@@ -283,7 +283,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadataByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
-        assert user != null;
 
         // Get all the user metadata that can be accessed by groups that contain specified user
         Set<Usermetadata> umSet = new HashSet<>();
@@ -304,8 +303,10 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     public Set<Usermetadata> getUserMetadataByLogs(List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum) {
 
+        Set<Usermetadata> result = new HashSet<>();
+
         if (null == logIds || logIds.size() == 0) {
-            return null;
+            return result;
         }
 
         // Get all the user metadata that linked to specified logs
@@ -314,7 +315,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             lists.add(getUserMetadataByLog(logId, userMetadataTypeEnum));
         }
         // Find intersection of user metadata lists that get from specified logIds
-        Set<Usermetadata> result = new HashSet<>();
         for (Set<Usermetadata> umSet : lists) {
             for (Usermetadata u : umSet) {
                 int count = 0;
@@ -367,7 +367,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Find intersection of user metadata lists that get from 2 linked tables (log, group)
         umSetLinkedToUser.retainAll(umSetLinkedToLogs);
 
-        return umSetLinkedToUser.size() > 0 ? umSetLinkedToUser : null;
+        return umSetLinkedToUser;
     }
 
 
@@ -421,7 +421,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
-        assert user != null;
 
         // Get all the user metadata that can be accessed by groups that contain specified user
         Set<GroupUsermetadata> groupUsermetadataSet = new HashSet<>();

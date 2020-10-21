@@ -206,7 +206,7 @@ public class UserMetadataServiceImplTest {
     }
 
     @Test
-    public void testGetUserMetadataByLogs() throws UserNotFoundException {
+    public void testGetUserMetadataByLogs() {
 
         String username = "test_username";
 
@@ -312,6 +312,18 @@ public class UserMetadataServiceImplTest {
         verifyAll();
         assertThat(usermetadataSet, equalTo(usermetadataSetExpect));
 
+    }
+
+    @Test
+    public void testGetUserMetadataByLogsReturnEmptySet() {
+
+        List<Integer> logIds = new ArrayList<>();
+        Set<Usermetadata> usermetadataSetExpect = new HashSet<>();
+
+        Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLogs(logIds,
+                UserMetadataTypeEnum.FILTER);
+
+        assertThat(usermetadataSet, equalTo(usermetadataSetExpect));
     }
 
     private Usermetadata generateUsermetadata () {
