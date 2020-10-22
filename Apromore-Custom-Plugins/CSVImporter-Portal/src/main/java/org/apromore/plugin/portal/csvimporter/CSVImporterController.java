@@ -348,27 +348,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
     }
 
-    private String storeMappingAsJSON(Media media, LogSample logSample, Log log) throws UserNotFoundException {
+    private void storeMappingAsJSON(Media media, LogSample logSample, Log log) throws UserNotFoundException {
 
         String username = portalContext.getCurrentUser().getUsername();
 
-        String jsonStr = null;
-
-//        JSONObject jsonMapping = new JSONObject();
-//
-//        jsonMapping.put("header", logSample.getHeader());
-//        jsonMapping.put("caseIdPos", logSample.getCaseIdPos());
-//        jsonMapping.put("activityPos", logSample.getActivityPos());
-//        jsonMapping.put("endTimestampPos", logSample.getEndTimestampPos());
-//        jsonMapping.put("startTimestampPos", logSample.getStartTimestampPos());
-//        jsonMapping.put("resourcePos", logSample.getResourcePos());
-//        jsonMapping.put("caseAttributesPos", logSample.getCaseAttributesPos());
-//        jsonMapping.put("eventAttributesPos", logSample.getEventAttributesPos());
-//        jsonMapping.put("otherTimestamps", logSample.getOtherTimestamps());
-//        jsonMapping.put("ignoredPos", logSample.getIgnoredPos());
-//        jsonMapping.put("endTimestampFormat", logSample.getEndTimestampFormat());
-//        jsonMapping.put("startTimestampFormat", logSample.getStartTimestampFormat());
-
+        String jsonStr = "";
 
         // Creating Object of ObjectMapper define in Jakson Api
         ObjectMapper Obj = new ObjectMapper();
@@ -378,9 +362,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             e.printStackTrace();
         }
 
-        userMetadataService.saveUserMetadataLinkedToOneLog(jsonStr, UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
+        userMetadataService.saveUserMetadataLinkedToOneLog("Default CSV schema mapping name", jsonStr,
+                UserMetadataTypeEnum.CSV_IMPORTER, username,
+                log.getId());
 
-        return null;
     }
 
     public ResourceBundle getLabels() {

@@ -21,14 +21,13 @@
  */
 package org.apromore.service;
 
-import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface UserMetadataService {
@@ -36,26 +35,31 @@ public interface UserMetadataService {
     /**
      * Save as a new User Metadata
      *
-     * @param metadata             Content of user metadata
+     * @param userMetadataName     Name of user metadata
+     * @param userMetadataContent  Content of user metadata
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @param username             username
      * @param logIds               List of logId
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    void saveUserMetadata(String metadata, UserMetadataTypeEnum userMetadataTypeEnum, String username,
+    void saveUserMetadata(String userMetadataName, String userMetadataContent,
+                          UserMetadataTypeEnum userMetadataTypeEnum,
+                          String username,
                           List<Integer> logIds) throws UserNotFoundException;
 
 
     /**
      * Save as a new User Metadata. Use this method when only one log is linked to this metadata.
      *
+     * @param userMetadataName     Name of user metadata
      * @param userMetadataContent  Content of user metadata
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @param username             username
      * @param logId                logId
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+    void saveUserMetadataLinkedToOneLog(String userMetadataName, String userMetadataContent,
+                                        UserMetadataTypeEnum userMetadataTypeEnum,
                                         String username,
                                         Integer logId) throws UserNotFoundException;
 
