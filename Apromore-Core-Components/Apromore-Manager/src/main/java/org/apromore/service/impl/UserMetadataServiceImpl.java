@@ -204,9 +204,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                 u, true, false, false);
                         u.getGroupUserMetadata().add(g);
                     } else {
-                        g.setHasRead(true);
-                        g.setHasWrite(false);
-                        g.setHasOwnership(false);
+                        g.setAccessRights(new AccessRights(true, false, false));
 
                     }
                     groupUsermetadataRepo.save(g);

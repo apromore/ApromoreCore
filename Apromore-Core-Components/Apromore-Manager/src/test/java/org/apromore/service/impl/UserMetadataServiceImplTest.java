@@ -815,9 +815,7 @@ public class UserMetadataServiceImplTest {
         GroupUsermetadata gu = new GroupUsermetadata();
         gu.setGroup(group);
         gu.setUsermetadata(um);
-        gu.setHasOwnership(true);
-        gu.setHasRead(true);
-        gu.setHasWrite(true);
+        gu.setAccessRights(new AccessRights(true, true, true));
 
         em.getTransaction().begin();
 
