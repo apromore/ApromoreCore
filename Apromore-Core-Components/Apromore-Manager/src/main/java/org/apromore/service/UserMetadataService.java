@@ -21,13 +21,14 @@
  */
 package org.apromore.service;
 
-import org.apromore.dao.model.Log;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.*;
+import org.apromore.dao.model.Process;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface UserMetadataService {
@@ -57,6 +58,15 @@ public interface UserMetadataService {
     void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                         String username,
                                         Integer logId) throws UserNotFoundException;
+
+    /**
+     * Save a user metadata which is not linked to log. So it can not be shared to other users at stage one.
+     *
+     * @param content Content of user metadata
+     * @param username username
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
 
     /**
      * Assign specified group with permission to all the user metadata that linked to the specified log
@@ -98,6 +108,14 @@ public interface UserMetadataService {
     void deleteUserMetadata(Integer userMetadataId, String username) throws UserNotFoundException;
 
     /**
+     * Delete user metadata that linked to specified log
+     * @param log Log
+     * @param user User
+     * @throws UserNotFoundException
+     */
+    void deleteUserMetadataByLog(Log log, User user) throws UserNotFoundException;
+
+    /**
      * Find a set of user metadata
      *
      * @param username             username
@@ -110,6 +128,41 @@ public interface UserMetadataService {
                                       UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
 
     /**
+     * Find a set of user metadata by username and type
+     * @param username username
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A set of user metadata
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    Set<Usermetadata> getUserMetadataByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
+    /**
+     * Find a set of user metadata that are linked to specified list of Logs and type
+     * @param logIds List of logId
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A set of user metadata
+     */
+    Set<Usermetadata> getUserMetadataByLogs(List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum);
+
+    /**
+     * Find a set of user metadata that are linked to specified Log and type
+     * @param logId Log Id
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A set of user metadata
+     */
+    Set<Usermetadata> getUserMetadataByLog(Integer logId, UserMetadataTypeEnum userMetadataTypeEnum);
+
+    /**
+     * Find a set of user metadata that are linked to specified User, Log and type
+     * @param username Name of User
+     * @param logId Log Id
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A set of user metadata
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    Set<Usermetadata> getUserMetadataByUserAndLog(String username, Integer logId,
+                                                  UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+    /**
      * Find whether is specified user can write to this user metadata
      *
      * @param username       username
@@ -119,14 +172,7 @@ public interface UserMetadataService {
      */
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
-    /**
-     * Save a user metadata which is not linked to log. So it can not be shared to other users at stage one.
-     *
-     * @param content Content of user metadata
-     * @param username username
-     * @throws UserNotFoundException Can't find a user with specified username
-     */
-    void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
+    AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata);
 
     /**
      * Find a set of user metadata which is not linked to log.
@@ -137,7 +183,27 @@ public interface UserMetadataService {
      */
     Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
 
-    void deleteUserMetadataByLog(Log log, User user) throws UserNotFoundException;
 
+    /**
+     * Get dependent logs of a specified user metadata
+     * @param usermetadata Usermetadata
+     * @return List of Log
+     */
+    List<Log> getDependentLog(Usermetadata usermetadata);
+
+    /**
+     * Get dependent processes of a specified user metadata
+     * @param usermetadata Usermetadata
+     * @return List of processes
+     */
+    List<Process> getDependentProcess(Usermetadata usermetadata);
+
+    /**
+     * Get User by unique id
+     * @param rowGuid unique id
+     * @return User
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
     User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
+
 }

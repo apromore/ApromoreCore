@@ -21,11 +21,17 @@
  */
 package org.apromore.dao.model;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
-
+@Entity
 @Table(name = "usermetadata_process")
+@Configurable("usermetadata_process")
+@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class UsermetadataProcess implements Serializable, Cloneable {
     /**
      *
@@ -34,11 +40,25 @@ public class UsermetadataProcess implements Serializable, Cloneable {
     /**
      * FK USERMETADATA ID
      */
-    private Integer usermetadataId;
+    private Usermetadata usermetadata;
     /**
      * FK PROCESS ID
      */
-    private Integer processId;
+    private Process process;
+
+    /**
+     * Default Constructor.
+     */
+    public UsermetadataProcess() {
+    }
+
+    /**
+     * Convenient constructor.
+     */
+    public UsermetadataProcess(Usermetadata newUsermetadata, Process newProcerss) {
+        this.usermetadata = newUsermetadata;
+        this.process = newProcerss;
+    }
 
     /**
      * ID
@@ -62,15 +82,15 @@ public class UsermetadataProcess implements Serializable, Cloneable {
      */
     @ManyToOne
     @JoinColumn(name = "usermetadata_id")
-    public Integer getUsermetadataId() {
-        return this.usermetadataId;
+    public Usermetadata getUsermetadata() {
+        return this.usermetadata;
     }
 
     /**
      * FK USERMETADATA ID
      */
-    public void setUsermetadataId(Integer usermetadataId) {
-        this.usermetadataId = usermetadataId;
+    public void setUsermetadata(Usermetadata usermetadata) {
+        this.usermetadata = usermetadata;
     }
 
     /**
@@ -78,14 +98,14 @@ public class UsermetadataProcess implements Serializable, Cloneable {
      */
     @ManyToOne
     @JoinColumn(name = "process_id")
-    public Integer getProcessId() {
-        return this.processId;
+    public Process getProcess() {
+        return this.process;
     }
 
     /**
      * FK PROCESS ID
      */
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
+    public void setProcess(Process process) {
+        this.process = process;
     }
 }
