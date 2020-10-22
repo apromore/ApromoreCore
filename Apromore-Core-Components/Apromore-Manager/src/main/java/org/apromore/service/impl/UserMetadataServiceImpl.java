@@ -86,19 +86,19 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+    public void saveUserMetadataLinkedToOneLog(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                                String username,
                                                Integer logId) throws UserNotFoundException {
 
         List<Integer> logIds = new LinkedList<>();
         logIds.add(logId);
 
-        saveUserMetadata(userMetadataContent, userMetadataTypeEnum, username, logIds);
+        saveUserMetadata(userMetadataName, userMetadataContent, userMetadataTypeEnum, username, logIds);
     }
 
     @Override
     @Transactional
-    public void saveUserMetadata(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
+    public void saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
                                  List<Integer> logIds) throws UserNotFoundException {
 
         //TODO:
@@ -137,6 +137,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setCreatedBy(user.getRowGuid());
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(userMetadataContent);
+        userMetadata.setName(userMetadataName);
 
         // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
         userMetadataRepo.saveAndFlush(userMetadata);

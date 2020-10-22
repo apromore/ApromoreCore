@@ -88,6 +88,26 @@ public class Usermetadata implements Serializable {
      */
     private Set<UsermetadataProcess> usermetadataProcessSet = new HashSet<>();
 
+    private Set<Log> logs = new HashSet<>();
+
+    /**
+     * @return all the logs this user metadata is linked to
+     */
+    @ManyToMany
+    @JoinTable(name = "usermetadata_log",
+            joinColumns = @JoinColumn(name = "usermetadata_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "log_id", referencedColumnName = "id"))
+    public Set<Log> getLogs() {
+        return logs;
+    }
+
+    /**
+     * @param newLogs all the log which this user metadata linked to
+     */
+    public void setLogs(final Set<Log> newLogs) {
+        this.logs = newLogs;
+    }
+
     /**
      * ID
      */
