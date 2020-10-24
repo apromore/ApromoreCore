@@ -1,0 +1,91 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<window xmlns:ca="client/attribute"
+        xmlns:n="native"
+        sclass="ap-calendar-win"
+        width="90%" height="600px" position="center"
+        style="max-width: 1400px;"
+        closable="true"
+        title="Custom Calendar" viewModel="@id('vm') @init('org.apromore.portal.common.calendar.CalendarViewModel')">
+  <script type="text/javascript" src="/themes/ap/calendar/js/index.js"></script>
+  <style src="/themes/ap/calendar/css/index.css" />
+  <n:div id="binder"></n:div>
+  <vbox height="100%" hflex="1" spacing="0">
+    <div sclass="ap-portal-menu-actions" hflex="1" height="40px"
+         style="box-sizing: border-box; padding: 8px;">
+    </div>
+    <listbox model="@bind(vm.itemList)" vflex="1" hflex="1" nonselectableTags="*">
+      <listhead>
+        <listheader align="center" label="" width="36px" /><!-- icon -->
+        <listheader align="left" label="" width="160px" />
+        <listheader align="center" label="" width="36px" style="cursor:pointer;" /><!-- delete/add icon -->
+        <listheader align="left" label="Start Time" hflex="min" />
+        <listheader align="left" label="End Time" hflex="min" />
+        <listheader align="left" label="" hflex="1" />
+      </listhead>
+      <template name="model">
+        <listitem sclass="@bind(each.holiday ? 'holiday' : 'workday')">
+          <listcell>
+            <span sclass="@bind('ap-icon '.concat(each.holiday ? 'ap-icon-holiday' : 'ap-icon-workday'))"
+                  style="display: inline-block" />
+          </listcell>
+          <listcell>
+            <datebox hflex="1"
+                     format="@bind(each.format)"
+                     value="@bind(each.date)"
+                     onChanging="@command('updateDate', item=each)"
+            />
+          </listcell>
+          <listcell>
+            <button sclass="ap-icon ap-icon-trash"
+                    tooltiptext="Remove"
+                    onClick="@command('removeItem',item=each)"
+                    visible="@bind(each.holiday and each.date ne null)"
+            />
+          </listcell>
+          <listcell>
+            <timebox sclass="start-time" cols="8" format="HH:mm" visible="@bind(!each.holiday)"
+                     value="@bind(each.startTime)"
+                     ca:onChange="Ap.calendar.changeStartDate()"
+                     onChanging="@command('updateStartTime', item=each, date=event.value)"
+            />
+          </listcell>
+          <listcell>
+            <timebox sclass="end-time" cols="8" format="HH:mm" visible="@bind(!each.holiday)"
+                     value="@bind(each.endTime)"
+                     onChanging="@command('updateEndTime', item=each)"
+            />
+          </listcell>
+          <listcell sclass="ap-period-picker-wrapper">
+            <div visible="@bind(!each.holiday)" sclass="ap-period-picker">
+            </div>
+          </listcell>
+        </listitem>
+      </template>
+    </listbox>
+    <div sclass="ap-window-footer-actions" height="42px">
+      <button id="btnApply" label="Apply Changes" iconSclass="z-icon-check-circle" onClick="@command('applyChanges')" />
+      <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
+    </div>
+  </vbox>
+</window>

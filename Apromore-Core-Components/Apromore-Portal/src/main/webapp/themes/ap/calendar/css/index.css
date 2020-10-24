@@ -1,0 +1,71 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+.ap-period-picker-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 40px;
+}
+
+.ap-period-picker-wrapper .z-listcell-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 40px;
+}
+
+.ap-period-picker {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: stretch;
+}
+
+.ap-period-picker > div {
+    flex: 1 1 auto;
+    height: 100%;
+    text-align: center;
+    line-height: 40px;
+    border-left: 1px solid #fafafa;
+    font-size: 10px;
+    user-select: none;
+}
+
+.ap-period-picker > div.selected {
+    background-color: var(--ap-c-widget);
+    border-left: 1px solid white;
+}
+
+.ap-calendar-win .z-listitem.workday .z-datebox {
+    pointer-events: none;
+}
+
+.ap-calendar-win .z-listitem.workday .z-datebox-icon {
+    color: #c0c0c0;
+}
+
+.ap-calendar-win .z-listitem.workday .ap-icon-workday {
+    filter: var(--ap-filter-ico-green);
+}
+
+.ap-calendar-win .z-listitem.holiday .ap-icon-holiday {
+    filter: var(--ap-filter-ico-maroon);
+}
