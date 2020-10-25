@@ -433,13 +433,14 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
-    protected void rename() throws InterruptedException {
+    public boolean isSingleFileSelected() {     
+      return getSelectionCount() ==1;    
+    }
+
+    public void rename() throws InterruptedException {
         try {
-            if (getSelectionCount() == 0) {
-                Notification.error("Please select a file/folder to rename");
-                return;
-            } else if (getSelectionCount() > 1) {
-                Notification.error("You can not rename multiple selections");
+            if (!isSingleFileSelected()) {
+                Notification.error("Please select single file or folder to rename");
                 return;
             }
             List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();

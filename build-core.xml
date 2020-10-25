@@ -3,8 +3,6 @@
 
     <description>Apromore Core Distribution</description>
 
-    <property name="startup.java.opts" value="-server -Xmx14g -Xmn1g"/>
-
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <property name="core-dir" location="${basedir}/ApromoreCore"/>
     <property name="core-dir-sups" location="${core-dir}/Supplements"/>
@@ -22,6 +20,8 @@
     <property name="core-dir-portal-templates" location="${core-dir}/Apromore-Plugins/plugin-templates/"/>
     <property name="core-dir-osgi" location="${core-dir}/Apromore-OSGI-Bundles/"/>
     
+    <property name="startup.java.opts" value='-server -Xmx14g -Xmn1g -Dhadoop.home.dir="${core-dir-virgo}/hadoop.home.dir"'/>
+
     <fileset id="fileset-core-lpsolve-lib" dir="${core-dir-sups}">
         <include name="liblpsolve55.jnilib" />
         <include name="liblpsolve55.lib" />
@@ -104,6 +104,11 @@
     <target name="copy-core" depends="clean-virgo, setup-virgo, create-repository-dirs">
         <copy todir="${core-dir-virgo}" flatten="true" overwrite="true">
             <fileset refid="fileset-core-lpsolve-lib" />
+        </copy>
+
+        <!-- Most recent version of the precompiled Window native Hadoop support files from https://github.com/cdarlint/winutils -->
+        <copy todir="${core-dir-virgo}/hadoop.home.dir" overwrite="true">
+            <fileset dir="${core-dir-sups}/hadoop-3.2.1"/>
         </copy>
         
         <copy todir="${core-dir-virgo}/repository/usr" flatten="true" overwrite="true">
@@ -221,16 +226,7 @@
             <arg value="-url"/>
             <arg value="jdbc:h2:${core-dir-assembly}/Manager-Repository"/>
             <arg value="-script"/>
-            <arg file="${core-dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
-        </java>
-        <java classname="org.h2.tools.RunScript">
-            <classpath>
-                <pathelement location="${core-dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.3.171.jar"/>
-            </classpath>
-            <arg value="-url"/>
-            <arg value="jdbc:h2:${core-dir-assembly}/Manager-Repository"/>
-            <arg value="-script"/>
-            <arg file="${core-dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
+            <arg file="${core-dir-sups}/database/create-h2.sql"/>
         </java>
     </target>
 </project>

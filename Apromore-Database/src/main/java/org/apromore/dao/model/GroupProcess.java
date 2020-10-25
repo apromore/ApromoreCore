@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2014 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -28,15 +28,7 @@ import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
@@ -55,11 +47,9 @@ public class GroupProcess implements Serializable {
 
     private Integer id;
 
-    private boolean hasRead;
-    private boolean hasWrite;
-    private boolean hasOwnership;
+    private AccessRights accessRights = new AccessRights();
 
-    private Group   group;
+    private Group group;
     private Process process;
 
     /**
@@ -71,16 +61,19 @@ public class GroupProcess implements Serializable {
     /**
      * Convenient constructor.
      */
-    public GroupProcess(Process newProcess, Group newGroup, boolean newHasRead, boolean newHasWrite, boolean newHasOwnership) {
-        this.process      = newProcess;
-        this.group        = newGroup;
-        this.hasRead      = newHasRead;
-        this.hasWrite     = newHasWrite;
-        this.hasOwnership = newHasOwnership;
+    public GroupProcess(Process newProcess, Group newGroup, AccessRights accessRights) {
+        this.process = newProcess;
+        this.group = newGroup;
+        this.accessRights = accessRights;
+    }
+
+    public GroupProcess(Process process, Group group, boolean hasRead, boolean hasWrite, boolean hasOwnerShip) {
+        this(process, group, new AccessRights(hasRead, hasWrite, hasOwnerShip));
     }
 
     /**
      * Get the Primary Key for the Object.
+     *
      * @return Returns the Id.
      */
     @Id
@@ -92,6 +85,7 @@ public class GroupProcess implements Serializable {
 
     /**
      * Set the id for the Object.
+     *
      * @param newId The role name to set.
      */
     public void setId(final Integer newId) {
@@ -99,53 +93,14 @@ public class GroupProcess implements Serializable {
     }
 
 
-    /**
-     * @return whether the group has read access to the process model
-     */
-    @Column(name = "has_read")
-    public boolean getHasRead() {
-        return this.hasRead;
+    @Embedded
+    public AccessRights getAccessRights() {
+        return accessRights;
     }
 
-    /**
-     * @param newHasRead  whether the group should have read access to the process model
-     */
-    public void setHasRead(final boolean newHasRead) {
-        this.hasRead = newHasRead;
+    public void setAccessRights(AccessRights accessRights) {
+        this.accessRights = accessRights;
     }
-
-
-    /**
-     * @return whether the group has write access to the process model
-     */
-    @Column(name = "has_write")
-    public boolean getHasWrite() {
-        return this.hasWrite;
-    }
-
-    /**
-     * @param newHasWrite  whether the group should have write access to the process model
-     */
-    public void setHasWrite(final boolean newHasWrite) {
-        this.hasWrite = newHasWrite;
-    }
-
-
-    /**
-     * @return whether the group has ownership of the process model
-     */
-    @Column(name = "has_ownership")
-    public boolean getHasOwnership() {
-        return this.hasOwnership;
-    }
-
-    /**
-     * @param newHasRead  whether the group should have ownership of the process model
-     */
-    public void setHasOwnership(final boolean newHasOwnership) {
-        this.hasOwnership = newHasOwnership;
-    }
-
 
     @ManyToOne
     @JoinColumn(name = "groupId")
@@ -165,6 +120,21 @@ public class GroupProcess implements Serializable {
 
     public void setProcess(Process process) {
         this.process = process;
+    }
+
+    public Boolean getHasRead() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isReadOnly();
+    }
+
+    public Boolean getHasWrite() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isWriteOnly();
+    }
+
+    public Boolean getHasOwnership() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isOwnerShip();
     }
 
 }

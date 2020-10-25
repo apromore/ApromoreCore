@@ -186,24 +186,29 @@
             </plugin>
             
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>${maven.exec.plugin}</version>
-				<executions>
-					<execution>
-						<id>weave-classes</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
-					<commandlineArgs>-classpath %classpath; -loglevel ALL -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
-					<classpathScope>compile</classpathScope>
-				</configuration>
-			</plugin>
+                <artifactId>eclipselink-staticweave-maven-plugin</artifactId>
+                <groupId>au.com.alderaan</groupId>
+                <version>1.0.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>weave</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <logLevel>ALL</logLevel>
+                            <includeProjectClasspath>true</includeProjectClasspath>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.persistence</groupId>
+                        <artifactId>eclipselink</artifactId>
+                        <version>2.4.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 			
 			
 		</plugins>

@@ -97,7 +97,7 @@ public class GroupUsermetadata implements Serializable {
     /**
      * FK GROUP ID
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "group_id")
     public Group getGroup() {
         return this.group;
@@ -113,7 +113,7 @@ public class GroupUsermetadata implements Serializable {
     /**
      * FK USER METADATA ID
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "usermetadata_id")
     public Usermetadata getUsermetadata() {
         return this.usermetadata;

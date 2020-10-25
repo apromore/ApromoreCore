@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -79,6 +79,10 @@ public class Usermetadata implements Serializable {
      * Set of UserMetadataLog from linked table
      */
     private Set<UsermetadataLog> usermetadataLogSet = new HashSet<>();
+    /**
+     * Set of UserMetadataLog from linked table
+     */
+    private Set<UsermetadataProcess> usermetadataProcessSet = new HashSet<>();
 
     /**
      * ID
@@ -100,7 +104,7 @@ public class Usermetadata implements Serializable {
     /**
      * FK User mtadata type id
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "type_id")
     public UsermetadataType getUsermetadataType() {
         return this.usermetadataType;
@@ -242,6 +246,23 @@ public class Usermetadata implements Serializable {
         this.usermetadataLogSet = newUsermetadataLogSet;
     }
 
+    /**
+     * Set of UserMetadataProcess from linked table
+     */
+    @OneToMany(mappedBy = "usermetadata", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<UsermetadataProcess> getUsermetadataProcess() {
+        return this.usermetadataProcessSet;
+    }
+
+    public void setUsermetadataProcess(Set<UsermetadataProcess> newUsermetadataProcessSet) {
+        this.usermetadataProcessSet = newUsermetadataProcessSet;
+    }
+
+    /**
+     * Test equality of another object
+     *
+     * @return true if equal
+     */
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof Usermetadata)){
@@ -249,7 +270,20 @@ public class Usermetadata implements Serializable {
         }
         Usermetadata u = (Usermetadata) obj;
 
-        return (this.id == u.id);
+        return (this.id.equals(u.id));
+    }
+
+    /**
+     * Override default hashCode
+     *
+     * @return hash code value
+     */
+    @Override
+    public int hashCode() {
+        if (id == null) {
+            return 0;
+        }
+        return id.hashCode();
     }
 
 }

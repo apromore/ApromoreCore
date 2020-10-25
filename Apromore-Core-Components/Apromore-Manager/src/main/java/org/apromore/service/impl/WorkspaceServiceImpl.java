@@ -24,47 +24,17 @@
 
 package org.apromore.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Resource;
-import javax.inject.Inject;
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.WorkspaceRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
+import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
+import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -73,6 +43,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
@@ -201,9 +177,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         GroupFolder gf = new GroupFolder();
         gf.setFolder(folder);
         gf.setGroup(user.getGroup());
-        gf.setHasOwnership(true);
-        gf.setHasWrite(true);
-        gf.setHasRead(true);
+        AccessRights accessRights=new AccessRights();
+        accessRights.setOwnerShip(true);
+        accessRights.setWriteOnly(true);
+        accessRights.setReadOnly(true);
+        gf.setAccessRights(accessRights);
 
         groupFolderRepo.save(gf);
     }
@@ -236,7 +214,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      */
     private boolean canUserWriteFolder(User user, Integer folderId) {
         for (GroupFolder gf: groupFolderRepo.findByFolderAndUser(folderId, user.getRowGuid())) {
-            if (gf.isHasWrite()) {
+            if (gf.getAccessRights().isWriteOnly()) {
                  return true;
             }
         }
@@ -287,16 +265,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 fu = new GroupFolder();
                 fu.setGroup(gf.getGroup());
                 fu.setFolder(gf.getFolder());
-                fu.setHasRead(gf.isHasRead());
-                fu.setHasWrite(gf.isHasWrite());
-                fu.setHasOwnership(gf.isHasOwnership());
+                fu.setAccessRights(gf.getAccessRights());
                 folderUsers.add(fu);
                 map.put(gf.getFolder().getId(), fu);
-            } else {
-                fu.setHasRead(fu.isHasRead()           || gf.isHasRead());
-                fu.setHasWrite(fu.isHasWrite()         || gf.isHasWrite());
-                fu.setHasOwnership(fu.isHasOwnership() || gf.isHasOwnership());
-            }
+            } 
         }
         return folderUsers;
     }
@@ -341,13 +313,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public String removeLogPermissions(Integer logId, String groupRowGuid) {
+    public String removeLogPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
         Log log = logRepo.findOne(logId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupLog(group, log);
 
         // Sync permission with user metadata that linked to specified log
-//        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid);
+        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid, username);
 
         return "";
     }
@@ -461,13 +433,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Set access group
         Set<GroupLog> groupLogs = newLog.getGroupLogs();
         groupLogs.clear();
-        groupLogs.add(new GroupLog(newUser.getGroup(), newLog, true, true, true));
+        groupLogs.add(new GroupLog(newUser.getGroup(), newLog, new AccessRights(true,true,true)));
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
             } else {
-                groupLogs.add(new GroupLog(publicGroup, newLog, true, true, false));
+                groupLogs.add(new GroupLog(publicGroup, newLog, new AccessRights(true,true,false)));
             }
         }
         newLog.setGroupLogs(groupLogs);
@@ -533,13 +505,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Set access group
         Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
         groupProcesses.clear();
-        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), true, true, true));
+        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), new AccessRights(true,true,true)));
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
             } else {
-                groupProcesses.add(new GroupProcess(newProcess, publicGroup, true, true, false));
+                groupProcesses.add(new GroupProcess(newProcess, publicGroup, new AccessRights(true,true,false)));
             }
         }
         newProcess.setGroupProcesses(groupProcesses);
@@ -639,37 +611,35 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupFolder.setFolder(folder);
         }
         assert groupFolder != null;
-        groupFolder.setHasRead(hasRead);
-        groupFolder.setHasWrite(hasWrite);
-        groupFolder.setHasOwnership(hasOwnership);
+        AccessRights accessRights=new AccessRights(hasRead,hasWrite,hasOwnership);
+        groupFolder.setAccessRights(accessRights);
 
         groupFolderRepo.save(groupFolder);
     }
 
     private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
+        AccessRights accessRights = new AccessRights(hasRead,hasWrite,hasOwnership);
         if (groupProcess == null) {
-            groupProcess = new GroupProcess(process, group, hasRead, hasWrite, hasOwnership);
+         
+          groupProcess = new GroupProcess(process, group, accessRights);
             process.getGroupProcesses().add(groupProcess);
             //group.getGroupProcesses().add(groupProcess);
         } else {
-            groupProcess.setHasRead(hasRead);
-            groupProcess.setHasWrite(hasWrite);
-            groupProcess.setHasOwnership(hasOwnership);
+            groupProcess.setAccessRights(accessRights);
         }
         groupProcessRepo.save(groupProcess);
     }
 
     private void createGroupLog(Group group, Log log, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+        AccessRights accessRights = new AccessRights(hasRead,hasWrite,hasOwnership);
         if (groupLog == null) {
-            groupLog= new GroupLog(group, log, hasRead, hasWrite, hasOwnership);
+            groupLog= new GroupLog(group, log, accessRights);
             log.getGroupLogs().add(groupLog);
             //group.getGroupLogs().add(groupLog);
         } else {
-            groupLog.setHasRead(hasRead);
-            groupLog.setHasWrite(hasWrite);
-            groupLog.setHasOwnership(hasOwnership);
+            groupLog.setAccessRights(accessRights);
         }
         groupLogRepo.save(groupLog);
     }
@@ -694,27 +664,4 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupLogRepo.delete(groupLog);
         }
     }
-
-    // TODO: whether should I put this logic here or in a separate service?
-//    private void createGroupUsermetadata(Group group, UserMetadata userMetadata, boolean hasRead, boolean hasWrite,
-//                                         boolean hasOwnership) {
-//        GroupUserMetadata groupUserMetadata = groupUserMetadataRepo.findByGroupAndUserMetadata(group, userMetadata);
-//        if (groupUserMetadata == null) {
-//            groupLog= new GroupLog(group, log, hasRead, hasWrite, hasOwnership);
-//            log.getGroupLogs().add(groupLog);
-//            //group.getGroupLogs().add(groupLog);
-//        } else {
-//            groupLog.setHasRead(hasRead);
-//            groupLog.setHasWrite(hasWrite);
-//            groupLog.setHasOwnership(hasOwnership);
-//        }
-//        groupLogRepo.save(groupLog);
-//    }
-//
-//    private void removeGroupUsermetadata(Group group, UserMetadata usermetadata) {
-//        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
-//        if (groupLog != null) {
-//            groupLogRepo.delete(groupLog);
-//        }
-//    }
 }

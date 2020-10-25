@@ -65,14 +65,13 @@ public class UserManagementUnitTest extends BaseTestClass {
 		assertThat(savedUSerGroup.getName()).isEqualTo(userGroup.getName());
 		assertThat(savedUSerGroup.getType()).isEqualTo(userGroup.getType());
 		
-		Group group=groupRepository.findByName("testGroup");
 			
 	}
 	
 	@Test
 	public void testSaveUser() {
 		// given
-		Group group=groupRepository.saveAndFlush(builder.withGroup("testGroup", "USER").buildGroup());
+		Group group=groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
 		Role role=roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
 		User user = builder.withGroup(group)
 				.withRole(role)

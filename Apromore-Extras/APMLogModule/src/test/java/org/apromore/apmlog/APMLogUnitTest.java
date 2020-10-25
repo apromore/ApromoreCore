@@ -283,6 +283,54 @@ public class APMLogUnitTest {
         EventTimeFilterTest.testRetain(apmLog, this);
     }
 
+    @Test
+    public void testAttrCombFilterEventEvent1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute combination: eventAttr > eventAttr (1)'");
+        XLog xLog = getXLog("files/attrCombTest.xes");
+        APMLog apmLog = new APMLog(xLog);
+        AttributeCombinationTest.testRetainEventEvent1(apmLog, this);
+    }
+
+    @Test
+    public void testAttrCombFilterEventCase1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute combination: eventAttr > caseAttr (1)'");
+        XLog xLog = getXLog("files/attrCombTest.xes");
+        APMLog apmLog = new APMLog(xLog);
+        AttributeCombinationTest.testRetainEventCase1(apmLog, this);
+    }
+
+    @Test
+    public void testAttrDuration1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute duration (1)'");
+        XLog xLog = getXLog("files/attrCombTest.xes");
+        APMLog apmLog = new APMLog(xLog);
+        AttributeDurationTest.testRetainAttributeDuration1(apmLog, this);
+    }
+
+    @Test
+    public void testAttrArcDur1() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (1)'");
+        XLog xLog = getXLog("files/attrArcDurTest.xes");
+        APMLog apmLog = new APMLog(xLog);
+        AttributeArcDurationTest.testRetain1(apmLog, this);
+    }
+
+    @Test
+    public void testAttrArcDur2() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (2)'");
+        XLog xLog = getXLog("files/attrArcDurTest.xes");
+        APMLog apmLog = new APMLog(xLog);
+        AttributeArcDurationTest.testRetain2(apmLog, this);
+    }
+
+    @Test
+    public void testAttrArcDur3() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (3)'");
+        XLog xLog = getXLog("files/attrArcDurTest.xes");
+        APMLog apmLog = new APMLog(xLog);
+        AttributeArcDurationTest.testRetain3(apmLog, this);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");

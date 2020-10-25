@@ -21,7 +21,10 @@
  */
 package org.apromore.apmlog.stats;
 
+import org.apromore.apmlog.AActivity;
+import org.apromore.apmlog.APMLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.Set;
 
@@ -112,6 +115,37 @@ public class AAttributeGraph {
 
     public AAttributeValue getAttributeValue(String key, String value) {
         return map.get(key).get(value);
+    }
+
+    public UnifiedSet<Double> getDurations(String attributeKey, String indegree, String outdegree, APMLog apmLog) {
+
+        UnifiedSet<Double> durSet = new UnifiedSet<>();
+
+        AAttribute aAttribute = map.get(attributeKey);
+
+        AAttributeValue aAttributeValue = aAttribute.get(indegree);
+
+        UnifiedSet<String> indexPairSet = aAttributeValue.getNextValues().get(outdegree);
+
+        for (String taip : indexPairSet) {
+            String index1 = taip.substring(0, taip.indexOf(">"));
+            String index2 = taip.substring(taip.indexOf(">") + 1);
+            String traceIndexStr = index1.substring(0, index1.indexOf(":"));
+            String actIndex1Str = index1.substring(index1.indexOf(":") + 1);
+            String actIndex2Str = index2.substring(index2.indexOf(":") + 1);
+
+            int traceIndex = Integer.valueOf(traceIndexStr);
+            int actIndex1 = Integer.valueOf(actIndex1Str);
+            int actIndex2 = Integer.valueOf(actIndex2Str);
+            AActivity activity1 = apmLog.getTraceList().get(traceIndex).getActivityList().get(actIndex1);
+            AActivity activity2 = apmLog.getTraceList().get(traceIndex).getActivityList().get(actIndex2);
+            long act1ET = activity1.getEndTimeMilli();
+            long act2ST = activity2.getStartTimeMilli();
+            double duration = act2ST > act1ET ? act2ST - act1ET : 0;
+
+            if (!durSet.contains(duration)) durSet.put(duration);
+        }
+        return durSet;
     }
 
     public AAttributeGraph clone() {

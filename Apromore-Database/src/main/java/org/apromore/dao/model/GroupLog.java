@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2016 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -40,18 +40,17 @@ import java.util.logging.Logger;
 @Entity
 @Table(name = "group_log")
 @Configurable("group_log")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 100,
+        coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class GroupLog implements Serializable {
 
     private static Logger LOGGER = Logger.getLogger(GroupLog.class.getCanonicalName());
 
     private Integer id;
 
-    private boolean hasRead;
-    private boolean hasWrite;
-    private boolean hasOwnership;
+    private AccessRights accessRights;
 
-    private Group   group;
+    private Group group;
     private Log log;
 
     /**
@@ -63,16 +62,19 @@ public class GroupLog implements Serializable {
     /**
      * Convenient constructor.
      */
-    public GroupLog(Group newGroup, Log newLog, boolean newHasRead, boolean newHasWrite, boolean newHasOwnership) {
-        this.group        = newGroup;
-        this.log          = newLog;
-        this.hasRead      = newHasRead;
-        this.hasWrite     = newHasWrite;
-        this.hasOwnership = newHasOwnership;
+    public GroupLog(Group newGroup, Log newLog, AccessRights accessRights) {
+        this.group = newGroup;
+        this.log = newLog;
+        this.accessRights = accessRights;
+    }
+
+    public GroupLog(Group group, Log log, boolean isRead, boolean isWrite, boolean isOwnerShip) {
+        this(group, log, new AccessRights(isRead, isWrite, isOwnerShip));
     }
 
     /**
      * Get the Primary Key for the Object.
+     *
      * @return Returns the Id.
      */
     @Id
@@ -84,6 +86,7 @@ public class GroupLog implements Serializable {
 
     /**
      * Set the id for the Object.
+     *
      * @param newId The role name to set.
      */
     public void setId(final Integer newId) {
@@ -91,53 +94,14 @@ public class GroupLog implements Serializable {
     }
 
 
-    /**
-     * @return whether the group has read access to the process model
-     */
-    @Column(name = "has_read")
-    public boolean getHasRead() {
-        return this.hasRead;
+    @Embedded
+    public AccessRights getAccessRights() {
+        return accessRights;
     }
 
-    /**
-     * @param newHasRead  whether the group should have read access to the process model
-     */
-    public void setHasRead(final boolean newHasRead) {
-        this.hasRead = newHasRead;
+    public void setAccessRights(AccessRights accessRights) {
+        this.accessRights = accessRights;
     }
-
-
-    /**
-     * @return whether the group has write access to the process model
-     */
-    @Column(name = "has_write")
-    public boolean getHasWrite() {
-        return this.hasWrite;
-    }
-
-    /**
-     * @param newHasWrite  whether the group should have write access to the process model
-     */
-    public void setHasWrite(final boolean newHasWrite) {
-        this.hasWrite = newHasWrite;
-    }
-
-
-    /**
-     * @return whether the group has ownership of the process model
-     */
-    @Column(name = "has_ownership")
-    public boolean getHasOwnership() {
-        return this.hasOwnership;
-    }
-
-    /**
-     * @param newHasOwnership  whether the group should have ownership of the process model
-     */
-    public void setHasOwnership(final boolean newHasOwnership) {
-        this.hasOwnership = newHasOwnership;
-    }
-
 
     @ManyToOne
     @JoinColumn(name = "groupId")
@@ -157,6 +121,21 @@ public class GroupLog implements Serializable {
 
     public void setLog(Log log) {
         this.log = log;
+    }
+
+    public Boolean getHasRead() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isReadOnly();
+    }
+
+    public Boolean getHasWrite() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isWriteOnly();
+    }
+
+    public Boolean getHasOwnership() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isOwnerShip();
     }
 
 }

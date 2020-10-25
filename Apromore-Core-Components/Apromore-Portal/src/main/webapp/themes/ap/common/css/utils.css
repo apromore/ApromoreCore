@@ -158,13 +158,12 @@ div.ap-window-footer-actions {
 }
 
 .ap-footnotes {
-
     font-weight: normal !important;
     color: var(--ap-c-sunset-dark-2);
 }
 
 .ap-footnotes .z-row-content {
-    padding: 4px 5px 8px 5px;
+    padding: 4px 5px 8px 5px !important;
 }
 
 /* Forced scroll */
@@ -381,6 +380,7 @@ div.ap-window-footer-actions {
 .ap-key-help > div > div:first-child {
     width: 200px;
     font-size: 12px;
+    flex: 0 0 auto;
 }
 
 .ap-key-help > div > div:nth-child(2) {
@@ -401,6 +401,11 @@ div.ap-window-footer-actions {
     width: 1.4em !important;
 }
 
+.shift-kbd::after {
+    content: "Shift";
+    width: 2.1em !important;
+}
+
 .mac .control-kbd::after {
     content: "⌃";
     width: 1.2em !important;
@@ -411,6 +416,10 @@ div.ap-window-footer-actions {
     width: 1.2em !important;
 }
 
+.mac .shift-kbd::after {
+    content: "⇧";
+    width: 1.2em !important;
+}
 
 /* Switch */
 .ap-switch > span {

@@ -286,7 +286,7 @@ public class EventLogServiceImpl implements EventLogService {
     public boolean canUserWriteLog(String username, Integer logId) throws UserNotFoundException {
         User user = userSrv.findUserByLogin(username);
         for (GroupLog gl : groupLogRepo.findByLogAndUser(logId, user.getRowGuid())) {
-            if (gl.getHasWrite()) {
+            if (gl.getAccessRights().isWriteOnly()) {
                 return true;
             }
         }
