@@ -1,9 +1,6 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- *
- * Copyright (C) 2011 Marie Christine.
- * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
