@@ -1,0 +1,5 @@
+*         text=auto
+*.csv     text
+*.parquet binary
+*.xes     text
+*.xslx    binary
