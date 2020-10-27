@@ -36,6 +36,7 @@
 
     <!--<reference id="fileStoreClient" interface="org.apromore.filestore.client.FileStoreService"/>-->
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
+    <reference id="authorizationService" interface="org.apromore.service.AuthorizationService"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="securityService" interface="org.apromore.service.SecurityService"/>
