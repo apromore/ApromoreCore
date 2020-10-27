@@ -85,14 +85,6 @@
                     <unpackBundle>true</unpackBundle>
                     <instructions>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Bundle>
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.security.core;version="[3.1.0,4.0)",
-                            org.springframework.security.web;version="[3.1.0,4.0)"
-                        </Import-Bundle>
-                        <Import-Package>
-                            *
-                        </Import-Package>
                     </instructions>
                 </configuration>                
             </plugin>

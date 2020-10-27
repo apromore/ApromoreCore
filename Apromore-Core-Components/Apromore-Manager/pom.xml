@@ -41,29 +41,14 @@
                             artifactId=jaxb2-basics-runtime
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Import-Bundle>                            
-                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web.servlet;bundle-version="[3.1.0,4.0)",
-                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
-                            org.springframework.context;bundle-version="[3.1.0,4.0)",
-                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.security.core;version="[3.1.0,4.0)",
-                            org.springframework.security.config;version="[3.1.0,4.0)",
-                            org.springframework.security.web;version="[3.1.0,4.0)",
-                            org.springframework.security.remoting;version="[3.1.0,4.0)",
-                            org.apromore.manager-security;version="[1.1,1.1]",
-                            org.apromore.portal-model;version="[1.1,1.1]"
-                        </Import-Bundle>
                         <Import-Package>
                             org.deckfour.xes.*;version="2.27",                            
                             org.apromore.plugin.provider,
-                            org.eclipse.virgo.web.dm,
                             org.springframework.beans.factory.aspectj,
                             org.aopalliance.aop,                                                        
                             javax.wsdl.extensions,
+                            org.springframework.scheduling.concurrent,
+                            org.springframework.scheduling.config,
                             org.springframework.security.core.userdetails,
                             org.springframework.ws.transport.http,
                             org.springframework.ws,
@@ -77,6 +62,8 @@
                             org.apromore.apmlog.impl;version="[1.0,2)",
                             org.apromore.cache.ehcache;version="[1.0,2)",
                             org.apromore.dao.*;version="[1.0,2)",
+                            org.apromore.portal.helper,
+                            org.apromore.portal.model,
                             *
                         </Import-Package>
                         <Export-Package>
