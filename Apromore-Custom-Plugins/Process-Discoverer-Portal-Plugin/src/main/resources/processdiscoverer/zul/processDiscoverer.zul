@@ -111,8 +111,7 @@
             <n:span>+ right-click</n:span>
           </n:div>
           <n:div>
-            retain <n:u>only</n:u> cases based on event attribute to attribute duration performance measure
-            containing the selected directly-follows relation
+            filter on arc duration (from any perspective)
           </n:div>
         </n:div>
         <n:div class="ap-key-help-header">
@@ -160,7 +159,7 @@
             <n:span>+ right-click</n:span>
           </n:div>
           <n:div>
-            retain <n:u>only</n:u> cases containing the selected event attribute to attribute duration performance measure
+            filter on node duration (from any perspective)
           </n:div>
         </n:div>
         <n:div>
@@ -171,7 +170,7 @@
             <n:span>+ right-click</n:span>
           </n:div>
           <n:div>
-            retain <n:u>only</n:u> cases containing the selected secondary attribute
+            retain <n:u>only</n:u> cases containing the selected node as a secondary attribute
           </n:div>
         </n:div>
       </div>

@@ -158,13 +158,12 @@ div.ap-window-footer-actions {
 }
 
 .ap-footnotes {
-
     font-weight: normal !important;
     color: var(--ap-c-sunset-dark-2);
 }
 
 .ap-footnotes .z-row-content {
-    padding: 4px 5px 8px 5px;
+    padding: 4px 5px 8px 5px !important;
 }
 
 /* Forced scroll */
@@ -404,7 +403,7 @@ div.ap-window-footer-actions {
 
 .shift-kbd::after {
     content: "Shift";
-    width: 1.4em !important;
+    width: 2.1em !important;
 }
 
 .mac .control-kbd::after {
@@ -421,7 +420,6 @@ div.ap-window-footer-actions {
     content: "⇧";
     width: 1.2em !important;
 }
-
 
 /* Switch */
 .ap-switch > span {
