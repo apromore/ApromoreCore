@@ -430,7 +430,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test11-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = TestUtilities.resourceToString(expectedFile);
+        String expectedXES = TestUtilities.resourceToString(expectedFile).replaceAll("\\r\\n?", "\n");
 
         // Perform the test
         LogSample sample = sampleLogGenerator
