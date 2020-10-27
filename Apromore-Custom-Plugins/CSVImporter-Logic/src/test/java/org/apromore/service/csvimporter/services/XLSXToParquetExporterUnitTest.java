@@ -28,7 +28,6 @@ import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testSampleCSV_undersample() throws Exception {
 
@@ -92,7 +90,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testSampleCSV_oversample() throws Exception {
 
@@ -111,7 +108,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void test1_valid() throws Exception {
 
@@ -153,7 +149,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test2_missing_columns() throws Exception {
 
@@ -194,7 +189,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
@@ -235,7 +229,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
 
@@ -276,7 +269,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test5-expected.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
@@ -317,7 +309,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test6_record_invalid() throws Exception {
 
@@ -361,7 +352,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test7_all_invalid() throws Exception {
 
@@ -392,7 +382,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
 
@@ -439,7 +428,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
      */
-//    @Ignore
     @Test
     public void testPrepareXesModel_test9_detect_name() throws Exception {
 
@@ -480,7 +468,6 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test10_encoding() throws Exception {
 
@@ -510,14 +497,12 @@ public class XLSXToParquetExporterUnitTest {
                         true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        String parquetToCSV = convertParquetToCSV(tempOutput, '¸');
 
         // Validate result
         assertNotNull(logModel);
         assertEquals(5, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
-        assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
         assertEquals(expectedCsv, parquetToCSV);
     }
 }

@@ -28,7 +28,6 @@ import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -422,7 +421,6 @@ public class XLSXLogReaderImplUnitTest {
     /**
      * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
-    @Ignore
     @Test
     public void testPrepareXesModel_test10_encoding() throws Exception {
 
@@ -450,13 +448,9 @@ public class XLSXLogReaderImplUnitTest {
         assertEquals(0, logModel.getLogErrorReport().size());
         //Continue with the XES conversion
         XLog xlog = logModel.getXLog();
-
-//        LOGGER.info("expectedXES " + expectedXES);
-//        LOGGER.info("toString(xlog) " + toString(xlog));
-//         Validate result
         assertNotNull(xlog);
-//        assertEquals(
-//                utilities.removeTimezone(expectedXES),
-//                utilities.removeTimezone(utilities.xlogToString(xlog)));
+        assertEquals(
+                utilities.removeTimezone(expectedXES),
+                utilities.removeTimezone(utilities.xlogToString(xlog)));
     }
 }
