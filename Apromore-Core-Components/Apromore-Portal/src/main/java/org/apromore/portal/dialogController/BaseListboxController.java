@@ -472,13 +472,17 @@ public abstract class BaseListboxController extends BaseController {
     protected void share() {
         try {
             if (getSelectionCount() == 0) {
-                Messagebox.show("Please select a file/folder to share", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show("Please select a log or model to share", "Attention", Messagebox.OK, Messagebox.ERROR);
                 return;
             } else if (getSelectionCount() > 1) {
                 Messagebox.show("You can not share multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
                 return;
             }
             Object selectedItem = getSelection().iterator().next();
+            if (selectedItem instanceof FolderType) {
+                Messagebox.show("You can only share a log or model", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
             Map arg = new HashMap<>();
             arg.put("selectedItem", selectedItem);
             arg.put("currentUser", UserSessionManager.getCurrentUser());

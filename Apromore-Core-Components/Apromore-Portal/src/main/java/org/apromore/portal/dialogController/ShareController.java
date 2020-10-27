@@ -112,6 +112,7 @@ public class ShareController extends SelectorComposer<Window> {
     private ListModelList<Assignment> assignmentModel;
     Map<Group, AccessType> groupAccessTypeMap;
     Map<String, Assignment> assignmentMap;
+    Map<String, Assignment> ownerMap;
 
     @Wire("#selectedIconLog")
     Span selectedIconLog;
@@ -180,6 +181,9 @@ public class ShareController extends SelectorComposer<Window> {
                 Assignment assignment = assignmentMap.get(rowGuid);
                 if (assignment != null) {
                     assignment.setAccess(access);
+                    if (access == AccessType.OWNER.getLabel()) {
+                        ownerMap.put(rowGuid, assignment);
+                    }
                 }
             }
         });
@@ -191,8 +195,16 @@ public class ShareController extends SelectorComposer<Window> {
                 String rowGuid = (String) param.get("rowGuid");
                 String name = (String) param.get("name");
                 Assignment assignment = assignmentMap.get(rowGuid);
+                if (ownerMap.containsKey(rowGuid) && ownerMap.size() == 1) {
+                    Messagebox.show("At least one owner must remain", "Delete access error", Messagebox.OK, Messagebox.ERROR);
+                    return;
+                }
                 if (assignment != null) {
                     assignmentModel.remove(assignment);
+                    assignmentMap.remove(rowGuid);
+                    if (assignment.getAccess() == AccessType.OWNER.getLabel()) {
+                        ownerMap.remove(rowGuid);
+                    }
                 }
             }
         });
@@ -214,6 +226,7 @@ public class ShareController extends SelectorComposer<Window> {
     private void loadAssignments(Map<Group, AccessType> groupAccessTypeMap) {
         List<Assignment> assignments = new ArrayList<Assignment>();
         assignmentMap = new HashMap<String, Assignment>();
+        ownerMap = new HashMap<String, Assignment>();
 
         for (Map.Entry<Group, AccessType> entry : groupAccessTypeMap.entrySet()) {
             Group group = entry.getKey();
@@ -222,6 +235,9 @@ public class ShareController extends SelectorComposer<Window> {
             Assignment assignment = new Assignment(group.getName(), rowGuid, Type.USER, accessType.getLabel());
             assignments.add(assignment);
             assignmentMap.put(rowGuid, assignment);
+            if (accessType == AccessType.OWNER) {
+                ownerMap.put(rowGuid, assignment);
+            }
         }
         assignmentModel = new ListModelList<>(assignments, false);
         assignmentListbox.setMultiple(false);
@@ -327,7 +343,11 @@ public class ShareController extends SelectorComposer<Window> {
         if (assignees != null && assignees.size() == 1 && selectedItem != null && selectedItemId != null) {
             Assignee assignee = assignees.iterator().next();
             String rowGuid = assignee.getRowGuid();
-            assignmentModel.add(new Assignment(assignee.getName(), rowGuid, assignee.getType(), AccessType.VIEWER.getLabel()));
+            Assignment assignment = new Assignment(assignee.getName(), rowGuid, assignee.getType(), AccessType.VIEWER.getLabel());
+            if (!assignmentModel.contains(assignment)) {
+                assignmentModel.add(assignment);
+                assignmentMap.put(rowGuid, assignment);
+            }
         }
     }
 

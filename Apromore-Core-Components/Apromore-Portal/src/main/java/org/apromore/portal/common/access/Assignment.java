@@ -66,4 +66,13 @@ public class Assignment {
     public String getAccess() {
         return access;
     }
+
+    @Override
+    public int hashCode() { return rowGuid == null ? 0 : rowGuid.hashCode(); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !Assignment.class.equals(obj.getClass())) { return false; }
+        return (obj != null) && (obj instanceof Assignment) && rowGuid.equals(((Assignment) obj).rowGuid);
+    }
 }
