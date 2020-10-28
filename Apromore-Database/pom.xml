@@ -163,6 +163,7 @@
                         	com.jolbox.bonecp,
                         	com.mysql.jdbc,
                             javax.sql,
+                            org.h2,
                             org.springframework.data.*,
                             org.springframework.aop,
                             org.aopalliance.aop,
