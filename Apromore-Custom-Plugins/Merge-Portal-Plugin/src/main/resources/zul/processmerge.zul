@@ -28,8 +28,8 @@
     <vbox>
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
-                <column width="50%"></column>
-                <column width="50%"></column>
+                <column width="40%"></column>
+                <column width="60%"></column>
             </columns>
             <rows>
                 <row id="mergednamep">
@@ -44,8 +44,8 @@
         </grid>
         <grid sclass="ap-grid ap-form" id="advancedOpts" visible="false">
             <columns sizable="true">
-                <column width="50%"></column>
-                <column width="50%"></column>
+                <column width="40%"></column>
+                <column width="60%"></column>
             </columns>
             <rows>
                 <row id="removeEnt">
@@ -88,15 +88,15 @@
         </grid>
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
-                <column width="50%"></column>
-                <column width="50%"></column>
+                <column width="40%"></column>
+                <column width="60%"></column>
             </columns>
             <rows>
                 <row spans="2" sclass="ap-footnotes">
                     <label value="* mandatory fields" />
                 </row>
                 <row id="mergeButtons" sclass="ap-window-footer-actions">
-                    <div style="text-align:left !important;">
+                    <div style="text-align:left !important;" visible="false">
                         <button id="advancedOptsButton" label="Show advanced options"></button>
                     </div>
                     <div align="center">

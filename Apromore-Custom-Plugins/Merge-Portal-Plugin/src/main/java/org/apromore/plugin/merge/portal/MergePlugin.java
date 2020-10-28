@@ -200,6 +200,13 @@ public class MergePlugin extends DefaultPortalPlugin {
 
         updateActions();
 
+        this.processMergeW.addEventListener("onOK", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                mergeProcesses();
+            }
+        });
+
         this.processNameT.addEventListener("onChange", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
