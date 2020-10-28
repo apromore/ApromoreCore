@@ -373,6 +373,10 @@ div.ap-window-footer-actions {
     text-align: center;
 }
 
+.ap-key-help kbd + span {
+    margin: 0 6px;
+}
+
 .ap-key-help span {
     font-family: monospace;
 }

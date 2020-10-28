@@ -27,34 +27,51 @@ import java.util.Arrays;
 
 /**
  * Access types in ACL, which can map to flags in Group_[artifact] POJOs.
- *
- |        | has_read | has_write | has_ownership |
- |--------|----------|-----------|---------------|
- | Viewer | 1        | 0         | 0             |
- | Editor | 1        | 1         | 0             |
- | Owner  | 1        | 1         | 1             |
- *
+ * <p>
+ * |        | has_read | has_write | has_ownership |
+ * |--------|----------|-----------|---------------|
+ * | Viewer | 1        | 0         | 0             |
+ * | Editor | 1        | 1         | 0             |
+ * | Owner  | 1        | 1         | 1             |
  */
 @Getter
 public enum AccessType {
 
-    NONE(false, false, false),
-    VIEWER(true, false, false),
-    EDITOR(true, true, false),
-    OWNER(true, true, true);
+    NONE(false, false, false, "None"),
+    VIEWER(true, false, false, "Viewer"),
+    EDITOR(true, true, false, "Editor"),
+    OWNER(true, true, true, "Owner");
 
     boolean isRead;
     boolean isWrite;
     boolean isOwner;
+    String label;
 
-    AccessType(boolean isRead, boolean isWrite, boolean isOwner) {
+    AccessType(boolean isRead, boolean isWrite, boolean isOwner, String label) {
         this.isRead = isRead;
         this.isWrite = isWrite;
         this.isOwner = isOwner;
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    /**
+     * Get AccessType by label
+     *
+     * @param label
+     * @return the AccessType object
+     */
+    public static AccessType getAccessType(String label) {
+        return Arrays.asList(AccessType.values()).stream()
+                .filter(accessType -> accessType.label.equals(label))
+                .findFirst()
+                .orElse(AccessType.NONE);
     }
 
     public static AccessType getAccessType(boolean isRead, boolean isWrite, boolean isOwner) {
-
         return Arrays.asList(AccessType.values()).stream().filter(accessType -> accessType.isRead == isRead &&
                 accessType.isWrite == isWrite &&
                 accessType.isOwner == isOwner).findFirst().orElse(AccessType.NONE);

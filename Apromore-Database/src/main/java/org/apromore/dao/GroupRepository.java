@@ -76,6 +76,12 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     Set<Group> findCompulsoryGroups(User user);
 
     /**
+     * @return all groups
+     */
+    @Query("SELECT g FROM Group g")
+    List<Group> findAllGroups();
+
+    /**
      * @return all elective groups
      */
     @Query("SELECT g FROM Group g WHERE (g.type = org.apromore.dao.model.Group.Type.GROUP)")

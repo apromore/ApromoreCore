@@ -100,7 +100,7 @@
         <n:div>
           <n:div>
             <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
+            <n:span> + right-click</n:span>
           </n:div>
           <n:div>retain <n:u>only</n:u> cases containing the selected directly-follows relation
           </n:div>
@@ -108,10 +108,10 @@
         <n:div>
           <n:div>
             <n:kbd title="shift" class="shift-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
+            <n:span> + right-click</n:span>
           </n:div>
           <n:div>
-            filter on arc duration (from any perspective)
+            filter cases based on this arc's duration (from any perspective)
           </n:div>
         </n:div>
         <n:div class="ap-key-help-header">
@@ -130,15 +130,35 @@
         <n:div>
           <n:div>
             <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
+            <n:span> + right-click</n:span>
           </n:div>
           <n:div>retain <n:u>only</n:u> cases with an event containing the selected attribute
           </n:div>
         </n:div>
         <n:div>
           <n:div>
+            <n:kbd title="shift" class="shift-kbd"></n:kbd>
+            <n:span> + right-click</n:span>
+          </n:div>
+          <n:div>
+            filter cases based on this node's duration (from any perspective)
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="shift" class="shift-kbd"></n:kbd>
+            <n:span>+</n:span>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span> + right-click</n:span>
+          </n:div>
+          <n:div>
+            filter cases using this node as a primary attribute
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
             <n:kbd title="alt" class="alt-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
+            <n:span> + right-click</n:span>
           </n:div>
           <n:div>remove <n:u>all</n:u> events containing the selected attribute
           </n:div>
@@ -148,29 +168,9 @@
             <n:kbd title="alt" class="alt-kbd"></n:kbd>
             <n:span>+</n:span>
             <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
+            <n:span> + right-click</n:span>
           </n:div>
           <n:div>retain <n:u>only</n:u> events containing the selected attribute
-          </n:div>
-        </n:div>
-        <n:div>
-          <n:div>
-            <n:kbd title="shift" class="shift-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
-          </n:div>
-          <n:div>
-            filter on node duration (from any perspective)
-          </n:div>
-        </n:div>
-        <n:div>
-          <n:div>
-            <n:kbd title="shift" class="shift-kbd"></n:kbd>
-            <n:span>+</n:span>
-            <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span>+ right-click</n:span>
-          </n:div>
-          <n:div>
-            retain <n:u>only</n:u> cases containing the selected node as a secondary attribute
           </n:div>
         </n:div>
       </div>

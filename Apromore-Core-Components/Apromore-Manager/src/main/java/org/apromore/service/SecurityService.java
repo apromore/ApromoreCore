@@ -91,6 +91,13 @@ public interface SecurityService {
     void deleteGroup(Group group);
 
     /**
+     * Return all groups
+     *
+     * @return all groups
+     */
+    List<Group> findAllGroups();
+
+    /**
      * "Elective" groups don't include the personal singleton groups that
      * exist for every user, or the public group that every user belongs to.
      *

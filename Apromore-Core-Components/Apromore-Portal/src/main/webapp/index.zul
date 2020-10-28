@@ -218,6 +218,7 @@
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
                             <button id="btnUserMgmt" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="Manage users and groups"/>
+                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />
