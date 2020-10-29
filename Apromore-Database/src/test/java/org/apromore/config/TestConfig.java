@@ -21,6 +21,7 @@
  */
 package org.apromore.config;
 
+import java.sql.Driver;
 import javax.sql.DataSource;
 
 
@@ -33,6 +34,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jolbox.bonecp.BoneCPDataSource;
@@ -49,6 +51,12 @@ public class TestConfig {
 
 	@Value("${jdbc.password}")
 	private String password;
+	
+	@Value("${liquibase.jdbc.username}")
+    private String liquibaseDbUser;
+
+    @Value("${liquibase.jdbc.password}")
+    private String liquibasePassword;
 
 	@Value("${jdbc.url}")
 	private String url;
@@ -68,13 +76,20 @@ public class TestConfig {
 		ds.setPassword(password);
 		return ds;
 	}
+	
+	public DataSource unPooledDataSource() throws ClassNotFoundException {
+      SimpleDriverDataSource ds = new SimpleDriverDataSource();
+      ds.setUrl(url);
+      ds.setDriverClass((Class<? extends Driver>) Class.forName(driver));
+      ds.setUsername(liquibaseDbUser);
+      ds.setPassword(liquibasePassword);
+      return ds;
+  }
 
 	@Bean
-	public SpringLiquibase liquibase() {
-
+	public SpringLiquibase liquibase() throws ClassNotFoundException {
 		SpringLiquibase liquibase = new SpringLiquibase();
-
-		liquibase.setDataSource(dataSource());
+		liquibase.setDataSource(unPooledDataSource());
 		liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
 		liquibase.setContexts(context);
 		liquibase.setDropFirst(true);
