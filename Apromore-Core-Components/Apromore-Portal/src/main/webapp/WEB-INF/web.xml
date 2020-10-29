@@ -30,10 +30,12 @@
 
   <display-name>Apromore-Portal</display-name>
 
+<!--
   <context-param>
     <param-name>contextClass</param-name>
     <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
   </context-param>
+-->
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
