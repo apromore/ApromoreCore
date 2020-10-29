@@ -24,7 +24,6 @@ package org.apromore.service.csvimporter.services.legacy;
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.*;
 import org.apromore.service.csvimporter.utilities.XEventComparator;
@@ -43,12 +42,11 @@ import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
 public class LogReaderImpl implements LogReader, Constants {
 
-    private final Parse parse = new Parse();
-    boolean preferMonthFirstChanged;
     private List<LogErrorReport> logErrorReport;
     private boolean validRow;
 
@@ -80,7 +78,6 @@ public class LogReaderImpl implements LogReader, Constants {
             logErrorReport = new ArrayList<>();
             int lineIndex = 1; // set to 1 since first line is the header
             int numOfValidEvents = 0;
-            boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
             String[] line;
 
@@ -137,7 +134,6 @@ public class LogReaderImpl implements LogReader, Constants {
                 eventAttributes = new HashMap<>();
                 otherTimestamps = new HashMap<>();
 
-
                 // Case id:
                 caseId = line[sample.getCaseIdPos()];
                 if (caseId == null || caseId.isEmpty()) {
@@ -153,13 +149,13 @@ public class LogReaderImpl implements LogReader, Constants {
                 // End Timestamp
                 endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
                 if (endTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], errorMessage));
                 }
                 // Start Timestamp
                 if (sample.getStartTimestampPos() != -1) {
                     startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                     if (startTimestamp == null) {
-                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], errorMessage));
                     }
                 }
 
@@ -170,17 +166,8 @@ public class LogReaderImpl implements LogReader, Constants {
                         if (tempTimestamp != null) {
                             otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
                         } else {
-                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
+                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], errorMessage));
                         }
-                    }
-                }
-
-                // If PreferMonthFirst changed to True, we have to start over.
-                if (!preferMonthFirst && preferMonthFirstChanged) {
-                    if(in.markSupported()){
-                        in.mark(0);
-                        in.reset();
-                        readLogs(in, sample, charset, skipInvalidRow);
                     }
                 }
 
@@ -256,22 +243,11 @@ public class LogReaderImpl implements LogReader, Constants {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        Timestamp stamp;
         if (format != null && !format.isEmpty()) {
-            stamp = parse.tryParsingWithFormat(theValue, format);
-            if (stamp == null) {
-                stamp = parse.tryParsing(theValue);
-                if (!preferMonthFirstChanged) {
-                    preferMonthFirstChanged = parse.getPreferMonthFirst();
-                }
-            }
+            return parseToTimestamp(theValue, format);
         } else {
-            stamp = parse.tryParsing(theValue);
-            if (!preferMonthFirstChanged) {
-                preferMonthFirstChanged = parse.getPreferMonthFirst();
-            }
+            return null;
         }
-        return stamp;
     }
 
     private void invalidRow(LogErrorReportImpl error) {

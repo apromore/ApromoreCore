@@ -552,6 +552,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             textbox.setId(popUpTextBoxId + pos);
             textbox.setWidth("98%");
             textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
+            if (pos == sample.getEndTimestampPos()) {
+                textbox.setPlaceholder(sample.getEndTimestampFormat());
+                textbox.setValue(sample.getEndTimestampFormat());
+            } else if (pos == sample.getStartTimestampPos()) {
+                textbox.setPlaceholder(sample.getStartTimestampFormat());
+                textbox.setValue(sample.getStartTimestampFormat());
+            }
             textbox.setPopup(helpP);
             textbox.setClientAttribute("spellcheck", "false");
             textbox.setPopupAttributes(helpP, "after_start", "", "", "toggle");
@@ -628,7 +635,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(ignoreLabel) && sample.getIgnoredPos().contains(pos))
-                        ) {
+                ) {
                     item.setSelected(true);
                 }
                 box.appendChild(item);

@@ -33,12 +33,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 
 
 @Data
 public class LogSampleImpl implements LogSample, Constants {
 
-    private final Parse parse = new Parse();
+//    private final Parse parse = new Parse();
 
     private List<String> header;
     private List<List<String>> lines;
@@ -89,8 +93,10 @@ public class LogSampleImpl implements LogSample, Constants {
                 activityPos = pos;
             } else if (endTimestampPos == -1 && match(possibleEndTimestamp, header.get(pos)) && isParsable(pos)) {
                 endTimestampPos = pos;
+                endTimestampFormat = detectDateTimeFormat(pos);
             } else if (startTimestampPos == -1 && match(possibleStartTimestamp, header.get(pos)) && isParsable(pos)) {
                 startTimestampPos = pos;
+                startTimestampFormat = detectDateTimeFormat(pos);
             } else if (resourcePos == -1 && match(possibleResource, header.get(pos))) {
                 resourcePos = pos;
             }
@@ -103,11 +109,31 @@ public class LogSampleImpl implements LogSample, Constants {
         for (List<String> myLine : lines) {
             if (myLine.get(pos).isEmpty()) {
                 emptyCount++;
-            } else if (parse.tryParsing(myLine.get(pos)) == null) {
+//            } else if (parse.tryParsing(myLine.get(pos)) == null) {
+            } else if (determineDateFormat(myLine.get(pos)) == null) {
                 return false;
             }
         }
         return emptyCount < lines.size();
+    }
+
+    private String detectDateTimeFormat(int pos) {
+        String dateTimeFormat;
+        List<String> dateTimeFormatCollections = new ArrayList<>();
+
+        for (List<String> myLine : lines) {
+            if (!myLine.get(pos).isEmpty()) {
+                dateTimeFormatCollections.add(determineDateFormat(myLine.get(pos)));
+            }
+        }
+        dateTimeFormat = dateTimeFormatCollections.stream()
+                .collect(Collectors.groupingBy(w -> w, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Comparator.comparing(Map.Entry::getValue))
+                .get()
+                .getKey();
+        return dateTimeFormat;
     }
 
     @Override
@@ -116,7 +142,7 @@ public class LogSampleImpl implements LogSample, Constants {
         for (List<String> myLine : lines) {
             if (myLine.get(pos).isEmpty()) {
                 emptyCount++;
-            } else if (format == null || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
+            } else if (format == null || parseToTimestamp(myLine.get(pos), format) == null) {
                 return false;
             }
         }
@@ -165,9 +191,11 @@ public class LogSampleImpl implements LogSample, Constants {
         if (endTimestampPos == -1 && startTimestampPos == -1 && otherTimestamps.size() == 1) {
             endTimestampPos = otherTimestamps.keySet().stream().findFirst().get();
             otherTimestamps.remove(endTimestampPos);
-        } else if (endTimestampPos == -1 && (otherTimestamps == null || otherTimestamps.isEmpty()) && startTimestampPos != -1){
+            endTimestampFormat = detectDateTimeFormat(endTimestampPos);
+        } else if (endTimestampPos == -1 && (otherTimestamps == null || otherTimestamps.isEmpty()) && startTimestampPos != -1) {
             endTimestampPos = startTimestampPos;
             startTimestampPos = -1;
+            endTimestampFormat = detectDateTimeFormat(endTimestampPos);
         }
     }
 

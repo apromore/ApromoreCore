@@ -63,8 +63,8 @@
     
     <artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/>
     
-    <artifact type="bundle" name="@csvimporter-logic.bundle@" version="[1.0.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.csvimporter-portal" version="[1.0.0, 2)"/>
+     <!--<artifact type="bundle" name="@csvimporter-logic.bundle@" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.csvimporter-portal" version="[1.0.0, 2)"/>-->
     
     <artifact type="bundle" name="org.apromore.csvexporter-logic" version="[1.0.0, 2)"/>
     <!--<artifact type="bundle" name="org.apromore.csvexporter-portal-plugin" version="[1.0.0, 2)"/>-->

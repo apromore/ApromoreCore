@@ -44,10 +44,10 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
+
 public class XLSXLogReaderImpl implements LogReader, Constants {
 
-    private final Parse parse = new Parse();
-    boolean preferMonthFirstChanged;
     private List<LogErrorReport> logErrorReport;
     private boolean validRow;
     private final int BUFFER_SIZE = 2048;
@@ -75,7 +75,6 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             logErrorReport = new ArrayList<>();
             int lineIndex = 0;
             int numOfValidEvents = 0;
-            boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
 
             String[] line;
 
@@ -159,13 +158,13 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 // End Timestamp
                 endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
                 if (endTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], errorMessage));
                 }
                 // Start Timestamp
                 if (sample.getStartTimestampPos() != -1) {
                     startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                     if (startTimestamp == null) {
-                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], errorMessage));
                     }
                 }
 
@@ -176,19 +175,10 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                         if (tempTimestamp != null) {
                             otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
                         } else {
-                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
+                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], errorMessage));
                         }
                     }
                 }
-
-//                // If PreferMonthFirst changed to True, we have to start over.
-//                if (!preferMonthFirst && preferMonthFirstChanged) {
-//                    if(in.markSupported()){
-//                        in.mark(0);
-//                        in.reset();
-//                        readLogs(in, sample, charset, skipInvalidRow);
-//                    }
-//                }
 
                 // Resource
                 if (sample.getResourcePos() != -1) {
@@ -264,22 +254,11 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        Timestamp stamp;
         if (format != null && !format.isEmpty()) {
-            stamp = parse.tryParsingWithFormat(theValue, format);
-            if (stamp == null) {
-                stamp = parse.tryParsing(theValue);
-                if (!preferMonthFirstChanged) {
-                    preferMonthFirstChanged = parse.getPreferMonthFirst();
-                }
-            }
+            return parseToTimestamp(theValue, format);
         } else {
-            stamp = parse.tryParsing(theValue);
-            if (!preferMonthFirstChanged) {
-                preferMonthFirstChanged = parse.getPreferMonthFirst();
-            }
+            return null;
         }
-        return stamp;
     }
 
     private void invalidRow(LogErrorReportImpl error) {

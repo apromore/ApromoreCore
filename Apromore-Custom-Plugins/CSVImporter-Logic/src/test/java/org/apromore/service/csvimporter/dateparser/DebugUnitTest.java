@@ -21,19 +21,21 @@
  */
 package org.apromore.service.csvimporter.dateparser;
 
+import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.legacy.LogReader;
 import org.apromore.service.csvimporter.services.legacy.LogReaderImpl;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
-
+@Ignore
 public class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
@@ -59,45 +61,29 @@ public class DebugUnitTest {
 
         System.out.println("\n************************************\ntest");
 
-        // Test file data
-//        String testFile = "/test9-differentiate-dates-test.csv";
-//        System.out.println("Parsing " + dateFormatPredictor.parseCalendar("03/19/2019 15:13:05"));
-//        System.out.println("Parsing 03/19/2019 15:13:05" );
-//        System.out.println("Parsing " + dateFormatPredictor.parseCalendar("2019-03-02 15:13:05"));
-//        System.out.println("Parsing 2019-03-02 15:13:05" );
+        String testFile = "/test1-valid-ddMM.csv";
+        LogSample logSample = sampleLogGenerator
+                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 101, "UTF-8");
+        System.out.println("getEndTimestampFormat " + logSample.getEndTimestampFormat());
 
-        String dattime = "03-19-2019 15:13:05";
-        if(determineDateFormat(dattime) != null){
-            System.out.println("Parsing " + determineDateFormat(dattime));
 
-        } else {
-            System.out.println("Parsing Null");
+//        String dattime = "12/19/2019 15:13:05";
+////        String dattime = "03/09/2019 15:13:05";
+//
+//        if(determineDateFormat(dattime) != null){
+//            System.out.println("Parsing " + determineDateFormat(dattime));
+//        } else {
+//            System.out.println("Parsing Null");
+//
+//        }
+//        System.out.println("Parsing " + dattime );
 
-        }
-        System.out.println("Parsing " + dattime );
+
+//        System.out.println("Parsing " + dattime.matches("^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$"));
 
 //        parse = new Parse();
 //        System.out.println("Parsing " + parse.tryParsing("06-11-2011 4:59:00 pm"));
         System.out.println("\n************************************\n");
 
-//        LogSample sample = sampleLogGenerator
-//                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
-//
-////        sample.setEndTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-////        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-//        sample.setEndTimestampPos(3);
-//        sample.setStartTimestampPos(2);
-//        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-//        sample.getEventAttributesPos().remove(Integer.valueOf(3));
-//
-//        LogModel logModel = logReader
-//                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
-//
-//        // Continue with the XES conversion
-//        XLog xlog = logModel.getXLog();
-
-
-//        System.out.println(utilities.xlogToString(xlog));
-//        System.out.println("\n************************************\n");
     }
 }
