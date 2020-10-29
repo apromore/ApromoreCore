@@ -65,12 +65,12 @@ mysql -u root -p
 	CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
 	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
 ```
-* Create a user named 'db_user' with the required permissions, This user is used for database versioning and preload the db with the information the application needs.
+* Create a user named 'liquibase_user' with the required permissions, This user is used for database versioning and preload the db with the information the application needs.
 
 ```bash
 mysql -u root -p
-	CREATE USER 'db_user'@'%' IDENTIFIED BY '7fHJV41fpJ';
-	GRANT ALL PRIVILEGES ON apromore.* TO 'db_user'@'%';
+	CREATE USER 'liquibase_user'@'%' IDENTIFIED BY '7fHJV41fpJ';
+	GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
 ```
 
 * On Application startup, the database will have all the relevant information. 
