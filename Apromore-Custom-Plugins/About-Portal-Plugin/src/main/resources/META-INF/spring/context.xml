@@ -34,7 +34,7 @@
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
     <context:property-placeholder properties-ref="gitProperties" ignore-unresolvable="true"/>
-    <osgi-compendium:cm-properties id="gitProperties" persistent-id="git" init-timeout="60"/>
+    <osgi-compendium:cm-properties id="gitProperties" persistent-id="git"/>
 
     <!-- Expose the components as OSGi services -->
     <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.about.AboutPlugin">

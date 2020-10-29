@@ -36,8 +36,8 @@
     <context:property-placeholder properties-ref="gitCoreProperties" ignore-unresolvable="true"/>
     <context:property-placeholder properties-ref="portalProperties" ignore-unresolvable="false"/>
 
-    <osgi-compendium:cm-properties id="portalProperties" persistent-id="site" init-timeout="60"/>
-    <osgi-compendium:cm-properties id="gitCoreProperties" persistent-id="git-core" init-timeout="60"/>
+    <osgi-compendium:cm-properties id="portalProperties" persistent-id="site"/>
+    <osgi-compendium:cm-properties id="gitCoreProperties" persistent-id="git-core"/>
 
     <bean id="portalConfig" class="org.apromore.portal.ConfigBean">
         <constructor-arg type="String" value="${site.editor}"/>
