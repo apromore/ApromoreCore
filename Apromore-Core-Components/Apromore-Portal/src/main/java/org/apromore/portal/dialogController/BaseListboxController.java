@@ -152,6 +152,7 @@ public abstract class BaseListboxController extends BaseController {
         btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
         btnShare = (Button) mainController.getFellow("btnShare");
         btnCalendar = (Button) mainController.getFellow("btnCalendar");
+        btnCalendar.setVisible(config.getEnableCalendar());
 
         attachEvents();
 
@@ -711,7 +712,18 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    protected void launchCalendar() {
+        PortalPlugin calendarPlugin;
 
+        getMainController().eraseMessage();
+        try {
+            calendarPlugin = portalPluginMap.get("Custom calendar");
+            calendarPlugin.execute(portalContext);
+        } catch(Exception e) {
+            LOGGER.error("Unable to create custom calendar dialog", e);
+            Messagebox.show("Unable to create custom calendar dialog");
+        }
+    }
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {
@@ -755,27 +767,6 @@ public abstract class BaseListboxController extends BaseController {
 
     public MainController getMainController() {
         return mainController;
-    }
-
-    protected void launchCalendar() {
-        try {
-//            if (getSelectionCount() == 0) {
-//                Messagebox.show("Please select a file/folder to share", "Attention", Messagebox.OK, Messagebox.ERROR);
-//                return;
-//            } else if (getSelectionCount() > 1) {
-//                Messagebox.show("You can not share multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
-//                return;
-//            }
-//            Object selectedItem = getSelection().iterator().next();
-            Map arg = new HashMap<>();
-            arg.put("type", ">>>> CALENDAR_TYPE");
-//            arg.put("selectedItem", selectedItem);
-//            arg.put("currentUser", UserSessionManager.getCurrentUser());
-            Window window = (Window) Executions.getCurrent().createComponents("macros/calendar.zul", null, arg);
-            window.doModal();
-        } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
     }
 
     public class SummaryListModel extends ListModelList {

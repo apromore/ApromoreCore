@@ -28,8 +28,8 @@
     <!-- Database -->
     <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.database" version="[1.0, 2)"/> 
-    
+    <artifact type="bundle" name="org.apromore.database" version="[1.0, 2)"/>
+
      <!-- Cache -->
     <artifact type="bundle" name="org.apromore.cache" version="[1.0, 2)"/>
 
@@ -67,6 +67,7 @@
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.calendar-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="@csvimporter-logic.bundle@" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.csvimporter-portal" version="[1.0.0, 2)"/>

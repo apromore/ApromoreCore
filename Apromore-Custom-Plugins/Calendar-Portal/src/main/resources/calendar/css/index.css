@@ -1,0 +1,165 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+.ap-period-picker-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 40px;
+}
+
+.ap-period-picker-wrapper .z-listcell-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 40px;
+}
+
+.ap-period-picker {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.ap-cal-dow-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+
+.ap-cal-dow-container > div {
+    flex: 1 1 auto;
+    height: 100%;
+    border-left: 1px solid transparent;
+    background-color: transparent;
+    font-size: 10px;
+    user-select: none;
+}
+
+.ap-cal-dow-container > div.ap-cal-tick {
+    text-align: left;
+    font-size: 10px;
+    padding-left: 3px;
+    line-height: 40px;
+}
+
+.ap-cal-dow-container > .ap-cal-bg {
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(200, 200, 200, 0.4);
+}
+
+.ap-cal-dow-container > .ap-cal-bg[data-min='0'] {
+    border-left: 1px solid rgba(255, 255, 255, 1);
+}
+
+.ap-cal-dow-container > .ap-cal-bg.selected {
+    background-color: var(--ap-c-widget);
+}
+
+.ap-calendar-win .z-listitem.workday .z-datebox {
+    pointer-events: none;
+}
+
+.ap-calendar-win .z-listitem.workday .z-datebox-icon {
+    color: #c0c0c0;
+}
+
+.ap-calendar-win .z-listitem .ap-icon:hover {
+    filter: none !important;
+}
+
+.ap-calendar-win .z-listitem.workday .ap-icon-workday {
+    filter: var(--ap-filter-ico-green);
+}
+
+.ap-calendar-win .z-listitem.offday .ap-icon-holiday {
+    filter: var(--ap-filter-ico-maroon);
+}
+
+.ap-calendar-win .z-listcell {
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.ap-window-header-actions {
+    background: linear-gradient(var(--ap-c-bg-medium) 0%, var(--ap-c-bg-lighter) 10%) !important;
+    padding: 8px;
+    margin: 0 !important;
+}
+
+.ap-window-header-actions .z-button {
+    margin-right: 8px !important;
+}
+
+.ap-window-header-actions .z-button:focus {
+    border-color: transparent;
+    box-shadow: none !important;
+}
+
+.ap-period-picker.offday {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.ap-holidays-selector {
+    margin-bottom: 7px;
+}
+
+.ap-calendar-win .ap-holidays .ap-icon-holiday.public:hover,
+.ap-calendar-win .ap-holidays .ap-icon-holiday.public {
+    filter: var(--ap-filter-ico-maroon) !important;
+    background-color: transparent !important;
+}
+
+.ap-calendar-win .ap-holidays .ap-icon-holiday.internal:hover,
+.ap-calendar-win .ap-holidays .ap-icon-holiday.internal {
+    filter: var(--ap-filter-ico-orange) !important;
+    background-color: transparent !important;
+}
+
+.ap-holidays .z-listcell {
+    border-bottom: 1px solid transparent;
+}
+
+.ap-holidays .z-listcell-content {
+    padding: 2px 5px 0 5px;
+}
+
+.ap-holidays .z-vbox-separator {
+    display: none;
+}
+.selectize-dropdown {
+    z-index: 3000 !important;
+}
+
+.selectize-dropdown,
+.selectize-input,
+.selectize-input input {
+    font-family: var(--ap-font-base);
+}
+
+.ap-calendars-win .ap-icon {
+    display: inline-block;
+}

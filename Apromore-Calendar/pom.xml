@@ -105,7 +105,8 @@
 							org.apromore.commons.mapper;version="[1.0,2)"							
 						</Import-Package>
 						<Export-Package>
-							org.apromore.calendar.service
+							org.apromore.calendar.service,
+							org.apromore.calendar.model
 						</Export-Package>
 					</instructions>
 				</configuration>

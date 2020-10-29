@@ -1,0 +1,52 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+  <window xmlns:ca="client/attribute"
+          xmlns:n="native"
+          sclass="ap-calendars-win"
+          width="800px" height="80%" position="center"
+          style="max-width: 1400px;"
+          closable="true"
+          title="Calendars" apply="org.apromore.plugin.portal.calendar.controllers.Calendars">
+    <style src="/calendar/css/index.css" />
+    <vbox id="calendarsWrapper" hflex="1" vflex="1" spacing="0">
+      <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
+            style="padding: 8px;">
+        <button id="addNewCalendarBtn">
+          Add New Calendar
+        </button>
+      </hbox>
+      <listbox id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">
+        <listhead>
+          <listheader align="left" label="Name" hflex="1" />
+          <listheader align="left" label="Created on" width="120px" />
+          <listheader align="center" label="" width="36px" /><!-- icon -->
+          <listheader align="center" label="" width="36px" /><!-- icon -->
+        </listhead>
+      </listbox>
+      <div sclass="ap-window-footer-actions" height="42px">
+        <button id="okBtn" label="OK" iconSclass="z-icon-check-circle" />
+      </div>
+    </vbox>
+  </window>
+</zk>

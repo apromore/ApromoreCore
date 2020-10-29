@@ -61,6 +61,11 @@
 		<module>Apromore-Core-Components/Apromore-Manager</module>
 		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
+		<module>Apromore-Cache</module>
+		<module>Apromore-Database</module>
+		<module>Apromore-Calendar</module>
+		<module>Apromore-Commons</module>
+
 		<!-- Custom Plugins -->
 		<module>Apromore-Plugins</module>
 
@@ -89,6 +94,7 @@
 		<module>Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin</module>
 
 		<module>Apromore-Custom-Plugins/User-Admin-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/Calendar-Portal</module>
 		<!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
 		<!-- Clients that we can distribute -->
@@ -114,6 +120,7 @@
     	<module>Apromore-Database</module>
 
 		<module>Apromore-Commons</module>
+
   </modules>
 
 	<properties>
@@ -137,6 +144,7 @@
 		<apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
 		<apromore-cache.version>1.0</apromore-cache.version>
 		<apromore-database.version>1.0</apromore-database.version>
+		<apromore-calendar.version>1.0</apromore-calendar.version>
 
 		<gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 		<httpcomponents.version>4.2.1</httpcomponents.version>
@@ -518,7 +526,15 @@
 				<artifactId>apromore-database</artifactId>
 				<version>${apromore-database.version}</version>
 			</dependency>
-	
+
+			<!-- Apromore Calendar  -->
+
+			<dependency>
+				<groupId>org.apromore</groupId>
+				<artifactId>apromore-calendar</artifactId>
+				<version>${apromore-calendar.version}</version>
+			</dependency>
+
 			<!-- Plugin API -->
 			<dependency>
 				<groupId>org.apromore.plugin</groupId>
