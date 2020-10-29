@@ -21,7 +21,8 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.LaTrace;
+
+import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -30,7 +31,7 @@ import org.apromore.apmlog.filter.types.OperationType;
 
 public class DurationFilter {
 
-    public static boolean toKeep(LaTrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -38,20 +39,20 @@ public class DurationFilter {
         }
     }
 
-    private static boolean conformRule(LaTrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
 
 
-        long durRangeFrom = 0, durRangeTo = 0;
+        double durRangeFrom = 0, durRangeTo = 0;
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
             OperationType operationType = ruleValue.getOperationType();
-            if (operationType == OperationType.GREATER_EQUAL) durRangeFrom = ruleValue.getLongValue();
-            if (operationType == OperationType.LESS_EQUAL) durRangeTo = ruleValue.getLongValue();
+            if (operationType == OperationType.GREATER_EQUAL) durRangeFrom = ruleValue.getDoubleValue();
+            if (operationType == OperationType.LESS_EQUAL) durRangeTo = ruleValue.getDoubleValue();
         }
 
 
         FilterType filterType = logFilterRule.getFilterType();
 
-        long dur = 0;
+        double dur = 0;
 
         switch (filterType) {
             case DURATION:

@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,162 +25,54 @@ import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (03/02/2020)
  * Modified: Chii Chang (04/02/2020)
+ * Modified: Chii Chang (13/10/2020)
+ * Modified: Chii Chang (27/10/2020)
  */
-public class AEvent implements Serializable {
-    private int index;
-    private String name = "";
-    private long timestampMilli = 0;
-    private String lifecycle = "complete";
-    private String resource = "";
-    private UnifiedMap<String, String> attributeMap;
-    private UnifiedSet<String> attributeNameSet;
-    private String timeZone = "";
+public interface AEvent {
 
-    public AEvent(int index, String name, long timestampMilli, String lifecycle, String resource,
-                  UnifiedMap<String, String> attributeMap,
-                  UnifiedSet<String> attributeNameSet,
-                  String timeZone) {
-        this.index = index;
-        this.name = name.intern();
-        this.timestampMilli = timestampMilli;
-        this.lifecycle = lifecycle.intern();
-        this.resource = resource.intern();
-        this.attributeMap = attributeMap;
-        this.attributeNameSet = attributeNameSet;
-        this.timeZone = timeZone;
-    }
+     UnifiedMap<String, String> getAllAttributes();
 
-    public AEvent(XEvent xEvent, int index) {
-        this.index = index;
+     void setName(String name);
 
-        XAttributeMap xAttributeMap = xEvent.getAttributes();
+     void setResource(String resource);
 
+     void setLifecycle(String lifecycle);
 
-        attributeMap = new UnifiedMap<>();
+     void setTimestampMilli(long timestampMilli);
 
-        if (xAttributeMap.keySet().contains("concept:name")) {
-            this.name = xAttributeMap.get("concept:name").toString().intern();
-        }
+     String getName();
 
-        if (xAttributeMap.keySet().contains("lifecycle:transition")) {
-            this.lifecycle = xAttributeMap.get("lifecycle:transition").toString().intern();
-        }
+     String getResource();
 
-        if (xAttributeMap.keySet().contains("org:resource")) {
-            this.resource = xAttributeMap.get("org:resource").toString().intern();
-        }
+     String getLifecycle();
 
-        for(String key : xAttributeMap.keySet()) {
-            if (!key.equals("concept:name") &&
-                    !key.equals("lifecycle:transition") &&
-                    !key.equals("org:resource") &&
-                    !key.equals("time:timestamp")) {
-//                if (xAttributeMap.get(key) instanceof XAttributeLiteralImpl) {
-//                    this.attributeMap.put(key, String.valueOf(((XAttributeLiteralImpl) xAttributeMap.get(key)).getValue()).intern());
-//                } else if (xAttributeMap.get(key) instanceof XAttributeDiscreteImpl) {
-//                    this.attributeMap.put(key, String.valueOf(((XAttributeDiscreteImpl) xAttributeMap.get(key)).getValue()).intern());
-//                } else if (xAttributeMap.get(key) instanceof XAttributeIDImpl) {
-//                    this.attributeMap.put(key, String.valueOf(((XAttributeIDImpl) xAttributeMap.get(key)).getValue()).intern());
-//                }
-                this.attributeMap.put(key, xAttributeMap.get(key).toString());
-            }
+     long getTimestampMilli();
 
-        }
-        if(xEvent.getAttributes().containsKey("time:timestamp")) {
-            ZonedDateTime zdt = Util.zonedDateTimeOf(xEvent);
-            this.timestampMilli = Util.epochMilliOf(zdt);
-            this.timeZone = zdt.getZone().getId();
-        }else{
-            Date d = new Date(0);
-            ZonedDateTime zdt = ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
-            this.timestampMilli = Util.epochMilliOf(zdt);
-            this.timeZone = zdt.getZone().getId();
-        }
+     String getAttributeValue(String attributeKey);
 
-        attributeNameSet = new UnifiedSet<>(attributeMap.keySet());
-    }
+     UnifiedMap<String, String> getAttributeMap();
 
-    public UnifiedMap<String, String> getAllAttributes() {
-        UnifiedMap<String, String> allAttr = new UnifiedMap<>(attributeMap);
-        allAttr.put("concept:name", this.name);
-        if (!this.resource.equals("")) allAttr.put("org:resource", this.resource);
-        return allAttr;
-    }
+     Set<String> getAttributeNameSet();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+     String getTimeZone();
+     int getIndex();
 
-    public void setResource(String resource) {
-        this.resource = resource;
-    }
+     int getParentActivityIndex();
 
-    public void setLifecycle(String lifecycle) {
-        this.lifecycle = lifecycle;
-    }
+     void setParentActivityIndex(int immutableActivityIndex);
 
-    public void setTimestampMilli(long timestampMilli) {
-        this.timestampMilli = timestampMilli;
-    }
+     AEvent clone(ATrace parentTrace, AActivity parentActivity);
 
-    public String getName() {
-        return name;
-    }
-
-    public String getResource() {
-        return resource;
-    }
-
-    public String getLifecycle() {
-        return lifecycle;
-    }
-
-    public long getTimestampMilli() {
-        return timestampMilli;
-    }
-
-    public String getAttributeValue(String attributeKey) {
-        return this.attributeMap.get(attributeKey);
-    }
-
-    public UnifiedMap<String, String> getAttributeMap() {
-        return attributeMap;
-    }
-
-    public UnifiedSet<String> getAttributeNameSet() {
-        return attributeNameSet;
-    }
-
-    public String getTimeZone() { //2019-10-20
-        return timeZone;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public AEvent clone()  {
-        String clnName = this.name.intern();
-        long clnTimestampMilli = this.timestampMilli;
-        String clnLifecycle = this.lifecycle;
-        String clnResource = this.resource;
-        UnifiedMap<String, String> clnAttributeMap = new UnifiedMap<>(this.attributeMap);
-        UnifiedSet<String> clnAttributeNameSet = new UnifiedSet<>(this.attributeNameSet);
-        String clnTimeZone = this.timeZone;
-
-        AEvent clnEvent = new AEvent(this.index, clnName, clnTimestampMilli, clnLifecycle, clnResource,
-                clnAttributeMap, clnAttributeNameSet, clnTimeZone);
-        return clnEvent;
-    }
+     AEvent clone();
 }

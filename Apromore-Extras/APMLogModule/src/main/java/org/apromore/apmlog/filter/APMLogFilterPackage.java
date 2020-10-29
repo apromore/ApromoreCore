@@ -23,7 +23,6 @@
 package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.deckfour.xes.model.XLog;
 

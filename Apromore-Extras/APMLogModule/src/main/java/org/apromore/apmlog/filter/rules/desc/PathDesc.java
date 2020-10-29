@@ -31,9 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author Chii Chang
- */
 public class PathDesc {
 
     public static String getDescription(LogFilterRule logFilterRule) {
@@ -55,6 +52,7 @@ public class PathDesc {
         List<String> fromList = new ArrayList<>();
         List<String> toList = new ArrayList<>();
 
+//        String fromVal = "", toVal = "";
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
             OperationType operationType = ruleValue.getOperationType();
             if (operationType == OperationType.FROM) {

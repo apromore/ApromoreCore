@@ -25,9 +25,7 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.sorted.mutable.TreeSortedMap;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class provides the data that can be used in various chart-based data visualisation
@@ -39,31 +37,31 @@ public class DefaultChartDataCollection {
 
     private UnifiedMap<Long, Integer> caseOTSeriesData;
     private UnifiedMap<Long, Integer> eventOTSeriesData;
-    private UnifiedMap<Long, Integer> caseDurationSeriesData;
-    private UnifiedMap<Long, Integer> totalProcessingTimeSeriesData;
-    private UnifiedMap<Long, Integer> averageProcessingTimeSeriesData;
-    private UnifiedMap<Long, Integer> maxProcessingTimeSeriesData;
-    private UnifiedMap<Long, Integer> totalWaitingTimeSeriesData;
-    private UnifiedMap<Long, Integer> averageWaitingTimeSeriesData;
-    private UnifiedMap<Long, Integer> maxWaitingTimeSeriesData;
+    private UnifiedMap<Double, Integer> caseDurationSeriesData;
+    private UnifiedMap<Double, Integer> totalProcessingTimeSeriesData;
+    private UnifiedMap<Double, Integer> averageProcessingTimeSeriesData;
+    private UnifiedMap<Double, Integer> maxProcessingTimeSeriesData;
+    private UnifiedMap<Double, Integer> totalWaitingTimeSeriesData;
+    private UnifiedMap<Double, Integer> averageWaitingTimeSeriesData;
+    private UnifiedMap<Double, Integer> maxWaitingTimeSeriesData;
     private UnifiedMap<Double, Integer> caseUtilizationSeriesData;
 
-    private UnifiedMap<String, Long> totalProcessingTimeMap;
-    private UnifiedMap<String, Long> averageProcessingTimeMap;
-    private UnifiedMap<String, Long> maxProcessingTimeMap;
-    private UnifiedMap<String, Long> totalWaitingTimeMap;
-    private UnifiedMap<String, Long> averageWaitingTimeMap;
-    private UnifiedMap<String, Long> maxWaitingTimeMap;
+    private UnifiedMap<String, Double> totalProcessingTimeMap;
+    private UnifiedMap<String, Double> averageProcessingTimeMap;
+    private UnifiedMap<String, Double> maxProcessingTimeMap;
+    private UnifiedMap<String, Double> totalWaitingTimeMap;
+    private UnifiedMap<String, Double> averageWaitingTimeMap;
+    private UnifiedMap<String, Double> maxWaitingTimeMap;
     private UnifiedMap<String, Double> caseUtilizationMap;
 
     private UnifiedMap<Integer, Integer> caseVariFreqMap;
 
-    private long stepUnit = 1;
+    private double stepUnit = 1;
     private long earliestTime = 0; //for case overtime
     private long latestTime = 0; //for case overtime
-    private long minDuration = 0;
-    private long maxDuration = 0;
-    private final int MAX_UNIT = 300;
+    private double minDuration = 0;
+    private double maxDuration = 0;
+    private final int MAX_UNIT = 100;
     DecimalFormat decimalFormat = new DecimalFormat("###############.##");
 
     public DefaultChartDataCollection(APMLog apmLog) {
@@ -78,12 +76,12 @@ public class DefaultChartDataCollection {
 
         this.caseVariFreqMap = new UnifiedMap<>(); //2019-11-13
 
-        List<Long> allTotalProcessingTimes = new ArrayList<>();
-        List<Long> allAverageProcessingTimes = new ArrayList<>();
-        List<Long> allMaxProcessingTimes = new ArrayList<>();
-        List<Long> allTotalWaitingTimes = new ArrayList<>();
-        List<Long> allAverageWaitingTimes = new ArrayList<>();
-        List<Long> allMaxWaitingTimes = new ArrayList<>();
+        List<Double> allTotalProcessingTimes = new ArrayList<>();
+        List<Double> allAverageProcessingTimes = new ArrayList<>();
+        List<Double> allMaxProcessingTimes = new ArrayList<>();
+        List<Double> allTotalWaitingTimes = new ArrayList<>();
+        List<Double> allAverageWaitingTimes = new ArrayList<>();
+        List<Double> allMaxWaitingTimes = new ArrayList<>();
         List<Double> allCaseUtils = new ArrayList<>();
 
         earliestTime = apmLog.getStartTime();
@@ -149,6 +147,7 @@ public class DefaultChartDataCollection {
             cotMap.put(cotList.get(i), 0);
         }
 
+
         /**
          * Create eotMap (events over time) based on the cotList values
          */
@@ -163,15 +162,15 @@ public class DefaultChartDataCollection {
         /**
          * For case duration
          */
-        TreeSortedMap<Long, Integer> caseDurMap = new TreeSortedMap<>(); // Long as duration, Integer as frequency
-        long cateUnit = 0;
+        TreeSortedMap<Double, Integer> caseDurMap = new TreeSortedMap<>(); // Long as duration, Integer as frequency
+        double cateUnit = 0;
         if(interval > 0) {
             int numOfUnits = MAX_UNIT;
-            long first = minDuration;
-            long last = maxDuration;
+            double first = minDuration;
+            double last = maxDuration;
             cateUnit = (last - first) / numOfUnits;
             this.stepUnit = cateUnit;
-            long current = first;
+            double current = first;
             caseDurMap.put(current, 0);
             for(int i=1; i < numOfUnits; i++) {
                 current += cateUnit;
@@ -188,15 +187,15 @@ public class DefaultChartDataCollection {
         /**
          * For total processing time
          */
-        TreeSortedMap<Long, Integer> ttlPTMap = new TreeSortedMap<>();
-        long ttlPTUnit = 0;
+        TreeSortedMap<Double, Integer> ttlPTMap = new TreeSortedMap<>();
+        double ttlPTUnit = 0;
         if(interval > 0) {
             Collections.sort(allTotalProcessingTimes);
             int numOfUnits = MAX_UNIT;
-            long first = allTotalProcessingTimes.get(0);
-            long last = allTotalProcessingTimes.get(allTotalProcessingTimes.size() - 1);
+            double first = allTotalProcessingTimes.get(0);
+            double last = allTotalProcessingTimes.get(allTotalProcessingTimes.size() - 1);
             ttlPTUnit = (last - first) / numOfUnits;
-            long current = first - ttlPTUnit;
+            double current = first - ttlPTUnit;
             for(int i=0; i <= numOfUnits; i++) {
                 if(i == numOfUnits) current = last;
                 else current += ttlPTUnit;
@@ -206,14 +205,14 @@ public class DefaultChartDataCollection {
         /**
          * For average processing time
          */
-        TreeSortedMap<Long, Integer> avgPTMap = new TreeSortedMap<>();
-        long avgPTUnit = 0;
+        TreeSortedMap<Double, Integer> avgPTMap = new TreeSortedMap<>();
+        double avgPTUnit = 0;
         if(interval > 0) {
             Collections.sort(allAverageProcessingTimes);
-            long first = allAverageProcessingTimes.get(0);
-            long last = allAverageProcessingTimes.get(allAverageProcessingTimes.size() - 1);
+            double first = allAverageProcessingTimes.get(0);
+            double last = allAverageProcessingTimes.get(allAverageProcessingTimes.size() - 1);
             avgPTUnit = (last - first) / MAX_UNIT;
-            long current = first - avgPTUnit;
+            double current = first - avgPTUnit;
             for(int i=0; i <= MAX_UNIT; i++) {
                 if(i == MAX_UNIT) current = last;
                 else current += avgPTUnit;
@@ -223,14 +222,14 @@ public class DefaultChartDataCollection {
         /**
          * For max processing time
          */
-        TreeSortedMap<Long, Integer> maxPTMap = new TreeSortedMap<>();
-        long maxPTUnit = 0;
+        TreeSortedMap<Double, Integer> maxPTMap = new TreeSortedMap<>();
+        double maxPTUnit = 0;
         if(interval > 0) {
             Collections.sort(allMaxProcessingTimes);
-            long first = allMaxProcessingTimes.get(0);
-            long last = allMaxProcessingTimes.get(allMaxProcessingTimes.size() - 1);
+            double first = allMaxProcessingTimes.get(0);
+            double last = allMaxProcessingTimes.get(allMaxProcessingTimes.size() - 1);
             maxPTUnit = (last - first) / MAX_UNIT;
-            long current = first - maxPTUnit;
+            double current = first - maxPTUnit;
             for(int i=0; i <= MAX_UNIT; i++) {
                 if(i == MAX_UNIT) current = last;
                 else current += maxPTUnit;
@@ -240,15 +239,15 @@ public class DefaultChartDataCollection {
         /**
          * For total waiting time
          */
-        TreeSortedMap<Long, Integer> ttlWTMap = new TreeSortedMap<>();
-        long ttlWTUnit = 0;
+        TreeSortedMap<Double, Integer> ttlWTMap = new TreeSortedMap<>();
+        double ttlWTUnit = 0;
         if(interval > 0) {
             Collections.sort(allTotalWaitingTimes);
             int numOfUnits = MAX_UNIT;
-            long first = allTotalWaitingTimes.get(0);
-            long last = allTotalWaitingTimes.get(allTotalWaitingTimes.size() - 1);
+            double first = allTotalWaitingTimes.get(0);
+            double last = allTotalWaitingTimes.get(allTotalWaitingTimes.size() - 1);
             ttlWTUnit = (last - first) / numOfUnits;
-            long current = first - ttlWTUnit;
+            double current = first - ttlWTUnit;
             for(int i=0; i <= numOfUnits; i++) {
                 if(i == numOfUnits) current = last;
                 else current += ttlWTUnit;
@@ -258,15 +257,15 @@ public class DefaultChartDataCollection {
         /**
          * For average waiting time
          */
-        TreeSortedMap<Long, Integer> avgWTMap = new TreeSortedMap<>();
-        long avgWTUnit = 0;
+        TreeSortedMap<Double, Integer> avgWTMap = new TreeSortedMap<>();
+        double avgWTUnit = 0;
         if(interval > 0) {
             Collections.sort(allAverageWaitingTimes);
             int numOfUnits = MAX_UNIT;
-            long first = allAverageWaitingTimes.get(0);
-            long last = allAverageWaitingTimes.get(allAverageWaitingTimes.size() - 1);
+            double first = allAverageWaitingTimes.get(0);
+            double last = allAverageWaitingTimes.get(allAverageWaitingTimes.size() - 1);
             avgWTUnit = (last - first) / numOfUnits;
-            long current = first - avgWTUnit;
+            double current = first - avgWTUnit;
             for(int i=0; i <= numOfUnits; i++) {
                 if(i == numOfUnits) current = last;
                 else current += avgWTUnit;
@@ -276,15 +275,15 @@ public class DefaultChartDataCollection {
         /**
          * For max waiting time
          */
-        TreeSortedMap<Long, Integer> maxWTMap = new TreeSortedMap<>();
-        long maxWTUnit = 0;
+        TreeSortedMap<Double, Integer> maxWTMap = new TreeSortedMap<>();
+        double maxWTUnit = 0;
         if(interval > 0) {
             Collections.sort(allMaxWaitingTimes);
             int numOfUnits = MAX_UNIT;
-            long first = allMaxWaitingTimes.get(0);
-            long last = allMaxWaitingTimes.get(allMaxWaitingTimes.size() - 1);
+            double first = allMaxWaitingTimes.get(0);
+            double last = allMaxWaitingTimes.get(allMaxWaitingTimes.size() - 1);
             maxWTUnit = (last - first) / numOfUnits;
-            long current = first - maxWTUnit;
+            double current = first - maxWTUnit;
             for(int i=0; i <= numOfUnits; i++) {
                 if(i == numOfUnits) current = last;
                 else current += maxWTUnit;
@@ -298,7 +297,7 @@ public class DefaultChartDataCollection {
         double caseUtilUnit = 0;
         if(interval > 0) {
             Collections.sort(allCaseUtils);
-            int numOfUnits = MAX_UNIT;
+            int numOfUnits = (MAX_UNIT / 2);
             double first = allCaseUtils.get(0);
             double last = allCaseUtils.get(allCaseUtils.size() - 1);
             caseUtilUnit = (last - first) / numOfUnits;
@@ -351,9 +350,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Case duration
                      */
-                    long caseDuration = aTrace.getDuration();
-                    for(Long key : caseDurMap.keySet()) {
-                        long p = key - cateUnit;
+                    double caseDuration = aTrace.getDuration();
+                    for(double key : caseDurMap.keySet()) {
+                        double p = key - cateUnit;
                         if(caseDuration <= key && caseDuration > p) {
                             int y = caseDurMap.get(key) + 1;
                             caseDurMap.put(key, y);
@@ -363,9 +362,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Total processing time
                      */
-                    long ttlPT = totalProcessingTimeMap.get(caseName);
-                    for(Long key : ttlPTMap.keySet()) {
-                        long p = key - ttlPTUnit;
+                    double ttlPT = totalProcessingTimeMap.get(caseName);
+                    for(double key : ttlPTMap.keySet()) {
+                        double p = key - ttlPTUnit;
                         if(ttlPT > p && ttlPT <= key) {
                             int y = ttlPTMap.get(key) + 1;
                             ttlPTMap.put(key, y);
@@ -375,9 +374,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Average processing time
                      */
-                    long avgPT = averageProcessingTimeMap.get(caseName);
-                    for(Long key : avgPTMap.keySet()) {
-                        long p = key - avgPTUnit;
+                    double avgPT = averageProcessingTimeMap.get(caseName);
+                    for(double key : avgPTMap.keySet()) {
+                        double p = key - avgPTUnit;
                         if(avgPT > p && avgPT <= key) {
                             int y = avgPTMap.get(key) + 1;
                             avgPTMap.put(key, y);
@@ -387,9 +386,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Max processing time
                      */
-                    long maxPT = maxProcessingTimeMap.get(caseName);
-                    for(Long key : maxPTMap.keySet()) {
-                        long p = key - maxPTUnit;
+                    double maxPT = maxProcessingTimeMap.get(caseName);
+                    for(double key : maxPTMap.keySet()) {
+                        double p = key - maxPTUnit;
                         if(maxPT > p && maxPT <= key) {
                             int y = maxPTMap.get(key) + 1;
                             maxPTMap.put(key, y);
@@ -399,9 +398,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Total waiting time
                      */
-                    long ttlWT = totalWaitingTimeMap.get(caseName);
-                    for(Long key : ttlWTMap.keySet()) {
-                        long p = key - ttlWTUnit;
+                    double ttlWT = totalWaitingTimeMap.get(caseName);
+                    for(double key : ttlWTMap.keySet()) {
+                        double p = key - ttlWTUnit;
                         if(ttlWT > p && ttlWT <= key) {
                             int y = ttlWTMap.get(key) + 1;
                             ttlWTMap.put(key, y);
@@ -411,9 +410,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Average waiting time
                      */
-                    long avgWT = averageWaitingTimeMap.get(caseName);
-                    for(Long key : avgWTMap.keySet()) {
-                        long p = key - avgWTUnit;
+                    double avgWT = averageWaitingTimeMap.get(caseName);
+                    for(double key : avgWTMap.keySet()) {
+                        double p = key - avgWTUnit;
                         if(avgWT > p && avgWT <= key) {
                             int y = avgWTMap.get(key) + 1;
                             avgWTMap.put(key, y);
@@ -423,9 +422,9 @@ public class DefaultChartDataCollection {
                     /**
                      * Max waiting time
                      */
-                    long maxWT = maxWaitingTimeMap.get(caseName);
-                    for(Long key : maxWTMap.keySet()) {
-                        long p = key - maxWTUnit;
+                    double maxWT = maxWaitingTimeMap.get(caseName);
+                    for(double key : maxWTMap.keySet()) {
+                        double p = key - maxWTUnit;
                         if(maxWT > p && maxWT <= key) {
                             int y = maxWTMap.get(key) + 1;
                             maxWTMap.put(key, y);
@@ -470,7 +469,7 @@ public class DefaultChartDataCollection {
              * Make case duration chart series
              */
             this.caseDurationSeriesData = new UnifiedMap();
-            for(Long key : caseDurMap.keySet()) {
+            for(double key : caseDurMap.keySet()) {
                 int y = caseDurMap.get(key);
                 this.caseDurationSeriesData.put(key, y);
             }
@@ -479,7 +478,7 @@ public class DefaultChartDataCollection {
              * Make total processing time chart series
              */
             this.totalProcessingTimeSeriesData = new UnifiedMap<>();
-            for(Long key : ttlPTMap.keySet()) {
+            for(double key : ttlPTMap.keySet()) {
                 int y = ttlPTMap.get(key);
                 this.totalProcessingTimeSeriesData.put(key, y);
             }
@@ -487,7 +486,7 @@ public class DefaultChartDataCollection {
              * Make average processing time chart series
              */
             this.averageProcessingTimeSeriesData = new UnifiedMap<>();
-            for(Long key : avgPTMap.keySet()) {
+            for(double key : avgPTMap.keySet()) {
                 int y = avgPTMap.get(key);
                 this.averageProcessingTimeSeriesData.put(key, y);
             }
@@ -495,7 +494,7 @@ public class DefaultChartDataCollection {
              * Make max processing time chart series
              */
             this.maxProcessingTimeSeriesData = new UnifiedMap<>();
-            for(Long key : maxPTMap.keySet()) {
+            for(double key : maxPTMap.keySet()) {
                 int y = maxPTMap.get(key);
                 this.maxProcessingTimeSeriesData.put(key, y);
             }
@@ -503,7 +502,7 @@ public class DefaultChartDataCollection {
              * Make total waiting time chart series
              */
             this.totalWaitingTimeSeriesData = new UnifiedMap<>();
-            for(Long key : ttlWTMap.keySet()) {
+            for(double key : ttlWTMap.keySet()) {
                 int y = ttlWTMap.get(key);
                 this.totalWaitingTimeSeriesData.put(key, y);
             }
@@ -511,7 +510,7 @@ public class DefaultChartDataCollection {
              * Make average waiting time chart series
              */
             this.averageWaitingTimeSeriesData = new UnifiedMap<>();
-            for(Long key : avgWTMap.keySet()) {
+            for(double key : avgWTMap.keySet()) {
                 int y = avgWTMap.get(key);
                 this.averageWaitingTimeSeriesData.put(key, y);
             }
@@ -519,7 +518,7 @@ public class DefaultChartDataCollection {
              * Make max waiting time chart series
              */
             this.maxWaitingTimeSeriesData = new UnifiedMap<>();
-            for(Long key : maxWTMap.keySet()) {
+            for(double key : maxWTMap.keySet()) {
                 int y = maxWTMap.get(key);
                 this.maxWaitingTimeSeriesData.put(key, y);
             }
@@ -534,11 +533,11 @@ public class DefaultChartDataCollection {
         }
     }
 
-    public long getMaxDuration() {
+    public double getMaxDuration() {
         return maxDuration;
     }
 
-    public long getMinDuration() {
+    public double getMinDuration() {
         return minDuration;
     }
 
@@ -563,7 +562,7 @@ public class DefaultChartDataCollection {
         return eventOTSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getCaseDurationSeriesData() {
+    public UnifiedMap<Double, Integer> getCaseDurationSeriesData() {
         return caseDurationSeriesData;
     }
 
@@ -571,27 +570,27 @@ public class DefaultChartDataCollection {
         return caseUtilizationSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getTotalProcessingTimeSeriesData() {
+    public UnifiedMap<Double, Integer> getTotalProcessingTimeSeriesData() {
         return totalProcessingTimeSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getAverageProcessingTimeSeriesData() {
+    public UnifiedMap<Double, Integer> getAverageProcessingTimeSeriesData() {
         return averageProcessingTimeSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getMaxProcessingTimeSeriesData() {
+    public UnifiedMap<Double, Integer> getMaxProcessingTimeSeriesData() {
         return maxProcessingTimeSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getTotalWaitingTimeSeriesData() {
+    public UnifiedMap<Double, Integer> getTotalWaitingTimeSeriesData() {
         return totalWaitingTimeSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getAverageWaitingTimeSeriesData() {
+    public UnifiedMap<Double, Integer> getAverageWaitingTimeSeriesData() {
         return averageWaitingTimeSeriesData;
     }
 
-    public UnifiedMap<Long, Integer> getMaxWaitingTimeSeriesData() {
+    public UnifiedMap<Double, Integer> getMaxWaitingTimeSeriesData() {
         return maxWaitingTimeSeriesData;
     }
 }
