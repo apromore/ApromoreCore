@@ -96,10 +96,17 @@
     },
   };
 
+  let history = new Undoo();
+  history.save({
+    event: 'onClearFilter',
+    data: ''
+  });
+
   let container;
   let sourceJSON;
   let cy = null;
   let vizBridgeId = '$vizBridge';
+  let eventRegistered = false;
   let options = {
     maxZoom: 1E50,
     minZoom: 1E-50,
@@ -214,6 +221,7 @@
   let currentLayout = 0;
   let isCtrlPressed = false;
   let isAltPressed = false;
+  let isShiftPressed = false;
 
   let currentNodeTooltip;
   let currentZoomLevel = 1;
@@ -252,6 +260,9 @@
       }
     });
 
+    // cy.on('beforeUndo', function() {
+    // });
+
     cy.on('mouseover', 'node', function(event) {
       let node = event.target;
       if (node.data(NAME_PROP)) {
@@ -266,32 +277,51 @@
       if (currentNodeTooltip) currentNodeTooltip.hide();
     });
 
-    $(document).keydown(function(evt) {
-      if (evt.ctrlKey || 17 === evt.keyCode || 17 === evt.which) {
-        isCtrlPressed = true;
-      }
-      if (evt.altKey || 18 === evt.keyCode || 18 === evt.which) {
-        isAltPressed = true;
-      }
-      if (evt.ctrlKey && evt.which === 90) {
-        cy.undoRedo().undo();
-      } else if (evt.ctrlKey && evt.which === 89) {
-        cy.undoRedo().redo();
-      }
-    })
-
-    $(document).keyup(function() {
-      isAltPressed = isCtrlPressed = false;
-    });
+    if (!eventRegistered) {
+      eventRegistered = true;
+      $(document).keydown(function(evt) {
+        if (evt.shiftKey || 16 === evt.keyCode || 16 === evt.which) {
+          isShiftPressed = true;
+        }
+        if (evt.ctrlKey || 17 === evt.keyCode || 17 === evt.which) {
+          isCtrlPressed = true;
+        }
+        if (evt.altKey || 18 === evt.keyCode || 18 === evt.which) {
+          isAltPressed = true;
+        }
+        if (evt.ctrlKey && evt.which === 90) { // "Z" key
+          if (cy.undoRedo().isUndoStackEmpty()) {
+            history.undo((hist) => {
+              if (hist) {
+                zkSendEvent(vizBridgeId, hist.event, hist.data);
+              }
+            });
+          } else {
+            cy.undoRedo().undo();
+          }
+        } else if (evt.ctrlKey && evt.which === 89) { // "Y" key
+          if (cy.undoRedo().isRedoStackEmpty()) {
+            let hist = history.redo((hist) => {
+              if (hist) {
+                zkSendEvent(vizBridgeId, hist.event, hist.data);
+              }
+            });
+          } else {
+            cy.undoRedo().redo();
+          }
+        }
+      })
+      $(document).keyup(function() {
+        isAltPressed = isCtrlPressed = isShiftPressed = false;
+      });
+    }
   }
 
   function makeTippy(node, text) {
     return tippy(node.popperRef(), {
       content: function() {
         let div = document.createElement('div');
-
         div.innerHTML = text;
-
         return div;
       },
       trigger: 'manual',
@@ -304,7 +334,9 @@
   }
 
   function reset() {
-    cy.destroy();
+    if (cy) {
+      cy.destroy();
+    }
   }
 
   function loadLog(json, layoutType, retain) {
@@ -431,7 +463,9 @@
     if (source === '') { source = '|>'; }
     if (target === '') { target = '[]'; }
     let payload = source.concat(' => ', target);
-    if (isCtrlPressed) {
+    if (isShiftPressed) {
+      zkSendEvent('$filter', 'onInvokeExt', { type: 'ATTRIBUTE_ARC_DURATION', source, target  });
+    } else if (isCtrlPressed) {
       zkSendEvent(vizBridgeId, 'onEdgeRetained', payload);
     } else {
       zkSendEvent(vizBridgeId, 'onEdgeRemoved', payload);
@@ -440,21 +474,34 @@
 
   function removeNode(evt) {
     let evTarget = evt.target;
+    let graphEvent;
     let data = evTarget.data(NAME_PROP);
     if (data !== '') {
-      if (isCtrlPressed || isAltPressed) {
-        if (isCtrlPressed && !isAltPressed) {
-          zkSendEvent(vizBridgeId, 'onNodeRetainedTrace', data);
-        } else if (!isCtrlPressed && isAltPressed) {
-          zkSendEvent(vizBridgeId, 'onNodeRemovedEvent', data);
+      if (isShiftPressed) {
+        if  (isCtrlPressed) {
+          zkSendEvent('$filter', 'onInvokeExt', { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data });
         } else {
-          zkSendEvent(vizBridgeId, 'onNodeRetainedEvent', data);
+          zkSendEvent('$filter', 'onInvokeExt', { type: 'EVENT_ATTRIBUTE_DURATION', data });
+        }
+        // skip the history
+        return;
+      } else if (isCtrlPressed || isAltPressed) {
+        if (isCtrlPressed && !isAltPressed) {
+          graphEvent = 'onNodeRetainedTrace'
+        } else if (!isCtrlPressed && isAltPressed) {
+          graphEvent = 'onNodeRemovedEvent'
+        } else {
+          graphEvent = 'onNodeRetainedEvent'
         }
       } else {
-        zkSendEvent(vizBridgeId, 'onNodeRemovedTrace', data);
+        graphEvent = 'onNodeRemovedTrace'
       }
+      zkSendEvent(vizBridgeId, graphEvent, data);
+      history.save({
+        event: graphEvent,
+        data: data
+      });
     }
-
   }
 
   function zkSendEvent(widgetId, event, payload) {

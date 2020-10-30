@@ -1,7 +1,5 @@
-<!--<?xml version="1.0" encoding="UTF-8" standalone="no"?> -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--<?xml version="1.0" encoding="UTF-8" standalone="no"?> --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apromore</groupId>
@@ -50,6 +48,7 @@
 		<module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
 		<module>Apromore-OSGI-Bundles/json-osgi</module>
 		<module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
+		<module>Apromore-OSGI-Bundles/xlsx-streamer-osgi</module>
 		<module>Apromore-OSGI-Bundles/zk-osgi</module>
 		<module>Apromore-OSGI-Bundles/jgraph-osgi</module>
 		<module>Apromore-OSGI-Bundles/parquet-osgi</module>
@@ -111,7 +110,12 @@
 		<module>Apromore-Assembly/Portal-Assembly</module>
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
 
-	</modules>
+	  	<module>Apromore-Calendar</module>
+    	<module>Apromore-Cache</module>
+    	<module>Apromore-Database</module>
+
+		<module>Apromore-Commons</module>
+  </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -132,6 +136,8 @@
 		<apromore.plugin.version>1.1</apromore.plugin.version>
 		<apromore.plugin.custom.gui.version>1.1.0</apromore.plugin.custom.gui.version>
 		<apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
+		<apromore-cache.version>1.0</apromore-cache.version>
+		<apromore-database.version>1.0</apromore-database.version>
 
 		<gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 		<httpcomponents.version>4.2.1</httpcomponents.version>
@@ -183,7 +189,7 @@
 		<inject.version>1.0.0</inject.version>
 		<sardine.version>5.0.1</sardine.version>
 		<jackson.version>1.9.12</jackson.version>
-		<xmlbeans.version>2.4.0</xmlbeans.version>
+		<xmlbeans.version>3.1.0</xmlbeans.version>
 
 		<zk.version>8.6.0.1</zk.version>
 		<zk.spring.version>3.1</zk.spring.version>
@@ -235,7 +241,7 @@
 		<maven.build.helper.plugin>1.8</maven.build.helper.plugin>
 		<maven.bundle.plugin>3.0.1</maven.bundle.plugin>
 		<maven.changelog.plugin>2.2</maven.changelog.plugin>
-		<maven.checkstyle.plugin>2.10</maven.checkstyle.plugin>
+		<maven.checkstyle.plugin>3.1.1</maven.checkstyle.plugin>
 		<maven.clean.plugin>2.5</maven.clean.plugin>
 		<maven.compiler.plugin>3.0</maven.compiler.plugin>
 		<maven.dependency.plugin>2.8</maven.dependency.plugin>
@@ -498,6 +504,22 @@
 				<version>${filestore-client.version}</version>
 			</dependency>
 
+			<!-- Apromore Cache -->
+		
+			<dependency>
+				<groupId>org.apromore</groupId>
+				<artifactId>apromore-cache</artifactId>
+				<version>${apromore-cache.version}</version>
+			</dependency>
+			
+			<!-- Apromore Database  -->
+	
+			<dependency>
+				<groupId>org.apromore</groupId>
+				<artifactId>apromore-database</artifactId>
+				<version>${apromore-database.version}</version>
+			</dependency>
+	
 			<!-- Plugin API -->
 			<dependency>
 				<groupId>org.apromore.plugin</groupId>
@@ -1073,7 +1095,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xmlbeans</groupId>
-				<artifactId>com.springsource.org.apache.xmlbeans</artifactId>
+				<artifactId>xmlbeans</artifactId>
 				<version>${xmlbeans.version}</version>
 			</dependency>
 
@@ -1386,6 +1408,7 @@
 					<generateGitPropertiesFilename>${project.build.outputDirectory}/META-INF/git.properties</generateGitPropertiesFilename>
 					<skipPoms>false</skipPoms>
 				</configuration>
+				<inherited>false</inherited>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -1457,20 +1480,26 @@
 						<artifactId>build-tools</artifactId>
 						<version>${build-tools.version}</version>
 					</dependency>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>8.36.2</version>
+					</dependency>
 				</dependencies>
-				<configuration>
-					<skip>${checkstyle.skip}</skip>
-					<configLocation>${checkstyle.ruleset.location}</configLocation>
-					<failsOnError>false</failsOnError>
-					<enableRulesSummary>true</enableRulesSummary>
-					<includeTestSourceDirectory>true</includeTestSourceDirectory>
-				</configuration>
 				<executions>
 					<execution>
-						<id>run-checkstyle</id>
-						<phase>verify</phase>
+						<id>checkstyle</id>
+						<phase>process-sources</phase>
+						<configuration>
+							<configLocation>${checkstyle.ruleset.location}</configLocation>
+							<encoding>UTF-8</encoding>
+							<consoleOutput>true</consoleOutput>
+							<failsOnError>true</failsOnError>
+							<linkXRef>false</linkXRef>
+							<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+						</configuration>
 						<goals>
-							<goal>checkstyle</goal>
+							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -1756,7 +1785,7 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<skip>${jacoco.skip}</skip>
-					<check />
+					<check/>
 				</configuration>
 				<reportSets>
 					<reportSet>

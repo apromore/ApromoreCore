@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
@@ -73,7 +74,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
             Set<Role> userRoles = securityService.findRolesByUser(currentUser);
             if (!userRoles.contains(adminRole)) {
-                Messagebox.show("Only administrator accounts may manage users.");
+                Notification.info("Only administrator accounts may manage users");
                 return;
             }
 
@@ -86,7 +87,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
         } catch(Exception e) {
             LOGGER.error("Unable to create user administration dialog", e);
-            Messagebox.show("Unable to create user administration dialog");
+            Notification.error("Unable to create user administration dialog");
         }
     }
 

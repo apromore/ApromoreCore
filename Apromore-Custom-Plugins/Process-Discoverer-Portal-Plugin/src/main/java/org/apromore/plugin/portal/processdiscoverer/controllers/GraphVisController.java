@@ -151,6 +151,12 @@ public class GraphVisController extends VisualController {
                 }
             }
         });
+        vizBridge.addEventListener("onClearFilter", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                parent.clearFilter();
+            }
+        });
     }
 
     private boolean isGatewayEdge(String edge) {

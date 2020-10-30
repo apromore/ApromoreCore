@@ -22,8 +22,12 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AActivity;
+<<<<<<< HEAD
 
 import org.apromore.apmlog.ATrace;
+=======
+import org.apromore.apmlog.LaTrace;
+>>>>>>> development
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -34,7 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventAttributeDurationFilter {
+<<<<<<< HEAD
     public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+=======
+    public static boolean toKeep(LaTrace trace, LogFilterRule logFilterRule) {
+>>>>>>> development
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -42,7 +50,11 @@ public class EventAttributeDurationFilter {
         }
     }
 
+<<<<<<< HEAD
     private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+=======
+    private static boolean conformRule(LaTrace trace, LogFilterRule logFilterRule) {
+>>>>>>> development
         String attributeKey = logFilterRule.getKey();
 
 
@@ -71,7 +83,11 @@ public class EventAttributeDurationFilter {
         return false;
     }
 
+<<<<<<< HEAD
     private static List<Double> getAttributeDurationList(ATrace trace, String key, String value) {
+=======
+    private static List<Double> getAttributeDurationList(LaTrace trace, String key, String value) {
+>>>>>>> development
         List<Double> durList= new ArrayList<>();
 
         List<AActivity> activityList = trace.getActivityList();
@@ -88,6 +104,7 @@ public class EventAttributeDurationFilter {
     }
 
     private static String getAttributeValue(AActivity activity, String key) {
+<<<<<<< HEAD
         return activity.getAttributeValue(key);
 //        switch (key) {
 //            case "concept:name": return activity.getName();
@@ -96,5 +113,14 @@ public class EventAttributeDurationFilter {
 //                UnifiedMap<String, String> attrMap = activity.getEventList().get(0).getAttributeMap();
 //                return attrMap.get(key);
 //        }
+=======
+        switch (key) {
+            case "concept:name": return activity.getName();
+            case "org:resource": return activity.getEventList().get(0).getResource();
+            default:
+                UnifiedMap<String, String> attrMap = activity.getEventList().get(0).getAttributeMap();
+                return attrMap.get(key);
+        }
+>>>>>>> development
     }
 }

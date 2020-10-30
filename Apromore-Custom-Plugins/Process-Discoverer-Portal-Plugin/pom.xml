@@ -85,7 +85,11 @@
         </plugins>
     </build>
 
-    <dependencies>  
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>log-filter-portal-plugin-generic</artifactId>
@@ -119,7 +123,13 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom-bpmn-osgi</artifactId>
             <version>1.0</version>
-        </dependency>        
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-commons</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apromore</groupId>

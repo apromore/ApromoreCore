@@ -27,15 +27,20 @@ package org.apromore.portal.dialogController;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
 
 import javax.xml.datatype.DatatypeFactory;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
@@ -60,6 +65,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -67,6 +73,7 @@ import org.zkoss.zul.Listhead;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Window;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -78,6 +85,9 @@ public abstract class BaseListboxController extends BaseController {
     private static final String LOG_DELETE = "Are you sure you want to delete selected log(s)?";
     private static final String PROCESS_DELETE = "Are you sure you want to delete the selected process model(s)? If no version has been selected, the latest version will be removed.";
     private static final String MIXED_DELETE = "Are you sure you want to delete the selected file(s)? For a process model, if no version has been selected, the latest version will be removed.";
+
+    private static final String TILE_VIEW = "tile";
+    private static final String LIST_VIEW = "list";
 
     private final Listbox listBox;
 
@@ -100,6 +110,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button btnTileView;
     private final Button btnSecurity;
     private final Button btnUserMgmt;
+    private final Button btnShare;
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -138,13 +149,34 @@ public abstract class BaseListboxController extends BaseController {
         btnTileView = (Button) mainController.getFellow("btnTileView");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
         btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
+        btnShare = (Button) mainController.getFellow("btnShare");
 
         attachEvents();
 
         appendChild(listBox);
-        setTileView(true);
+        if (LIST_VIEW.equals(getPersistedView())) {
+            setTileView(false);
+        } else {
+            setTileView(true);
+        }
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+    }
+
+    public void setPersistedView(String view) {
+        Clients.evalJavaScript("Ap.common.setCookie('view','" + view + "')");
+    }
+
+    public String getPersistedView() {
+        Cookie[] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if("view".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     protected void attachEvents() {
@@ -283,6 +315,13 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        this.btnShare.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                share();
+            }
+        });
+
     }
 
     public void setTileView(boolean tileOn) {
@@ -297,6 +336,7 @@ public abstract class BaseListboxController extends BaseController {
             }
             toggleComponentSclass(btnTileView, true, "ap-btn-off", "ap-btn-on");
             toggleComponentSclass(btnListView, false, "ap-btn-off", "ap-btn-on");
+            setPersistedView(TILE_VIEW);
         } else {
             if (sclass.contains("ap-tiles-view")) {
                 this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
@@ -306,6 +346,7 @@ public abstract class BaseListboxController extends BaseController {
             }
             toggleComponentSclass(btnListView, true, "ap-btn-off", "ap-btn-on");
             toggleComponentSclass(btnTileView, false, "ap-btn-off", "ap-btn-on");
+            setPersistedView(LIST_VIEW);
         }
     }
 
@@ -384,7 +425,7 @@ public abstract class BaseListboxController extends BaseController {
                 }
                 new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
-                Messagebox.show("Only one item can be renamed at a time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("Only one item can be renamed at a time.");
             }
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -403,13 +444,14 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
-    protected void rename() throws InterruptedException {
+    public boolean isSingleFileSelected() {     
+      return getSelectionCount() ==1;    
+    }
+
+    public void rename() throws InterruptedException {
         try {
-            if (getSelectionCount() == 0) {
-                Messagebox.show("Please select a file/folder to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
-                return;
-            } else if (getSelectionCount() > 1) {
-                Messagebox.show("You can not rename multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
+            if (!isSingleFileSelected()) {
+                Notification.error("Please select single file or folder to rename");
                 return;
             }
             List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
@@ -420,6 +462,33 @@ public abstract class BaseListboxController extends BaseController {
                 renameFolder();
             }
         } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    /**
+     * Share folder/log/process model
+     */
+    protected void share() {
+        try {
+            if (getSelectionCount() == 0) {
+                Messagebox.show("Please select a log or model to share", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            } else if (getSelectionCount() > 1) {
+                Messagebox.show("You can not share multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
+            Object selectedItem = getSelection().iterator().next();
+            if (selectedItem instanceof FolderType) {
+                Messagebox.show("You can only share a log or model", "Attention", Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
+            Map arg = new HashMap<>();
+            arg.put("selectedItem", selectedItem);
+            arg.put("currentUser", UserSessionManager.getCurrentUser());
+            Window window = (Window) Executions.getCurrent().createComponents("macros/share.zul", null, arg);
+            window.doModal();
+        } catch (Exception e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }

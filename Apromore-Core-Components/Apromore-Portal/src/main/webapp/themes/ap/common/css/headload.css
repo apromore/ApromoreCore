@@ -19,9 +19,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-
 /* This style should be linked in <head> using */
+
+/* Avoid scrollbar pushing internal layout in Windows OS due to upload progress bar */
+body {
+    overflow: hidden;
+}
 
 /* Make sure button colours are transparent */
 .ap-icon {

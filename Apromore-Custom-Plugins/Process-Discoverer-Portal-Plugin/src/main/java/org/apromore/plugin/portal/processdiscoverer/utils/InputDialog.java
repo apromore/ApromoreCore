@@ -22,7 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.utils;
 
-import java.util.regex.Pattern;
+import org.apromore.commons.item.Constants;
+import org.apromore.commons.item.ItemNameUtils;
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -44,8 +45,6 @@ public class InputDialog {
      * @returnValueHander: callback event listener, notified with onOK (containing return value as string) and onCancel event
      */
     public static void showInputDialog(String title, String message, String initialValue, 
-                                String valuePattern,
-                                String allowedValues, 
                                 EventListener<Event> returnValueHander) {
         Window win = (Window) Executions.createComponents("inputDialog.zul", null, null);
         Window dialog = (Window) win.getFellow("inputDialog");
@@ -70,24 +69,26 @@ public class InputDialog {
         ((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
              @Override
              public void onEvent(Event event) throws Exception {
-                 okHandler(txtValue, labelError, valuePattern, allowedValues, dialog, returnValueHander);
+                 okHandler(txtValue, labelError, dialog, returnValueHander);
              }
         });
 
         win.addEventListener("onOK", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                okHandler(txtValue, labelError, valuePattern, allowedValues, dialog, returnValueHander);
+                okHandler(txtValue, labelError, dialog, returnValueHander);
             }
         });
         
     }
 
-    public static void okHandler(Textbox txtValue, Label labelError, String valuePattern, String allowedValues, Window dialog, EventListener<Event> returnValueHander) throws Exception {
+    public static void okHandler(Textbox txtValue, Label labelError, Window dialog, EventListener<Event> returnValueHander) throws Exception {
+        String allowedValues = Constants.VALID_NAME_MESSAGE;
+
         if (txtValue.getValue().trim().isEmpty()) {
             labelError.setValue("Please enter a value!");
         }
-        else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
+        else if (!ItemNameUtils.hasValidName(txtValue.getValue())) {
             labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
         }
         else {

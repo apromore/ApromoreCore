@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apromore.common.Constants;
+import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
@@ -168,9 +169,8 @@ public class AbstractTest extends EasyMockSupport {
         gp.setId(123);
         gp.setGroup(group);
         gp.setProcess(process);
-        gp.setHasOwnership(hasOwnership);
-        gp.setHasRead(hasRead);
-        gp.setHasWrite(hasWrite);
+        AccessRights accessRights=new AccessRights(hasRead,hasWrite,hasOwnership);
+        gp.setAccessRights(accessRights);
         return gp;
     }
     

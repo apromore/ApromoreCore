@@ -1191,7 +1191,8 @@ div.ap-pd-drawer-splitter:hover {
     border-radius: 3px;
     box-shadow: 0 3px 6px 0 rgba(0,0,0,0.16),0 2px 4px 0 rgba(0,0,0,0.24);
     z-index: 5000;
-    max-height: 400px;
+    max-width: 320px;
+    max-height: 500px;
     overflow-y: auto;
 }
 
@@ -1200,6 +1201,10 @@ div.ap-pd-drawer-splitter:hover {
     padding: 3px 6px;
     cursor: pointer;
     text-align: left;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .ap-pd-search-graph-options > div:hover,

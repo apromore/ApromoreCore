@@ -30,7 +30,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.legecy.LogReader;
+import org.apromore.service.csvimporter.services.legacy.LogReaderProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
     private ParquetFactoryProvider parquetFactoryProvider;
-    LogReader logReader;
+    LogReaderProvider logReaderProvider;
     private UserMetadataService userMetadataService;
 
     public ParquetFactoryProvider getParquetFactoryProvider() {
@@ -64,17 +64,13 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.parquetFactoryProvider = parquetFactoryProvider;
     }
 
-    public LogReader getLogReader() {
-        return logReader;
-    }
+    public LogReaderProvider getLogReaderProvider() {return logReaderProvider;}
+
+    public void setLogReaderProvider(LogReaderProvider logReaderProvider) {this.logReaderProvider = logReaderProvider;}
 
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
         LOGGER.info("Injected CSV importer logic {}", newUserMetadataService);
         this.userMetadataService = newUserMetadataService;
-    }
-
-    public void setLogReader(LogReader logReader) {
-        this.logReader = logReader;
     }
 
     // Implementation of FileImporterPlugin
@@ -91,9 +87,9 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         boolean useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
 
         if (useParquet) {
-            return new HashSet<>(Arrays.asList("csv", "parquet"));
+            return new HashSet<>(Arrays.asList("csv", "parquet", "xlsx"));
         } else {
-            return Collections.singleton("csv");
+            return new HashSet<>(Arrays.asList("csv", "xlsx"));
         }
     }
 
@@ -103,7 +99,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
         arg.put("parquetFactoryProvider", parquetFactoryProvider);
-        arg.put("logReader", logReader);
+        arg.put("logReaderProvider", logReaderProvider);
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
 

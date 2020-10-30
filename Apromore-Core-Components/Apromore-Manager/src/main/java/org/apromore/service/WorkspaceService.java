@@ -25,16 +25,14 @@
 package org.apromore.service;
 
 import java.util.List;
+import java.util.Map;
 
-import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.service.model.FolderTreeNode;
+import org.apromore.util.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -91,7 +89,7 @@ public interface WorkspaceService {
 
     String removeProcessPermissions(Integer processId, String userId);
 
-    String removeLogPermissions(Integer logId, String userId);
+    String removeLogPermissions(Integer logId, String userId, String username) throws UserNotFoundException;
 
     /**
      * Creates the public status for the users to have read rights to this model.
@@ -175,4 +173,7 @@ public interface WorkspaceService {
      * @throws Exception
      */
     Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
+
+
+
 }

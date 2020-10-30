@@ -180,8 +180,13 @@ public class LogData {
         return false;
     }
 
-    
-    
+    public boolean hasSufficientDurationVariant(String attribute, String value) {
+        return false;
+    }
+
+    public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
+        return false;
+    }
     //////////////////////// Statistics /////////////////////////////
     
     public String getFilteredStartTime() {

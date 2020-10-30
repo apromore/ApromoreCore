@@ -22,8 +22,12 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AActivity;
+<<<<<<< HEAD
 
 import org.apromore.apmlog.ATrace;
+=======
+import org.apromore.apmlog.LaTrace;
+>>>>>>> development
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -34,7 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttributeArcDurationFilter {
+<<<<<<< HEAD
     public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+=======
+    public static boolean toKeep(LaTrace trace, LogFilterRule logFilterRule) {
+>>>>>>> development
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -42,7 +50,11 @@ public class AttributeArcDurationFilter {
         }
     }
 
+<<<<<<< HEAD
     private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+=======
+    private static boolean conformRule(LaTrace trace, LogFilterRule logFilterRule) {
+>>>>>>> development
         String attributeKey = logFilterRule.getKey();
 
         String fromVal = "", toVal = "";
@@ -69,7 +81,11 @@ public class AttributeArcDurationFilter {
         return durList.size() > 0;
     }
 
+<<<<<<< HEAD
     private static List<Double> getAttributeToAttributeDurationList(ATrace trace, String attributeKey,
+=======
+    private static List<Double> getAttributeToAttributeDurationList(LaTrace trace, String attributeKey,
+>>>>>>> development
                                                                     String value1, String value2,
                                                                     double lowBoundVal, double upBoundVal) {
         List<Double> durList= new ArrayList<>();

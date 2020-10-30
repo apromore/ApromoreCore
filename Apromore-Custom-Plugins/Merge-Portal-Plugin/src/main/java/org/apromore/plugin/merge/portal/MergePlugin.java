@@ -26,6 +26,7 @@
 package org.apromore.plugin.merge.portal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -55,6 +57,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -89,9 +92,12 @@ public class MergePlugin extends DefaultPortalPlugin {
     private Button OKbutton;
     private Textbox processNameT;
     private Textbox versionNameT;
+    private String mergedProcessName;
+
+    private Grid advancedOpts;
+    private Button advancedOptsButton;
 
     private Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
-
 
     // DefaultPortalPlugin overrides
 
@@ -111,12 +117,16 @@ public class MergePlugin extends DefaultPortalPlugin {
             LOGGER.info("Executing");
             Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
             Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+            List<String> filenames = new ArrayList<String>();
             for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
-                if(entry.getKey() instanceof ProcessSummaryType) {
-                    selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+                SummaryType processSummaryType = entry.getKey();
+                if(processSummaryType instanceof ProcessSummaryType) {
+                    String name = processSummaryType.getName();
+                    filenames.add(name);
+                    selectedProcessVersions.put((ProcessSummaryType) processSummaryType, entry.getValue());
                 }
             }
-
+            mergedProcessName = ItemNameUtils.mergeNames(filenames);
             Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
 
             // At least 2 process versions must be selected. Not necessarily of different processes
@@ -126,8 +136,6 @@ public class MergePlugin extends DefaultPortalPlugin {
             }
 
             showDialog(context, selectedProcessVersions);
-
-
             LOGGER.info("Executed");
 
         } catch (Exception e) {
@@ -155,6 +163,7 @@ public class MergePlugin extends DefaultPortalPlugin {
 
         Row processNameR = (Row) this.processMergeW.getFellow("mergednamep");
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
+        this.processNameT.setValue(mergedProcessName);
 
         Row versionNameR = (Row) this.processMergeW.getFellow("mergednamev");
         this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
@@ -177,6 +186,9 @@ public class MergePlugin extends DefaultPortalPlugin {
         this.skipnweight = (Row) this.processMergeW.getFellow("skipnweight");
         this.subnweight = (Row) this.processMergeW.getFellow("subnweight");
 
+        this.advancedOpts = (Grid) this.processMergeW.getFellow("advancedOpts");
+        this.advancedOptsButton = (Button) this.processMergeW.getFellow("advancedOptsButton");
+
         this.algosLB = (Listbox) algoChoiceR.getFirstChild().getNextSibling();
         Listitem listItem = new Listitem();
         listItem.setLabel("Greedy");
@@ -187,6 +199,13 @@ public class MergePlugin extends DefaultPortalPlugin {
         this.algosLB.appendChild(listItem);
 
         updateActions();
+
+        this.processMergeW.addEventListener("onOK", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                mergeProcesses();
+            }
+        });
 
         this.processNameT.addEventListener("onChange", new EventListener<Event>() {
             @Override
@@ -224,8 +243,24 @@ public class MergePlugin extends DefaultPortalPlugin {
                 cancel();
             }
         });
+        advancedOptsButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                toggleAdvancedOpts();
+            }
+        });
 
         this.processMergeW.doModal();
+    }
+
+    private void toggleAdvancedOpts() {
+        boolean visible = this.advancedOpts.isVisible();
+        this.advancedOpts.setVisible(!visible);
+        if (visible) {
+            this.advancedOptsButton.setLabel("Show advanced options");
+        } else {
+            this.advancedOptsButton.setLabel("Hide advanced options");
+        }
     }
 
     protected void cancel() {

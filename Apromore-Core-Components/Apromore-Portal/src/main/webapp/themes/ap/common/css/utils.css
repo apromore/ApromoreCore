@@ -158,13 +158,12 @@ div.ap-window-footer-actions {
 }
 
 .ap-footnotes {
-
     font-weight: normal !important;
     color: var(--ap-c-sunset-dark-2);
 }
 
 .ap-footnotes .z-row-content {
-    padding: 4px 5px 8px 5px;
+    padding: 4px 5px 8px 5px !important;
 }
 
 /* Forced scroll */
@@ -374,6 +373,10 @@ div.ap-window-footer-actions {
     text-align: center;
 }
 
+.ap-key-help kbd + span {
+    margin: 0 6px;
+}
+
 .ap-key-help span {
     font-family: monospace;
 }
@@ -381,6 +384,7 @@ div.ap-window-footer-actions {
 .ap-key-help > div > div:first-child {
     width: 200px;
     font-size: 12px;
+    flex: 0 0 auto;
 }
 
 .ap-key-help > div > div:nth-child(2) {
@@ -401,6 +405,11 @@ div.ap-window-footer-actions {
     width: 1.4em !important;
 }
 
+.shift-kbd::after {
+    content: "Shift";
+    width: 2.1em !important;
+}
+
 .mac .control-kbd::after {
     content: "⌃";
     width: 1.2em !important;
@@ -411,6 +420,10 @@ div.ap-window-footer-actions {
     width: 1.2em !important;
 }
 
+.mac .shift-kbd::after {
+    content: "⇧";
+    width: 1.2em !important;
+}
 
 /* Switch */
 .ap-switch > span {
@@ -498,7 +511,9 @@ div.ap-window-footer-actions {
     position: fixed;
     left: 50%;
     top: 10px;
-    padding: 2px 23px 5px 8px;
+    width: fit-content;
+    max-width: 80%;
+    padding: 5px 25px 8px 8px;
     border-radius: 5px;
     background-color: rgba(240, 250, 230, 0.9);
     border: 1px solid rgb(183, 235, 143);

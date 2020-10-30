@@ -29,28 +29,26 @@
  */
 package de.hpi.bpmn2_0.replay;
 
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.backtracking2.Backtracking;
-import de.hpi.bpmn2_0.backtracking2.Node;
-import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
+
+import de.hpi.bpmn2_0.backtracking2.Backtracking;
+import de.hpi.bpmn2_0.backtracking2.Node;
+import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 /**
  *
  * @author Administrator
@@ -294,7 +292,7 @@ public class Replayer {
             // Traverse backtracking result from the beginning
             //---------------------------------------------
             while (!stack.empty()) {
-                node = (Node)stack.pop();
+                node = stack.pop();
                 modelNode = node.getState().getElement();
                 
                 //Skip EVENT_SKIPPED nodes: no need to show them on the replay

@@ -45,6 +45,7 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.GroupMapper;
 import org.apromore.mapper.NativeTypeMapper;
@@ -288,8 +289,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public String removeLogPermissions(int logId, String userId) {
-        return workspaceSrv.removeLogPermissions(logId, userId);
+    public String removeLogPermissions(int logId, String userId, String username) throws UserNotFoundException {
+        return workspaceSrv.removeLogPermissions(logId, userId, username);
     }
 
     /**

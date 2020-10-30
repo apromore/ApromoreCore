@@ -38,7 +38,8 @@ import org.apromore.service.csvimporter.services.ConvertToParquetFactory;
 import org.apromore.service.csvimporter.services.ParquetExporter;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
-import org.apromore.service.csvimporter.services.legecy.LogReader;
+import org.apromore.service.csvimporter.services.legacy.LogReader;
+import org.apromore.service.csvimporter.services.legacy.LogReaderProvider;
 import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -77,6 +78,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
      */
     static final String SESSION_ATTRIBUTE_KEY = "csvimport";
 
+    private static final int ROW_INDEX_START_FROM = 2;
+
     // Fields injected from Spring beans/OSGi services
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
     private UserMetadataService userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
@@ -92,7 +95,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     // Fields injected from the ZK session
     private ParquetFactoryProvider parquetFactoryProvider = (ParquetFactoryProvider) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("parquetFactoryProvider");
-    private LogReader logReader = (LogReader) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("logReader");
+    private LogReaderProvider logReaderProvider = (LogReaderProvider) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("logReaderProvider");
     private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
     private JSONObject mappingJSON = (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("mappingJSON");
@@ -125,6 +128,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     SampleLogGenerator sampleLogGenerator;
     ParquetExporter parquetExporter;
 
+    LogReader logReader;
+
     @Override
     public void doFinally() throws Exception {
         super.doFinally();
@@ -134,6 +139,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             convertToParquetFactory = parquetFactoryProvider.getParquetFactory(getMediaFormat(media));
             sampleLogGenerator = convertToParquetFactory.createSampleLogGenerator();
             parquetExporter = convertToParquetFactory.createParquetExporter();
+            logReader = logReaderProvider.getLogReader(getMediaFormat(media));
 
             Properties props = new Properties();
             props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));
@@ -492,7 +498,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         Grid myGrid = (Grid) window.getFellow(myGridId);
         ListModelList<String[]> indexedResult = new ListModelList<>();
 
-        int index = 1;
+        int index = ROW_INDEX_START_FROM;
         for (List<String> myLine : sample.getLines()) {
             List<String> withIndex = new ArrayList<>();
             withIndex.add(String.valueOf(index));
@@ -1112,6 +1118,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private InputStream getInputSream(Media media) {
+
         return media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData());
     }
 

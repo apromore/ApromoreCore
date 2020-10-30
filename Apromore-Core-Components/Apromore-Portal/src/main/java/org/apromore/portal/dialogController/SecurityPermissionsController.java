@@ -28,7 +28,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.common.FolderTreeNodeTypes;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.GroupAccessType;
@@ -37,6 +39,7 @@ import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -64,6 +67,8 @@ public class SecurityPermissionsController extends BaseController {
 
     @SuppressWarnings("unchecked")
     public void loadUsers(final int id, FolderTreeNodeTypes type){
+        PortalContext pc = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        String username = pc.getCurrentUser().getUsername();
         List<GroupAccessType> groups;
         ManagerService service = securitySetupController.getMainController().getService();
         switch (type) {
@@ -140,7 +145,7 @@ public class SecurityPermissionsController extends BaseController {
                                 break;
                             }
                             if (message.isEmpty()){
-                                Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+                                Notification.info("Successfully saved permissions.");
                             } else {
                                 Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
                             }
@@ -166,11 +171,11 @@ public class SecurityPermissionsController extends BaseController {
                             message = service.removeProcessPermissions(id, group.getGroupId());
                             break;
                         case Log:
-                            message = service.removeLogPermissions(id, group.getGroupId());
+                            message = service.removeLogPermissions(id, group.getGroupId(), username);
                             break;
                         }
                         if (message.isEmpty()){
-                            Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+                            Notification.info("Successfully removed permissions.");
                             loadUsers(id, type);
                         } else {
                             Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);

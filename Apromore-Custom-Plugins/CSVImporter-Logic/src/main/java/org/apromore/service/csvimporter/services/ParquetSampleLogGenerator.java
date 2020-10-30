@@ -39,31 +39,40 @@ import java.util.List;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 class ParquetSampleLogGenerator implements SampleLogGenerator {
+    private ParquetReader<Group> reader;
+
     @Override
     public void validateLog(InputStream in, String charset) { /**To be Implemented**/}
 
     @Override
     public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-        //Write InputStream to a file
-        File tempFile = File.createTempFile("samplelog", "parquet");
-        new FileWriter(in, tempFile).writeToFile();
+        try {
+            //Write InputStream to a file
+            File tempFile = File.createTempFile("samplelog", "parquet");
+            new FileWriter(in, tempFile).writeToFile();
 
-        //Read Parquet file
-        ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
-        MessageType schema = parquetLocalFileReader.getSchema();
-        ParquetReader<Group> reader = parquetLocalFileReader.getParquetReader();
+            //Read Parquet file
+            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+            MessageType schema = parquetLocalFileReader.getSchema();
+            reader = parquetLocalFileReader.getParquetReader();
 
-        List<List<String>> lines = new ArrayList<>();
-        Group g;
-        int lineIndex = 0;
-        while ((g = reader.read()) != null && lineIndex < sampleSize) {
-            String[] myLine = readGroup(g, schema);
-            lines.add(Arrays.asList(myLine));
-            lineIndex++;
+            List<List<String>> lines = new ArrayList<>();
+            Group g;
+            int lineIndex = 0;
+            while ((g = reader.read()) != null && lineIndex < sampleSize) {
+                String[] myLine = readGroup(g, schema);
+                lines.add(Arrays.asList(myLine));
+                lineIndex++;
+            }
+
+            return new ParquetLogSampleImpl(getHeaderFromParquet(schema), lines, tempFile);
+
+        } finally {
+            reader.close();
+            in.close();
         }
-        reader.close();
-        return new ParquetLogSampleImpl(getHeaderFromParquet(schema), lines, tempFile);
+
     }
 
     private String[] readGroup(Group g, MessageType schema) {

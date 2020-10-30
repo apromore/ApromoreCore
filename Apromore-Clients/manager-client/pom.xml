@@ -134,17 +134,6 @@
                     <instructions>
                         <Embed-Dependency>artifactId=jaxb2-basics-runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Bundle>
-                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
-                            org.springframework.context;bundle-version="[3.1.0,4.0)",
-                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
-                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]"
-                        </Import-Bundle>
                         <Import-Package>
                             org.springframework.ws.soap,
                             *

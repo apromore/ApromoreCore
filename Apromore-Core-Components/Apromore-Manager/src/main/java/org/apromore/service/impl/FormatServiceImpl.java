@@ -99,25 +99,24 @@ public class FormatServiceImpl implements FormatService {
      */
     @Override
     @Transactional(readOnly = false)
-    public void storeNative(String procName, ProcessModelVersion pmv, String created, String lastUpdate, User user,
+    public Native storeNative(String procName, String created, String lastUpdate, User user,
             NativeType nativeType, String annVersion, InputStream original) throws JAXBException, IOException {
         Native nat = null;
 
         if (original != null) {
             String nativeString = StreamUtil.inputStream2String(original).trim();
-            nat = createNative(pmv, nativeType, nativeString);
+            nat = createNative(nativeType, nativeString);
             nat.setLastUpdateDate(lastUpdate);
         }
 
-        pmv.setNativeDocument(nat);
+        return nat;
     }
 
 
-    private Native createNative(ProcessModelVersion pmv, NativeType nativeType, String nativeString) {
+    private Native createNative( NativeType nativeType, String nativeString) {
         Native nat = new Native();
         nat.setNativeType(nativeType);
-        nat.setContent(nativeString);
-        nat.setProcessModelVersion(pmv);
+        nat.setContent(nativeString);        
         nat = nativeRepo.save(nat);
         return nat;
     }

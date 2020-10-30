@@ -24,7 +24,7 @@
 
 package org.apromore.service.csvimporter.model;
 
-import org.apromore.service.csvimporter.services.legecy.CreateXLog;
+import org.apromore.service.csvimporter.services.legacy.CreateXLog;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
