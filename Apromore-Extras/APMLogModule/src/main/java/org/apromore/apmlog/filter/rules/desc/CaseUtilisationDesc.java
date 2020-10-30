@@ -43,8 +43,8 @@ public class CaseUtilisationDesc {
         }
 
         DecimalFormat df2 = new DecimalFormat("###############.##");
-        String fromString = df2.format(100 * utilRangeFrom) + "%";
-        String toString = df2.format(100 * utilRangeTo) + "%";
+        String fromString = df2.format(utilRangeFrom * 100) + "%";
+        String toString = df2.format(utilRangeTo * 100) + "%";
 
         desc += fromString + " to " + toString;
         return desc;

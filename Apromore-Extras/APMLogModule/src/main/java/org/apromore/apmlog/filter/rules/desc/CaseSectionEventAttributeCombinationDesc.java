@@ -22,6 +22,7 @@
 package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Inclusion;
 
 import java.util.ArrayList;

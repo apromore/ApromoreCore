@@ -25,9 +25,7 @@ import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
 
-import java.util.HashSet;
 import java.util.Set;
-
 /**
  * @author Chii Chang
  */

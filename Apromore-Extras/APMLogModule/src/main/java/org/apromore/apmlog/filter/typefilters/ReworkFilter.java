@@ -22,7 +22,8 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AActivity;
-import org.apromore.apmlog.LaTrace;
+
+import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -39,7 +40,7 @@ import java.util.Set;
  * @author Chii Chang
  */
 public class ReworkFilter {
-    public static boolean toKeep(LaTrace pTrace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(ATrace pTrace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(pTrace, logFilterRule);
@@ -47,7 +48,7 @@ public class ReworkFilter {
         }
     }
 
-    private static boolean conformRule(LaTrace pTrace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(ATrace pTrace, LogFilterRule logFilterRule) {
 
         Set<RuleValue> primaryVals = logFilterRule.getPrimaryValues();
 
@@ -176,7 +177,7 @@ public class ReworkFilter {
 //        return true;
 //    }
 
-    private static Map<String, Integer> getActivityNameOccurMap(LaTrace pTrace) {
+    private static Map<String, Integer> getActivityNameOccurMap(ATrace pTrace) {
 
 
         Map<String, Integer> actNameOccurMap = new HashMap<>();
