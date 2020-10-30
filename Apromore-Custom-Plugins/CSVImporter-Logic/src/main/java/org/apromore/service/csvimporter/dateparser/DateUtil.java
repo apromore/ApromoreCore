@@ -31,31 +31,136 @@ import java.util.*;
 
 public class DateUtil {
 
+    //Day digit 1-31
+    private static final String DAY_DIGIT = "(0?[1-9]|[12][0-9]|3[01])";
+    //Month digit 1-12 
+    private static final String MONTH_DIGIT = "(0?[1-9]|1[012])";
+    //Year digit 1000-2999
+    private static final String YEAR_DIGIT = "([12][0-9]{3}{1})";
+    //Month short name e.g Feb
+    private static final String MONTH_NAME_SHORT = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
+    //Month long name e.g February
+    private static final String MONTH_NAME_LONG = "(January|February|March|April|May|June|July|August|September|October|November|December)";
+    //Hour digit 1-24
+    private static final String HOURS_DIGIT = "(0?[0-9]|1[0-9]|2[0-4])";
+    //Minutes or Second digit 1-60
+    private static final String MINUTES_OR_SECOND_DIGIT = "(0?[0-9]|[1-5][0-9]|60)";
+
+    //yyyyMMdd
+    private static final String DATE_NO_SPACE_YEAR_MONTH_DAY = YEAR_DIGIT + "{1}" + MONTH_DIGIT + "{1}" + DAY_DIGIT + "{1}";
+    //yyyyddMM
+    private static final String DATE_NO_SPACE_YEAR_DAY_MONTH = YEAR_DIGIT + "{1}" + DAY_DIGIT + "{1}" + MONTH_DIGIT + "{1}";
+    //ddMMyyyy
+    private static final String DATE_NO_SPACE_DAY_MONTH_YEAR = DAY_DIGIT + "{1}" + MONTH_DIGIT + "{1}" + YEAR_DIGIT + "{1}";
+    //MMddyyyy
+    private static final String DATE_NO_SPACE_MONTH_DAY_YEAR = MONTH_DIGIT + "{1}" + DAY_DIGIT + "{1}" + YEAR_DIGIT + "{1}";
+    //dd-MM-yyyy
+    private static final String DATE_DASH_DAY_MONTH_YEAR = DAY_DIGIT + "{1}" + "-" + MONTH_DIGIT + "{1}" + "-" + YEAR_DIGIT + "{1}";
+    //MM-dd-yyyy
+    private static final String DATE_DASH_MONTH_DAY_YEAR = MONTH_DIGIT + "{1}" + "-" + DAY_DIGIT + "{1}" + "-" + YEAR_DIGIT + "{1}";
+    //yyyy-MM-dd
+    private static final String DATE_DASH_YEAR_MONTH_DAY = YEAR_DIGIT + "{1}" + "-" + MONTH_DIGIT + "{1}" + "-" + DAY_DIGIT + "{1}";
+    //yyyy-dd-MM
+    private static final String DATE_DASH_YEAR_DAY_MONTH = YEAR_DIGIT + "{1}" + "-" + DAY_DIGIT + "{1}" + "-" + MONTH_DIGIT + "{1}";
+    //dd/MM/yyyy
+    private static final String DATE_SLASH_DAY_MONTH_YEAR = DAY_DIGIT + "{1}" + "/" + MONTH_DIGIT + "{1}" + "/" + YEAR_DIGIT + "{1}";
+    //MM/dd/yyyy
+    private static final String DATE_SLASH_MONTH_DAY_YEAR = MONTH_DIGIT + "{1}" + "/" + DAY_DIGIT + "{1}" + "/" + YEAR_DIGIT + "{1}";
+    //yyyy/MM/dd
+    private static final String DATE_SLASH_YEAR_MONTH_DAY = YEAR_DIGIT + "{1}" + "/" + MONTH_DIGIT + "{1}" + "/" + DAY_DIGIT + "{1}";
+    //yyyy/dd/MM
+    private static final String DATE_SLASH_YEAR_DAY_MONTH = YEAR_DIGIT + "{1}" + "/" + DAY_DIGIT + "{1}" + "/" + MONTH_DIGIT + "{1}";
+    //dd MM yyyy
+    private static final String DATE_SPACE_DAY_MONTH_YEAR = DAY_DIGIT + "{1}" + "\\s" + MONTH_DIGIT + "{1}" + "\\s" + YEAR_DIGIT + "{1}";
+    //MM dd yyyy
+    private static final String DATE_SPACE_MONTH_DAY_YEAR = MONTH_DIGIT + "{1}" + "\\s" + DAY_DIGIT + "{1}" + "\\s" + YEAR_DIGIT + "{1}";
+    //yyyy MM dd
+    private static final String DATE_SPACE_YEAR_MONTH_DAY = YEAR_DIGIT + "{1}" + "\\s" + MONTH_DIGIT + "{1}" + "\\s" + DAY_DIGIT + "{1}";
+    //yyyy dd MM
+    private static final String DATE_SPACE_YEAR_DAY_MONTH = YEAR_DIGIT + "{1}" + "\\s" + DAY_DIGIT + "{1}" + "\\s" + MONTH_DIGIT + "{1}";
+
+
+    //HHMM
+    private static final String TIME_NO_SPACE = HOURS_DIGIT + "{1}" + MINUTES_OR_SECOND_DIGIT + "{1}";
+    //HHMMSS
+    private static final String TIME_NO_SPACE_SECOND = HOURS_DIGIT + "{1}" + MINUTES_OR_SECOND_DIGIT + "{1}" + MINUTES_OR_SECOND_DIGIT + "{1}";
+    //HH:MM
+    private static final String TIME_COLON = HOURS_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}";
+    //HH:MM:SS
+    private static final String TIME_COLON_SECOND = HOURS_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}";
+
+
     private static final Map<String, String> DATE_FORMAT_REGEXPS = new HashMap<String, String>() {{
-        put("^\\d{8}$", "yyyyMMdd");
-        put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "dd-MM-yyyy");
-        put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "yyyy-MM-dd");
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "dd/MM/yyyy");
-        put("^\\d{4}/\\d{1,2}/\\d{1,2}$", "yyyy/MM/dd");
-        put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}$", "dd MMM yyyy");
-        put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}$", "dd MMMM yyyy");
-        put("^\\d{12}$", "yyyyMMddHHmm");
-        put("^\\d{8}\\s\\d{4}$", "yyyyMMdd HHmm");
-        put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{2}$", "dd-MM-yyyy HH:mm");
-        put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy-MM-dd HH:mm");
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}$", "dd/MM/yyyy HH:mm");
-        put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy/MM/dd HH:mm");
-        put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}$", "dd MMM yyyy HH:mm");
-        put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}$", "dd MMMM yyyy HH:mm");
-        put("^\\d{14}$", "yyyyMMddHHmmss");
-        put("^\\d{8}\\s\\d{6}$", "yyyyMMdd HHmmss");
-        put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd-MM-yyyy HH:mm:ss");
-        put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-dd HH:mm:ss");
-        put("^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd/MM/yyyy HH:mm:ss");
-        put("^(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "MM/dd/yyyy HH:mm:ss");
-        put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/dd HH:mm:ss");
-        put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMM yyyy HH:mm:ss");
-        put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMMM yyyy HH:mm:ss");
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + "$", "yyyyMMdd");
+        put("^" + DATE_NO_SPACE_YEAR_DAY_MONTH + "$", "yyyyddMM");
+        put("^" + DATE_NO_SPACE_DAY_MONTH_YEAR + "$", "ddMMyyyy");
+        put("^" + DATE_NO_SPACE_MONTH_DAY_YEAR + "$", "MMddyyyy");
+        put("^" + DATE_DASH_DAY_MONTH_YEAR + "$", "dd-MM-yyyy");
+        put("^" + DATE_DASH_MONTH_DAY_YEAR + "$", "MM-dd-yyyy");
+        put("^" + DATE_DASH_YEAR_MONTH_DAY + "$", "yyyy-MM-dd");
+        put("^" + DATE_DASH_YEAR_DAY_MONTH + "$", "yyyy-dd-MM");
+        put("^" + DATE_SLASH_DAY_MONTH_YEAR + "$", "dd/MM/yyyy");
+        put("^" + DATE_SLASH_MONTH_DAY_YEAR + "$", "MM/dd/yyyy");
+        put("^" + DATE_SLASH_YEAR_MONTH_DAY + "$", "yyyy/MM/dd");
+        put("^" + DATE_SLASH_YEAR_DAY_MONTH + "$", "yyyy/dd/MM");
+        put("^" + DATE_SPACE_DAY_MONTH_YEAR + "$", "dd MM yyyy");
+        put("^" + DATE_SPACE_MONTH_DAY_YEAR + "$", "MM dd yyyy");
+        put("^" + DATE_SPACE_YEAR_MONTH_DAY + "$", "yyyy MM dd");
+        put("^" + DATE_SPACE_YEAR_DAY_MONTH + "$", "yyyy dd MM");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_SHORT + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "$", "dd MMM yyyy");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_LONG + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "$", "dd MMMM yyyy");
+
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + TIME_NO_SPACE + "$", "yyyyMMddHHmm");
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_NO_SPACE + "$", "yyyyMMdd HHmm");
+        put("^" + DATE_DASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON + "$", "dd-MM-yyyy HH:mm");
+        put("^" + DATE_DASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON + "$", "MM-dd-yyyy HH:mm");
+        put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON + "$", "yyyy-MM-dd HH:mm");
+        put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON + "$", "yyyy-dd-MM HH:mm");
+        put("^" + DATE_SLASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON + "$", "dd/MM/yyyy HH:mm");
+        put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON + "$", "MM/dd/yyyy HH:mm");
+        put("^" + DATE_SLASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON + "$", "yyyy/MM/dd HH:mm");
+        put("^" + DATE_SLASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON + "$", "yyyy/dd/MM HH:mm");
+        put("^" + DATE_SPACE_DAY_MONTH_YEAR + "\\s" + TIME_COLON + "$", "dd MM yyyy HH:mm");
+        put("^" + DATE_SPACE_MONTH_DAY_YEAR + "\\s" + TIME_COLON + "$", "MM dd yyyy HH:mm");
+        put("^" + DATE_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_COLON + "$", "yyyy MM dd HH:mm");
+        put("^" + DATE_SPACE_YEAR_DAY_MONTH + "\\s" + TIME_COLON + "$", "yyyy dd MM HH:mm");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_SHORT + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "\\s" + TIME_COLON + "$", "dd MMM yyyy HH:mm");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_LONG + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "\\s" + TIME_COLON + "$", "dd MMMM yyyy HH:mm");
+
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + TIME_NO_SPACE_SECOND + "$", "yyyyMMddHHmmss");
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_NO_SPACE_SECOND + "$", "yyyyMMdd HHmmss");
+        put("^" + DATE_DASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "$", "dd-MM-yyyy HH:mm:ss");
+        put("^" + DATE_DASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "$", "MM-dd-yyyy HH:mm:ss");
+        put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yyyy-MM-dd HH:mm:ss");
+        put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "$", "yyyy-dd-MM HH:mm:ss");
+        put("^" + DATE_SLASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "$", "dd/MM/yyyy HH:mm:ss");
+        put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "$", "MM/dd/yyyy HH:mm:ss");
+        put("^" + DATE_SLASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yyyy/MM/dd HH:mm:ss");
+        put("^" + DATE_SLASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "$", "yyyy/dd/MM HH:mm:ss");
+        put("^" + DATE_SPACE_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "$", "dd MM yyyy HH:mm:ss");
+        put("^" + DATE_SPACE_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "$", "MM dd yyyy HH:mm:ss");
+        put("^" + DATE_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yyyy MM dd HH:mm:ss");
+        put("^" + DATE_SPACE_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "$", "yyyy dd MM HH:mm:ss");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_SHORT + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "\\s" + TIME_COLON_SECOND + "$", "dd MMM yyyy HH:mm:ss");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_LONG + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "\\s" + TIME_COLON_SECOND + "$", "dd MMMM yyyy HH:mm:ss");
+
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + TIME_NO_SPACE_SECOND + "\\." + "\\d{3}" + "$", "yyyyMMddHHmmss.SSS");
+        put("^" + DATE_NO_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_NO_SPACE_SECOND + "\\." + "\\d{3}" + "$", "yyyyMMdd HHmmss.SSS");
+        put("^" + DATE_DASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd-MM-yyyy HH:mm:ss.SSS");
+        put("^" + DATE_DASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM-dd-yyyy HH:mm:ss.SSS");
+        put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-MM-dd HH:mm:ss.SSS");
+        put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-dd-MM HH:mm:ss.SSS");
+        put("^" + DATE_SLASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd/MM/yyyy HH:mm:ss.SSS");
+        put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM/dd/yyyy HH:mm:ss.SSS");
+        put("^" + DATE_SLASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy/MM/dd HH:mm:ss.SSS");
+        put("^" + DATE_SLASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy/dd/MM HH:mm:ss.SSS");
+        put("^" + DATE_SPACE_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd MM yyyy HH:mm:ss.SSS");
+        put("^" + DATE_SPACE_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM dd yyyy HH:mm:ss.SSS");
+        put("^" + DATE_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy MM dd HH:mm:ss.SSS");
+        put("^" + DATE_SPACE_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy dd MM HH:mm:ss.SSS");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_SHORT + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd MMM yyyy HH:mm:ss.SSS");
+        put("^" + DAY_DIGIT + "{1}" + "\\s" + MONTH_NAME_LONG + "{1}" + "\\s" + YEAR_DIGIT + "{1}" + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd MMMM yyyy HH:mm:ss.SSS");
+
     }};
 
     private DateUtil() {
