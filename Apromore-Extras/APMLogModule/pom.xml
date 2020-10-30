@@ -70,7 +70,7 @@
             <!-- ******************************** -->
         </plugins>
     </build>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.eclipse.collections</groupId>
@@ -81,7 +81,7 @@
             <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
         </dependency>
-
+        
         <!--  Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -94,11 +94,11 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-        </dependency>
+        </dependency>          
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-    </dependencies>
+    </dependencies>    
 </project>
