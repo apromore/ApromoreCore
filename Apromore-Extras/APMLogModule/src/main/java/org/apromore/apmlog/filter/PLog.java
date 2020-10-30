@@ -471,7 +471,7 @@ public class PLog extends LaLog {
             BitSet vEvents = trace.getValidEventIndexBitSet();
             eventSize += vEvents.cardinality();
 
-            System.out.println((i+1) + " / " + immutableTraces.size());
+//            System.out.println((i+1) + " / " + immutableTraces.size());
         }
 
         variantSize = variantIdFreqMap.size();
@@ -539,7 +539,7 @@ public class PLog extends LaLog {
             eventAttributeValueCasesFreqMap.put(key, valCaseFreqMap);
 
             counter += 1;
-            System.out.println(counter + " / " + eventAttributeOccurMap.size());
+//            System.out.println(counter + " / " + eventAttributeOccurMap.size());
         }
 
 
