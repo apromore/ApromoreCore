@@ -57,6 +57,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private UsermetadataRepository userMetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;
+    private UsermetadataProcessRepository usermetadataProcessRepo;
     private GroupRepository groupRepo;
 
     /**
@@ -72,6 +73,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                    final UsermetadataRepository userMetadataRepo,
                                    final UsermetadataTypeRepository usermetadataTypeRepo,
                                    final UsermetadataLogRepository usermetadataLogRepo,
+                                   final UsermetadataProcessRepository usermetadataProcessRepo,
                                    final GroupRepository groupRepository) {
         this.logRepo = logRepository;
         this.groupLogRepo = groupLogRepository;
@@ -80,6 +82,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         this.userMetadataRepo = userMetadataRepo;
         this.usermetadataTypeRepo = usermetadataTypeRepo;
         this.usermetadataLogRepo = usermetadataLogRepo;
+        this.usermetadataProcessRepo = usermetadataProcessRepo;
         this.groupRepo = groupRepository;
        
     }
@@ -267,6 +270,12 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         usermetadataLogSet.clear();
         userMetadata.setUsermetadataLog(usermetadataLogSet);
         usermetadataLogRepo.delete(usermetadataLogSet);
+
+        // Delete all UsermetadataLog
+        Set<UsermetadataProcess> usermetadataProcessSet = userMetadata.getUsermetadataProcess();
+        usermetadataProcessSet.clear();
+        userMetadata.setUsermetadataProcess(usermetadataProcessSet);
+        usermetadataProcessRepo.delete(usermetadataProcessSet);
 
         // Delete all GroupUsermetadata
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
