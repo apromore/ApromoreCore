@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
+import static org.junit.Assert.assertEquals;
+
 @Ignore
 public class DebugUnitTest {
     /**
@@ -84,6 +86,81 @@ public class DebugUnitTest {
 //        parse = new Parse();
 //        System.out.println("Parsing " + parse.tryParsing("06-11-2011 4:59:00 pm"));
         System.out.println("\n************************************\n");
+
+    }
+    @Test
+    public void test_timestamp() throws Exception {
+
+        System.out.println("\n************************************\ntest");
+
+        assertEquals("",determineDateFormat("yyyyMMdd"));
+        assertEquals("",determineDateFormat("yyyyddMM"));
+        assertEquals("",determineDateFormat("ddMMyyyy"));
+        assertEquals("",determineDateFormat("MMddyyyy"));
+        assertEquals("",determineDateFormat("dd-MM-yyyy"));
+        assertEquals("",determineDateFormat("MM-dd-yyyy"));
+        assertEquals("",determineDateFormat("yyyy-MM-dd"));
+        assertEquals("",determineDateFormat("yyyy-dd-MM"));
+        assertEquals("",determineDateFormat("dd/MM/yyyy"));
+        assertEquals("",determineDateFormat("MM/dd/yyyy"));
+        assertEquals("",determineDateFormat("yyyy/MM/dd"));
+        assertEquals("",determineDateFormat("yyyy/dd/MM"));
+        assertEquals("",determineDateFormat("dd MM yyyy"));
+        assertEquals("",determineDateFormat("MM dd yyyy"));
+        assertEquals("",determineDateFormat("yyyy MM dd"));
+        assertEquals("",determineDateFormat("yyyy dd MM"));
+        assertEquals("",determineDateFormat("dd MMM yyyy"));
+        assertEquals("",determineDateFormat("dd MMMM yyyy"));
+
+        assertEquals("",determineDateFormat("yyyyMMddHHmm"));
+        assertEquals("",determineDateFormat("yyyyMMdd HHmm"));
+        assertEquals("",determineDateFormat("dd-MM-yyyy HH:mm"));
+        assertEquals("",determineDateFormat("MM-dd-yyyy HH:mm"));
+        assertEquals("",determineDateFormat("yyyy-MM-dd HH:mm"));
+        assertEquals("",determineDateFormat("yyyy-dd-MM HH:mm"));
+        assertEquals("",determineDateFormat("dd/MM/yyyy HH:mm"));
+        assertEquals("",determineDateFormat("MM/dd/yyyy HH:m"));
+        assertEquals("",determineDateFormat("yyyy/MM/dd HH:mm"));
+        assertEquals("",determineDateFormat("yyyy/dd/MM HH:mm"));
+        assertEquals("",determineDateFormat("dd MM yyyy HH:mm"));
+        assertEquals("",determineDateFormat("MM dd yyyy HH:mm"));
+        assertEquals("",determineDateFormat("yyyy MM dd HH:mm"));
+        assertEquals("",determineDateFormat("yyyy dd MM HH:mm"));
+        assertEquals("",determineDateFormat("dd MMM yyyy HH:mm"));
+        assertEquals("",determineDateFormat("dd MMMM yyyy HH:mm"));
+
+        assertEquals("",determineDateFormat("yyyyMMddHHmmss"));
+        assertEquals("",determineDateFormat("yyyyMMdd HHmmss"));
+        assertEquals("",determineDateFormat("dd-MM-yyyy HH:mm:ss"));
+        assertEquals("",determineDateFormat("MM-dd-yyyy HH:mm:ss"));
+        assertEquals("",determineDateFormat("yyyy-MM-dd HH:mm:ss"));
+        assertEquals("",determineDateFormat("yyyy-dd-MM HH:mm:ss"));
+        assertEquals("",determineDateFormat("dd/MM/yyyy HH:mm:ss"));
+        assertEquals("",determineDateFormat("MM/dd/yyyy HH:mm:s"));
+        assertEquals("",determineDateFormat("yyyy/MM/dd HH:mm:ss"));
+        assertEquals("",determineDateFormat("yyyy/dd/MM HH:mm:ss"));
+        assertEquals("",determineDateFormat("dd MM yyyy HH:mm:ss"));
+        assertEquals("",determineDateFormat("MM dd yyyy HH:mm:ss"));
+        assertEquals("",determineDateFormat("yyyy MM dd HH:mm:ss"));
+        assertEquals("",determineDateFormat("yyyy dd MM HH:mm:ss"));
+        assertEquals("",determineDateFormat("dd MMM yyyy HH:mm:ss"));
+        assertEquals("",determineDateFormat("yyyyMMddHHmmss.SSS"));
+        assertEquals("",determineDateFormat("yyyyMMdd HHmmss.SSS"));
+        assertEquals("",determineDateFormat("dd-MM-yyyy HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("MM-dd-yyyy HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("yyyy-dd-MM HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("dd/MM/yyyy HH:mm:ss.SS"));
+        assertEquals("",determineDateFormat("MM/dd/yyyy HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("yyyy/MM/dd HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("yyyy/dd/MM HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("dd MM yyyy HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("MM dd yyyy HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("yyyy MM dd HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("yyyy dd MM HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("dd MMM yyyy HH:mm:ss.SSS"));
+        assertEquals("",determineDateFormat("dd MMMM yyyy HH:mm:ss.SSS"));
+
 
     }
 }
