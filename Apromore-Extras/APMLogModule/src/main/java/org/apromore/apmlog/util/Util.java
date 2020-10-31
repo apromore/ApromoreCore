@@ -21,15 +21,21 @@
  */
 package org.apromore.apmlog.util;
 
+import org.apromore.apmlog.AActivity;
+import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.filter.PLog;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.in.XesXmlGZIPParser;
+import org.deckfour.xes.in.XesXmlParser;
+import org.deckfour.xes.model.*;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.io.File;
 import java.text.DecimalFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * @author Chii Chang (11/2019)
@@ -53,6 +59,18 @@ public class Util {
     }
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
+//        XAttribute da =
+//                xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
+//        Date d = ((XAttributeTimestamp) da).getValue();
+//        ZonedDateTime z =
+//                ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
+//        return z;
+//        String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
+//        Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
+//        ZonedDateTime z = millisecondToZonedDateTime(calendar.getTimeInMillis());
+//        return z;
+
+
 
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
 
@@ -97,6 +115,48 @@ public class Util {
 
 
     public static String durationShortStringOf(long millis) {
+        double secs = millis / second;
+        double mins = millis / minute;
+        double hrs = millis / hour;
+        double days = millis / day;
+        double wks = millis / week;
+        double mths = millis / month;
+        double yrs = millis / year;
+
+        if (yrs > 1.0D) return df2.format(yrs) + " yrs";
+        if (mths > 1.0D) return df2.format(mths) + " mths";
+        if (wks > 1.0D) return df2.format(wks) + " wks";
+        if (days > 1.0D) return df2.format(days) + " d";
+        if (hrs > 1.0D) return df2.format(hrs) + " hrs";
+        if (mins > 1.0D) return df2.format(mins) + " mins";
+        if (secs > 1.0D) return df2.format(secs) + " secs";
+        if (millis > 1.0D) return df2.format(millis) + " millis";
+        return "instant";
+    }
+
+    public static String durationStringOf(double millis) {
+
+        double secs = millis / 1000d;
+        double mins = millis / 1000 / 60;
+        double hrs = millis / 1000 / 60 / 60d;
+        double days = millis / 1000 / 60 / 60 / 24d;
+        double wks = millis / 1000 / 60 / 60 / 24 / 7d;
+        double mths = millis / 1000 / 60 / 60 / 24 / 31d;
+        double yrs = millis / 1000 / 60 / 60 / 24 / 365d;
+
+        if (yrs > 1)  return df2.format(yrs) + " yrs";
+        if (mths > 1) return df2.format(mths) + " mths";
+        if (wks > 1) return df2.format(wks) + " wks";
+        if (days > 1) return df2.format(days) + " d";
+        if (hrs > 1) return df2.format(hrs) + " hrs";
+        if (mins > 1) return df2.format(mins) + " mins";
+        if (secs > 1) return df2.format(secs) + " secs";
+        if (millis > 0) return df2.format(millis) + " millis";
+
+        return "instant";
+    }
+
+    public static String durationShortStringOf(double millis) {
         double secs = millis / second;
         double mins = millis / minute;
         double hrs = millis / hour;
@@ -163,6 +223,7 @@ public class Util {
 
         return validChar;
     }
+
 
 
 }

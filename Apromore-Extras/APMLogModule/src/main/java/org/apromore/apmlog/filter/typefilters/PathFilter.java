@@ -23,7 +23,8 @@ package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
-import org.apromore.apmlog.LaTrace;
+
+import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -42,7 +43,7 @@ import java.util.Set;
  * @author Chii Chang
  */
 public class PathFilter {
-    public static boolean toKeep(LaTrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -50,7 +51,7 @@ public class PathFilter {
         }
     }
 
-    private static boolean conformRule(LaTrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
 
         FilterType filterType = logFilterRule.getFilterType();
 
@@ -72,7 +73,7 @@ public class PathFilter {
 
     }
 
-    private static boolean conformDirectFollow(LaTrace trace,
+    private static boolean conformDirectFollow(ATrace trace,
                                                String attributeKey,
                                                UnifiedSet<String> fromValSet,
                                                UnifiedSet<String> toValSet,
@@ -89,8 +90,8 @@ public class PathFilter {
                 AActivity nextAct = activityList.get(i+1);
                 String nextVal = getAttributeValue(nextAct, attributeKey);
                 if (toValSet.contains(nextVal)) {
-                    AEvent e1 = activity.getEventList().get(activity.getEventList().size()-1);
-                    AEvent e2 = nextAct.getEventList().get(nextAct.getEventList().size()-1);
+                    AEvent e1 = activity.getImmutableEventList().get(activity.getImmutableEventList().size()-1);
+                    AEvent e2 = nextAct.getImmutableEventList().get(nextAct.getImmutableEventList().size()-1);
                     boolean conformRequirement = conformRequirement(e1, e2, logFilterRule);
                     if (conformRequirement) {
                         matchCount += 1;
@@ -103,10 +104,10 @@ public class PathFilter {
         return matchCount > 0;
     }
 
-    private static boolean conformEventualFollow(LaTrace trace,
-                                                 String attributeKey,
-                                                 UnifiedSet<String> fromValSet,
-                                                 UnifiedSet<String> toValSet,
+    private static boolean conformEventualFollow(ATrace trace,
+                                                    String attributeKey,
+                                                    UnifiedSet<String> fromValSet,
+                                                    UnifiedSet<String> toValSet,
                                                  LogFilterRule logFilterRule) {
         int matchCount = 0;
         List<AActivity> activityList = trace.getActivityList();
@@ -119,10 +120,10 @@ public class PathFilter {
                 UnifiedSet<AActivity> matchedFollowUps = getMatchedFollowUpActivities(trace, attributeKey,
                         toValSet, i + 1);
 
-                AEvent e1 = activity.getEventList().get(activity.getEventList().size()-1);
+                AEvent e1 = activity.getImmutableEventList().get(activity.getImmutableEventList().size()-1);
 
                 for (AActivity followUpAct : matchedFollowUps) {
-                    AEvent e2 = followUpAct.getEventList().get(followUpAct.getEventList().size()-1);
+                    AEvent e2 = followUpAct.getImmutableEventList().get(followUpAct.getImmutableEventList().size()-1);
                     if (conformRequirement(e1, e2, logFilterRule)) {
                         matchCount += 1;
                         break;
@@ -134,7 +135,7 @@ public class PathFilter {
         return matchCount > 0;
     }
 
-    private static UnifiedSet<AActivity> getMatchedFollowUpActivities(LaTrace trace,
+    private static UnifiedSet<AActivity> getMatchedFollowUpActivities(ATrace trace,
                                                                       String attributeKey,
                                                                       UnifiedSet<String> toValSet,
                                                                       int fromIndex) {
@@ -152,7 +153,7 @@ public class PathFilter {
 
 
     private static String getAttributeValue(AActivity activity, String attributeKey) {
-        AEvent event0 = activity.getEventList().get(0);
+        AEvent event0 = activity.getImmutableEventList().get(0);
         UnifiedMap<String, String> eventAttributes = event0.getAttributeMap();
         String val = null;
         switch (attributeKey) {
@@ -296,14 +297,14 @@ public class PathFilter {
             case "lifecycle:transition":
                 if (event1.getLifecycle().equals(event2.getLifecycle())) return true;
                 break;
-            default:
-                if (event1.getAttributeMap().keySet().contains(attributeKey) &&
-                        event2.getAttributeMap().keySet().contains(attributeKey)) {
-                    String val1 = event1.getAttributeValue(attributeKey);
-                    String val2 = event2.getAttributeValue(attributeKey);
-                    if (val1.equals(val2)) return true;
-                }
-                break;
+                default:
+                    if (event1.getAttributeMap().keySet().contains(attributeKey) &&
+                    event2.getAttributeMap().keySet().contains(attributeKey)) {
+                        String val1 = event1.getAttributeValue(attributeKey);
+                        String val2 = event2.getAttributeValue(attributeKey);
+                        if (val1.equals(val2)) return true;
+                    }
+                    break;
         }
 
         return false;

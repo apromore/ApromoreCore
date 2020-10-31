@@ -38,6 +38,7 @@ import java.util.Set;
 
 public class DurationFilterTest {
 
+    // (1)
     public static void testDuration(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
 
         System.out.println("Trace size: " + apmLog.getTraceList().size());
@@ -48,8 +49,8 @@ public class DurationFilterTest {
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
-        long val1 = Long.valueOf("10800000");
-        long val2 = Long.valueOf("10800001");
+        double val1 = Double.valueOf("10800000");
+        double val2 = Double.valueOf("10800001");
 
         String attrKey = "duration:range";
         RuleValue rv1 = new RuleValue(FilterType.DURATION, OperationType.GREATER_EQUAL, attrKey, val1);
@@ -84,15 +85,16 @@ public class DurationFilterTest {
         }
     }
 
+    // (2)
     public static void testTotalProcessTime(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
 
-        long val1 = Long.valueOf("3600000");
-        long val2 = Long.valueOf("3600001");
+        double val1 = Double.valueOf("3600000");
+        double val2 = Double.valueOf("3600001");
 
         System.out.println("Trace size: " + apmLog.getTraceList().size());
 
         for (ATrace aTrace : apmLog.getTraceList()) {
-            long ttlProcTime = aTrace.getTotalProcessingTime();
+            double ttlProcTime = aTrace.getTotalProcessingTime();
             System.out.println(aTrace.getCaseId() + ":" + ttlProcTime);
             System.out.println(ttlProcTime >= val1 && ttlProcTime <= val2);
         }
@@ -138,11 +140,12 @@ public class DurationFilterTest {
         }
     }
 
+    // (3)
     public static void testAverageProcessTime(APMLog apmLog, APMLogUnitTest parent)
             throws UnsupportedEncodingException {
 
-        long val1 = Long.valueOf("1800000");
-        long val2 = Long.valueOf("1800001");
+        double val1 = Double.valueOf("1800000");
+        double val2 = Double.valueOf("1800001");
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
@@ -185,11 +188,12 @@ public class DurationFilterTest {
         }
     }
 
+    // (4)
     public static void testMaxProcessTime(APMLog apmLog, APMLogUnitTest parent)
             throws UnsupportedEncodingException {
 
-        long val1 = Long.valueOf("1800000");
-        long val2 = Long.valueOf("1800001");
+        double val1 = Double.valueOf("1800000");
+        double val2 = Double.valueOf("1800001");
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
@@ -232,11 +236,12 @@ public class DurationFilterTest {
         }
     }
 
+    // (5)
     public static void testTotalWaitTime(APMLog apmLog, APMLogUnitTest parent)
             throws UnsupportedEncodingException {
 
-        long val1 = Long.valueOf("10800000");
-        long val2 = Long.valueOf("10800001");
+        double val1 = Double.valueOf(10800000d);
+        double val2 = Double.valueOf(10800001d);
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
@@ -279,18 +284,13 @@ public class DurationFilterTest {
         }
     }
 
+    // (6)
     public static void testAverageWaitTime(APMLog apmLog, APMLogUnitTest parent)
             throws UnsupportedEncodingException {
 
-        long val1 = Long.valueOf("7200000");
-        long val2 = Long.valueOf("7200001");
+        double val1 = Double.valueOf("7200000");
+        double val2 = Double.valueOf("7200001");
 
-
-//        for (ATrace aTrace : apmLog.getTraceList()) {
-//            long avgWT = aTrace.getAverageWaitingTime();
-//            System.out.println(aTrace.getCaseId() + ":" + avgWT);
-//            System.out.println(avgWT >= val1 && avgWT <= val2);
-//        }
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
@@ -333,18 +333,12 @@ public class DurationFilterTest {
         }
     }
 
+    // (7)
     public static void testMaxWaitTime(APMLog apmLog, APMLogUnitTest parent)
             throws UnsupportedEncodingException {
 
-        long val1 = Long.valueOf("10777000");
-        long val2 = Long.valueOf("10800000");
-
-
-//        for (ATrace aTrace : apmLog.getTraceList()) {
-//            long avgWT = aTrace.getAverageWaitingTime();
-//            System.out.println(aTrace.getCaseId() + ":" + avgWT);
-//            System.out.println(avgWT >= val1 && avgWT <= val2);
-//        }
+        double val1 = Double.valueOf("10777000");
+        double val2 = Double.valueOf("10800000");
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
@@ -387,18 +381,13 @@ public class DurationFilterTest {
         }
     }
 
+    // (8)
     public static void testUtilization(APMLog apmLog, APMLogUnitTest parent)
             throws UnsupportedEncodingException {
 
         double val1 = 0.297;
         double val2 = 0.379;
 
-
-//        for (ATrace aTrace : apmLog.getTraceList()) {
-//            long avgWT = aTrace.getAverageWaitingTime();
-//            System.out.println(aTrace.getCaseId() + ":" + avgWT);
-//            System.out.println(avgWT >= val1 && avgWT <= val2);
-//        }
 
         Set<RuleValue> primaryValues = new HashSet<>();
 

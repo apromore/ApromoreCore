@@ -35,7 +35,7 @@ public class CaseSectionCaseAttributeDesc {
 
         String desc = "";
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases containing an event where ";
+        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases containing where ";
 
         String attributeKey = logFilterRule.getKey();
 
