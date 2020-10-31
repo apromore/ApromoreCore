@@ -24,6 +24,7 @@ package org.apromore.apmlog.filter.rules;
 
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -114,10 +115,12 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
     }
 
     public long getLongValue() {
+        if (longVal == 0 && doubleVal > 0) return Double.valueOf(doubleVal).longValue();
         return longVal;
     }
 
     public double getDoubleValue() {
+        if (doubleVal == 0 && longVal > 0) return longVal;
         return doubleVal;
     }
 
@@ -150,7 +153,7 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         if (longValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, longValCopy );
         else if (doubleValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, doubleValCopy );
         else if (intValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, intValCopy );
-        else rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, stringValCopy );
+        else rv = new  RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, stringValCopy );
         if (customAttrCopy != null) rv.setCustomAttributes(customAttrCopy);
 
         return rv;

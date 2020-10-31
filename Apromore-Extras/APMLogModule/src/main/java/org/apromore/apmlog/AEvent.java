@@ -37,138 +37,42 @@ import java.util.Set;
  * Modified: Chii Chang (03/02/2020)
  * Modified: Chii Chang (04/02/2020)
  * Modified: Chii Chang (13/10/2020)
+ * Modified: Chii Chang (27/10/2020)
  */
-public class AEvent implements Serializable {
-    private int index;
-    private String name = "";
-    private long timestampMilli = 0;
-    private String lifecycle = "complete";
-    private String resource = "";
-    private UnifiedMap<String, String> attributeMap;
-    private String timeZone = "";
+public interface AEvent {
 
-    public AEvent(int index, String name, long timestampMilli, String lifecycle, String resource,
-                  UnifiedMap<String, String> attributeMap,
-                  String timeZone) {
-        this.index = index;
-        this.name = name.intern();
-        this.timestampMilli = timestampMilli;
-        this.lifecycle = lifecycle.intern();
-        this.resource = resource.intern();
-        this.attributeMap = attributeMap;
-        this.timeZone = timeZone;
-    }
+     UnifiedMap<String, String> getAllAttributes();
 
-    public AEvent(int index, XEvent xEvent) {
-        this.index = index;
+     void setName(String name);
 
-        XAttributeMap xAttributeMap = xEvent.getAttributes();
+     void setResource(String resource);
 
+     void setLifecycle(String lifecycle);
 
-        attributeMap = new UnifiedMap<>();
+     void setTimestampMilli(long timestampMilli);
 
-        if (xAttributeMap.keySet().contains("concept:name")) {
-            this.name = xAttributeMap.get("concept:name").toString().intern();
-        }
+     String getName();
 
-        if (xAttributeMap.keySet().contains("lifecycle:transition")) {
-            this.lifecycle = xAttributeMap.get("lifecycle:transition").toString().intern();
-        }
+     String getResource();
 
-        if (xAttributeMap.keySet().contains("org:resource")) {
-            this.resource = xAttributeMap.get("org:resource").toString().intern();
-        }
+     String getLifecycle();
 
-        for(String key : xAttributeMap.keySet()) {
-            if (!key.equals("concept:name") &&
-                    !key.equals("lifecycle:transition") &&
-                    !key.equals("org:resource") &&
-                    !key.equals("time:timestamp")) {
-                this.attributeMap.put(key, xAttributeMap.get(key).toString());
-            }
+     long getTimestampMilli();
 
-        }
-        if(xEvent.getAttributes().containsKey("time:timestamp")) {
-            ZonedDateTime zdt = Util.zonedDateTimeOf(xEvent);
-            this.timestampMilli = Util.epochMilliOf(zdt);
-            this.timeZone = zdt.getZone().getId();
-        }else{
-            Date d = new Date(0);
-            ZonedDateTime zdt = ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
-            this.timestampMilli = Util.epochMilliOf(zdt);
-            this.timeZone = zdt.getZone().getId();
-        }
-    }
+     String getAttributeValue(String attributeKey);
 
-    public UnifiedMap<String, String> getAllAttributes() {
-        UnifiedMap<String, String> allAttr = new UnifiedMap<>(attributeMap);
-        allAttr.put("concept:name", this.name);
-        if (!this.resource.equals("")) allAttr.put("org:resource", this.resource);
-        return allAttr;
-    }
+     UnifiedMap<String, String> getAttributeMap();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+     Set<String> getAttributeNameSet();
 
-    public void setResource(String resource) {
-        this.resource = resource;
-    }
+     String getTimeZone();
+     int getIndex();
 
-    public void setLifecycle(String lifecycle) {
-        this.lifecycle = lifecycle;
-    }
+     int getParentActivityIndex();
 
-    public void setTimestampMilli(long timestampMilli) {
-        this.timestampMilli = timestampMilli;
-    }
+     void setParentActivityIndex(int immutableActivityIndex);
 
-    public String getName() {
-        return name;
-    }
+     AEvent clone(ATrace parentTrace, AActivity parentActivity);
 
-    public String getResource() {
-        return resource;
-    }
-
-    public String getLifecycle() {
-        return lifecycle;
-    }
-
-    public long getTimestampMilli() {
-        return timestampMilli;
-    }
-
-    public String getAttributeValue(String attributeKey) {
-        return this.attributeMap.get(attributeKey);
-    }
-
-    public UnifiedMap<String, String> getAttributeMap() {
-        return attributeMap;
-    }
-
-    public Set<String> getAttributeNameSet() {
-        return attributeMap.keySet();
-    }
-
-    public String getTimeZone() { //2019-10-20
-        return timeZone;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public AEvent clone()  {
-        String clnName = this.name.intern();
-        long clnTimestampMilli = this.timestampMilli;
-        String clnLifecycle = this.lifecycle;
-        String clnResource = this.resource;
-        UnifiedMap<String, String> clnAttributeMap = new UnifiedMap<>(this.attributeMap);
-        String clnTimeZone = this.timeZone;
-
-        AEvent clnEvent = new AEvent(this.index, clnName, clnTimestampMilli, clnLifecycle, clnResource,
-                clnAttributeMap, clnTimeZone);
-        return clnEvent;
-    }
+     AEvent clone();
 }

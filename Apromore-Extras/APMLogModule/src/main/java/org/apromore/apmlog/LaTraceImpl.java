@@ -22,6 +22,7 @@
 package org.apromore.apmlog;
 
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.List;
 

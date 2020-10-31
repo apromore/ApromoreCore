@@ -58,6 +58,10 @@ public class DescriptionProducer {
                 return EventSectionAttributeDesc.getDescription(logFilterRule);
             case EVENT_TIME:
                 return EventTimeDesc.getDescription(logFilterRule);
+//            case ACTIVITY_DURATION:
+//                return ActivityDurationDesc.getDescription(logFilterRule);
+//            case RESOURCE_DURATION:
+//                return ResourceDurationDesc.getDescription(logFilterRule);
             case EVENT_ATTRIBUTE_DURATION:
                 return EventAttributeDurationDesc.getDescription(logFilterRule);
             case CASE_SECTION_ATTRIBUTE_COMBINATION:

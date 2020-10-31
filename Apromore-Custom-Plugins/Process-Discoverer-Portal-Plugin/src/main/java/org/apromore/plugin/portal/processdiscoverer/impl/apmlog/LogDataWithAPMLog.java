@@ -43,7 +43,7 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.AAttributeGraph;
-import org.apromore.apmlog.stats.AAttributeValue;
+import org.apromore.apmlog.stats.DurSubGraph;
 import org.apromore.logman.ALog;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.log.AttributeInfo;
@@ -191,9 +191,9 @@ public class LogDataWithAPMLog extends LogData {
 
     @Override
     public boolean hasSufficientDurationVariant(String attribute, String value) {
-        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
-        AAttributeValue aAttributeValue = aAttributeGraph.getAttributeValue(attribute, value);
-        return (aAttributeValue.getDurationsIndexMap().size() > 1);
+        DurSubGraph dsg = this.originalAPMLog.getAAttributeGraph().getValueDurations(attribute);
+        if (!dsg.getValDurCaseIndexMap().containsKey(value)) return false;
+        return dsg.getValDurCaseIndexMap().get(value).size() > 1;
     }
 
     @Override

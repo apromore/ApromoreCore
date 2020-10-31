@@ -22,7 +22,9 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AEvent;
-import org.apromore.apmlog.LaTrace;
+import org.apromore.apmlog.ATrace;
+
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -34,7 +36,7 @@ import java.util.List;
 
 
 public class CaseTimeFilter {
-    public static boolean toKeep(LaTrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -42,7 +44,7 @@ public class CaseTimeFilter {
         }
     }
 
-    private static boolean conformRule(LaTrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
         long traceStartTime = trace.getStartTimeMilli(), traceEndTime = trace.getEndTimeMilli();
 
 
@@ -76,7 +78,7 @@ public class CaseTimeFilter {
         return traceStartTime >= fromTime && traceEndTime <= toTime;
     }
 
-    private static boolean intersectTimeRange(long fromTime, long toTime, LaTrace trace) {
+    private static boolean intersectTimeRange(long fromTime, long toTime, ATrace trace) {
         long traceST = trace.getStartTimeMilli();
         long traceET = trace.getEndTimeMilli();
 

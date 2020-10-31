@@ -23,6 +23,7 @@ package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 import java.util.*;
 
@@ -43,6 +44,11 @@ public class CaseIDDesc {
 
         List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
         Collections.sort(ruleValueList);
+
+//        for (int i = 0; i < ruleValueList.size(); i++) {
+//            desc += ruleValueList.get(i).getStringValue();
+//            if (i < ruleValueList.size() -1) desc += ", ";
+//        }
 
         if (allNumeric(ruleValueList)) {
             List<Pair> pairList = getPairs(ruleValueList);
