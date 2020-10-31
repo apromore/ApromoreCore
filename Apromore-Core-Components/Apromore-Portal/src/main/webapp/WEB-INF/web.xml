@@ -30,12 +30,11 @@
 
   <display-name>Apromore-Portal</display-name>
 
-<!--
   <context-param>
     <param-name>contextClass</param-name>
-    <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
+    <!--<param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>-->
+    <param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
   </context-param>
--->
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
@@ -86,6 +85,7 @@
     <servlet-name>resource</servlet-name>
     <servlet-class>org.apromore.portal.servlet.ResourceServlet</servlet-class>
   </servlet>
+<!--
   <servlet>
     <servlet-name>ws</servlet-name>
     <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
@@ -95,6 +95,7 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+-->
   <servlet>
     <servlet-name>newUserRegistration</servlet-name>
     <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>

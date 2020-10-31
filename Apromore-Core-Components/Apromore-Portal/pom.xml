@@ -63,6 +63,7 @@
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Package>
+                            javax.xml.soap,
                             org.eclipse.virgo.web.dm;resolution:=optional,
                             org.aopalliance.aop,                            
                             org.apromore.security.filter,
@@ -88,6 +89,9 @@
                             org.springframework.aop,
                             org.springframework.aop.framework,
                             org.springframework.context.config,
+                            org.springframework.osgi.compendium.config,
+                            org.springframework.osgi.config,
+                            org.springframework.osgi.web.context.support,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.security.authentication,
                             org.springframework.security.config,
@@ -97,6 +101,7 @@
                             org.springframework.security.web.session,
                             org.springframework.web.context.request,
                             org.springframework.web.filter,
+                            org.springframework.ws.soap.saaj,
                             org.springframework.ws.transport.http,
                             org.zkoss.zel.impl,
                             org.zkoss.zk.au.http,

@@ -47,9 +47,9 @@
         <constructor-arg type="String" value="${site.manager}"/>
         <constructor-arg type="String" value="${site.portal}"/>
         <constructor-arg type="String" value="${version.number}"/>
-        <constructor-arg type="String" value="${git.commit.id.describe}"/>
+        <constructor-arg type="String" value="{git.commit.id.describe}"/>
         <constructor-arg type="String" value="${version.edition}"/>
-        <constructor-arg type="String" value="${git.commit.time}"/>
+        <constructor-arg type="String" value="{git.commit.time}"/>
 
         <constructor-arg type="String" value="${ldap.providerURL}"/>
         <constructor-arg type="String" value="${ldap.userContext}"/>
