@@ -469,6 +469,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    public Usermetadata findById(Integer id) {
+        return userMetadataRepo.findById(id);
+    }
+
+    @Override
     public List<Log> getDependentLog(Usermetadata usermetadata) {
         List<Log> logs = new ArrayList<>();
         Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();

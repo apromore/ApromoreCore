@@ -27,4 +27,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsermetadataRepository extends JpaRepository<Usermetadata, Integer> {
+
+    Usermetadata findById(Integer id);
 }

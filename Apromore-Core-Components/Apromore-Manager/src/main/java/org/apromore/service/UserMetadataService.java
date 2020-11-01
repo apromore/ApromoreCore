@@ -210,4 +210,11 @@ public interface UserMetadataService {
      */
     User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Usermetadata findById(Integer id);
+
 }
