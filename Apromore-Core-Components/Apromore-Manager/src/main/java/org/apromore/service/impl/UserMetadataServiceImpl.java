@@ -101,7 +101,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
+    public Usermetadata saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
                                  List<Integer> logIds) throws UserNotFoundException {
 
         //TODO:
@@ -146,6 +146,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadataRepo.saveAndFlush(userMetadata);
         LOGGER.info("Create user metadata ID: {} TYPE: {}.", userMetadata.getId(), userMetadataTypeEnum.toString());
 
+        return userMetadata;
     }
 
     /**
