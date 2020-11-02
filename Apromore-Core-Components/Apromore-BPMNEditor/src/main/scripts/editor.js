@@ -65,6 +65,8 @@ ORYX.Editor = {
         // Defines if the editor should be fullscreen or not
         this.fullscreen = config.fullscreen !== false;
 
+        this.useSimulationPanel = config.useSimulationPanel || false;
+
         // CREATES the canvas
         this._createCanvas(model.stencil ? model.stencil.id : null, model.properties, langs);
 
@@ -85,9 +87,9 @@ ORYX.Editor = {
                 keyboard: {
                     bindTo: window
                 },
-                propertiesPanel: {
+                propertiesPanel: this.useSimulationPanel ? {
                     parent: '#js-properties-panel'
-                }
+                } : undefined
             }));
 
             if (config && config.xml) {
@@ -282,6 +284,10 @@ ORYX.Editor = {
             //layout_config.height = layoutHeight;
             layout_config.height = this.getEditorNode().clientHeight; // the panel and the containing div should be of the same height
             this.layout = new Ext.Panel(layout_config)
+        }
+
+        if (!this.useSimulationPanel) {
+            this.layout_regions.east.hide();
         }
 
         this.layout_regions.west.hide();
@@ -532,6 +538,7 @@ ORYX.Editor = {
                     updateSelection: function() {},
                     getCanvas: this.getCanvas.bind(this),
                     getSimulationDrawer: this.getSimulationDrawer.bind(this),
+                    useSimulationPanel: this.useSimulationPanel,
                     importJSON: function() {},
                     importERDF: function() {},
                     getERDF: function() {},

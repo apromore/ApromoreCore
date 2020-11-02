@@ -99,7 +99,8 @@
                       editorWrapper = new ORYX.Editor ({
                         xml: bpmnXML,
                         model : {id : 'editorcanvas'},
-                        fullscreen : true
+                        fullscreen : true,
+                        useSimulationPanel: true
                       });
                     }
 					//console.log('${arg.bpmnXML}');

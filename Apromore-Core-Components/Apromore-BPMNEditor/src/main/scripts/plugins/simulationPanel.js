@@ -28,7 +28,8 @@ ORYX.Plugins.SimulationPanel = Clazz.extend({
             'description': ORYX.I18N.SimulationPanel.toggleSimualtionDrawerDesc,
             'index': 1,
             'minShape': 0,
-            'maxShape': 0
+            'maxShape': 0,
+            isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
     },
 
