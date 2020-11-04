@@ -33,7 +33,8 @@
         <plugin source="export.js" name="ORYX.Plugins.Export"/>
 		<plugin source="pdf.js" name="ORYX.Plugins.File"/>
 		<plugin source="view.js" name="ORYX.Plugins.View"/>
-        
+		<plugin source="simulationPanel.js" name="ORYX.Plugins.SimulationPanel"/>
+
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>
 
@@ -48,5 +49,6 @@
 		<property group="Group" index="6" />
 		<property group="Z-Order" index="7" />
 		<property group="Docker" index="8" />
+		<property group="Simulation" index="9" />
 	</properties>
 </config>
