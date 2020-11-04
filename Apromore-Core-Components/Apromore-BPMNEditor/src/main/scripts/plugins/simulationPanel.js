@@ -22,10 +22,10 @@ ORYX.Plugins.SimulationPanel = Clazz.extend({
 
         /* Register toggle simulation panel */
         this.facade.offer({
-            'name': ORYX.I18N.SimulationPanel.toggleSimualtionDrawer,
+            'name': ORYX.I18N.SimulationPanel.toggleSimulationDrawer,
             'functionality': this.toggleSimulationDrawer.bind(this),
             'group': ORYX.I18N.SimulationPanel.group,
-            'description': ORYX.I18N.SimulationPanel.toggleSimualtionDrawerDesc,
+            'description': ORYX.I18N.SimulationPanel.toggleSimulationDrawerDesc,
             'index': 1,
             'minShape': 0,
             'maxShape': 0,
