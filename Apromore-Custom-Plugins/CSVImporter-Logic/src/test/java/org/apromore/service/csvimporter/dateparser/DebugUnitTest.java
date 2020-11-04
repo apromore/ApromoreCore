@@ -37,7 +37,7 @@ import java.util.List;
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
 import static org.junit.Assert.assertEquals;
 
-
+@Ignore
 public class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
