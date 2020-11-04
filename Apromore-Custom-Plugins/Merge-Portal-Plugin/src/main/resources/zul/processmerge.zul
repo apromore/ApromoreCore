@@ -28,8 +28,8 @@
     <vbox>
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
-                <column width="40%"></column>
-                <column width="60%"></column>
+                <column width="20%"></column>
+                <column width="70%"></column>
             </columns>
             <rows>
                 <row id="mergednamep">
@@ -44,8 +44,8 @@
         </grid>
         <grid sclass="ap-grid ap-form" id="advancedOpts" visible="false">
             <columns sizable="true">
-                <column width="40%"></column>
-                <column width="60%"></column>
+                <column width="20%"></column>
+                <column width="70%"></column>
             </columns>
             <rows>
                 <row id="removeEnt">
@@ -88,8 +88,8 @@
         </grid>
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
-                <column width="40%"></column>
-                <column width="60%"></column>
+                <column width="20%"></column>
+                <column width="70%"></column>
             </columns>
             <rows>
                 <row spans="2" sclass="ap-footnotes">
