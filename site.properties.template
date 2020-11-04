@@ -4,7 +4,7 @@
 
 # Build tagging
 version.edition = @version.edition@
-version.number  = 7.17
+version.number  = 7.19-development
 
 # Network
 
@@ -78,10 +78,19 @@ security.userreg.enable = true
 security.fulluserreg.enable = true
 security.subscribe.enable = true
 
+# LDAP
+
+ldap.providerURL        = ldaps://centaur.unimelb.edu.au
+ldap.userContext        = ou=people,o=unimelb
+ldap.usernameAttribute  = uid
+ldap.emailAttribute     = mail
+ldap.firstNameAttribute = givenName
+ldap.lastNameAttribute  = sn
+
 # Database and JPA (H2)
 
 jdbc.driver   = org.h2.Driver
-jdbc.url      = jdbc:h2:../Manager-Repository
+jdbc.url      = jdbc:h2:../Manager-Repository;DB_CLOSE_DELAY=-1;
 jdbc.username = apromore
 jdbc.password = MAcri
 
@@ -89,11 +98,15 @@ jpa.database         = H2
 jpa.databasePlatform = org.eclipse.persistence.platform.database.H2Platform
 jpa.showSql          = false
 jpa.generateDDL      = false
+#
+## Liquibase User H2
+liquibase.jdbc.username = apromore
+liquibase.jdbc.password = MAcri
 
 # Database and JPA (MySQL)
 
 #jdbc.driver   = com.mysql.jdbc.Driver
-#jdbc.url      = jdbc:mysql://localhost/apromore?autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8
+#jdbc.url      = jdbc:mysql://localhost:3306/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8
 #jdbc.username = apromore
 #jdbc.password = MAcri
 #
@@ -102,6 +115,16 @@ jpa.generateDDL      = false
 #jpa.showSql          = false
 #jpa.generateDDL      = false
 
+## Liquibase User Mysql
+#liquibase.jdbc.username = liquibase_user
+#liquibase.jdbc.password = 7fHJV41fpJ
+
+# Cache threshold (Set to 0 to disable)
+
+# cache.numOfEvent = 100,000
+# cache.numOfTrace = 10,000
+cache.numOfEvent = 0
+cache.numOfTrace = 0
 
 #
 # GED Matrix support
