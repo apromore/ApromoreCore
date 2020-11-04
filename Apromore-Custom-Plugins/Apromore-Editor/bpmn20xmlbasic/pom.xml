@@ -37,7 +37,7 @@
                             ;inline=true
                         </Embed-Dependency>
                         <Import-Package>
-                            com.sun.xml.bind.v2;resolution:=optional,
+                            com.sun.xml.bind.v2,
                             *
                         </Import-Package>
                         <Export-Package>

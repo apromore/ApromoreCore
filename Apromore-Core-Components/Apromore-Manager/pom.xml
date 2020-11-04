@@ -52,7 +52,7 @@
                             org.springframework.security.core.userdetails,
                             org.springframework.ws.transport.http,
                             org.springframework.ws,
-                            com.sun.xml.bind.v2;resolution:=optional,
+                            com.sun.xml.bind.v2,
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,

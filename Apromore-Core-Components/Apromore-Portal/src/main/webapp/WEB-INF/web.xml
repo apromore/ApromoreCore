@@ -32,8 +32,10 @@
 
   <context-param>
     <param-name>contextClass</param-name>
-    <!--<param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>-->
+    <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
+    <!--
     <param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+    -->
   </context-param>
 
   <context-param>
@@ -125,6 +127,7 @@
     <servlet-name>resource</servlet-name>
     <url-pattern>/</url-pattern>  <!-- override the "default" servlet -->
   </servlet-mapping>
+<!--
   <servlet-mapping>
     <servlet-name>ws</servlet-name>
     <url-pattern>/services/*</url-pattern>
@@ -137,6 +140,7 @@
     <servlet-name>ws</servlet-name>
     <url-pattern>*.xsd</url-pattern>
   </servlet-mapping>
+-->
   <servlet-mapping>
     <servlet-name>newUserRegistration</servlet-name>
     <url-pattern>/register/newUserRegister/*</url-pattern>
