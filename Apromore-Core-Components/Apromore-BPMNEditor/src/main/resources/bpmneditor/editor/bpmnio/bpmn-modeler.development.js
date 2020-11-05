@@ -1579,7 +1579,6 @@ ValidationErrorHelper.validateDistributionMean = function(bpmnFactory, elementRe
       elementId = options.elementId,
       distribution = options.distribution,
       mean = options.mean,
-      timeUnits = options.timeUnits,
       message;
 
   if (!mean || mean.trim() === '') {
@@ -1587,8 +1586,6 @@ ValidationErrorHelper.validateDistributionMean = function(bpmnFactory, elementRe
   } else if (!isDigit(mean)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (distribution.type === 'TRIANGULAR') {
-    mean = (mean * timeUnits[distribution.timeUnit].unit).toString();
-
     if (parseFloat(mean) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
     }
@@ -1611,7 +1608,6 @@ ValidationErrorHelper.validateDistributionArg1 = function(bpmnFactory, elementRe
       elementId = options.elementId,
       distribution = options.distribution,
       arg1 = options.arg1,
-      timeUnits = options.timeUnits,
       message;
 
   if (!arg1 || arg1.trim() === '') {
@@ -1619,8 +1615,6 @@ ValidationErrorHelper.validateDistributionArg1 = function(bpmnFactory, elementRe
   } else if (!isDigit(arg1)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (distribution.type === 'TRIANGULAR') {
-    arg1 = (arg1 * timeUnits[distribution.timeUnit].unit).toString();
-
     if (parseFloat(arg1) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
     } else if (parseFloat(arg1) > parseFloat(distribution.mean)) {
@@ -8043,7 +8037,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           elementId: elementId || label,
           distribution: distribution,
           timeUnits: timeUnits,
-          mean: values.mean,
+          mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
+            (values.mean * timeUnits[distribution.timeUnit].unit).toString(),
         });
 
         if (!error.message) {
