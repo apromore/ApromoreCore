@@ -247,6 +247,12 @@ ORYX.I18N.View.zoomStandardDesc = "Zoom to the standard level";
 ORYX.I18N.View.zoomFitToModel = "Zoom fit to model";
 ORYX.I18N.View.zoomFitToModelDesc = "Zoom to fit the model size";
 
+if(!ORYX.I18N.SimulationPanel) ORYX.I18N.SimulationPanel = {};
+
+ORYX.I18N.SimulationPanel.group = "Simulation";
+ORYX.I18N.SimulationPanel.toggleSimulationDrawer = "Toggle simulation panel";
+ORYX.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle simulation parameters panel";
+
 /** New Language Properties: 08.12.2008 */
 
 ORYX.I18N.PropertyWindow.title = "Properties";

@@ -99,7 +99,8 @@
                       editorWrapper = new ORYX.Editor ({
                         xml: bpmnXML,
                         model : {id : 'editorcanvas'},
-                        fullscreen : true
+                        fullscreen : true,
+                        useSimulationPanel: true
                       });
                     }
 					//console.log('${arg.bpmnXML}');
@@ -128,6 +129,6 @@
     </n:div>
 
     <n:div id="editorcanvas"></n:div>
-
+    <n:div id="js-properties-panel"></n:div>
 </window>
 
