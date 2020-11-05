@@ -43,9 +43,9 @@ public interface UserMetadataService {
      * @throws UserNotFoundException Can't find a user with specified username
      */
     Usermetadata saveUserMetadata(String userMetadataName, String userMetadataContent,
-                          UserMetadataTypeEnum userMetadataTypeEnum,
-                          String username,
-                          List<Integer> logIds) throws UserNotFoundException;
+                                  UserMetadataTypeEnum userMetadataTypeEnum,
+                                  String username,
+                                  List<Integer> logIds) throws UserNotFoundException;
 
 
     /**
@@ -66,7 +66,7 @@ public interface UserMetadataService {
     /**
      * Save a user metadata which is not linked to log. So it can not be shared to other users at stage one.
      *
-     * @param content Content of user metadata
+     * @param content  Content of user metadata
      * @param username username
      * @throws UserNotFoundException Can't find a user with specified username
      */
@@ -75,22 +75,23 @@ public interface UserMetadataService {
     /**
      * Assign specified group with permission to all the user metadata that linked to the specified log
      *
-     * @param logId log ID
+     * @param logId        log ID
      * @param groupRowGuid group guid
-     * @param hasRead Log READ permission
-     * @param hasWrite Log WRITE permission
+     * @param hasRead      Log READ permission
+     * @param hasWrite     Log WRITE permission
      * @param hasOwnership Log OWNER permission
      */
-    void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                     boolean hasOwnership);
+    void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, boolean hasRead,
+                                                   boolean hasWrite,
+                                                   boolean hasOwnership);
 
     /**
      * Remove permissions of user metadata assigned to specified group and log
      *
-     * @param logId log ID
+     * @param logId        log ID
      * @param groupRowGuid group guid
      */
-    void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
+    void removeUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
 
     /**
      * Update a user metadata.
@@ -113,7 +114,8 @@ public interface UserMetadataService {
 
     /**
      * Delete user metadata that linked to specified log
-     * @param log Log
+     *
+     * @param log  Log
      * @param user User
      * @throws UserNotFoundException
      */
@@ -133,7 +135,8 @@ public interface UserMetadataService {
 
     /**
      * Find a set of user metadata by username and type
-     * @param username username
+     *
+     * @param username             username
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @return A set of user metadata
      * @throws UserNotFoundException Can't find a user with specified username
@@ -142,7 +145,8 @@ public interface UserMetadataService {
 
     /**
      * Find a set of user metadata that are linked to specified list of Logs and type
-     * @param logIds List of logId
+     *
+     * @param logIds               List of logId
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @return A set of user metadata
      */
@@ -150,7 +154,8 @@ public interface UserMetadataService {
 
     /**
      * Find a set of user metadata that are linked to specified Log and type
-     * @param logId Log Id
+     *
+     * @param logId                Log Id
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @return A set of user metadata
      */
@@ -158,14 +163,16 @@ public interface UserMetadataService {
 
     /**
      * Find a set of user metadata that are linked to specified User, Log and type
-     * @param username Name of User
-     * @param logId Log Id
+     *
+     * @param username             Name of User
+     * @param logId                Log Id
      * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
      * @return A set of user metadata
      * @throws UserNotFoundException Can't find a user with specified username
      */
     Set<Usermetadata> getUserMetadataByUserAndLog(String username, Integer logId,
                                                   UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
     /**
      * Find whether is specified user can write to this user metadata
      *
@@ -190,6 +197,7 @@ public interface UserMetadataService {
 
     /**
      * Get dependent logs of a specified user metadata
+     *
      * @param usermetadata Usermetadata
      * @return List of Log
      */
@@ -197,6 +205,7 @@ public interface UserMetadataService {
 
     /**
      * Get dependent processes of a specified user metadata
+     *
      * @param usermetadata Usermetadata
      * @return List of processes
      */
@@ -204,14 +213,41 @@ public interface UserMetadataService {
 
     /**
      * Get User by unique id
+     *
      * @param rowGuid unique id
      * @return User
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    User findUserByRowGuid(String rowGuid) throws  UserNotFoundException;
+    User findUserByRowGuid(String rowGuid) throws UserNotFoundException;
 
     /**
+     * Get a list of GroupUsermetadata by user metadata id
      *
+     * @param userMetadataId User metadata id
+     * @return a list of GroupUsermetadata
+     */
+    List<GroupUsermetadata> getGroupUserMetadata(Integer userMetadataId);
+
+    /**
+     * Update or save UserMetadata access rights
+     *
+     * @param userMetadataId id
+     * @param groupRowGuid   group UID
+     * @param hasRead        flag
+     * @param hasWrite       flag
+     * @param hasOwnership   flag
+     */
+    void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                      boolean hasOwnership);
+
+    /**
+     * Remove a group's access rights to one user metadata
+     * @param userMetadataId
+     * @param groupRowGuid
+     */
+    void removeUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid);
+
+    /**
      * @param id
      * @return
      */

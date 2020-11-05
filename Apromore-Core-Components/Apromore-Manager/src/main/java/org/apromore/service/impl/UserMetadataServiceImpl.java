@@ -22,8 +22,8 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.*;
-import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
@@ -185,7 +185,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+    public void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
                                             boolean hasOwnership) {
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
@@ -222,7 +222,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+    public void removeUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
         Set<GroupUsermetadata> groupUsermetadataSet;
 
@@ -397,7 +397,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata) {
 
         GroupUsermetadata gu = groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
-        return AccessType.getAccessType(gu.getHasRead(), gu.getHasWrite(), gu.getHasOwnership());
+
+        if (gu != null) {
+            return AccessType.getAccessType(gu.getHasRead(), gu.getHasWrite(), gu.getHasOwnership());
+        }
+        return null;
     }
 
     @Override
@@ -467,6 +471,37 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     public User findUserByRowGuid(String rowGuid) throws UserNotFoundException {
         return userSrv.findUserByRowGuid(rowGuid);
+    }
+
+    @Override
+    public List<GroupUsermetadata> getGroupUserMetadata(Integer userMetadataId) {
+        return groupUsermetadataRepo.findByUsermetadataId(userMetadataId);
+    }
+
+    @Override
+    public void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, boolean hasRead,
+                                             boolean hasWrite, boolean hasOwnership) {
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
+        AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        GroupUsermetadata gu =
+                groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+
+        if (gu == null) {
+            gu = new GroupUsermetadata(group, usermetadata, accessRights);
+        } else {
+            gu.setAccessRights(accessRights);
+        }
+        groupUsermetadataRepo.save(gu);
+    }
+
+    @Override
+    public void removeUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
+
+        groupUsermetadataRepo.delete(groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata));
     }
 
     @Override

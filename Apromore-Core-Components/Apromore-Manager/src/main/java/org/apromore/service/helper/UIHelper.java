@@ -39,23 +39,12 @@ import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.portal.helper.Version;
-import org.apromore.portal.model.FolderSummaryType;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.ProcessVersionType;
-import org.apromore.portal.model.ProcessVersionsType;
-import org.apromore.portal.model.SummariesType;
-import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.model.*;
 import org.apromore.service.WorkspaceService;
+import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -265,6 +254,26 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         return logSummaries;
+    }
+
+    @Override
+    public UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata,
+                                                            AccessType accessType) {
+
+        UserMetadataSummaryType userMetadataSummaryType = new UserMetadataSummaryType();
+
+        userMetadataSummaryType.setId(usermetadata.getId());
+        userMetadataSummaryType.setCreatedBy(usermetadata.getCreatedBy());
+        userMetadataSummaryType.setGroupName(group.getName());
+        userMetadataSummaryType.setUpdatedTime(usermetadata.getUpdatedTime());
+        userMetadataSummaryType.setHasOwnership(accessType.isOwner());
+        userMetadataSummaryType.setHasWrite(accessType.isWrite());
+        userMetadataSummaryType.setHasRead(accessType.isRead());
+        userMetadataSummaryType.setName(usermetadata.getName());
+        userMetadataSummaryType.setOwner(usermetadata.getCreatedBy());
+        userMetadataSummaryType.setAccessType(accessType.getLabel());
+
+        return userMetadataSummaryType;
     }
 
     /**

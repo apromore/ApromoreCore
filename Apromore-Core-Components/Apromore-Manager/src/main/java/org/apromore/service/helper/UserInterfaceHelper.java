@@ -24,14 +24,10 @@
 
 package org.apromore.service.helper;
 
-import org.apromore.dao.model.Log;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.ProcessVersionsType;
-import org.apromore.portal.model.SummariesType;
-import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.*;
+import org.apromore.util.AccessType;
 
 /**
  * UI Helper Interface. Kinda a hack, need to re-look at this.
@@ -89,4 +85,6 @@ public interface UserInterfaceHelper {
     SummaryType buildLogSummary(Log log);
 
     SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
+
+    UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata, AccessType accessType);
 }

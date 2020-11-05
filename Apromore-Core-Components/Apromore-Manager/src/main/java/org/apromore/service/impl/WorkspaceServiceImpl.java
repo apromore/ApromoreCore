@@ -319,7 +319,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         removeGroupLog(group, log);
 
         // Sync permission with user metadata that linked to specified log
-        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid, username);
+        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
 
         return "";
     }
@@ -358,7 +358,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
 
         // Sync permission with user metadata that linked to specified log
-        userMetadataServ.saveUserMetadataPermissions(logId, groupRowGuid, hasRead, hasWrite, hasOwnership);
+        userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, hasRead, hasWrite,
+                hasOwnership);
 
         return "";
     }

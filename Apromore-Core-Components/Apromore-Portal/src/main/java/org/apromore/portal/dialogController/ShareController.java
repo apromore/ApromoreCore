@@ -21,61 +21,31 @@
  */
 package org.apromore.portal.dialogController;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Group.Type;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.common.access.Assignee;
+import org.apromore.portal.common.access.Assignment;
+import org.apromore.portal.model.*;
+import org.apromore.service.AuthorizationService;
+import org.apromore.service.SecurityService;
+import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModels;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Span;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Vbox;
-import org.zkoss.zul.Window;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zul.*;
 
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Group.Type;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.manager.client.ManagerService;
-import org.apromore.service.AuthorizationService;
-import org.apromore.service.SecurityService;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.model.GroupAccessType;
-import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.UserType;
-import org.apromore.portal.common.access.Assignee;
-import org.apromore.portal.common.access.Assignment;
-import org.apromore.util.AccessType;
+import java.util.*;
 
 /**
  * Controller for handling share interface
@@ -102,8 +72,8 @@ public class ShareController extends SelectorComposer<Window> {
     private AuthorizationService authorizationService;
 
     Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
-    private Object selectedItem = argMap.get("selectedItem");
-    private UserType currentUser = (UserType) argMap.get("currentUser");
+    private Object selectedItem;
+    private UserType currentUser;
 
     private Integer selectedItemId;
     private String selectedItemName;
@@ -181,7 +151,7 @@ public class ShareController extends SelectorComposer<Window> {
                 Assignment assignment = assignmentMap.get(rowGuid);
                 if (assignment != null) {
                     assignment.setAccess(access);
-                    if (access == AccessType.OWNER.getLabel()) {
+                    if (Objects.equals(access, AccessType.OWNER.getLabel())) {
                         ownerMap.put(rowGuid, assignment);
                     }
                 }
@@ -268,6 +238,8 @@ public class ShareController extends SelectorComposer<Window> {
                 authorizationService.saveProcessAccessType(selectedItemId, rowGuid, accessType);
             } else if (selectedItem instanceof LogSummaryType) {
                 authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType);
+            } else if (selectedItem instanceof UserMetadataSummaryType) {
+                authorizationService.saveUserMetadtarAccessType(selectedItemId, rowGuid, accessType);
             } else {
                 LOGGER.error("Unknown item type.");
             }
@@ -288,10 +260,11 @@ public class ShareController extends SelectorComposer<Window> {
                     authorizationService.deleteLogAccess(selectedItemId, rowGuid, name);
                 } catch (UserNotFoundException e) {
                     LOGGER.error("User not found", e.getMessage(), e);
-                    Messagebox.show("The user can not be found.", "Delete access error", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show("The user can not be found.", "Delete access error", Messagebox.OK,
+                            Messagebox.ERROR);
                 }
-            } else {
-                continue;
+            } else if (selectedItem instanceof UserMetadataSummaryType) {
+                authorizationService.deleteUserMetadataAccess(selectedItemId, rowGuid);
             }
         }
     }
@@ -312,22 +285,28 @@ public class ShareController extends SelectorComposer<Window> {
 
         if (selectedItem instanceof FolderType) {
             FolderType folder = (FolderType) selectedItem;
-            selectedItemId = new Integer(folder.getId());
+            selectedItemId = folder.getId();
             selectedItemName = folder.getFolderName();
             groupAccessTypeMap = authorizationService.getFolderAccessType(selectedItemId);
             selectedIcon = selectedIconFolder;
         } else if (selectedItem instanceof ProcessSummaryType) {
             ProcessSummaryType process = (ProcessSummaryType) selectedItem;
-            selectedItemId = new Integer(process.getId());
+            selectedItemId = process.getId();
             selectedItemName = process.getName();
             groupAccessTypeMap = authorizationService.getProcessAccessType(selectedItemId);
             selectedIcon = selectedIconModel;
         } else if (selectedItem instanceof LogSummaryType) {
             LogSummaryType log = (LogSummaryType) selectedItem;
-            selectedItemId = new Integer(log.getId());
+            selectedItemId = log.getId();
             selectedItemName = log.getName();
             groupAccessTypeMap = authorizationService.getLogAccessType(selectedItemId);
             selectedIcon = selectedIconLog;
+        } else if (selectedItem instanceof UserMetadataSummaryType) {
+            UserMetadataSummaryType usermetadata = (UserMetadataSummaryType) selectedItem;
+            selectedItemId = usermetadata.getId();
+            selectedItemName = usermetadata.getName();
+            groupAccessTypeMap = authorizationService.getUserMetadataAccessType(selectedItemId);
+            selectedIcon = selectedIconMetadata;
         } else {
             return;
         }
@@ -355,6 +334,10 @@ public class ShareController extends SelectorComposer<Window> {
     public void onClickBtnApply() {
         applyChanges();
         getSelf().detach();
+
+        EventQueue eq = EventQueues.lookup(
+                "save_new_dash", EventQueues.APPLICATION, true);
+        eq.publish(new Event("update_access_right"));
     }
 
     @Listen("onClick = #btnCancel")

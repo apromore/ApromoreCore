@@ -24,6 +24,7 @@ package org.apromore.service.impl;
 import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.AuthorizationService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
@@ -44,12 +45,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
 
     private WorkspaceService workspaceService;
+    private UserMetadataService userMetadataService;
 
     @Inject
-    public AuthorizationServiceImpl(final WorkspaceService workspaceService) {
+    public AuthorizationServiceImpl(final WorkspaceService workspaceService, UserMetadataService userMetadataService) {
         this.workspaceService = workspaceService;
+        this.userMetadataService = userMetadataService;
     }
 
+    @Override
     public Map<Group, AccessType> getLogAccessType(Integer logId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
@@ -71,6 +75,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return accessType;
     }
 
+    @Override
     public Map<Group, AccessType> getProcessAccessType(Integer processId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
@@ -83,6 +88,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return groupAccessTypeMap;
     }
 
+    @Override
     public Map<Group, AccessType> getFolderAccessType(Integer processId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
@@ -95,6 +101,20 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return groupAccessTypeMap;
     }
 
+    @Override
+    public Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId) {
+
+        Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
+
+        for (GroupUsermetadata g : userMetadataService.getGroupUserMetadata(userMetadataId)) {
+            AccessRights accessRights = g.getAccessRights();
+            groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
+        }
+
+        return groupAccessTypeMap;
+    }
+
+    @Override
     public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
 
         if (!accessType.equals(AccessType.NONE)) {
@@ -104,6 +124,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     }
 
+    @Override
     public void saveProcessAccessType(Integer processId, String groupRowGuid, AccessType accessType) {
 
         if (!accessType.equals(AccessType.NONE)) {
@@ -112,6 +133,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
     }
 
+    @Override
     public void saveFolderAccessType(Integer folderId, String groupRowGuid, AccessType accessType) {
 
         if (!accessType.equals(AccessType.NONE)) {
@@ -120,20 +142,37 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
     }
 
+    @Override
+    public void saveUserMetadtarAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
+
+        if (!accessType.equals(AccessType.NONE)) {
+            userMetadataService.saveUserMetadataAccessRights(userMetadataId, groupRowGuid, accessType.isRead(),
+                    accessType.isWrite(), accessType.isOwner());
+        }
+    }
+
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
     // field
+    @Override
     public void deleteLogAccess(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
         workspaceService.removeLogPermissions(logId, groupRowGuid, username);
     }
 
+    @Override
     public void deleteProcessAccess(Integer processId, String groupRowGuid) {
 
         workspaceService.removeProcessPermissions(processId, groupRowGuid);
     }
 
+    @Override
     public void deleteFolderAccess(Integer folderId, String groupRowGuid) {
 
         workspaceService.removeFolderPermissions(folderId, groupRowGuid);
+    }
+
+    @Override
+    public void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid) {
+        userMetadataService.removeUserMetadataAccessRights(userMetadataId, groupRowGuid);
     }
 }
