@@ -42,7 +42,6 @@
                             <!-- !org.apache.avalon.framework.*, -->
                             !org.apache.fontbox.cff.*,
                             !org.apache.log.*,
-                            !org.apache.tools.ant.*,
                             !org.apache.xml.utils,
                             !org.apache.xpath.*,
                             !org.mozilla.javascript,
