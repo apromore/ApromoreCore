@@ -54,6 +54,9 @@ public class CalenderModel {
 
     Map<DayOfWeek, WorkDayModel> dayOfWeekWorkDayMap = workDays.parallelStream()
         .collect(Collectors.toMap(WorkDayModel::getDayOfWeek, Function.identity()));
+    
+    Map<LocalDate, HolidayModel> holidayLocalDateMap = holidays.parallelStream()
+        .collect(Collectors.toMap(HolidayModel::getHolidayDate, Function.identity()));
 
     DurationModel durationModel = new DurationModel();
 
@@ -61,14 +64,24 @@ public class CalenderModel {
     // if startdate and enddate is same
     LocalDate localStartDate = starDateTime.toLocalDate();
     LocalDate localEndDate = endDateTime.toLocalDate();
-    if (localStartDate.equals(localEndDate)) {
-      durationModel.setAll(getDurationForSameDay(starDateTime.toOffsetTime(),
-          endDateTime.toOffsetTime(),
-          dayOfWeekWorkDayMap.get(starDateTime.getDayOfWeek())));
+
+    if (isSameDay(localStartDate, localEndDate)) {
+
+      Duration durationForSameDay = Duration.ZERO;
+
+      WorkDayModel workDayModel = dayOfWeekWorkDayMap.get(starDateTime.getDayOfWeek());
+      if (workDayModel.isWorkingDay()) {
+        durationForSameDay = getDurationForSameDay(starDateTime.toOffsetTime(),
+            endDateTime.toOffsetTime(),
+            workDayModel);
+      }
+      durationModel.setAll(durationForSameDay);
       return durationModel;
 
     }
-    // Get duration based on time
+    
+//    if Start Day and end day is not same.
+    
     Duration totalDuration = Duration.ZERO;
     for (OffsetDateTime dayDateTime = starDateTime; !dayDateTime.toLocalDate()
         .isAfter(endDateTime.toLocalDate()); dayDateTime = dayDateTime.plus(1, ChronoUnit.DAYS)) {
@@ -78,12 +91,17 @@ public class CalenderModel {
       WorkDayModel workDay = dayOfWeekWorkDayMap.get(currentDayOfWeek);
 
       Duration calculatedDuration = workDay.getDuration();
-      if (dayDateTime.isEqual(starDateTime)) {
-        calculatedDuration = workDay.getSameDayDurationByStartTime(dayDateTime.toOffsetTime());
-      } else if (dayDateTime.isEqual(endDateTime)) {
-        calculatedDuration = workDay.getSameDayDurationByEndTime(dayDateTime.toOffsetTime());
+      if (!workDay.isWorkingDay()) {
+        calculatedDuration = Duration.ZERO;
+      } else if (isStartDay(starDateTime, dayDateTime)) {
+
+        calculatedDuration = workDay.getSameDayDurationByStartTime(starDateTime.toOffsetTime());
+
+      } else if (isEndDay(endDateTime, dayDateTime)) {
+        calculatedDuration = workDay.getSameDayDurationByEndTime(endDateTime.toOffsetTime());
       }
-      totalDuration.plus(calculatedDuration);
+
+      totalDuration = totalDuration.plus(calculatedDuration);
 
     }
     durationModel.setAll(totalDuration);
@@ -92,11 +110,26 @@ public class CalenderModel {
   }
 
 
+  private boolean isEndDay(OffsetDateTime endDateTime, OffsetDateTime dayDateTime) {
+    return dayDateTime.toLocalDate().isEqual(endDateTime.toLocalDate());
+  }
+
+
+  private boolean isStartDay(OffsetDateTime starDateTime, OffsetDateTime dayDateTime) {
+    return isEndDay(starDateTime, dayDateTime);
+  }
+
+
+  private boolean isSameDay(LocalDate localStartDate, LocalDate localEndDate) {
+    return localStartDate.equals(localEndDate);
+  }
+
+
   private Duration getDurationForSameDay(OffsetTime startTime, OffsetTime endTime,
       WorkDayModel workDayModel) {
     DurationModel durationModel = new DurationModel();
     Duration duration = Duration.between(workDayModel.getAdjustedStartTime(startTime),
-        workDayModel.getAdjustedStartTime(endTime));
+        workDayModel.getAdjustedEndTime(endTime));
     return duration.isNegative() ? Duration.ZERO : duration;
 
   }

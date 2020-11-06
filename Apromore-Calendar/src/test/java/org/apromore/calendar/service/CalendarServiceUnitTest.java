@@ -90,21 +90,6 @@ public class CalendarServiceUnitTest {
     
   }
   
-  
-//  @Test
-//  public void testT()
-//  {
-//    
-//    OffsetDateTime d1=OffsetDateTime.of(2020, 01, 1, 23, 59, 1, 1,ZoneOffset.UTC);
-//    OffsetDateTime d2=OffsetDateTime.of(2020, 01, 3, 1, 55, 3, 1,ZoneOffset.UTC);
-//    
-//    Duration duration=Duration.between(d1, d2);
-//    System.out.println(duration);
-//    System.out.println(duration.getUnits());
-//    System.out.println(duration.toHours());
-//    System.out.println(duration.toMinutes());
-//    System.out.println(duration.getSeconds());
-// 
-//  }
+
 
 }

@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class DurationCalculationUnitTest {
+public class DurationCalculationUnitTestWithHoliday {
 
   CalenderModelBuilder calenderModelBuilder;
   OffsetDateTime startDateTime;
@@ -29,7 +29,7 @@ public class DurationCalculationUnitTest {
     calenderModelBuilder = new CalenderModelBuilder();
   }
 
- public DurationCalculationUnitTest(OffsetDateTime startDateTime,OffsetDateTime endDateTime,Duration expected)
+ public DurationCalculationUnitTestWithHoliday(OffsetDateTime startDateTime,OffsetDateTime endDateTime,Duration expected)
  {
    this.startDateTime=startDateTime;
    this.endDateTime=endDateTime;
@@ -40,12 +40,11 @@ public class DurationCalculationUnitTest {
  @Parameterized.Parameters
  public static Collection params() {
     return Arrays.asList(new Object[][] {
-       { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 02, 02, 20, 00, 00, 0, ZoneOffset.UTC), Duration.of(16, ChronoUnit.HOURS)},
-       { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(8, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(5, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 17, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 03, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(19, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 03, 19, 00, 00, 0, ZoneOffset.UTC), Duration.of(21, ChronoUnit.HOURS)}
+       { OffsetDateTime.of(2020, 10, 03, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 03, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
+       { OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 06, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(22, ChronoUnit.HOURS)},
+       { OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(24, ChronoUnit.HOURS)},
+       {  OffsetDateTime.of(2020, 10, 02, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(21, ChronoUnit.HOURS)},
+       {  OffsetDateTime.of(2020, 10, 02, 17, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(16, ChronoUnit.HOURS)},
     });
  }
  
@@ -53,7 +52,7 @@ public class DurationCalculationUnitTest {
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
    
-    CalenderModel calenderModel = calenderModelBuilder.with7DayWorking().build();
+    CalenderModel calenderModel = calenderModelBuilder.with5DayWorking().build();
 
     // When
     DurationModel durationModel = calenderModel.getDuration(startDateTime, endDateTime);  

@@ -42,18 +42,32 @@ public class CalenderModelBuilder {
         OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC), false);
 
   }
-  
+
   public CalenderModelBuilder with7DayWorking() {
 
-    for(DayOfWeek dayOfWeek : DayOfWeek.values())
-    {
-     withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC),
-        OffsetTime.of(17, 0, 0, 0, ZoneOffset.UTC), true);
+    for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+      withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC),
+          OffsetTime.of(17, 0, 0, 0, ZoneOffset.UTC), true);
 
     }
     return this;
   }
-  
-  
+
+  public CalenderModelBuilder with5DayWorking() {
+
+    for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+      boolean isWorking = true;
+      if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+        isWorking = false;
+      }
+
+      withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC),
+          OffsetTime.of(17, 0, 0, 0, ZoneOffset.UTC), isWorking);
+
+    }
+    return this;
+  }
+
+
 
 }
