@@ -1412,38 +1412,6 @@ CmdHelper.setList = function(element, businessObject, listPropertyName, updatedO
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(10),
@@ -1875,6 +1843,38 @@ ValidationErrorHelper.validateToTime = function(bpmnFactory, elementRegistry, tr
 };
 
 module.exports = ValidationErrorHelper;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
 
 /***/ }),
 /* 7 */
@@ -2435,7 +2435,7 @@ module.exports.escapeHTML = escapeHTML;
 var arrayEach = __webpack_require__(47),
     baseEach = __webpack_require__(29),
     castFunction = __webpack_require__(141),
-    isArray = __webpack_require__(5);
+    isArray = __webpack_require__(6);
 
 /**
  * Iterates over elements of `collection` and invokes `iteratee` for each element.
@@ -5435,7 +5435,7 @@ function escapeText(text) {
 var baseMatches = __webpack_require__(144),
     baseMatchesProperty = __webpack_require__(187),
     identity = __webpack_require__(26),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     property = __webpack_require__(196);
 
 /**
@@ -6266,6 +6266,7 @@ module.exports = toKey;
 
 var elementHelper = __webpack_require__(10),
     ProcessSimulationHelper = __webpack_require__(9),
+    ValidationErrorHelper = __webpack_require__(5),
     is = __webpack_require__(1).is;
 
 var ElementHelper = {};
@@ -6301,9 +6302,17 @@ ElementHelper.getElements = function(bpmnFactory, elementRegistry) {
       return el.id;
     });
 
-    elements.values = elements.values.filter(function(el) {
-      return elementRegistryEventIds.indexOf(el.elementId) > -1;
-    });
+    if (elementRegistryEventIds.length) {
+      elements.values = elements.values.filter(function(el) {
+        var isElementPresent = elementRegistryEventIds.indexOf(el.elementId) > -1;
+
+        if (!isElementPresent) {
+          ValidationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: el.elementId });
+        }
+
+        return isElementPresent;
+      });
+    }
   }
 
   function createQBPElements() {
@@ -7709,7 +7718,7 @@ module.exports = arrayFilter;
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(5),
+var isArray = __webpack_require__(6),
     isSymbol = __webpack_require__(40);
 
 /** Used to match property names within property paths. */
@@ -7947,7 +7956,7 @@ module.exports = getHolder;
 var entryFactory = __webpack_require__(7);
 var cmdHelper = __webpack_require__(4);
 
-var validationHelper = __webpack_require__(6);
+var validationHelper = __webpack_require__(5);
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -9230,7 +9239,7 @@ module.exports = baseGet;
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(5),
+var isArray = __webpack_require__(6),
     isKey = __webpack_require__(57),
     stringToPath = __webpack_require__(188),
     toString = __webpack_require__(191);
@@ -9260,7 +9269,7 @@ module.exports = castPath;
 var arrayFilter = __webpack_require__(56),
     baseFilter = __webpack_require__(205),
     baseIteratee = __webpack_require__(22),
-    isArray = __webpack_require__(5);
+    isArray = __webpack_require__(6);
 
 /**
  * Iterates over elements of `collection`, returning an array of all elements
@@ -11127,7 +11136,7 @@ module.exports = createBaseFor;
 
 var baseTimes = __webpack_require__(132),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isBuffer = __webpack_require__(31),
     isIndex = __webpack_require__(32),
     isTypedArray = __webpack_require__(33);
@@ -11650,7 +11659,7 @@ var arrayEach = __webpack_require__(47),
     baseForOwn = __webpack_require__(70),
     baseIteratee = __webpack_require__(22),
     getPrototype = __webpack_require__(199),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isBuffer = __webpack_require__(31),
     isFunction = __webpack_require__(50),
     isObject = __webpack_require__(13),
@@ -12511,7 +12520,7 @@ var Stack = __webpack_require__(77),
     equalByTag = __webpack_require__(176),
     equalObjects = __webpack_require__(179),
     getTag = __webpack_require__(82),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isBuffer = __webpack_require__(31),
     isTypedArray = __webpack_require__(33);
 
@@ -12942,7 +12951,7 @@ module.exports = getAllKeys;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(81),
-    isArray = __webpack_require__(5);
+    isArray = __webpack_require__(6);
 
 /**
  * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -13307,7 +13316,7 @@ module.exports = toString;
 
 var Symbol = __webpack_require__(25),
     arrayMap = __webpack_require__(58),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isSymbol = __webpack_require__(40);
 
 /** Used as references for various `Number` constants. */
@@ -13409,7 +13418,7 @@ module.exports = baseHasIn;
 
 var castPath = __webpack_require__(89),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isIndex = __webpack_require__(32),
     isLength = __webpack_require__(48),
     toKey = __webpack_require__(41);
@@ -13949,7 +13958,7 @@ var forEach = __webpack_require__(12),
     get = __webpack_require__(87),
     keys = __webpack_require__(15),
     isEmpty = __webpack_require__(206),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     xor = __webpack_require__(207),
     debounce = __webpack_require__(220);
 
@@ -15245,7 +15254,7 @@ module.exports = baseFilter;
 var baseKeys = __webpack_require__(75),
     getTag = __webpack_require__(82),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isArrayLike = __webpack_require__(16),
     isBuffer = __webpack_require__(31),
     isPrototype = __webpack_require__(49),
@@ -15651,7 +15660,7 @@ module.exports = strictIndexOf;
 
 var Symbol = __webpack_require__(25),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(5);
+    isArray = __webpack_require__(6);
 
 /** Built-in value references. */
 var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
@@ -16119,7 +16128,7 @@ module.exports = keyBy;
 var arrayAggregator = __webpack_require__(225),
     baseAggregator = __webpack_require__(226),
     baseIteratee = __webpack_require__(22),
-    isArray = __webpack_require__(5);
+    isArray = __webpack_require__(6);
 
 /**
  * Creates a function like `_.groupBy`.
@@ -16203,7 +16212,7 @@ module.exports = baseAggregator;
 var arrayMap = __webpack_require__(58),
     baseIteratee = __webpack_require__(22),
     baseMap = __webpack_require__(228),
-    isArray = __webpack_require__(5);
+    isArray = __webpack_require__(6);
 
 /**
  * Creates an array of values by running each element in `collection` thru
@@ -16296,7 +16305,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
 
 var ElementHelper = __webpack_require__(42),
     SequenceFlowHelper = __webpack_require__(100),
-    suppressValidationError = __webpack_require__(6).suppressValidationError;
+    suppressValidationError = __webpack_require__(5).suppressValidationError;
 
 var createSimulationParametersTab = __webpack_require__(232),
     createTaskTab = __webpack_require__(273),
@@ -16338,6 +16347,8 @@ function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegi
   PropertiesActivator.call(this, eventBus);
 
   this.getTabs = function(element) {
+
+    console.log(element);
 
     var simulationParametersTab = createSimulationParametersTab(element, bpmnFactory, elementRegistry, translate);
     var taskTab = createTaskTab(element, bpmnFactory, elementRegistry, translate);
@@ -16631,7 +16642,7 @@ var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4);
 
 var ProcessSimulationHelper = __webpack_require__(9),
-    validationHelper = __webpack_require__(6);
+    validationHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -18221,7 +18232,7 @@ module.exports = realNames;
 var LazyWrapper = __webpack_require__(63),
     LodashWrapper = __webpack_require__(112),
     baseLodash = __webpack_require__(64),
-    isArray = __webpack_require__(5),
+    isArray = __webpack_require__(6),
     isObjectLike = __webpack_require__(19),
     wrapperClone = __webpack_require__(260);
 
@@ -18773,7 +18784,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(6),
+    validationHelper = __webpack_require__(5),
     ProcessSimulationHelper = __webpack_require__(9);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -18821,7 +18832,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(6),
+    validationHelper = __webpack_require__(5),
     ProcessSimulationHelper = __webpack_require__(9);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -19176,7 +19187,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69);
 
-var suppressValidationError = __webpack_require__(6).suppressValidationError;
+var suppressValidationError = __webpack_require__(5).suppressValidationError;
 
 var TimetableHelper = __webpack_require__(117);
 
@@ -19290,7 +19301,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19344,7 +19355,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69),
     RuleHelper = __webpack_require__(118),
-    suppressValidationError = __webpack_require__(6).suppressValidationError;
+    suppressValidationError = __webpack_require__(5).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -19462,7 +19473,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19521,7 +19532,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(119),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19580,7 +19591,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(119),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19689,7 +19700,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var cmdHelper = __webpack_require__(4),
     dateTimeField = __webpack_require__(45),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19810,7 +19821,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69),
     ResourceHelper = __webpack_require__(116),
-    suppressValidationError = __webpack_require__(6).suppressValidationError;
+    suppressValidationError = __webpack_require__(5).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19967,7 +19978,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20026,7 +20037,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20084,7 +20095,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20212,7 +20223,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
     SequenceFlowHelper = __webpack_require__(100);
 
-var validationErrorHelper = __webpack_require__(6);
+var validationErrorHelper = __webpack_require__(5);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
