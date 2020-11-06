@@ -6265,7 +6265,8 @@ module.exports = toKey;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9);
+    ProcessSimulationHelper = __webpack_require__(9),
+    is = __webpack_require__(1).is;
 
 var ElementHelper = {};
 
@@ -6291,15 +6292,41 @@ ElementHelper.getElements = function(bpmnFactory, elementRegistry) {
 
   var elements = processSimulationInfo.elements;
 
-  if (!elements) {
+  function filterRemovedQBPElements() {
+    var elementRegistryEvents = elementRegistry.filter(function(el) {
+      return isQBPElement(el);
+    });
+
+    var elementRegistryEventIds = elementRegistryEvents.map(function(el) {
+      return el.id;
+    });
+
+    elements.values = elements.values.filter(function(el) {
+      return elementRegistryEventIds.indexOf(el.elementId) > -1;
+    });
+  }
+
+  function createQBPElements() {
     elements = elementHelper.createElement('qbp:Elements',
       { values: [] }, processSimulationInfo, bpmnFactory);
 
     processSimulationInfo.elements = elements;
   }
 
+  if (elements && elements.values) {
+    filterRemovedQBPElements();
+  } else {
+    createQBPElements();
+  }
+
   return elements;
 };
+
+function isQBPElement(element) {
+  return is(element, 'bpmn:Task') ||
+    is(element, 'bpmn:IntermediateCatchEvent') ||
+    is(element, 'bpmn:BoundaryEvent');
+}
 
 
 module.exports = ElementHelper;
@@ -8326,10 +8353,10 @@ module.exports = function getFlowElementsByType(element, type) {
   var businessObject = getBusinessObject(element);
 
   var flowElements = {
-    'bpmn:Process': getProcessTasks,
-    'bpmn:SubProcess': getProcessTasks,
-    'bpmn:Participant': getParticipantTasks,
-    'bpmn:Collaboration': getCollaborationTasks,
+    'bpmn:Process': getProcessElements,
+    'bpmn:SubProcess': getProcessElements,
+    'bpmn:Participant': getParticipantElements,
+    'bpmn:Collaboration': getCollaborationElements,
     'default': function() {
       return [];
     }
@@ -8341,7 +8368,7 @@ module.exports = function getFlowElementsByType(element, type) {
     return [element];
   }
 
-  function getProcessTasks() {
+  function getProcessElements() {
     var flowElements = businessObject && businessObject.flowElements || [],
         elements = [];
 
@@ -8353,12 +8380,12 @@ module.exports = function getFlowElementsByType(element, type) {
     return elements;
   }
 
-  function getParticipantTasks() {
+  function getParticipantElements() {
     var process = businessObject.processRef;
     return getFlowElementsByType(process, type);
   }
 
-  function getCollaborationTasks() {
+  function getCollaborationElements() {
     var participants = businessObject && businessObject.participants || [],
         elements = [];
 
@@ -16347,16 +16374,27 @@ function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegi
     return element && tabs[element.type] || tabs['default'];
   };
 
+  function isInvokedOnQBPElement(event) {
+    return is(event.element, 'bpmn:Task') ||
+      is(event.element, 'bpmn:BoundaryEvent') ||
+      is(event.element, 'bpmn:IntermediateCatchEvent');
+  }
+
+  function isInvokedOnGateway(event) {
+    return is(event.element, 'bpmn:ExclusiveGateway') ||
+      is(event.element, 'bpmn:InclusiveGateway');
+  }
+
   // 1500 is the HIGHEST PRIORITY for the listener
   eventBus.on('shape.remove', 1500, function(event) {
-    if (is(event.element, 'bpmn:Task')) {
+    if (isInvokedOnQBPElement(event)) {
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: event.element.id });
       removeTasks(event.element, bpmnFactory, elementRegistry);
-      removeSequenceFlows(bpmnFactory, elementRegistry);
-    } else if (is(event.element, 'bpmn:ExclusiveGateway') || is(event.element, 'bpmn:InclusiveGateway')) {
+    } else if (isInvokedOnGateway(event)) {
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: event.element.id });
-      removeSequenceFlows(bpmnFactory, elementRegistry);
     }
+
+    removeSequenceFlows(bpmnFactory, elementRegistry);
 
     getBusinessObject(event.element).toBeRemoved = true;
   });
@@ -20268,6 +20306,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       boundaryEvents = getFlowElementsByType(element, 'bpmn:BoundaryEvent');
 
   var intermediateAndBoundaryEvents = intermediateEvents.concat(boundaryEvents);
+
+  intermediateAndBoundaryEvents = intermediateAndBoundaryEvents.filter(function(el) {
+    return !el.toBeRemoved;
+  });
 
   function eventToGroup(el) {
     var event = getBusinessObject(el),
