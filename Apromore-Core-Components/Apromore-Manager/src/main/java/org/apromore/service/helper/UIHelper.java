@@ -273,6 +273,8 @@ public class UIHelper implements UserInterfaceHelper {
         userMetadataSummaryType.setOwner(usermetadata.getCreatedBy());
         userMetadataSummaryType.setAccessType(accessType.getLabel());
         userMetadataSummaryType.setCanShare(accessType.isOwner());
+        userMetadataSummaryType.setCanEdit(accessType.isWrite());
+        userMetadataSummaryType.setCanView(accessType.isRead());
 
         return userMetadataSummaryType;
     }

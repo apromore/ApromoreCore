@@ -28,6 +28,8 @@ public class UserMetadataSummaryType extends SummaryType {
     private String updatedTime;
     private String accessType;
     private boolean canShare;
+    private boolean canEdit;
+    private boolean canView;
 
 
     public String getGroupName() {
@@ -68,5 +70,21 @@ public class UserMetadataSummaryType extends SummaryType {
 
     public void setCanShare(boolean canShare) {
         this.canShare = canShare;
+    }
+
+    public boolean isCanEdit() {
+        return canEdit;
+    }
+
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
+    }
+
+    public boolean isCanView() {
+        return canView;
+    }
+
+    public void setCanView(boolean canView) {
+        this.canView = canView;
     }
 }

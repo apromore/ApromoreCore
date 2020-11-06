@@ -99,9 +99,19 @@ public interface UserMetadataService {
      * @param userMetadataId Id of user metadata
      * @param username       username
      * @param content        Content of user metadata
-     * @throws UserNotFoundException
+     * @throws UserNotFoundException UserNotFoundException
      */
     void updateUserMetadata(Integer userMetadataId, String username, String content) throws UserNotFoundException;
+
+    /**
+     * Update user metadata's name
+     *
+     * @param userMetadataId id
+     * @param username       username
+     * @param name           name of user metadata
+     * @throws UserNotFoundException UserNotFoundException
+     */
+    void updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException;
 
     /**
      * Delete a user metadata logically.

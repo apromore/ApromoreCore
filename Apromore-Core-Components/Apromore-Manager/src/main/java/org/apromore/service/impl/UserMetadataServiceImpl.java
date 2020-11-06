@@ -256,6 +256,21 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    public void updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        Usermetadata userMetadata = userMetadataRepo.findOne(userMetadataId);
+        userMetadata.setName(name);
+        userMetadata.setUpdatedBy(user.getRowGuid());
+        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
+
+        // Persist Usermetadata
+        userMetadataRepo.saveAndFlush(userMetadata);
+        LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
+    }
+
+    @Override
     @Transactional
     public void deleteUserMetadata(Integer usermetadataId, String username) throws UserNotFoundException {
 
