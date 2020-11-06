@@ -44,9 +44,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>2.3.0</version>
+			<groupId>org.apromore</groupId>
+			<artifactId>apromore-commons</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>
@@ -101,9 +101,7 @@
 						<Import-Package>
 							org.apromore.dao.*,
 							org.springframework.beans.factory.annotation,
-							org.modelmapper.internal.cglib.proxy,
-							org.modelmapper.internal.cglib.core,
-							org.modelmapper.internal.cglib.transform
+							org.apromore.commons							
 						</Import-Package>
 						<Export-Package>
 							org.apromore.calendar.service

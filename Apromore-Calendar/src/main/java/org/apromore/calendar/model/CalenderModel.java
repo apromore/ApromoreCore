@@ -70,7 +70,7 @@ public class CalenderModel {
       Duration durationForSameDay = Duration.ZERO;
 
       WorkDayModel workDayModel = dayOfWeekWorkDayMap.get(starDateTime.getDayOfWeek());
-      if (workDayModel.isWorkingDay()) {
+      if (workDayModel.isWorkingDay() && holidayLocalDateMap.get(localStartDate)==null) {
         durationForSameDay = getDurationForSameDay(starDateTime.toOffsetTime(),
             endDateTime.toOffsetTime(),
             workDayModel);
@@ -91,7 +91,7 @@ public class CalenderModel {
       WorkDayModel workDay = dayOfWeekWorkDayMap.get(currentDayOfWeek);
 
       Duration calculatedDuration = workDay.getDuration();
-      if (!workDay.isWorkingDay()) {
+      if (!workDay.isWorkingDay() || holidayLocalDateMap.get(localStartDate)!=null) {
         calculatedDuration = Duration.ZERO;
       } else if (isStartDay(starDateTime, dayDateTime)) {
 

@@ -22,17 +22,32 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
        xmlns:sws="http://www.springframework.org/schema/web-services"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring.xsd
             http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
-            
-            
-
-	<context:component-scan base-package="org.apromore.calendar.mapper"/>
+                     	
 
     <bean id="calendarService" class="org.apromore.calendar.service.CustomCalendarService">
         <property name="calendarRepo" ref="customCalendarRepository"/>
+        <property name="modelMapper" ref="customMapper"/>
     </bean>
+    
+    <bean id="customMapper" class="org.apromore.commons.mapper.CustomMapper" init-method="init">
+        <constructor-arg>
+        	<list>
+	        	<ref bean="stringToLocalDate"/>
+	  			<ref bean="stringToOffsetDateTime"/>
+	  			<ref bean="stringToOffsetTime"/>
+        	</list>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="stringToLocalDate" class="org.apromore.commons.mapper.converter.StringToLocalDate"/>
+    <bean id="stringToOffsetDateTime" class="org.apromore.commons.mapper.converter.StringToOffsetDateTime"/>
+    <bean id="stringToOffsetTime" class="org.apromore.commons.mapper.converter.StringToOffsetTime"/>
+    
  </beans>
     

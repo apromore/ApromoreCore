@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.mapper.CustomMapper;
 import org.apromore.calendar.model.CalenderModel;
 import org.apromore.calendar.util.CalendarUtil;
+import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.WorkDay;
@@ -63,7 +63,7 @@ public class CustomCalendarService {
   public CalenderModel createBusinessCalendar(String description, boolean weekendsOff)
       throws CalendarAlreadyExistsException {
     OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
-    OffsetTime endTime = OffsetTime.of(LocalTime.of(5, 0), ZoneOffset.UTC);
+    OffsetTime endTime = OffsetTime.of(LocalTime.of(17, 0), ZoneOffset.UTC);
 
     CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
     CalenderModel calenderModel = modelMapper.getMapper().map(customCalender, CalenderModel.class);
@@ -77,7 +77,8 @@ public class CustomCalendarService {
     return modelMapper.getMapper().map(calendarRepo.findById(id), CalenderModel.class);
 
   }
-
+ 
+  
 
   private CustomCalendar createCalendar(String description, boolean weekendsOff, OffsetTime start,
       OffsetTime end)

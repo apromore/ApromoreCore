@@ -61,6 +61,8 @@ public class DurationCalculationUnitTestWithHoliday {
     assertThat(durationModel.getDuration()).isEqualTo(expected);
   }
   
+//    add test for midnight shift workers.
+  
 
 
 }
