@@ -6302,15 +6302,17 @@ ElementHelper.getElements = function(bpmnFactory, elementRegistry) {
       return el.id;
     });
 
-    elements.values = elements.values.filter(function(el) {
-      var isElementPresent = elementRegistryEventIds.indexOf(el.elementId) > -1;
+    if (elementRegistryEventIds.length) {
+      elements.values = elements.values.filter(function(el) {
+        var isElementPresent = elementRegistryEventIds.indexOf(el.elementId) > -1;
 
-      if (!isElementPresent) {
-        ValidationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: el.elementId });
-      }
+        if (!isElementPresent) {
+          ValidationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: el.elementId });
+        }
 
-      return isElementPresent;
-    });
+        return isElementPresent;
+      });
+    }
   }
 
   function createQBPElements() {
@@ -16345,6 +16347,8 @@ function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegi
   PropertiesActivator.call(this, eventBus);
 
   this.getTabs = function(element) {
+
+    console.log(element);
 
     var simulationParametersTab = createSimulationParametersTab(element, bpmnFactory, elementRegistry, translate);
     var taskTab = createTaskTab(element, bpmnFactory, elementRegistry, translate);
