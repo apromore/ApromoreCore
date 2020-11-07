@@ -26,6 +26,7 @@ package org.apromore.service.helper;
 
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.*;
 import org.apromore.util.AccessType;
 
@@ -86,5 +87,5 @@ public interface UserInterfaceHelper {
 
     SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 
-    UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata, AccessType accessType);
+    UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata, AccessType accessType) throws UserNotFoundException;
 }
