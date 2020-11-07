@@ -31,6 +31,7 @@ import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -240,19 +241,18 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void updateUserMetadata(Integer usermetadataId, String username, String content) throws UserNotFoundException {
+    public void updateUserMetadata(Usermetadata userMetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException {
 
-        User user = userSrv.findUserByLogin(username);
+            User user = userSrv.findUserByLogin(username);
 
-        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
-        userMetadata.setContent(content);
-        userMetadata.setUpdatedBy(user.getRowGuid());
-        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
+//        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
+            userMetadata.setContent(content);
+            userMetadata.setUpdatedBy(user.getRowGuid());
+            userMetadata.setUpdatedTime(dateFormat.format(new Date()));
 
-        // Persist Usermetadata
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
-
+            // Persist Usermetadata
+            userMetadataRepo.saveAndFlush(userMetadata);
+            LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
     }
 
     @Override
@@ -276,7 +276,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         User user = userSrv.findUserByLogin(username);
 
-        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
+        Usermetadata userMetadata = userMetadataRepo.findById(usermetadataId);
         userMetadata.setUpdatedBy(user.getRowGuid());
         userMetadata.setUpdatedTime(dateFormat.format(new Date()));
         userMetadata.setIsValid(false);

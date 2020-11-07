@@ -234,6 +234,7 @@ public class Usermetadata implements Serializable {
     /**
      * reserve for optimistic lock
      */
+    @Version
     @Column(name = "revision")
     public Integer getRevision() {
         return this.revision;
