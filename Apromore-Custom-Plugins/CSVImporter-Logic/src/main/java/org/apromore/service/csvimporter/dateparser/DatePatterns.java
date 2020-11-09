@@ -409,8 +409,9 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + TIME_COLON + "$", "HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "$", "HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "HH:mm:ss.SSS");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{1}" + "$", "HH:mm:ss.S");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{3}" + "$", "HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "$", "mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{1}" + "$", "mm:ss.S");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{3}" + "$", "mm:ss.SSS");
 
         DATE_FORMAT_PATTERN_STORE = DATE_FORMAT_REGEXPS;
     }

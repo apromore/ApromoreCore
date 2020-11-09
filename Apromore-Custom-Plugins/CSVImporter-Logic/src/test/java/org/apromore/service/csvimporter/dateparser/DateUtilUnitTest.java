@@ -96,6 +96,10 @@ public class DateUtilUnitTest {
         assertEquals("MM-dd-yyyy HH:mm", determineDateFormat("12-19-2019 15:13"));
         assertEquals("yyyy-MM-dd HH:mm", determineDateFormat("2019-12-19 15:13"));
         assertEquals("yyyy-dd-MM HH:mm", determineDateFormat("2019-19-12 15:13"));
+        assertEquals("dd-MM-yyyy'T'HH:mm", determineDateFormat("19-12-2019T15:13"));
+        assertEquals("MM-dd-yyyy'T'HH:mm", determineDateFormat("12-19-2019T15:13"));
+        assertEquals("yyyy-MM-dd'T'HH:mm", determineDateFormat("2019-12-19T15:13"));
+        assertEquals("yyyy-dd-MM'T'HH:mm", determineDateFormat("2019-19-12T15:13"));
         assertEquals("dd/MM/yyyy HH:mm", determineDateFormat("19/12/2019 15:13"));
         assertEquals("MM/dd/yyyy HH:mm", determineDateFormat("12/19/2019 15:13"));
         assertEquals("yyyy/MM/dd HH:mm", determineDateFormat("2019/12/19 15:13"));
@@ -119,6 +123,10 @@ public class DateUtilUnitTest {
         assertEquals("MM-dd-yyyy HH:mm:ss", determineDateFormat("12-19-2019 15:13:05"));
         assertEquals("yyyy-MM-dd HH:mm:ss", determineDateFormat("2019-12-19 15:13:05"));
         assertEquals("yyyy-dd-MM HH:mm:ss", determineDateFormat("2019-19-12 15:13:05"));
+        assertEquals("dd-MM-yyyy'T'HH:mm:ss", determineDateFormat("19-12-2019T15:13:05"));
+        assertEquals("MM-dd-yyyy'T'HH:mm:ss", determineDateFormat("12-19-2019T15:13:05"));
+        assertEquals("yyyy-MM-dd'T'HH:mm:ss", determineDateFormat("2019-12-19T15:13:05"));
+        assertEquals("yyyy-dd-MM'T'HH:mm:ss", determineDateFormat("2019-19-12T15:13:05"));
         assertEquals("dd/MM/yyyy HH:mm:ss", determineDateFormat("19/12/2019 15:13:05"));
         assertEquals("MM/dd/yyyy HH:mm:ss", determineDateFormat("12/19/2019 15:13:05"));
         assertEquals("yyyy/MM/dd HH:mm:ss", determineDateFormat("2019/12/19 15:13:05"));
@@ -142,6 +150,10 @@ public class DateUtilUnitTest {
         assertEquals("MM-dd-yyyy HH:mm:ss.SSS", determineDateFormat("12-19-2019 15:13:05.328"));
         assertEquals("yyyy-MM-dd HH:mm:ss.SSS", determineDateFormat("2019-12-19 15:13:05.328"));
         assertEquals("yyyy-dd-MM HH:mm:ss.SSS", determineDateFormat("2019-19-12 15:13:05.328"));
+        assertEquals("dd-MM-yyyy'T'HH:mm:ss.SSS", determineDateFormat("19-12-2019T15:13:05.328"));
+        assertEquals("MM-dd-yyyy'T'HH:mm:ss.SSS", determineDateFormat("12-19-2019T15:13:05.328"));
+        assertEquals("yyyy-MM-dd'T'HH:mm:ss.SSS", determineDateFormat("2019-12-19T15:13:05.328"));
+        assertEquals("yyyy-dd-MM'T'HH:mm:ss.SSS", determineDateFormat("2019-19-12T15:13:05.328"));
         assertEquals("dd/MM/yyyy HH:mm:ss.SSS", determineDateFormat("19/12/2019 15:13:05.328"));
         assertEquals("MM/dd/yyyy HH:mm:ss.SSS", determineDateFormat("12/19/2019 15:13:05.328"));
         assertEquals("yyyy/MM/dd HH:mm:ss.SSS", determineDateFormat("2019/12/19 15:13:05.328"));
@@ -190,6 +202,10 @@ public class DateUtilUnitTest {
         assertEquals("MM-dd-yy HH:mm", determineDateFormat("12-19-00 15:13"));
         assertEquals("yy-MM-dd HH:mm", determineDateFormat("00-12-19 15:13"));
         assertEquals("yy-dd-MM HH:mm", determineDateFormat("00-19-12 15:13"));
+        assertEquals("dd-MM-yy'T'HH:mm", determineDateFormat("19-12-00T15:13"));
+        assertEquals("MM-dd-yy'T'HH:mm", determineDateFormat("12-19-00T15:13"));
+        assertEquals("yy-MM-dd'T'HH:mm", determineDateFormat("00-12-19T15:13"));
+        assertEquals("yy-dd-MM'T'HH:mm", determineDateFormat("00-19-12T15:13"));
         assertEquals("dd/MM/yy HH:mm", determineDateFormat("19/12/00 15:13"));
         assertEquals("MM/dd/yy HH:mm", determineDateFormat("12/19/00 15:13"));
         assertEquals("yy/MM/dd HH:mm", determineDateFormat("00/12/19 15:13"));
@@ -212,6 +228,10 @@ public class DateUtilUnitTest {
         assertEquals("MM-dd-yy HH:mm:ss", determineDateFormat("12-19-00 15:13:05"));
         assertEquals("yy-MM-dd HH:mm:ss", determineDateFormat("00-12-19 15:13:05"));
         assertEquals("yy-dd-MM HH:mm:ss", determineDateFormat("00-19-12 15:13:05"));
+        assertEquals("dd-MM-yy'T'HH:mm:ss", determineDateFormat("19-12-00T15:13:05"));
+        assertEquals("MM-dd-yy'T'HH:mm:ss", determineDateFormat("12-19-00T15:13:05"));
+        assertEquals("yy-MM-dd'T'HH:mm:ss", determineDateFormat("00-12-19T15:13:05"));
+        assertEquals("yy-dd-MM'T'HH:mm:ss", determineDateFormat("00-19-12T15:13:05"));
         assertEquals("dd/MM/yy HH:mm:ss", determineDateFormat("19/12/00 15:13:05"));
         assertEquals("MM/dd/yy HH:mm:ss", determineDateFormat("12/19/00 15:13:05"));
         assertEquals("yy/MM/dd HH:mm:ss", determineDateFormat("00/12/19 15:13:05"));
@@ -234,6 +254,10 @@ public class DateUtilUnitTest {
         assertEquals("MM-dd-yy HH:mm:ss.SSS", determineDateFormat("12-19-00 15:13:05.328"));
         assertEquals("yy-MM-dd HH:mm:ss.SSS", determineDateFormat("00-12-19 15:13:05.328"));
         assertEquals("yy-dd-MM HH:mm:ss.SSS", determineDateFormat("00-19-12 15:13:05.328"));
+        assertEquals("dd-MM-yy'T'HH:mm:ss.SSS", determineDateFormat("19-12-00T15:13:05.328"));
+        assertEquals("MM-dd-yy'T'HH:mm:ss.SSS", determineDateFormat("12-19-00T15:13:05.328"));
+        assertEquals("yy-MM-dd'T'HH:mm:ss.SSS", determineDateFormat("00-12-19T15:13:05.328"));
+        assertEquals("yy-dd-MM'T'HH:mm:ss.SSS", determineDateFormat("00-19-12T15:13:05.328"));
         assertEquals("dd/MM/yy HH:mm:ss.SSS", determineDateFormat("19/12/00 15:13:05.328"));
         assertEquals("MM/dd/yy HH:mm:ss.SSS", determineDateFormat("12/19/00 15:13:05.328"));
         assertEquals("yy/MM/dd HH:mm:ss.SSS", determineDateFormat("00/12/19 15:13:05.328"));
@@ -271,6 +295,9 @@ public class DateUtilUnitTest {
         assertEquals("HH:mm", determineDateFormat("12:08"));
         assertEquals("HH:mm:ss", determineDateFormat("12:59:59"));
         assertEquals("HH:mm:ss.SSS", determineDateFormat("12:59:59.879"));
+        assertEquals("mm:ss", determineDateFormat("59:59"));
+        assertEquals("mm:ss.S", determineDateFormat("59:59.8"));
+        assertEquals("mm:ss.SSS", determineDateFormat("59:59.879"));
     }
     @Test
     public void test_timestamp_unsupported_separators() {
