@@ -28,7 +28,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
@@ -59,10 +64,10 @@ public class CalendarServiceUnitTest {
     when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
     // When
-    Long id = calendarService.createGenericCalendar(calendar.getName(), true);
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true);
 
     // Then
-    assertThat(id).isEqualTo(calendar.getId());
+    assertThat(calendarSaved.getId()).isEqualTo(calendar.getId());
     verify(calendarRepository,times(1)).findByName(calendar.getName());
     verify(calendarRepository,times(1)).saveAndFlush(any(CustomCalendar.class));
     
@@ -78,11 +83,13 @@ public class CalendarServiceUnitTest {
   
     
     // When
-    Long id = calendarService.createGenericCalendar(calendar.getName(), true);
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true);
 
     // Then
 //    exception thrown
     
   }
+  
+
 
 }
