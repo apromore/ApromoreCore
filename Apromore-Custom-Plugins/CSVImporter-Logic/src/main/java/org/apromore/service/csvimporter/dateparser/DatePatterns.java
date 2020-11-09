@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -135,6 +135,8 @@ class DatePatterns {
     private static final String TIME_COLON = HOURS_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}";
     //HH:mm:ss
     private static final String TIME_COLON_SECOND = HOURS_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}";
+    //mm:ss
+    private static final String TIME_COLON_MIN_SEC = MINUTES_OR_SECOND_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}";
 
     static {
 
@@ -171,6 +173,10 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON + "$", "MM/dd/yyyy HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON + "$", "yyyy/MM/dd HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON + "$", "yyyy/dd/MM HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR + "t" + "{1}" + TIME_COLON + "$", "dd-MM-yyyy'T'HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "t" + "{1}" + TIME_COLON + "$", "MM-dd-yyyy'T'HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "t" + "{1}" + TIME_COLON + "$", "yyyy-MM-dd'T'HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "t" + "{1}" + TIME_COLON + "$", "yyyy-dd-MM'T'HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SPACE_DAY_MONTH_YEAR + "\\s" + TIME_COLON + "$", "dd MM yyyy HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SPACE_MONTH_DAY_YEAR + "\\s" + TIME_COLON + "$", "MM dd yyyy HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SPACE_YEAR_MONTH_DAY + "\\s" + TIME_COLON + "$", "yyyy MM dd HH:mm");
@@ -198,6 +204,10 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "$", "MM-dd-yyyy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yyyy-MM-dd HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "$", "yyyy-dd-MM HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "$", "dd-MM-yyyy'T'HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "$", "MM-dd-yyyy'T'HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "t" + "{1}" + TIME_COLON_SECOND + "$", "yyyy-MM-dd'T'HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "t" + "{1}" + TIME_COLON_SECOND + "$", "yyyy-dd-MM'T'HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "$", "dd/MM/yyyy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "$", "MM/dd/yyyy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yyyy/MM/dd HH:mm:ss");
@@ -229,6 +239,10 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM-dd-yyyy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-MM-dd HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-dd-MM HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd-MM-yyyy'T'HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM-dd-yyyy'T'HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-dd-MM'T'HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_DAY_MONTH_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd/MM/yyyy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM/dd/yyyy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy/MM/dd HH:mm:ss.SSS");
@@ -283,6 +297,10 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR_TWO_DIGIT + "\\s" + TIME_COLON + "$", "MM-dd-yy HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_MONTH_DAY + "\\s" + TIME_COLON + "$", "yy-MM-dd HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_DAY_MONTH + "\\s" + TIME_COLON + "$", "yy-dd-MM HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR_TWO_DIGIT + "t" + "{1}" + TIME_COLON + "$", "dd-MM-yy'T'HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR_TWO_DIGIT + "t" + "{1}" + TIME_COLON + "$", "MM-dd-yy'T'HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_MONTH_DAY + "t" + "{1}" + TIME_COLON + "$", "yy-MM-dd'T'HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_DAY_MONTH + "t" + "{1}" + TIME_COLON + "$", "yy-dd-MM'T'HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_DAY_MONTH_YEAR_TWO_DIGIT + "\\s" + TIME_COLON + "$", "dd/MM/yy HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR_TWO_DIGIT + "\\s" + TIME_COLON + "$", "MM/dd/yy HH:mm");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_TWO_DIGIT_MONTH_DAY + "\\s" + TIME_COLON + "$", "yy/MM/dd HH:mm");
@@ -314,6 +332,10 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR_TWO_DIGIT + "\\s" + TIME_COLON_SECOND + "$", "MM-dd-yy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yy-MM-dd HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "$", "yy-dd-MM HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR_TWO_DIGIT + "t" + "{1}" + TIME_COLON_SECOND + "$", "dd-MM-yy'T'HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR_TWO_DIGIT + "t" + "{1}" + TIME_COLON_SECOND + "$", "MM-dd-yy'T'HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_MONTH_DAY + "t" + "{1}" + TIME_COLON_SECOND + "$", "yy-MM-dd'T'HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_DAY_MONTH + "t" + "{1}" + TIME_COLON_SECOND + "$", "yy-dd-MM'T'HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_DAY_MONTH_YEAR_TWO_DIGIT + "\\s" + TIME_COLON_SECOND + "$", "dd/MM/yy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR_TWO_DIGIT + "\\s" + TIME_COLON_SECOND + "$", "MM/dd/yy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_TWO_DIGIT_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "$", "yy/MM/dd HH:mm:ss");
@@ -344,6 +366,10 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR_TWO_DIGIT + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM-dd-yy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yy-MM-dd HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_DAY_MONTH + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yy-dd-MM HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR_TWO_DIGIT + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd-MM-yy'T'HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR_TWO_DIGIT + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM-dd-yy'T'HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_MONTH_DAY + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yy-MM-dd'T'HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_TWO_DIGIT_DAY_MONTH + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yy-dd-MM'T'HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_DAY_MONTH_YEAR_TWO_DIGIT + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd/MM/yy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR_TWO_DIGIT + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM/dd/yy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_YEAR_TWO_DIGIT_MONTH_DAY + "\\s" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yy/MM/dd HH:mm:ss.SSS");
@@ -377,12 +403,14 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + WEEK_DAY_NAME_LONG + "{1}" + "$", "EEEE");
         DATE_FORMAT_REGEXPS.put("^" + WEEK_DAY_NAME_FIRST_LETTER + "{1}" + "$", "EEEEE");
 
-        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE + "{1}" + "$", "HHmm");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE_SECOND + "{1}" + "$", "HHmmss");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE_SECOND + "{1}" + "\\." + "\\d{3}" + "$", "HHmmss.SSS");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON + "{1}" + "$", "HH:mm");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "{1}" + "$", "HH:mm:ss");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "{1}" + "\\." + "\\d{3}" + "$", "HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE + "$", "HHmm");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE_SECOND + "$", "HHmmss");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE_SECOND + "\\." + "\\d{3}" + "$", "HHmmss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON + "$", "HH:mm");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "$", "HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "HH:mm:ss.SSS");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{1}" + "$", "HH:mm:ss.S");
+        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{3}" + "$", "HH:mm:ss.SSS");
 
         DATE_FORMAT_PATTERN_STORE = DATE_FORMAT_REGEXPS;
     }

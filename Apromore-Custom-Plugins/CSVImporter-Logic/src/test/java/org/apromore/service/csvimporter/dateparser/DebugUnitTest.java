@@ -69,20 +69,20 @@ public class DebugUnitTest {
 //        System.out.println("getEndTimestampFormat " + logSample.getEndTimestampFormat());
 
 
-        String dattime = "20191219";
+        String dattime = "18/4/13 00:30";
 ////        String dattime = "03/09/2019 15:13:05";
-//
-//        if(determineDateFormat(dattime) != null){
-//            System.out.println("Parsing " + determineDateFormat(dattime));
-//        } else {
-//            System.out.println("Parsing Null");
-//
-//        }
-//        System.out.println("Parsing " + dattime );
 
+        if(determineDateFormat(dattime) != null){
+            System.out.println("Parsing " + determineDateFormat(dattime));
+        } else {
+            System.out.println("Parsing Null");
 
-        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[0-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])(([0-5][0-9]){2}))"));
-        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[1-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])([0-5][0-9]){2})$"));
+        }
+        System.out.println("Parsing " + dattime );
+
+//
+//        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[0-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])(([0-5][0-9]){2}))"));
+//        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[1-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])([0-5][0-9]){2})$"));
 
 //        parse = new Parse();
 //        System.out.println("Parsing " + parse.tryParsing("06-11-2011 4:59:00 pm"));
