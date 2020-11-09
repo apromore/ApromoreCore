@@ -102,7 +102,7 @@ public interface UserMetadataService {
      * @param content        Content of user metadata
      * @throws UserNotFoundException UserNotFoundException
      */
-    void updateUserMetadata(Usermetadata usermetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException;
+    Usermetadata updateUserMetadata(Usermetadata usermetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException;
 
     /**
      * Update user metadata's name
@@ -112,7 +112,7 @@ public interface UserMetadataService {
      * @param name           name of user metadata
      * @throws UserNotFoundException UserNotFoundException
      */
-    void updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException;
+    Usermetadata updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException;
 
     /**
      * Delete a user metadata logically.

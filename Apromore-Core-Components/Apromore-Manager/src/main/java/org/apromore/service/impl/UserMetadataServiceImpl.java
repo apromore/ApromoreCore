@@ -144,10 +144,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setName(userMetadataName);
 
         // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
-        userMetadataRepo.saveAndFlush(userMetadata);
         LOGGER.info("Create user metadata ID: {} TYPE: {}.", userMetadata.getId(), userMetadataTypeEnum.toString());
+        return userMetadataRepo.saveAndFlush(userMetadata);
 
-        return userMetadata;
     }
 
     /**
@@ -241,33 +240,34 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void updateUserMetadata(Usermetadata userMetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException {
-
-            User user = userSrv.findUserByLogin(username);
-
-//        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
-            userMetadata.setContent(content);
-            userMetadata.setUpdatedBy(user.getRowGuid());
-            userMetadata.setUpdatedTime(dateFormat.format(new Date()));
-
-            // Persist Usermetadata
-            userMetadataRepo.saveAndFlush(userMetadata);
-            LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
-    }
-
-    @Override
-    public void updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException {
+    public Usermetadata updateUserMetadata(Usermetadata userMetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException {
 
         User user = userSrv.findUserByLogin(username);
 
+        // Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
+        userMetadata.setContent(content);
+        userMetadata.setUpdatedBy(user.getRowGuid());
+        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
+
+        // Persist Usermetadata
+        LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
+        return userMetadataRepo.saveAndFlush(userMetadata);
+    }
+
+    @Override
+    public Usermetadata updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        // Optimistic locking version check is not necessary here since consistency should be guaranteed by EventQueue
         Usermetadata userMetadata = userMetadataRepo.findOne(userMetadataId);
         userMetadata.setName(name);
         userMetadata.setUpdatedBy(user.getRowGuid());
         userMetadata.setUpdatedTime(dateFormat.format(new Date()));
 
         // Persist Usermetadata
-        userMetadataRepo.saveAndFlush(userMetadata);
         LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
+        return userMetadataRepo.saveAndFlush(userMetadata);
     }
 
     @Override
