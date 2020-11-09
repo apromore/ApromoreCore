@@ -26,6 +26,7 @@ import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 
 import java.util.List;
 import java.util.Set;
@@ -101,7 +102,7 @@ public interface UserMetadataService {
      * @param content        Content of user metadata
      * @throws UserNotFoundException UserNotFoundException
      */
-    void updateUserMetadata(Usermetadata usermetadata, String username, String content) throws UserNotFoundException;
+    void updateUserMetadata(Usermetadata usermetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException;
 
     /**
      * Update user metadata's name
