@@ -22,6 +22,7 @@
 package org.apromore.dao.model;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.OffsetTime;
 
 import javax.persistence.Column;
@@ -33,6 +34,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -45,120 +49,145 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "work_day", uniqueConstraints = {
-		@UniqueConstraint(columnNames = { "day_of_week", "calendar_id", "start_time" }) })
+    @UniqueConstraint(columnNames = {"day_of_week", "calendar_id", "start_time"})})
 @Configurable("work_day")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 1000,
+    coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @NoArgsConstructor
 public class WorkDay {
 
-	private Long id;
-	private DayOfWeek dayOfWeek;
+  private Long id;
+  private DayOfWeek dayOfWeek;
 
-	private String startTimeString;
-	
+  private String startTime;
 
-	private String endTimeString;
- 
-	private boolean isWorkingDay = true;
 
-	private String createdBy;
-	private String updatedBy;
+  private String endTime;
 
-	private CustomCalendar customCalendar;
+  private boolean isWorkingDay = true;
 
-	public WorkDay(DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime, boolean isWorkingDay) {
-		this.dayOfWeek = dayOfWeek;
-		this.startTimeString = startTime.toString();		
-		this.endTimeString = endTime.toString();
-		this.isWorkingDay = isWorkingDay;
-	}
+  private String createdBy;
+  private String updatedBy;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	public Long getId() {
-		return id;
-	}
+  private CustomCalendar customCalendar;
 
-	@Column(name = "day_of_week")
-	@Enumerated(EnumType.STRING)
-	public DayOfWeek getDayOfWeek() {
-		return dayOfWeek;
-	}
+  
+  private Duration duration;
 
-	@Column(name = "start_time")
-	public String getStartTimeString() {
-		return startTimeString;
-	}
+  public WorkDay(DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
+      boolean isWorkingDay) {
+    this.dayOfWeek = dayOfWeek;
+    this.startTime = startTime.toString();
+    this.endTime = endTime.toString();
+    this.isWorkingDay = isWorkingDay;
+  }
 
-	@Column(name = "end_time")
-	public String getEndTimeString() {
+  @PostLoad
+  @PostPersist
+  @PostUpdate
+  public void calculateDuration() {
+    duration = Duration.between(getOffsetStartTime(), getOffsetEndTime());
 
-		return endTimeString;
-	}
+  }
 
-	@Column(name = "is_working_day")
-	public boolean isWorkingDay() {
-		return isWorkingDay;
-	}
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", unique = true, nullable = false)
+  public Long getId() {
+    return id;
+  }
 
-	@ManyToOne
-	@JoinColumn(name = "calendar_id")
-	public CustomCalendar getCustomCalendar() {
-		return customCalendar;
-	}
+  @Column(name = "day_of_week")
+  @Enumerated(EnumType.STRING)
+  public DayOfWeek getDayOfWeek() {
+    return dayOfWeek;
+  }
 
-	@Column(name = "created_by")
-	public String getCreatedBy() {
-		return createdBy;
-	}
+  @Column(name = "start_time")
+  public String getStartTime() {
+    return startTime;
+  }
 
-	@Transient
-	public OffsetTime getStartTime() {
-		return OffsetTime.parse(startTimeString);		
-	}
+  @Column(name = "end_time")
+  public String getEndTime() {
 
-	@Column(name = "updated_by")
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    return endTime;
+  }
 
-	@Transient
-	public OffsetTime getEndTime() {
-		return OffsetTime.parse(endTimeString);		
-	}
+  @Column(name = "is_working_day")
+  public boolean isWorkingDay() {
+    return isWorkingDay;
+  }
 
-	public void setCustomCalendar(CustomCalendar customCalendar) {
-		this.customCalendar = customCalendar;
-	}
+  @ManyToOne
+  @JoinColumn(name = "calendar_id")
+  public CustomCalendar getCustomCalendar() {
+    return customCalendar;
+  }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+  @Column(name = "created_by")
+  public String getCreatedBy() {
+    return createdBy;
+  }
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+  @Transient
+  public OffsetTime getOffsetStartTime() {
+    return OffsetTime.parse(startTime);
+  }
 
-	public void setStartTimeString(String startTimeString) {
-		this.startTimeString = startTimeString;
-	}
+  @Column(name = "updated_by")
+  public String getUpdatedBy() {
+    return updatedBy;
+  }
 
-	public void setEndTimeString(String endTimeString) {
-		this.endTimeString = endTimeString;
-	}
+  @Transient
+  public OffsetTime getOffsetEndTime() {
+    return OffsetTime.parse(endTime);
+  }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public void setCustomCalendar(CustomCalendar customCalendar) {
+    this.customCalendar = customCalendar;
+  }
 
-	public void setDayOfWeek(DayOfWeek dayOfWeek) {
-		this.dayOfWeek = dayOfWeek;
-	}
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 
-	
-	public void setWorkingDay(boolean isWorkingDay) {
-		this.isWorkingDay = isWorkingDay;
-	}
+  public void setUpdatedBy(String updatedBy) {
+    this.updatedBy = updatedBy;
+  }
 
+  public void setStartTime(String startTime) {
+    this.startTime = startTime;
+  }
+
+  public void setEndTime(String endTime) {
+    this.endTime = endTime;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setDayOfWeek(DayOfWeek dayOfWeek) {
+    this.dayOfWeek = dayOfWeek;
+  }
+
+
+  public void setWorkingDay(boolean isWorkingDay) {
+    this.isWorkingDay = isWorkingDay;
+  }
+
+  @Transient
+  public Duration getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Duration duration) {
+    this.duration = duration;
+  }
+  
+  
+
+  
 }
