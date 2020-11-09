@@ -53,7 +53,7 @@
 	<osgi:reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     <osgi:reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 	<!--<osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>-->
-    <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin"/>
+    <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin" cardinality="0..1"/>
 
     <osgi:list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/><!-- required for font-icon -->
 
