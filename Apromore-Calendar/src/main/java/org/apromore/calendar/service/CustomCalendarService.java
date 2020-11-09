@@ -40,7 +40,7 @@ import lombok.Data;
 
 @Data
 public class CustomCalendarService {
-  // spelling of calendar
+  
   @Autowired
   public CustomCalendarRepository calendarRepo;
 
