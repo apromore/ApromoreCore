@@ -37,7 +37,7 @@ import lombok.Data;
 import sun.security.provider.certpath.CollectionCertStore;
 
 @Data
-public class CalenderModel {
+public class CalendarModel {
 
   private Long id;
   private String name;

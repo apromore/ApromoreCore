@@ -4,19 +4,19 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
-import org.apromore.calendar.model.CalenderModel;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.WorkDayModel;
 
-public class CalenderModelBuilder {
+public class CalendarModelBuilder {
 
-  CalenderModel model = new CalenderModel();
+  CalendarModel model = new CalendarModel();
 
-  public CalenderModel build() {
+  public CalendarModel build() {
 
     return model;
   }
 
-  public CalenderModelBuilder withWorkDay(DayOfWeek dayOfWeek, OffsetTime starOffsetTime,
+  public CalendarModelBuilder withWorkDay(DayOfWeek dayOfWeek, OffsetTime starOffsetTime,
       OffsetTime endOffsetTime, boolean isWorkingDay) {
 
     WorkDayModel workDayModel = new WorkDayModel();
@@ -29,21 +29,21 @@ public class CalenderModelBuilder {
     return this;
   }
 
-  public CalenderModelBuilder withWork9to5Day(DayOfWeek dayOfWeek) {
+  public CalendarModelBuilder withWork9to5Day(DayOfWeek dayOfWeek) {
 
     return withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC),
         OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC), true);
 
   }
 
-  public CalenderModelBuilder withNotWorkDay(DayOfWeek dayOfWeek) {
+  public CalendarModelBuilder withNotWorkDay(DayOfWeek dayOfWeek) {
 
     return withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC),
         OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC), false);
 
   }
 
-  public CalenderModelBuilder with7DayWorking() {
+  public CalendarModelBuilder with7DayWorking() {
 
     for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
       withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC),
@@ -53,7 +53,7 @@ public class CalenderModelBuilder {
     return this;
   }
 
-  public CalenderModelBuilder with5DayWorking() {
+  public CalendarModelBuilder with5DayWorking() {
 
     for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
       boolean isWorking = true;

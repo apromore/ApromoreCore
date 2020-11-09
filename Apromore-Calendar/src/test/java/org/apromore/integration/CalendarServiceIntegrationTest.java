@@ -33,7 +33,7 @@ import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.model.CalenderModel;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.dao.model.CustomCalendar;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   public void testCreateCalender() throws CalendarAlreadyExistsException {
     
 //    when
-    CalenderModel model=calenderService.createGenericCalendar("Generic", true);
+    CalendarModel model=calenderService.createGenericCalendar("Generic", true);
     
  // Then
     assertThat(model.getId()).isNotNull();
@@ -65,9 +65,9 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   @Test
   public void testGetCalender() throws CalendarAlreadyExistsException {
 //    Given
-    CalenderModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true);
+    CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true);
 //    when
-    CalenderModel modelExpected=calenderService.getCalenderById(model.getId());
+    CalendarModel modelExpected=calenderService.getCalenderById(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();

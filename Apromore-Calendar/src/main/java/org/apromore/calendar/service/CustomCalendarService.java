@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.model.CalenderModel;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.util.CalendarUtil;
 import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarRepository;
@@ -47,34 +47,34 @@ public class CustomCalendarService {
   @Autowired
   private CustomMapper modelMapper;
 
-  public CalenderModel createGenericCalendar(String description, boolean weekendsOff)
+  public CalendarModel createGenericCalendar(String description, boolean weekendsOff)
       throws CalendarAlreadyExistsException {
 
     OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
     OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.UTC);
 
     CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
-    CalenderModel calenderModel = modelMapper.getMapper().map(customCalender, CalenderModel.class);
+    CalendarModel calenderModel = modelMapper.getMapper().map(customCalender, CalendarModel.class);
     return calenderModel;
   }
 
 
 
-  public CalenderModel createBusinessCalendar(String description, boolean weekendsOff)
+  public CalendarModel createBusinessCalendar(String description, boolean weekendsOff)
       throws CalendarAlreadyExistsException {
     OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
     OffsetTime endTime = OffsetTime.of(LocalTime.of(17, 0), ZoneOffset.UTC);
 
     CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
-    CalenderModel calenderModel = modelMapper.getMapper().map(customCalender, CalenderModel.class);
+    CalendarModel calenderModel = modelMapper.getMapper().map(customCalender, CalendarModel.class);
 
     return calenderModel;
 
   }
 
-  public CalenderModel getCalenderById(Long id) {
+  public CalendarModel getCalenderById(Long id) {
 
-    return modelMapper.getMapper().map(calendarRepo.findById(id), CalenderModel.class);
+    return modelMapper.getMapper().map(calendarRepo.findById(id), CalendarModel.class);
 
   }
  

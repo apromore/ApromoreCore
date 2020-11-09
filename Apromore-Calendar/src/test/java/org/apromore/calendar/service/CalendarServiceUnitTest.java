@@ -33,7 +33,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.model.CalenderModel;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
@@ -64,7 +64,7 @@ public class CalendarServiceUnitTest {
     when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
     // When
-    CalenderModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true);
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true);
 
     // Then
     assertThat(calendarSaved.getId()).isEqualTo(calendar.getId());
@@ -83,7 +83,7 @@ public class CalendarServiceUnitTest {
   
     
     // When
-    CalenderModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true);
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true);
 
     // Then
 //    exception thrown
