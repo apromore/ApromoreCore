@@ -63,36 +63,21 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (06/03/2020)
  * Modified: Chii Chang (11/04/2020)
  * Modified: Chii Chang (12/05/2020)
+ * Modified: Chii Chang (10/11/2020)
  */
 public class PLog extends LaLog {
 
     private APMLog apmLog;
-//    DefaultChartDataCollection defaultChartDataCollection;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PLog.class);
 
     private UnifiedMap<String, PTrace> pTraceUnifiedMap;
     private List<PTrace> pTraceList;
-//    private UnifiedMap<Integer, Integer> variantIdFreqMap;
-//    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap;
-//    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
-//    private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
-
-
-//    private double minDuration = 0;
     private double medianDuration = 0;
     private double averageDuration = 0;
-//    private double maxDuration = 0;
-//    private String timeZone = "";
-//    private long startTime = -1;
-//    private long endTime = -1;
     private long caseVariantSize = 0;
-//    private long eventSize = 0;
-
     private BitSet validTraceIndexBS;
-
     public BitSet originalValidTraceIndexBS;
-
     private double originalMinDuration = 0;
     private double originalMedianDuration = 0;
     private double originalAverageDuration = 0;
@@ -355,12 +340,7 @@ public class PLog extends LaLog {
             this.previousPTraceList.add(pTrace);
         }
 
-//        this.originalPTraceList = new ArrayList<>(this.pTraceList);
-//        this.previousPTraceList = new ArrayList<>(this.pTraceList);
-//        this.customPTraceList = new ArrayList<>(this.pTraceList);
 
-
-        System.out.println("done");
 
         LOGGER.info("do the rest of copies");
         this.caseVariantSize = apmLog.getCaseVariantSize();
@@ -409,13 +389,6 @@ public class PLog extends LaLog {
         this.originalActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
         this.previousActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
 
-
-//        HashBiMap<Integer, String> aiMap = apmLog.getActIdNameMap();
-//
-//        if (aiMap != null) {
-//            this.actIdNameMap = new HashBiMap<>(aiMap);
-//        }
-
         this.caseAttributeValueFreqMap = apmLog.getCaseAttributeValueFreqMap();
         this.eventAttributeValueFreqMap = apmLog.getEventAttributeValueFreqMap();
         this.eventAttributeValueCasesFreqMap = apmLog.getEventAttributeValueCasesFreqMap();
@@ -426,6 +399,11 @@ public class PLog extends LaLog {
 
 
     public void updateStats(List<PTrace> filteredPTraceList) {
+
+        minDuration = 0;
+        maxDuration = 0;
+        startTime = 0;
+        endTime = 0;
 
         actNameIdxCId = new HashBiMap<>();
 
@@ -471,35 +449,12 @@ public class PLog extends LaLog {
             BitSet vEvents = trace.getValidEventIndexBitSet();
             eventSize += vEvents.cardinality();
 
-//            System.out.println((i+1) + " / " + immutableTraces.size());
         }
 
         variantSize = variantIdFreqMap.size();
 
         List<Map.Entry<IntArrayList, Integer>> list = new ArrayList<>(actNameIndexesFreqMap.entrySet());
         list.sort(comparingByValue());
-
-//        int cIdCount = 0;
-//        for (int i = list.size() - 1; i >= 0; i--) {
-//            cIdCount += 1;
-//            Map.Entry<IntArrayList, Integer> entry = list.get(i);
-//            IntArrayList ial = entry.getKey();
-//            int freq = entry.getValue();
-//
-//            variantIdFreqMap.put(cIdCount, freq);
-//            actNameIdxCId.put(ial, cIdCount);
-//
-//            System.out.println((i+1) + " / " + traceList.size());
-//        }
-//
-//        for (int i = 0; i < traceList.size(); i++) {
-//            ATrace trace = traceList.get(i);
-//            IntArrayList iIAL = traceActNameIndexes.get(i);
-//            int cId = actNameIdxCId.get(iIAL);
-//            trace.setCaseVariantId(cId);
-//
-//            System.out.println((i+1) + " / " + traceList.size());
-//        }
 
         eventAttributeOccurMap = new UnifiedMap<>();
 
@@ -539,7 +494,6 @@ public class PLog extends LaLog {
             eventAttributeValueCasesFreqMap.put(key, valCaseFreqMap);
 
             counter += 1;
-//            System.out.println(counter + " / " + eventAttributeOccurMap.size());
         }
 
 
@@ -743,9 +697,6 @@ public class PLog extends LaLog {
 
     /* ----------------- SET methods ------------------ */
 
-//    public void setMinDuration(double minDuration) {
-//        this.minDuration = minDuration;
-//    }
 
     public void setMedianDuration(double medianDuration) {
         this.medianDuration = medianDuration;
@@ -754,18 +705,6 @@ public class PLog extends LaLog {
     public void setAverageDuration(double averageDuration) {
         this.averageDuration = averageDuration;
     }
-
-//    public void setMaxDuration(double maxDuration) {
-//        this.maxDuration = maxDuration;
-//    }
-
-//    public void setStartTime(long startTime) {
-//        this.startTime = startTime;
-//    }
-
-//    public void setEndTime(long endTime) {
-//        this.endTime = endTime;
-//    }
 
     public void setCaseVariantSize(long caseVariantSize) {
         this.caseVariantSize = caseVariantSize;
@@ -788,15 +727,6 @@ public class PLog extends LaLog {
     }
 
     /* ----------------- GET methods ------------------ */
-
-//    @Override
-//    public List<ATrace> getTraceList() {
-//        List<ATrace> traceList = new ArrayList<>();
-//        for (int i = 0; i < pTraceList.size(); i++) {
-//            traceList.add(pTraceList.get(i));
-//        }
-//        return traceList;
-//    }
 
     public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueCasesFreqMap() {
         return eventAttributeValueCasesFreqMap;
@@ -856,9 +786,6 @@ public class PLog extends LaLog {
         return this.pTraceList.size();
     }
 
-//    public String getTimeZone() {
-//        return timeZone;
-//    }
 
     public BitSet getValidTraceIndexBS() {
         return validTraceIndexBS;
@@ -882,13 +809,6 @@ public class PLog extends LaLog {
         return eventSize;
     }
 
-//    public double getMinDuration() {
-//        return minDuration;
-//    }
-
-//    public double getMaxDuration() {
-//        return maxDuration;
-//    }
 
     public double getMedianDuration() {
         return medianDuration;
@@ -898,13 +818,6 @@ public class PLog extends LaLog {
         return averageDuration;
     }
 
-//    public long getStartTime() {
-//        return startTime;
-//    }
-
-//    public long getEndTime() {
-//        return endTime;
-//    }
 
     @Override
     public UnifiedMap<Integer, Integer> getVariantIdFreqMap() {
@@ -996,22 +909,16 @@ public class PLog extends LaLog {
             traceUM.put(aTrace.getCaseId(), aTrace);
         }
 
-//        APMLog apmLog = new ImmutableLog();
-//        apmLog.setTraceList(traceList);
-
         ImmutableLog apmLog = new ImmutableLog(traceList,
                 variantIdFreqMap,
-//                actIdNameMap,
                 eventAttributeValueCasesFreqMap,
                 eventAttributeValueFreqMap,
                 caseAttributeValueFreqMap,
-//                traceUM,
                 minDuration,
                 maxDuration,
                 timeZone,
                 startTime,
                 endTime,
-//                variantIdFreqMap.size(),
                 eventSize,
                 activityNameMapper,
                 activityMaxOccurMap);

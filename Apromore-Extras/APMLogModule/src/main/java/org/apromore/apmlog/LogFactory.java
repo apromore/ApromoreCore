@@ -91,8 +91,6 @@ public class LogFactory {
                         event.setParentActivityIndex(actSize);
                     }
                 }
-
-//                System.out.println((j+1) + " / " + xTrace.size() + " (" + (i+1) + " / " + xLog.size() + ")");
             }
 
             List<AActivity> actList = trace.getActivityList();

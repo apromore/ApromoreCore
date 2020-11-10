@@ -25,8 +25,6 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.util.Util;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
@@ -55,6 +53,22 @@ public class ImmutableActivity implements AActivity {
         this.endTime = endTime;
     }
 
+    public ImmutableActivity(int immutableIndex,
+                             int mutableIndex,
+                             ATrace parentTrace) {
+        this.immutableIndex = immutableIndex;
+        this.mutableIndex = mutableIndex;
+        this.parentTrace = parentTrace;
+        this.eventIndexes = new IntArrayList();
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
 
     public IntArrayList getEventIndexes() {
         return eventIndexes;
@@ -104,11 +118,7 @@ public class ImmutableActivity implements AActivity {
     }
 
     public UnifiedMap<String, String> getAttributes() {
-//        UnifiedMap<String, String> attrMap =
-//                new UnifiedMap<>(parentTrace.getActivityAttributesList().get(immutableIndex));
-//        if (attrMap.containsKey("concept:name")) attrMap.remove("concept:name");
-//        if (attrMap.containsKey("org:resource")) attrMap.remove("org:resource");
-//        return attrMap;
+
         return parentTrace.getActivityAttributesList().get(immutableIndex);
     }
 
@@ -130,7 +140,6 @@ public class ImmutableActivity implements AActivity {
         try {
             return getAllAttributes().get("concept:name");
         } catch (Exception e) {
-//            System.out.println("");
             return null;
         }
     }
