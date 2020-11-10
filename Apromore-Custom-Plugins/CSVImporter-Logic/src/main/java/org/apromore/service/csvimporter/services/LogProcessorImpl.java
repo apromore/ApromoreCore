@@ -29,8 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
+
 public class LogProcessorImpl implements LogProcessor {
-    private final Parse parse = new Parse();
     private String caseId;
     private String activity;
     private Timestamp endTimestamp;
@@ -71,14 +72,14 @@ public class LogProcessorImpl implements LogProcessor {
         // End Timestamp
         endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat());
         if (endTimestamp == null) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header.get(sample.getEndTimestampPos()), parse.getParseFailMess()));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header.get(sample.getEndTimestampPos()), errorMessage));
             validRow = false;
         }
         // Start Timestamp
         if (sample.getStartTimestampPos() != -1) {
             startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat());
             if (startTimestamp == null) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header.get(sample.getStartTimestampPos()), parse.getParseFailMess()));
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header.get(sample.getStartTimestampPos()), errorMessage));
                 validRow = false;
             }
         }
@@ -90,7 +91,7 @@ public class LogProcessorImpl implements LogProcessor {
                 if (tempTimestamp != null) {
                     otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
                 } else {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header.get(otherTimestamp.getKey()), parse.getParseFailMess()));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header.get(otherTimestamp.getKey()), errorMessage));
                     validRow = false;
                 }
             }
@@ -123,15 +124,10 @@ public class LogProcessorImpl implements LogProcessor {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        Timestamp stamp;
-        if (format != null && !format.isEmpty()) {
-            stamp = parse.tryParsingWithFormat(theValue, format);
-            if (stamp == null) {
-                stamp = parse.tryParsing(theValue);
-            }
+        if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
+            return parseToTimestamp(theValue, format);
         } else {
-            stamp = parse.tryParsing(theValue);
+            return null;
         }
-        return stamp;
     }
 }

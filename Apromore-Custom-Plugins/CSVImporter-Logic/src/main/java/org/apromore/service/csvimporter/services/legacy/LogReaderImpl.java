@@ -243,7 +243,7 @@ public class LogReaderImpl implements LogReader, Constants {
     }
 
     private Timestamp parseTimestampValue(String theValue, String format) {
-        if (format != null && !format.isEmpty()) {
+        if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
             return parseToTimestamp(theValue, format);
         } else {
             return null;

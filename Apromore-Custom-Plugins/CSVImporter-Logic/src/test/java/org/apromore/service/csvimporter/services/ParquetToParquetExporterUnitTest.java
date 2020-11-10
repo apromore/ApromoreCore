@@ -401,10 +401,8 @@ public class ParquetToParquetExporterUnitTest {
         // Perform the test
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "windows-1255");
-
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
-
         //Export parquet
         LogModel logModel = parquetExporter
                 .generateParqeuetFile(
@@ -413,7 +411,6 @@ public class ParquetToParquetExporterUnitTest {
                         "windows-1255",
                         outputParquet,
                         true);
-
 
         //Read Parquet file
         String parquetToCSV = convertParquetToCSV(outputParquet, '¸');

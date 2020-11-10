@@ -300,6 +300,7 @@ public class XLSXLogReaderImplUnitTest {
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
         sample.setStartTimestampPos(2);
+        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         sample.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         LogModel logModel = logReader
@@ -438,6 +439,7 @@ public class XLSXLogReaderImplUnitTest {
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
 
+        sample.setEndTimestampFormat("MM/dd/yy HH:mm");
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
 

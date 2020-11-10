@@ -332,6 +332,7 @@ public class CSVToParquetExporterUnitTest {
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
         sample.setStartTimestampPos(2);
+        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         sample.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         //Export parquet

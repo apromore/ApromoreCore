@@ -328,6 +328,7 @@ public class XLSXToParquetExporterUnitTest {
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
         sample.setStartTimestampPos(2);
+        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         sample.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         //Export parquet
@@ -488,7 +489,7 @@ public class XLSXToParquetExporterUnitTest {
 
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
-
+        sample.setEndTimestampFormat("MM/dd/yy HH:mm");
         //Export parquet
         LogModel logModel = parquetExporter
                 .generateParqeuetFile(
