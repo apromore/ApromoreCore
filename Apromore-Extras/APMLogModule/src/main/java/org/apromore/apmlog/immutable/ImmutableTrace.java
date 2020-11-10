@@ -64,6 +64,10 @@ public class ImmutableTrace implements ATrace {
         if (event.getLifecycle().toLowerCase().equals("start")) hasActivity = true;
     }
 
+    public void setAttributes(UnifiedMap<String, String> attributes) {
+        this.attributes = attributes;
+    }
+
     @Override
     public void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes) {
         aActivity.setParentTrace(this);
@@ -97,21 +101,6 @@ public class ImmutableTrace implements ATrace {
     public void setActivityAttributesList(List<UnifiedMap<String, String>> activityAttributesList) {
         this.activityAttributesList = activityAttributesList;
     }
-
-//    @Override
-//    public IntArrayList getActivityNameIndexes() {
-//        return activityNameIndexes;
-//    }
-//
-//    @Override
-//    public void setActivityNameIndexes(IntArrayList activityNameIndexes) {
-//        this.activityNameIndexes = activityNameIndexes;
-//    }
-
-
-//    private void updateStats() {
-//
-//    }
 
 
     @Override
@@ -192,12 +181,7 @@ public class ImmutableTrace implements ATrace {
             }
         }
         return names;
-//
-//        List<String> list = new ArrayList<>();
-//        for (int i = 0; i < activities.size(); i++) {
-//            list.add(activities.get(i).getName().intern());
-//        }
-//        return list;
+
     }
 
     @Override
@@ -211,12 +195,7 @@ public class ImmutableTrace implements ATrace {
 
     @Override
     public UnifiedMap<String, String> getAttributeMap() {
-//        UnifiedMap<String, String> attr = new UnifiedMap<>();
-//        for (String key : attributes.keySet()) {
-//            if (!key.toLowerCase().equals("concept:name")) {
-//                attr.put(key.intern(), attributes.get(key).intern());
-//            }
-//        }
+
         return attributes;
     }
 
@@ -359,7 +338,6 @@ public class ImmutableTrace implements ATrace {
         hasActivity = opt;
     }
 
-    //int index, UnifiedMap<String, String> attributes
 
     @Override
     public ATrace clone() {
@@ -402,14 +380,4 @@ public class ImmutableTrace implements ATrace {
         return traceClone;
     }
 
-//
-//    private int index;
-//    private List<AActivity> activities;
-//    private List<AEvent> events;
-//    private UnifiedMap<String, String> attributes;
-
-//    private int caseVariantId;
-//    private boolean hasActivity;
-//    private double ttlProcessTime, avgProcessTime, maxProcessTime, ttlWaitTime, avgWaitTime, maxWaitTime,
-//            caseUtilization;
 }

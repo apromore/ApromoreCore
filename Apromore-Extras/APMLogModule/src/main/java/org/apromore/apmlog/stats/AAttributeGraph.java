@@ -106,7 +106,7 @@ public class AAttributeGraph {
 
 
         for (AActivity act : activities) {
-            int actIndex = act.getImmutableIndex();
+            int actIndex = act.getMutableIndex();
             ATrace parentTrace = ((PLog) apmLog).getPTraceList().get(act.getMutableTraceIndex());
             int traceIndex = parentTrace.getMutableIndex();
 
