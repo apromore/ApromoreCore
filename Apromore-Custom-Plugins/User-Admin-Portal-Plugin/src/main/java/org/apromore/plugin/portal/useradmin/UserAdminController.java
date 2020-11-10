@@ -60,6 +60,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.ForwardEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -301,7 +303,11 @@ public class UserAdminController extends SelectorComposer<Window> {
             @Override
             public void onEvent(Event event) throws Exception {
                 JSONObject param = (JSONObject) event.getData();
-                int index = (Integer) param.get("index");
+                String name = (String) param.get("name");
+                User user = new User();
+                user.setUsername(name);
+                ListModelList model = (ListModelList) userListbox.getListModel();
+                int index = model.indexOf(user);
                 Listitem item = userListbox.getItemAtIndex(index);
                 if (item.isSelected() && userListbox.getSelectedCount() == 1) {
                     userListbox.clearSelection();
@@ -317,7 +323,11 @@ public class UserAdminController extends SelectorComposer<Window> {
             @Override
             public void onEvent(Event event) throws Exception {
                 JSONObject param = (JSONObject) event.getData();
-                int index = (Integer) param.get("index");
+                String name = (String) param.get("name");
+                Group group = new Group();
+                group.setName(name);
+                ListModelList model = (ListModelList) groupListbox.getListModel();
+                int index = model.indexOf(group);
                 Listitem item = groupListbox.getItemAtIndex(index);
                 if (item.isSelected() && groupListbox.getSelectedCount() == 1) {
                     groupListbox.clearSelection();
@@ -788,7 +798,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             return;
         }
         Set<User> selectedUsers = userList.getSelection();
-        if (selectedUsers.size() == 0) {
+        if (userList.getSelectionCount() == 0) {
             Notification.error("Nothing to delete");
             return;
         }
@@ -988,7 +998,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             return;
         }
         Set<Group> selectedGroups = groupList.getSelection();
-        if (selectedGroups.size() == 0) {
+        if (groupList.getSelectionCount() == 0) {
             Notification.error("Nothing to delete");
             return;
         }
