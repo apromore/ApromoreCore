@@ -47,8 +47,6 @@ public class ImmutableTrace implements ATrace {
                     caseUtilization;
     private IntArrayList activityNameIndexes;
 
-    private List<UnifiedMap<String, String>> activityAttributesList = new ArrayList<>();
-
     public ImmutableTrace(int immutableIndex, int mutableIndex, UnifiedMap<String, String> attributes) {
         this.immutableIndex = immutableIndex;
         this.mutableIndex = mutableIndex;
@@ -68,38 +66,16 @@ public class ImmutableTrace implements ATrace {
         this.attributes = attributes;
     }
 
-    @Override
-    public void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes) {
-        aActivity.setParentTrace(this);
-        this.activities.add(aActivity);
-        activityAttributesList.add(attributes);
-
-    }
 
     public void addActivity(AActivity aActivity) {
         aActivity.setParentTrace(this);
         this.activities.add(aActivity);
     }
 
-    @Override
-    public UnifiedMap<String, String> getActivityAttributes(int immutableActivityIndex) {
-        return activityAttributesList.get(immutableActivityIndex);
-    }
-
 
     @Override
     public void setEventList(List<AEvent> eventList) {
         this.events = eventList;
-    }
-
-    @Override
-    public List<UnifiedMap<String, String>> getActivityAttributesList() {
-        return activityAttributesList;
-    }
-
-    @Override
-    public void setActivityAttributesList(List<UnifiedMap<String, String>> activityAttributesList) {
-        this.activityAttributesList = activityAttributesList;
     }
 
 
@@ -174,8 +150,8 @@ public class ImmutableTrace implements ATrace {
     @Override
     public List<String> getActivityNameList() {
         List<String> names = new ArrayList<>();
-        for (int i = 0; i < activityAttributesList.size(); i++) {
-            UnifiedMap<String, String> attrMap = activityAttributesList.get(i);
+        for (int i = 0; i < activities.size(); i++) {
+            UnifiedMap<String, String> attrMap = activities.get(i).getAttributes();
             if (attrMap != null) {
                 if (attrMap.containsKey("concept:name")) names.add(attrMap.get("concept:name"));
             }
@@ -352,13 +328,7 @@ public class ImmutableTrace implements ATrace {
         for (int i = 0; i < activities.size(); i++) {
             AActivity originAct = activities.get(i);
 
-            UnifiedMap<String, String> actAttr = activityAttributesList.get(i);
-            UnifiedMap<String, String> actAttrClone = new UnifiedMap<>(actAttr.size());
-            for (String key : actAttr.keySet()) {
-                actAttrClone.put(key.intern(), actAttr.get(key).intern());
-            }
-
-            traceClone.addActivity(originAct.clone(), actAttrClone);
+            traceClone.addActivity(originAct.clone(traceClone));
         }
 
         for (int i = 0; i < events.size(); i++) {

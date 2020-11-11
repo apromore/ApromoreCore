@@ -21,15 +21,8 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.util.Util;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.io.Serializable;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -71,6 +64,10 @@ public interface AEvent {
      int getParentActivityIndex();
 
      void setParentActivityIndex(int immutableActivityIndex);
+
+     void setParentTrace(ATrace parentTrace);
+
+     ATrace getParentTrace();
 
      AEvent clone(ATrace parentTrace, AActivity parentActivity);
 

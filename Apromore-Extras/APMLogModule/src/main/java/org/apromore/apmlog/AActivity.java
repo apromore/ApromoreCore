@@ -24,7 +24,6 @@ package org.apromore.apmlog;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,15 +51,19 @@ public interface AActivity  {
 
      long getEndTimeMilli();
 
-     long getDuration();
+     double getDuration();
 
      UnifiedMap<String, String> getAttributes();
 
      UnifiedMap<String, String> getAllAttributes();
 
+     void setAttributes(UnifiedMap<String, String> allAttributes);
+
      IntArrayList getEventIndexes();
 
      String getAttributeValue(String key);
+
+     AActivity clone(ATrace parentTrace);
 
      AActivity clone();
 

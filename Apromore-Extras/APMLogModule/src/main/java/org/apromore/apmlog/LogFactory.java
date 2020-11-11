@@ -36,7 +36,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LogFactory {
@@ -49,7 +48,6 @@ public class LogFactory {
             XTrace xTrace = xLog.get(i);
 
             ImmutableTrace trace = new ImmutableTrace(i, i, getAttributes(xTrace, log));
-
 
             IntArrayList markedIndexes = new IntArrayList();
 
@@ -74,13 +72,11 @@ public class LogFactory {
 
                     ImmutableActivity activity = getActivity(actSize, trace, xTrace, j, markedIndexes);
 
-                    trace.addActivity(activity, activityAttributes);
+                    trace.addActivity(activity);
 
                     ttlProcTime += activity.getDuration();
 
                     if (activity.getDuration() > maxProcTime) maxProcTime = activity.getDuration();
-
-
 
                     if (!log.getActivityNameBiMap().containsKey(activity.getName())) {
                         int index = log.getActivityNameBiMap().size();
@@ -106,7 +102,6 @@ public class LogFactory {
                     if (wt > maxWaitTime) maxWaitTime = wt;
                 }
             }
-
 
             avgProcTime = ttlProcTime > 0 ? ttlProcTime / trace.getActivityList().size() : 0;
             avgWaitTime = ttlWaitTime > 0 ? ttlWaitTime / (trace.getActivityList().size()-1) : 0;
@@ -143,7 +138,6 @@ public class LogFactory {
 
         return log;
     }
-
 
 
     public static UnifiedMap<String, String> getAttributes(XEvent xEvent) {
@@ -246,12 +240,13 @@ public class LogFactory {
 
         markedIndexes.addAll(eventIndexList);
 
-        ImmutableActivity activity = new ImmutableActivity(index, index, trace, eventIndexList, startTime, endTime);
+        UnifiedMap<String, String> attributes = getAttributes(baseEvent);
 
+        ImmutableActivity activity =
+                new ImmutableActivity(index, index, trace, eventIndexList, startTime, endTime, attributes);
 
         return activity;
     }
-
 
 
     private static boolean haveCommonMainAttributes(XEvent event1, XEvent event2) {
@@ -261,8 +256,15 @@ public class LogFactory {
         return name1.equals(name2);
     }
 
+    private static boolean haveCommonMainAttributes(AEvent event1, AEvent event2) {
+        String name1 = event1.getName();
+        String name2 = event2.getName();
+
+        return name1.equals(name2);
+    }
+
     public static void fillAttributeOccurMap(AActivity activity,
-                                              UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>>
+                                             UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>>
                                                       attributeOccurMap) {
         UnifiedMap<String, String> attributes = activity.getAttributes();
         for (String key : attributes.keySet()) {

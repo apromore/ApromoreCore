@@ -38,28 +38,36 @@ public class ImmutableActivity implements AActivity {
     private IntArrayList eventIndexes;
     private long startTime;
     private long endTime;
+    private UnifiedMap<String, String> attributes;
 
     public ImmutableActivity(int immutableIndex,
                              int mutableIndex,
                              ATrace parentTrace,
                              IntArrayList eventIndexes,
                              long startTime,
-                             long endTime) {
+                             long endTime,
+                             UnifiedMap<String, String> attributes) {
         this.immutableIndex = immutableIndex;
         this.mutableIndex = mutableIndex;
         this.parentTrace = parentTrace;
         this.eventIndexes = eventIndexes;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.attributes = attributes;
     }
 
     public ImmutableActivity(int immutableIndex,
                              int mutableIndex,
-                             ATrace parentTrace) {
+                             IntArrayList eventIndexes,
+                             long startTime,
+                             long endTime,
+                             UnifiedMap<String, String> attributes) {
         this.immutableIndex = immutableIndex;
         this.mutableIndex = mutableIndex;
-        this.parentTrace = parentTrace;
-        this.eventIndexes = new IntArrayList();
+        this.eventIndexes = eventIndexes;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.attributes = attributes;
     }
 
     public void setStartTime(long startTime) {
@@ -118,16 +126,18 @@ public class ImmutableActivity implements AActivity {
     }
 
     public UnifiedMap<String, String> getAttributes() {
-
-        return parentTrace.getActivityAttributesList().get(immutableIndex);
+        return attributes;
+//        return parentTrace.getActivityAttributesList().get(immutableIndex);
     }
 
     @Override
     public UnifiedMap<String, String> getAllAttributes() {
-        if (parentTrace == null) return null;
-        if (parentTrace.getActivityAttributesList() == null) return null;
-        if (parentTrace.getActivityAttributesList().size()-1 < immutableIndex) return null;
-        return parentTrace.getActivityAttributesList().get(immutableIndex);
+        return attributes;
+    }
+
+    @Override
+    public void setAttributes(UnifiedMap<String, String> attributes) {
+        this.attributes = attributes;
     }
 
 
@@ -175,7 +185,7 @@ public class ImmutableActivity implements AActivity {
     }
 
     @Override
-    public long getDuration() {
+    public double getDuration() {
         return endTime > startTime ? endTime - startTime : 0;
     }
 
@@ -188,7 +198,42 @@ public class ImmutableActivity implements AActivity {
     }
 
     @Override
-    public AActivity clone() {
-        return null;
+    public AActivity clone(ATrace parentTrace) {
+        UnifiedMap<String, String> attributesClone = new UnifiedMap<>(attributes.size());
+        for (String key : attributes.keySet()) {
+            attributesClone.put(key.intern(), attributes.get(key).intern());
+        }
+
+        IntArrayList eventIndexClone = new IntArrayList(eventIndexes.size());
+        for (int i = 0; i < eventIndexes.size(); i++) {
+            eventIndexClone.add(eventIndexes.get(i));
+        }
+
+
+        AActivity actClone = new ImmutableActivity(immutableIndex, mutableIndex, parentTrace, eventIndexClone,
+                startTime, endTime, attributesClone);
+
+        return actClone;
     }
+
+    @Override
+    public AActivity clone() {
+        UnifiedMap<String, String> attributesClone = new UnifiedMap<>(attributes.size());
+        for (String key : attributes.keySet()) {
+            attributesClone.put(key.intern(), attributes.get(key).intern());
+        }
+
+        IntArrayList eventIndexClone = new IntArrayList(eventIndexes.size());
+        for (int i = 0; i < eventIndexes.size(); i++) {
+            eventIndexClone.add(eventIndexes.get(i));
+        }
+
+
+        AActivity actClone = new ImmutableActivity(immutableIndex, mutableIndex, eventIndexClone,
+                startTime, endTime, attributesClone);
+
+        return actClone;
+    }
+
+
 }
