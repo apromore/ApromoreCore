@@ -24,25 +24,19 @@ package org.apromore.integration;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalenderNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CustomCalendarService;
-import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Holiday;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
