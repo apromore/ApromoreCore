@@ -23,7 +23,7 @@
 <window xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:ca="client/attribute"
         sclass="ap-share-win"
-        width="400px" height="80%" position="center"
+        width="600px" height="60%" position="center"
         closable="true"
         title="Share" apply="org.apromore.portal.dialogController.ShareController">
   <script type="text/javascript" src="/themes/ap/share/js/index.js"></script>
@@ -61,7 +61,8 @@
       <listhead>
         <listheader align="center" label="" width="40px" /><!-- user/group icon -->
         <listheader align="left" label="Name" width="130px" sort="auto(name)" />
-        <listheader align="left" label="Permission" />
+        <listheader align="center" label="Permission" />
+        <listheader align="center" label="Share associated user metadata" width="130px"/>
         <listheader align="center" label="" width="40px" style="cursor:pointer;" />
       </listhead>
       <template name="model">
@@ -80,6 +81,9 @@
             </combobox>
           </listcell>
           <listcell>
+            <checkbox ca:onClick="Ap.share.shareUM('${each.rowGuid}', '${each.name}')"/>
+          </listcell>
+          <listcell>
             <button sclass="ap-icon ap-icon-trash" tooltiptext="Remove"
                     ca:onClick="Ap.share.removeAssignee('${each.rowGuid}', '${each.name}')"
             />
@@ -87,6 +91,7 @@
         </listitem>
       </template>
     </listbox>
+    <!--<checkbox id="shareUMCheckbox" label="Share associated filters and dashboards" />-->
     <div sclass="ap-window-footer-actions" height="42px">
       <button id="btnApply" label="Apply Changes" iconSclass="z-icon-check-circle" />
       <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>

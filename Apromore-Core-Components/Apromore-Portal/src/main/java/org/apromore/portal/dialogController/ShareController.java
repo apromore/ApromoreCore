@@ -120,6 +120,9 @@ public class ShareController extends SelectorComposer<Window> {
     @Wire("#editBtn")
     Button editBtn;
 
+    @Wire("#shareUMCheckbox")
+    Checkbox shareUMCheckbox;
+
     private Window mainWindow;
 
     public ShareController() throws Exception {
@@ -178,6 +181,19 @@ public class ShareController extends SelectorComposer<Window> {
                 }
             }
         });
+
+        editBtn.addEventListener("onCheck", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                JSONObject param = (JSONObject) event.getData();
+                String rowGuid = (String) param.get("rowGuid");
+                String name = (String) param.get("name");
+                Assignment assignment = assignmentMap.get(rowGuid);
+                if (assignment != null) {
+                    assignment.setShareUserMetadata(true);
+                }
+            }
+        });
     }
 
     private void loadCandidateAssignee() {
@@ -223,6 +239,7 @@ public class ShareController extends SelectorComposer<Window> {
         for (Assignment assignment : assignmentModel) {
             String name = assignment.getName();
             String rowGuid = assignment.getRowGuid();
+            boolean shareUM = assignment.isShareUserMetadata();
             AccessType accessType = AccessType.getAccessType(assignment.getAccess());
             Group group = securityService.findGroupByRowGuid(rowGuid);
             if (groupAccessTypeChanges.containsKey(group)) {
@@ -237,7 +254,9 @@ public class ShareController extends SelectorComposer<Window> {
             } else if (selectedItem instanceof ProcessSummaryType) {
                 authorizationService.saveProcessAccessType(selectedItemId, rowGuid, accessType);
             } else if (selectedItem instanceof LogSummaryType) {
-                authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType);
+                authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType,
+//                        shareUMCheckbox.isChecked());
+                        shareUM);
             } else if (selectedItem instanceof UserMetadataSummaryType) {
                 authorizationService.saveUserMetadtarAccessType(selectedItemId, rowGuid, accessType);
             } else {

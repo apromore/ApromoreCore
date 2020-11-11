@@ -115,11 +115,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType) {
+    public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
 
         if (!accessType.equals(AccessType.NONE)) {
-            workspaceService.saveLogPermissions(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
-                    accessType.isOwner());
+            workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+                    accessType.isOwner(), shareUserMetadata);
         }
 
     }

@@ -194,6 +194,12 @@ public interface UserMetadataService {
      */
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
+    /**
+     * Find AccessType given a Group and Usermetadata
+     * @param group Group
+     * @param usermetadata Usermetadata
+     * @return AccessType
+     */
     AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata);
 
     /**

@@ -64,7 +64,7 @@ public interface AuthorizationService {
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata);
 
     /**
      * Save new GroupProcess or update existing one

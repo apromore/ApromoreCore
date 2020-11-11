@@ -123,11 +123,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         for (Integer logId : logIds) {
             // Assign READ permission to all groups that have read permission to the linked artifact
-            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
-                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
-                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
-                }
-            }
+//            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
+//                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
+//                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
+//                }
+//            }
 
             // Add linked artifact to the UsermetadataLog linked table
             usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
@@ -190,7 +190,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
-        // Assign specified group with READ permission to all the user metadata that linked to the specified log
+        // Assign specified group with the same permission to all the user metadata that linked to the specified log
         if (hasRead || hasWrite || hasOwnership) {
 
             // All the user metadata that linked to this log
@@ -203,13 +203,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                     Usermetadata u = usermetadataLog.getUsermetadata();
                     GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
 
-                    // Inherit permission from log (simplified at stage 1, only assign READ permission)
+                    // Inherit permission from log
                     if (g == null) {
                         g = new GroupUsermetadata(group,
-                                u, true, false, false);
+                                u, hasRead, hasWrite, hasOwnership);
                         u.getGroupUserMetadata().add(g);
                     } else {
-                        g.setAccessRights(new AccessRights(true, false, false));
+                        g.setAccessRights(new AccessRights(hasRead, hasWrite, hasOwnership));
 
                     }
                     groupUsermetadataRepo.save(g);
