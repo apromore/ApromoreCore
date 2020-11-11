@@ -268,13 +268,15 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderOwner(final SummaryType summaryType) {
         Boolean isMakePublic = summaryType.isMakePublic();
-        String label;
+        String owner;
         if (isMakePublic != null && isMakePublic == true) {
-            label = "public";
+            owner = "public";
         } else {
-            label = summaryType.getOwner();
+            owner = summaryType.getOwner();
         }
-        return wrapIntoListCell(new Label(label));
+        Label label = new Label(owner);
+        label.setClientAttribute("title", owner);
+        return wrapIntoListCell(label);
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
