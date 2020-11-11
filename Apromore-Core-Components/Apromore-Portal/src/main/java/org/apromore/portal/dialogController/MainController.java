@@ -41,6 +41,8 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -223,6 +225,20 @@ public class MainController extends BaseController implements MainControllerInte
             Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
 
+    }
+
+    public boolean isCurrentUserAdmin() {
+        try {
+            Role adminRole = getSecurityService().findRoleByName("ROLE_ADMIN");
+            User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
+            Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
+            if (!userRoles.contains(adminRole)) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Bruce: Do not use Executions.sendRedirect as it does not work 

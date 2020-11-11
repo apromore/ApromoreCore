@@ -54,12 +54,12 @@
     </auxheader>
   </auxhead>
   <template name="model">
-    <listitem ca:onClick="Ap.userAdmin.toggleUserClick('${each.username}', ${forEachStatus.index}, event)">
+    <listitem ca:onClick="Ap.userAdmin.toggleUserClick('${each.username}', event)">
       <listcell label="${each.username}"/>
       <listcell label="${c:formatDate(each.dateCreated, 'dd MMM yyyy')}"/>
       <listcell>
         <button sclass="ap-icon ap-icon-user-edit" tooltiptext="Edit user"
-                ca:onClick="Ap.userAdmin.editUser('${each.username}', ${forEachStatus.index})"
+                ca:onClick="Ap.userAdmin.editUser('${each.username}')"
         />
       </listcell>
     </listitem>

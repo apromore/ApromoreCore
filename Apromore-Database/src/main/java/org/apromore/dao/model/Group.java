@@ -191,11 +191,11 @@ public class Group implements Serializable {
     // Overridden object methods
 
     @Override
-    public int hashCode() { return 113 * (id == null ? 0 : id.hashCode()); }
+    public int hashCode() { return 113 * (name == null ? 0 : name.hashCode()); }
 
     @Override
     public boolean equals(java.lang.Object obj) {
        if (obj == null || !Group.class.equals(obj.getClass())) { return false; }
-       return (obj != null) && (obj instanceof Group) && id.equals(((Group) obj).id);
+       return (obj != null) && (obj instanceof Group) && name.equals(((Group) obj).name);
     }
 }
