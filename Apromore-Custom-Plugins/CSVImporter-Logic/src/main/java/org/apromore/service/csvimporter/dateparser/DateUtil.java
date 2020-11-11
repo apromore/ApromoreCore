@@ -98,23 +98,26 @@ public class DateUtil extends DatePatterns {
     }
 
     public static Timestamp parseToTimestamp(String dateString, String dateFormat) {
+
+        if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty())
+            return null;
+
         removeUnwantedChartsFromDate(dateString);
+        Date date;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
         try {
-            if (dateString == null || dateFormat.isEmpty())
-                throw new Exception("Field is empty or has a null date value!");
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-            simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
-            Date date = simpleDateFormat.parse(dateString);
-
-            if (date == null)
-                date = simpleDateFormat.parse(dateString.replaceAll("\\W", " "));
-
+            date = simpleDateFormat.parse(dateString);
             Calendar calendar = toCalendar(date);
             return new Timestamp(calendar.getTimeInMillis());
 
-        } catch (Exception e) {
-            return null;
+        } catch (ParseException e) {
+            try {
+                date = simpleDateFormat.parse(dateString.replaceAll("\\W", " "));
+                Calendar calendar = toCalendar(date);
+                return new Timestamp(calendar.getTimeInMillis());
+
+            } catch (ParseException parseException) {return null;}
         }
     }
 

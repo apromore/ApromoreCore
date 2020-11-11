@@ -401,6 +401,8 @@ public class ParquetToParquetExporterUnitTest {
         // Perform the test
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "windows-1255");
+
+        System.out.println(sample.getLines());
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
         //Export parquet

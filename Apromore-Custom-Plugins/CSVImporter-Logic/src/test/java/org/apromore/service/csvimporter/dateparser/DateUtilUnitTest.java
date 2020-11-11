@@ -268,6 +268,16 @@ public class DateUtilUnitTest {
         assertEquals("yy dd MM HH:mm:ss.SSS", determineDateFormat("00 19 12 15:13:05.328"));
         assertEquals("dd MMM yy HH:mm:ss.SSS", determineDateFormat("19 DEC 00 15:13:05.328"));
         assertEquals("dd MMMM yy HH:mm:ss.SSS", determineDateFormat("19 DECEMBER 00 15:13:05.328"));
+        assertEquals("MMM dd yy HH:mm:ss.SSS", determineDateFormat("DEC 19 00 15:13:05.328"));
+        assertEquals("MMMM dd yy HH:mm:ss.SSS", determineDateFormat("DECEMBER 19 00 15:13:05.328"));
+        assertEquals("yy MMM dd HH:mm:ss.SSS", determineDateFormat("00 DEC 19 15:13:05.328"));
+        assertEquals("yy MMMM dd HH:mm:ss.SSS", determineDateFormat("00 DECEMBER 19 15:13:05.328"));
+        assertEquals("dd MMM yy HH mm ss SSS", determineDateFormat("19 DEC 00 15 13 05 328"));
+        assertEquals("dd MMMM yy HH mm ss SSS", determineDateFormat("19 DECEMBER 00 15 13 05 328"));
+        assertEquals("MMM dd yy HH mm ss SSS", determineDateFormat("DEC 19 00 15 13 05 328"));
+        assertEquals("MMMM dd yy HH mm ss SSS", determineDateFormat("DECEMBER 19 00 15 13 05 328"));
+        assertEquals("yy MMM dd HH mm ss SSS", determineDateFormat("00 DEC 19 15 13 05 328"));
+        assertEquals("yy MMMM dd HH mm ss SSS", determineDateFormat("00 DECEMBER 19 15 13 05 328"));
     }
     @Test
     public void test_timestamp_date_yy_only() {
@@ -311,5 +321,33 @@ public class DateUtilUnitTest {
         assertEquals("MM dd yy HH mm", determineDateFormat("12*19*00 15*13"));
         assertEquals("yy MM dd HH mm ss", determineDateFormat("00*12*19 15*13*05"));
         assertEquals("yy MM dd HH mm ss SSS", determineDateFormat("00*12*19 15*13*05*328"));
+    }
+
+    @Test
+    public void test_timestamp_date_HH_MM_ss_S() {
+
+        System.out.println("\n************************************\ntest12 - Test timestamp format - date, hours, minutes , seconds and single digit millisecond");
+
+        assertEquals("yyyyMMddHHmmssS", determineDateFormat("201912191513059"));
+        assertEquals("yyyyMMdd HHmmssS", determineDateFormat("20191219 1513059"));
+        assertEquals("dd-MM-yyyy HH:mm:ss.S", determineDateFormat("19-12-2019 15:13:05.9"));
+        assertEquals("MM-dd-yyyy HH:mm:ss.S", determineDateFormat("12-19-2019 15:13:05.9"));
+        assertEquals("yyyy-MM-dd HH:mm:ss.S", determineDateFormat("2019-12-19 15:13:05.9"));
+        assertEquals("yyyy-dd-MM HH:mm:ss.S", determineDateFormat("2019-19-12 15:13:05.9"));
+        assertEquals("HH:mm:ss.S yyyy-MM-dd", determineDateFormat("15:13:05.9 2019-12-19"));
+        assertEquals("dd-MM-yyyy'T'HH:mm:ss.S", determineDateFormat("19-12-2019T15:13:05.9"));
+        assertEquals("MM-dd-yyyy'T'HH:mm:ss.S", determineDateFormat("12-19-2019T15:13:05.9"));
+        assertEquals("yyyy-MM-dd'T'HH:mm:ss.S", determineDateFormat("2019-12-19T15:13:05.9"));
+        assertEquals("yyyy-dd-MM'T'HH:mm:ss.S", determineDateFormat("2019-19-12T15:13:05.9"));
+        assertEquals("dd/MM/yyyy HH:mm:ss.S", determineDateFormat("19/12/2019 15:13:05.9"));
+        assertEquals("MM/dd/yyyy HH:mm:ss.S", determineDateFormat("12/19/2019 15:13:05.9"));
+        assertEquals("yyyy/MM/dd HH:mm:ss.S", determineDateFormat("2019/12/19 15:13:05.9"));
+        assertEquals("yyyy/dd/MM HH:mm:ss.S", determineDateFormat("2019/19/12 15:13:05.9"));
+        assertEquals("dd MM yyyy HH:mm:ss.S", determineDateFormat("19 12 2019 15:13:05.9"));
+        assertEquals("MM dd yyyy HH:mm:ss.S", determineDateFormat("12 19 2019 15:13:05.9"));
+        assertEquals("yyyy MM dd HH:mm:ss.S", determineDateFormat("2019 12 19 15:13:05.9"));
+        assertEquals("yyyy dd MM HH:mm:ss.S", determineDateFormat("2019 19 12 15:13:05.9"));
+        assertEquals("dd MMM yyyy HH:mm:ss.S", determineDateFormat("19 DEC 2019 15:13:05.9"));
+        assertEquals("dd MMMM yyyy HH:mm:ss.S", determineDateFormat("19 DECEMBER 2019 15:13:05.9"));
     }
 }

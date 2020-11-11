@@ -50,10 +50,14 @@ class DatePatterns {
     private static final String MONTH_NAME_SHORT = "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)";
     //Month long name e.g. February
     private static final String MONTH_NAME_LONG = "(january|february|march|april|may|june|july|august|september|october|november|december)";
-    //Hour digit 01-24
-    private static final String HOURS_DIGIT = "([0-1][0-9]|2[0-3])";
+    //Hour digit 1-23
+    private static final String HOURS_DIGIT = "(0?[0-9]|1[0-9]|2[0-3])";
+    //Hour digit 01-23
+    private static final String HOURS_DIGIT_TWO_DIGIT = "([0-1][0-9]|2[0-3])";
     //Minutes or Second digit 01-60
-    private static final String MINUTES_OR_SECOND_DIGIT = "([0-5][0-9])";
+    private static final String MINUTES_OR_SECOND_DIGIT = "(0?[0-9]|[1-5][0-9])";
+    //Minutes or Second digit 1-60
+    private static final String MINUTES_OR_SECOND_TWO_DIGIT = "([0-5][0-9])";
 //    //TimeZone e.g., Z, +07 or +07:00
 //    private static final String TIME_ZONE = "(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)";
 
@@ -123,14 +127,14 @@ class DatePatterns {
     //yyyy dd MM
     private static final String DATE_SPACE_YEAR_DAY_MONTH = YEAR_DIGIT + "{1}" + "\\s" + DAY_DIGIT + "{1}" + "\\s" + MONTH_DIGIT + "{1}";
 
-    //HH:mm
+    //HH mm
     private static final String TIME_SPACE = HOURS_DIGIT + "{1}" + "\\s" + MINUTES_OR_SECOND_DIGIT + "{1}";
-    //HH:mm:ss
+    //HH mm ss
     private static final String TIME_SPACE_SECOND = HOURS_DIGIT + "{1}" + "\\s" + MINUTES_OR_SECOND_DIGIT + "{1}" + "\\s" + MINUTES_OR_SECOND_DIGIT + "{1}";
     //HHmm
-    private static final String TIME_NO_SPACE = HOURS_DIGIT + "{1}" + MINUTES_OR_SECOND_DIGIT + "{1}";
+    private static final String TIME_NO_SPACE = HOURS_DIGIT_TWO_DIGIT + "{1}" + MINUTES_OR_SECOND_TWO_DIGIT + "{1}";
     //HHmmss
-    private static final String TIME_NO_SPACE_SECOND = HOURS_DIGIT + "{1}" + MINUTES_OR_SECOND_DIGIT + "{1}" + MINUTES_OR_SECOND_DIGIT + "{1}";
+    private static final String TIME_NO_SPACE_SECOND = HOURS_DIGIT_TWO_DIGIT + "{1}" + MINUTES_OR_SECOND_TWO_DIGIT + "{1}" + MINUTES_OR_SECOND_TWO_DIGIT + "{1}";
     //HH:mm
     private static final String TIME_COLON = HOURS_DIGIT + "{1}" + ":" + MINUTES_OR_SECOND_DIGIT + "{1}";
     //HH:mm:ss

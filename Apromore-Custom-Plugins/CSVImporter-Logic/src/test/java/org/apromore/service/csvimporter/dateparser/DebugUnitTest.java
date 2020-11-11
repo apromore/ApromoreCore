@@ -31,13 +31,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+//@Ignore
 public class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
@@ -69,16 +71,19 @@ public class DebugUnitTest {
 //        System.out.println("getEndTimestampFormat " + logSample.getEndTimestampFormat());
 
 
-        String dattime = "18/4/13 00:30";
+        String dattime = "25.3.10 9:32";
 ////        String dattime = "03/09/2019 15:13:05";
 
-        if(determineDateFormat(dattime) != null){
+        if (determineDateFormat(dattime) != null) {
             System.out.println("Parsing " + determineDateFormat(dattime));
+            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime));
+            System.out.println("timestamp " + timestamp.toString());
+
         } else {
             System.out.println("Parsing Null");
 
         }
-        System.out.println("Parsing " + dattime );
+        System.out.println("Parsing " + dattime);
 
 //
 //        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[0-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])(([0-5][0-9]){2}))"));
