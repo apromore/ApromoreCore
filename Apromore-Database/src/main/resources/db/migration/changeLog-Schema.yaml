@@ -518,3 +518,17 @@ databaseChangeLog:
        - dropTable:
            cascadeConstraints:  true
            tableName:  dashboard_layout
+           
+ - changeSet:
+     id: 20201109125100
+     author: nolantellis
+     changes:
+        - addColumn:
+            tableName: custom_calendar
+            columns:
+               - column:
+                  name: zone_id
+                  type: varchar(50))
+                  constraints:
+                      nullable: false
+                  

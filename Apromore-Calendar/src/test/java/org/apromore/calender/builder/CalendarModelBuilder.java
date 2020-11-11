@@ -42,6 +42,12 @@ public class CalendarModelBuilder {
         OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC), false);
 
   }
+  
+  public CalendarModelBuilder withZoneId(String zoneId) {
+    model.setZoneId(zoneId);
+    return this;
+
+  }
 
   public CalendarModelBuilder with7DayWorking() {
 

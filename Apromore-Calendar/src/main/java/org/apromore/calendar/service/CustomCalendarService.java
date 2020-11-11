@@ -22,48 +22,67 @@
 package org.apromore.calendar.service;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
+import org.apromore.calendar.exception.CalenderNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.util.CalendarUtil;
 import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarRepository;
+import org.apromore.dao.HolidayRepository;
 import org.apromore.dao.model.CustomCalendar;
+import org.apromore.dao.model.Holiday;
 import org.apromore.dao.model.WorkDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.Data;
 
 @Data
 public class CustomCalendarService {
-  
+
   @Autowired
   public CustomCalendarRepository calendarRepo;
 
   @Autowired
+  public HolidayRepository holidayRepository;
+
+  @Autowired
   private CustomMapper modelMapper;
 
-  public CalendarModel createGenericCalendar(String description, boolean weekendsOff)
+  public CalendarModel createGenericCalendar(String description,
+      boolean weekendsOff,
+      String zoneId)
       throws CalendarAlreadyExistsException {
 
-    OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.UTC);
-    OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.UTC);
+    OffsetTime startTime = OffsetTime.of(LocalTime.MIN,
+        ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
+
+    OffsetTime endTime =
+        OffsetTime.of(LocalTime.MAX,
+            ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
     CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
     CalendarModel calenderModel = modelMapper.getMapper().map(customCalender, CalendarModel.class);
     return calenderModel;
   }
 
-
-
-  public CalendarModel createBusinessCalendar(String description, boolean weekendsOff)
+  public CalendarModel createBusinessCalendar(String description,
+      boolean weekendsOff,
+      String zoneId)
       throws CalendarAlreadyExistsException {
-    OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
-    OffsetTime endTime = OffsetTime.of(LocalTime.of(17, 0), ZoneOffset.UTC);
+
+    OffsetTime startTime =
+        OffsetTime.of(LocalTime.of(9, 0),
+            ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
+    OffsetTime endTime =
+        OffsetTime.of(LocalTime.of(17, 0),
+            ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
     CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
     CalendarModel calenderModel = modelMapper.getMapper().map(customCalender, CalendarModel.class);
@@ -77,8 +96,6 @@ public class CustomCalendarService {
     return modelMapper.getMapper().map(calendarRepo.findById(id), CalendarModel.class);
 
   }
- 
-  
 
   private CustomCalendar createCalendar(String description, boolean weekendsOff, OffsetTime start,
       OffsetTime end)
@@ -122,4 +139,28 @@ public class CustomCalendarService {
 
   }
 
+  public void addHoliday(Long id, List<Holiday> holidays) throws CalenderNotExistsException {
+    CustomCalendar calendar = calendarRepo.findById(id);
+
+    if (calendar == null) {
+      throw new CalenderNotExistsException("calender does not exist");
+    }
+    for (Holiday holiday : holidays) {
+      calendar.addHoliday(holiday);
+    }
+    calendarRepo.saveAndFlush(calendar);
+
+  }
+
+  public void removeHoliday(Long id, List<Long> holidayIds)  {
+    
+    List<Holiday> holidays=new ArrayList<Holiday>();
+//    Bad way to delete, but we need to upgrade jpa of springs to make use of better ways of delete
+    for(Long idLong : holidayIds)
+    {
+      holidayRepository.delete(idLong);
+     
+    }
+
+  }
 }
