@@ -161,6 +161,7 @@
                     <instructions>
                         <Import-Package>
                         	com.jolbox.bonecp,
+                        	com.mysql.cj.jdbc;resolution:=optional,
                         	com.mysql.jdbc,
                             javax.sql,
                             org.h2,

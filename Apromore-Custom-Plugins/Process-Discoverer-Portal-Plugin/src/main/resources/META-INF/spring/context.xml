@@ -36,7 +36,7 @@
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
     <!-- Access the site.properties configuration artifact
-    <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
+    <osgi-compendium:cm-properties id="properties" persistent-id="site"/>
     <context:property-placeholder properties-ref="properties"/>
     -->
 
@@ -55,7 +55,7 @@
 	<!--<osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>-->
     <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin" cardinality="0..1"/>
 
-    <osgi:list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/><!-- required for font-icon -->
+    <osgi:list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" cardinality="0..N"/><!-- required for font-icon -->
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer.plugins" />
