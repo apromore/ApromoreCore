@@ -72,8 +72,8 @@ public class ShareController extends SelectorComposer<Window> {
     private AuthorizationService authorizationService;
 
     Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
-    private Object selectedItem;
-    private UserType currentUser;
+    private Object selectedItem = argMap.get("selectedItem");
+    private UserType currentUser = (UserType) argMap.get("currentUser");
 
     private Integer selectedItemId;
     private String selectedItemName;
@@ -157,7 +157,7 @@ public class ShareController extends SelectorComposer<Window> {
                 Assignment assignment = assignmentMap.get(rowGuid);
                 if (assignment != null) {
                     assignment.setAccess(access);
-                    if (Objects.equals(access, AccessType.OWNER.getLabel())) {
+                    if (access == AccessType.OWNER.getLabel()) {
                         ownerMap.put(rowGuid, assignment);
                     }
                 }
@@ -185,7 +185,7 @@ public class ShareController extends SelectorComposer<Window> {
             }
         });
 
-        editBtn.addEventListener("onCheck", new EventListener<Event>() {
+        editBtn.addEventListener("onIncludeMetadata", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 JSONObject param = (JSONObject) event.getData();
@@ -193,7 +193,9 @@ public class ShareController extends SelectorComposer<Window> {
                 String name = (String) param.get("name");
                 Assignment assignment = assignmentMap.get(rowGuid);
                 if (assignment != null) {
-                    assignment.setShareUserMetadata(true);
+                    assignment.setShareUserMetadata(!assignment.isShareUserMetadata());
+                    int index = assignmentModel.indexOf(assignment);
+                    assignmentModel.set(index, assignment); // trigger change
                 }
             }
         });
@@ -243,6 +245,8 @@ public class ShareController extends SelectorComposer<Window> {
             String name = assignment.getName();
             String rowGuid = assignment.getRowGuid();
             boolean shareUM = assignment.isShareUserMetadata();
+            // FIXME pass this when backend is ready
+            // boolean shareUserMetadata = assignment.isShareUserMetadata();
             AccessType accessType = AccessType.getAccessType(assignment.getAccess());
             Group group = securityService.findGroupByRowGuid(rowGuid);
             if (groupAccessTypeChanges.containsKey(group)) {

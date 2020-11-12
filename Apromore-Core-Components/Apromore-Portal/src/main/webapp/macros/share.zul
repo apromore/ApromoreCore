@@ -23,7 +23,7 @@
 <window xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:ca="client/attribute"
         sclass="ap-share-win"
-        width="600px" height="60%" position="center"
+        width="700px" height="80%" position="center"
         closable="true"
         title="Share" apply="org.apromore.portal.dialogController.ShareController">
   <script type="text/javascript" src="/themes/ap/share/js/index.js"></script>
@@ -60,9 +60,11 @@
     <listbox id="assignmentListbox" multiple="true" vflex="1" hflex="1" xmlns:ca="client/attribute">
       <listhead>
         <listheader align="center" label="" width="40px" /><!-- user/group icon -->
-        <listheader align="left" label="Name" width="130px" sort="auto(name)" />
-        <listheader align="center" label="Permission" />
-        <listheader id="shareUM" visible="false" align="center" label="Include user metadata" width="180px"/>
+        <listheader align="left" label="Name" sort="auto(name)" />
+        <listheader align="center" label="Permission" width="130px" />
+        <listheader align="center" id="shareUM" visible="false" tooltiptext="Share also the associated user metadata"
+                    label="Incl. metadata"
+                    width="130px" />
         <listheader align="center" label="" width="40px" style="cursor:pointer;" />
       </listhead>
       <template name="model">
@@ -74,6 +76,7 @@
           <listcell>
             <combobox value="${each.access}"
                       readonly="true"
+                      hflex="1"
                       ca:onSelect="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
               <comboitem label="Viewer" />
               <comboitem label="Editor" />
@@ -81,7 +84,8 @@
             </combobox>
           </listcell>
           <listcell>
-            <checkbox ca:onClick="Ap.share.shareUM('${each.rowGuid}', '${each.name}')"/>
+            <checkbox ca:onClick="Ap.share.toggleIncludeMetadata('${each.rowGuid}', '${each.name}')"
+                      checked="${each.shareUserMetadata}" />
           </listcell>
           <listcell>
             <button sclass="ap-icon ap-icon-trash" tooltiptext="Remove"
@@ -91,7 +95,6 @@
         </listitem>
       </template>
     </listbox>
-    <!--<checkbox id="shareUMCheckbox" label="Share associated filters and dashboards" />-->
     <div sclass="ap-window-footer-actions" height="42px">
       <button id="btnApply" label="Apply Changes" iconSclass="z-icon-check-circle" />
       <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>

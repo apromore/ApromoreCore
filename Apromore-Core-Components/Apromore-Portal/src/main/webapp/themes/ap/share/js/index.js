@@ -29,6 +29,6 @@ Ap.share.removeAssignee = (rowGuid, name) => {
  * @param rowGuid {String} group rowGuid
  * @param name {String} group/user name
  */
-Ap.share.shareUM = (rowGuid, name) => {
-  zAu.send(new zk.Event(zk.Widget.$('$editBtn'), 'onCheck', { rowGuid, name }));
+Ap.share.toggleIncludeMetadata = (rowGuid, name) => {
+  zAu.send(new zk.Event(zk.Widget.$('$editBtn'), 'onIncludeMetadata', { rowGuid, name }));
 };
