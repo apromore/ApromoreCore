@@ -126,6 +126,9 @@ public class ShareController extends SelectorComposer<Window> {
     @Wire("#shareUM")
     Listheader shareUM;
 
+    @Wire("#umWarning")
+    Div umWarning;
+
     private Window mainWindow;
 
     public ShareController() throws Exception {
@@ -334,6 +337,7 @@ public class ShareController extends SelectorComposer<Window> {
             selectedItemName = usermetadata.getName();
             groupAccessTypeMap = authorizationService.getUserMetadataAccessType(selectedItemId);
             selectedIcon = selectedIconMetadata;
+            umWarning.setVisible(true);
         } else {
             return;
         }
