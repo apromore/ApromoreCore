@@ -123,6 +123,9 @@ public class ShareController extends SelectorComposer<Window> {
     @Wire("#shareUMCheckbox")
     Checkbox shareUMCheckbox;
 
+    @Wire("#shareUM")
+    Listheader shareUM;
+
     private Window mainWindow;
 
     public ShareController() throws Exception {
