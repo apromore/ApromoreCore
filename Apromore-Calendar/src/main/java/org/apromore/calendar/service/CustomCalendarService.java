@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.exception.CalenderNotExistsException;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.util.CalendarUtil;
 import org.apromore.commons.mapper.CustomMapper;
@@ -139,11 +139,11 @@ public class CustomCalendarService {
 
   }
 
-  public void addHoliday(Long id, List<Holiday> holidays) throws CalenderNotExistsException {
+  public void addHoliday(Long id, List<Holiday> holidays) throws CalendarNotExistsException {
     CustomCalendar calendar = calendarRepo.findById(id);
 
     if (calendar == null) {
-      throw new CalenderNotExistsException("calender does not exist");
+      throw new CalendarNotExistsException("calender does not exist");
     }
     for (Holiday holiday : holidays) {
       calendar.addHoliday(holiday);

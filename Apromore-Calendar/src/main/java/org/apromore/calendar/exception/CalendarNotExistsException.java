@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CalenderNotExistsException extends Exception {
+public class CalendarNotExistsException extends Exception {
 
 	@NonNull
 	String messageString;

@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.exception.CalenderNotExistsException;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.dao.model.Holiday;
@@ -80,7 +80,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   
   
   @Test
-  public void testGetCalenderWithCustomHoliday() throws CalendarAlreadyExistsException, CalenderNotExistsException {
+  public void testGetCalenderWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
 //    Given
     CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
     Holiday holiday = new Holiday("Test Holiday", "Test Holiday Desc", LocalDate.of(2020, 01, 01));
@@ -99,7 +99,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   }
   
   @Test
-  public void testGetCalenderWithCustomHolidayRemoved() throws CalendarAlreadyExistsException, CalenderNotExistsException {
+  public void testGetCalenderWithCustomHolidayRemoved() throws CalendarAlreadyExistsException, CalendarNotExistsException {
 //    Given
     CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
     Holiday holiday1 = new Holiday("Test Holiday1", "Test Holiday Desc1", LocalDate.of(2020, 01, 01));
