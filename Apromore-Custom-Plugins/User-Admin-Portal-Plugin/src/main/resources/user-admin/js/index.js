@@ -24,8 +24,8 @@ Ap.userAdmin.toggleUserClick = (name, event) => {
  * @param index {number} Row index
  * @param event {Event} Click Event
  */
-Ap.userAdmin.toggleGroupClick = (name, event) => {
-  toggleClick('$groupEditBtn', { name }, event);
+Ap.userAdmin.toggleGroupClick = (id, event) => {
+  toggleClick('$groupEditBtn', { id }, event);
 }
 
 Ap.userAdmin.editUser = (userName) => {
