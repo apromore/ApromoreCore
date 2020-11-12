@@ -308,12 +308,17 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
-        this.btnUserMgmt.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                userMgmt();
-            }
-        });
+        if (mainController.isCurrentUserAdmin()) {
+            this.btnUserMgmt.addEventListener("onClick", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    userMgmt();
+                }
+            });
+            this.btnUserMgmt.setVisible(true);
+        } else {
+            this.btnUserMgmt.setVisible(false);
+        }
 
         this.btnShare.addEventListener("onClick", new EventListener<Event>() {
             @Override

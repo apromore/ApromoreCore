@@ -13,8 +13,8 @@ const toggleClick = (widgetId, param, event) => {
  * @param index {number} Row index
  * @param event {Event} Click Event
  */
-Ap.userAdmin.toggleUserClick = (name, index, event) => {
-  toggleClick('$userEditBtn', { name, index }, event);
+Ap.userAdmin.toggleUserClick = (name, event) => {
+  toggleClick('$userEditBtn', { name }, event);
 }
 
 /**
@@ -24,15 +24,15 @@ Ap.userAdmin.toggleUserClick = (name, index, event) => {
  * @param index {number} Row index
  * @param event {Event} Click Event
  */
-Ap.userAdmin.toggleGroupClick = (name, index, event) => {
-  toggleClick('$groupEditBtn', { name, index }, event);
+Ap.userAdmin.toggleGroupClick = (name, event) => {
+  toggleClick('$groupEditBtn', { name }, event);
 }
 
-Ap.userAdmin.editUser = (userName, index) => {
+Ap.userAdmin.editUser = (userName) => {
   zAu.send(new zk.Event(zk.Widget.$('$userEditBtn'), 'onExecute', userName));
 }
 
-Ap.userAdmin.editGroup = (groupName, index) => {
+Ap.userAdmin.editGroup = (groupName) => {
   zAu.send(new zk.Event(zk.Widget.$('$groupEditBtn'), 'onExecute', groupName));
 }
 
