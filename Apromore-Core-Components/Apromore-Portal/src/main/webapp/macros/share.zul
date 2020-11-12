@@ -62,7 +62,7 @@
         <listheader align="center" label="" width="40px" /><!-- user/group icon -->
         <listheader align="left" label="Name" width="130px" sort="auto(name)" />
         <listheader align="center" label="Permission" />
-        <listheader id="shareUM" align="center" label="Include user metadata" width="180px"/>
+        <listheader id="shareUM" visible="false" align="center" label="Include user metadata" width="180px"/>
         <listheader align="center" label="" width="40px" style="cursor:pointer;" />
       </listhead>
       <template name="model">

@@ -323,6 +323,7 @@ public class ShareController extends SelectorComposer<Window> {
             selectedItemName = log.getName();
             groupAccessTypeMap = authorizationService.getLogAccessType(selectedItemId);
             selectedIcon = selectedIconLog;
+            shareUM.setVisible(true);
         } else if (selectedItem instanceof UserMetadataSummaryType) {
             UserMetadataSummaryType usermetadata = (UserMetadataSummaryType) selectedItem;
             selectedItemId = usermetadata.getId();
