@@ -268,12 +268,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderOwner(final SummaryType summaryType) {
         Boolean isMakePublic = summaryType.isMakePublic();
-        String owner;
-        if (isMakePublic != null && isMakePublic == true) {
-            owner = "public";
-        } else {
-            owner = summaryType.getOwner();
-        }
+        String owner = summaryType.getOwnerName();
         Label label = new Label(owner);
         label.setClientAttribute("title", owner);
         return wrapIntoListCell(label);
