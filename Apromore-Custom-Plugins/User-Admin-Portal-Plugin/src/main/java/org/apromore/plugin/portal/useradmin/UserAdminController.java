@@ -323,9 +323,9 @@ public class UserAdminController extends SelectorComposer<Window> {
             @Override
             public void onEvent(Event event) throws Exception {
                 JSONObject param = (JSONObject) event.getData();
-                String name = (String) param.get("name");
+                Integer id = (Integer) param.get("id");
                 Group group = new Group();
-                group.setName(name);
+                group.setId(id);
                 ListModelList model = (ListModelList) groupListbox.getListModel();
                 int index = model.indexOf(group);
                 Listitem item = groupListbox.getItemAtIndex(index);

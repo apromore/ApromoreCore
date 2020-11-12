@@ -110,6 +110,7 @@
 		<module>Apromore-Assembly/Portal-Assembly</module>
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
     	<module>Apromore-Cache</module>
+    	<module>Apromore-Calendar</module>
     	<module>Apromore-Database</module>
 
 		<module>Apromore-Commons</module>

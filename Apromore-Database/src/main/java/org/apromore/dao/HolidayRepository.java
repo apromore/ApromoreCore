@@ -19,29 +19,21 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.calendar.model;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import lombok.Data;
-import lombok.ToString;
+package org.apromore.dao;
 
-@Data
-@ToString
-public class DurationModel {
+import java.util.List;
+import org.apromore.dao.model.Holiday;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-  Duration duration = Duration.ZERO;
-  Duration durationMin = Duration.ZERO;
-  Duration durationMax = Duration.ZERO;
-  Duration durationMean = Duration.ZERO;
-  Duration durationMedian = Duration.ZERO;
-  Duration durationSum = Duration.ZERO;
+@Repository
+public interface HolidayRepository extends JpaRepository<Holiday, Long>{
 
-  public void setAll(Duration totalDuration) {
-    duration =
-        durationMin = durationMax = durationMean = durationMedian = durationSum = totalDuration;
-
-  }
+	
+  Holiday findById(Long id);
+  
 
 
 }
