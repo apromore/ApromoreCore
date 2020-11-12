@@ -45,13 +45,13 @@ import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -79,7 +79,6 @@ public class APMLogFilter {
         LOGGER.info("Create new PLog");
         this.pLog = new PLog(apmLog);
         LOGGER.info("Create new PLog complete");
-//        System.out.println("");
     }
 
     public PLog getPLog() {
@@ -143,32 +142,18 @@ public class APMLogFilter {
 
         List<PTrace> filteredPTraceList = new ArrayList<>();
 
-//        BitSet validTraceBS = pLog.getValidTraceIndexBS();
         BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
         validTraceBS.set(0, pLog.getOriginalPTraceList().size());
 
 
         List<PTrace> originalPTraceList = pLog.getOriginalPTraceList();
 
-//        pLog.getPTraceList().clear();
-//        pLog.getTraceList().clear();
-
 
         for (int i = 0; i < originalPTraceList.size(); i++) {
 
-//            System.out.println(i + " / " + (originalPTraceList.size() - 1));
-
-
             if (validTraceBS.get(i)) {
 
-                PTrace op = originalPTraceList.get(i);
-
-                String theId = op.getCaseId();
-                PTrace pTrace = pLog.getPTraceUnifiedMap().get(theId);
-
-//                BitSet validEventsBS = new BitSet(pTrace.getOriginalEventList().size());
-//                validEventsBS.set(0, pTrace.getOriginalEventList().size());
-//                pTrace.setValidEventIndexBS(validEventsBS);
+                PTrace pTrace = originalPTraceList.get(i);
 
                 PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
 
@@ -179,8 +164,7 @@ public class APMLogFilter {
                         filteredPTrace.update(muIndex);
 
                         filteredPTraceList.add(filteredPTrace);
-                        validTraceBS.set(i, true);
-                        pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
+//                        pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
 
                         pLog.getPTraceList().add(pTrace);
                         pLog.getTraceList().add(pTrace);
@@ -205,29 +189,6 @@ public class APMLogFilter {
             pLog.setEventSize(0);
             pLog.setVariantIdFreqMap(new UnifiedMap<>());
         }
-
-//        PTrace pTrace;
-//
-//        for (int i = 0; i < filteredPTraceList.size(); i++) {
-//            pTrace = originalPTraceList.get(i);
-////            pTrace.updateAttributeGraph(i, pLog);
-//        }
-
-
-
-
-
-
-//        updatePLogStats(filteredPTraceList);
-
-//        List<PTrace> list= pLog.getCustomPTraceList();
-//        System.out.println("");
-//        for (PTrace pTrace : list) {
-//            if (pTrace.getCaseId().equals("2042")) {
-//                System.out.println("");
-//            }
-//        }
-
     }
 
     private PTrace getFilteredPTrace(PTrace pTrace, List<LogFilterRule> logFilterRules) {
@@ -245,7 +206,6 @@ public class APMLogFilter {
                     return null;
                 }
             } else { //Event section
-
                 BitSet validEventBS = pTrace.getValidEventIndexBitSet();
 
                 List<AEvent> eventList = pTrace.getOriginalEventList();
@@ -307,10 +267,6 @@ public class APMLogFilter {
                 return PathFilter.toKeep(trace, logFilterRule);
             case REWORK_REPETITION:
                 return ReworkFilter.toKeep(trace, logFilterRule);
-//            case ACTIVITY_DURATION:
-//                return ActivityDurationFilter.toKeep(trace, logFilterRule);
-//            case RESOURCE_DURATION:
-//                return ResourceDurationFilter.toKeep(trace, logFilterRule);
             case CASE_SECTION_ATTRIBUTE_COMBINATION:
                 return CaseSectionAttributeCombinationFilter.toKeep(trace, logFilterRule);
             case EVENT_ATTRIBUTE_DURATION:
@@ -333,16 +289,6 @@ public class APMLogFilter {
                 return false;
         }
     }
-
-
-//    private void updatePLogStats(List<PTrace> pTraceList) {
-////        this.pLog.setPTraceList(pTraceList);
-//
-//
-//
-////        pLog.update();
-//    }
-
 
 
     private void resetDuration() {

@@ -189,17 +189,19 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> ttlPTMap = new TreeSortedMap<>();
         double ttlPTUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allTotalProcessingTimes);
-            int numOfUnits = MAX_UNIT;
-            double first = allTotalProcessingTimes.get(0);
-            double last = allTotalProcessingTimes.get(allTotalProcessingTimes.size() - 1);
-            ttlPTUnit = (last - first) / numOfUnits;
-            double current = first - ttlPTUnit;
-            for(int i=0; i <= numOfUnits; i++) {
-                if(i == numOfUnits) current = last;
-                else current += ttlPTUnit;
-                ttlPTMap.put(current, 0);
+        if (allTotalProcessingTimes.size() > 0) {
+            if (interval > 0) {
+                Collections.sort(allTotalProcessingTimes);
+                int numOfUnits = MAX_UNIT;
+                double first = allTotalProcessingTimes.get(0);
+                double last = allTotalProcessingTimes.get(allTotalProcessingTimes.size() - 1);
+                ttlPTUnit = (last - first) / numOfUnits;
+                double current = first - ttlPTUnit;
+                for (int i = 0; i <= numOfUnits; i++) {
+                    if (i == numOfUnits) current = last;
+                    else current += ttlPTUnit;
+                    ttlPTMap.put(current, 0);
+                }
             }
         }
         /**
@@ -207,16 +209,18 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> avgPTMap = new TreeSortedMap<>();
         double avgPTUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allAverageProcessingTimes);
-            double first = allAverageProcessingTimes.get(0);
-            double last = allAverageProcessingTimes.get(allAverageProcessingTimes.size() - 1);
-            avgPTUnit = (last - first) / MAX_UNIT;
-            double current = first - avgPTUnit;
-            for(int i=0; i <= MAX_UNIT; i++) {
-                if(i == MAX_UNIT) current = last;
-                else current += avgPTUnit;
-                avgPTMap.put(current, 0);
+        if (allAverageProcessingTimes.size() > 0) {
+            if (interval > 0) {
+                Collections.sort(allAverageProcessingTimes);
+                double first = allAverageProcessingTimes.get(0);
+                double last = allAverageProcessingTimes.get(allAverageProcessingTimes.size() - 1);
+                avgPTUnit = (last - first) / MAX_UNIT;
+                double current = first - avgPTUnit;
+                for (int i = 0; i <= MAX_UNIT; i++) {
+                    if (i == MAX_UNIT) current = last;
+                    else current += avgPTUnit;
+                    avgPTMap.put(current, 0);
+                }
             }
         }
         /**
@@ -224,16 +228,18 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> maxPTMap = new TreeSortedMap<>();
         double maxPTUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allMaxProcessingTimes);
-            double first = allMaxProcessingTimes.get(0);
-            double last = allMaxProcessingTimes.get(allMaxProcessingTimes.size() - 1);
-            maxPTUnit = (last - first) / MAX_UNIT;
-            double current = first - maxPTUnit;
-            for(int i=0; i <= MAX_UNIT; i++) {
-                if(i == MAX_UNIT) current = last;
-                else current += maxPTUnit;
-                maxPTMap.put(current, 0);
+        if (allMaxProcessingTimes.size() > 0) {
+            if (interval > 0) {
+                Collections.sort(allMaxProcessingTimes);
+                double first = allMaxProcessingTimes.get(0);
+                double last = allMaxProcessingTimes.get(allMaxProcessingTimes.size() - 1);
+                maxPTUnit = (last - first) / MAX_UNIT;
+                double current = first - maxPTUnit;
+                for (int i = 0; i <= MAX_UNIT; i++) {
+                    if (i == MAX_UNIT) current = last;
+                    else current += maxPTUnit;
+                    maxPTMap.put(current, 0);
+                }
             }
         }
         /**
@@ -241,17 +247,19 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> ttlWTMap = new TreeSortedMap<>();
         double ttlWTUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allTotalWaitingTimes);
-            int numOfUnits = MAX_UNIT;
-            double first = allTotalWaitingTimes.get(0);
-            double last = allTotalWaitingTimes.get(allTotalWaitingTimes.size() - 1);
-            ttlWTUnit = (last - first) / numOfUnits;
-            double current = first - ttlWTUnit;
-            for(int i=0; i <= numOfUnits; i++) {
-                if(i == numOfUnits) current = last;
-                else current += ttlWTUnit;
-                ttlWTMap.put(current, 0);
+        if (allTotalWaitingTimes.size() > 0) {
+            if (interval > 0) {
+                Collections.sort(allTotalWaitingTimes);
+                int numOfUnits = MAX_UNIT;
+                double first = allTotalWaitingTimes.get(0);
+                double last = allTotalWaitingTimes.get(allTotalWaitingTimes.size() - 1);
+                ttlWTUnit = (last - first) / numOfUnits;
+                double current = first - ttlWTUnit;
+                for (int i = 0; i <= numOfUnits; i++) {
+                    if (i == numOfUnits) current = last;
+                    else current += ttlWTUnit;
+                    ttlWTMap.put(current, 0);
+                }
             }
         }
         /**
@@ -259,17 +267,19 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> avgWTMap = new TreeSortedMap<>();
         double avgWTUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allAverageWaitingTimes);
-            int numOfUnits = MAX_UNIT;
-            double first = allAverageWaitingTimes.get(0);
-            double last = allAverageWaitingTimes.get(allAverageWaitingTimes.size() - 1);
-            avgWTUnit = (last - first) / numOfUnits;
-            double current = first - avgWTUnit;
-            for(int i=0; i <= numOfUnits; i++) {
-                if(i == numOfUnits) current = last;
-                else current += avgWTUnit;
-                avgWTMap.put(current, 0);
+        if (allAverageWaitingTimes.size() > 0) {
+            if (interval > 0) {
+                Collections.sort(allAverageWaitingTimes);
+                int numOfUnits = MAX_UNIT;
+                double first = allAverageWaitingTimes.get(0);
+                double last = allAverageWaitingTimes.get(allAverageWaitingTimes.size() - 1);
+                avgWTUnit = (last - first) / numOfUnits;
+                double current = first - avgWTUnit;
+                for (int i = 0; i <= numOfUnits; i++) {
+                    if (i == numOfUnits) current = last;
+                    else current += avgWTUnit;
+                    avgWTMap.put(current, 0);
+                }
             }
         }
         /**
@@ -277,17 +287,19 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> maxWTMap = new TreeSortedMap<>();
         double maxWTUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allMaxWaitingTimes);
-            int numOfUnits = MAX_UNIT;
-            double first = allMaxWaitingTimes.get(0);
-            double last = allMaxWaitingTimes.get(allMaxWaitingTimes.size() - 1);
-            maxWTUnit = (last - first) / numOfUnits;
-            double current = first - maxWTUnit;
-            for(int i=0; i <= numOfUnits; i++) {
-                if(i == numOfUnits) current = last;
-                else current += maxWTUnit;
-                maxWTMap.put(current, 0);
+        if (allMaxWaitingTimes.size() > 0 ) {
+            if (interval > 0) {
+                Collections.sort(allMaxWaitingTimes);
+                int numOfUnits = MAX_UNIT;
+                double first = allMaxWaitingTimes.get(0);
+                double last = allMaxWaitingTimes.get(allMaxWaitingTimes.size() - 1);
+                maxWTUnit = (last - first) / numOfUnits;
+                double current = first - maxWTUnit;
+                for (int i = 0; i <= numOfUnits; i++) {
+                    if (i == numOfUnits) current = last;
+                    else current += maxWTUnit;
+                    maxWTMap.put(current, 0);
+                }
             }
         }
         /**
@@ -295,19 +307,21 @@ public class DefaultChartDataCollection {
          */
         TreeSortedMap<Double, Integer> caseUtilMap = new TreeSortedMap<>();
         double caseUtilUnit = 0;
-        if(interval > 0) {
-            Collections.sort(allCaseUtils);
-            int numOfUnits = (MAX_UNIT / 2);
-            double first = allCaseUtils.get(0);
-            double last = allCaseUtils.get(allCaseUtils.size() - 1);
-            caseUtilUnit = (last - first) / numOfUnits;
-            double current = first - caseUtilUnit;
-            for(int i=0; i < numOfUnits; i++) {
-                current += caseUtilUnit;
-                caseUtilMap.put(current, 0);
+        if (allCaseUtils.size() > 0 ) {
+            if (interval > 0) {
+                Collections.sort(allCaseUtils);
+                int numOfUnits = (MAX_UNIT / 2);
+                double first = allCaseUtils.get(0);
+                double last = allCaseUtils.get(allCaseUtils.size() - 1);
+                caseUtilUnit = (last - first) / numOfUnits;
+                double current = first - caseUtilUnit;
+                for (int i = 0; i < numOfUnits; i++) {
+                    current += caseUtilUnit;
+                    caseUtilMap.put(current, 0);
+                }
+                caseUtilMap.put(last, 0);
+                caseUtilMap.put(last, 0);
             }
-            caseUtilMap.put(last, 0);
-            caseUtilMap.put(last, 0);
         }
 
         /**

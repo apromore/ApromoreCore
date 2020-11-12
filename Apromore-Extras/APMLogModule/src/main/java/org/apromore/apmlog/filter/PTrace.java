@@ -25,13 +25,13 @@
 
 package org.apromore.apmlog.filter;
 
-import org.apromore.apmlog.*;
+import org.apromore.apmlog.AActivity;
+import org.apromore.apmlog.AEvent;
+import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.immutable.ImmutableActivity;
 import org.apromore.apmlog.immutable.ImmutableTrace;
-import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.util.Util;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -52,6 +52,7 @@ import java.util.List;
  * Modified: Chii Chang (24/05/2020)
  * Modified: Chii Chang (26/05/2020)
  * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
+ * Modified: Chii Chang (11/11/2020)
  */
 public class PTrace implements Comparable<PTrace>, ATrace {
 
@@ -79,7 +80,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
     private List<AActivity> activityList;
     private List<AEvent> eventList;
-//    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, String> attributeMap;
     private List<String> activityNameList;
     private UnifiedSet<String> eventNameSet;
@@ -99,7 +99,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     private double originalCaseUtilization = 0;
     private List<AActivity> originalActivityList;
     private List<AEvent> originalEventList;
-//    private UnifiedMap<String, UnifiedMap<String, Integer>> originalEventAttributeValueFreqMap;
     private UnifiedMap<String, String> originalAttributeMap;
     private List<String> originalActivityNameList;
     private UnifiedSet<String> originalEventNameSet;
@@ -125,12 +124,9 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     private double previousCaseUtilization = 0;
     private List<AActivity> previousActivityList;
     private List<AEvent> previousEventList;
-//    private UnifiedMap<String, UnifiedMap<String, Integer>> previousEventAttributeValueFreqMap;
     private UnifiedMap<String, String> previousAttributeMap;
     private List<String> previousActivityNameList;
     private UnifiedSet<String> previousEventNameSet;
-
-    private List<UnifiedMap<String, String>> activityAttributesList = new ArrayList<>();
 
     private APMLog apmLog;
 
@@ -139,7 +135,10 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
         this.apmLog = apmLog;
 
-        this.activityAttributesList = new ArrayList<>(aTrace.getActivityAttributesList());
+        initDefault();
+    }
+
+    private void initDefault() {
 
         this.immutableIndex = aTrace.getImmutableIndex();
         this.mutableIndex = aTrace.getMutableIndex();
@@ -188,14 +187,11 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         this.previousMaxWaitingTime = aTrace.getMaxWaitingTime();
         this.previousCaseUtilization = aTrace.getCaseUtilization();
 
-
         List<AEvent> aTraceEventList = aTrace.getEventList();
 
         this.validEventIndexBS = new BitSet(aTraceEventList.size());
         this.originalValidEventIndexBS = new BitSet(aTraceEventList.size());
         this.previousValidEventIndexBS = new BitSet(aTraceEventList.size());
-
-
 
         this.eventList = new ArrayList<>(aTraceEventList);
         this.originalEventList = new ArrayList<>(aTraceEventList);
@@ -205,29 +201,13 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         this.originalValidEventIndexBS.set(0,  originalEventList.size(), true);
         this.previousValidEventIndexBS.set(0,  previousEventList.size(), true);
 
-
-
-
-
         this.activityList = new ArrayList<>(aTrace.getActivityList());
         this.originalActivityList = new ArrayList<>(aTrace.getActivityList());
         this.previousActivityList = new ArrayList<>(aTrace.getActivityList());
 
-
-
         this.eventList = new ArrayList<>(aTrace.getEventList());
         this.originalEventList = new ArrayList<>(aTrace.getEventList());
         this.previousEventList = new ArrayList<>(aTrace.getEventList());
-
-
-
-        UnifiedMap<String, UnifiedMap<String, Integer>> eavfMap = aTrace.getEventAttributeValueFreqMap();
-
-
-
-//        this.eventAttributeValueFreqMap = new UnifiedMap<>(eavfMap);
-//        this.originalEventAttributeValueFreqMap = new UnifiedMap<>(eavfMap);
-//        this.previousEventAttributeValueFreqMap = new UnifiedMap<>(eavfMap);
 
         this.attributeMap = aTrace.getAttributeMap();
         this.previousAttributeMap = aTrace.getAttributeMap();
@@ -268,29 +248,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     public void reset() {
 
 
+        initDefault();
 
-        validEventIndexBS.set(0, originalEventList.size(), true);
-
-        startTimeMilli = originalStartTimeMilli;
-        endTimeMilli = originalEndTimeMilli;
-        duration = originalDuration;
-        hasActivity = originalHasActivity;
-        totalProcessingTime = originalTotalProcessingTime;
-        averageProcessingTime = originalAverageProcessingTime;
-        maxProcessingTime = originalMaxProcessingTime;
-        totalWaitingTime = originalTotalWaitingTime;
-        averageWaitingTime = originalAverageWaitingTime;
-        maxWaitingTime = originalMaxWaitingTime;
-        caseUtilization = originalCaseUtilization;
-
-        this.activityList = originalActivityList;
-        this.eventList = originalEventList;
-//        this.eventAttributeValueFreqMap = originalEventAttributeValueFreqMap;
-        this.attributeMap = originalAttributeMap;
-        this.activityNameList = originalActivityNameList;
-        this.eventNameSet = originalEventNameSet;
-
-        this.activityNameIndexList = originalActivityNameIndexList;
     }
 
     public ATrace getOriginalATrace() {
@@ -318,7 +277,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
             this.activityList = previousActivityList;
             this.eventList = previousEventList;
-//            this.eventAttributeValueFreqMap = previousEventAttributeValueFreqMap;
             this.attributeMap = previousAttributeMap;
             this.activityNameList = previousActivityNameList;
             this.eventNameSet = previousEventNameSet;
@@ -352,7 +310,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
         previousActivityList = activityList;
         previousEventList = eventList;
-//        previousEventAttributeValueFreqMap = eventAttributeValueFreqMap;
         previousAttributeMap = attributeMap;
         previousActivityNameList = activityNameList;
         previousEventNameSet = eventNameSet;
@@ -379,16 +336,13 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousCaseUtilization = caseUtilization;
         previousActivityList = activityList;
         previousEventList = eventList;
-//        previousEventAttributeValueFreqMap = eventAttributeValueFreqMap;
         previousAttributeMap = attributeMap;
         previousActivityNameList = activityNameList;
         previousEventNameSet = eventNameSet;
         previousActiivtyNameIndexList = activityNameIndexList;
 
-
         this.eventList = new ArrayList<>();
 
-        UnifiedSet<Integer> validActs = new UnifiedSet<>();
 
         List<AEvent> aEventList = aTrace.getEventList();
 
@@ -396,23 +350,97 @@ public class PTrace implements Comparable<PTrace>, ATrace {
             AEvent event = aEventList.get(i);
             if (validEventIndexBS.get(i)) {
                 eventList.add(event);
-                int actIndex = event.getParentActivityIndex();
-                if (!validActs.contains(actIndex)) validActs.add(actIndex);
-            }
-        }
-        this.activityList = new ArrayList<>();
-        List<AActivity> aActivityList = aTrace.getActivityList();
-        for (int i = 0; i < aActivityList.size(); i++) {
-            if (validActs.contains(i)) {
-                AActivity activity = aActivityList.get(i);
-                activity.setMutableIndex(aActivityList.size());
-                activity.setParentTrace(this);
-                this.activityList.add(activity);
             }
         }
 
+        IntArrayList markedIndexes = new IntArrayList(eventList.size());
+
+        this.activityList = new ArrayList<>();
+
+        for (int j = 0; j < eventList.size(); j++) {
+
+            int actSize = activityList.size();
+
+            if (!markedIndexes.contains(j)) {
+
+                AEvent jEvent = eventList.get(j);
+                AActivity activity = getActivity(actSize, j, markedIndexes);
+                activityList.add(activity);
+
+                if (activity.getEventIndexes().contains(j)) {
+                    jEvent.setParentActivityIndex(actSize);
+                }
+            }
+
+        }
 
         updateStats(this.activityList);
+
+    }
+
+    private AActivity getActivity(int index, int fromIndex, IntArrayList markedIndexes) {
+
+        IntArrayList eventIndexList = new IntArrayList();
+
+        boolean proceed = true;
+
+        AEvent baseEvent = eventList.get(fromIndex);
+
+        eventIndexList.add(fromIndex);
+
+        long baseT = baseEvent.getTimestampMilli();
+
+        long startTime = baseT;
+        long endTime = baseT;
+
+        String baseLife = baseEvent.getLifecycle();
+
+        if (fromIndex == eventList.size() - 1) proceed = false;
+        if (baseLife.equals("complete")) proceed = false;
+
+        if (proceed) {
+            for (int i = fromIndex + 1; i < eventList.size(); i++) {
+                if (!markedIndexes.contains(i)) {
+                    AEvent nEvent = eventList.get(i);
+
+                    if (haveCommonMainAttributes(nEvent, baseEvent)) {
+                        String lifecycle = nEvent.getLifecycle();
+                        if (lifecycle.equals("complete") ||
+                                lifecycle.equals("manualskip") ||
+                                lifecycle.equals("autoskip")) {
+                            eventIndexList.add(i);
+
+                            long nT = nEvent.getTimestampMilli();
+                            if (nT > endTime) endTime = nT;
+
+                            break;
+                        } else {
+                            eventIndexList.add(i);
+                        }
+                    }
+                }
+            }
+        }
+
+        markedIndexes.addAll(eventIndexList);
+
+        UnifiedMap<String, String> attributes = baseEvent.getAttributeMap();
+
+        ImmutableActivity activity =
+                new ImmutableActivity(index, index, this, eventIndexList, startTime, endTime, attributes);
+
+        return activity;
+    }
+
+    private boolean haveCommonMainAttributes(AEvent event1, AEvent event2) {
+
+        try {
+            return event1.getName().equals(event2.getName());
+        } catch (Exception e) {
+            System.out.println("");
+            return false;
+        }
+
 
     }
 
@@ -496,16 +524,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     @Override
-    public List<UnifiedMap<String, String>> getActivityAttributesList() {
-        return activityAttributesList;
-    }
-
-    @Override
-    public void setActivityAttributesList(List<UnifiedMap<String, String>> activityAttributesList) {
-        this.activityAttributesList = activityAttributesList;
-    }
-
-    @Override
     public List<AEvent> getImmutableEvents() {
         return aTrace.getImmutableEvents();
     }
@@ -527,13 +545,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     @Override
-    public void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes) {
-
-    }
-
-    @Override
-    public UnifiedMap<String, String> getActivityAttributes(int immutableActivityIndex) {
-        return null;
+    public void addActivity(AActivity aActivity) {
+        this.activityList.add(aActivity);
     }
 
     @Override
@@ -747,16 +760,20 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
         ImmutableTrace trace = new ImmutableTrace(immutableIndex, mutableIndex, attributeMap);
 
+
         for (int i = 0; i < activityList.size(); i++) {
             AActivity act = activityList.get(i);
-            act.setParentTrace(trace);
-            UnifiedMap<String, String> attr = act.getAllAttributes();
+
             trace.addActivity(act);
+
+        }
+
+        for (AEvent event : eventList) {
+            event.setParentTrace(trace);
         }
 
         trace.setEventList(eventList);
         trace.setImmutableEvents(aTrace.getImmutableEvents());
-        trace.setActivityAttributesList(new ArrayList<>(aTrace.getActivityAttributesList()));
         trace.setCaseVariantId(caseVariantId);
         trace.setHasActivity(hasActivity);
         trace.setTotalProcessingTime(totalProcessingTime);

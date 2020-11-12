@@ -172,6 +172,16 @@ public class AEventImpl implements Serializable, org.apromore.apmlog.AEvent {
 
     }
 
+    @Override
+    public void setParentTrace(ATrace parentTrace) {
+
+    }
+
+    @Override
+    public ATrace getParentTrace() {
+        return null;
+    }
+
 
     public AActivity getParentActivity() {
         return null;
