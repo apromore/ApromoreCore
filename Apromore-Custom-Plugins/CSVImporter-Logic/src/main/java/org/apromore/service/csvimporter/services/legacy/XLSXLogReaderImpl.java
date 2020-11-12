@@ -89,7 +89,6 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
             TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
 
-            String errorMessage = "Field is empty or has a null value!";
             boolean rowLimitExceeded = false;
 
             //XES
@@ -146,25 +145,25 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 // Case id:
                 caseId = line[sample.getCaseIdPos()];
                 if (caseId == null || caseId.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], "Case id is empty or has a null value!"));
                 }
 
                 // Activity
                 activity = line[sample.getActivityPos()];
                 if (activity == null || activity.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], "Activity is empty or has a null value!"));
                 }
 
                 // End Timestamp
                 endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
                 if (endTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], errorMessage));
+                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "Can not parse end timestamp!"));
                 }
                 // Start Timestamp
                 if (sample.getStartTimestampPos() != -1) {
                     startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
                     if (startTimestamp == null) {
-                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], errorMessage));
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Can not parse start timestamp!"));
                     }
                 }
 
@@ -175,7 +174,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                         if (tempTimestamp != null) {
                             otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
                         } else {
-                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], errorMessage));
+                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], "Can not parse other timestamp!"));
                         }
                     }
                 }
@@ -184,7 +183,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 if (sample.getResourcePos() != -1) {
                     resource = line[sample.getResourcePos()];
                     if (resource == null || resource.isEmpty()) {
-                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
+                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], "Resource is empty or has a null value!"));
                     }
                 }
 

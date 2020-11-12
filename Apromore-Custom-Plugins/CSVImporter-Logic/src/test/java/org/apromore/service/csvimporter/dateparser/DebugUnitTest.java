@@ -21,11 +21,13 @@
  */
 package org.apromore.service.csvimporter.dateparser;
 
+import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.legacy.LogReader;
 import org.apromore.service.csvimporter.services.legacy.LogReaderImpl;
+import org.apromore.service.csvimporter.services.legacy.XLSXLogReaderImpl;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -55,9 +57,12 @@ public class DebugUnitTest {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
         sampleLogGenerator = parquetFactoryProvider
-                .getParquetFactory("csv")
+//                .getParquetFactory("csv")
+                .getParquetFactory("xlsx")
                 .createSampleLogGenerator();
-        logReader = new LogReaderImpl();
+//        logReader = new LogReaderImpl();
+
+        logReader = new XLSXLogReaderImpl();
     }
 
     @Test
@@ -65,32 +70,40 @@ public class DebugUnitTest {
 
         System.out.println("\n************************************\ntest");
 
-//        String testFile = "/test1-valid-ddMM.csv";
-//        LogSample logSample = sampleLogGenerator
-//                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 101, "UTF-8");
-//        System.out.println("getEndTimestampFormat " + logSample.getEndTimestampFormat());
+//        String testFile = "/TEST.xlsx";
+//        LogSample sample = sampleLogGenerator
+//                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+//        System.out.println("getEndTimestampFormat " + sample.getEndTimestampFormat());
+//
+//        LogModel logModel = logReader
+//                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+//
+//        System.out.println("getRowsCount " + logModel.getRowsCount());
+//        System.out.println("getLogErrorReport " + logModel.getLogErrorReport());
 
 
-        String dattime = "25.3.10 9:32";
-////        String dattime = "03/09/2019 15:13:05";
+//        System.out.println("Parsing " + parseToTimestamp("9/13/17 12:20", "dd/MM/yy HH:mm"));
 
-        if (determineDateFormat(dattime) != null) {
-            System.out.println("Parsing " + determineDateFormat(dattime));
-            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime));
-            System.out.println("timestamp " + timestamp.toString());
 
-        } else {
-            System.out.println("Parsing Null");
-
-        }
-        System.out.println("Parsing " + dattime);
+//        String dattime = "9/13/17 12:20";
+//////        String dattime = "03/09/2019 15:13:05";
+//
+//        if (determineDateFormat(dattime) != null) {
+//            System.out.println("Parsing " + determineDateFormat(dattime));
+//            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime));
+//            System.out.println("timestamp " + timestamp.toString());
+//
+//        } else {
+//            System.out.println("Parsing Null");
+//
+//        }
+//        System.out.println("Parsing " + dattime);
 
 //
-//        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[0-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])(([0-5][0-9]){2}))"));
+//        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[0-9]|
+//        1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])(([0-5][0-9]){2}))"));
 //        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[1-9]|1[0-2])([0-2][0-9]|3[0-1])([0-1][0-9]|2[0-4])([0-5][0-9]){2})$"));
 
-//        parse = new Parse();
-//        System.out.println("Parsing " + parse.tryParsing("06-11-2011 4:59:00 pm"));
         System.out.println("\n************************************\n");
 
     }

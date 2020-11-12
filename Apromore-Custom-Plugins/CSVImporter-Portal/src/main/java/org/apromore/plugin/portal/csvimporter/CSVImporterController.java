@@ -570,12 +570,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 resetSelect(colPos);
 
                 if (StringUtils.isBlank(event.getValue())) {
-                    if (sample.isParsable(colPos)) {
-                        parsedAuto(colPos, selected);
-                    } else {
-                        textbox.setPlaceholder(getLabels().getString("specify_timestamp_format"));
-                        failedToParse(colPos);
-                    }
+//                    if (sample.isParsable(colPos)) {
+//                        parsedAuto(colPos, selected);
+//                    } else {
+                    textbox.setValue("");
+                    textbox.setPlaceholder(getLabels().getString("specify_timestamp_format"));
+                    failedToParse(colPos);
+//                    }
                 } else {
                     String format = event.getValue();
                     if (sample.isParsableWithFormat(colPos, format)) {

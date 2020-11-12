@@ -107,44 +107,40 @@ public class LogSampleImpl implements LogSample, Constants {
     public boolean isParsable(int pos) {
         int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if (myLine.get(pos).isEmpty()) {
+            if (myLine.get(pos).isEmpty() || determineDateFormat(myLine.get(pos)) == null) {
                 emptyCount++;
-//            } else if (parse.tryParsing(myLine.get(pos)) == null) {
-            } else if (determineDateFormat(myLine.get(pos)) == null) {
-                return false;
             }
         }
         return emptyCount < lines.size();
     }
 
     private String detectDateTimeFormat(int pos) {
-        String dateTimeFormat;
-        List<String> dateTimeFormatCollections = new ArrayList<>();
 
+        List<String> dateTimeFormatCollections = new ArrayList<>();
         for (List<String> myLine : lines) {
-            if (!myLine.get(pos).isEmpty()) {
+            if (determineDateFormat(myLine.get(pos)) != null)
                 dateTimeFormatCollections.add(determineDateFormat(myLine.get(pos)));
-            }
         }
-        dateTimeFormat = dateTimeFormatCollections.stream()
-                .collect(Collectors.groupingBy(w -> w, Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Comparator.comparing(Map.Entry::getValue))
-                .get()
-                .getKey();
-        return dateTimeFormat;
+        // Get the most common date format
+        if (dateTimeFormatCollections.size() > 0) {
+            return dateTimeFormatCollections.stream()
+                    .collect(Collectors.groupingBy(w -> w, Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .max(Comparator.comparing(Map.Entry::getValue))
+                    .get()
+                    .getKey();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean isParsableWithFormat(int pos, String format) {
         int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if (myLine.get(pos).isEmpty()) {
+            if (myLine.get(pos).isEmpty() || parseToTimestamp(myLine.get(pos), format) == null)
                 emptyCount++;
-            } else if (format == null || parseToTimestamp(myLine.get(pos), format) == null) {
-                return false;
-            }
         }
         return emptyCount < lines.size();
     }
@@ -226,15 +222,12 @@ public class LogSampleImpl implements LogSample, Constants {
                     iterator.remove();
                 }
             }
-
         }
     }
-
 
     private boolean isNOTUniqueAttribute(int pos) {
         return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
     }
-
 
     @Override
     public void validateSample() throws Exception {
