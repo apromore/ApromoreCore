@@ -28,6 +28,7 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.access.Assignee;
 import org.apromore.portal.common.access.Assignment;
 import org.apromore.portal.model.*;
+import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.SecurityService;
 import org.apromore.util.AccessType;
@@ -366,9 +367,9 @@ public class ShareController extends SelectorComposer<Window> {
         applyChanges();
         getSelf().detach();
 
-        EventQueue eq = EventQueues.lookup(
-                "save_new_dash", EventQueues.APPLICATION, true);
-        eq.publish(new Event("update_access_right"));
+        EventQueue eqAccessRight = EventQueues.lookup(EventQueueTypes.UPDATE_USERMETADATA,
+                EventQueues.APPLICATION, true);
+        eqAccessRight.publish(new Event("update_usermetadata"));
     }
 
     @Listen("onClick = #btnCancel")
