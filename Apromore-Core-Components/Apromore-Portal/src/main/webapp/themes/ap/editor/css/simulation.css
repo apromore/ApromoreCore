@@ -1,0 +1,12 @@
+ul.bpp-properties-tabs-links > li.bpp-active a {
+    border-top: 3px solid var(--ap-c-widget-selected);
+}
+
+.bpp-properties-group:hover > .group-toggle:hover,
+.bpp-properties-group.group-closed:hover > .group-toggle {
+    background-color: var(--ap-c-widget-selected);
+}
+
+.x-layout-collapsed.x-layout-collapsed-east text {
+    fill: #aaaaaa;
+}

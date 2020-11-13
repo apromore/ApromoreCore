@@ -46,6 +46,7 @@
 
     <n:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />
     <n:link rel="stylesheet" type="text/css" href='/themes/ap/editor/css/index.css'  />
+    <n:link rel="stylesheet" type="text/css" href='/themes/ap/editor/css/simulation.css'  />
 
     <n:div class="ap-header">
         <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
