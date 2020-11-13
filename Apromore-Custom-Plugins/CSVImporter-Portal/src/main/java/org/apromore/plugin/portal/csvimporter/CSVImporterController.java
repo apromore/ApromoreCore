@@ -408,7 +408,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
         window.setTitle("CSV Importer - " + media.getName());
 
-
         setDropDownLists();
         setCSVGrid();
         renderGridContent();
@@ -579,10 +578,18 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 //                    }
                 } else {
                     String format = event.getValue();
-                    if (sample.isParsableWithFormat(colPos, format)) {
-                        parsedManual(colPos, selected, format);
-                    } else {
+                    try {
+                        if (sample.isParsableWithFormat(colPos, format)) {
+                            parsedManual(colPos, selected, format);
+                        } else {
+                            failedToParse(colPos);
+                        }
+                    } catch (IllegalArgumentException e) {
                         failedToParse(colPos);
+                        throw e;
+                    } catch (Exception e) {
+                        failedToParse(colPos);
+                        throw new Exception(e.getMessage());
                     }
                 }
             });
@@ -811,6 +818,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private void showFormatBtn(Button myButton) {
         myButton.setSclass("ap-csv-importer-format-icon");
+        myButton.setTooltiptext(specifyTimestampformat);
     }
 
     private void hideFormatBtn(Button myButton) {

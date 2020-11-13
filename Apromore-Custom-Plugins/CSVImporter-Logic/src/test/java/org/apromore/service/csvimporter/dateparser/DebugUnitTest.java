@@ -85,19 +85,19 @@ public class DebugUnitTest {
 //        System.out.println("Parsing " + parseToTimestamp("9/13/17 12:20", "dd/MM/yy HH:mm"));
 
 
-//        String dattime = "9/13/17 12:20";
-//////        String dattime = "03/09/2019 15:13:05";
-//
-//        if (determineDateFormat(dattime) != null) {
-//            System.out.println("Parsing " + determineDateFormat(dattime));
-//            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime));
-//            System.out.println("timestamp " + timestamp.toString());
-//
-//        } else {
-//            System.out.println("Parsing Null");
-//
-//        }
-//        System.out.println("Parsing " + dattime);
+        String dattime = "9/13/17 12:20";
+////        String dattime = "03/09/2019 15:13:05";
+
+        if (determineDateFormat(dattime) != null) {
+            System.out.println("Parsing " + determineDateFormat(dattime));
+            Timestamp timestamp = parseToTimestamp(dattime, "MM/dd/yy HH:mmeee");
+            System.out.println("timestamp " + timestamp.toString());
+
+        } else {
+            System.out.println("Parsing Null");
+
+        }
+        System.out.println("Parsing " + dattime);
 
 //
 //        System.out.println("Parsing " + dattime.matches("^(\\d{4}(0[0-9]|
