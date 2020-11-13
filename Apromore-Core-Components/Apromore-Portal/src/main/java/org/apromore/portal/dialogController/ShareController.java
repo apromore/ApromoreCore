@@ -25,6 +25,7 @@ import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.common.access.Assignee;
 import org.apromore.portal.common.access.Assignment;
 import org.apromore.portal.model.*;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -367,9 +369,12 @@ public class ShareController extends SelectorComposer<Window> {
         applyChanges();
         getSelf().detach();
 
+        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        String username = portalContext.getCurrentUser().getUsername();
+
         EventQueue eqAccessRight = EventQueues.lookup(EventQueueTypes.UPDATE_USERMETADATA,
                 EventQueues.APPLICATION, true);
-        eqAccessRight.publish(new Event("update_usermetadata"));
+        eqAccessRight.publish(new Event("update_usermetadata", null, username));
     }
 
     @Listen("onClick = #btnCancel")
