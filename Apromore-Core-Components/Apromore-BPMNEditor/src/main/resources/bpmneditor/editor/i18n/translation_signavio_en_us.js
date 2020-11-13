@@ -1,6 +1,6 @@
 ORYX.I18N.PropertyWindow.dateFormat = "d/m/y";
 
-ORYX.I18N.View.East = "Attributes";
+ORYX.I18N.View.East = "Simulation parameters";
 ORYX.I18N.View.West = "Modeling Elements";
 
 ORYX.I18N.Oryx.title	= "Signavio";
