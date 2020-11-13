@@ -21,10 +21,9 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.filter.PLog;
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+
 import org.apromore.apmlog.filter.PTrace;
-import org.apromore.apmlog.immutable.ImmutableActivity;
-import org.apromore.apmlog.immutable.ImmutableLog;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XLog;
@@ -37,7 +36,7 @@ import java.util.*;
 
 import static java.util.Map.Entry.comparingByValue;
 
-public class LaLog implements APMLog{
+public class LaLog implements APMLog {
     public List<ATrace> immutableTraces; // this is the immutable traces
     public List<ATrace> traceList; // this is mutable traces;
     public UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> eventAttributeOccurMap;
@@ -81,10 +80,7 @@ public class LaLog implements APMLog{
 
         for (int i = 0; i < traceList.size(); i++) {
 
-
             ATrace trace = traceList.get(i);
-
-
 
             IntArrayList actNameIndexes = getActivityNameIndexes(trace);
             traceActNameIndexes.add(actNameIndexes);
@@ -108,8 +104,6 @@ public class LaLog implements APMLog{
             } else {
                 eventSize += trace.getEventSize();
             }
-
-            System.out.println((i+1) + " / " + immutableTraces.size());
         }
 
 
@@ -126,8 +120,6 @@ public class LaLog implements APMLog{
 
             variantIdFreqMap.put(cIdCount, freq);
             actNameIdxCId.put(ial, cIdCount);
-
-            System.out.println((i+1) + " / " + traceList.size());
         }
 
         for (int i = 0; i < traceList.size(); i++) {
@@ -135,8 +127,6 @@ public class LaLog implements APMLog{
             IntArrayList iIAL = traceActNameIndexes.get(i);
             int cId = actNameIdxCId.get(iIAL);
             trace.setCaseVariantId(cId);
-
-            System.out.println((i+1) + " / " + traceList.size());
         }
 
         int size = eventAttributeOccurMap.size();
@@ -166,7 +156,6 @@ public class LaLog implements APMLog{
             eventAttributeValueCasesFreqMap.put(key, valCaseFreqMap);
 
             counter += 1;
-            System.out.println(counter + " / " + eventAttributeOccurMap.size());
         }
 
 
@@ -427,13 +416,13 @@ public class LaLog implements APMLog{
 
     @Override
     public double getMedianDuration() {
-        List<Double> durList = new ArrayList<>();
-        for (int i=0; i<traceList.size(); i++) {
-            durList.add(traceList.get(i).getDuration());
+        double[] dArray = new double[traceList.size()];
+        for (int i = 0; i < dArray.length; i++) {
+            dArray[i] = traceList.get(i).getDuration();
         }
-        Collections.sort(durList);
-        int medianIndex = traceList.size() / 2;
-        return durList.get(medianIndex);
+        Median median = new Median();
+        double med =median.evaluate(dArray);
+        return med;
     }
 
     @Override
@@ -483,34 +472,4 @@ public class LaLog implements APMLog{
         return null;
     }
 
-//    public LaLog(List<ATrace> traceList,
-//                        UnifiedMap<Integer, Integer> variantIdFreqMap,
-//                        HashBiMap<Integer, String> actIdNameMap,
-//                        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap,
-//                        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
-//                        UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
-//                        double minDuration,
-//                        double maxDuration,
-//                        String timeZone,
-//                        long startTime,
-//                        long endTime,
-//                        long eventSize,
-//                        ActivityNameMapper activityNameMapper,
-//                        UnifiedMap<String, Integer> activityMaxOccurMap) {
-//        this.traces = traceList;
-//        this.variantIdFreqMap = variantIdFreqMap;
-//        this.actIdNameMap = actIdNameMap;
-//        this.eventAttributeValueCasesFreqMap = eventAttributeValueCasesFreqMap;
-//        this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
-//        this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
-//        this.minDuration = minDuration;
-//        this.maxDuration = maxDuration;
-//        this.timeZone = timeZone;
-//        this.startTime = startTime;
-//        this.endTime = endTime;
-//        this.eventSize = eventSize;
-//        this.activityNameMapper = activityNameMapper;
-//        this.activityMaxOccurMap = activityMaxOccurMap;
-//        defaultChartDataCollection = new DefaultChartDataCollection(this);
-//    }
 }

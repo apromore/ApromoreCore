@@ -25,7 +25,6 @@ package org.apromore.apmlog.immutable;
 import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.ATrace;
-import org.apromore.apmlog.LogFactory;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -67,18 +66,33 @@ public class ImmutableEvent implements AEvent {
         this.immutableParentActivityIndex = immutableParentActivityIndex;
     }
 
+    public ImmutableEvent(int index, String lifecycle, long timestamp, ATrace parentTrace) {
+        this.parentTrace = parentTrace;
+        this.lifecycle = lifecycle;
+        this.timestamp = timestamp;
+        this.index = index;
+    }
+
     @Override
     public void setParentActivityIndex(int immutableParentActivityIndex) {
         this.immutableParentActivityIndex = immutableParentActivityIndex;
     }
 
     private String getXAttrVal(String key) {
-        return xEvent.getAttributes().get(key).toString();
+        return xEvent.getAttributes().containsKey(key) ? xEvent.getAttributes().get(key).toString() : null;
     }
 
     @Override
     public UnifiedMap<String, String> getAllAttributes() {
-        return parentTrace.getActivityAttributesList().get(immutableParentActivityIndex);
+
+        UnifiedMap<String, String> attr = new UnifiedMap<>(xEvent.getAttributes().size());
+        for (String key : xEvent.getAttributes().keySet()) {
+            if (!key.equals("lifecycle:transition") && !key.equals("time:timestamp")) {
+                attr.put(key.intern(), xEvent.getAttributes().get(key).toString().intern());
+            }
+        }
+        return attr;
+
     }
 
     @Override
@@ -93,24 +107,22 @@ public class ImmutableEvent implements AEvent {
 
     @Override
     public void setLifecycle(String lifecycle) {
-
+        this.lifecycle = lifecycle;
     }
 
     @Override
     public void setTimestampMilli(long timestampMilli) {
-
+        this.timestamp = timestampMilli;
     }
 
     @Override
     public String getName() {
-        String conceptName = getAllAttributes().get("concept:name");
-        return conceptName != null ? conceptName : "";
+        return getXAttrVal("concept:name") != null ? getXAttrVal("concept:name") : "";
     }
 
     @Override
     public String getResource() {
-        String orgResource = getAllAttributes().get("org:resource");
-        return orgResource != null ? orgResource : "";
+        return getXAttrVal("org:resource") != null ? getXAttrVal("org:resource") : "";
     }
 
     @Override
@@ -125,7 +137,8 @@ public class ImmutableEvent implements AEvent {
 
     @Override
     public String getAttributeValue(String attributeKey) {
-        return getAllAttributes().get(attributeKey);
+        return xEvent.getAttributes().containsKey(attributeKey) ?
+                xEvent.getAttributes().get(attributeKey).toString() : null;
     }
 
     @Override
@@ -151,6 +164,14 @@ public class ImmutableEvent implements AEvent {
     @Override
     public int getParentActivityIndex() {
         return immutableParentActivityIndex;
+    }
+
+    public void setParentTrace(ATrace parentTrace) {
+        this.parentTrace = parentTrace;
+    }
+
+    public ATrace getParentTrace() {
+        return parentTrace;
     }
 
     @Override

@@ -682,6 +682,7 @@ img[src="img/icon/bpmn-22x22.png"] {
   display: none;
 }
 
+/* version */
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(8) {
   display: block;
   position: absolute;
@@ -689,6 +690,7 @@ img[src="img/icon/bpmn-22x22.png"] {
   right: 9px;
 }
 
+/* date */
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(9) {
   display: inline-block;
   position: absolute;
@@ -696,11 +698,20 @@ img[src="img/icon/bpmn-22x22.png"] {
   left: 9px;
 }
 
+/* owner */
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(10) {
   display: block;
   position: absolute;
   bottom: 7px;
   right: 9px;
+}
+
+.ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(10) div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90px;
+  text-align: right;
 }
 
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(8) div,

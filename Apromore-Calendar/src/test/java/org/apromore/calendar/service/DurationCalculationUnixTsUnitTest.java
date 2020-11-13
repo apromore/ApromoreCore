@@ -37,52 +37,51 @@ import org.junit.runners.Parameterized;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class DurationCalculationUnitTest {
+public class DurationCalculationUnixTsUnitTest {
 
   CalendarModelBuilder calenderModelBuilder;
-  OffsetDateTime startDateTime;
-  OffsetDateTime endDateTime;
-  Duration expected;
-  
+  long startDateTime;
+  long endDateTime;
+  long expected;
+
 
   @Before
   public void Setup() {
     calenderModelBuilder = new CalendarModelBuilder();
   }
 
- public DurationCalculationUnitTest(OffsetDateTime startDateTime,OffsetDateTime endDateTime,Duration expected)
- {
-   this.startDateTime=startDateTime;
-   this.endDateTime=endDateTime;
-   this.expected=expected;
- }
-  
- 
- @Parameterized.Parameters
- public static Collection params() {
+  public DurationCalculationUnixTsUnitTest(long startDateTime, long endDateTime, long expected) {
+    this.startDateTime = startDateTime;
+    this.endDateTime = endDateTime;
+    this.expected = expected;
+  }
+
+
+  @Parameterized.Parameters
+  public static Collection params() {
     return Arrays.asList(new Object[][] {
-       { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 02, 02, 20, 00, 00, 0, ZoneOffset.UTC), Duration.of(16, ChronoUnit.HOURS)},
-       { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(8, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(5, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 17, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 03, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(19, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 03, 19, 00, 00, 0, ZoneOffset.UTC), Duration.of(21, ChronoUnit.HOURS)}
+        {1549004400000l, 1549137600000l, 57600000l},
+        {1549004400000l, 1549044000000l, 28800000L},
+        {1549022400000l, 1549044000000l, 18000000L},
+        {1549040400000l, 1549044000000l, 0l},
+        {1549022400000l, 1549206000000l, 68400000L},
+        {1549022400000l, 1549220400000l, 75600000L},
     });
- }
- 
- 
+  }
+
+
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
-   
+
     CalendarModel calenderModel = calenderModelBuilder.with7DayWorking().withZoneId("UTC").build();
 
     // When
-    DurationModel durationModel = calenderModel.getDuration(startDateTime, endDateTime);  
-    
+    DurationModel durationModel = calenderModel.getDuration(startDateTime, endDateTime);
+
     // Then
-    assertThat(durationModel.getDuration()).isEqualTo(expected);
+    assertThat(durationModel.getDuration().toMillis()).isEqualTo(expected);
   }
-  
+
 
 
 }

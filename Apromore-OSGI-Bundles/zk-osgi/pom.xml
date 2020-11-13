@@ -46,7 +46,6 @@
                             !org.python.*,
                             !org.reflections.*,
                             !org.seasar.*,
-                            !org.xml.*,
                             !org.zkforge.*,
                             !org.zkoss.zkex.theme,
                             !org.zkoss.zkmax.theme,

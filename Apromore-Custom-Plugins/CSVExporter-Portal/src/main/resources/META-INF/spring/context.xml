@@ -22,13 +22,14 @@
   #L%
   -->
 
-<beans:beans xmlns="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:beans="http://www.springframework.org/schema/beans"
    xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
-        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/osgi                  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="csvExporterLogic" interface="org.apromore.service.csvexporter.CSVExporterLogic"/>

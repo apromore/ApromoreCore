@@ -22,13 +22,11 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AActivity;
-
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.OperationType;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +78,7 @@ public class EventAttributeDurationFilter {
             AActivity activity = activityList.get(i);
             String attrVal = getAttributeValue(activity, key);
             if (attrVal.equals(value)) {
-                durList.add(Long.valueOf(activity.getDuration()).doubleValue());
+                durList.add(activity.getDuration());
             }
         }
 

@@ -43,8 +43,6 @@ package org.apromore.apmlog.old;
 
 import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
-import org.apromore.apmlog.stats.AAttributeGraph;
-
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
@@ -99,8 +97,8 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
 
     public String startTimeString, endTimeString, durationString;
 
-    private List<org.apromore.apmlog.AActivity> activityList;
-    private List<org.apromore.apmlog.AEvent> eventList;
+    private List<AActivity> activityList;
+    private List<AEvent> eventList;
     private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     private UnifiedMap<String, String> attributeMap;
     private List<String> activityNameList;
@@ -125,8 +123,8 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
         initStats(apmLog);
     }
 
-    public ATraceImpl(String caseIdString, List<org.apromore.apmlog.AEvent> inputEventList,
-                  UnifiedMap<String, String> caseAttributes, APMLogImpl apmLog) {
+    public ATraceImpl(String caseIdString, List<AEvent> inputEventList,
+                      UnifiedMap<String, String> caseAttributes, APMLogImpl apmLog) {
         if (!caseIdString.equals("")) {
             this.caseId = caseIdString;
             if (caseIdString.matches("-?\\d+(\\.\\d+)?")) this.caseIdDigit = new Long(caseId);
@@ -477,14 +475,10 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
     }
 
     @Override
-    public void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes) {
+    public void addActivity(AActivity aActivity) {
 
     }
 
-    @Override
-    public UnifiedMap<String, String> getActivityAttributes(int immutableActivityIndex) {
-        return null;
-    }
 
     @Override
     public int getImmutableIndex() {
@@ -566,7 +560,7 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
         return attributeMap;
     }
 
-    public List<org.apromore.apmlog.AEvent> getEventList() {
+    public List<AEvent> getEventList() {
         return eventList;
     }
 
@@ -750,15 +744,6 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
 
     }
 
-    @Override
-    public List<UnifiedMap<String, String>> getActivityAttributesList() {
-        return null;
-    }
-
-    @Override
-    public void setActivityAttributesList(List<UnifiedMap<String, String>> activityAttributesList) {
-
-    }
 
     @Override
     public List<AEvent> getImmutableEvents() {
@@ -773,9 +758,9 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
 
     public ATraceImpl clone() {
 
-        List<org.apromore.apmlog.AEvent> aEventList = new ArrayList<>();
+        List<AEvent> aEventList = new ArrayList<>();
 
-        List<org.apromore.apmlog.AEvent> originalEventList = this.getEventList();
+        List<AEvent> originalEventList = this.getEventList();
 
         for (int i=0; i < originalEventList.size(); i++) {
             AEvent eventClone = originalEventList.get(i).clone(null, null);
@@ -841,6 +826,11 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
                 eNameSet,
                 this.activityNameIndexList);
         aTrace.setIndex(this.index);
+
+        for (int i=0; i < this.activityList.size(); i++) {
+            AActivity aActivity = this.activityList.get(i).clone();
+            aActivity.setParentTrace(aTrace);
+        }
         return aTrace;
     }
 

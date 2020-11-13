@@ -41,22 +41,9 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.stats.AAttributeGraph;
-
-import org.apromore.apmlog.util.Util;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
@@ -77,15 +64,15 @@ import java.util.List;
  * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
  * Modified: Chii Chang (13/10/2020)
  * Modified: Chii Chang (27/10/2020)
+ * Modified: Chii Chang (11/11/2020)
  */
 public interface ATrace {
 
 
      UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap();
 
-     void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes);
-
-     UnifiedMap<String, String> getActivityAttributes(int immutableActivityIndex);
+//     void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes);
+     void addActivity(AActivity aActivity);
 
      int getImmutableIndex();
 
@@ -167,14 +154,6 @@ public interface ATrace {
      void addEvent(AEvent event);
 
      void setEventList(List<AEvent> eventList);
-
-//     IntArrayList getActivityNameIndexes();
-//
-//     void setActivityNameIndexes(IntArrayList activityNameIndexes);
-
-     List<UnifiedMap<String, String>> getActivityAttributesList();
-
-     void setActivityAttributesList(List<UnifiedMap<String, String>> activityAttributesList);
 
      List<AEvent> getImmutableEvents();
 

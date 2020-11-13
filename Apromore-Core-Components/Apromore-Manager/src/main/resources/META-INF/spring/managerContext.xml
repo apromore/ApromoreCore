@@ -39,7 +39,7 @@
 >
 
     <context:property-placeholder properties-ref="managerProperties"/>
-    <osgi-compendium:cm-properties id="managerProperties" persistent-id="site" init-timeout="60"/>
+    <osgi-compendium:cm-properties id="managerProperties" persistent-id="site"/>
 
     <context:annotation-config/>
     <context:spring-configured/>

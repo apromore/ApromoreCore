@@ -41,11 +41,12 @@ import java.util.*;
  * @author Chii Chang (11/2019)
  * Modified: Frank Ma (16/11/2019)
  * Modified: Chii Chang (28/01/2020)
+ * Modified: Chii Chang (10/11/2020)
  */
 public class Util {
 
     private static final double year = 1000.0D * 60 * 60 * 24 * 365;
-    private static final double month = 1000.0D * 60 * 60 * 24 * 31;
+    private static final double month = 1000.0D * 60 * 60 * 24 * 30.4166666667;
     private static final double week = 1000.0D * 60 * 60 * 24 * 7;
     private static final double day = 1000.0D * 60 * 60 * 24;
     private static final double hour = 1000.0D *  60 * 60;
@@ -59,19 +60,6 @@ public class Util {
     }
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-//        XAttribute da =
-//                xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
-//        Date d = ((XAttributeTimestamp) da).getValue();
-//        ZonedDateTime z =
-//                ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
-//        return z;
-//        String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
-//        Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
-//        ZonedDateTime z = millisecondToZonedDateTime(calendar.getTimeInMillis());
-//        return z;
-
-
-
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
 
         timestamp = validateTimestamp(timestamp);
@@ -136,13 +124,13 @@ public class Util {
 
     public static String durationStringOf(double millis) {
 
-        double secs = millis / 1000d;
-        double mins = millis / 1000 / 60;
-        double hrs = millis / 1000 / 60 / 60d;
-        double days = millis / 1000 / 60 / 60 / 24d;
-        double wks = millis / 1000 / 60 / 60 / 24 / 7d;
-        double mths = millis / 1000 / 60 / 60 / 24 / 31d;
-        double yrs = millis / 1000 / 60 / 60 / 24 / 365d;
+        double secs = millis / second;
+        double mins = millis / minute;
+        double hrs = millis / hour;
+        double days = millis / day;
+        double wks = millis / week;
+        double mths = millis / month;
+        double yrs = millis / year;
 
         if (yrs > 1)  return df2.format(yrs) + " yrs";
         if (mths > 1) return df2.format(mths) + " mths";

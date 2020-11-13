@@ -43,6 +43,7 @@
                             to the Fragment-Host bundle we are attached to.
                         -->
                         <Import-Package>
+                            com.mysql.cj.jdbc;resolution:=optional,
                             com.mysql.jdbc
                         </Import-Package>
                     </instructions>

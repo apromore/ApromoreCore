@@ -34,14 +34,15 @@
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
     <context:property-placeholder properties-ref="gitProperties" ignore-unresolvable="true"/>
-    <osgi-compendium:cm-properties id="gitProperties" persistent-id="git" init-timeout="60"/>
+    <osgi-compendium:cm-properties id="gitProperties" persistent-id="git"/>
 
     <!-- Expose the components as OSGi services -->
     <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.about.AboutPlugin">
+        <beans:constructor-arg type="org.osgi.framework.BundleContext" ref="bundleContext"/>
         <beans:constructor-arg type="String" value="${git.commit.id.describe}"/>
         <beans:constructor-arg type="String" value="${git.commit.time}"/>
     </beans:bean>
-    <osgi:service ref="portalPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <osgi:service ref="portalPlugin" interface="org.apromore.plugin.portal.PortalPlugin"/>
 
     <osgi:service interface="org.apromore.plugin.portal.WebContentService">
         <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">

@@ -110,6 +110,7 @@
 		<module>Apromore-Assembly/Portal-Assembly</module>
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
     	<module>Apromore-Cache</module>
+    	<module>Apromore-Calendar</module>
     	<module>Apromore-Database</module>
 
 		<module>Apromore-Commons</module>
@@ -157,6 +158,7 @@
 
 		<h2.version>1.3.171</h2.version>
 		<mysql.connector.version>5.1.31</mysql.connector.version>
+		<!-- <mysql.connector.version>8.0.22</mysql.connector.version> -->
 		<transaction.version>1.1.0</transaction.version>
 		<javax.persistence.version>2.0.3</javax.persistence.version>
 		<eclipselink.version>2.4.1</eclipselink.version>
@@ -222,7 +224,6 @@
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 		<jbpt-petri.version>0.2.433</jbpt-petri.version>
 		<v4-runtime.version>4.3</v4-runtime.version>
-		<mysql.version>5.1.21</mysql.version>
 		<liquibase.version>3.4.2</liquibase.version>
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 

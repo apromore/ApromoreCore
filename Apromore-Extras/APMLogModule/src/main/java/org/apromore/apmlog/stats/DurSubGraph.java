@@ -32,15 +32,26 @@ public class DurSubGraph {
     private UnifiedMap<String, UnifiedSet<Integer>> valCaseOccurMap;
     private UnifiedMap<String, Integer> valTtlFreqMap;
     private UnifiedMap<String, IntIntPair> valFrequenciesMap;
+    private UnifiedMap<String, DoubleArrayList> valDurListMap;
 
     public DurSubGraph() {
         valDurCaseIndexMap = new UnifiedMap<>();
         valFrequenciesMap = new UnifiedMap<>();
         valCaseOccurMap = new UnifiedMap<>();
         valTtlFreqMap = new UnifiedMap<>();
+        valDurListMap = new UnifiedMap<>();
     }
 
     public void addDuration(String value, double duration, int traceIndex) {
+        if (valDurListMap.containsKey(value)) {
+            valDurListMap.get(value).add(duration);
+        } else {
+            DoubleArrayList dal = new DoubleArrayList();
+            dal.add(duration);
+            valDurListMap.put(value, dal);
+        }
+
+
         if (valDurCaseIndexMap.containsKey(value)) {
             UnifiedMap<Double, UnifiedSet<Integer>> durCaseMap = valDurCaseIndexMap.get(value);
             if (durCaseMap.containsKey(duration)) {
@@ -92,5 +103,9 @@ public class DurSubGraph {
 
     public UnifiedMap<String, UnifiedSet<Integer>> getValCaseOccurMap() {
         return valCaseOccurMap;
+    }
+
+    public UnifiedMap<String, DoubleArrayList> getValDurListMap() {
+        return valDurListMap;
     }
 }

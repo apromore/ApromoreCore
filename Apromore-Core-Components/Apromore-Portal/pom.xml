@@ -63,10 +63,12 @@
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Package>
-                            org.eclipse.virgo.web.dm,
+                            javax.xml.soap,
+                            org.eclipse.virgo.web.dm;resolution:=optional,
                             org.aopalliance.aop,                            
                             org.apromore.security.filter,
                             org.apromore.security.provider,
+                            org.apromore.service,
                             com.google.common.base,
                             org.deckfour.xes.classification,
                             org.deckfour.xes.extension,
@@ -87,6 +89,10 @@
                             org.deckfour.xes.xstream,
                             org.springframework.aop,
                             org.springframework.aop.framework,
+                            org.springframework.context.config,
+                            org.springframework.osgi.compendium.config;resolution:=optional,
+                            org.springframework.osgi.config;resolution:=optional,
+                            org.springframework.osgi.web.context.support;resolution:=optional,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.security.authentication,
                             org.springframework.security.config,
@@ -96,6 +102,8 @@
                             org.springframework.security.web.session,
                             org.springframework.web.context.request,
                             org.springframework.web.filter,
+                            org.springframework.ws.soap.saaj,
+                            org.springframework.ws.transport.http,
                             org.zkoss.zel.impl,
                             org.zkoss.zk.au.http,
                             *;resolution:=optional
