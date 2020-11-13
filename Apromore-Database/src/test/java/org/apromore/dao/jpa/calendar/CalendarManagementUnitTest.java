@@ -24,8 +24,12 @@ package org.apromore.dao.jpa.calendar;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
@@ -43,7 +47,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 	@Test
 	public void createCustomCalender() {
 //		Given
-		CustomCalendar calender = new CustomCalendar("Test Calender");
+		CustomCalendar calender = new CustomCalendar("Test Calender",ZoneId.of("UTC"));
 
 //		When
 		calender = customCal.saveAndFlush(calender);
@@ -171,5 +175,6 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 		assertThat(calenderExpected.getHolidays().get(0).getLocalDateHolidayDate()).isEqualTo(holidayDate);
 
 	}
+	
 
 }

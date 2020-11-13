@@ -39,6 +39,12 @@ public class CustomMapper {
     this.converters = converters;
   }
 
+  
+  public CustomMapper() {
+    super();
+  }
+
+
   public void init() {
     mapper = new ModelMapper();
 

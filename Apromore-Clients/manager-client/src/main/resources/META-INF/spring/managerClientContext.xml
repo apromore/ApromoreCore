@@ -32,7 +32,7 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <osgi-compendium:cm-properties id="managerClientProperties" persistent-id="site" init-timeout="60" />
+    <osgi-compendium:cm-properties id="managerClientProperties" persistent-id="site"/>
     <context:property-placeholder properties-ref="managerClientProperties"/>
 
     <context:component-scan base-package="org.apromore.manager.client"/>

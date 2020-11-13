@@ -170,6 +170,14 @@ public class SearchableListbox {
         }
     }
 
+    public int getSelectionCount() {
+        return listbox.getSelectedCount();
+    }
+
+    public boolean isSingleFileSelected() {
+        return getSelectionCount() == 1;
+    }
+
     public Set getSelection () {
         return listModel.getSelection();
     }

@@ -22,7 +22,7 @@
   #L%
   -->
 
-<beans:beans xmlns="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:beans="http://www.springframework.org/schema/beans"
    xmlns:context="http://www.springframework.org/schema/context"
@@ -30,14 +30,15 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.eclipse.org/gemini/blueprint/schema/blueprint
        http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <context:annotation-config />
     <context:spring-configured />
 
     <!-- Other OSGi services this component consumes -->
-    <list id="editorPluginsSignavio" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional"/>
-    <list id="editorPluginsBPMN" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
+    <list id="editorPluginsSignavio" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" cardinality="0..N"/>
+    <list id="editorPluginsBPMN" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" cardinality="0..N"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="logAnimationService" interface="org.apromore.service.loganimation.LogAnimationService"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>

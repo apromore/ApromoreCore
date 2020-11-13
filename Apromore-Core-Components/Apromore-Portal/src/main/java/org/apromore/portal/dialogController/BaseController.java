@@ -44,6 +44,7 @@ import org.zkoss.zul.Window;
 // Local classes
 import org.apromore.manager.client.ManagerService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.SecurityService;
 import org.apromore.portal.ConfigBean;
 
 /**
@@ -55,8 +56,10 @@ public class BaseController extends Window {
 
     public static final String MANAGER_SERVICE = "managerClient";
     public static final String EVENT_LOG_SERVICE = "eventLogService";
+    public static final String SECURITY_SERVICE = "securityService";
     private ManagerService managerService;
     private EventLogService eventLogService;
+    private SecurityService securityService;
 
     protected AutowireCapableBeanFactory beanFactory;
     protected ConfigBean config;
@@ -85,6 +88,14 @@ public class BaseController extends Window {
             setEventLogService(eventLogService);
         }
         return eventLogService;
+    }
+
+    public SecurityService getSecurityService() {
+        if (securityService == null) {
+            securityService = (SecurityService) SpringUtil.getBean(SECURITY_SERVICE);
+            setSecurityService(securityService);
+        }
+        return securityService;
     }
 
     /**
@@ -194,5 +205,7 @@ public class BaseController extends Window {
     private void setEventLogService(final EventLogService eventLogService) {
         this.eventLogService = eventLogService;
     }
-
+    private void setSecurityService(final SecurityService securityService) {
+        this.securityService = securityService;
+    }
 }

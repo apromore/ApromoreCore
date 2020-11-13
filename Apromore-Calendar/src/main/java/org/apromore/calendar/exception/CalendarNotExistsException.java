@@ -19,29 +19,16 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.calendar.model;
+package org.apromore.calendar.exception;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import lombok.Data;
-import lombok.ToString;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Data
-@ToString
-public class DurationModel {
+@RequiredArgsConstructor
+public class CalendarNotExistsException extends Exception {
 
-  Duration duration = Duration.ZERO;
-  Duration durationMin = Duration.ZERO;
-  Duration durationMax = Duration.ZERO;
-  Duration durationMean = Duration.ZERO;
-  Duration durationMedian = Duration.ZERO;
-  Duration durationSum = Duration.ZERO;
-
-  public void setAll(Duration totalDuration) {
-    duration =
-        durationMin = durationMax = durationMean = durationMedian = durationSum = totalDuration;
-
-  }
-
-
+	@NonNull
+	String messageString;
+	
+	
 }

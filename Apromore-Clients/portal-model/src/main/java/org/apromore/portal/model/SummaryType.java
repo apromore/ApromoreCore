@@ -197,6 +197,10 @@ public class SummaryType {
         return owner;
     }
 
+    public String getOwnerName() {
+        return (makePublic != null && makePublic == true) ? "public" : owner;
+    }
+
     /**
      * Sets the value of the owner property.
      * 

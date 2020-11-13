@@ -25,7 +25,6 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.PLog;
-import org.apromore.apmlog.filter.PTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -34,7 +33,6 @@ import java.util.Set;
 
 public class AAttributeGraph {
 
-//    private UnifiedMap<String, AAttribute> map = new UnifiedMap<>();
     private APMLog apmLog;
     private UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> eventAttributeOccurMap;
 
@@ -85,11 +83,13 @@ public class AAttributeGraph {
         for (String val : valActsMap.keySet()) {
             UnifiedSet<AActivity> activities = valActsMap.get(val);
             for (AActivity activity : activities) {
-                long actDur = activity.getDuration();
+                double actDur = activity.getDuration();
                 int traceIndex = activity.getMutableTraceIndex();
                 durSubGraph.addDuration(val, actDur, traceIndex);
+
             }
         }
+
 
         return durSubGraph;
 
@@ -106,7 +106,7 @@ public class AAttributeGraph {
 
 
         for (AActivity act : activities) {
-            int actIndex = act.getImmutableIndex();
+            int actIndex = act.getMutableIndex();
             ATrace parentTrace = ((PLog) apmLog).getPTraceList().get(act.getMutableTraceIndex());
             int traceIndex = parentTrace.getMutableIndex();
 
@@ -125,8 +125,6 @@ public class AAttributeGraph {
                     if (nST > aET) {
                         long dur = nST - aET;
                         subGraph.addDuration(nVal, dur, traceIndex);
-                    } else {
-                        //System.out.println("");
                     }
                 }
             }

@@ -187,7 +187,6 @@ public class Group implements Serializable {
         this.users = newUsers;
     }
 
-
     // Overridden object methods
 
     @Override

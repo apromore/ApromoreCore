@@ -39,7 +39,7 @@
 >
 
 	<context:property-placeholder properties-ref="managerProperties"/>
-    <osgi-compendium:cm-properties id="managerProperties" persistent-id="site" init-timeout="60"/>
+    <osgi-compendium:cm-properties id="managerProperties" persistent-id="site"/>
   
 
     <!-- Import other Application Context used to construct the Spring context. -->

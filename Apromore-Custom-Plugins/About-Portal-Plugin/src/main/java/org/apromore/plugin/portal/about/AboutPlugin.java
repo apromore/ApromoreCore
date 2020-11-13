@@ -22,15 +22,18 @@
 
 package org.apromore.plugin.portal.about;
 
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.ConfigBean;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -43,10 +46,12 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     private String label = "About Apromore";
     private String groupLabel = "About";
+    private BundleContext bundleContext;
     private String commitId;
     private String buildDate;
 
-    public AboutPlugin(final String newCommitId, final String newBuildDate) {
+    public AboutPlugin(final BundleContext newBundleContext, final String newCommitId, final String newBuildDate) {
+        this.bundleContext = newBundleContext;
         this.commitId = newCommitId;
         this.buildDate = newBuildDate;
     }
@@ -91,8 +96,11 @@ public class AboutPlugin extends DefaultPortalPlugin {
                     config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() +
                 ")"
             );
-            final Window pluginWindow = (Window)
-                portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/about.zul", null, args);
+            final Window pluginWindow = (Window) Executions.getCurrent().createComponentsDirectly(
+                new InputStreamReader(bundleContext.getBundle().getResource("zul/about.zul").openStream(), "UTF-8"),
+                "zul",
+                null,
+                args);
             pluginWindow.setAttribute("version", "dummy");
 
             Button buttonOk = (Button) pluginWindow.getFellow("ok");
@@ -106,6 +114,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
         } catch (Exception e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            LOGGER.error("Unable to display About dialog", e);
         }
     }
 }

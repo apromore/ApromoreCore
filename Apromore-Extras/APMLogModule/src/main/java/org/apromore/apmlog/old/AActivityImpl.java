@@ -39,10 +39,10 @@ public class AActivityImpl implements org.apromore.apmlog.AActivity {
     private List<AEvent> eventList;
     private long startTimeMilli = 0;
     private long endTimeMilli = 0;
-    private long duration = 0;
+    private double duration = 0;
 
     public AActivityImpl(String name, List<AEvent> eventList, long startTimeMilli, long endTimeMilli,
-                     long duration) {
+                         double duration) {
         this.name = name.intern();
         this.eventList = eventList;
         this.startTimeMilli = startTimeMilli;
@@ -119,7 +119,7 @@ public class AActivityImpl implements org.apromore.apmlog.AActivity {
         return endTimeMilli;
     }
 
-    public long getDuration() {
+    public double getDuration() {
         return duration;
     }
 
@@ -133,6 +133,11 @@ public class AActivityImpl implements org.apromore.apmlog.AActivity {
     }
 
     @Override
+    public void setAttributes(UnifiedMap<String, String> allAttributes) {
+
+    }
+
+    @Override
     public IntArrayList getEventIndexes() {
         return null;
     }
@@ -140,6 +145,11 @@ public class AActivityImpl implements org.apromore.apmlog.AActivity {
     @Override
     public String getAttributeValue(String key) {
         return getAllAttributes().get(key);
+    }
+
+    @Override
+    public AActivity clone(ATrace parentTrace) {
+        return null;
     }
 
     public AActivityImpl clone() {
@@ -151,7 +161,7 @@ public class AActivityImpl implements org.apromore.apmlog.AActivity {
         }
         long clnStartTimeMilli = this.startTimeMilli;
         long clnEndTimeMilli = this.endTimeMilli;
-        long clnDuration = this.duration;
+        double clnDuration = this.duration;
         AActivityImpl activity = new AActivityImpl(clnName, clnEventList, clnStartTimeMilli,
                 clnEndTimeMilli, clnDuration);
         return activity;

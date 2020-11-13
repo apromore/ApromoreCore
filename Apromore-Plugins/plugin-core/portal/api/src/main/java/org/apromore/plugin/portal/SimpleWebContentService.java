@@ -61,7 +61,7 @@ public class SimpleWebContentService implements WebContentService {
     /**
      * Paths matching the given pattern will never be exposed by this service.
      */
-    private Pattern excludePattern = Pattern.compile("WEB-INF/.*|.*\\.class");
+    private Pattern excludePattern = Pattern.compile("WEB-INF/.*|.*\\.class|.*/");
 
     /**
      * @param object  an object from a package of the plugin bundle; must not be <code>null</code>

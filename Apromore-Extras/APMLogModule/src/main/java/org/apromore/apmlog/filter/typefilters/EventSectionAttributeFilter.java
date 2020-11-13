@@ -21,15 +21,37 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
+import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.Set;
+
 /**
  * @author Chii Chang
  */
 public class EventSectionAttributeFilter {
+
+    public static boolean toKeep(AActivity aActivity, LogFilterRule logFilterRule) {
+        Choice choice = logFilterRule.getChoice();
+        switch (choice) {
+            case RETAIN: return conformRule(aActivity, logFilterRule);
+            default: return !conformRule(aActivity, logFilterRule);
+        }
+    }
+
+    private static boolean conformRule(AActivity aActivity, LogFilterRule logFilterRule) {
+        String attributeKey = logFilterRule.getKey();
+        Set<String> values = logFilterRule.getPrimaryValuesInString();
+
+        UnifiedMap<String, String> allAttributes = aActivity.getAllAttributes();
+
+        if (!allAttributes.containsKey(attributeKey)) return false;
+
+        return values.contains(allAttributes.get(attributeKey));
+    }
 
     public static boolean toKeep(AEvent event, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
