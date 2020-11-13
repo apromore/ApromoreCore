@@ -68,6 +68,7 @@
                             org.aopalliance.aop,                            
                             org.apromore.security.filter,
                             org.apromore.security.provider,
+                            org.apromore.service,
                             com.google.common.base,
                             org.deckfour.xes.classification,
                             org.deckfour.xes.extension,
