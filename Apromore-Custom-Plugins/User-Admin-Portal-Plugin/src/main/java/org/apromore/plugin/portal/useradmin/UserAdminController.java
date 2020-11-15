@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apromore.commons.zk.ComponentUtils;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -83,6 +84,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
+import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
 import org.apromore.plugin.portal.useradmin.listbox.*;
 import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
 
@@ -161,6 +163,11 @@ public class UserAdminController extends SelectorComposer<Window> {
     Tab groupsTab;
     @Wire("#userListView")
     Vbox userListView;
+
+    @Wire("#userDetailContainer")
+    Vbox userDetailContainer;
+    @Wire("#groupDetailContainer")
+    Vbox groupDetailContainer;
 
     @Wire("#userListbox")
     Listbox userListbox;
@@ -650,6 +657,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedGroupList.reset();
         assignedRoleListbox.setDisabled(false);
         assignedGroupListbox.setDisabled(false);
+        ComponentUtils.toggleSclass(userDetailContainer, true);
         if (users == null || users.size() == 0 || users.size() > 1) {
             selectedUser = null;
             selectedUsers = users;
@@ -666,6 +674,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                 userSaveBtn.setDisabled(false);
             }
             if (users == null || users.size() == 0) {
+                ComponentUtils.toggleSclass(userDetailContainer, false);
                 assignedRoleItemRenderer.setDisabled(true);
                 assignedGroupItemRenderer.setDisabled(true);
                 assignedRoleListbox.setDisabled(true);
@@ -694,12 +703,14 @@ public class UserAdminController extends SelectorComposer<Window> {
     private Group setSelectedGroup(Group group) {
         isGroupDetailDirty = false;
         assignedUserAddView.setVisible(false);
+
         if (group == null) {
             groupNameTextbox.setValue("");
             groupDetail.setValue("No group is selected");
             assignedUserModel = new ListModelList<>();
             nonAssignedUserModel = new ListModelList<>();
             groupSaveBtn.setDisabled(true);
+            ComponentUtils.toggleSclass(groupDetailContainer, false);
         } else {
             groupNameTextbox.setValue(group.getName());
             groupDetail.setValue("Group: " + group.getName());
@@ -711,6 +722,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             assignedUserModel = new ListModelList<User>(assignedUsers, false);
             nonAssignedUserModel = new ListModelList<User>(nonAssignedUsers, false);
             groupSaveBtn.setDisabled(false);
+            ComponentUtils.toggleSclass(groupDetailContainer, true);
         }
         assignedUserModel.setMultiple(true);
         assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, "Assigned Users");
@@ -745,9 +757,67 @@ public class UserAdminController extends SelectorComposer<Window> {
         if (!hasPermission(Permissions.VIEW_USERS)) {
             throw new Exception("Cannot view users without permission");
         }
-        Set<User> users = event.getSelectedObjects();
-        if (users.size() >= 1) {
-            setSelectedUsers(users);
+        Set<User> prevUsers = event.getPreviousSelectedObjects();
+        Set<User> newUsers = event.getSelectedObjects();
+        checkDirtyUser(prevUsers, newUsers, null);
+    }
+
+    public void selectBulk(SearchableListbox list, boolean select) {
+        if (select) {
+            list.selectAll();
+        } else {
+            list.unselectAll();
+        }
+    }
+
+    /**
+     * Check dirty user detail
+     *
+     * @param prevUsers Previously selected users
+     * @param newUsers Newly selected users
+     * @param select Null do nothing, true select all, false unselect all
+     * @return
+     */
+    public void checkDirtyUser(Set<User> prevUsers, Set<User> newUsers, Boolean select) {
+        if (isUserDetailDirty) {
+            Messagebox.show("There is unsaved user detail. Do you want to save the information?",
+                    "Question",
+                    new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
+                    Messagebox.QUESTION,
+                    new org.zkoss.zk.ui.event.EventListener() {
+                        public void onEvent(Event e) {
+                            String buttonName = e.getName();
+                            if (Messagebox.ON_CANCEL.equals(buttonName)) {
+                                if (prevUsers != null) {
+                                    userList.getListModel().setSelection(prevUsers);
+                                }
+                                return;
+                            } else if (Messagebox.ON_YES.equals(buttonName)) {
+                                onClickUserSaveButton();
+                            }
+                            if (select != null) {
+                                selectBulk(userList, select);
+                            }
+                            updateUserDetail(newUsers);
+                        }
+                    }
+            );
+        } else {
+            if (select != null) {
+                selectBulk(userList, select);
+            }
+            updateUserDetail(newUsers);
+        }
+    }
+
+    /**
+     * Update user detail when required
+     *
+     * @param newUsers
+     */
+    public void updateUserDetail(Set<User> newUsers) {
+        if (newUsers != null && newUsers.size() >= 1) {
+            setSelectedUsers(newUsers);
         } else {
             setSelectedUsers(null);
         }
@@ -760,6 +830,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Notification.error("You do not have permission to assign group(s)");
             return;
         }
+        isUserDetailDirty = true;
     }
 
     @Listen("onSelect = #assignedRoleListbox")
@@ -769,6 +840,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Notification.error("You do not have permission to assign roles");
             return;
         }
+        isUserDetailDirty = true;
     }
 
     @Listen("onClick = #userAddBtn")
@@ -877,9 +949,59 @@ public class UserAdminController extends SelectorComposer<Window> {
             Notification.error("You do not have permission to edit group");
             return;
         }
-        Set<Group> selectedGroups = event.getSelectedObjects();
-        if (selectedGroups.size() == 1) {
-            Group group = selectedGroups.iterator().next();
+        Set<Group> newGroups = event.getSelectedObjects();
+        Set<Group> prevGroups = event.getPreviousSelectedObjects();
+        checkDirtyGroup(prevGroups, newGroups, null);
+    }
+
+    /**
+     * Check dirty group detail
+     *
+     * @param prevGroups Previously selected groups
+     * @param newGroups Newly selected groups
+     * @param select Null do nothing, true select all, false unselect all
+     * @return
+     */
+    public void checkDirtyGroup(Set<Group> prevGroups, Set<Group> newGroups, Boolean select) {
+        if (isGroupDetailDirty) {
+            Messagebox.show("There is unsaved group detail. Do you want to save the information?",
+                    "Question",
+                    new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
+                    Messagebox.QUESTION,
+                    new org.zkoss.zk.ui.event.EventListener() {
+                        public void onEvent(Event e) {
+                            String buttonName = e.getName();
+                            if (Messagebox.ON_CANCEL.equals(buttonName)) {
+                                if (prevGroups != null) {
+                                    groupList.getListModel().setSelection(prevGroups);
+                                }
+                                return;
+                            } else if (Messagebox.ON_YES.equals(buttonName)) {
+                                onClickGroupSaveButton();
+                            }
+                            if (select != null) {
+                                selectBulk(groupList, select);
+                            }
+                            updateGroupDetail(newGroups);
+                        }
+                    }
+            );
+        } else {
+            if (select != null) {
+                selectBulk(groupList, select);
+            }
+            updateGroupDetail(newGroups);
+        }
+    }
+
+    /**
+     * Update group detail when required
+     *
+     * @param newGroups
+     */
+    public void updateGroupDetail(Set<Group> newGroups) {
+        if (newGroups != null && newGroups.size() == 1) {
+            Group group = newGroups.iterator().next();
             setSelectedGroup(securityService.getGroupByName(group.getName()));
         } else {
             setSelectedGroup(null);
@@ -948,6 +1070,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                 nonAssignedUserList.reset();
                 assignedUserList.reset();
             }
+            isGroupDetailDirty = false;
         }
     }
 
@@ -968,6 +1091,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                 nonAssignedUserList.reset();
                 assignedUserList.reset();
             }
+            isGroupDetailDirty = false;
         }
     }
 
@@ -1045,26 +1169,22 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Listen("onClick = #userSelectAllBtn")
     public void onUserSelectAllBtn() {
-        userList.selectAll();
-        setSelectedUsers(null);
+        checkDirtyUser(null, null, true);
     }
 
     @Listen("onClick = #userSelectNoneBtn")
     public void onUserSelectNoneBtn() {
-        userList.unselectAll();
-        setSelectedUsers(null);
+        checkDirtyUser(null, null, false);
     }
 
     @Listen("onClick = #groupSelectAllBtn")
     public void onGroupSelectAllBtn() {
-        groupList.selectAll();
-        setSelectedGroup(null);
+        checkDirtyGroup(null, null, true);
     }
 
     @Listen("onClick = #groupSelectNoneBtn")
     public void onGroupSelectNoneBtn() {
-        groupList.unselectAll();
-        setSelectedGroup(null);
+        checkDirtyGroup(null, null, false);
     }
 
     @Listen("onClick = #okBtn")

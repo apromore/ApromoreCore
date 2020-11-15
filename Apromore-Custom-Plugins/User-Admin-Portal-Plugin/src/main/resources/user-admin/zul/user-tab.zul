@@ -36,7 +36,7 @@
     </hbox>
     <userListboxComp/>
   </vbox>
-  <vbox hflex="1" vflex="1" spacing="0">
+  <vbox hflex="1" vflex="1" spacing="0" id="userDetailContainer" sclass="ap-usrmgt-detail-container">
     <div sclass="ap-usrmgt-detail" hflex="1" height="32px">
       <label id="userDetail" value="User"></label>
     </div>
