@@ -66,6 +66,12 @@
 			<version>1.4.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zul</artifactId>
+			<version>${zk.version}</version>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<build>
