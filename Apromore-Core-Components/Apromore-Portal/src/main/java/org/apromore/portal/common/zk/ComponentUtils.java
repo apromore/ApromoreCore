@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.commons.zk;
+package org.apromore.portal.common.zk;
 
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.slf4j.Logger;

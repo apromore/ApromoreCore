@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.commons.zk;
+package org.apromore.portal.common.zk;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.ParameterizedTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apromore.commons.zk.ComponentUtils;
+import org.apromore.portal.common.zk.ComponentUtils;
 
 /**
  * Test toggle sclass

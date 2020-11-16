@@ -35,11 +35,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apromore.commons.zk.ComponentUtils;
+import org.apromore.portal.common.zk.ComponentUtils;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
