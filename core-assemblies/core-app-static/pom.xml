@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apromore</groupId>
+    <artifactId>core-assemblies</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>core-app-static</artifactId>
+  <packaging>pom</packaging>
+
+  <properties>
+    <checkstyle.skip>false</checkstyle.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core-features</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>static</artifactId>
+      <type>kar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>standard</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.services</groupId>
+      <artifactId>org.apache.karaf.services.staticcm</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>package</id>
+            <goals>
+              <goal>archive</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>dockerfile</id>
+            <goals>
+              <goal>dockerfile</goal>
+            </goals>
+            <configuration>
+              <command>["karaf"]</command>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <startupFeatures>
+            <startupFeature>static-framework</startupFeature>
+            <startupFeature>eventadmin</startupFeature>
+            <startupFeature>jaas</startupFeature>
+            <startupFeature>jpa</startupFeature>
+            <startupFeature>shell</startupFeature>
+            <startupFeature>war</startupFeature>
+
+            <startupFeature>webconsole</startupFeature>
+
+            <startupFeature>virgo-compatibility</startupFeature>
+            <startupFeature>apromore-core</startupFeature>
+          </startupFeatures>
+          <startupBundles>
+            <startupBundle>mvn:org.apache.felix/org.apache.felix.fileinstall/3.6.4</startupBundle>
+<!--
+            <startupBundle>mvn:org.ops4j.pax.logging/pax-logging-api/2.0.6</startupBundle>
+-->
+          </startupBundles>
+          <framework>static</framework>
+          <useReferenceUrls>true</useReferenceUrls>
+          <environment>static</environment>
+          <javase>${java.version}</javase>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

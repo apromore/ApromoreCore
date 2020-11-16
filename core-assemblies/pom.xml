@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore</artifactId>
+    <version>1.1</version>
+  </parent>
+
+  <artifactId>core-assemblies</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0</version>
+
+  <modules>
+    <module>core-app-dynamic</module>
+    <module>core-app-static</module>
+    <module>core-dependencies</module>
+    <module>core-features</module>
+    <module>virgo-compatibility</module>
+  </modules>
+
+  <properties>
+    <checkstyle.skip>false</checkstyle.skip>
+    <enforcer.skip>true</enforcer.skip>
+    <java.version>1.8</java.version>
+    <karaf.version>4.3.0</karaf.version>
+    <license.skipUpdateLicense>true</license.skipUpdateLicense>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <virgo.spring.version>3.1.4.RELEASE</virgo.spring.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>enterprise</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>framework</artifactId>
+        <type>kar</type>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>framework</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>standard</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>static</artifactId>
+        <type>kar</type>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.services</groupId>
+        <artifactId>org.apache.karaf.services.staticcm</artifactId>
+        <version>${karaf.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>${karaf.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
