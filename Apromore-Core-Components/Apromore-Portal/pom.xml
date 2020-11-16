@@ -22,6 +22,10 @@
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Portal</developerConnection>
     </scm>
 
+    <properties>
+        <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    </properties>
+
     <build>
         <finalName>portal</finalName>
         <plugins>
@@ -111,6 +115,7 @@
                         <Export-Package>
                             org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.common.zk,
                             org.apromore.portal.common.notification,
                             org.apromore.portal.context,
                             org.apromore.portal.dialogController.workspaceOptions,
@@ -391,6 +396,30 @@
         </dependency>
 
         <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.4.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
