@@ -64,9 +64,13 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.parquetFactoryProvider = parquetFactoryProvider;
     }
 
-    public LogReaderProvider getLogReaderProvider() {return logReaderProvider;}
+    public LogReaderProvider getLogReaderProvider() {
+        return logReaderProvider;
+    }
 
-    public void setLogReaderProvider(LogReaderProvider logReaderProvider) {this.logReaderProvider = logReaderProvider;}
+    public void setLogReaderProvider(LogReaderProvider logReaderProvider) {
+        this.logReaderProvider = logReaderProvider;
+    }
 
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
         LOGGER.info("Injected CSV importer logic {}", newUserMetadataService);
@@ -77,20 +81,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
     @Override
     public Set<String> getFileExtensions() {
-
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream("datalayer.config"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        boolean useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
-
-        if (useParquet) {
-            return new HashSet<>(Arrays.asList("csv", "parquet", "xlsx"));
-        } else {
-            return new HashSet<>(Arrays.asList("csv", "xlsx"));
-        }
+        return new HashSet<>(Arrays.asList("csv", "parquet", "xlsx"));
     }
 
     @Override

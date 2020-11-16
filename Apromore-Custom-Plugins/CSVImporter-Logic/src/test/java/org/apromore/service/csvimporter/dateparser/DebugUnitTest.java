@@ -41,7 +41,7 @@ import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDate
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 import static org.junit.Assert.assertEquals;
 
-//@Ignore
+@Ignore
 public class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
@@ -90,7 +90,7 @@ public class DebugUnitTest {
 
         if (determineDateFormat(dattime) != null) {
             System.out.println("Parsing " + determineDateFormat(dattime));
-            Timestamp timestamp = parseToTimestamp(dattime, "MM/dd/yy HH:mmeee");
+            Timestamp timestamp = parseToTimestamp(dattime, "MM/dd/yy HH:mm");
             System.out.println("timestamp " + timestamp.toString());
 
         } else {

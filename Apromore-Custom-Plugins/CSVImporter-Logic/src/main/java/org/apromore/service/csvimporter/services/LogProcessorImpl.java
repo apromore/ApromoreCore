@@ -58,28 +58,28 @@ public class LogProcessorImpl implements LogProcessor {
         // Case id:
         caseId = line.get(sample.getCaseIdPos());
         if (caseId == null || caseId.isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header.get(sample.getCaseIdPos()), errorMessage));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header.get(sample.getCaseIdPos()), "Case id is empty or has a null value!"));
             validRow = false;
         }
 
         // Activity
         activity = line.get(sample.getActivityPos());
         if (activity == null || activity.isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header.get(sample.getActivityPos()), errorMessage));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header.get(sample.getActivityPos()), "Activity is empty or has a null value!"));
             validRow = false;
         }
 
         // End Timestamp
         endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat());
         if (endTimestamp == null) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header.get(sample.getEndTimestampPos()), errorMessage));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header.get(sample.getEndTimestampPos()), "End timestamp Can not parse!"));
             validRow = false;
         }
         // Start Timestamp
         if (sample.getStartTimestampPos() != -1) {
             startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat());
             if (startTimestamp == null) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header.get(sample.getStartTimestampPos()), errorMessage));
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header.get(sample.getStartTimestampPos()), "Start timestamp Can not parse!"));
                 validRow = false;
             }
         }
@@ -91,7 +91,7 @@ public class LogProcessorImpl implements LogProcessor {
                 if (tempTimestamp != null) {
                     otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
                 } else {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header.get(otherTimestamp.getKey()), errorMessage));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header.get(otherTimestamp.getKey()), "Other timestamp Can not parse!"));
                     validRow = false;
                 }
             }
@@ -101,7 +101,7 @@ public class LogProcessorImpl implements LogProcessor {
         if (sample.getResourcePos() != -1) {
             resource = line.get(sample.getResourcePos());
             if (resource == null || resource.isEmpty()) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header.get(sample.getResourcePos()), errorMessage));
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header.get(sample.getResourcePos()), "Resource is empty or has a null value!"));
                 validRow = false;
             }
         }
