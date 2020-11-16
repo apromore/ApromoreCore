@@ -557,7 +557,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             } else if (pos == sample.getStartTimestampPos()) {
                 textbox.setPlaceholder(sample.getStartTimestampFormat());
                 textbox.setValue(sample.getStartTimestampFormat());
+            } else if (sample.getOtherTimestamps().containsKey(pos)) {
+                textbox.setPlaceholder(sample.getOtherTimestamps().get(pos));
+                textbox.setValue(sample.getOtherTimestamps().get(pos));
             }
+
             textbox.setPopup(helpP);
             textbox.setClientAttribute("spellcheck", "false");
             textbox.setPopupAttributes(helpP, "after_start", "", "", "toggle");

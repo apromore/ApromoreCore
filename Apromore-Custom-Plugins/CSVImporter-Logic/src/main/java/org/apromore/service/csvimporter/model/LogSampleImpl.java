@@ -26,14 +26,12 @@ package org.apromore.service.csvimporter.model;
 
 import lombok.Data;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.utilities.NameComparator;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
@@ -41,8 +39,6 @@ import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimest
 
 @Data
 public class LogSampleImpl implements LogSample, Constants {
-
-//    private final Parse parse = new Parse();
 
     private List<String> header;
     private List<List<String>> lines;
@@ -148,7 +144,7 @@ public class LogSampleImpl implements LogSample, Constants {
     private void setOtherTimestamps() {
         for (int pos = 0; pos < header.size(); pos++) {
             if (isNOTUniqueAttribute(pos) && couldBeTimestamp(pos) && isParsable(pos)) {
-                otherTimestamps.put(pos, null);
+                otherTimestamps.put(pos, detectDateTimeFormat(pos));
             }
         }
     }
@@ -184,7 +180,7 @@ public class LogSampleImpl implements LogSample, Constants {
 
     // If only one timestamp found then set it as endTimestamp
     private void onlyOnetimestampFound() {
-        if (endTimestampPos == -1 && startTimestampPos == -1 && otherTimestamps.size() == 1) {
+        if (endTimestampPos == -1 && startTimestampPos == -1 && otherTimestamps.size() > 0) {
             endTimestampPos = otherTimestamps.keySet().stream().findFirst().get();
             otherTimestamps.remove(endTimestampPos);
             endTimestampFormat = detectDateTimeFormat(endTimestampPos);
