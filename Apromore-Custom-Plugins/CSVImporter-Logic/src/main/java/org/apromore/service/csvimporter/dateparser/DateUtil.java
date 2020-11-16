@@ -98,7 +98,6 @@ public class DateUtil extends DatePatterns {
     }
 
     public static Timestamp parseToTimestamp(String dateString, String dateFormat) {
-
         if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty())
             return null;
 
