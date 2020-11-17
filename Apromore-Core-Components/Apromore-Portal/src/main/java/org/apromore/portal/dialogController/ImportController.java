@@ -125,7 +125,7 @@ public class ImportController extends BaseController {
             isPublicCheckbox = ((Checkbox) this.importWindow.getFellow("public"));
 
             // build the list of supported extensions to display
-            SortedSet<String> supportedExt = new TreeSet<>();
+            LinkedHashSet<String> supportedExt = new LinkedHashSet<>();
             Collections.addAll(supportedExt, "xes", "xes.gz", "mxml", "mxml.gz", "zip");
             supportedExt.addAll(this.mainC.getNativeTypes().keySet());
             List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");

@@ -78,10 +78,9 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     }
 
     // Implementation of FileImporterPlugin
-
     @Override
     public Set<String> getFileExtensions() {
-        return new HashSet<>(Arrays.asList("csv", "parquet", "xlsx"));
+        return new LinkedHashSet<>(Arrays.asList("csv", "xlsx", "parquet"));
     }
 
     @Override
