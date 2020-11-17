@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -188,120 +188,38 @@ public class DefaultChartDataCollection {
          * For total processing time
          */
         TreeSortedMap<Double, Integer> ttlPTMap = new TreeSortedMap<>();
-        double ttlPTUnit = 0;
-        if (allTotalProcessingTimes.size() > 0) {
-            if (interval > 0) {
-                Collections.sort(allTotalProcessingTimes);
-                int numOfUnits = MAX_UNIT;
-                double first = allTotalProcessingTimes.get(0);
-                double last = allTotalProcessingTimes.get(allTotalProcessingTimes.size() - 1);
-                ttlPTUnit = (last - first) / numOfUnits;
-                double current = first - ttlPTUnit;
-                for (int i = 0; i <= numOfUnits; i++) {
-                    if (i == numOfUnits) current = last;
-                    else current += ttlPTUnit;
-                    ttlPTMap.put(current, 0);
-                }
-            }
-        }
+        double ttlPTUnit = fillMap(allTotalProcessingTimes, interval, ttlPTMap);
+
         /**
          * For average processing time
          */
         TreeSortedMap<Double, Integer> avgPTMap = new TreeSortedMap<>();
-        double avgPTUnit = 0;
-        if (allAverageProcessingTimes.size() > 0) {
-            if (interval > 0) {
-                Collections.sort(allAverageProcessingTimes);
-                double first = allAverageProcessingTimes.get(0);
-                double last = allAverageProcessingTimes.get(allAverageProcessingTimes.size() - 1);
-                avgPTUnit = (last - first) / MAX_UNIT;
-                double current = first - avgPTUnit;
-                for (int i = 0; i <= MAX_UNIT; i++) {
-                    if (i == MAX_UNIT) current = last;
-                    else current += avgPTUnit;
-                    avgPTMap.put(current, 0);
-                }
-            }
-        }
+        double avgPTUnit = fillMap(allAverageProcessingTimes, interval, avgPTMap);
+
         /**
          * For max processing time
          */
         TreeSortedMap<Double, Integer> maxPTMap = new TreeSortedMap<>();
-        double maxPTUnit = 0;
-        if (allMaxProcessingTimes.size() > 0) {
-            if (interval > 0) {
-                Collections.sort(allMaxProcessingTimes);
-                double first = allMaxProcessingTimes.get(0);
-                double last = allMaxProcessingTimes.get(allMaxProcessingTimes.size() - 1);
-                maxPTUnit = (last - first) / MAX_UNIT;
-                double current = first - maxPTUnit;
-                for (int i = 0; i <= MAX_UNIT; i++) {
-                    if (i == MAX_UNIT) current = last;
-                    else current += maxPTUnit;
-                    maxPTMap.put(current, 0);
-                }
-            }
-        }
+        double maxPTUnit = fillMap(allMaxProcessingTimes, interval, maxPTMap);
+
         /**
          * For total waiting time
          */
         TreeSortedMap<Double, Integer> ttlWTMap = new TreeSortedMap<>();
-        double ttlWTUnit = 0;
-        if (allTotalWaitingTimes.size() > 0) {
-            if (interval > 0) {
-                Collections.sort(allTotalWaitingTimes);
-                int numOfUnits = MAX_UNIT;
-                double first = allTotalWaitingTimes.get(0);
-                double last = allTotalWaitingTimes.get(allTotalWaitingTimes.size() - 1);
-                ttlWTUnit = (last - first) / numOfUnits;
-                double current = first - ttlWTUnit;
-                for (int i = 0; i <= numOfUnits; i++) {
-                    if (i == numOfUnits) current = last;
-                    else current += ttlWTUnit;
-                    ttlWTMap.put(current, 0);
-                }
-            }
-        }
+        double ttlWTUnit = fillMap(allTotalWaitingTimes, interval, ttlWTMap);
+
         /**
          * For average waiting time
          */
         TreeSortedMap<Double, Integer> avgWTMap = new TreeSortedMap<>();
-        double avgWTUnit = 0;
-        if (allAverageWaitingTimes.size() > 0) {
-            if (interval > 0) {
-                Collections.sort(allAverageWaitingTimes);
-                int numOfUnits = MAX_UNIT;
-                double first = allAverageWaitingTimes.get(0);
-                double last = allAverageWaitingTimes.get(allAverageWaitingTimes.size() - 1);
-                avgWTUnit = (last - first) / numOfUnits;
-                double current = first - avgWTUnit;
-                for (int i = 0; i <= numOfUnits; i++) {
-                    if (i == numOfUnits) current = last;
-                    else current += avgWTUnit;
-                    avgWTMap.put(current, 0);
-                }
-            }
-        }
+        double avgWTUnit = fillMap(allAverageWaitingTimes, interval, avgWTMap);
+
         /**
          * For max waiting time
          */
         TreeSortedMap<Double, Integer> maxWTMap = new TreeSortedMap<>();
-        double maxWTUnit = 0;
-        if (allMaxWaitingTimes.size() > 0 ) {
-            if (interval > 0) {
-                Collections.sort(allMaxWaitingTimes);
-                int numOfUnits = MAX_UNIT;
-                double first = allMaxWaitingTimes.get(0);
-                double last = allMaxWaitingTimes.get(allMaxWaitingTimes.size() - 1);
-                maxWTUnit = (last - first) / numOfUnits;
-                double current = first - maxWTUnit;
-                for (int i = 0; i <= numOfUnits; i++) {
-                    if (i == numOfUnits) current = last;
-                    else current += maxWTUnit;
-                    maxWTMap.put(current, 0);
-                }
-            }
-        }
+        double maxWTUnit = fillMap(allMaxWaitingTimes, interval, maxWTMap);
+
         /**
          * For case utilization
          */
@@ -545,6 +463,27 @@ public class DefaultChartDataCollection {
                 this.caseUtilizationSeriesData.put(key, y);
             }
         }
+    }
+
+    private double fillMap(List<Double> allValueList, double interval,
+                           TreeSortedMap<Double, Integer> seriesMap) {
+        double unit = 0;
+        if (allValueList.size() > 0 ) {
+            if (interval > 0) {
+                Collections.sort(allValueList);
+                int numOfUnits = MAX_UNIT;
+                double first = allValueList.get(0);
+                double last = allValueList.get(allValueList.size() - 1);
+                unit = (last - first) / numOfUnits;
+                double current = first - unit;
+                for (int i = 0; i <= numOfUnits; i++) {
+                    if (i == numOfUnits) current = last;
+                    else current += unit;
+                    seriesMap.put(current, 0);
+                }
+            }
+        }
+        return unit;
     }
 
     public double getMaxDuration() {
