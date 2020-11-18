@@ -262,9 +262,9 @@ public interface UserMetadataService {
      *
      * @param userMetadataId
      * @param groupRowGuid
-     * @param accessRights
+     * @param accessType
      */
-    void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, AccessRights accessRights);
+    void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType);
 
     /**
      * Remove a group's access rights to one user metadata

@@ -513,18 +513,10 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
-    public void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, AccessRights accessRights) {
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
-        GroupUsermetadata gu =
-                groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+    public void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
-        if (gu == null) {
-            gu = new GroupUsermetadata(group, usermetadata, accessRights);
-        } else {
-            gu.setAccessRights(accessRights);
-        }
-        groupUsermetadataRepo.save(gu);
+        saveUserMetadataAccessRights(userMetadataId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+                accessType.isOwner());
     }
 
     @Override
