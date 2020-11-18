@@ -20,14 +20,15 @@
   #L%
   -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<window
+<window xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:ca="client/attribute"
         sclass="ap-share-win"
         width="700px" height="80%" position="center"
         closable="true"
-        title="Share" apply="org.apromore.portal.dialogController.ShareController">
+        title="Sharing process log or model" apply="org.apromore.portal.dialogController.ShareController">
   <script type="text/javascript" src="/themes/ap/share/js/index.js"></script>
   <style src="/themes/ap/share/css/index.css" />
+
   <vbox height="100%" hflex="1" spacing="0">
     <button id="editBtn" visible="false" />
     <div style="padding: 8px;margin-bottom: 3px;" vflex="min">
@@ -57,50 +58,200 @@
         <button id="candidateAssigneeAdd" label="Share" />
       </div>
     </div>
-    <listbox id="assignmentListbox" multiple="true" vflex="1" hflex="1" xmlns:ca="client/attribute">
-      <listhead>
-        <listheader align="center" label="" width="40px" /><!-- user/group icon -->
-        <listheader align="left" label="Name" sort="auto(name)" />
-        <listheader align="center" label="Permission" width="130px" />
-        <listheader align="center" id="shareUM" visible="false" tooltiptext="Share also the associated user metadata"
-                    label="Incl. metadata"
-                    width="130px" />
-        <listheader align="center" label="" width="40px" style="cursor:pointer;" />
-      </listhead>
-      <template name="model">
-        <listitem>
-          <listcell>
-            <span sclass="ap-icon ${each.isGroup ? 'ap-icon-user' : 'ap-icon-users' }" style="display: inline-block" />
-          </listcell>
-          <listcell label="${each.name}" />
-          <listcell>
-            <combobox value="${each.access}"
-                      readonly="true"
-                      hflex="1"
-                      ca:onSelect="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
-              <comboitem label="Viewer" />
-              <comboitem label="Editor" />
-              <comboitem label="Owner" />
-            </combobox>
-          </listcell>
-          <listcell>
-            <checkbox ca:onClick="Ap.share.toggleIncludeMetadata('${each.rowGuid}', '${each.name}')"
-                      checked="${each.shareUserMetadata}" />
-          </listcell>
-          <listcell>
-            <button sclass="ap-icon ap-icon-trash" tooltiptext="Remove"
-                    ca:onClick="Ap.share.removeAssignee('${each.rowGuid}', '${each.name}')"
-            />
-          </listcell>
-        </listitem>
-      </template>
-    </listbox>
+    <hbox vflex="1" hflex="1" spacing="0" style="padding: 0;">
+      <listbox id="assignmentListbox" multiple="true" vflex="1" hflex="1">
+        <listhead>
+          <listheader align="center" label="" width="40px" /><!-- user/group icon -->
+          <listheader align="left" label="Name" sort="auto(name)" />
+          <listheader align="center" label="Permission" width="130px" />
+          <!--
+          <listheader align="center" id="shareUM" tooltiptext="Share also the associated user metadata"
+                      label="Incl. metadata"
+                      width="130px" />
+                      -->
+          <listheader align="center" label="" width="40px" style="cursor:pointer;" />
+        </listhead>
+        <template name="model">
+          <listitem>
+            <listcell>
+              <span sclass="ap-icon ${each.isGroup ? 'ap-icon-users' : 'ap-icon-user' }" style="display: inline-block" />
+            </listcell>
+            <listcell label="${each.name}" />
+            <listcell>
+              <combobox value="${each.access}"
+                        readonly="true"
+                        hflex="1"
+                        ca:onSelect="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
+                <comboitem label="Viewer" />
+                <comboitem label="Editor" />
+                <comboitem label="Owner" />
+              </combobox>
+            </listcell>
+            <!--<listcell>
+              <checkbox ca:onClick="Ap.share.toggleIncludeMetadata('${each.rowGuid}', '${each.name}')"
+                        checked="${each.shareUserMetadata}" />
+            </listcell>-->
+            <listcell>
+              <button sclass="ap-icon ap-icon-trash" tooltiptext="Remove"
+                      ca:onClick="Ap.share.removeAssignee('${each.rowGuid}', '${each.name}')"
+              />
+            </listcell>
+          </listitem>
+        </template>
+      </listbox><!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
 
-    <div id="umWarning" visible="false" sclass="z-icon-exclamation-circle">
-      No access to the associated log. By sharing this artifact, this user or group will also gain the same access
-      right on the associated log. ​
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+      <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+      <window
+          xmlns:ca="client/attribute"
+          sclass="ap-share-win"
+          width="700px" height="80%" position="center"
+          closable="true"
+          title="Sharing process log or model" apply="org.apromore.portal.dialogController.ShareController">
+        <script type="text/javascript" src="/themes/ap/share/js/index.js"></script>
+        <style src="/themes/ap/share/css/index.css" />
+
+        <vbox height="100%" hflex="1" spacing="0">
+          <button id="editBtn" visible="false" />
+          <div style="padding: 8px;margin-bottom: 3px;" vflex="min">
+            <div sclass="ap-share-detail">
+              <span id="selectedIconLog" sclass="ap-icon ap-icon-log"></span>
+              <span id="selectedIconModel" sclass="ap-icon ap-icon-bpmn-model"></span>
+              <span id="selectedIconFolder" sclass="ap-icon ap-icon-folder"></span>
+              <span id="selectedIconMetadata" sclass="ap-icon ap-icon-metadata"></span>
+              <label id="selectedName">Resource name</label>
+            </div>
+            <div id="relatedDepsWrapper" sclass="ap-share-related-deps" visible="false">
+              <div sclass="note">
+                The following files will also be automatically shared to the assigned users with the same permission level.
+              </div>
+              <div sclass="body" id="relatedDependencies">
+              </div>
+            </div>
+          </div>
+          <div sclass="ap-portal-menu-actions" hflex="1" height="40px"
+               style="box-sizing: border-box; padding: 8px;">
+            <div id="assigneeAddView">
+              <combobox id="candidateAssigneeCombobox" placeholder="Select a user or group">
+                <template name="model">
+                  <comboitem sclass="type-${each.type}" label="${each.name}" />
+                </template>
+              </combobox>
+              <button id="candidateAssigneeAdd" label="Share" />
+            </div>
+          </div>
+          <hbox vflex="1" hflex="1" spacing="0" style="padding: 0;">
+            <listbox id="assignmentListbox" multiple="true" vflex="1" hflex="1">
+              <listhead>
+                <listheader align="center" label="" width="40px" /><!-- user/group icon -->
+                <listheader align="left" label="Name" sort="auto(name)" />
+                <listheader align="center" label="Permission" width="130px" />
+                <!--
+                <listheader align="center" id="shareUM" tooltiptext="Share also the associated user metadata"
+                            label="Incl. metadata"
+                            width="130px" />
+                            -->
+                <listheader align="center" label="" width="40px" style="cursor:pointer;" />
+              </listhead>
+              <template name="model">
+                <listitem>
+                  <listcell>
+                    <span sclass="ap-icon ${each.isGroup ? 'ap-icon-users' : 'ap-icon-user' }" style="display: inline-block" />
+                  </listcell>
+                  <listcell label="${each.name}" />
+                  <listcell>
+                    <combobox value="${each.access}"
+                              readonly="true"
+                              hflex="1"
+                              ca:onSelect="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
+                      <comboitem label="Viewer" />
+                      <comboitem label="Editor" />
+                      <comboitem label="Owner" />
+                    </combobox>
+                  </listcell>
+                  <!--<listcell>
+                    <checkbox ca:onClick="Ap.share.toggleIncludeMetadata('${each.rowGuid}', '${each.name}')"
+                              checked="${each.shareUserMetadata}" />
+                  </listcell>-->
+                  <listcell>
+                    <button sclass="ap-icon ap-icon-trash" tooltiptext="Remove"
+                            ca:onClick="Ap.share.removeAssignee('${each.rowGuid}', '${each.name}')"
+                    />
+                  </listcell>
+                </listitem>
+              </template>
+            </listbox>
+            <listbox id="artifactListbox" multiple="true" checkmark="true" nonselectableTags="*" vflex="1" hflex="1" visible="false">
+              <listhead>
+                <listheader label="" width="30px" />
+                <listheader align="center" label="" width="40px" /><!-- type icon -->
+                <listheader align="left" hflex="1" label="Associated artifacts" sort="auto(name)" />
+                <listheader align="left" width="120px" label="Updated" sort="auto(updatedTime)" />
+              </listhead>
+              <template name="model">
+                <listitem>
+                  <listcell />
+                  <listcell>
+                    <span sclass="ap-icon ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-speed'}" style="display: inline-block" />
+                  </listcell>
+                  <listcell label="${each.name}" />
+                  <listcell label="${each.updatedTime}" />
+                </listitem>
+              </template>
+            </listbox>
+          </hbox>
+          <div id="umWarning" visible="false" sclass="z-icon-exclamation-circle" >
+            No access to the associated log. By sharing this dashboard,
+            this user or group will also gain the same access right on the associated log.​
+          </div>
+          <div sclass="ap-window-footer-actions" height="42px">
+            <button id="btnApply" label="Apply Changes" iconSclass="z-icon-check-circle" />
+            <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
+          </div>
+        </vbox>
+      </window>
+
+      <listbox id="artifactListbox" multiple="true" checkmark="true" nonselectableTags="*" vflex="1" hflex="1" visible="false">
+        <listhead>
+          <listheader label="" width="30px" />
+          <listheader align="center" label="" width="40px" /><!-- type icon -->
+          <listheader align="left" hflex="1" label="Associated artifacts" sort="auto(name)" />
+          <listheader align="left" width="120px" label="Updated" sort="auto(updatedTime)" />
+        </listhead>
+        <template name="model">
+          <listitem>
+            <listcell />
+            <listcell>
+              <span sclass="ap-icon ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-speed'}" style="display: inline-block" />
+            </listcell>
+            <listcell label="${each.name}" />
+            <listcell label="${each.updatedTime}" />
+          </listitem>
+        </template>
+      </listbox>
+    </hbox>
+    <div id="umWarning" visible="false" sclass="z-icon-exclamation-circle" >
+      No access to the associated log. By sharing this dashboard,
+      this user or group will also gain the same access right on the associated log.​
     </div>
-
     <div sclass="ap-window-footer-actions" height="42px">
       <button id="btnApply" label="Apply Changes" iconSclass="z-icon-check-circle" />
       <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
