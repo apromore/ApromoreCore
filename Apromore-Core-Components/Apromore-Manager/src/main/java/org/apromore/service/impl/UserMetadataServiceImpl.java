@@ -144,7 +144,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setName(userMetadataName);
 
         // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
-        LOGGER.info("Create user metadata ID: {} TYPE: {}.", userMetadata.getId(), userMetadataTypeEnum.toString());
+        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username, userMetadata.getId(),
+                userMetadataTypeEnum.toString());
         return userMetadataRepo.saveAndFlush(userMetadata);
 
     }
@@ -250,7 +251,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setUpdatedTime(dateFormat.format(new Date()));
 
         // Persist Usermetadata
-        LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
+        LOGGER.info("User: {} update user metadata ID: {}.", username, userMetadata.getId());
         return userMetadataRepo.saveAndFlush(userMetadata);
     }
 
@@ -266,7 +267,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setUpdatedTime(dateFormat.format(new Date()));
 
         // Persist Usermetadata
-        LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
+        LOGGER.info("User: {} update user metadata ID: {}.", username, userMetadata.getId());
         return userMetadataRepo.saveAndFlush(userMetadata);
     }
 
@@ -274,34 +275,35 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Transactional
     public void deleteUserMetadata(Integer usermetadataId, String username) throws UserNotFoundException {
 
-        User user = userSrv.findUserByLogin(username);
-
-        Usermetadata userMetadata = userMetadataRepo.findById(usermetadataId);
-        userMetadata.setUpdatedBy(user.getRowGuid());
-        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
-        userMetadata.setIsValid(false);
-
-        // Delete all UsermetadataLog
-        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
-        usermetadataLogSet.clear();
-        userMetadata.setUsermetadataLog(usermetadataLogSet);
-        usermetadataLogRepo.delete(usermetadataLogSet);
-
-        // Delete all UsermetadataLog
-        Set<UsermetadataProcess> usermetadataProcessSet = userMetadata.getUsermetadataProcess();
-        usermetadataProcessSet.clear();
-        userMetadata.setUsermetadataProcess(usermetadataProcessSet);
-        usermetadataProcessRepo.delete(usermetadataProcessSet);
-
-        // Delete all GroupUsermetadata
-        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
-        groupUserMetadataSet.clear();
-        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
-        groupUsermetadataRepo.delete(groupUserMetadataSet);
-
-        // Invalidate Usermetadata
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Delete user metadata ID: {}.", userMetadata.getId());
+//        User user = userSrv.findUserByLogin(username);
+//
+//        Usermetadata userMetadata = userMetadataRepo.findById(usermetadataId);
+//        userMetadata.setUpdatedBy(user.getRowGuid());
+//        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
+//        userMetadata.setIsValid(false);
+//
+//        // Delete all UsermetadataLog
+//        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+//        usermetadataLogSet.clear();
+//        userMetadata.setUsermetadataLog(usermetadataLogSet);
+//        usermetadataLogRepo.delete(usermetadataLogSet);
+//
+//        // Delete all UsermetadataLog
+//        Set<UsermetadataProcess> usermetadataProcessSet = userMetadata.getUsermetadataProcess();
+//        usermetadataProcessSet.clear();
+//        userMetadata.setUsermetadataProcess(usermetadataProcessSet);
+//        usermetadataProcessRepo.delete(usermetadataProcessSet);
+//
+//        // Delete all GroupUsermetadata
+//        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
+//        groupUserMetadataSet.clear();
+//        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+//        groupUsermetadataRepo.delete(groupUserMetadataSet);
+//
+//        // Delete Usermetadata
+//        userMetadataRepo.saveAndFlush(userMetadata);
+        userMetadataRepo.delete(usermetadataId);
+        LOGGER.info("User: {} Delete user metadata ID: {}.", username, usermetadataId);
     }
 
     @Override
@@ -449,7 +451,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setContent(content);
 
         userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Create user metadata ID: {} TYPE: {}.",
+        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username,
                 userMetadata.getId(), UserMetadataTypeEnum.DASH_TEMPLATE.toString());
     }
 
@@ -499,6 +501,21 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
         AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        GroupUsermetadata gu =
+                groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+
+        if (gu == null) {
+            gu = new GroupUsermetadata(group, usermetadata, accessRights);
+        } else {
+            gu.setAccessRights(accessRights);
+        }
+        groupUsermetadataRepo.save(gu);
+    }
+
+    @Override
+    public void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, AccessRights accessRights) {
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
         GroupUsermetadata gu =
                 groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
 

@@ -258,6 +258,15 @@ public interface UserMetadataService {
                                       boolean hasOwnership);
 
     /**
+     * Update or save UserMetadata access rights
+     *
+     * @param userMetadataId
+     * @param groupRowGuid
+     * @param accessRights
+     */
+    void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, AccessRights accessRights);
+
+    /**
      * Remove a group's access rights to one user metadata
      * @param userMetadataId
      * @param groupRowGuid
