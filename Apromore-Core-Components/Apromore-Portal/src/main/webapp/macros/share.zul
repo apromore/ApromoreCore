@@ -20,7 +20,7 @@
   #L%
   -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<window xmlns:h="http://www.w3.org/1999/xhtml"
+<window
         xmlns:ca="client/attribute"
         sclass="ap-share-win"
         width="700px" height="80%" position="center"
@@ -96,10 +96,9 @@
       </template>
     </listbox>
 
-    <div id="umWarning" visible="false" sclass="z-icon-exclamation-circle" >
-      This user or group with this WARNING mark doesn't have access to the underlying
-      artifacts. By sharing this user or group will be given the same
-      level of access (viewer, editor, owner) with the user metadata. ​
+    <div id="umWarning" visible="false" sclass="z-icon-exclamation-circle">
+      No access to the associated log. By sharing this artifact, this user or group will also gain the same access
+      right on the associated log. ​
     </div>
 
     <div sclass="ap-window-footer-actions" height="42px">
