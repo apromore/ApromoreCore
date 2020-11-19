@@ -163,7 +163,7 @@ public class ShareController extends SelectorComposer<Window> {
                 Assignment assignment = assignmentMap.get(rowGuid);
                 if (assignment != null) {
                     assignment.setAccess(access);
-                    if (access == AccessType.OWNER.getLabel()) {
+                    if (Objects.equals(access, AccessType.OWNER.getLabel())) {
                         ownerMap.put(rowGuid, assignment);
                     }
                 }
@@ -184,7 +184,7 @@ public class ShareController extends SelectorComposer<Window> {
                 if (assignment != null) {
                     assignmentModel.remove(assignment);
                     assignmentMap.remove(rowGuid);
-                    if (assignment.getAccess() == AccessType.OWNER.getLabel()) {
+                    if (Objects.equals(assignment.getAccess(), AccessType.OWNER.getLabel())) {
                         ownerMap.remove(rowGuid);
                     }
                 }
