@@ -381,7 +381,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadataByUserAndLog(String username, Integer logId,
                                              UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
-        return getUserMetadata(username, new ArrayList<>(logId), userMetadataTypeEnum);
+        return getUserMetadata(username, Collections.singletonList(logId), userMetadataTypeEnum);
     }
 
     @Override
