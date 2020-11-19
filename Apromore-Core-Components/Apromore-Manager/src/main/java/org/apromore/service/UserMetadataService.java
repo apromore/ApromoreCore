@@ -279,4 +279,12 @@ public interface UserMetadataService {
      */
     Usermetadata findById(Integer id);
 
+    /**
+     * Delete one user metadata only when removing the last OWNER access type
+     * @param userMetadataId
+     * @param groupRowGuid
+     * @return
+     */
+    boolean canDeleteUserMetadata(Integer userMetadataId, String groupRowGuid);
+
 }

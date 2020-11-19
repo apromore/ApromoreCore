@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
@@ -531,6 +532,28 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     public Usermetadata findById(Integer id) {
         return userMetadataRepo.findById(id);
+    }
+
+    @Override
+    public boolean canDeleteUserMetadata(Integer userMetadataId, String groupRowGuid) {
+
+        List<GroupUsermetadata> groupUsermetadataList = getGroupUserMetadata(userMetadataId);
+        List<GroupUsermetadata> ownerList = new ArrayList<>();
+
+//        groupUsermetadataList =
+//                groupUsermetadataList.stream()
+//                        .filter(g -> g.getAccessRights().isOwnerShip())
+//                        .collect(Collectors.toList());
+//        return (groupUsermetadataList.size() == 1 && groupUsermetadataList.get(0).getGroup().getRowGuid().equals(groupRowGuid));
+
+
+        for (GroupUsermetadata g :groupUsermetadataList) {
+            if(g.getAccessRights().isOwnerShip()) {
+                ownerList.add(g);
+            }
+        }
+
+        return (ownerList.size() == 1 && ownerList.get(0).getGroup().getRowGuid().equals(groupRowGuid));
     }
 
     @Override

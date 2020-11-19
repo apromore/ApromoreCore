@@ -260,6 +260,7 @@ public class UIHelper implements UserInterfaceHelper {
         userMetadataSummaryType.setId(usermetadata.getId());
         userMetadataSummaryType.setCreatedBy(userMetadataService.findUserByRowGuid(usermetadata.getCreatedBy()).getUsername());
         userMetadataSummaryType.setGroupName(group.getName());
+        userMetadataSummaryType.setGroupUID(group.getRowGuid());
         userMetadataSummaryType.setUpdatedTime(Objects.equals(usermetadata.getUpdatedTime(), null) ?
                 usermetadata.getCreatedTime() :
                 usermetadata.getUpdatedTime());

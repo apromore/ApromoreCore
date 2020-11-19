@@ -24,6 +24,7 @@ package org.apromore.portal.model;
 public class UserMetadataSummaryType extends SummaryType {
 
     private String groupName;
+    private String groupUID;
     private String createdBy;
     private String updatedTime;
     private String accessType;
@@ -38,6 +39,14 @@ public class UserMetadataSummaryType extends SummaryType {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getGroupUID() {
+        return groupUID;
+    }
+
+    public void setGroupUID(String groupUID) {
+        this.groupUID = groupUID;
     }
 
     public String getCreatedBy() {
