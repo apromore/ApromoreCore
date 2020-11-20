@@ -35,6 +35,7 @@ public class Assignment {
     public boolean isGroup;
     public String access; // Viewer, Editor, Owner (UI front for AccessType)
     public boolean shareUserMetadata;
+    public boolean showWarning;
 
     public Assignment(String name, String rowGuid, Type type, String access) {
         this.name = name;
@@ -74,6 +75,14 @@ public class Assignment {
 
     public void setShareUserMetadata(boolean shareUserMetadata) {
         this.shareUserMetadata = shareUserMetadata;
+    }
+
+    public boolean isShowWarning() {
+        return showWarning;
+    }
+
+    public void setShowWarning(boolean showWarning) {
+        this.showWarning = showWarning;
     }
 
     @Override

@@ -28,13 +28,15 @@ import org.apromore.dao.model.UsermetadataType;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.common.access.*;
+import org.apromore.portal.common.access.Artifact;
+import org.apromore.portal.common.access.Assignee;
+import org.apromore.portal.common.access.Assignment;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.model.*;
 import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.AuthorizationService;
-import org.apromore.service.UserMetadataService;
 import org.apromore.service.SecurityService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
@@ -43,11 +45,8 @@ import org.zkoss.json.JSONObject;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -430,7 +429,16 @@ public class ShareController extends SelectorComposer<Window> {
         if (assignees != null && assignees.size() == 1 && selectedItem != null && selectedItemId != null) {
             Assignee assignee = assignees.iterator().next();
             String rowGuid = assignee.getRowGuid();
+
+            boolean showWarning = false;
+            if (selectedItem instanceof UserMetadataSummaryType) {
+                showWarning =
+                        !userMetadataService.canAccessAssociatedLog(((UserMetadataSummaryType) selectedItem).getId(),
+                                rowGuid);
+            }
+
             Assignment assignment = new Assignment(assignee.getName(), rowGuid, assignee.getType(), AccessType.VIEWER.getLabel());
+            assignment.setShowWarning(showWarning);
             if (!assignmentModel.contains(assignment)) {
                 assignmentModel.add(assignment);
                 assignmentMap.put(rowGuid, assignment);

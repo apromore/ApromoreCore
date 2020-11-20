@@ -287,4 +287,14 @@ public interface UserMetadataService {
      */
     boolean canDeleteUserMetadata(Integer userMetadataId, String groupRowGuid);
 
+    /**
+     * Check whether the specified group has access (READER, EDITOR or OWNER) to the associated log of specified user
+     * metadata
+     *
+     * @param userMetadataId
+     * @param groupRowGuid
+     * @return
+     */
+    boolean canAccessAssociatedLog(Integer userMetadataId, String groupRowGuid);
+
 }

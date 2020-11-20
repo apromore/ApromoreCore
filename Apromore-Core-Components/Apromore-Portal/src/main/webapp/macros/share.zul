@@ -39,7 +39,7 @@
                 <span id="selectedIconMetadata" sclass="ap-icon ap-icon-metadata"/>
                 <label id="selectedName">Resource name</label>
             </div>
-            <div id="relatedDepsWrapper" sclass="ap-share-related-deps" visible="false">
+            <div id="relatedDepsWrapper" sclass="ap-share-related-deps" visible="true">
                 <div sclass="note">
                     The following files will also be automatically shared to the assigned users with the same permission
                     level.
@@ -78,7 +78,10 @@
                             <span sclass="ap-icon ${each.isGroup ? 'ap-icon-users' : 'ap-icon-user' }"
                                   style="display: inline-block"/>
                         </listcell>
-                        <listcell label="${each.name}"/>
+                        <listcell label="${each.name}" >
+                            <span sclass="ap-icon ${each.showWarning ? 'z-icon-exclamation-circle' : '' }"
+                                  style="display: inline-block"/>
+                        </listcell>
                         <listcell>
                             <combobox value="${each.access}"
                                       readonly="true"

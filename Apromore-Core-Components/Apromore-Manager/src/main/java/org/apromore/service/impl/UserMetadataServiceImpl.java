@@ -41,7 +41,6 @@ import javax.inject.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
@@ -497,6 +496,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    @Transactional
     public void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, boolean hasRead,
                                              boolean hasWrite, boolean hasOwnership) {
         Group group = groupRepo.findByRowGuid(groupRowGuid);
@@ -511,6 +511,23 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             gu.setAccessRights(accessRights);
         }
         groupUsermetadataRepo.save(gu);
+
+        // Assign the same access right to logs if there is no access. Do nothing if there's already access.
+        if (!canAccessAssociatedLog(userMetadataId, groupRowGuid)) {
+
+            Set<Log> logs = findById(userMetadataId).getLogs();
+            for (Log l : logs) {
+                Set<Group> groups = new HashSet<>();
+
+                for (GroupLog gl : l.getGroupLogs()) {
+                    groups.add(gl.getGroup());
+                }
+
+                if(!groups.contains(group)) {
+                    groupLogRepo.save(new GroupLog(group, l, accessRights));
+                }
+            }
+        }
     }
 
     @Override
@@ -540,6 +557,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         List<GroupUsermetadata> groupUsermetadataList = getGroupUserMetadata(userMetadataId);
         List<GroupUsermetadata> ownerList = new ArrayList<>();
 
+        // Using lambda here would cause runtime error
 //        groupUsermetadataList =
 //                groupUsermetadataList.stream()
 //                        .filter(g -> g.getAccessRights().isOwnerShip())
@@ -554,6 +572,37 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         }
 
         return (ownerList.size() == 1 && ownerList.get(0).getGroup().getRowGuid().equals(groupRowGuid));
+    }
+
+    @Override
+    public boolean canAccessAssociatedLog(Integer userMetadataId, String groupRowGuid) {
+
+        Set<Log> logs = findById(userMetadataId).getLogs();
+
+        // If this metadata doesn't link to log, then turn true.
+        if(logs.size() == 0) {
+            return true;
+        }
+
+        Set<Group> groups = new HashSet<>();
+        Set<Group> intersection = new HashSet<>();
+        for (Log l : logs) {
+            // Assume groups can't be empty since this log is shown in UI, which means at least one user/group have
+            // access to it.
+            for (GroupLog gl : l.getGroupLogs()) {
+                groups.add(gl.getGroup());
+            }
+
+            if (!intersection.isEmpty()) {
+                groups.retainAll(intersection);
+                intersection.clear();
+            }
+
+            intersection.addAll(groups);
+            groups.clear();
+        }
+
+        return intersection.contains(groupRepo.findByRowGuid(groupRowGuid));
     }
 
     @Override
