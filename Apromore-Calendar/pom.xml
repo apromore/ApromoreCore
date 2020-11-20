@@ -107,7 +107,8 @@
 						</Import-Package>
 						<Export-Package>
 							org.apromore.calendar.service,
-							org.apromore.calendar.model
+							org.apromore.calendar.model,
+							org.apromore.calendar.exception
 						</Export-Package>
 					</instructions>
 				</configuration>

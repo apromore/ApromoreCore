@@ -21,9 +21,13 @@
  */
 package org.apromore.plugin.portal.calendar.controllers;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
@@ -82,7 +86,12 @@ public class Calendars extends SelectorComposer<Window> {
     private void mock() {
       
 //      create
-      
+    	try {
+			calendarService.createBusinessCalendar(UUID.randomUUID().toString(), true, ZoneId.systemDefault().toString());
+		} catch (CalendarAlreadyExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
      List<CalendarModel> calendars=calendarService.getCalendars();
      
         calendarListModel.addAll(calendars);

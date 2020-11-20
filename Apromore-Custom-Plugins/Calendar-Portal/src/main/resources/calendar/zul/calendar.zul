@@ -71,7 +71,10 @@
                   ${each.label}
                 </listcell>
                 <listcell sclass="ap-period-picker-wrapper">
-                  <div visible="${each.workday}" sclass="ap-period-picker" ca:data-dow="${forEachStatus.index + 1}"></div>
+                	<div visible="${each.workday}"
+                		sclass="ap-period-picker"
+                		ca:data-dow="${forEachStatus.index + 1}">
+                	</div>
                 </listcell>
               </listitem>
             </template>
