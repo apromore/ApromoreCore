@@ -79,7 +79,7 @@
                                   style="display: inline-block"/>
                         </listcell>
                         <listcell label="${each.name}" >
-                            <span sclass="ap-icon ${each.showWarning ? 'z-icon-exclamation-circle' : '' }"
+                            <span sclass="${each.showWarning ? 'z-icon-exclamation-circle' : '' }"
                                   style="display: inline-block"/>
                         </listcell>
                         <listcell>
