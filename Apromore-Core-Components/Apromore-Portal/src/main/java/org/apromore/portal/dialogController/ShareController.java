@@ -336,9 +336,11 @@ public class ShareController extends SelectorComposer<Window> {
                 authorizationService.saveProcessAccessType(selectedItemId, rowGuid, accessType);
             } else if (selectedItem instanceof LogSummaryType) {
                 authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType, shareUserMetadata);
-                Set<Artifact> selectedArtifacts = groupArtifactsMap.get(rowGuid).getSelection();
-                for (Artifact artifact: selectedArtifacts) {
-                    userMetadataService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
+                if (groupArtifactsMap.containsKey(rowGuid)) {
+                    Set<Artifact> selectedArtifacts = groupArtifactsMap.get(rowGuid).getSelection();
+                    for (Artifact artifact: selectedArtifacts) {
+                        userMetadataService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
+                    }
                 }
             } else if (selectedItem instanceof UserMetadataSummaryType) {
                 authorizationService.saveUserMetadtarAccessType(selectedItemId, rowGuid, accessType);
