@@ -24,23 +24,12 @@ package org.apromore.plugin.portal.calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.portal.common.notification.Notification;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.model.PermissionType;
-import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 @Component("calendarPlugin")
@@ -50,6 +39,9 @@ public class CalendarPlugin extends DefaultPortalPlugin {
 
     private String label = "Custom calendar";
     private String groupLabel = "Settings";
+    
+//    @Autowired
+//    CalendarService calendarService;
 
     @Override
     public String getLabel(Locale locale) {
@@ -68,12 +60,13 @@ public class CalendarPlugin extends DefaultPortalPlugin {
             // Present the calendar window
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
+//            arg.put("calendarService", calendarService);
             Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendars.zul", null, arg);
             window.doModal();
 
         } catch(Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);
-            Notification.error("Unable to create custom calendar dialog");
+           
         }
     }
 

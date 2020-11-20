@@ -35,19 +35,25 @@ import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.util.CalendarUtil;
 import org.apromore.commons.mapper.CustomMapper;
+import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.HolidayRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Holiday;
 import org.apromore.dao.model.WorkDay;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.Data;
 
 @Data
-public class CustomCalendarService {
+public class CustomCalendarService implements CalendarService {
 
   @Autowired
   public CustomCalendarRepository calendarRepo;
+  
+  @Autowired
+  public CustomCalendarInfoRepository calendarInfoRepo;
 
   @Autowired
   public HolidayRepository holidayRepository;
@@ -55,6 +61,7 @@ public class CustomCalendarService {
   @Autowired
   private CustomMapper modelMapper;
 
+  @Override
   public CalendarModel createGenericCalendar(String description,
       boolean weekendsOff,
       String zoneId)
@@ -72,6 +79,7 @@ public class CustomCalendarService {
     return calenderModel;
   }
 
+  @Override
   public CalendarModel createBusinessCalendar(String description,
       boolean weekendsOff,
       String zoneId)
@@ -91,9 +99,19 @@ public class CustomCalendarService {
 
   }
 
-  public CalendarModel getCalenderById(Long id) {
+  @Override
+  public CalendarModel getCalender(Long id) {
 
     return modelMapper.getMapper().map(calendarRepo.findById(id), CalendarModel.class);
+
+  }
+
+  @Override
+  public List<CalendarModel> getCalendars() {
+
+    List<CalendarModel> calendarModels =  modelMapper.getMapper().map(calendarInfoRepo.findAll(), new TypeToken<List<CalendarModel>>() {}.getType());
+   
+    return calendarModels;
 
   }
 
@@ -124,11 +142,7 @@ public class CustomCalendarService {
 
   }
 
-  public CustomCalendar getCalender(Long id) {
 
-    return calendarRepo.findById(id);
-
-  }
 
   private void validateCalenderExists(CustomCalendar calendar)
       throws CalendarAlreadyExistsException {
@@ -152,15 +166,17 @@ public class CustomCalendarService {
 
   }
 
-  public void removeHoliday(Long id, List<Long> holidayIds)  {
-    
-    List<Holiday> holidays=new ArrayList<Holiday>();
-//    Bad way to delete, but we need to upgrade jpa of springs to make use of better ways of delete
-    for(Long idLong : holidayIds)
-    {
+  public void removeHoliday(Long id, List<Long> holidayIds) {
+
+    List<Holiday> holidays = new ArrayList<Holiday>();
+    // Bad way to delete, but we need to upgrade jpa of springs to make use of better ways of delete
+    for (Long idLong : holidayIds) {
       holidayRepository.delete(idLong);
-     
+
     }
 
   }
+
+
+
 }

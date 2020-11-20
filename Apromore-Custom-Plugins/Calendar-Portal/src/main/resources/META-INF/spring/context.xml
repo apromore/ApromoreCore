@@ -26,18 +26,20 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:osgi="http://www.springframework.org/schema/osgi"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
-        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-
-    <reference id="securityService" interface="org.apromore.service.SecurityService"/>
+        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <!-- Create beans for each class annotated with @Component within the package -->
     <context:component-scan base-package="org.apromore.plugin.portal.calendar" />
 
     <!-- Exposes the component as OSGi service -->
     <service ref="calendarPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-
+    
+    
+    
     <!-- Web content -->
     <service interface="org.apromore.plugin.portal.WebContentService">
       <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">

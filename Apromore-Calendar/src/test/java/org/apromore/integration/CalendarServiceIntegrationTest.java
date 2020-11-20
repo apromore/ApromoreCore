@@ -69,7 +69,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
 //    Given
     CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
 //    when
-    CalendarModel modelExpected=calenderService.getCalenderById(model.getId());
+    CalendarModel modelExpected=calenderService.getCalender(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();
@@ -87,7 +87,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     calenderService.addHoliday(model.getId(),Arrays.asList(holiday));
    
 //    when
-    CalendarModel modelExpected=calenderService.getCalenderById(model.getId());
+    CalendarModel modelExpected=calenderService.getCalender(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();
@@ -108,7 +108,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     calenderService.addHoliday(model.getId(),Arrays.asList(holiday1,holiday2,holiday3));
    
 //    when
-    CalendarModel modelExpected=calenderService.getCalenderById(model.getId());
+    CalendarModel modelExpected=calenderService.getCalender(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();
@@ -121,7 +121,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
         modelExpected.getHolidays().get(1).getId());
     String leftHolidayDesc=modelExpected.getHolidays().get(2).getDescription();
     calenderService.removeHoliday(model.getId(), holidayIdList);
-    modelExpected=calenderService.getCalenderById(model.getId());
+    modelExpected=calenderService.getCalender(model.getId());
     
 //    Then
     

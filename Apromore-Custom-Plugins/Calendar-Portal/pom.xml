@@ -54,20 +54,9 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>apromore-commons</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-portal</artifactId>
-            <version>1.1</version>
-            <classifier>classes</classifier>
-        </dependency>
+        </dependency>   
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
@@ -80,13 +69,15 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zk</artifactId>
+        
+         <dependency>
+           <groupId>org.apromore</groupId>
+			<artifactId>apromore-calendar</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zul</artifactId>
+        
+       <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>zk-osgi</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

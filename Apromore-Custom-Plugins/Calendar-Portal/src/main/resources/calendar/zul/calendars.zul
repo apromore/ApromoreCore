@@ -20,6 +20,7 @@
   #L%
   -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
   <window xmlns:ca="client/attribute"
           xmlns:n="native"

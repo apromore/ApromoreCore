@@ -21,33 +21,21 @@
  */
 package org.apromore.plugin.portal.calendar.controllers;
 
-import java.util.Map;
-import java.util.Date;
-import java.util.TimeZone;
-import java.lang.Integer;
-import java.lang.Boolean;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-
-import org.apromore.dao.model.User;
-import org.apromore.security.util.SecurityUtil;
-import org.apromore.service.SecurityService;
+import java.util.Date;
+import java.util.Map;
+import java.util.TimeZone;
+import org.apromore.commons.datetime.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Timebox;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Timebox;
 import org.zkoss.zul.Window;
-
-import org.apromore.commons.datetime.TimeUtils;
-import org.apromore.plugin.portal.calendar.controllers.Calendar;
-import org.apromore.plugin.portal.calendar.TimeRange;
 
 public class EditRange extends SelectorComposer<Window> {
 

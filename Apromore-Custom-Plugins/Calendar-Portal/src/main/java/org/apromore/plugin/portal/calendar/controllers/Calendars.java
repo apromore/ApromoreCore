@@ -21,106 +21,45 @@
  */
 package org.apromore.plugin.portal.calendar.controllers;
 
-import java.util.Comparator;
-import java.lang.Object;
-import java.lang.Integer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
-import java.time.Instant;
-import java.time.OffsetTime;
-import java.time.OffsetDateTime;
-import java.time.LocalTime;
-import java.time.format.TextStyle;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.DayOfWeek;
-import java.time.format.TextStyle;
-import java.text.SimpleDateFormat;
-
-import lombok.Getter;
-import lombok.Setter;
-
+import java.util.List;
+import java.util.Map;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
+import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.json.JSONArray;
-import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModels;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Span;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
-import org.zkoss.spring.SpringUtil;
-
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Group.Type;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.manager.client.ManagerService;
-import org.apromore.service.AuthorizationService;
-import org.apromore.service.SecurityService;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.model.GroupAccessType;
-import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.UserType;
-import org.apromore.portal.common.access.Assignee;
-import org.apromore.portal.common.access.Assignment;
-import org.apromore.util.AccessType;
-
-import org.apromore.commons.datetime.TimeUtils;
-import org.apromore.plugin.portal.calendar.*;
 
 /**
  * Controller for handling calendar interface
  * Corresponds to calendars.zul
  */
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class Calendars extends SelectorComposer<Window> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(Calendars.class);
 
     @Wire("#calendarListbox")
     Listbox calendarListbox;
+    
+    @Wire("#addNewCalendarBtn")
+    Button addNewCalender;
+    
+    @WireVariable("calendarService")
+    CalendarService calendarService;
 
-    private ListModelList<CalendarItem> calendarListModel;
+    private ListModelList<CalendarModel> calendarListModel;
 
-    private Window mainWindow;
 
     public Calendars() throws Exception {
     }
@@ -128,26 +67,39 @@ public class Calendars extends SelectorComposer<Window> {
     @Override
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
-        mainWindow = win;
+       
         initialize();
     }
 
     public void initialize() {
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer();
         calendarListbox.setItemRenderer(itemRenderer);
-        calendarListModel = new ListModelList<CalendarItem>();
+        calendarListModel = new ListModelList<CalendarModel>();
         calendarListbox.setModel(calendarListModel);
         mock();
     }
 
     private void mock() {
-        calendarListModel.add(new CalendarItem(1L, "Calendar 1", OffsetDateTime.now()));
-        calendarListModel.add(new CalendarItem(2L, "Calendar 2", OffsetDateTime.now()));
+      
+//      create
+      
+     List<CalendarModel> calendars=calendarService.getCalendars();
+     
+        calendarListModel.addAll(calendars);
+        
     }
 
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
         getSelf().detach();
+    }
+    
+    @Listen("onClick = #addNewCalendarBtn")
+    public void onClickAddNewCalender() {
+      Map arg = new HashMap<>();
+      arg.put("source", "addNewCalendarBtn");
+      Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
+      window.doModal();
     }
 
 }

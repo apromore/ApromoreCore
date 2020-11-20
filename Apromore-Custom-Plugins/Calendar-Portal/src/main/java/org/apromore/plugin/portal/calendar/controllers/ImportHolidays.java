@@ -21,34 +21,21 @@
  */
 package org.apromore.plugin.portal.calendar.controllers;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.Object;
-import java.lang.Boolean;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-
-import org.zkoss.json.JSONObject;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.EventListener;
-import org.apromore.dao.model.User;
-import org.apromore.security.util.SecurityUtil;
-import org.apromore.service.SecurityService;
+import java.util.ArrayList;
+import java.util.List;
+import org.apromore.plugin.portal.calendar.HolidayItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
-
-import org.apromore.plugin.portal.calendar.controllers.Calendar;
-import org.apromore.plugin.portal.calendar.TimeRange;
-import org.apromore.plugin.portal.calendar.HolidayItem;
 
 public class ImportHolidays extends SelectorComposer<Window> {
 

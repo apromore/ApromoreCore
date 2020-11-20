@@ -24,19 +24,13 @@
 
 package org.apromore.plugin.portal.calendar;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.dto.VersionDetailType;
-import org.apromore.portal.model.VersionSummaryType;
+import java.util.HashMap;
+import java.util.Map;
+import org.apromore.calendar.model.CalendarModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -70,10 +64,10 @@ public class CalendarItemRenderer implements ListitemRenderer {
         return renderCell(listItem, span);
     }
 
-    public void edit() {
+    public void edit(Long calenderId) {
         try {
             Map arg = new HashMap<>();
-            arg.put("arg", "");
+            arg.put("calenderId", calenderId);
             Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
             window.doModal();
         } catch(Exception e) {
@@ -88,7 +82,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
 
     @Override
     public void render(Listitem listItem, Object obj, int index) {
-        CalendarItem calendarItem = (CalendarItem) obj;
+        CalendarModel calendarItem = (CalendarModel) obj;
 
         renderTextCell(listItem, calendarItem.getName());
         OffsetDateTime created = calendarItem.getCreated();
@@ -99,21 +93,21 @@ public class CalendarItemRenderer implements ListitemRenderer {
         editAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                edit();
+                edit(calendarItem.getId());
             }
         });
 
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                edit();
+              edit(calendarItem.getId());
             }
         });
 
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                edit();
+              edit(calendarItem.getId());
             }
         });
     }
