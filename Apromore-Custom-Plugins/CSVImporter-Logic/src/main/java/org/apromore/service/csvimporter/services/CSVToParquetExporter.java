@@ -34,7 +34,6 @@ import org.apromore.service.csvimporter.model.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
@@ -43,7 +42,7 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.create
 class CSVToParquetExporter implements ParquetExporter {
 
     private List<LogErrorReport> logErrorReport;
-    private LogProcessor logProcessor;
+    private LogProcessorParquet logProcessorParquet;
     private Reader readerin;
     private BufferedReader brReader;
     private InputStream in2;
@@ -68,12 +67,10 @@ class CSVToParquetExporter implements ParquetExporter {
 
             in2 = new ReaderInputStream(brReader, charset);
             reader = new CSVFileReader().newCSVReader(in2, charset, separator);
-
-            if (reader == null) {
+            if (reader == null)
                 return null;
-            }
 
-            MessageType parquetSchema = createParquetSchema(header, sample);
+            MessageType parquetSchema = createParquetSchema(header);
 
             // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
             Thread thread = Thread.currentThread();
@@ -87,13 +84,13 @@ class CSVToParquetExporter implements ParquetExporter {
                 }
             }
 
-            logProcessor = new LogProcessorImpl();
+            logProcessorParquet = new LogProcessorParquetImpl();
             logErrorReport = new ArrayList<>();
             int lineIndex = 1; // set to 1 since first line is the header
             int numOfValidEvents = 0;
             String[] line;
             boolean rowLimitExceeded = false;
-            LogEventModelExt logEventModelExt;
+            ParquetEventLogModel parquetEventLogModel;
 
             while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
@@ -111,10 +108,10 @@ class CSVToParquetExporter implements ParquetExporter {
                 }
 
                 //Construct an event
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+                parquetEventLogModel = logProcessorParquet.processLog(line, header, sample, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
-                if (!logEventModelExt.isValid()) {
+                if (!parquetEventLogModel.isValid()) {
                     if (skipInvalidRow) {
                         continue;
                     } else {
@@ -122,7 +119,7 @@ class CSVToParquetExporter implements ParquetExporter {
                     }
                 }
 
-                writer.write(logEventModelExt);
+                writer.write(parquetEventLogModel.getEvent());
                 numOfValidEvents++;
             }
 
