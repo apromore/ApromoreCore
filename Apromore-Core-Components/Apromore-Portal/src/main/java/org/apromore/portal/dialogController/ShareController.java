@@ -282,7 +282,9 @@ public class ShareController extends SelectorComposer<Window> {
         for (Usermetadata userMetadata: userMetadataSet) {
             Integer id = userMetadata.getId();
             String name = userMetadata.getName();
-            String updatedTime = userMetadata.getUpdatedTime();
+            String updatedTime = Objects.equals(userMetadata.getUpdatedTime(), null) ?
+                    userMetadata.getCreatedTime() :
+                    userMetadata.getUpdatedTime();
             UsermetadataType usermetadataType = userMetadata.getUsermetadataType();
             Artifact artifact = new Artifact(id, name, updatedTime, usermetadataType);
             artifactModel.add(artifact);

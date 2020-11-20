@@ -107,7 +107,7 @@
                     <listheader label="" width="30px"/>
                     <listheader align="center" label="" width="40px"/><!-- type icon -->
                     <listheader align="left" hflex="1" label="Associated artifacts" sort="auto(name)"/>
-                    <listheader align="left" width="120px" label="Updated" sort="auto(updatedTime)"/>
+                    <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
                 </listhead>
                 <template name="model">
                     <listitem>
