@@ -321,35 +321,62 @@
 
 .ap-user-menu {
   position: fixed;
-  right: 5px;
+  right: 30px;
   top: 1px;
   z-index: var(--ap-z-user-menu);
   background-color: transparent;
-  width: 30px;
+  width: 150px;
   border: none;
   height: 30px;
 }
 
 .ap-portal .ap-header-actions {
-  right: 34px !important;
+  right: 5px;
 }
 
 .ap-user-menu li {
   float: right;
+  width: 100%;
 }
 
 .ap-user-menu .z-menu-content:hover {
   background-color: transparent;
 }
 
-.ap-user-menu .z-menu-icon:before {
-  display: none;
+.ap-user-menu .z-menu-text {
+  text-align: right;
+  color: black !important;
+  filter: var(--ap-filter-ico-normal-light) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  padding-right: 3px;
 }
 
 .ap-user-menu .z-menu-text {
-  display: none;
-  color: black;
-  filter: var(--ap-filter-ico-normal-light);
+  color: black !important;
+  filter: var(--ap-filter-ico-normal-light) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.ap-user-menu:hover .z-menu-text {
+  background-color: transparent !important;
+  color: black !important;
+  filter: var(--ap-filter-ico-white) !important;
+}
+
+.ap-user-menu .z-menu-selected .z-menu-text {
+  color: black !important;
+  filter: var(--ap-filter-ico-white) !important;
+  background-color: transparent !important;
+}
+
+.ap-user-menu .z-menu-selected .z-menu-content {
+  background-color: transparent !important;
 }
 
 .ap-user-menu .z-menu-icon {
@@ -373,11 +400,7 @@
   filter: var(--ap-filter-ico-normal-light);
 }
 
-.ap-user-menu .z-menu-selected .z-menu-text {
-  color: black !important;
-}
 
-.ap-user-menu:hover .z-menu-text,
 .ap-user-menu:hover .z-menu-icon {
   background-color: transparent !important;
   filter: var(--ap-filter-ico-white) !important;

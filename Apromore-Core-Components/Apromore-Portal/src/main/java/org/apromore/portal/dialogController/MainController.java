@@ -137,6 +137,7 @@ public class MainController extends BaseController implements MainControllerInte
     public MainController() {
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
         portalSession = new PortalSession(this);
+        UserSessionManager.initializeUser(getService(), config);
     }
 
     /** Unit test constructor. */
@@ -209,7 +210,8 @@ public class MainController extends BaseController implements MainControllerInte
                 }
             });
 
-            UserSessionManager.initializeUser(getService(), config);
+            // Move this to constructor so that inner component can access UserSessionManager data
+            // UserSessionManager.initializeUser(getService(), config);
             switchToProcessSummaryView();
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
