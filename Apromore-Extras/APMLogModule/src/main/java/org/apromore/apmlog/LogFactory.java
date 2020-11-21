@@ -114,7 +114,12 @@ public class LogFactory {
             trace.setMaxWaitingTime(maxWaitTime);
 
             double dur = trace.getDuration();
-            double caseUtil = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 0;
+            double caseUtil;
+            if (ttlWaitTime > 0 && ttlProcTime > 0) {
+                caseUtil = ttlProcTime / (ttlProcTime + ttlWaitTime);
+            } else {
+                caseUtil = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 1.0;
+            }
             trace.setCaseUtilization(caseUtil);
 
             log.add(trace);
