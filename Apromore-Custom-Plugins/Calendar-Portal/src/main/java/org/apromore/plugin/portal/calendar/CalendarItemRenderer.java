@@ -64,10 +64,10 @@ public class CalendarItemRenderer implements ListitemRenderer {
         return renderCell(listItem, span);
     }
 
-    public void edit(Long calenderId) {
+    public void edit(Long calendarId) {
         try {
             Map arg = new HashMap<>();
-            arg.put("calenderId", calenderId);
+            arg.put("calendarId", calendarId);
             Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
             window.doModal();
         } catch(Exception e) {

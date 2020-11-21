@@ -22,16 +22,14 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
   <window xmlns:ca="client/attribute"
+          xmlns:client="client"
           xmlns:n="native"
           sclass="ap-calendar-win"
           width="1380px" height="600px" position="center"
           style="max-width: 1400px;"
           closable="true"
+          client:onBind="Ap.calendar.syncRows()"
           title="Custom Calendar" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
-    <script type="text/javascript" src="libs/tippy/6.2.7/popper.min.js"></script>
-    <script type="text/javascript" src="libs/tippy/6.2.7/tippy-bundle.umd.min.js"></script>
-    <script type="text/javascript" src="/calendar/js/index.js"></script>
-    <style src="/calendar/css/index.css" />
     <div id="actionBridge" visible="false" />
     <vbox height="100%" hflex="1" spacing="0">
       <hbox hflex="1" vflex="1">

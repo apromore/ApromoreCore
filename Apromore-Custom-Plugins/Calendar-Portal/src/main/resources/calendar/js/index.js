@@ -70,6 +70,15 @@ zk.afterMount(function() {
     sendCalendarEvent('onUpdateRanges', { dow, ranges: newRanges });
   };
 
+  Ap.calendar.updateRanges = function (dow, newRanges) {
+    if (typeof newRanges === 'string') {
+      newRanges = JSON.parse(newRanges);
+    }
+    newRanges.forEach((range, index) => { range.index = index; });
+    dayOfWeek[dow].ranges = newRanges;
+    updateRow(dow);
+  };
+
   Ap.calendar.deleteRange = function (dow, index) {
     let ranges = dayOfWeek[dow].ranges;
     ranges = ranges.splice(index, 1);
@@ -81,12 +90,14 @@ zk.afterMount(function() {
 
   const TEMPLATES = {
     '9to5': {
+      index: 0,
       startHour: 9,
       startMin: 0,
       endHour: 17,
       endMin: 0,
     },
     '24h': {
+      index: 0,
       startHour: 0,
       startMin: 0,
       endHour: 24,
@@ -123,6 +134,14 @@ zk.afterMount(function() {
   Ap.calendar.rebuild = function() {
     build();
     reset();
+  };
+
+  Ap.calendar.syncRows = function() {
+    console.log('syncRows requested');
+    setTimeout(
+        () => { sendCalendarEvent('onSyncRows', {}); },
+        600
+    )
   };
 
   function sendCalendarEvent(event, params) {
@@ -459,6 +478,8 @@ zk.afterMount(function() {
 
   zAu.send(new zk.Event(zk.Widget.$('$actionBridge'), 'onLoaded'));
 
+  // FIXME:
+  // Only one range is allowed per day of week
   function ensureOneRange() {
     let selectedIndex = 0;
     let prevSelectedIndex = null;
