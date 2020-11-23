@@ -21,6 +21,15 @@
 	<packaging>jar</packaging>
 	<name>Apromore :: ui :: ui-theme-compact</name>
 	<description>Chiaroscuro Compact theme for ZK</description>
+
+    <pluginRepositories>
+        <pluginRepository>  <!-- required for zkless-engine-maven-plugin -->
+            <id>zkmaven</id>
+            <name>ZK Maven Plugin Repository</name>
+            <url>http://mavensync.zkoss.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>

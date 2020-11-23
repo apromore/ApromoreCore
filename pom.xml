@@ -164,7 +164,7 @@
 		<!-- <mysql.connector.version>8.0.22</mysql.connector.version> -->
 		<transaction.version>1.1.0</transaction.version>
 		<javax.persistence.version>2.0.3</javax.persistence.version>
-		<eclipselink.version>2.4.1</eclipselink.version>
+		<eclipselink.version>2.4.2</eclipselink.version>
 		<eclipselink.antlr.version>3.2.0.v201206041011</eclipselink.antlr.version>
 		<eclipselink.asm.version>3.3.1.v201206041142</eclipselink.asm.version>
 		<bonecp.version>0.7.1.RELEASE</bonecp.version>
@@ -312,7 +312,7 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.4.10-java7</version>
+				<version>1.4.13-java7</version>
 			</dependency>
 
 			<dependency>
@@ -1274,21 +1274,6 @@
 			<url>https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/</url>
 		</repository>
 		<repository>
-			<id>EclipseLink Repo</id>
-			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-			<name>EclipseLink Repo</name>
-		</repository>
-		<repository>
-			<id>eclipse-gemini</id>
-			<name>Eclipse Gemini Maven repository</name>
-			<url>http://download.eclipse.org/gemini/mvn/</url>
-		</repository>
-		<repository>
-			<id>com.springsource.repository.bundles.snapshot</id>
-			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Snapshot</name>
-			<url>http://repository.springsource.com/maven/bundles/snapshot</url>
-		</repository>
-		<repository>
 			<id>com.springsource.repository.bundles.release</id>
 			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
 			<url>http://repository.springsource.com/maven/bundles/release</url>
@@ -1298,29 +1283,7 @@
 			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
 		</repository>
-		<repository>
-			<id>com.springsource.repository.bundle.milestone</id>
-			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Milestones</name>
-			<url>http://repository.springsource.com/maven/bundles/milestone</url>
-		</repository>
-		<repository>
-			<id>ZK CE</id>
-			<name>ZK CE Repository</name>
-			<url>http://mavensync.zkoss.org/maven2</url>
-		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>com.springsource.repository.bundles.release</id>
-			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/release</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>zkmaven</id>
-			<name>ZK Maven Plugin Repository</name>
-			<url>http://mavensync.zkoss.org/maven2</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<build>
 		<pluginManagement>
