@@ -37,7 +37,7 @@ public class CalendarPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CalendarPlugin.class);
 
-    private String label = "Custom calendar";
+    private String label = "Manage calendars";
     private String groupLabel = "Settings";
     
 //    @Autowired

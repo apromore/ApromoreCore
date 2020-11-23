@@ -717,7 +717,7 @@ public abstract class BaseListboxController extends BaseController {
 
         getMainController().eraseMessage();
         try {
-            calendarPlugin = portalPluginMap.get("Custom calendar");
+            calendarPlugin = portalPluginMap.get("Manage calendars");
             calendarPlugin.execute(portalContext);
         } catch(Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);

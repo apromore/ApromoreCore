@@ -41,5 +41,7 @@ public interface CalendarService {
   public CalendarModel getCalender(Long id);
   
   public List<CalendarModel> getCalendars();
+
+public void deleteCalender(Long calendarId);
       
 }

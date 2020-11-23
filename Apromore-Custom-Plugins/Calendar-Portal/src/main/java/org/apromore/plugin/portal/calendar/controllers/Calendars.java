@@ -25,7 +25,6 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -76,7 +75,7 @@ public class Calendars extends SelectorComposer<Window> {
     }
 
     public void initialize() {
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer();
+        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListbox.setModel(calendarListModel);
@@ -86,8 +85,8 @@ public class Calendars extends SelectorComposer<Window> {
     private void mock() {
       
 //      create
-    	try {
-			calendarService.createBusinessCalendar(UUID.randomUUID().toString(), true, ZoneId.systemDefault().toString());
+    	try {    		
+			calendarService.createBusinessCalendar("Austrailia 2020", true, ZoneId.systemDefault().toString());
 		} catch (CalendarAlreadyExistsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

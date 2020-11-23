@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
@@ -47,7 +48,15 @@ public class CalendarItemRenderer implements ListitemRenderer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CalendarItemRenderer.class);
 
-    public Listcell renderCell(Listitem listItem, Component comp) {
+    CalendarService calendarService;
+    
+    
+    public CalendarItemRenderer(CalendarService calendarService) {
+		super();
+		this.calendarService = calendarService;
+	}
+
+	public Listcell renderCell(Listitem listItem, Component comp) {
         Listcell listCell = new Listcell();
         listCell.appendChild(comp);
         listItem.appendChild(listCell);
@@ -55,6 +64,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
     }
 
     public Listcell renderTextCell(Listitem listItem, String content) {
+    	
         return renderCell(listItem, new Label(content));
     }
 
@@ -70,6 +80,15 @@ public class CalendarItemRenderer implements ListitemRenderer {
             arg.put("calendarId", calendarId);
             Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
             window.doModal();
+        } catch(Exception e) {
+            LOGGER.error("Unable to create custom calendar dialog", e);
+            // Notification.error("Unable to create custom calendar dialog");
+        }
+    }
+    
+    public void deleteCalender(Long calendarId) {
+        try {
+            calendarService.deleteCalender(calendarId);  
         } catch(Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);
             // Notification.error("Unable to create custom calendar dialog");
@@ -100,7 +119,9 @@ public class CalendarItemRenderer implements ListitemRenderer {
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-              edit(calendarItem.getId());
+              deleteCalender(calendarItem.getId());
+              listItem.detach();
+            
             }
         });
 
