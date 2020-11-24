@@ -43,7 +43,6 @@ import static org.apromore.service.csvimporter.services.utilities.TestUtilities.
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class CSVToParquetExporterUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVToParquetExporterUnitTest.class);
@@ -481,7 +480,7 @@ public class CSVToParquetExporterUnitTest {
     /**
      * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test11-encoding.csv</code>.
      */
-
+    @Ignore
     @Test
     public void testPrepareXesModel_test11_encoding() throws Exception {
 

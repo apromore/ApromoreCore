@@ -13,7 +13,7 @@
 	<string key="lifecycle:model" value="standard"/>
 	<trace>
 		<string key="concept:name" value="case1"/>
-		<string key="processtype" value="1"/>
+		<string key="process_type" value="1"/>
 		<event>
 			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="start"/>
@@ -27,7 +27,7 @@
 	</trace>
 	<trace>
 		<string key="concept:name" value="case2"/>
-		<string key="processtype" value="1"/>
+		<string key="process_type" value="1"/>
 		<event>
 			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="start"/>

@@ -29,7 +29,6 @@ import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +39,15 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-@Ignore
+
+
 public class ParquetLogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetLogReaderImplUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
-    private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("caseID", "activity", "startTimestamp", "endTimestamp", "processtype");
+    private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
     private SampleLogGenerator sampleLogGenerator;
@@ -279,8 +279,8 @@ public class ParquetLogReaderImplUnitTest {
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setEndTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        sample.setStartTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
         sample.setEndTimestampPos(3);
         sample.setStartTimestampPos(2);
         sample.getEventAttributesPos().remove(Integer.valueOf(2));
@@ -354,7 +354,6 @@ public class ParquetLogReaderImplUnitTest {
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "windows-1255");
 
-        System.out.println(sample.getLines());
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
         //Export parquet

@@ -14,43 +14,43 @@
 	<trace>
 		<string key="concept:name" value="case1"/>
 		<event>
-			<string key="processtype" value="1"/>
 			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.114+03:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.114"/>
+			<string key="process_type" value="1"/>
 		</event>
 		<event>
-			<string key="processtype" value="1"/>
 			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.132+03:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.132"/>
+			<string key="process_type" value="1"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="case2"/>
 		<event>
-			<string key="processtype" value="3"/>
 			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.071+03:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.071"/>
+			<string key="process_type" value="3"/>
 		</event>
 		<event>
-			<string key="processtype" value="3"/>
 			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.132+03:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.132"/>
+			<string key="process_type" value="3"/>
 		</event>
 		<event>
-			<string key="processtype" value="1"/>
 			<string key="concept:name" value="activity2"/>
 			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+03:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.133"/>
+			<string key="process_type" value="1"/>
 		</event>
 		<event>
-			<string key="processtype" value="1"/>
 			<string key="concept:name" value="activity2"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+03:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.133"/>
+			<string key="process_type" value="1"/>
 		</event>
 	</trace>
 </log>

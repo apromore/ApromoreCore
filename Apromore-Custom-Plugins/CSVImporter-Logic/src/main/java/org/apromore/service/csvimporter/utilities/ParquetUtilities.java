@@ -50,6 +50,7 @@ public class ParquetUtilities {
 
     private static String formatColumn(String column) {
         return column
+                .trim()
                 .replaceAll("\\s", "_")
                 .replaceAll("\\W", "")
                 .toLowerCase();

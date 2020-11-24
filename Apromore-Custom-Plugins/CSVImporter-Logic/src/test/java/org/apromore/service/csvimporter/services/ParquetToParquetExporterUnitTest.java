@@ -43,7 +43,6 @@ import static org.apromore.service.csvimporter.services.utilities.TestUtilities.
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class ParquetToParquetExporterUnitTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetToParquetExporterUnitTest.class);
     /**
@@ -81,6 +80,9 @@ public class ParquetToParquetExporterUnitTest {
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
 
+        System.out.println("\n************************************\n");
+        System.out.println(sample.getHeader());
+        System.out.println("\n************************************\n");
         // Validate result
         assertEquals(PARQUET_EXPECTED_HEADER, sample.getHeader());
         assertEquals(2, sample.getLines().size());
@@ -316,8 +318,8 @@ public class ParquetToParquetExporterUnitTest {
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        sample.setEndTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        sample.setStartTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
         sample.setEndTimestampPos(3);
         sample.setStartTimestampPos(2);
         sample.getEventAttributesPos().remove(Integer.valueOf(2));
@@ -404,7 +406,6 @@ public class ParquetToParquetExporterUnitTest {
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "windows-1255");
 
-        System.out.println(sample.getLines());
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
         //Export parquet

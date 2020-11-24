@@ -44,7 +44,7 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHea
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore
+
 public class XLSXToParquetExporterUnitTest {
 
 
@@ -84,7 +84,6 @@ public class XLSXToParquetExporterUnitTest {
         String testFile = "/test1-valid.xlsx";
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
-
         // Validate result
         assertEquals(SAMPLE_EXPECTED_HEADER, sample.getHeader());
         assertEquals(2, sample.getLines().size());
