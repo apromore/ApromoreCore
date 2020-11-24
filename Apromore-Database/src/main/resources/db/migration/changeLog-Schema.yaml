@@ -542,3 +542,14 @@ databaseChangeLog:
                   type: varchar(50))
                   constraints:
                       nullable: false
+
+ - changeSet:
+     id: 20201125100000
+     author: dreamind
+     changes:
+       - createIndex:
+           columns:
+             - column:
+                 name: name
+           indexName: IDX_LOG_NAME
+           tableName: log

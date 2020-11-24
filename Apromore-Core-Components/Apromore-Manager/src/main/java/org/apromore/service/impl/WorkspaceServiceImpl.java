@@ -139,6 +139,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    public List<Process> getProcessesByPrefix(String prefix) {
+        return processRepo.findWithPrefix(prefix);
+    }
+
+    @Override
+    public List<Log> getLogsByPrefix(String prefix) {
+        return logRepo.findWithPrefix(prefix);
+    }
+
+    @Override
     public Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable) {
 	return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
 	                       : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
