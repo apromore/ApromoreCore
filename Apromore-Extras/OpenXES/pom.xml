@@ -17,27 +17,27 @@
     <packaging>jar</packaging>
     <name>OpenXES</name>
 
-    <!--<build>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.felix</groupId>-->
-                <!--<artifactId>maven-bundle-plugin</artifactId>-->
-                <!--<extensions>true</extensions>-->
-                <!--<configuration>-->
-                    <!--<instructions>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
                         <!--<Import-Package>-->
                             <!--org.apromore.plugin,  &lt;!&ndash; These are invoked dynamically, so have to declare explicitly &ndash;&gt;-->
                             <!--org.springframework.beans.factory.aspectj,  &lt;!&ndash; Invoked dynamically by Spring from context.xml &ndash;&gt;-->
                             <!--*-->
                         <!--</Import-Package>-->
-                        <!--<Export-Package>-->
-                            <!--org.deckfour.xes.*;version="2.27"-->
-                        <!--</Export-Package>-->
-                    <!--</instructions>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</build>-->
+                        <Export-Package>
+                            org.deckfour.xes.*;version="2.27"
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

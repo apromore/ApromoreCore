@@ -65,6 +65,8 @@ ORYX.Editor = {
         // Defines if the editor should be fullscreen or not
         this.fullscreen = config.fullscreen !== false;
 
+        this.useSimulationPanel = config.useSimulationPanel || false;
+
         // CREATES the canvas
         this._createCanvas(model.stencil ? model.stencil.id : null, model.properties, langs);
 
@@ -84,7 +86,10 @@ ORYX.Editor = {
                 container: '#' + this.getCanvas().rootNode.id,
                 keyboard: {
                     bindTo: window
-                }
+                },
+                propertiesPanel: this.useSimulationPanel ? {
+                    parent: '#js-properties-panel'
+                } : undefined
             }));
 
             if (config && config.xml) {
@@ -171,7 +176,6 @@ ORYX.Editor = {
                 region: 'east',
                 layout: 'fit',
                 cls: 'x-panel-editor-east',
-                autoEl: 'div',
                 collapseTitle: ORYX.I18N.View.East,
                 titleCollapse: true,
                 border: false,
@@ -179,9 +183,14 @@ ORYX.Editor = {
                 floatable: false,
                 expandTriggerAll: true,
                 collapsible: true,
-                width: ORYX.CONFIG.PANEL_RIGHT_WIDTH || 200,
+                width: 450,
                 split: true,
-                title: "East"
+                title: "Simulation Parameters",
+                items: {
+                    layout: "fit",
+                    autoHeight: true,
+                    el: document.getElementById("js-properties-panel")
+                }
             }),
 
             // DEFINES BOTTOM-AREA
@@ -277,7 +286,10 @@ ORYX.Editor = {
             this.layout = new Ext.Panel(layout_config)
         }
 
-        this.layout_regions.east.hide();
+        if (!this.useSimulationPanel) {
+            this.layout_regions.east.hide();
+        }
+
         this.layout_regions.west.hide();
         this.layout_regions.info.hide();
         if (Ext.isIPad && "undefined" != typeof iScroll) {
@@ -500,6 +512,10 @@ ORYX.Editor = {
         return this._canvas;
     },
 
+    getSimulationDrawer: function() {
+        return this.layout_regions.east;
+    },
+
     /**
      * Returns a per-editor singleton plugin facade.
      * To be used in plugin initialization.
@@ -521,6 +537,8 @@ ORYX.Editor = {
                     setSelection: function() {},
                     updateSelection: function() {},
                     getCanvas: this.getCanvas.bind(this),
+                    getSimulationDrawer: this.getSimulationDrawer.bind(this),
+                    useSimulationPanel: this.useSimulationPanel,
                     importJSON: function() {},
                     importERDF: function() {},
                     getERDF: function() {},

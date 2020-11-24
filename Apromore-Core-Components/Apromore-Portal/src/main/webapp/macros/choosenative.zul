@@ -66,8 +66,8 @@
                         </grid>
                     </groupbox>
                 </row>
-                <row spans="3">
-                    <label value="*: mandatory fields." />
+                <row spans="3" sclass="ap-footnotes">
+                    <label value="* mandatory fields." />
                 </row>
                 <row spans="3"  sclass="ap-window-footer-actions">
                     <div align="center" sclass="ap-window-modal-actions">

@@ -32,7 +32,7 @@ if [ "$?" = "0" ]; then
     case $yn in
         [Yy]* ) echo 'Rebasing ...';
         	git rebase $cur_dev $cur_branch;
-        	# cp site.properties.mysql site.properties
+        	cp site.properties.template site.properties
         	exit;;
         [Nn]* ) git checkout $cur_branch;
         	exit;;

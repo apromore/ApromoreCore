@@ -404,6 +404,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-metadata {
+    background-image: url('metadata.svg') !important;
+    width: 21px !important;
+}
+
 .ap-icon-mine-dashboard {
     background-image: url('mine-dashboard.svg') !important;
     width: 28.5px !important;
@@ -537,6 +542,11 @@
 .ap-icon-select-none {
     background-image: url('select-none.svg') !important;
     width: 27.2890625px !important;
+}
+
+.ap-icon-share {
+    background-image: url('share.svg') !important;
+    width: 24.75px !important;
 }
 
 .ap-icon-sign-out {

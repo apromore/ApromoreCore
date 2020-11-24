@@ -42,7 +42,8 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.util.Util;
+import org.apromore.apmlog.stats.AAttributeGraph;
+import org.apromore.apmlog.stats.DurSubGraph;
 import org.apromore.logman.ALog;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.log.AttributeInfo;
@@ -51,7 +52,11 @@ import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
+import org.apromore.commons.datetime.DateTimeUtils;
+import org.apromore.commons.datetime.DurationUtils;
+
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 /**
  * LogDataWithAPMLog is {@link LogData} but uses APMLog to do filtering and some statistics data.
@@ -184,7 +189,20 @@ public class LogDataWithAPMLog extends LogData {
                 getDirectFollowRuleValue(value, attKey)));
     }
 
-    
+    @Override
+    public boolean hasSufficientDurationVariant(String attribute, String value) {
+        DurSubGraph dsg = this.originalAPMLog.getAAttributeGraph().getValueDurations(attribute);
+        if (!dsg.getValDurCaseIndexMap().containsKey(value)) return false;
+        return dsg.getValDurCaseIndexMap().get(value).size() > 1;
+    }
+
+    @Override
+    public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
+        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
+        UnifiedSet<Double> durations = aAttributeGraph.getDurations(attribute, inDegree, outDegree, this.originalAPMLog);
+        return (durations.size() > 1);
+    }
+
     @Override
     public List<CaseDetails> getCaseDetails() {
         UnifiedMap<List<Integer>, Integer> actNameListCaseSizeMap = new UnifiedMap<>();
@@ -236,32 +254,32 @@ public class LogDataWithAPMLog extends LogData {
     
     @Override
     public String getFilteredStartTime() {
-        return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.filteredAPMLog.getStartTime()), "dd MMM yy, HH:mm");
+        return DateTimeUtils.humanize(this.filteredAPMLog.getStartTime());
     }
 
     @Override
     public String getFilteredEndTime() {
-            return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.filteredAPMLog.getEndTime()), "dd MMM yy, HH:mm");
+        return DateTimeUtils.humanize(this.filteredAPMLog.getEndTime());
     }
 
     @Override
     public String getFilteredMinDuration() {
-        return this.filteredAPMLog.getMinDurationString();
+        return DurationUtils.humanize(this.filteredAPMLog.getMinDuration(), true);
     }
 
     @Override
     public String getFilteredMedianDuration() {
-        return this.filteredAPMLog.getMedianDurationString();
+        return DurationUtils.humanize(this.filteredAPMLog.getMedianDuration(), true);
     }
 
     @Override
     public String getFilteredMeanDuration() {
-        return this.filteredAPMLog.getAverageDurationString();
+        return DurationUtils.humanize(this.filteredAPMLog.getAverageDuration(), true);
     }
 
     @Override
     public String getFilteredMaxDuration() {
-        return this.filteredAPMLog.getMaxDurationString();
+        return DurationUtils.humanize(this.filteredAPMLog.getMaxDuration(), true);
     }
     
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {

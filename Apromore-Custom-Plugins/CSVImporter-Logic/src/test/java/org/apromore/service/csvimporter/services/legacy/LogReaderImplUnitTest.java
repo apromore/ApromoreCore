@@ -22,7 +22,6 @@
 
 package org.apromore.service.csvimporter.services.legacy;
 
-import com.google.common.io.ByteStreams;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
@@ -34,7 +33,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -111,7 +109,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test1-valid.csv";
         String expectedFile = "/test1-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
@@ -145,7 +143,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test2-missing-columns.csv";
         String expectedFile = "/test2-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
@@ -178,7 +176,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test3-invalid-end-timestamp.csv";
         String expectedFile = "/test3-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
@@ -211,7 +209,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test4-invalid-start-timestamp.csv";
         String expectedFile = "/test4-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
@@ -245,7 +243,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test5-empty-caseID.csv";
         String expectedFile = "/test5-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
@@ -279,7 +277,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test6-different-delimiters.csv";
         String expectedFile = "/test6-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
@@ -313,7 +311,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test7-record-invalid.csv";
         String expectedFile = "/test7-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
@@ -375,7 +373,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test9-differentiate-dates.csv";
         String expectedFile = "/test9-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
@@ -416,7 +414,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test10-eventAttribute.csv";
         String expectedFile = "/test10-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
@@ -449,7 +447,7 @@ public class LogReaderImplUnitTest {
         String testFile = "/test11-encoding.csv";
         String expectedFile = "/test11-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");

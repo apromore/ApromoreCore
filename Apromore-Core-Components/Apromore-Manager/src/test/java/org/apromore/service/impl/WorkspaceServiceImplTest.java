@@ -23,8 +23,7 @@ package org.apromore.service.impl;
 
 import static org.easymock.EasyMock.expect;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.apromore.AbstractTest;
 import org.apromore.TestData;
@@ -39,20 +38,12 @@ import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.WorkspaceRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.util.AccessType;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +61,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private FolderRepository folderRepo;
     private LogRepository logRepo;
     private EventLogFileService logFileService;
+    private FolderServiceImpl folderServiceImpl;
     
     private GroupRepository groupRepo;
     private GroupFolderRepository groupFolderRepo;
@@ -99,6 +91,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         pmvRepo = createMock(ProcessModelVersionRepository.class);
         userRepo = createMock(UserRepository.class);
         userMetadataServ = createMock(UserMetadataService.class);
+        folderServiceImpl = createMock(FolderServiceImpl.class);
         
         config = new ConfigBean();
 
@@ -113,7 +106,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupProcessRepo,
                                                 groupLogRepo,
                                                 logFileService,
-                                                userMetadataServ);
+                                                userMetadataServ, folderServiceImpl);
     }
 
     @Test
@@ -360,5 +353,6 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Assert.assertEquals(folder.getName(), movedFolder.getName());
         Assert.assertEquals(newParentFolder, movedFolder.getParentFolder());
     }
-    
+
+
 }

@@ -22,6 +22,10 @@
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Portal</developerConnection>
     </scm>
 
+    <properties>
+        <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    </properties>
+
     <build>
         <finalName>portal</finalName>
         <plugins>
@@ -62,37 +66,13 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-                        <Import-Bundle>
-                            com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
-                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
-                            com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
-                            jackson-core-lgpl;version="[1.9.12,2.0.0]",
-                            jackson-mapper-lgpl;version="[1.9.12,2.0.0]",
-                            org.apromore.portal-model;version="[1.1,1.1]",
-                            org.apromore.manager-client;version="[1.1,1.1]",
-                            org.apromore.manager-security;version="[1.1,1.1]",
-                            <!--org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",-->
-                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
-                            org.springframework.context;bundle-version="[3.1.0,4.0)",
-                            org.springframework.oxm;bundle-version="[3.1.0,4.0)",
-                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.security.core;version="[3.1.0,4.0)",
-                            org.springframework.security.config;version="[3.1.0,4.0)",
-                            org.springframework.security.web;version="[3.1.0,4.0)",
-                            org.springframework.security.remoting;version="[3.1.0,4.0)",
-                            org.apromore.zk-osgi;bundle-version="[6.5,9.0)",
-                            org.apromore.plugin.portal-custom-gui;version="[1.1,2.0)"
-                        </Import-Bundle>
                         <Import-Package>
-                            org.eclipse.virgo.web.dm,
-                            org.aopalliance.aop,
-                            net.sf.cglib.proxy,
-                            net.sf.cglib.core,
-                            net.sf.cglib.reflect,
+                            javax.xml.soap,
+                            org.eclipse.virgo.web.dm;resolution:=optional,
+                            org.aopalliance.aop,                            
+                            org.apromore.security.filter,
+                            org.apromore.security.provider,
+                            org.apromore.service,
                             com.google.common.base,
                             org.deckfour.xes.classification,
                             org.deckfour.xes.extension,
@@ -111,11 +91,31 @@
                             org.deckfour.xes.out,
                             org.deckfour.xes.util,
                             org.deckfour.xes.xstream,
+                            org.springframework.aop,
+                            org.springframework.aop.framework,
+                            org.springframework.context.config,
+                            org.springframework.osgi.compendium.config;resolution:=optional,
+                            org.springframework.osgi.config;resolution:=optional,
+                            org.springframework.osgi.web.context.support;resolution:=optional,
+                            org.springframework.remoting.httpinvoker,
+                            org.springframework.security.authentication,
+                            org.springframework.security.config,
+                            org.springframework.security.core.userdetails,
+                            org.springframework.security.remoting.httpinvoker,
+                            org.springframework.security.web.authentication,
+                            org.springframework.security.web.session,
+                            org.springframework.web.context.request,
+                            org.springframework.web.filter,
+                            org.springframework.ws.soap.saaj,
+                            org.springframework.ws.transport.http,
+                            org.zkoss.zel.impl,
+                            org.zkoss.zk.au.http,
                             *;resolution:=optional
                         </Import-Package>
                         <Export-Package>
                             org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.common.zk,
                             org.apromore.portal.common.notification,
                             org.apromore.portal.context,
                             org.apromore.portal.dialogController.workspaceOptions,
@@ -176,6 +176,11 @@
             <artifactId>com.springsource.javax.xml.bind</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-commons</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!-- Custom GUI -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -391,6 +396,30 @@
         </dependency>
 
         <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.4.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

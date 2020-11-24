@@ -5,7 +5,7 @@
     
     <artifact type="configuration" name="site" version="0" />
     <artifact type="configuration" name="git" version="0" />
-    <artifact type="configuration" name="git-core" version="0" />
+    <artifact type="configuration" name="git.core" version="0" />
     
     <!-- OSGi Libraries -->
     <artifact type="bundle" name="org.apromore.eclipse-collections-osgi" version="[1.0.0, 2)"/>
@@ -28,6 +28,10 @@
     <!-- Database -->
     <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.database" version="[1.0, 2)"/> 
+    
+     <!-- Cache -->
+    <artifact type="bundle" name="org.apromore.cache" version="[1.0, 2)"/>
 
     <!-- Plugins API -->
     <artifact type="bundle" name="org.apromore.plugin.api-provider" version="[1.1.0, 2)"/>
@@ -37,7 +41,8 @@
     <artifact type="bundle" name="org.apromore.portal-model" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-client" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.manager-security" version="[1.1.0, 2)"/>
-    
+    <artifact type="bundle" name="org.apromore.calendar" version="[1.0, 2)"/>
+
     <!-- Portal -->
     <artifact type="bundle" name="org.apromore.plugin.portal-plugin-api" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.portal-custom-gui" version="[1.1.0, 2)"/>

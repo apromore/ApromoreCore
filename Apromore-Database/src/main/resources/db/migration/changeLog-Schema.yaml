@@ -1,0 +1,534 @@
+databaseChangeLog:
+ - changeSet:
+    id: 20200915024502
+    author: nolantellis
+    changes:
+      - createTable:
+           tableName: usermetadata_type
+           columns: 
+             - column:
+                  name: id
+                  type: INT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_usermetadata_type_id                  
+             - column:                
+                constraints:
+                   nullable: true
+                name: type
+                type: VARCHAR(255)
+                remarks: 'Metadata type'
+             - column:
+                constraints:
+                   nullable: false
+                name: version
+                type: INT
+                remarks: 'Metadata type'
+             - column:
+                  constraints:
+                     nullable: false
+                  name: is_valid
+                  type: TINYINT
+                  remarks: 'Indicate whether this record is valid'           
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_usermetadata_id
+                name: id
+                type: INT
+            - column:
+                constraints:
+                  nullable: false
+                name: type_id
+                type: INT
+                remarks: 'FK User mtadata type id'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: created_by
+                 type: VARCHAR(255)
+                 remarks: 'The user create this metadata'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: created_time
+                 type: VARCHAR(40)
+                 remarks: 'Create time'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: updated_by
+                 type: VARCHAR(255)
+                 remarks: 'The user updated this metadata'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: updated_time
+                 type: VARCHAR(40)
+                 remarks: 'Update time'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: content
+                 type: MEDIUMTEXT
+                 remarks: 'Content of user metadata'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: revision
+                 type: INT
+                 remarks: 'reserve for optimistic lock'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: is_valid
+                 type: TINYINT
+                 remarks: 'Indicate whether this record is valid'        
+         tableName: usermetadata
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: type_id
+         baseTableName: usermetadata
+         constraintName: FK_usermetadata_type_id
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata_type
+         validate: true
+      
+      - createIndex:
+         columns:
+            - column:
+                name: type_id
+         indexName: IDX_type_id
+         tableName: usermetadata
+      
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_usermetadata_log_id
+                name: id
+                type: INT
+            - column:
+                 constraints:
+                   nullable: true
+                 name: usermetadata_id
+                 type: INT
+                 remarks: 'FK USERMETADATA ID'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: log_id
+                 type: INT
+                 remarks: 'FK LOGID ID'
+         tableName: usermetadata_log
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: log_id
+         baseTableName: usermetadata_log
+         constraintName: FK_usermetadata_log_id
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: log
+         validate: true
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: usermetadata_id
+         baseTableName: usermetadata_log
+         constraintName: FK_usermetadata_usermetadata_id
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata
+         validate: true
+
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_usermetadata_process_id
+                name: id
+                type: INT
+            - column:
+                 constraints:
+                   nullable: true
+                 name: usermetadata_id
+                 type: INT
+                 remarks: 'FK USERMETADATA ID'
+            - column:
+                 constraints:
+                   nullable: true
+                 name: process_id
+                 type: INT
+                 remarks: 'FK PROCESS ID'
+         tableName: usermetadata_process
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: usermetadata_id
+         baseTableName: usermetadata_process
+         constraintName: usermetadata_process_ibfk_1
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata
+         validate: true
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: process_id
+         baseTableName: usermetadata_process
+         constraintName: usermetadata_process_ibfk_2
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: process
+         validate: true
+
+      - createTable:
+         columns:
+            - column:
+                autoIncrement: true
+                constraints:
+                  nullable: false
+                  primaryKey: true
+                  primaryKeyName: pk_group_usermetadata_id
+                name: id
+                type: INT
+            - column:
+                 constraints:
+                   nullable: false
+                 name: group_id
+                 type: INT
+                 remarks: 'FK GROUP ID'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: usermetadata_id
+                 type: INT
+                 remarks: 'FK USER METADATA ID'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: has_read
+                 type: TINYINT
+                 remarks: 'Has read permission'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: has_write
+                 type: TINYINT
+                 remarks: 'Has write permission'
+            - column:
+                 constraints:
+                   nullable: false
+                 name: has_ownership
+                 type: TINYINT
+                 remarks: 'Has ownership permission'
+         tableName: group_usermetadata
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: group_id
+         baseTableName: group_usermetadata
+         constraintName: group_usermetadata_ibfk_1
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: group
+         validate: true
+      
+      - addForeignKeyConstraint:
+         baseColumnNames: usermetadata_id
+         baseTableName: group_usermetadata
+         constraintName: group_usermetadata_ibfk_2
+         deferrable: false
+         initiallyDeferred: false
+         onDelete: CASCADE
+         onUpdate: CASCADE
+         referencedColumnNames: id
+         referencedTableName: usermetadata
+         validate: true
+
+ - changeSet:
+     id: 20200928103000
+     author: frankm
+     changes:
+       - modifyDataType:
+           columnName:  content
+           newDataType:  LONGTEXT
+           tableName:  usermetadata
+           
+ - changeSet:
+    id: 20200929015111
+    author: nolantellis
+    changes:
+      - createTable:
+           tableName: custom_calendar
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_custom_calendar_id                  
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: true
+                name: name
+                type: VARCHAR(100)
+                remarks: 'Description for the calender'
+             - column:
+                constraints:
+                   nullable: false
+                name: created
+                type: VARCHAR(100)
+                remarks: 'creation time for the calender'
+             
+             - column:
+                constraints:
+                   nullable: false
+                name: updated
+                type: VARCHAR(100)
+                remarks: 'update time for the calender'
+ 
+             - column:                
+                constraints:
+                   nullable: true
+                name: created_by
+                type: VARCHAR(100)    
+                
+             - column:                
+                constraints:
+                   nullable: true
+                name: updated_by
+                type: VARCHAR(100)
+                
+      - createTable:
+           tableName: work_day
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_work_day_id                  
+             - column:                
+                constraints:
+                   nullable: false
+                name: day_of_week
+                type: VARCHAR(10)
+                remarks: 'Description for the work_day'
+             - column:
+                constraints:
+                   nullable: false
+                name: start_time
+                type: VARCHAR(100)
+                remarks: 'start_time time for the work_day'
+             
+             - column:
+                constraints:
+                   nullable: false
+                name: end_time
+                type: VARCHAR(100)
+                remarks: 'end_time for the work_day'
+ 
+             - column:                
+                constraints:
+                   nullable: false
+                name: is_working_day
+                type: BOOLEAN
+                
+             - column:                
+                constraints:
+                   nullable: false
+                   referencedTableName: custom_calendar
+                   referencedColumnNames: id
+                   foreignKeyName: fk_work_day_custom_calendar_idk
+                   deleteCascade: true
+                name: calendar_id
+                type: BIGINT    
+                
+             - column:
+                constraints:
+                   nullable: true
+                name: created_by
+                type: VARCHAR(100)
+                remarks: 'created_by time for the work_day'
+             
+             - column:
+                constraints:
+                   nullable: true
+                name: updated_by
+                type: VARCHAR(100)
+                remarks: 'updated_by for the work_day'
+                
+      - addUniqueConstraint:  
+         clustered:  true  
+         columnNames:  day_of_week,calendar_id,start_time
+         constraintName:  work_day_constraint  
+         deferrable:  true  
+         disabled:  false  
+         initiallyDeferred:  false   
+         tableName:  work_day
+         validate:  true
+         
+      - createTable:
+           tableName: holiday
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_holiday_id
+                    
+             - column:
+                constraints:
+                   nullable: true
+                name: created_by
+                type: VARCHAR(100)
+                remarks: 'created_by time for the holiday'
+             
+             - column:
+                constraints:
+                   nullable: true
+                name: updated_by
+                type: VARCHAR(100)
+                remarks: 'updated_by for the holiday'   
+                
+             - column:                
+                constraints:
+                   nullable: false
+                   referencedTableName: custom_calendar
+                   referencedColumnNames: id
+                   foreignKeyName: fk_holiday_custom_calendar_idk
+                   deleteCascade: true
+                name: calendar_id
+                type: BIGINT 
+                
+             - column:
+                constraints:
+                   nullable: false
+                name: name
+                type: VARCHAR(100)
+               
+             - column:
+                constraints:
+                   nullable: true
+                name: description
+                type: VARCHAR(100)
+                
+             - column:
+                constraints:
+                   nullable: false
+                name: holiday_date
+                type: VARCHAR(20)
+                
+             - column:
+                constraints:
+                   nullable: true
+                name: reference_id
+                type: BIGINT
+
+ - changeSet:
+     id: 20201014123300
+     author: frankm
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+           - or:
+               - foreignKeyConstraintExists:
+                   foreignKeyName: fk_user_group
+               - indexExists:
+                   indexName: idx_search_history_position_search
+                   tableName: search_history
+               - indexExists:
+                   indexName: idx_group_row_guid
+                   tableName: group
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: groupId
+           baseTableName: user
+           constraintName: fk_user_group
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: group
+           validate: true
+
+       - createIndex:
+           columns:
+             - column:
+                 name: position
+             - column:
+                 name: search
+           indexName: idx_search_history_position_search
+           tableName: search_history
+           unique: true
+
+       - createIndex:
+           columns:
+             - column:
+                 name: row_guid
+           indexName: idx_group_row_guid
+           tableName: group
+           unique: true
+
+ - changeSet:
+     id: 20201014125100
+     author: frankm
+     preConditions:
+       - onFail: MARK_RAN
+       - tableExists:
+           tableName: dashboard_layout
+     changes:
+       - dropTable:
+           cascadeConstraints:  true
+           tableName:  dashboard_layout
+           
+ - changeSet:
+     id: 20201109125100
+     author: nolantellis
+     changes:
+        - addColumn:
+            tableName: custom_calendar
+            columns:
+               - column:
+                  name: zone_id
+                  type: varchar(50))
+                  constraints:
+                      nullable: false
+                  

@@ -79,8 +79,8 @@
                         </grid>
                     </groupbox>
                 </row>
-                <row spans="3" id="canoniserMandatoryFieldsRow" visible="false">
-                    <label value="*: mandatory fields."/>
+                <row spans="3" id="canoniserMandatoryFieldsRow" visible="false" sclass="ap-footnotes">
+                    <label value="* mandatory fields."/>
                 </row>
                 <row spans="2"  sclass="ap-window-footer-actions">
                     <div align="right">

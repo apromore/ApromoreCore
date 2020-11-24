@@ -48,6 +48,16 @@
     border: none !important;
 }
 
+.ap-usrmgt-detail-container.ap-state-on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ap-usrmgt-detail-container.ap-state-off {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .ap-usrmgt-detail {
     background-color: var(--ap-c-grey-minor);
     padding: 8px 10px;

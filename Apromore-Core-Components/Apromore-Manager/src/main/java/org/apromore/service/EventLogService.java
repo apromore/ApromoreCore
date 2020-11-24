@@ -25,8 +25,10 @@
 package org.apromore.service;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.cache.exception.*;
 import org.apromore.dao.model.*;
-import org.apromore.exception.*;
+import org.apromore.exception.ImportException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.util.StatType;
@@ -104,5 +106,5 @@ public interface EventLogService {
      * @param logId
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
-    APMLog getAggregatedLog(Integer logId, XLog xLog);
+    APMLog getAggregatedLog(Integer logId);
 }

@@ -27,16 +27,16 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:beans="http://www.springframework.org/schema/beans"
    xmlns:context="http://www.springframework.org/schema/context"
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.eclipse.org/gemini/blueprint/schema/blueprint
-       http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+   xmlns:osgi="http://www.springframework.org/schema/osgi"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
+       http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       http://www.springframework.org/schema/osgi                  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
        
     <!-- enable classpath scanning -->
     <context:component-scan base-package="org.apromore.plugin.provider" />
        
-    <service ref="pluginProviderImpl" interface="org.apromore.plugin.provider.PluginProvider" />
-    <set id="pluginSet" interface="org.apromore.plugin.Plugin" availability="optional" greedy-proxying="true" />
+    <osgi:service ref="pluginProviderImpl" interface="org.apromore.plugin.provider.PluginProvider" />
+    <osgi:set id="pluginSet" interface="org.apromore.plugin.Plugin" cardinality="0..N" greedy-proxying="true" />
       
 </beans:beans>

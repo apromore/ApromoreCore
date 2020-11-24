@@ -53,6 +53,11 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-commons</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

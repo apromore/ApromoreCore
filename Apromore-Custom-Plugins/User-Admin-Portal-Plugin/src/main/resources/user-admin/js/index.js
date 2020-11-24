@@ -1,9 +1,38 @@
 Ap.userAdmin = Ap.userAdmin || {}
-Ap.userAdmin.editUser = (userName, index) => {
+
+// Common toggle click
+const toggleClick = (widgetId, param, event) => {
+  if (event.metaKey || event.shiftKey || event.ctrlKey) { return; } // do not toggle for multiple selections
+  zAu.send(new zk.Event(zk.Widget.$(widgetId), 'onToggleClick', param));
+}
+
+/**
+ * Manual single-row toggle for user Listbox
+ *
+ * @param name {String} Username
+ * @param index {number} Row index
+ * @param event {Event} Click Event
+ */
+Ap.userAdmin.toggleUserClick = (name, event) => {
+  toggleClick('$userEditBtn', { name }, event);
+}
+
+/**
+ * Manual single-row toggle for group Listbox
+ *
+ * @param name {String} Username
+ * @param index {number} Row index
+ * @param event {Event} Click Event
+ */
+Ap.userAdmin.toggleGroupClick = (id, event) => {
+  toggleClick('$groupEditBtn', { id }, event);
+}
+
+Ap.userAdmin.editUser = (userName) => {
   zAu.send(new zk.Event(zk.Widget.$('$userEditBtn'), 'onExecute', userName));
 }
 
-Ap.userAdmin.editGroup = (groupName, index) => {
+Ap.userAdmin.editGroup = (groupName) => {
   zAu.send(new zk.Event(zk.Widget.$('$groupEditBtn'), 'onExecute', groupName));
 }
 

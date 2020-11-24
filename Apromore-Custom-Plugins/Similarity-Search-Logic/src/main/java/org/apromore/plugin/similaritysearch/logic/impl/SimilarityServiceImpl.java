@@ -43,6 +43,7 @@ import org.apromore.portal.model.ProcessVersionsType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
+import org.apromore.service.FolderService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.similaritysearch.tools.SearchForSimilarProcesses;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
     private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityServiceImpl.class);
 
     private ProcessModelVersionRepository processModelVersionRepo;
-    private FolderRepository folderRepo;
+    private FolderService folderService;
     //private CanoniserService canoniserSrv;
     private UserInterfaceHelper ui;
 
@@ -67,10 +68,10 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
      * @param uiHelper user interface helper
      */
     @Inject
-    public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final FolderRepository folderRepository,
+    public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final FolderService folderService,
                                  final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
-        folderRepo = folderRepository;
+        this.folderService = folderService;
         ui = uiHelper;
     }
 
@@ -114,7 +115,7 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
         } else {
             // We have a folder, Get all processes in the folder and in all folders underneath this one.
             models = new ArrayList<>();
-            models.addAll(folderRepo.getProcessModelVersionByFolderUserRecursive(folderId, userGuid));
+            models.addAll(folderService.getProcessModelVersionByFolderUserRecursive(folderId, userGuid));
         }
         return models;
     }

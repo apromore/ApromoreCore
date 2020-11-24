@@ -21,68 +21,55 @@
  */
 package org.apromore.apmlog;
 
-import java.util.ArrayList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
 import java.util.List;
 
 /**
  * @author Chii Chang (11/2019)
+ * Modified: Chii Chang (07/10/2020) - "schedule" event included; added start time method.
+ * Modified: Chii Chang (27/10/2020)
  */
-public class AActivity  {
-    private String name;
-    private List<AEvent> eventList;
-    private long startTimeMilli = 0;
-    private long endTimeMilli = 0;
-    private long duration = 0;
+public interface AActivity  {
 
-    public AActivity(String name, List<AEvent> eventList, long startTimeMilli, long endTimeMilli,
-                     long duration) {
-        this.name = name;
-        this.eventList = eventList;
-        this.startTimeMilli = startTimeMilli;
-        this.endTimeMilli = endTimeMilli;
-        this.duration = duration;
-    }
+     int getImmutableIndex();
 
-    public AActivity(List<AEvent> eventList) {
-        this.name = eventList.get(0).getName();
-        this.eventList = eventList;
-        this.startTimeMilli = eventList.get(0).getTimestampMilli();
-        this.endTimeMilli = eventList.get(eventList.size()-1).getTimestampMilli();
-        if(endTimeMilli > startTimeMilli) this.duration = endTimeMilli - startTimeMilli;
-    }
+     void setMutableIndex(int mutableIndex);
 
-    public String getName() {
-        return name;
-    }
+     int getMutableIndex();
 
-    public List<AEvent> getEventList() {
-        return eventList;
-    }
+     String getName();
 
-    public long getStartTimeMilli() {
-        return startTimeMilli;
-    }
+     String getResource();
 
-    public long getEndTimeMilli() {
-        return endTimeMilli;
-    }
+     UnifiedMap<String, String> getAttributeMap();
 
-    public long getDuration() {
-        return duration;
-    }
+     List<AEvent> getImmutableEventList();
 
-    public AActivity clone() {
-        String clnName = this.name;
-        List<AEvent> clnEventList = new ArrayList<>();
-        for(int i = 0; i<this.eventList.size(); i++) {
-            AEvent aEvent = this.eventList.get(i).clone();
-            clnEventList.add(aEvent);
-        }
-        long clnStartTimeMilli = this.startTimeMilli;
-        long clnEndTimeMilli = this.endTimeMilli;
-        long clnDuration = this.duration;
-        AActivity activity = new AActivity(clnName, clnEventList, clnStartTimeMilli,
-                clnEndTimeMilli, clnDuration);
-        return activity;
-    }
+     long getStartTimeMilli();
+
+     long getEndTimeMilli();
+
+     double getDuration();
+
+     UnifiedMap<String, String> getAttributes();
+
+     UnifiedMap<String, String> getAllAttributes();
+
+     void setAttributes(UnifiedMap<String, String> allAttributes);
+
+     IntArrayList getEventIndexes();
+
+     String getAttributeValue(String key);
+
+     AActivity clone(ATrace parentTrace);
+
+     AActivity clone();
+
+     int getMutableTraceIndex();
+
+     int getImmutableTraceIndex();
+
+     void setParentTrace(ATrace parentTrace);
 }

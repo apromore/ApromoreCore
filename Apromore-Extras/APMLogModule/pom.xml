@@ -47,7 +47,9 @@
                             org.apromore.apmlog.filter.typefilters,
                             org.apromore.apmlog.filter.rules.desc,
                             org.apromore.apmlog.impl,
-                            org.apromore.apmlog.util
+                            org.apromore.apmlog.util,
+                            org.apromore.apmlog.stats,
+                            org.apromore.apmlog.immutable
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -73,6 +75,11 @@
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
         </dependency>
 
         <dependency>

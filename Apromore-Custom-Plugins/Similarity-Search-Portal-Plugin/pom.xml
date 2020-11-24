@@ -23,9 +23,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Bundle>
-                            org.apromore.plugin.portal-custom-gui;version="[1.1.0,2.0)"
-                        </Import-Bundle>
                         <Import-Package>
                             org.apromore.plugin,
                             org.apromore.portal.custom.gui,
@@ -33,9 +30,6 @@
                             org.apromore.portal.custom.gui.tab.impl,
                             *
                         </Import-Package>
-                        <!--<Export-Package>-->
-                            <!--*-->
-                        <!--</Export-Package>-->
                     </instructions>
                 </configuration>
             </plugin>

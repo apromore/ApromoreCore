@@ -19,6 +19,25 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+/*
+ * This file is part of "Apromore".
+ *
+ * Copyright (C) 2019 - 2020 The University of Melbourne.
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
 
 package org.apromore.apmlog.filter;
 
@@ -28,6 +47,7 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
@@ -59,7 +79,6 @@ public class APMLogFilter {
         LOGGER.info("Create new PLog");
         this.pLog = new PLog(apmLog);
         LOGGER.info("Create new PLog complete");
-//        System.out.println("");
     }
 
     public PLog getPLog() {
@@ -115,8 +134,6 @@ public class APMLogFilter {
 
     public void filter(List<LogFilterRule> logFilterRuleList) {
 
-//        pLog.updatePrevious();
-
         // reset all
         for (String caseId : pLog.getPTraceUnifiedMap().keySet()) {
             PTrace pTrace = pLog.getPTraceUnifiedMap().get(caseId);
@@ -125,44 +142,53 @@ public class APMLogFilter {
 
         List<PTrace> filteredPTraceList = new ArrayList<>();
 
-//        BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
+        BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
+        validTraceBS.set(0, pLog.getOriginalPTraceList().size());
 
-        BitSet validTraceBS = pLog.getValidTraceIndexBS();
 
         List<PTrace> originalPTraceList = pLog.getOriginalPTraceList();
 
+
         for (int i = 0; i < originalPTraceList.size(); i++) {
-
-//            System.out.println(i + " / " + (originalPTraceList.size() - 1));
-
 
             if (validTraceBS.get(i)) {
 
-                PTrace op = originalPTraceList.get(i);
-
-                String theId = op.getCaseId();
-                PTrace pTrace = pLog.getPTraceUnifiedMap().get(theId);
-
+                PTrace pTrace = originalPTraceList.get(i);
 
                 PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
 
                 if (filteredPTrace != null) {
-                    if (filteredPTrace.getEventSize() > 0) {
+                    if (filteredPTrace.getValidEventIndexBitSet().cardinality() > 0) {
+
+                        int muIndex = filteredPTraceList.size();
+                        filteredPTrace.update(muIndex);
+
                         filteredPTraceList.add(filteredPTrace);
-                        validTraceBS.set(i, true);
-                        pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
+//                        pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
+
+                        pLog.getPTraceList().add(pTrace);
+                        pLog.getTraceList().add(pTrace);
                     } else {
                         pTrace.getValidEventIndexBitSet().clear();
+                        validTraceBS.set(i, false);
                     }
                 } else {
                     pTrace.getValidEventIndexBitSet().clear();
+                    validTraceBS.set(i, false);
                 }
             }
         }
 
-
         pLog.setValidTraceIndexBS(validTraceBS);
-        updatePLogStats(filteredPTraceList);
+        if (validTraceBS.cardinality() > 0 ) {
+            pLog.updateStats(filteredPTraceList);
+
+            pLog.setAttributeGraph(new AAttributeGraph(pLog));
+        } else {
+            pLog.getPTraceList().clear();
+            pLog.setEventSize(0);
+            pLog.setVariantIdFreqMap(new UnifiedMap<>());
+        }
     }
 
     private PTrace getFilteredPTrace(PTrace pTrace, List<LogFilterRule> logFilterRules) {
@@ -176,16 +202,11 @@ public class APMLogFilter {
 
             if (section == Section.CASE) {
                 boolean keepTrace = toKeep(pTrace, logFilterRule);
-                if (keepTrace) {
-                    filteredTrace = pTrace;
-                } else {
-                    filteredTrace = null;
-                    break;
+                if (!keepTrace) {
+                    return null;
                 }
             } else { //Event section
-
                 BitSet validEventBS = pTrace.getValidEventIndexBitSet();
-//                BitSet validEventBS = new BitSet(pTrace.getOriginalEventList().size());
 
                 List<AEvent> eventList = pTrace.getOriginalEventList();
 
@@ -212,8 +233,6 @@ public class APMLogFilter {
         if (filteredTrace!= null) {
             if (filteredTrace.getValidEventIndexBitSet().cardinality() == 0) {
                 filteredTrace = null;
-            } else {
-                filteredTrace.update();
             }
         }
 
@@ -248,6 +267,12 @@ public class APMLogFilter {
                 return PathFilter.toKeep(trace, logFilterRule);
             case REWORK_REPETITION:
                 return ReworkFilter.toKeep(trace, logFilterRule);
+            case CASE_SECTION_ATTRIBUTE_COMBINATION:
+                return CaseSectionAttributeCombinationFilter.toKeep(trace, logFilterRule);
+            case EVENT_ATTRIBUTE_DURATION:
+                return EventAttributeDurationFilter.toKeep(trace, logFilterRule);
+            case ATTRIBUTE_ARC_DURATION:
+                return AttributeArcDurationFilter.toKeep(trace, logFilterRule);
             default:
                 return false;
         }
@@ -265,50 +290,17 @@ public class APMLogFilter {
         }
     }
 
-    private void updatePLogStats(List<PTrace> pTraceList) {
-        this.pLog.setPTraceList(pTraceList);
-        this.pLog.updateActivityOccurMaxMap();
-
-        this.pLog.setMinDuration(0);
-        this.pLog.setMaxDuration(0);
-        this.pLog.setStartTime(-1);
-        this.pLog.setEndTime(-1);
-
-        UnifiedSet<Integer> variSet = new UnifiedSet<>();
-        for(PTrace pTrace : pTraceList) {
-
-            long dur = pTrace.getDuration();
-            long st = pTrace.getStartTimeMilli();
-            long et = pTrace.getEndTimeMilli();
-
-            if(this.pLog.getMinDuration() == 0 || dur < this.pLog.getMinDuration()) this.pLog.setMinDuration(dur);
-            if(this.pLog.getMaxDuration() == 0 || dur > this.pLog.getMaxDuration()) this.pLog.setMaxDuration(dur);
-            if(this.pLog.getStartTime() == -1 || st < this.pLog.getStartTime()) this.pLog.setStartTime(st);
-            if(this.pLog.getEndTime() == -1 || et > this.pLog.getEndTime()) this.pLog.setEndTime(et);
-
-            if(!variSet.contains(pTrace.getCaseVariantId())) {
-                variSet.put(pTrace.getCaseVariantId());
-            }
-        }
-
-        this.pLog.setCaseVariantSize(variSet.size());
-
-        int newEventSize = 0;
-
-        for(int i=0; i < this.pLog.getPTraceList().size(); i++) {
-            newEventSize += this.pLog.getPTraceList().get(i).getEventSize();
-        }
-
-        this.pLog.setEventSize(newEventSize);
-
-
-        resetDuration();
-        updateCaseVariants();
-    }
-
-
 
     private void resetDuration() {
+
+        this.pLog.durFreqMap = new UnifiedMap<>();
+        this.pLog.ttlProcTimeFreqMap = new UnifiedMap<>();
+        this.pLog.avgProcTimeFreqMap = new UnifiedMap<>();
+        this.pLog.maxProcTimeFreqMap = new UnifiedMap<>();
+        this.pLog.ttlWaitTimeFreqMap = new UnifiedMap<>();
+        this.pLog.avgWaitTimeFreqMap = new UnifiedMap<>();
+        this.pLog.maxWaitTimeFreqMap = new UnifiedMap<>();
+
         this.pLog.setMinDuration(0);
         this.pLog.setMaxDuration(0);
         for(int i=0; i<this.pLog.getPTraceList().size(); i++) {
@@ -319,6 +311,14 @@ public class APMLogFilter {
             if(pTrace.getDuration() > this.pLog.getMaxDuration()) {
                 this.pLog.setMaxDuration(pTrace.getDuration());
             }
+
+            this.pLog.addToPerfMap(pTrace, "duration");
+            this.pLog.addToPerfMap(pTrace, "totalProcessingTime");
+            this.pLog.addToPerfMap(pTrace, "averageProcessingTime");
+            this.pLog.addToPerfMap(pTrace, "maxProcessingTime");
+            this.pLog.addToPerfMap(pTrace, "totalWaitingTime");
+            this.pLog.addToPerfMap(pTrace, "averageWaitingTime");
+            this.pLog.addToPerfMap(pTrace, "maxWaitingTime");
         }
     }
 

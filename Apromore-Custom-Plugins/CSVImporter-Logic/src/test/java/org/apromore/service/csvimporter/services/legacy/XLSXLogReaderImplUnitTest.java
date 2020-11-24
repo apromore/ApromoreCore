@@ -21,7 +21,6 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
-import com.google.common.io.ByteStreams;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
@@ -33,7 +32,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -110,7 +108,7 @@ public class XLSXLogReaderImplUnitTest {
         String testFile = "/test1-valid.xlsx";
         String expectedFile = "/test1-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         //Generate sample
         LogSample sample = sampleLogGenerator
@@ -146,7 +144,7 @@ public class XLSXLogReaderImplUnitTest {
         String testFile = "/test2-missing-columns.xlsx";
         String expectedFile = "/test2-expected.xes";
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         //Generate sample
         LogSample sample = sampleLogGenerator
@@ -183,7 +181,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test3-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -220,7 +218,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test4-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -256,7 +254,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test5-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -293,7 +291,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test7-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -355,7 +353,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test9-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -398,7 +396,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test10-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator
@@ -433,7 +431,7 @@ public class XLSXLogReaderImplUnitTest {
         String expectedFile = "/test11-expected.xes";
 
         // Set up inputs and expected outputs
-        String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
+        String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogSample sample = sampleLogGenerator

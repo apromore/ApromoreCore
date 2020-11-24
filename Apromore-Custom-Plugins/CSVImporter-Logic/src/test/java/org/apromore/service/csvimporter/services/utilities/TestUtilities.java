@@ -21,6 +21,7 @@
  */
 package org.apromore.service.csvimporter.services.utilities;
 
+import com.google.common.io.ByteStreams;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -32,6 +33,7 @@ import org.deckfour.xes.out.XesXmlSerializer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 public class TestUtilities {
@@ -77,5 +79,14 @@ public class TestUtilities {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         (new XesXmlSerializer()).serialize(xlog, baos);
         return baos.toString();
+    }
+
+    /**
+     * @param resource  the classpath of a UTF-8-encoded test document, e.g. "/test1-expected.xes"
+     * @return the content of the document, with line endings normalized to LF (i.e. unix convention)
+     * @throws IOException if the <var>resource</var> cannot be read
+     */
+    public static String resourceToString(String resource) throws IOException {
+        return new String(ByteStreams.toByteArray(TestUtilities.class.getResourceAsStream(resource)), Charset.forName("utf-8"));
     }
 }

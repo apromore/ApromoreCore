@@ -14,7 +14,6 @@
 	<artifactId>ui-theme-compact</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<properties>
-		<zk.version>8.6.0.1</zk.version>
                 <theme.project>chiaroscuro</theme.project>
                 <theme.name>chiaroscuro_c</theme.name>
                 <theme.display>Chiaroscuro Compact</theme.display>
@@ -22,6 +21,15 @@
 	<packaging>jar</packaging>
 	<name>Apromore :: ui :: ui-theme-compact</name>
 	<description>Chiaroscuro Compact theme for ZK</description>
+
+    <pluginRepositories>
+        <pluginRepository>  <!-- required for zkless-engine-maven-plugin -->
+            <id>zkmaven</id>
+            <name>ZK Maven Plugin Repository</name>
+            <url>http://mavensync.zkoss.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>

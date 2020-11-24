@@ -38,7 +38,7 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.portal.util.DateTimeNormalizer;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
@@ -268,13 +268,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderOwner(final SummaryType summaryType) {
         Boolean isMakePublic = summaryType.isMakePublic();
-        String label;
-        if (isMakePublic != null && isMakePublic == true) {
-            label = "public";
-        } else {
-            label = summaryType.getOwner();
-        }
-        return wrapIntoListCell(new Label(label));
+        String owner = summaryType.getOwnerName();
+        Label label = new Label(owner);
+        label.setClientAttribute("title", owner);
+        return wrapIntoListCell(label);
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
@@ -287,7 +284,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         String lastUpdate = summaries.get(lastIndex).getLastUpdate();
 
         if (lastUpdate != null) {
-            lastUpdate = DateTimeNormalizer.parse(lastUpdate);
+            lastUpdate = DateTimeUtils.normalize(lastUpdate);
         }
         return wrapIntoListCell(new Label(lastUpdate));
     }

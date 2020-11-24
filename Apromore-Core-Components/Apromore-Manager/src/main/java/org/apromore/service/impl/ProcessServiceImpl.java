@@ -39,8 +39,8 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
-
 import org.apromore.aop.Event;
+import org.apromore.aop.HistoryEnum;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.GroupProcessRepository;
@@ -49,9 +49,10 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.HistoryEnum;
+import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
@@ -159,10 +160,10 @@ public class ProcessServiceImpl implements ProcessService {
                 throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
 
-            pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType);
+            Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
+            pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType,nat);
             LOGGER.info("Process model version: " + pmv);
-            formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
-
+            
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
@@ -257,8 +258,8 @@ public class ProcessServiceImpl implements ProcessService {
                         throw new RepositoryException(message);
                     }
                     else {
-                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null);
-                        formatSrv.storeNative(processName, pmv, now, now, user, nativeType, newVersion.toString(), nativeStream);
+                        Native nat = formatSrv.storeNative(processName, now, now, user, nativeType, newVersion.toString(), nativeStream);
+                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null,nat);
                         LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
                         return pmv;
                     }
@@ -285,7 +286,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     private boolean canUserWriteProcess(User user, Integer processId) {
         for (GroupProcess gp: groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())) {
-            if (gp.getHasWrite()) {
+            if (gp.getAccessRights().isWriteOnly()) {
                  return true;
             }
         }
@@ -359,7 +360,7 @@ public class ProcessServiceImpl implements ProcessService {
                 boolean isCurrentPublic = !publicGroupProcesses.isEmpty();
 
                 if (!isCurrentPublic && tobePublic) {
-                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
+                    groupProcesses.add(new GroupProcess(process, publicGroup, new AccessRights(true,true,false)));
                     process.setGroupProcesses(groupProcesses);
                     workspaceSrv.createPublicStatusForUsers(process);
 
@@ -527,10 +528,10 @@ public class ProcessServiceImpl implements ProcessService {
     /* Does the processing of ImportProcess. */
     @Transactional(readOnly = false)
     private ProcessModelVersion addProcessModelVersion(final Process process, final String processName, final Version version, final String branchName,
-            final String created, final String lastUpdated, NativeType nativeType) throws ImportException {
+            final String created, final String lastUpdated, NativeType nativeType,Native nat) throws ImportException {
         ProcessModelVersion pmv;
         ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
-        pmv = createProcessModelVersion(branch, version, nativeType, null);
+        pmv = createProcessModelVersion(branch, version, nativeType, null,nat);
         return pmv;
     }
 
@@ -566,7 +567,7 @@ public class ProcessServiceImpl implements ProcessService {
             Set<GroupProcess> groupProcesses = process.getGroupProcesses();
 
             // Add the user's personal group
-            groupProcesses.add(new GroupProcess(process, user.getGroup(), true, true, true));
+            groupProcesses.add(new GroupProcess(process, user.getGroup(),new AccessRights(true,true,true)));
             process.setGroupProcesses(groupProcesses);
 
             process = processRepo.save(process);
@@ -582,11 +583,9 @@ public class ProcessServiceImpl implements ProcessService {
                 if (publicGroup == null) {
                     LOGGER.warn("No public group present in repository");
                 } else {
-                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
+                    groupProcesses.add(new GroupProcess(process, publicGroup, new AccessRights(true,true,false)));
                 }
-            }
-
-            process.setGroupProcesses(groupProcesses);
+            }            
 
             process = processRepo.saveAndFlush(process);
 
@@ -607,6 +606,7 @@ public class ProcessServiceImpl implements ProcessService {
             branch.setBranchName(name);
             branch.setCreateDate(created);
             branch.setLastUpdateDate(lastUpdated);
+            branch.setProcess(process);
 
             process.getProcessBranches().add(branch);
 
@@ -618,7 +618,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, 
-            NativeType nativeType, final String netId) {
+            NativeType nativeType, final String netId, Native nat) {
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
 
@@ -631,9 +631,10 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setCreateDate(now);
         processModel.setLastUpdateDate(now);
         processModel.setNativeType(nativeType);
-
+        processModel.setNativeDocument(nat);
         branch.setCurrentProcessModelVersion(processModel);
-
+        branch.getProcessModelVersions().add(processModel);
+        
         return processModelVersionRepo.save(processModel);
     }
 
