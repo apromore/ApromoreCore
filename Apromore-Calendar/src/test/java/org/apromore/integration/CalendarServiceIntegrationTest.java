@@ -36,6 +36,7 @@ import java.util.UUID;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.dao.model.Holiday;
 import org.junit.Test;
@@ -83,8 +84,9 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   public void testGetCalenderWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
 //    Given
     CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
-    Holiday holiday = new Holiday("Test Holiday", "Test Holiday Desc", LocalDate.of(2020, 01, 01));
-    calenderService.addHoliday(model.getId(),Arrays.asList(holiday));
+ 
+    HolidayModel holiday = new HolidayModel("CUSTOM","Test Holiday", "Test Holiday Desc", LocalDate.of(2020, 01, 01));
+    calenderService.updateHoliday(model.getId(),Arrays.asList(holiday));
    
 //    when
     CalendarModel modelExpected=calenderService.getCalender(model.getId());
@@ -102,10 +104,10 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   public void testGetCalenderWithCustomHolidayRemoved() throws CalendarAlreadyExistsException, CalendarNotExistsException {
 //    Given
     CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
-    Holiday holiday1 = new Holiday("Test Holiday1", "Test Holiday Desc1", LocalDate.of(2020, 01, 01));
-    Holiday holiday2 = new Holiday("Test Holiday2", "Test Holiday Desc2", LocalDate.of(2020, 01, 02));
-    Holiday holiday3 = new Holiday("Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
-    calenderService.addHoliday(model.getId(),Arrays.asList(holiday1,holiday2,holiday3));
+    HolidayModel holiday1 = new HolidayModel("CUSTOM","Test Holiday1", "Test Holiday Desc1", LocalDate.of(2020, 01, 01));
+    HolidayModel holiday2 = new HolidayModel("CUSTOM","Test Holiday2", "Test Holiday Desc2", LocalDate.of(2020, 01, 02));
+    HolidayModel holiday3 = new HolidayModel("CUSTOM","Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
+    calenderService.updateHoliday(model.getId(),Arrays.asList(holiday1,holiday2,holiday3));
    
 //    when
     CalendarModel modelExpected=calenderService.getCalender(model.getId());

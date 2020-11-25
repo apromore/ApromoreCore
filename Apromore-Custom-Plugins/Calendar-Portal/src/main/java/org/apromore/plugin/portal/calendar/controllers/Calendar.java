@@ -37,15 +37,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.model.HolidayModel;
+import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.TimeUtils;
-import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.calendar.Constants;
-import org.apromore.plugin.portal.calendar.DayOfWeekItem;
-import org.apromore.plugin.portal.calendar.HolidayItem;
 import org.apromore.plugin.portal.calendar.TimeRange;
 import org.apromore.plugin.portal.calendar.Zone;
 import org.slf4j.Logger;
@@ -73,6 +72,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -87,6 +87,8 @@ public class Calendar extends SelectorComposer<Window> {
   CalendarService calendarService;
 
   private CalendarModel calendarModel;
+  
+  private boolean calenderExists=false;
 
   /**
    * For searching time zone id
@@ -136,11 +138,10 @@ public class Calendar extends SelectorComposer<Window> {
   @Setter
   private List<String> holidayTypes;
 
-  private ListModelList<DayOfWeekItem> dayOfWeekListModel;
-  private ListModelList<HolidayItem> holidayListModel;
-  private ListModelList<Zone> zoneModel;
-  Map<DayOfWeek, DayOfWeekItem> dayOfWeekMap;
-  Map<LocalDate, HolidayItem> holidayMap;
+  private ListModelList<WorkDayModel> dayOfWeekListModel;
+  private ListModelList<HolidayModel> holidayListModel;
+  private ListModelList<Zone> zoneModel;  
+ 
 
   public Calendar() throws Exception {}
 
@@ -149,7 +150,8 @@ public class Calendar extends SelectorComposer<Window> {
     super.doAfterCompose(win);
 
     Long calendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-    calendarModel = calendarId == null ? null : calendarService.getCalender(calendarId);
+    calenderExists=calendarId!=null;
+    calendarModel = !calenderExists ? new CalendarModel(): calendarService.getCalender(calendarId);
 
     populateTimeZone();
     initialize();
@@ -191,8 +193,8 @@ public class Calendar extends SelectorComposer<Window> {
         JSONObject params = (JSONObject) event.getData();
         int dowIndex = (Integer) params.get("dow");
         Boolean workday = (Boolean) params.get("workday");
-        DayOfWeekItem dowItem = getDayOfWeekItem(dowIndex);
-        dowItem.setWorkday(workday);
+        WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
+        dowItem.setWorkingDay(workday);
         refresh(dowItem);
         Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
       }
@@ -214,10 +216,15 @@ public class Calendar extends SelectorComposer<Window> {
           ranges.add(new TimeRange(
               OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)),
               OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC))));
+          
+          WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
+          dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)));
+          dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));
+          
+          refresh(dowItem);
+          
         }
-        DayOfWeekItem dowItem = getDayOfWeekItem(dowIndex);
-        dowItem.setRanges(ranges);
-        refresh(dowItem);
+        
         Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
       }
     });
@@ -231,8 +238,11 @@ public class Calendar extends SelectorComposer<Window> {
       ZoneId zoneId = ZoneId.of(id);
       Zone currentZone = new Zone(zoneId.getId(), zoneId.getDisplayName(TextStyle.FULL, Locale.US));
       zoneModel.add(currentZone);
-      
-      if(zoneId.equals(ZoneId.systemDefault()))
+      if(calenderExists && zoneId.equals(ZoneId.of(calendarModel.getZoneId())))
+      {
+    	  zoneModel.addToSelection(currentZone);
+      }
+      else if(zoneId.equals(ZoneId.systemDefault()))
       {
         
         zoneModel.addToSelection(currentZone);
@@ -245,12 +255,12 @@ public class Calendar extends SelectorComposer<Window> {
 
   }
 
-  public DayOfWeekItem getDayOfWeekItem(int dowIndex) {
-    DayOfWeek dow = DayOfWeek.of(dowIndex);
-    return dayOfWeekMap.get(dow);
+  public WorkDayModel getDayOfWeekItem(int dowIndex) {    
+    return (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex-1);
   }
 
-  public void refresh(DayOfWeekItem dowItem) {
+  public void refresh(WorkDayModel dowItem) {
+	  
     int index = dayOfWeekListModel.indexOf(dowItem);
     dayOfWeekListModel.set(index, dowItem); // trigger change
   }
@@ -278,7 +288,7 @@ public class Calendar extends SelectorComposer<Window> {
     Textbox textbox = (Textbox) inputEvent.getTarget();
     String description = (String) inputEvent.getValue();
     Listitem listItem = (Listitem) textbox.getParent().getParent();
-    HolidayItem holiday = (HolidayItem) listItem.getValue();
+    HolidayModel holiday = (HolidayModel) listItem.getValue();
     holiday.setDescription(description);
   }
 
@@ -291,25 +301,19 @@ public class Calendar extends SelectorComposer<Window> {
     if (val instanceof Date) {
       date = (Date) val;
     } else {
-      date = new SimpleDateFormat("MMM dd").parse((String) val);
+      date = new SimpleDateFormat("yyyy MMM dd").parse((String) val);
     }
     LocalDate holidayDate = TimeUtils.dateToLocalDate(date);
     Listitem listItem = (Listitem) datebox.getParent().getParent();
-    HolidayItem holiday = (HolidayItem) listItem.getValue();
-    if (holidayMap.containsKey(holidayDate)) {
-      Date oldDate = TimeUtils.localDateToDate(holiday.getHolidayDate());
-      datebox.setValue(oldDate);
-    } else {
+    HolidayModel holiday = (HolidayModel) listItem.getValue();
       holiday.setHolidayDate(holidayDate);
-      holidayMap.remove(holidayDate);
-      holidayMap.put(holidayDate, holiday);
-    }
+   
   }
 
   @Listen("onRemoveHoliday = #holidayListbox")
   public void onRemoveHoliday(final Event event) {
     try {
-      HolidayItem holiday = (HolidayItem) event.getData();
+      HolidayModel holiday = (HolidayModel) event.getData();
       removeHoliday(holiday);
     } catch (Exception e) {
       LOGGER.error("Unable to create remove a holiday", e);
@@ -357,24 +361,17 @@ public class Calendar extends SelectorComposer<Window> {
     Clients.evalJavaScript(cmd);
   }
 
-  public void addHoliday(HolidayItem holiday) {
-    LocalDate holidayDate = holiday.getHolidayDate();
-    if (!holidayMap.containsKey(holidayDate)) {
+  public void addHoliday(HolidayModel holiday) {
+    LocalDate holidayDate = holiday.getHolidayDate();   
       holidayListModel.add(holiday);
-      holidayMap.put(holidayDate, holiday);
-    }
   }
 
-  public void removeHoliday(HolidayItem holiday) {
-    LocalDate holidayDate = holiday.getHolidayDate();
+  public void removeHoliday(HolidayModel holiday) {
     holidayListModel.remove(holiday);
-    holidayMap.remove(holidayDate);
   }
 
-  public void addHolidays(List<HolidayItem> holidays) {
-    for (HolidayItem holiday : holidays) {
-      addHoliday(holiday);
-    }
+  public void addHolidays(List<HolidayModel> holidays) {
+	  holidayListModel.addAll(holidays);
   }
 
   public void rebuild() {
@@ -395,10 +392,9 @@ public class Calendar extends SelectorComposer<Window> {
   }
 
   public void initialize() {
-    dayOfWeekListModel = new ListModelList<DayOfWeekItem>();
-    dayOfWeekMap = new HashMap<DayOfWeek, DayOfWeekItem>();
-    holidayListModel = new ListModelList<HolidayItem>();
-    holidayMap = new HashMap<LocalDate, HolidayItem>();
+    dayOfWeekListModel = new ListModelList<WorkDayModel>();    
+    holidayListModel = new ListModelList<HolidayModel>();
+   
 
     rebuild();
     if (calendarModel != null) {
@@ -413,57 +409,27 @@ public class Calendar extends SelectorComposer<Window> {
   }
 
   private void fromModels() {
-    List<WorkDayModel> workDays = calendarModel.getWorkDays();
+    List<WorkDayModel> workDays = calendarModel.getOrderedWorkDay();
     List<HolidayModel> holidays = calendarModel.getHolidays();
     dayOfWeekStartTimes = new ArrayList<OffsetTime>();
     dayOfWeekEndTimes  = new ArrayList<OffsetTime>();
-    holidayDates = new ArrayList<LocalDate>();
-
-    // FIXME:
-    // workDays ordering doesn't corresponds to the ISO-8601 standard, from 1 (Monday) to 7 (Sunday)
-
-    // TODO:
-    // These four loops could be simplified to two
-    for (WorkDayModel workDay: workDays) {
-      dayOfWeekStartTimes.add(workDay.getStartTime());
-      dayOfWeekEndTimes.add(workDay.getEndTime());
-    }
-    for (HolidayModel holiday: holidays) {
-      holidayDates.add(holiday.getHolidayDate());
-    }
-
-    for (int i = 1; i < 8; i++) {
-      List<TimeRange> ranges = new ArrayList<>();
-      ranges.add(new TimeRange(dayOfWeekStartTimes.get(i - 1), dayOfWeekEndTimes.get(i - 1)));
-      DayOfWeek dow = DayOfWeek.of(i);
-      DayOfWeekItem dowItem = new DayOfWeekItem(dow, true, ranges);
-      dayOfWeekListModel.add(dowItem);
-      dayOfWeekMap.put(dow, dowItem);
-      // String json = toJSON(i);
-      // rebuildRow(i, json);
-    }
-    for (int j = 0; j < holidayDates.size(); j++) {
-      LocalDate holidayDate = holidayDates.get(j);
-      String holidayDescription = holidayDescriptions.get(j);
-      String holidayType = holidayTypes.get(j);
-      HolidayItem holiday = new HolidayItem(holidayDate, holidayDescription, holidayType);
-      holidayListModel.add(holiday);
-      holidayMap.put(holidayDate, holiday);
-    }
+    holidayListModel.addAll(holidays);
+    dayOfWeekListModel.addAll(workDays);
+       
+    
   }
 
   private String toJSON(int dowIndex) {
     String json = "[";
     DayOfWeek dow = DayOfWeek.of(dowIndex);
-    DayOfWeekItem dowItem = dayOfWeekMap.get(dow);
-    List<TimeRange> ranges = dowItem.getRanges();
+    WorkDayModel dowItem = (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex-1);    
     json += "{";
-    for (TimeRange range: ranges) {
-      json += "startHour: " + Integer.toString(range.getStartTime().getHour()) + ",";
-      json += "startMin: " + Integer.toString(range.getStartTime().getMinute()) + ",";
-      json += "endHour: " + Integer.toString(range.getEndTime().getHour()) + ",";
-      json += "endMin: " + Integer.toString(range.getEndTime().getMinute());
-    }
+    
+      json += "startHour: " + Integer.toString(dowItem.getStartTime().getHour()) + ",";
+      json += "startMin: " + Integer.toString(dowItem.getStartTime().getMinute()) + ",";
+      json += "endHour: " + Integer.toString(dowItem.getEndTime().getHour()) + ",";
+      json += "endMin: " + Integer.toString(dowItem.getEndTime().getMinute());
+    
     json += "}";
     json += "]";
     return json;
@@ -473,34 +439,31 @@ public class Calendar extends SelectorComposer<Window> {
     // Warning: UNTESTED
 
     // transfer ZK ListModels to Apromore Calendar's models
-    List<WorkDayModel> workdays = new ArrayList<>();
-    for (int i = 1; i < 8; i++) {
-      DayOfWeek dow = DayOfWeek.of(i);
-      DayOfWeekItem dowItem = dayOfWeekMap.get(dow);
-      TimeRange range = dowItem.getRanges().get(0);
-      WorkDayModel workDayModel = new WorkDayModel();
-      workDayModel.setDayOfWeek(dow);
-      workDayModel.setStartTime(range.getStartTime());
-      workDayModel.setEndTime(range.getEndTime());
-      workDayModel.setWorkingDay(dowItem.getWorkday());
-      workdays.add(workDayModel);
+    
+    if(calenderExists)
+    {
+    	try {
+			calendarService.updateHoliday(calendarModel.getId(), 
+					(List<HolidayModel>) holidayListbox.getModel());
+		} catch (CalendarNotExistsException e) {
+//			 post event to notificaton
+		}
     }
-    calendarModel.setWorkDays(workdays);
     // TODO:
     // Save holidayMap to calendarModel
-    List<HolidayModel> holidays = new ArrayList<>();
-    for (Map.Entry<LocalDate, HolidayItem> entry : holidayMap.entrySet()) {
-      LocalDate localDate = entry.getKey();
-      HolidayItem holidayItem = entry.getValue();
-      LocalDate holidayDate = holidayItem.getHolidayDate();
-      String holidayDescription = holidayItem.getDescription();
-      HolidayModel holidayModel = new HolidayModel();
-      holidayModel.setName(holidayDescription);
-      holidayModel.setDescription(holidayDescription);
-      holidayModel.setHolidayDate(holidayDate);
-      holidays.add(holidayModel);
-    }
-    calendarModel.setHolidays(holidays);
+//    List<HolidayModel> holidays = new ArrayList<>();
+//    for (Map.Entry<LocalDate, HolidayItem> entry : holidayMap.entrySet()) {
+//      LocalDate localDate = entry.getKey();
+//      HolidayItem holidayItem = entry.getValue();
+//      LocalDate holidayDate = holidayItem.getHolidayDate();
+//      String holidayDescription = holidayItem.getDescription();
+//      HolidayModel holidayModel = new HolidayModel();
+//      holidayModel.setName(holidayDescription);
+//      holidayModel.setDescription(holidayDescription);
+//      holidayModel.setHolidayDate(holidayDate);
+//      holidays.add(holidayModel);
+//    }
+//    calendarModel.setHolidays(holidays);
     // TODO:
     // calendarService.saveCalendar(calendarModel);
   }
@@ -511,9 +474,12 @@ public class Calendar extends SelectorComposer<Window> {
       ranges.add(
           new TimeRange(OffsetTime.from(DEFAULT_START_TIME), OffsetTime.from(DEFAULT_END_TIME)));
       DayOfWeek dow = DayOfWeek.of(i);
-      DayOfWeekItem dowItem = new DayOfWeekItem(dow, true, ranges);
-      dayOfWeekListModel.add(dowItem);
-      dayOfWeekMap.put(dow, dowItem);
+      WorkDayModel dowItem = new WorkDayModel();
+      dowItem.setWorkingDay(true);      
+      dowItem.setDayOfWeek(dow);
+      dowItem.setStartTime(OffsetTime.from(DEFAULT_START_TIME));
+      dowItem.setEndTime(OffsetTime.from(DEFAULT_END_TIME));
+      dayOfWeekListModel.add(dowItem);      
     }
     // holidayListModel.add(new HolidayItem(LocalDate.parse("2020-12-25"), "Christmas"));
     // holidayListModel.add(new HolidayItem(LocalDate.parse("2020-01-01"), "New Year Day"));

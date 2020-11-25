@@ -33,12 +33,14 @@ import java.util.function.Predicate;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.util.CalendarUtil;
 import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.HolidayRepository;
 import org.apromore.dao.model.CustomCalendar;
+import org.apromore.dao.model.HOLIDAYTYPE;
 import org.apromore.dao.model.Holiday;
 import org.apromore.dao.model.WorkDay;
 import org.modelmapper.TypeToken;
@@ -140,12 +142,23 @@ public class CustomCalendarService implements CalendarService {
 
 	}
 
-	public void addHoliday(Long id, List<Holiday> holidays) throws CalendarNotExistsException {
+	public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException {
 		CustomCalendar calendar = calendarRepo.findById(id);
 
 		if (calendar == null) {
 			throw new CalendarNotExistsException("calender does not exist");
 		}
+
+		List<Holiday> holidays=new ArrayList<Holiday>();
+		for(HolidayModel h: holidayModels)
+		{
+			holidays.add(new Holiday(h.getName(),
+					h.getDescription(),
+					h.getHolidayDate(),
+					HOLIDAYTYPE.valueOf(h.getHolidayType())));
+		}
+
+		calendar.getHolidays().clear();
 		for (Holiday holiday : holidays) {
 			calendar.addHoliday(holiday);
 		}

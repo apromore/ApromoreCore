@@ -24,7 +24,8 @@ package org.apromore.plugin.portal.calendar.controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.apromore.plugin.portal.calendar.HolidayItem;
+
+import org.apromore.calendar.model.HolidayModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
@@ -53,13 +54,13 @@ public class ImportHolidays extends SelectorComposer<Window> {
         saveBtn.addEventListener("onSubmit", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                List<HolidayItem> holidays = new ArrayList<HolidayItem>();
+                List<HolidayModel> holidays = new ArrayList<HolidayModel>();
                 Object [] params = (Object []) event.getData();
                 for (Object param: params) {
                     JSONObject item = (JSONObject) param;
                     String name = (String) item.get("name");
                     String date = (String) item.get("date");
-                    holidays.add(new HolidayItem(LocalDate.parse(date), name, "Public"));
+                    holidays.add(new HolidayModel("PUBLIC",name,name,LocalDate.parse(date)));
                 }
                 if (holidays.size() == 0) {
                     return;

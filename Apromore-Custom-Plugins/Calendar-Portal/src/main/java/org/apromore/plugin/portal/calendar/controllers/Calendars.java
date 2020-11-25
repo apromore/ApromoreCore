@@ -21,13 +21,17 @@
  */
 package org.apromore.plugin.portal.calendar.controllers;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.slf4j.Logger;
@@ -86,8 +90,14 @@ public class Calendars extends SelectorComposer<Window> {
       
 //      create
     	try {    		
-			calendarService.createBusinessCalendar("Austrailia 2020", true, ZoneId.systemDefault().toString());
+			CalendarModel model=calendarService.createBusinessCalendar("Austrailia 2020", true, ZoneId.systemDefault().toString());
+			HolidayModel holiday3 = new HolidayModel("CUSTOM","Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
+			calendarService.updateHoliday(model.getId(),Arrays.asList(holiday3));
+		   
 		} catch (CalendarAlreadyExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CalendarNotExistsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

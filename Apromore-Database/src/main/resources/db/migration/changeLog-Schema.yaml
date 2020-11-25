@@ -531,4 +531,15 @@ databaseChangeLog:
                   type: varchar(50))
                   constraints:
                       nullable: false
+
+ - changeSet:
+    id: 20201121125100
+    author: nolantellis
+    changes:
+     - addColumn:
+        tableName: holiday
+        columns:
+         - column:
+            name: holiday_type
+            type: varchar(20)
                   

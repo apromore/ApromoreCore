@@ -32,7 +32,7 @@
         <rows>
             <row>
                 <label value="Date"/>
-                <datebox id="holidayDate" format="MMM dd" constraint="no empty"></datebox>
+                <datebox id="holidayDate" format="yyyy MMM dd" constraint="no empty"></datebox>
             </row>
             <row>
                 <label value="Description"/>
@@ -41,8 +41,8 @@
             <row>
                 <label value="Type"/>
                 <radiogroup id="holidayType">
-                    <radio label="Public" selected="true" radiogroup="holidayType"/>
-                    <radio label="Internal" radiogroup="holidayType"/>
+                    <radio label="PUBLIC" selected="true" radiogroup="holidayType"/>
+                    <radio label="CUSTOM" radiogroup="holidayType"/>
                 </radiogroup>
             </row>
         </rows>

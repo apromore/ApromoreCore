@@ -23,25 +23,25 @@ package org.apromore.calendar.service;
 
 import java.util.List;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.HolidayModel;
 import org.apromore.dao.model.CustomCalendar;
 
 public interface CalendarService {
 
-  public CalendarModel createGenericCalendar(String description,
-      boolean weekendsOff,
-      String zoneId)
-      throws CalendarAlreadyExistsException;
-  
-  public CalendarModel createBusinessCalendar(String description,
-      boolean weekendsOff,
-      String zoneId)
-      throws CalendarAlreadyExistsException;
-  
-  public CalendarModel getCalender(Long id);
-  
-  public List<CalendarModel> getCalendars();
+	public CalendarModel createGenericCalendar(String description, boolean weekendsOff, String zoneId)
+			throws CalendarAlreadyExistsException;
 
-public void deleteCalender(Long calendarId);
-      
+	public CalendarModel createBusinessCalendar(String description, boolean weekendsOff, String zoneId)
+			throws CalendarAlreadyExistsException;
+
+	public CalendarModel getCalender(Long id);
+
+	public List<CalendarModel> getCalendars();
+
+	public void deleteCalender(Long calendarId);
+
+	public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException;
+
 }

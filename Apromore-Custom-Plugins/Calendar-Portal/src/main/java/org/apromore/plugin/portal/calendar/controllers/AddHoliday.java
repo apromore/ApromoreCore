@@ -23,8 +23,9 @@ package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDate;
 import java.util.Date;
+
+import org.apromore.calendar.model.HolidayModel;
 import org.apromore.commons.datetime.TimeUtils;
-import org.apromore.plugin.portal.calendar.HolidayItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -63,7 +64,7 @@ public class AddHoliday extends SelectorComposer<Window> {
                 LocalDate localDate = TimeUtils.dateToLocalDate(date);
                 String description = holidayDescription.getValue();
                 String type = holidayType.getSelectedItem().getLabel();
-                HolidayItem holiday = new HolidayItem(localDate, description, type);
+                HolidayModel holiday = new HolidayModel(type,description,description,localDate);
                 try {
                     parentController.addHoliday(holiday);
                     getSelf().detach();

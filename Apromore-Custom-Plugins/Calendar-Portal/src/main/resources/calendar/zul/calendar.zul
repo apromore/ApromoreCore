@@ -58,18 +58,18 @@
               <listheader align="left" label="" hflex="1" />
             </listhead>
             <template name="model">
-              <listitem sclass="${each.workday ? 'workday' : 'offday'}">
+              <listitem sclass="${each.workingDay ? 'workday' : 'offday'}">
                 <listcell>
-                  <button sclass="ap-icon ${each.workday ? 'ap-icon-workday' : 'ap-icon-holiday'}"
+                  <button sclass="ap-icon ${each.workingDay ? 'ap-icon-workday' : 'ap-icon-holiday'}"
                           style="display: inline-block"
                           ca:onClick="Ap.calendar.toggleWorkday(${forEachStatus.index + 1})"
                   />
                 </listcell>
                 <listcell>
-                  ${each.label}
+                  ${each.dayOfWeek}
                 </listcell>
                 <listcell sclass="ap-period-picker-wrapper">
-                	<div visible="${each.workday}"
+                	<div visible="${each.workingDay}"
                 		sclass="ap-period-picker"
                 		ca:data-dow="${forEachStatus.index + 1}">
                 	</div>
@@ -100,8 +100,8 @@
                 </listcell>
                 <listcell>
                   <datebox hflex="1"
-                           format="MMM dd"
-                           value="${each.date}"
+                           format="yyyy MMM dd"
+                           value="${each.getDate()}"
                            forward="onChanging=holidayListbox.onUpdateHolidayDate, onChange=holidayListbox.onUpdateHolidayDate"
                   />
                 </listcell>

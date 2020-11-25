@@ -32,6 +32,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -197,6 +198,12 @@ public class CalendarModel {
 
     return duration.isNegative() ? Duration.ZERO : duration;
 
+  }
+  
+  public List<WorkDayModel> getOrderedWorkDay()
+  {
+	  workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
+	  return workDays;
   }
 
 

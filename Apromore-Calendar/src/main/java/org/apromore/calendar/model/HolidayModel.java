@@ -23,6 +23,10 @@ package org.apromore.calendar.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
+
+import org.apromore.commons.datetime.TimeUtils;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,21 +34,41 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class HolidayModel implements Serializable {
 
-  @EqualsAndHashCode.Exclude
-  private Long id;
-  @EqualsAndHashCode.Exclude
-  private Long referenceId;
+	@EqualsAndHashCode.Exclude
+	private Long id;
+	@EqualsAndHashCode.Exclude
+	private Long referenceId;
+
+	private String holidayType = "PUBLIC";
+
+	private String name;
+	private String description;
+	private LocalDate holidayDate;
+
+	@EqualsAndHashCode.Exclude
+	private String createdBy;
+
+	@EqualsAndHashCode.Exclude
+	private String updatedBy;
+
+	
+	public HolidayModel(String holidayType, String name, String description, LocalDate holidayDate) {
+		super();
+		this.holidayType = holidayType;
+		this.name = name;
+		this.description = description;
+		this.holidayDate = holidayDate;
+	}
 
 
-  private String name;
-  private String description;
-  private LocalDate holidayDate;
-
-  @EqualsAndHashCode.Exclude
-  private String createdBy;
-
-  @EqualsAndHashCode.Exclude
-  private String updatedBy;
-
+	public HolidayModel() {
+		super();
+	}
+	
+	public Date getDate()
+	{
+		return TimeUtils.localDateToDate(holidayDate);
+		
+	}
 
 }

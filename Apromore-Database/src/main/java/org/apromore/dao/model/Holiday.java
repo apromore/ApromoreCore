@@ -26,6 +26,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,6 +52,8 @@ public class Holiday implements Serializable {
 	private Long id;
 
 	private Long referenceId;
+	
+	private HOLIDAYTYPE holidayType=HOLIDAYTYPE.PUBLIC;
 
 	private String name;
 	private String description;
@@ -140,11 +144,28 @@ public class Holiday implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	
 	public Holiday(String name, String description, LocalDate localDateHolidayDate) {
+		this(name,description,localDateHolidayDate,HOLIDAYTYPE.PUBLIC);
+
+	}
+	
+	public Holiday(String name, String description, LocalDate localDateHolidayDate,HOLIDAYTYPE holidaytype) {
 		this.name = name;
 		this.description = description;		
 		this.holidayDate=localDateHolidayDate.toString();
+		this.holidayType=holidaytype;
 
+	}
+
+	@Column(name = "holiday_type")
+	@Enumerated(EnumType.STRING)
+	public HOLIDAYTYPE getHolidayType() {
+		return holidayType;
+	}
+
+	public void setHolidayType(HOLIDAYTYPE holidayType) {
+		this.holidayType = holidayType;
 	}
 
 }
