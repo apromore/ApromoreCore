@@ -21,12 +21,9 @@
  */
 package org.apromore.service.csvimporter.dateparser;
 
-import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.legacy.LogReader;
-import org.apromore.service.csvimporter.services.legacy.LogReaderImpl;
 import org.apromore.service.csvimporter.services.legacy.XLSXLogReaderImpl;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
@@ -39,7 +36,6 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
-import static org.junit.Assert.assertEquals;
 
 @Ignore
 public class DebugUnitTest {
@@ -84,13 +80,13 @@ public class DebugUnitTest {
 
 //        System.out.println("Parsing " + parseToTimestamp("9/13/17 12:20", "dd/MM/yy HH:mm"));
 
-
-        String dattime = "9/13/17 12:20";
+//dd-MM-yyyy HH:mm:ss tt
+        String dattime = "19/12/2019 08:13 AM";
 ////        String dattime = "03/09/2019 15:13:05";
 
         if (determineDateFormat(dattime) != null) {
             System.out.println("Parsing " + determineDateFormat(dattime));
-            Timestamp timestamp = parseToTimestamp(dattime, "MM/dd/yy HH:mm");
+            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime));
             System.out.println("timestamp " + timestamp.toString());
 
         } else {

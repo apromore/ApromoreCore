@@ -21,13 +21,12 @@
  */
 package org.apromore.service.csvimporter.dateparser;
 
-import org.apromore.service.csvimporter.utilities.InvalidCSVException;
-
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.*;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtil extends DatePatterns {
 
@@ -116,7 +115,9 @@ public class DateUtil extends DatePatterns {
                 Calendar calendar = toCalendar(date);
                 return new Timestamp(calendar.getTimeInMillis());
 
-            } catch (ParseException parseException) {return null;}
+            } catch (ParseException parseException) {
+                return null;
+            }
         }
     }
 
@@ -185,7 +186,7 @@ public class DateUtil extends DatePatterns {
         String dateFormat = findMatchDateFormat(removeUnwantedChartsFromDate(dateString));
 
         if (dateFormat == null)
-            dateFormat = findMatchDateFormat(dateString.replaceAll("\\W", " "));
+            dateFormat = findMatchDateFormat(removeUnwantedChartsFromDate(dateString.replaceAll("\\W", " ")));
 
         return dateFormat;
     }
