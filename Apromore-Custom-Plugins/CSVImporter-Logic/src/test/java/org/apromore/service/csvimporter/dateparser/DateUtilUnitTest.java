@@ -132,6 +132,24 @@ public class DateUtilUnitTest {
         assertEquals("yyyy dd MM HH:mm a", determineDateFormat("2019 19 12 08:13 AM"));
         assertEquals("dd MMM yyyy HH:mm a", determineDateFormat("19 DEC 2019 08:13 AM"));
         assertEquals("dd MMMM yyyy HH:mm a", determineDateFormat("19 DECEMBER 2019 08:13 AM"));
+        assertEquals("dd-MM-yyyy HH:mma", determineDateFormat("19-12-2019 08:13AM"));
+        assertEquals("MM-dd-yyyy HH:mma", determineDateFormat("12-19-2019 08:13AM"));
+        assertEquals("yyyy-MM-dd HH:mma", determineDateFormat("2019-12-19 08:13AM"));
+        assertEquals("yyyy-dd-MM HH:mma", determineDateFormat("2019-19-12 08:13AM"));
+        assertEquals("dd-MM-yyyy'T'HH:mma", determineDateFormat("19-12-2019T08:13AM"));
+        assertEquals("MM-dd-yyyy'T'HH:mma", determineDateFormat("12-19-2019T08:13AM"));
+        assertEquals("yyyy-MM-dd'T'HH:mma", determineDateFormat("2019-12-19T08:13AM"));
+        assertEquals("yyyy-dd-MM'T'HH:mma", determineDateFormat("2019-19-12T08:13AM"));
+        assertEquals("dd/MM/yyyy HH:mma", determineDateFormat("19/12/2019 08:13AM"));
+        assertEquals("MM/dd/yyyy HH:mma", determineDateFormat("12/19/2019 08:13AM"));
+        assertEquals("yyyy/MM/dd HH:mma", determineDateFormat("2019/12/19 08:13AM"));
+        assertEquals("yyyy/dd/MM HH:mma", determineDateFormat("2019/19/12 08:13AM"));
+        assertEquals("dd MM yyyy HH:mma", determineDateFormat("19 12 2019 08:13AM"));
+        assertEquals("MM dd yyyy HH:mma", determineDateFormat("12 19 2019 08:13AM"));
+        assertEquals("yyyy MM dd HH:mma", determineDateFormat("2019 12 19 08:13AM"));
+        assertEquals("yyyy dd MM HH:mma", determineDateFormat("2019 19 12 08:13AM"));
+        assertEquals("dd MMM yyyy HH:mma", determineDateFormat("19 DEC 2019 08:13AM"));
+        assertEquals("dd MMMM yyyy HH:mma", determineDateFormat("19 DECEMBER 2019 08:13AM"));
     }
 
     @Test
@@ -184,6 +202,24 @@ public class DateUtilUnitTest {
         assertEquals("yyyy dd MM HH:mm:ss a", determineDateFormat("2019 19 12 08:13:05 pm"));
         assertEquals("dd MMM yyyy HH:mm:ss a", determineDateFormat("19 DEC 2019 08:13:05 pm"));
         assertEquals("dd MMMM yyyy HH:mm:ss a", determineDateFormat("19 DECEMBER 2019 08:13:05 pm"));
+        assertEquals("dd-MM-yyyy HH:mm:ssa", determineDateFormat("19-12-2019 08:13:05pm"));
+        assertEquals("MM-dd-yyyy HH:mm:ssa", determineDateFormat("12-19-2019 08:13:05pm"));
+        assertEquals("yyyy-MM-dd HH:mm:ssa", determineDateFormat("2019-12-19 08:13:05pm"));
+        assertEquals("yyyy-dd-MM HH:mm:ssa", determineDateFormat("2019-19-12 08:13:05pm"));
+        assertEquals("dd-MM-yyyy'T'HH:mm:ssa", determineDateFormat("19-12-2019T08:13:05pm"));
+        assertEquals("MM-dd-yyyy'T'HH:mm:ssa", determineDateFormat("12-19-2019T08:13:05pm"));
+        assertEquals("yyyy-MM-dd'T'HH:mm:ssa", determineDateFormat("2019-12-19T08:13:05pm"));
+        assertEquals("yyyy-dd-MM'T'HH:mm:ssa", determineDateFormat("2019-19-12T08:13:05pm"));
+        assertEquals("dd/MM/yyyy HH:mm:ssa", determineDateFormat("19/12/2019 08:13:05pm"));
+        assertEquals("MM/dd/yyyy HH:mm:ssa", determineDateFormat("12/19/2019 08:13:05pm"));
+        assertEquals("yyyy/MM/dd HH:mm:ssa", determineDateFormat("2019/12/19 08:13:05pm"));
+        assertEquals("yyyy/dd/MM HH:mm:ssa", determineDateFormat("2019/19/12 08:13:05pm"));
+        assertEquals("dd MM yyyy HH:mm:ssa", determineDateFormat("19 12 2019 08:13:05pm"));
+        assertEquals("MM dd yyyy HH:mm:ssa", determineDateFormat("12 19 2019 08:13:05pm"));
+        assertEquals("yyyy MM dd HH:mm:ssa", determineDateFormat("2019 12 19 08:13:05pm"));
+        assertEquals("yyyy dd MM HH:mm:ssa", determineDateFormat("2019 19 12 08:13:05pm"));
+        assertEquals("dd MMM yyyy HH:mm:ssa", determineDateFormat("19 DEC 2019 08:13:05pm"));
+        assertEquals("dd MMMM yyyy HH:mm:ssa", determineDateFormat("19 DECEMBER 2019 08:13:05pm"));
     }
 
     @Test
@@ -288,6 +324,24 @@ public class DateUtilUnitTest {
         assertEquals("yy dd MM HH:mm a", determineDateFormat("00 19 12 08:13 AM"));
         assertEquals("dd MMM yy HH:mm a", determineDateFormat("19 DEC 00 08:13 AM"));
         assertEquals("dd MMMM yy HH:mm a", determineDateFormat("19 DECEMBER 00 08:13 AM"));
+        assertEquals("dd-MM-yy HH:mma", determineDateFormat("19-12-00 08:13AM"));
+        assertEquals("MM-dd-yy HH:mma", determineDateFormat("12-19-00 08:13AM"));
+        assertEquals("yy-MM-dd HH:mma", determineDateFormat("00-12-19 08:13AM"));
+        assertEquals("yy-dd-MM HH:mma", determineDateFormat("00-19-12 08:13AM"));
+        assertEquals("dd-MM-yy'T'HH:mma", determineDateFormat("19-12-00T08:13AM"));
+        assertEquals("MM-dd-yy'T'HH:mma", determineDateFormat("12-19-00T08:13AM"));
+        assertEquals("yy-MM-dd'T'HH:mma", determineDateFormat("00-12-19T08:13AM"));
+        assertEquals("yy-dd-MM'T'HH:mma", determineDateFormat("00-19-12T08:13AM"));
+        assertEquals("dd/MM/yy HH:mma", determineDateFormat("19/12/00 08:13AM"));
+        assertEquals("MM/dd/yy HH:mma", determineDateFormat("12/19/00 08:13AM"));
+        assertEquals("yy/MM/dd HH:mma", determineDateFormat("00/12/19 08:13AM"));
+        assertEquals("yy/dd/MM HH:mma", determineDateFormat("00/19/12 08:13AM"));
+        assertEquals("dd MM yy HH:mma", determineDateFormat("19 12 00 08:13AM"));
+        assertEquals("MM dd yy HH:mma", determineDateFormat("12 19 00 08:13AM"));
+        assertEquals("yy MM dd HH:mma", determineDateFormat("00 12 19 08:13AM"));
+        assertEquals("yy dd MM HH:mma", determineDateFormat("00 19 12 08:13AM"));
+        assertEquals("dd MMM yy HH:mma", determineDateFormat("19 DEC 00 08:13AM"));
+        assertEquals("dd MMMM yy HH:mma", determineDateFormat("19 DECEMBER 00 08:13AM"));
     }
 
     @Test
@@ -339,6 +393,24 @@ public class DateUtilUnitTest {
         assertEquals("yy dd MM HH:mm:ss a", determineDateFormat("00 19 12 09:13:05 pm"));
         assertEquals("dd MMM yy HH:mm:ss a", determineDateFormat("19 DEC 00 09:13:05 pm"));
         assertEquals("dd MMMM yy HH:mm:ss a", determineDateFormat("19 DECEMBER 00 09:13:05 pm"));
+        assertEquals("dd-MM-yy HH:mm:ssa", determineDateFormat("19-12-00 09:13:05pm"));
+        assertEquals("MM-dd-yy HH:mm:ssa", determineDateFormat("12-19-00 09:13:05pm"));
+        assertEquals("yy-MM-dd HH:mm:ssa", determineDateFormat("00-12-19 09:13:05pm"));
+        assertEquals("yy-dd-MM HH:mm:ssa", determineDateFormat("00-19-12 09:13:05pm"));
+        assertEquals("dd-MM-yy'T'HH:mm:ssa", determineDateFormat("19-12-00T09:13:05pm"));
+        assertEquals("MM-dd-yy'T'HH:mm:ssa", determineDateFormat("12-19-00T09:13:05pm"));
+        assertEquals("yy-MM-dd'T'HH:mm:ssa", determineDateFormat("00-12-19T09:13:05pm"));
+        assertEquals("yy-dd-MM'T'HH:mm:ssa", determineDateFormat("00-19-12T09:13:05pm"));
+        assertEquals("dd/MM/yy HH:mm:ssa", determineDateFormat("19/12/00 09:13:05pm"));
+        assertEquals("MM/dd/yy HH:mm:ssa", determineDateFormat("12/19/00 09:13:05pm"));
+        assertEquals("yy/MM/dd HH:mm:ssa", determineDateFormat("00/12/19 09:13:05pm"));
+        assertEquals("yy/dd/MM HH:mm:ssa", determineDateFormat("00/19/12 09:13:05pm"));
+        assertEquals("dd MM yy HH:mm:ssa", determineDateFormat("19 12 00 09:13:05pm"));
+        assertEquals("MM dd yy HH:mm:ssa", determineDateFormat("12 19 00 09:13:05pm"));
+        assertEquals("yy MM dd HH:mm:ssa", determineDateFormat("00 12 19 09:13:05pm"));
+        assertEquals("yy dd MM HH:mm:ssa", determineDateFormat("00 19 12 09:13:05pm"));
+        assertEquals("dd MMM yy HH:mm:ssa", determineDateFormat("19 DEC 00 09:13:05pm"));
+        assertEquals("dd MMMM yy HH:mm:ssa", determineDateFormat("19 DECEMBER 00 09:13:05pm"));
     }
 
     @Test
@@ -405,6 +477,10 @@ public class DateUtilUnitTest {
         assertEquals("HH:mm a", determineDateFormat("12:08 am"));
         assertEquals("HH:mm:ss a", determineDateFormat("12:59:59 pm"));
         assertEquals("HH:mm:ss.SSS a", determineDateFormat("12:59:59.879 am"));
+        assertEquals("HH:mma", determineDateFormat("12:08am"));
+        assertEquals("HH:mm:ssa", determineDateFormat("12:59:59pm"));
+        assertEquals("HH:mm:ss.Sa", determineDateFormat("12:59:59.8am"));
+        assertEquals("HH:mm:ss.SSSa", determineDateFormat("12:59:59.879am"));
         assertEquals("mm:ss", determineDateFormat("59:59"));
         assertEquals("mm:ss.S", determineDateFormat("59:59.8"));
         assertEquals("mm:ss.SSS", determineDateFormat("59:59.879"));

@@ -81,7 +81,7 @@ public class DebugUnitTest {
 //        System.out.println("Parsing " + parseToTimestamp("9/13/17 12:20", "dd/MM/yy HH:mm"));
 
 //dd-MM-yyyy HH:mm:ss tt
-        String dattime = "19/12/2019 08:13 AM";
+        String dattime = "19/12/2019 08:13:05AM";
 ////        String dattime = "03/09/2019 15:13:05";
 
         if (determineDateFormat(dattime) != null) {
