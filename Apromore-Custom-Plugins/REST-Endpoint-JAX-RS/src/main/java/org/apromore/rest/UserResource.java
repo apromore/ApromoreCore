@@ -37,8 +37,6 @@ import org.apromore.mapper.UserMapper;
 import org.apromore.portal.model.MembershipType;
 import org.apromore.portal.model.UserType;
 import org.apromore.service.SecurityService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +58,7 @@ public final class UserResource {
     @Path("{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(final @PathParam("name") String name) {
-        SecurityService securityService = getOSGiService(SecurityService.class, servletContext);
+        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
         User user = securityService.getUserByName(name);
         UserType userType = UserMapper.convertUserTypes(user, securityService);
 
@@ -110,31 +108,12 @@ public final class UserResource {
         creatingUserType.setOrganization(userType.getOrganization());
 
         // Ask the security service to create the user
-        SecurityService securityService = getOSGiService(SecurityService.class, servletContext);
+        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
         User user = UserMapper.convertFromUserType(creatingUserType, securityService);
         User createdUser = securityService.createUser(user);
 
         // Describe the created user for the caller
         UserType createdUserType = UserMapper.convertUserTypes(createdUser, securityService);
         return createdUserType;
-    }
-
-    // Internal methods
-
-    /**
-     * Access a unique OSGi service.
-     *
-     * This obtains the bundle context from the servlet context of the web application.
-     *
-     * @param clazz  the type of the service; there must me exactly one registered service of this type
-     * @param context  the servlet context
-     * @return the service instance
-     */
-    private static <T> T getOSGiService(final Class<T> clazz, final ServletContext context) {
-        BundleContext bundleContext = (BundleContext) context.getAttribute("osgi-bundlecontext");
-        ServiceReference serviceReference = bundleContext.getServiceReference(clazz);
-        T service = (T) bundleContext.getService(serviceReference);
-
-        return service;
     }
 }
