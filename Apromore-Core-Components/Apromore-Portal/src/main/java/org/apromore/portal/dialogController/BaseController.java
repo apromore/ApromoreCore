@@ -45,6 +45,7 @@ import org.zkoss.zul.Window;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.SecurityService;
+import org.apromore.service.AuthorizationService;
 import org.apromore.portal.ConfigBean;
 
 /**
@@ -57,9 +58,11 @@ public class BaseController extends Window {
     public static final String MANAGER_SERVICE = "managerClient";
     public static final String EVENT_LOG_SERVICE = "eventLogService";
     public static final String SECURITY_SERVICE = "securityService";
+    public static final String AUTH_SERVICE = "authorizationService";
     private ManagerService managerService;
     private EventLogService eventLogService;
     private SecurityService securityService;
+    private AuthorizationService authorizationService;
 
     protected AutowireCapableBeanFactory beanFactory;
     protected ConfigBean config;
@@ -96,6 +99,14 @@ public class BaseController extends Window {
             setSecurityService(securityService);
         }
         return securityService;
+    }
+
+    public AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = (AuthorizationService) SpringUtil.getBean(AUTH_SERVICE);
+            setAuthorizationService(authorizationService);
+        }
+        return authorizationService;
     }
 
     /**
@@ -207,5 +218,8 @@ public class BaseController extends Window {
     }
     private void setSecurityService(final SecurityService securityService) {
         this.securityService = securityService;
+    }
+    private void setAuthorizationService(final AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
     }
 }

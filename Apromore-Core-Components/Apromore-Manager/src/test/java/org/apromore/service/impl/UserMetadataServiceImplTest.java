@@ -73,6 +73,7 @@ public class UserMetadataServiceImplTest {
     private UsermetadataRepository userMetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;
+    private UsermetadataProcessRepository usermetadataProcessRepo;
     private GroupRepository groupRepo;
     private ConfigBean config;
     private UserMetadataService userMetadataService;
@@ -89,13 +90,14 @@ public class UserMetadataServiceImplTest {
         userMetadataRepo = createMock(UsermetadataRepository.class);
         usermetadataTypeRepo = createMock(UsermetadataTypeRepository.class);
         usermetadataLogRepo = createMock(UsermetadataLogRepository.class);
+        usermetadataProcessRepo = createMock(UsermetadataProcessRepository.class);
         groupRepo = createMock(GroupRepository.class);
 
         config = new ConfigBean();
 
         userMetadataService = new UserMetadataServiceImpl(logRepo, groupLogRepo, userSrv,
                 groupUsermetadataRepo,
-                userMetadataRepo, usermetadataTypeRepo, usermetadataLogRepo, groupRepo);
+                userMetadataRepo, usermetadataTypeRepo, usermetadataLogRepo, usermetadataProcessRepo, groupRepo);
     }
 
     @Test
@@ -815,9 +817,7 @@ public class UserMetadataServiceImplTest {
         GroupUsermetadata gu = new GroupUsermetadata();
         gu.setGroup(group);
         gu.setUsermetadata(um);
-        gu.setHasOwnership(true);
-        gu.setHasRead(true);
-        gu.setHasWrite(true);
+        gu.setAccessRights(new AccessRights(true, true, true));
 
         em.getTransaction().begin();
 
