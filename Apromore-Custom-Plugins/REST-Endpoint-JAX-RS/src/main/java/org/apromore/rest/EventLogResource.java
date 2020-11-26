@@ -42,6 +42,7 @@ import org.apromore.dao.LogRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.service.EventLogService;
+import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
 import org.deckfour.xes.model.XLog;
@@ -56,8 +57,6 @@ public final class EventLogResource {
 
     /** Logger.  Named after the class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogResource.class);
-
-    private static String adminUserId = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
     @Context
     private ServletContext servletContext;
@@ -76,21 +75,23 @@ public final class EventLogResource {
                          final @PathParam("path") String path,
                          final @PathParam("name") String name) throws Exception {
 
-        ResourceUtilities.auth(authorization, servletContext);
-
-        EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
-        LogRepository logRepository = ResourceUtilities.getOSGiService(LogRepository.class, servletContext);
+        // Try to access the folder using the given credentials
+        String username = ResourceUtilities.auth(authorization, servletContext);
+        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
+        String userId = securityService.getUserByName(username).getRowGuid();
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
-        
-        int folderId = findFolderIdByPath(path, workspaceService);
+        int folderId = findFolderIdByPath(path, userId, workspaceService);
 
         // Look for the event log in the folder
+        LogRepository logRepository = ResourceUtilities.getOSGiService(LogRepository.class, servletContext);
         Log log = logRepository.findByNameAndFolderId(name, folderId == 0 ? null : folderId);
         if (log == null) {
             throw new ResourceException(Response.Status.NOT_FOUND,
                 "No log named \"" + name + "\" in folder " + path);
         }
 
+        // Obtain the serialization of the event log
+        EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
         XLog xLog = eventLogService.getXLog(log.getId());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         eventLogService.exportToStream(baos, xLog);
@@ -117,15 +118,17 @@ public final class EventLogResource {
                                   final @PathParam("name") String name,
                                   final String body) throws Exception {
 
-        ResourceUtilities.auth(authorization, servletContext);
-
-        EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
+        // Try to access the folder using the given credentials
+        String username = ResourceUtilities.auth(authorization, servletContext);
+        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
+        String userId = securityService.getUserByName(username).getRowGuid();
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
+        int folderId = findFolderIdByPath(path, userId, workspaceService);
 
-        int folderId = findFolderIdByPath(path, workspaceService);
-
+        // Import the event log
+        EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
         Log log = eventLogService.importLog(
-            "admin",
+            username,
             folderId,
             name,
             new StringBufferInputStream(body),
@@ -134,6 +137,7 @@ public final class EventLogResource {
             DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
             true); // publicModel
 
+        // Return a description of the created event log
         LogSummaryType createdLogSummary = new LogSummaryType();
         return createdLogSummary;
     }
@@ -144,17 +148,19 @@ public final class EventLogResource {
      * This method ought to be made part of the {@link WorkspaceService}.
      *
      * @param path  a slash-delimited folder path, e.g. "foo/bar/"
+     * @param userId  the row GUID of the user under whose authority the folder is accessed
      * @param workspaceService  used to access folders
      * @return the primary key of the folder at the given <var>path</var>
      * @throws ResourceException if the <var>path</var> is not an existing folder
      */
     private static int findFolderIdByPath(final String path,
+                                          final String userId,
                                           final WorkspaceService workspaceService) throws ResourceException {
 
         int folderId = 0;  // the root folder, "Home"
 
         // Descend into the requested directory
-        List<FolderTreeNode> nodes = workspaceService.getWorkspaceFolderTree(adminUserId);
+        List<FolderTreeNode> nodes = workspaceService.getWorkspaceFolderTree(userId);
         if (!path.isEmpty()) {
             subfolder: for (String pathElement: path.split("/")) {
                 for (FolderTreeNode node: nodes) {
