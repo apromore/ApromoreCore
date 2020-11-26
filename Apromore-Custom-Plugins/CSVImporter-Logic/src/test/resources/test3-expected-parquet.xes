@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 2.0 -->
+<!-- OpenXES library version: 2.27 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="2.27">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+	<string key="lifecycle:model" value="standard"/>
+	<trace>
+		<string key="concept:name" value="case1"/>
+		<string key="process_type" value="1"/>
+		<event>
+			<string key="concept:name" value="activity1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.114+03:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="activity1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.132+03:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="activity1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2019-09-23T16:13:05.114+03:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="activity1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2019-09-24T15:13:05.132+03:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="case2"/>
+		<string key="process_type" value="1"/>
+		<event>
+			<string key="concept:name" value="activity1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.071+03:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="activity1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.132+03:00"/>
+		</event>
+	</trace>
+</log>

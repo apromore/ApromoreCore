@@ -39,7 +39,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 public class LogReaderImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImplUnitTest.class);
@@ -318,6 +317,7 @@ public class LogReaderImplUnitTest {
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
         sample.setStartTimestampPos(2);
+        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         sample.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         LogModel logModel = logReader

@@ -28,6 +28,7 @@ import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +51,8 @@ public class XLSXToParquetExporterUnitTest {
      * Expected headers for <code>test1-valid.csv</code>.
      */
     private final List<String> SAMPLE_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
-    private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("caseID", "activity", "startTimestamp", "endTimestamp", "processtype");
-    ;
+    private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
+
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
     private SampleLogGenerator sampleLogGenerator;
@@ -81,7 +82,6 @@ public class XLSXToParquetExporterUnitTest {
         String testFile = "/test1-valid.xlsx";
         LogSample sample = sampleLogGenerator
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
-
         // Validate result
         assertEquals(SAMPLE_EXPECTED_HEADER, sample.getHeader());
         assertEquals(2, sample.getLines().size());
@@ -326,6 +326,7 @@ public class XLSXToParquetExporterUnitTest {
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 
         sample.setStartTimestampPos(2);
+        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         sample.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         //Export parquet
@@ -468,6 +469,7 @@ public class XLSXToParquetExporterUnitTest {
     /**
      * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
+    @Ignore
     @Test
     public void testPrepareXesModel_test10_encoding() throws Exception {
 
@@ -486,7 +488,7 @@ public class XLSXToParquetExporterUnitTest {
 
         sample.setActivityPos(1);
         sample.getEventAttributesPos().remove(Integer.valueOf(1));
-
+        sample.setEndTimestampFormat("MM/dd/yy HH:mm");
         //Export parquet
         LogModel logModel = parquetExporter
                 .generateParqeuetFile(
