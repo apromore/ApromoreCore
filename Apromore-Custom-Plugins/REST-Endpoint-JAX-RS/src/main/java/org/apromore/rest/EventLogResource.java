@@ -29,7 +29,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-//import javax.ws.rs.HeaderParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
@@ -72,8 +72,11 @@ public final class EventLogResource {
     @GET
     @Path("{path:(.*/)*}{name}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getLog(final @PathParam("path") String path,
+    public byte[] getLog(final @HeaderParam("Authorization") String authorization,
+                         final @PathParam("path") String path,
                          final @PathParam("name") String name) throws Exception {
+
+        ResourceUtilities.auth(authorization, servletContext);
 
         EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
         LogRepository logRepository = ResourceUtilities.getOSGiService(LogRepository.class, servletContext);
@@ -109,9 +112,12 @@ public final class EventLogResource {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("ADMIN")
-    public LogSummaryType postLog(final @PathParam("path") String path,
+    public LogSummaryType postLog(final @HeaderParam("Authorization") String authorization,
+                                  final @PathParam("path") String path,
                                   final @PathParam("name") String name,
                                   final String body) throws Exception {
+
+        ResourceUtilities.auth(authorization, servletContext);
 
         EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);

@@ -31,6 +31,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 
 abstract class ResourceUtilities {
 
@@ -61,15 +65,16 @@ abstract class ResourceUtilities {
      * Perform HTTP Basic authentication and authorization.
      *
      * @param authorization  the HTTP Authorization header; <code>null</code> indicates absent header
+     * @param servletContext  used to obtain the Spring authentication manager
+     * @return the authenticated username
      * @throws ResourceException if either authentication or authorization fail
      */
-    static void auth(final String authorization) throws ResourceException {
-        LOGGER.info("Authorization: " + authorization);
+    static String auth(final String authorization, final ServletContext context) throws ResourceException {
+
+        // Validate the presence of HTTP Basic authentication
         if (authorization == null) {
             throw new ResourceException(Response.Status.UNAUTHORIZED, "Anonymous access denied.");
         }
-
-        // Validate the presence of HTTP Basic authentication
         Matcher matcher = AUTHORIZATION_PATTERN.matcher(authorization);
         if (!matcher.matches()) {
             throw new ResourceException(Response.Status.UNAUTHORIZED, "Basic authentication required");
@@ -83,7 +88,22 @@ abstract class ResourceUtilities {
             throw new ResourceException(Response.Status.BAD_REQUEST, "Malformed Basic authorization header");
         }
 
-        LOGGER.info("User " + matcher2.group("name") + ", password " +  matcher2.group("password"));
+        // Authenticate using Spring Security
+        AuthenticationManager authenticationManager =
+            ResourceUtilities.getOSGiService(AuthenticationManager.class, context);
+        try {
+            String name = matcher2.group("name");
+            String password = matcher2.group("password");
+            Authentication authentication =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(name, password));
+            assert authentication.isAuthenticated();
+
+            // Success!  Return the authenticated username
+            return name;
+
+        } catch (AuthenticationException e) {
+            throw new ResourceException(Response.Status.UNAUTHORIZED, e.getMessage());
+        }
     }
 
     /**

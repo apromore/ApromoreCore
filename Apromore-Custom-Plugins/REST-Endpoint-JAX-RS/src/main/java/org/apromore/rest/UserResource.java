@@ -58,10 +58,10 @@ public final class UserResource {
     @GET
     @Path("{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(final @PathParam("name") String name,
-                            final @HeaderParam("Authorization") String authorization) throws ResourceException {
+    public Response getUser(final @HeaderParam("Authorization") String authorization,
+                            final @PathParam("name") String name) throws ResourceException {
 
-        ResourceUtilities.auth(authorization);
+        ResourceUtilities.auth(authorization, servletContext);
         SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
         User user = securityService.getUserByName(name);
         UserType userType = UserMapper.convertUserTypes(user, securityService);
@@ -81,10 +81,12 @@ public final class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //@RolesAllowed("ADMIN")
-    public UserType postUser(final @PathParam("name") String name,
+    public UserType postUser(final @HeaderParam("Authorization") String authorization,
+                             final @PathParam("name") String name,
                              final UserType userType) throws ResourceException {
 
         // Authenticate the request
+        ResourceUtilities.auth(authorization, servletContext);
 
         // Validate the request
         if (userType.getId() != null) {
