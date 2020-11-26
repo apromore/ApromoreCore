@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -21,12 +21,12 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.example.data.Group;
+import org.apache.parquet.hadoop.ParquetReader;
+import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.io.XLSReader;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.*;
 import org.apromore.service.csvimporter.services.LogProcessor;
 import org.apromore.service.csvimporter.services.LogProcessorImpl;
@@ -41,32 +41,39 @@ import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class XLSXLogReaderImpl implements LogReader, Constants {
+import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
+public class ParquetLogReaderImpl implements LogReader, Constants {
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
-    private final int BUFFER_SIZE = 2048;
-    private final int DEFAULT_NUMBER_OF_ROWS = 100;
+    private ParquetReader<Group> reader;
 
     @Override
     public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
+        try {
+            ParquetLogSampleImpl parquetLogSample = (ParquetLogSampleImpl) sample;
+            parquetLogSample.validateSample();
 
-        try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
-            sample.validateSample();
-            if (workbook == null)
-                throw new Exception("Unable to import file");
+            File tempFile = parquetLogSample.getParquetTempFile();
+            if (tempFile == null)
+                throw new Exception("Imported file cant be found!");
 
-            // Process first sheet only
-            Sheet sheet = workbook.getSheetAt(0);
-            //Get the header
-            if (sheet == null)
-                throw new Exception("Unable to import file");
+            //Read Parquet file
+            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+            MessageType tempFileSchema = parquetLocalFileReader.getSchema();
+            reader = parquetLocalFileReader.getParquetReader();
 
-            String[] header = sample.getHeader().toArray(new String[0]);
+            if (reader == null)
+                return null;
+
+            String[] header = getHeaderFromParquet(tempFileSchema).toArray(new String[0]);
+
             logProcessor = new LogProcessorImpl();
             logErrorReport = new ArrayList<>();
             int lineIndex = 0;
@@ -74,6 +81,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             String[] line;
             TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
             boolean rowLimitExceeded = false;
+            LogEventModelExt logEventModelExt;
 
             //XES
             XFactory xFactory = new XFactoryNaiveImpl();
@@ -82,41 +90,35 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             XTimeExtension timestamp = XTimeExtension.instance();
             XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
 
-            XLog xLog = xFactory.createLog();
+            XLog xLog;
+            xLog = xFactory.createLog();
             xLog.getExtensions().add(concept);
             xLog.getExtensions().add(lifecycle);
             xLog.getExtensions().add(timestamp);
             xLog.getExtensions().add(resourceXes);
-
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
-            LogEventModelExt logEventModelExt;
 
-            for (Row r : sheet) {
-                //Skip header
-                if (r.getRowNum() == 0)
+            Group g;
+            while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
+                try {
+                    line = readGroup(g, tempFileSchema);
+                } catch (Exception e) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Cant read line. " + e.getMessage()));
                     continue;
-
-                if (!isValidLineCount(lineIndex - 1))
-                    break;
+                }
 
                 // new row, new event.
                 lineIndex++;
 
-                //Validate num of column
-                if (r.getPhysicalNumberOfCells() > header.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
-                    continue;
-                }
-
-                line = new String[header.length];
-                //Get the rows
-                for (Cell c : r) {
-                    line[c.getColumnIndex()] = c.getStringCellValue();
-                }
-
                 //empty row
                 if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
                     continue;
+
+                //Validate num of column
+                if (header.length != line.length) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                    continue;
+                }
 
                 //Construct an event
                 logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
@@ -126,9 +128,11 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     if (skipInvalidRow) {
                         continue;
                     } else {
+                        //Upon migrating to parquet, xlog need to be removed and LogModelXLogImpl need to be renamed
                         return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                     }
                 }
+
                 //Construct a Trace if it's not exists
                 if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModelExt.getCaseID())) {
                     XTrace xT = xFactory.createTrace();
@@ -152,19 +156,29 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                 xLog.add(v);
             });
 
-            if (!isValidLineCount(lineIndex - 1))
+            if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;
 
             return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
-        } catch (Exception e) {
-            throw e;
+
         } finally {
-            in.close();
+            closeQuietly(in);
         }
     }
 
-    public boolean isValidLineCount(int lineCount) {
+    private boolean isValidLineCount(int lineCount) {
         return true;
+    }
+
+    private String[] readGroup(Group g, MessageType schema) {
+
+        String[] line = new String[schema.getColumns().size()];
+        for (int j = 0; j < schema.getFieldCount(); j++) {
+
+            String valueToString = g.getValueToString(j, 0);
+            line[j] = valueToString;
+        }
+        return line;
     }
 
     private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {
@@ -179,9 +193,11 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     }
 
     private void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xTrace) {
+
         XAttributeMap xAttributeMap = xTrace.getAttributes();
 
         if (caseAttributes != null && !caseAttributes.isEmpty()) {
+
             XAttribute attribute;
             for (Map.Entry<String, String> entry : caseAttributes.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().trim().length() != 0 && !xAttributeMap.containsKey(entry.getKey())) {
@@ -193,8 +209,10 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     }
 
     private XEvent createEvent(LogEventModel myEvent, Boolean isEndTimestamp) {
+
         XFactory xFactory = new XFactoryNaiveImpl();
         XEvent xEvent = xFactory.createEvent();
+
         XConceptExtension concept = XConceptExtension.instance();
         concept.assignName(xEvent, myEvent.getActivity());
 
@@ -213,6 +231,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             timestamp.assignTimestamp(xEvent, myEvent.getStartTimestamp());
         }
 
+
         XAttribute attribute;
         if (myEvent.getOtherTimestamps() != null) {
             Map<String, Timestamp> otherTimestamps = myEvent.getOtherTimestamps();
@@ -230,5 +249,12 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             }
         }
         return xEvent;
+    }
+
+    private void closeQuietly(InputStream in) throws IOException {
+        if (in != null)
+            in.close();
+        if (this.reader != null)
+            this.reader.close();
     }
 }
