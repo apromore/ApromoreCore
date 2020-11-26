@@ -36,11 +36,14 @@
     <vbox id="calendarsWrapper" hflex="1" vflex="1" spacing="0">
       <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
             style="padding: 8px;">
-        <button id="addNewCalendarBtn">
+        <button id="addNewCalendarBtn" iconSclass="z-icon-plus-circle">
           Add New Calendar
         </button>
+        <button id="publishBtn">
+          Publish Changes
+        </button>
       </hbox>
-      <listbox id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">
+      <listbox checkmark="true" multiple="true" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">
         <listhead>
           <listheader align="left" label="Name" hflex="1" />
           <listheader align="left" label="Created on" width="120px" />

@@ -266,7 +266,9 @@ zk.afterMount(function() {
         if (isInRange(range, hour, min)) {
           select(dow, hour, min, true);
           let id = cellId(INTERACT, dow, hour, min)
-          const tip = tippy(document.getElementById(id));
+          const tip = tippy(document.getElementById(id), {
+            theme: 'ap-calendar',
+          });
           tip.setContent(content);
           tippies[dow][id] = tip;
         }

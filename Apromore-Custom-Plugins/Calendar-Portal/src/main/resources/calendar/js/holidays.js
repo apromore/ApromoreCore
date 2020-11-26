@@ -2,11 +2,23 @@ Ap.calendar = Ap.calendar || {};
 
 zk.afterMount(function() {
 
-  let YEAR = 2020;
+  let YEAR = 2015;
   let params = {};
   let selects = {};
 
   Ap.calendar.initHolidays = function () {
+
+    function wrapper(id) {
+      return $(`#ap-holidays-${id}-wrapper`);
+    }
+
+    function hide(id) {
+      wrapper(id).hide();
+    }
+
+    function show(id) {
+      wrapper(id).show();
+    }
 
     function setupYear () {
       let options = [];
@@ -56,11 +68,11 @@ zk.afterMount(function() {
         options = genOptions(options);
         populate('state', options);
         if (!options) {
-          $('#state').next().hide();
+          hide('state');
         } else {
-          $('#state').next().show();
+          show('state');
         }
-        $('#region').next().hide();
+        hide('region');
       },
       state: function (selected) {
         params['state'] = selected;
@@ -69,9 +81,9 @@ zk.afterMount(function() {
         options = genOptions(options);
         populate('region', options);
         if (!options) {
-          $('#region').next().hide();
+          hide('region');
         } else {
-          $('#region').next().show();
+          show('region');
         }
       },
       region: function (selected) {
@@ -79,33 +91,35 @@ zk.afterMount(function() {
       }
     };
 
-    ['country', 'state', 'region'].forEach(function (id) {
+    ['year', 'country', 'state', 'region'].forEach(function (id) {
       let $select =
           $('#' + id).selectize({
             valueField: 'id',
             labelField: 'title',
             searchField: 'title',
             dropdownParent: 'body',
-            maxOptions: 20,
             create: false,
             onChange: (function (id) {
               return function (selected) {
-                onChange[id](selected);
+                if (onChange[id]) {
+                  onChange[id](selected);
+                }
               };
             })(id)
           });
       selects[id] = $select[0].selectize;
     });
-    $('#state').next().hide();
-    $('#region').next().hide();
-
-    // setupYear();
+    show('year');
+    show('country');
+    hide('state');
+    hide('region');
+    setupYear();
     setupCountry('AU');
   }
 
   Ap.calendar.submitHolidays = function () {
     let hd = new Holidays(params.country, params.state, params.region)
-    let holidays = hd.getHolidays(YEAR).map((holiday) => {
+    let holidays = hd.getHolidays(params.year).map((holiday) => {
       return {
         date: holiday.date.substring(0, 10),
         name: holiday.name

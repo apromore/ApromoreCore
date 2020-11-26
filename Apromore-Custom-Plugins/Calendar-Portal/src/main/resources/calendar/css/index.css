@@ -143,6 +143,28 @@
     border-bottom: 1px solid transparent;
 }
 
+.ap-holidays-selections {
+    display: flex;
+    flex-direction: column;
+}
+
+.ap-holidays-wrapper {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.ap-holidays-wrapper > div {
+    flex: 1 1 auto;
+}
+
+.ap-holidays-wrapper > .label {
+    flex: 0 0 auto;
+    width: 120px;
+    text-align: right;
+    padding: 5px 5px 0 0;
+}
+
 .ap-holidays .z-listcell-content {
     padding: 2px 5px 0 5px;
 }
@@ -150,6 +172,7 @@
 .ap-holidays .z-vbox-separator {
     display: none;
 }
+
 .selectize-dropdown {
     z-index: 3000 !important;
 }
@@ -157,9 +180,37 @@
 .selectize-dropdown,
 .selectize-input,
 .selectize-input input {
-    font-family: var(--ap-font-base);
+    font-family: var(--ap-font-base) !important;
 }
 
 .ap-calendars-win .ap-icon {
     display: inline-block;
+}
+
+.tippy-box[data-theme~='ap-calendar'] {
+    background-color: #888888 !important;
+}
+
+.tippy-box[data-theme~='ap-calendar'][data-placement^='top'] .tippy-arrow::before {
+    border-top-color: #888888 !important;
+}
+
+.tippy-box[data-theme~='ap-calendar'] {
+    font-family: var(--ap-font-base) !important;
+    color: white !important;
+}
+
+.ap-holidays .z-listitem:hover > .z-listcell,
+.ap-calendars-win .z-listitem:not([class^="selected"]):hover > .z-listcell {
+    background: transparent !important;
+}
+
+.ap-inline-textbox.z-textbox {
+    border: none;
+    background: transparent;
+}
+
+.ap-inline-textbox.z-textbox:focus {
+    border: 1px solid grey;
+    background: white;
 }

@@ -42,6 +42,11 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -58,15 +63,16 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Wire("#calendarListbox")
     Listbox calendarListbox;
-    
+
     @Wire("#addNewCalendarBtn")
     Button addNewCalender;
-    
+
     @WireVariable("calendarService")
     CalendarService calendarService;
 
-    private ListModelList<CalendarModel> calendarListModel;
+    private EventQueue calendarEventQueue;
 
+    private ListModelList<CalendarModel> calendarListModel;
 
     public Calendars() throws Exception {
     }
@@ -74,50 +80,66 @@ public class Calendars extends SelectorComposer<Window> {
     @Override
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
-       
         initialize();
     }
 
     public void initialize() {
+        calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true);
+        // Internal loop testing
+        calendarEventQueue.subscribe(new EventListener() {
+            @Override
+            public void onEvent(Event event) {
+                Object data = event.getData();
+            }
+        });
+
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
+        calendarListModel.setMultiple(true);
         calendarListbox.setModel(calendarListModel);
         mock();
     }
 
     private void mock() {
-      
+
 //      create
-    	try {    		
-			CalendarModel model=calendarService.createBusinessCalendar("Austrailia 2020", true, ZoneId.systemDefault().toString());
-			HolidayModel holiday3 = new HolidayModel("CUSTOM","Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
-			calendarService.updateHoliday(model.getId(),Arrays.asList(holiday3));
-		   
-		} catch (CalendarAlreadyExistsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CalendarNotExistsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-     List<CalendarModel> calendars=calendarService.getCalendars();
-     
+        try {
+            CalendarModel model = calendarService.createBusinessCalendar("Austrailia 2020", true, ZoneId.systemDefault().toString());
+            HolidayModel holiday3 = new HolidayModel("CUSTOM", "Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
+            calendarService.updateHoliday(model.getId(), Arrays.asList(holiday3));
+
+        } catch (CalendarAlreadyExistsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (CalendarNotExistsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        List<CalendarModel> calendars = calendarService.getCalendars();
+
         calendarListModel.addAll(calendars);
-        
+
     }
 
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
         getSelf().detach();
     }
-    
+
+    @Listen("onClick = #publishBtn")
+    public void onClickPublishBtn() {
+        calendarEventQueue.publish(
+                new Event("onCalendarPublish", null, calendarListModel.getSelection())
+        );
+    }
+
     @Listen("onClick = #addNewCalendarBtn")
     public void onClickAddNewCalender() {
-      Map arg = new HashMap<>();
-      arg.put("source", "addNewCalendarBtn");
-      Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
-      window.doModal();
+        Map arg = new HashMap<>();
+        arg.put("source", "addNewCalendarBtn");
+        Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
+        window.doModal();
     }
 
 }

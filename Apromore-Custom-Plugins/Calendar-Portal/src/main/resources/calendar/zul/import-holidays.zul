@@ -20,37 +20,48 @@
   #L%
   -->
 <zk>
-<window width="400px" position="center" apply="org.apromore.plugin.portal.calendar.controllers.ImportHolidays"
-        title="Add Holidays from a country"
-        sclass="ap-holidays-win"
-        xmlns:ca="client/attribute"
-        xmlns:n="native">
-    <n:script type="text/javascript" src="libs/date-holidays/1.8.1/umd.min.js"></n:script>
-    <n:script type="text/javascript" src="libs/jquery/1.12.4/jquery-1.12.4.min.js"></n:script>
-    <n:script type="text/javascript" src="libs/jquery-ui/1.12.1/jquery-ui.min.js"></n:script>
-    <n:script type="text/javascript" src="/calendar/libs/selectize/0.13.0/selectize.js"></n:script>
-    <n:script type="text/javascript" src="/calendar/js/holidays.js"></n:script>
-    <style src="/calendar/libs/selectize/0.13.0/selectize.css"/>
-    <style src="/calendar/libs/selectize/0.13.0/selectize.ap.css"/>
-    <grid sclass="ap-grid ap-form">
-        <columns>
-            <column width="120px"/>
-            <column hflex="1"/>
-        </columns>
-        <rows>
-            <row>
-                <label value="Country"/>
-                <div>
-                    <n:select class="ap-holidays-selector" id="country" style="display:none"></n:select>
-                    <n:select class="ap-holidays-selector" id="state" style="display:none"></n:select>
-                    <n:select class="ap-holidays-selector" id="region" style="display:none"></n:select>
-                </div>
-            </row>
-        </rows>
-    </grid>
-    <div sclass="ap-window-footer-actions">
-        <button id="saveBtn" label="Create" iconSclass="z-icon-check-circle" ca:onClick="Ap.calendar.submitHolidays()" />
-        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
-    </div>
-</window>
+    <window width="400px" position="center" apply="org.apromore.plugin.portal.calendar.controllers.ImportHolidays"
+            title="Add Holidays from a country"
+            sclass="ap-holidays-win"
+            xmlns:ca="client/attribute"
+            xmlns:n="native">
+        <n:script type="text/javascript" src="libs/date-holidays/1.8.1/umd.min.js"></n:script>
+        <n:script type="text/javascript" src="libs/jquery/1.12.4/jquery-1.12.4.min.js"></n:script>
+        <n:script type="text/javascript" src="libs/jquery-ui/1.12.1/jquery-ui.min.js"></n:script>
+        <n:script type="text/javascript" src="/calendar/libs/selectize/0.13.0/selectize.js"></n:script>
+        <n:script type="text/javascript" src="/calendar/js/holidays.js"></n:script>
+        <style src="/calendar/libs/selectize/0.13.0/selectize.css"/>
+        <style src="/calendar/libs/selectize/0.13.0/selectize.ap.css"/>
+        <grid sclass="ap-grid ap-form">
+            <columns>
+                <column hflex="1"/>
+            </columns>
+            <rows>
+                <row>
+                    <div sclass="ap-holidays-selections" >
+                        <n:div id="ap-holidays-year-wrapper" class="ap-holidays-wrapper" style="display:none">
+                            <n:div class="label">Year</n:div>
+                            <n:select class="ap-holidays-selector" id="year"></n:select>
+                        </n:div>
+                        <n:div id="ap-holidays-country-wrapper" class="ap-holidays-wrapper" style="display:none">
+                            <n:div class="label">Country</n:div>
+                            <n:select class="ap-holidays-selector" id="country"></n:select>
+                        </n:div>
+                        <n:div id="ap-holidays-state-wrapper" class="ap-holidays-wrapper" style="display:none">
+                            <n:div class="label">State</n:div>
+                            <n:select class="ap-holidays-selector" id="state"></n:select>
+                        </n:div>
+                        <n:div id="ap-holidays-region-wrapper" class="ap-holidays-wrapper" style="display:none">
+                            <n:div class="label">Region</n:div>
+                            <n:select class="ap-holidays-selector" id="region"></n:select>
+                        </n:div>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+        <div sclass="ap-window-footer-actions">
+            <button id="saveBtn" label="Create" iconSclass="z-icon-check-circle" ca:onClick="Ap.calendar.submitHolidays()" />
+            <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
+        </div>
+    </window>
 </zk>

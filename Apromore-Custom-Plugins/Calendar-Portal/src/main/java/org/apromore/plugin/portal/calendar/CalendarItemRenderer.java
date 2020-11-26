@@ -38,6 +38,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -64,7 +65,6 @@ public class CalendarItemRenderer implements ListitemRenderer {
     }
 
     public Listcell renderTextCell(Listitem listItem, String content) {
-    	
         return renderCell(listItem, new Label(content));
     }
 
@@ -74,7 +74,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         return renderCell(listItem, span);
     }
 
-    public void edit(Long calendarId) {
+    public void editCalendar(Long calendarId) {
         try {
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
@@ -86,7 +86,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         }
     }
     
-    public void deleteCalender(Long calendarId) {
+    public void removeCalendar(Long calendarId) {
         try {
             calendarService.deleteCalender(calendarId);  
         } catch(Exception e) {
@@ -95,40 +95,58 @@ public class CalendarItemRenderer implements ListitemRenderer {
         }
     }
 
-    public void remove() {
-
+    public void updateCalendarName(String newName, Long calendarId) {
+        // updateCalendar name here
+        LOGGER.info("Edit name", newName);
     }
 
     @Override
     public void render(Listitem listItem, Object obj, int index) {
         CalendarModel calendarItem = (CalendarModel) obj;
 
-        renderTextCell(listItem, calendarItem.getName());
+        Textbox textbox = new Textbox(calendarItem.getName());
+        textbox.setSubmitByEnter(true);
+        textbox.setSclass("ap-inline-textbox");
+        textbox.setHflex("1");
+        Listcell nameCell = renderCell(listItem, textbox);
+        textbox.addEventListener(Events.ON_OK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                updateCalendarName(textbox.getValue(), calendarItem.getId());
+            }
+        });
+
         OffsetDateTime created = calendarItem.getCreated();
         renderTextCell(listItem, created.format(DateTimeFormatter.ofPattern("yyyy MMM dd")));
         Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit");
         Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash");
 
+        nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                textbox.setFocus(true);
+            }
+        });
+
         editAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                edit(calendarItem.getId());
+                editCalendar(calendarItem.getId());
             }
         });
 
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-              deleteCalender(calendarItem.getId());
+              removeCalendar(calendarItem.getId());
               listItem.detach();
-            
             }
         });
 
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-              edit(calendarItem.getId());
+              editCalendar(calendarItem.getId());
             }
         });
     }

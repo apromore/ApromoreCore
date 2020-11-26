@@ -30,6 +30,8 @@ import org.apromore.dao.model.CustomCalendar;
 
 public interface CalendarService {
 
+	final String EVENT_TOPIC = "org/apromore/service/CALENDAR";
+
 	public CalendarModel createGenericCalendar(String description, boolean weekendsOff, String zoneId)
 			throws CalendarAlreadyExistsException;
 

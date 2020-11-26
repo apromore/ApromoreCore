@@ -34,7 +34,7 @@
     <vbox height="100%" hflex="1" spacing="0">
       <hbox hflex="1" vflex="1">
         <vbox id="daysOfWeekWrapper" hflex="1" vflex="1" spacing="0">
-          <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
+          <hbox sclass="ap-window-header-actions" hflex="1" align="center" pack="start" spacing="0"
                 style="padding: 8px;">
             <button id="template9To5Btn"
                     ca:onClick="Ap.calendar.applyTemplate('9to5')">
@@ -44,8 +44,8 @@
                     ca:onClick="Ap.calendar.applyTemplate('24h')">
               24hr 5 Business Days
             </button>
-            <label>Time zone</label>
-            <combobox id="zoneCombobox" placeholder="Select a time zone">
+            <label style="padding-right: 5px">Time zone</label>
+            <combobox id="zoneCombobox" placeholder="Select a time zone" width="270px">
               <template name="model">
                 <comboitem label="${each.displayName}" />
               </template>
@@ -69,10 +69,10 @@
                   ${each.dayOfWeek}
                 </listcell>
                 <listcell sclass="ap-period-picker-wrapper">
-                	<div visible="${each.workingDay}"
-                		sclass="ap-period-picker"
-                		ca:data-dow="${forEachStatus.index + 1}">
-                	</div>
+                  <div visible="${each.workingDay}"
+                       sclass="ap-period-picker"
+                       ca:data-dow="${forEachStatus.index + 1}">
+                  </div>
                 </listcell>
               </listitem>
             </template>
