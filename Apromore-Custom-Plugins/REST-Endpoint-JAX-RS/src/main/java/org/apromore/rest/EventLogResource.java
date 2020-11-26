@@ -29,6 +29,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+//import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
@@ -72,7 +73,7 @@ public final class EventLogResource {
     @Path("{path:(.*/)*}{name}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public byte[] getLog(final @PathParam("path") String path,
-                                 final @PathParam("name") String name) throws Exception {
+                         final @PathParam("name") String name) throws Exception {
 
         EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
         LogRepository logRepository = ResourceUtilities.getOSGiService(LogRepository.class, servletContext);

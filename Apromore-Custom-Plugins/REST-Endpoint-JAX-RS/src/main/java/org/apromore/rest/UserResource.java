@@ -21,10 +21,11 @@
  */
 package org.apromore.rest;
 
-import javax.annotation.security.RolesAllowed;
+//import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
@@ -57,7 +58,10 @@ public final class UserResource {
     @GET
     @Path("{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(final @PathParam("name") String name) {
+    public Response getUser(final @PathParam("name") String name,
+                            final @HeaderParam("Authorization") String authorization) throws ResourceException {
+
+        ResourceUtilities.auth(authorization);
         SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
         User user = securityService.getUserByName(name);
         UserType userType = UserMapper.convertUserTypes(user, securityService);
@@ -76,7 +80,7 @@ public final class UserResource {
     @Path("{name}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
+    //@RolesAllowed("ADMIN")
     public UserType postUser(final @PathParam("name") String name,
                              final UserType userType) throws ResourceException {
 

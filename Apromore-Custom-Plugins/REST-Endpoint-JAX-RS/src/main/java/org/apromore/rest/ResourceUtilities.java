@@ -21,11 +21,70 @@
  */
 package org.apromore.rest;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
+import javax.ws.rs.core.Response;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class ResourceUtilities {
+
+    /**
+     * Logger.
+     *
+     * Named after the class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceUtilities.class);
+
+    /**
+     * Regular expression for HTTP Authorization headers.
+     *
+     * The named capturing group "basicAuthorization" contains the Base64 payload.
+     */
+    private static final Pattern AUTHORIZATION_PATTERN =
+        Pattern.compile("Basic\\s+(?<basicAuthorization>[\\d\\p{Alpha}+/]+=*)");
+
+    /**
+     * Regular expression for decoded HTTP Basic authorization payload.
+     *
+     * The named capturing groups "name" and "password" contain the payload fields.
+     */
+    private static final Pattern BASIC_PAYLOAD_PATTERN =
+        Pattern.compile("(?<name>[^:]*):(?<password>.*)");
+
+    /**
+     * Perform HTTP Basic authentication and authorization.
+     *
+     * @param authorization  the HTTP Authorization header; <code>null</code> indicates absent header
+     * @throws ResourceException if either authentication or authorization fail
+     */
+    static void auth(final String authorization) throws ResourceException {
+        LOGGER.info("Authorization: " + authorization);
+        if (authorization == null) {
+            throw new ResourceException(Response.Status.UNAUTHORIZED, "Anonymous access denied.");
+        }
+
+        // Validate the presence of HTTP Basic authentication
+        Matcher matcher = AUTHORIZATION_PATTERN.matcher(authorization);
+        if (!matcher.matches()) {
+            throw new ResourceException(Response.Status.UNAUTHORIZED, "Basic authentication required");
+        }
+
+        // Validate the HTTP Basic authentication payload
+        String base64 = matcher.group("basicAuthorization");
+        String decoded = new String(Base64.getDecoder().decode(base64), ISO_8859_1);
+        Matcher matcher2 = BASIC_PAYLOAD_PATTERN.matcher(decoded);
+        if (!matcher2.matches()) {
+            throw new ResourceException(Response.Status.BAD_REQUEST, "Malformed Basic authorization header");
+        }
+
+        LOGGER.info("User " + matcher2.group("name") + ", password " +  matcher2.group("password"));
+    }
 
     /**
      * Access a unique OSGi service.

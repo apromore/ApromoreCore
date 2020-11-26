@@ -1,0 +1,59 @@
+{
+    "country": null,
+    "firstName": "Test",
+    "id": "ad1f7b60-1143-4399-b331-b887585a0f30",
+    "lastActivityDate": "28/05/2012",
+    "lastName": "User",
+    "membership": {
+        "approved": true,
+        "email": "admin",
+        "failedAnswers": 0,
+        "failedLogins": 0,
+        "id": null,
+        "locked": false,
+        "password": null,
+        "passwordAnswer": null,
+        "passwordQuestion": null,
+        "passwordSalt": null
+    },
+    "organization": null,
+    "permissions": [
+        {
+            "id": "dff60714-1d61-4544-8884-0d8b852ba41e",
+            "name": "Manage users"
+        },
+        {
+            "id": "2e884153-feb2-4842-b291-769370c86e44",
+            "name": "Manage records"
+        },
+        {
+            "id": "dff60714-1d61-4544-8884-0d8b852ba41e",
+            "name": "Manage users"
+        },
+        {
+            "id": "2e884153-feb2-4842-b291-769370c86e44",
+            "name": "Manage records"
+        },
+        {
+            "id": "d9ade57c-14c7-4e43-87e5-6a9127380b1b",
+            "name": "Manage records"
+        }
+    ],
+    "phone": null,
+    "role": null,
+    "roles": [
+        {
+            "id": "80da507e-cdd7-40f4-a9f8-b2d2edb12856",
+            "name": "ROLE_ADMIN",
+            "rolePermissions": []
+        },
+        {
+            "id": "0ecd70b4-a204-41cd-a246-e3fcef88f6fe",
+            "name": "ROLE_USER",
+            "rolePermissions": []
+        }
+    ],
+    "searchHistories": [],
+    "subscription": null,
+    "username": "admin"
+}
