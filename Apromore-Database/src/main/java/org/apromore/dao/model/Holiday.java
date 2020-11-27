@@ -146,11 +146,12 @@ public class Holiday implements Serializable {
 
 	
 	public Holiday(String name, String description, LocalDate localDateHolidayDate) {
-		this(name,description,localDateHolidayDate,HOLIDAYTYPE.PUBLIC);
+		this(null,name,description,localDateHolidayDate,HOLIDAYTYPE.PUBLIC);
 
 	}
 	
-	public Holiday(String name, String description, LocalDate localDateHolidayDate,HOLIDAYTYPE holidaytype) {
+	public Holiday(Long id,String name, String description, LocalDate localDateHolidayDate,HOLIDAYTYPE holidaytype) {
+		this.id=id;
 		this.name = name;
 		this.description = description;		
 		this.holidayDate=localDateHolidayDate.toString();

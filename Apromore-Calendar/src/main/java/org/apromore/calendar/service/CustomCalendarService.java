@@ -34,6 +34,7 @@ import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
+import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.util.CalendarUtil;
 import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarInfoRepository;
@@ -143,18 +144,11 @@ public class CustomCalendarService implements CalendarService {
 	}
 
 	public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException {
-		CustomCalendar calendar = calendarRepo.findById(id);
+		CustomCalendar calendar = getExistingCalender(id);
 
-		if (calendar == null) {
-			throw new CalendarNotExistsException("calender does not exist");
-		}
-
-		List<Holiday> holidays=new ArrayList<Holiday>();
-		for(HolidayModel h: holidayModels)
-		{
-			holidays.add(new Holiday(h.getName(),
-					h.getDescription(),
-					h.getHolidayDate(),
+		List<Holiday> holidays = new ArrayList<Holiday>();
+		for (HolidayModel h : holidayModels) {
+			holidays.add(new Holiday(h.getId(), h.getName(), h.getDescription(), h.getHolidayDate(),
 					HOLIDAYTYPE.valueOf(h.getHolidayType())));
 		}
 
@@ -164,6 +158,15 @@ public class CustomCalendarService implements CalendarService {
 		}
 		calendarRepo.saveAndFlush(calendar);
 
+	}
+
+	private CustomCalendar getExistingCalender(Long id) throws CalendarNotExistsException {
+		CustomCalendar calendar = calendarRepo.findById(id);
+
+		if (calendar == null) {
+			throw new CalendarNotExistsException("calender does not exist");
+		}
+		return calendar;
 	}
 
 	public void removeHoliday(Long id, List<Long> holidayIds) {
@@ -184,4 +187,45 @@ public class CustomCalendarService implements CalendarService {
 
 	}
 
+	@Override
+	public void updateCalenderName(Long id, String calenderName) throws CalendarNotExistsException {
+		CustomCalendar calendar = getExistingCalender(id);
+
+		calendar.setName(calenderName);
+
+		calendarRepo.save(calendar);
+
+	}
+
+	@Override
+	public void updateWorkDays(Long id, List<WorkDayModel> workDayModels) throws CalendarNotExistsException {
+		CustomCalendar calendar = getExistingCalender(id);
+
+		List<WorkDay> workDays = new ArrayList<WorkDay>();
+		for (WorkDayModel w : workDayModels) {
+
+			workDays.add(new WorkDay(w.getId(), 
+					w.getDayOfWeek(), 
+					w.getStartTime(),
+					w.getEndTime(),
+					w.isWorkingDay()));
+		}
+
+		calendar.getWorkDays().clear();
+		for (WorkDay workDay : workDays) {
+			calendar.addWorkDay(workDay);
+		}
+		calendarRepo.saveAndFlush(calendar);
+
+	}
+
+	@Override
+	public void updateZoneInfo(Long id, String zoneId) throws CalendarNotExistsException {
+		CustomCalendar calendar = getExistingCalender(id);		
+		calendar.setZoneId(zoneId);
+		calendarRepo.save(calendar);
+	}
+
 }
+//public WorkDay(Long id,DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
+//	      boolean isWorkingDay) {

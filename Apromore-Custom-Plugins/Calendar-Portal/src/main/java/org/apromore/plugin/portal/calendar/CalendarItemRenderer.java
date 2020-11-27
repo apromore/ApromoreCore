@@ -28,6 +28,8 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.slf4j.Logger;
@@ -96,7 +98,13 @@ public class CalendarItemRenderer implements ListitemRenderer {
     }
 
     public void updateCalendarName(String newName, Long calendarId) {
-        // updateCalendar name here
+    	try {
+			calendarService.updateCalenderName(calendarId, newName);
+		} catch (CalendarNotExistsException e) {
+//			Need to handle this via publishing message in event queue
+			LOGGER.error("Unable to update custom calendar dialog", e);
+			e.printStackTrace();
+		}
         LOGGER.info("Edit name", newName);
     }
 
@@ -109,7 +117,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         textbox.setSclass("ap-inline-textbox");
         textbox.setHflex("1");
         Listcell nameCell = renderCell(listItem, textbox);
-        textbox.addEventListener(Events.ON_OK, new EventListener<Event>() {
+        textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 updateCalendarName(textbox.getValue(), calendarItem.getId());

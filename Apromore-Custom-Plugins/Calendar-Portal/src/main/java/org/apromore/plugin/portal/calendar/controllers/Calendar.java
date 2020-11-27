@@ -202,8 +202,7 @@ public class Calendar extends SelectorComposer<Window> {
 
     actionBridge.addEventListener("onUpdateRanges", new EventListener<Event>() {
       @Override
-      public void onEvent(Event event) throws Exception {
-        List<TimeRange> ranges = new ArrayList<TimeRange>();
+      public void onEvent(Event event) throws Exception {        
         JSONObject params = (JSONObject) event.getData();
         int dowIndex = (Integer) params.get("dow");
         JSONArray rangeArray = (JSONArray) params.get("ranges");
@@ -212,19 +211,13 @@ public class Calendar extends SelectorComposer<Window> {
           int startHour = (Integer) item.get("startHour");
           int startMin = (Integer) item.get("startMin");
           int endHour = (Integer) item.get("endHour");
-          int endMin = (Integer) item.get("endMin");
-          ranges.add(new TimeRange(
-              OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)),
-              OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC))));
-          
+          int endMin = (Integer) item.get("endMin");                    
           WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
           dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)));
-          dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));
-          
+          dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));          
           refresh(dowItem);
           
-        }
-        
+        }        
         Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
       }
     });
@@ -234,20 +227,19 @@ public class Calendar extends SelectorComposer<Window> {
     zoneModel = new ListModelList<Zone>();
     Set<String> zoneIds = ZoneId.getAvailableZoneIds();
 
+    Zone selectedZone=null;
     for (String id : zoneIds) {
       ZoneId zoneId = ZoneId.of(id);
       Zone currentZone = new Zone(zoneId.getId(), zoneId.getDisplayName(TextStyle.FULL, Locale.US));
       zoneModel.add(currentZone);
-      if(calenderExists && zoneId.equals(ZoneId.of(calendarModel.getZoneId())))
+      if(zoneId.equals(ZoneId.of(calendarModel.getZoneId())) || 
+    		  (selectedZone==null && zoneId.equals(ZoneId.systemDefault())))
       {
-    	  zoneModel.addToSelection(currentZone);
+    	  selectedZone=currentZone;
       }
-      else if(zoneId.equals(ZoneId.systemDefault()))
-      {
-        
-        zoneModel.addToSelection(currentZone);
-      }
+      
     }
+    zoneModel.addToSelection(selectedZone);
     zoneModel.setMultiple(false);
     ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
     zoneCombobox.setModel(listSubModel);
@@ -436,36 +428,26 @@ public class Calendar extends SelectorComposer<Window> {
   }
 
   private void toModels() {
-    // Warning: UNTESTED
 
-    // transfer ZK ListModels to Apromore Calendar's models
-    
+
     if(calenderExists)
     {
     	try {
+    		
+    		
+    		calendarService.updateZoneInfo(calendarModel.getId(), 
+					((Zone)zoneCombobox.getModel().getElementAt(zoneCombobox.getSelectedIndex())).getId());
+    		
+    		calendarService.updateWorkDays(calendarModel.getId(), 
+					(List<WorkDayModel>) dayOfWeekListbox.getModel());
+    		
 			calendarService.updateHoliday(calendarModel.getId(), 
 					(List<HolidayModel>) holidayListbox.getModel());
 		} catch (CalendarNotExistsException e) {
 //			 post event to notificaton
 		}
     }
-    // TODO:
-    // Save holidayMap to calendarModel
-//    List<HolidayModel> holidays = new ArrayList<>();
-//    for (Map.Entry<LocalDate, HolidayItem> entry : holidayMap.entrySet()) {
-//      LocalDate localDate = entry.getKey();
-//      HolidayItem holidayItem = entry.getValue();
-//      LocalDate holidayDate = holidayItem.getHolidayDate();
-//      String holidayDescription = holidayItem.getDescription();
-//      HolidayModel holidayModel = new HolidayModel();
-//      holidayModel.setName(holidayDescription);
-//      holidayModel.setDescription(holidayDescription);
-//      holidayModel.setHolidayDate(holidayDate);
-//      holidays.add(holidayModel);
-//    }
-//    calendarModel.setHolidays(holidays);
-    // TODO:
-    // calendarService.saveCalendar(calendarModel);
+
   }
 
   private void mock() {

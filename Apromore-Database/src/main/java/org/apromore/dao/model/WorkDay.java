@@ -81,6 +81,15 @@ public class WorkDay {
     this.endTime = endTime.toString();
     this.isWorkingDay = isWorkingDay;
   }
+  
+  public WorkDay(Long id,DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
+	      boolean isWorkingDay) {
+	  	this.id=id;
+	    this.dayOfWeek = dayOfWeek;
+	    this.startTime = startTime.toString();
+	    this.endTime = endTime.toString();
+	    this.isWorkingDay = isWorkingDay;
+	  }
 
   @PostLoad
   @PostPersist

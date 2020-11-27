@@ -26,6 +26,7 @@ import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
+import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.dao.model.CustomCalendar;
 
 public interface CalendarService {
@@ -45,5 +46,12 @@ public interface CalendarService {
 	public void deleteCalender(Long calendarId);
 
 	public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException;
+	
+	public void updateCalenderName(Long id, String calenderName) throws CalendarNotExistsException;
+
+	public void updateWorkDays(Long id, List<WorkDayModel> model) throws CalendarNotExistsException;
+
+	public void updateZoneInfo(Long id, String zoneId) throws CalendarNotExistsException;;
+	
 
 }

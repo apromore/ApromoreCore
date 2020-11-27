@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -93,35 +94,16 @@ public class Calendars extends SelectorComposer<Window> {
             }
         });
 
+        
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
+        calendarListModel.addAll(calendarService.getCalendars());
         calendarListModel.setMultiple(true);
         calendarListbox.setModel(calendarListModel);
-        mock();
     }
 
-    private void mock() {
-
-//      create
-        try {
-            CalendarModel model = calendarService.createBusinessCalendar("Austrailia 2020", true, ZoneId.systemDefault().toString());
-            HolidayModel holiday3 = new HolidayModel("CUSTOM", "Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
-            calendarService.updateHoliday(model.getId(), Arrays.asList(holiday3));
-
-        } catch (CalendarAlreadyExistsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (CalendarNotExistsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        List<CalendarModel> calendars = calendarService.getCalendars();
-
-        calendarListModel.addAll(calendars);
-
-    }
-
+    
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
         getSelf().detach();
@@ -136,10 +118,19 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #addNewCalendarBtn")
     public void onClickAddNewCalender() {
-        Map arg = new HashMap<>();
-        arg.put("source", "addNewCalendarBtn");
-        Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
-        window.doModal();
+    	
+    	CalendarModel model;
+		try {
+			String calenderName="Generic Calender 9 to 5 created on"+LocalDateTime.now();
+			model = calendarService.createBusinessCalendar(calenderName, true, ZoneId.systemDefault().toString());
+			calendarListModel.add(model);
+			
+		} catch (CalendarAlreadyExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
     }
 
 }
