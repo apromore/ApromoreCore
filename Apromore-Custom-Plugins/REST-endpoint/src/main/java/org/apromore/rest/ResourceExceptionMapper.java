@@ -46,9 +46,17 @@ public final class ResourceExceptionMapper implements ExceptionMapper<Throwable>
             LOGGER.warn("Error processing REST resource", throwable);
         }
 
-        return Response.status(status)
-                       .type(MediaType.TEXT_PLAIN)
-                       .entity(throwable.getMessage())
-                       .build();
+        Response.ResponseBuilder builder = Response.status(status);
+
+        // Always include the error message as the plain text body of the response
+        builder.type(MediaType.TEXT_PLAIN)
+               .entity(throwable.getMessage());
+
+        // HTTP 401 Unauthorized response must indicate that Basic authentication is required
+        if (status == Response.Status.UNAUTHORIZED) {
+            builder.header("WWW-Authenticate", "Basic realm=\"apromore\"");
+        }
+
+        return builder.build();
     }
 }

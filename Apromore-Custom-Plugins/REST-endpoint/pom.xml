@@ -17,10 +17,10 @@
         <checkstyle.skip>false</checkstyle.skip>
     </properties>
 
-    <artifactId>rest-endpoint-jax-rs</artifactId>
+    <artifactId>rest-endpoint</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
-    <name>REST endpoint (JAX-RS)</name>
+    <name>REST endpoint for Manager services</name>
 
     <build>
         <plugins>

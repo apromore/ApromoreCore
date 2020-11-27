@@ -97,6 +97,7 @@ abstract class ResourceUtilities {
             Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(name, password));
             assert authentication.isAuthenticated();
+            LOGGER.info("Authentication " + authentication + " with authorities " + authentication.getAuthorities());
 
             // Success!  Return the authenticated username
             return name;
