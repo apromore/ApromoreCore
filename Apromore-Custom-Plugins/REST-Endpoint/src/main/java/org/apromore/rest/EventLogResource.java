@@ -41,6 +41,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
@@ -76,7 +77,8 @@ public final class EventLogResource {
                          final @PathParam("name") String name) throws Exception {
 
         // Try to access the folder using the given credentials
-        String username = ResourceUtilities.auth(authorization, servletContext);
+        String username = ResourceUtilities.authenticatedUser(authorization, servletContext)
+                                           .getUsername();
         SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
         String userId = securityService.getUserByName(username).getRowGuid();
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
@@ -119,16 +121,14 @@ public final class EventLogResource {
                                   final String body) throws Exception {
 
         // Try to access the folder using the given credentials
-        String username = ResourceUtilities.auth(authorization, servletContext);
-        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
-        String userId = securityService.getUserByName(username).getRowGuid();
+        UserType user = ResourceUtilities.authenticatedUser(authorization, servletContext);
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
-        int folderId = findFolderIdByPath(path, userId, workspaceService);
+        int folderId = findFolderIdByPath(path, user.getId(), workspaceService);
 
         // Import the event log
         EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
         Log log = eventLogService.importLog(
-            username,
+            user.getUsername(),
             folderId,
             name,
             new StringBufferInputStream(body),

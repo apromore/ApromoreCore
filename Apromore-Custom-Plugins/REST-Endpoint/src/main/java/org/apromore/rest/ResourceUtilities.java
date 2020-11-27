@@ -27,6 +27,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
+import org.apromore.mapper.UserMapper;
+import org.apromore.portal.model.RoleType;
+import org.apromore.portal.model.UserType;
+import org.apromore.service.SecurityService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -54,22 +58,22 @@ abstract class ResourceUtilities {
         Pattern.compile("Basic\\s+(?<basicAuthorization>[\\d\\p{Alpha}+/]+=*)");
 
     /**
-     * Regular expression for decoded HTTP Basic authorization payload.
+     * Regular expression for decoded HTTP Basic authentication payload.
      *
      * The named capturing groups "name" and "password" contain the payload fields.
      */
-    private static final Pattern BASIC_PAYLOAD_PATTERN =
-        Pattern.compile("(?<name>[^:]*):(?<password>.*)");
+    private static final Pattern BASIC_PAYLOAD_PATTERN = Pattern.compile("(?<name>[^:]*):(?<password>.*)");
 
     /**
-     * Perform HTTP Basic authentication and authorization.
+     * Perform HTTP Basic authentication.
      *
      * @param authorization  the HTTP Authorization header; <code>null</code> indicates absent header
      * @param servletContext  used to obtain the Spring authentication manager
-     * @return the authenticated username
-     * @throws ResourceException if either authentication or authorization fail
+     * @return the authenticated user
+     * @throws ResourceException if authentication fails
      */
-    static String auth(final String authorization, final ServletContext context) throws ResourceException {
+    static UserType authenticatedUser(final String authorization, final ServletContext context)
+        throws ResourceException {
 
         // Validate the presence of HTTP Basic authentication
         if (authorization == null) {
@@ -97,14 +101,33 @@ abstract class ResourceUtilities {
             Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(name, password));
             assert authentication.isAuthenticated();
-            LOGGER.info("Authentication " + authentication + " with authorities " + authentication.getAuthorities());
 
-            // Success!  Return the authenticated username
-            return name;
+            // Success!  Return the authenticated user DTO
+            SecurityService securityService = getOSGiService(SecurityService.class, context);
+            return UserMapper.convertUserTypes(securityService.getUserByName(name), securityService);
 
         } catch (AuthenticationException e) {
             throw new ResourceException(Response.Status.UNAUTHORIZED, e.getMessage());
         }
+    }
+
+    /**
+     * Authorize a user against a role.
+     *
+     * @param user  a user, usually obtained via {@link #authenticateUser}
+     * @param role  the role while the <var>authenticatedUser</var> ought to have
+     * @throws ResourceException if the <var>authenticatedUser</var> lacks the <var>authorizedRole</var>
+     */
+    static void authorize(final UserType user, final String role) throws ResourceException {
+        for (RoleType userRole: user.getRoles()) {
+            if (userRole.getName().equals(role)) {
+                return;  // Success
+            }
+        }
+
+        // User was not in the authorized role
+        throw new ResourceException(Response.Status.FORBIDDEN,
+            "User " + user.getUsername() + " not in role " + role);
     }
 
     /**
@@ -113,7 +136,7 @@ abstract class ResourceUtilities {
      * This obtains the bundle context from the servlet context of the web application.
      *
      * @param clazz  the type of the service; there must be exactly one registered service of this type
-     * @param context  the servlet context
+     * @param context  the servlet context, use to access the OSGi service registry
      * @return the service instance
      */
     static <T> T getOSGiService(final Class<T> clazz, final ServletContext context) {

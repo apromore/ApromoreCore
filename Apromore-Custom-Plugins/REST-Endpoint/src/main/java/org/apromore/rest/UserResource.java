@@ -24,6 +24,7 @@ package org.apromore.rest;
 //import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -55,15 +56,36 @@ public final class UserResource {
     @Context
     private ServletContext servletContext;
 
+    @DELETE
+    @Path("{name}")
+    public Response deleteUser(final @HeaderParam("Authorization") String authorization,
+                               final @PathParam("name") String name) throws ResourceException {
+
+        // Authenticate and authorize the request
+        UserType authenticatedUser = ResourceUtilities.authenticatedUser(authorization, servletContext);
+        ResourceUtilities.authorize(authenticatedUser, "ROLE_ADMIN");
+
+        // Perform the deletion
+        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
+        User user = findUserByName(name, securityService);
+        securityService.deleteUser(user);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
     @GET
     @Path("{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(final @HeaderParam("Authorization") String authorization,
                             final @PathParam("name") String name) throws ResourceException {
 
-        ResourceUtilities.auth(authorization, servletContext);
+        // Authenticate and authorize the request
+        UserType authenticatedUser = ResourceUtilities.authenticatedUser(authorization, servletContext);
+        ResourceUtilities.authorize(authenticatedUser, "ROLE_ADMIN");
+
+        // Lookup the user and convert to DTO
         SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
-        User user = securityService.getUserByName(name);
+        User user = findUserByName(name, securityService);
         UserType userType = UserMapper.convertUserTypes(user, securityService);
 
         return Response.status(Response.Status.OK).entity(userType).build();
@@ -85,8 +107,9 @@ public final class UserResource {
                              final @PathParam("name") String name,
                              final UserType userType) throws ResourceException {
 
-        // Authenticate the request
-        ResourceUtilities.auth(authorization, servletContext);
+        // Authenticate and authorize the request
+        UserType authenticatedUser = ResourceUtilities.authenticatedUser(authorization, servletContext);
+        ResourceUtilities.authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Validate the request
         if (userType.getId() != null) {
@@ -121,5 +144,20 @@ public final class UserResource {
         // Describe the created user for the caller
         UserType createdUserType = UserMapper.convertUserTypes(createdUser, securityService);
         return createdUserType;
+    }
+
+    // Internal methods
+
+    /**
+     * @param name  the username of some user
+     * @return a DTO describing the named user
+     * @throws ResourceException if there's no user with the given <var>name</var>
+     */
+    private User findUserByName(final String name, final SecurityService securityService) throws ResourceException {
+        User user = securityService.getUserByName(name);
+        if (user == null) {
+            throw new ResourceException(Response.Status.NOT_FOUND, "No such user");
+        }
+        return user;
     }
 }
