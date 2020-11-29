@@ -115,8 +115,8 @@ abstract class ResourceUtilities {
      * Authorize a user against a role.
      *
      * @param user  a user, usually obtained via {@link #authenticateUser}
-     * @param role  the role while the <var>authenticatedUser</var> ought to have
-     * @throws ResourceException if the <var>authenticatedUser</var> lacks the <var>authorizedRole</var>
+     * @param role  the role while the <var>user</var> ought to have
+     * @throws ResourceException if the <var>user</var> lacks the <var>role</var>
      */
     static void authorize(final UserType user, final String role) throws ResourceException {
         for (RoleType userRole: user.getRoles()) {
