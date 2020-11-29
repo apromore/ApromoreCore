@@ -168,6 +168,7 @@ public class SearchableListbox {
         for (int i = 0; i < sourceListModel.size(); i++) {
             listModel.add(sourceListModel.get(i));
         }
+        listbox.setModel(listModel);
     }
 
     public int getSelectionCount() {
