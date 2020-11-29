@@ -63,7 +63,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
     private Menuitem aboutMenuitem;
 
-    public String getDisplayName(UserType userType) {
+    public static final String getDisplayName(UserType userType) {
         String displayName = "";
         String firstName = userType.getFirstName();
         String lastName = userType.getLastName();
