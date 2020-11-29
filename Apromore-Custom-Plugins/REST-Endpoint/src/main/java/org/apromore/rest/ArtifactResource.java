@@ -51,13 +51,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * REST endpoint for event log management.
+ * REST endpoint for artifact management.
+ *
+ * Artifacts are organized in a folder tree whose root URL path is <code>/rest/Home/</code>.
  */
-@Path("/log")
-public final class EventLogResource {
+@Path("/Home")
+public final class ArtifactResource {
 
     /** Logger.  Named after the class. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventLogResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactResource.class);
 
     @Context
     private ServletContext servletContext;

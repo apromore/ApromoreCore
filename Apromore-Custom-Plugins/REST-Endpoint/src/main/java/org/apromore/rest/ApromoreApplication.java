@@ -30,7 +30,7 @@ public class ApromoreApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> s = new HashSet<Class<?>>();
-        s.add(EventLogResource.class);
+        s.add(ArtifactResource.class);
         s.add(ResourceExceptionMapper.class);
         s.add(UserResource.class);
         return s;
