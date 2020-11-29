@@ -29,39 +29,6 @@
 
   <display-name>Apromore REST endpoint</display-name>
 
-  <context-param>
-    <param-name>contextClass</param-name>
-    <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      classpath:META-INF/spring/context.xml
-    </param-value>
-  </context-param>
-
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-  <listener>
-    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-  </listener>
-  <!--
-  <listener>
-    <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-  </listener>
-
-  <filter>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  -->
-
   <!-- Jersey REST support -->
   <servlet>
     <servlet-name>jersey</servlet-name>

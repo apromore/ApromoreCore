@@ -30,31 +30,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>
-                            <!-- Spring security
-                            org.aopalliance.aop,
-                            org.apromore.portal.servlet,
-                            org.apromore.security,
-                            org.apromore.security.filter,
-                            org.apromore.security.provider,
-                            org.springframework.aop,
-                            org.springframework.aop.framework,
-                            org.springframework.remoting.httpinvoker,
-                            org.springframework.security.core.userdetails,
-                            org.springframework.security.remoting.httpinvoker,
-                            org.springframework.security.web.authentication,
-                            org.springframework.security.web.session,
-                            org.springframework.web.filter,
-                            -->
-
-                            <!-- Spring DM classes dynamically referenced in web.xml -->
-                            org.eclipse.virgo.web.dm;resolution:=optional,  <!-- Virgo -->
-                            org.springframework.osgi.web.context.support;resolution:=optional,  <!-- Karaf -->
-                            org.springframework.web.context,
-                            org.springframework.web.context.request,
-
-                            *
-                        </Import-Package>
                         <DynamicImport-Package>
                             com.sun.jersey.*  <!-- Jersey implementation of JAX-RS dynamically loaded -->
                         </DynamicImport-Package>
