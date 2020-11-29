@@ -21,18 +21,23 @@
  */
 package org.apromore.rest;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.ws.rs.core.Application;
 
+/**
+ * Explicitly register all JAX-RS providers.
+ *
+ * Annotation-based configuration via <code>@Provider</code> does not work with Virgo.
+ */
 public class ApromoreApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> s = new HashSet<Class<?>>();
-        s.add(ArtifactResource.class);
-        s.add(ResourceExceptionMapper.class);
-        s.add(UserResource.class);
-        return s;
+        return Stream.of(ArtifactResource.class,
+                         ResourceExceptionMapper.class,
+                         UserResource.class)
+                     .collect(Collectors.toSet());
     }
 }

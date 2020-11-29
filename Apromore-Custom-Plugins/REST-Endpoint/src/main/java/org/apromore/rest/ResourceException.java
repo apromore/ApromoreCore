@@ -24,7 +24,7 @@ package org.apromore.rest;
 import javax.ws.rs.core.Response.Status;
 
 /**
- * Exceptions occurring within {@link UserResource} methods.
+ * Exceptions occurring within {@link ArtifactResource} and {@link UserResource} methods.
  */
 public class ResourceException extends Exception {
 

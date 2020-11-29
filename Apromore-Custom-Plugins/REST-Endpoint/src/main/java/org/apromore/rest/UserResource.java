@@ -21,7 +21,6 @@
  */
 package org.apromore.rest;
 
-//import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -102,7 +101,6 @@ public final class UserResource {
     @Path("{name}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("ADMIN")
     public UserType postUser(final @HeaderParam("Authorization") String authorization,
                              final @PathParam("name") String name,
                              final UserType userType) throws ResourceException {

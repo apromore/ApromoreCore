@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringBufferInputStream;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -43,8 +42,8 @@ import org.apromore.dao.model.Log;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.service.EventLogService;
-import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.FolderTreeNode;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
@@ -67,24 +66,23 @@ public final class ArtifactResource {
     /**
      * Download a log.
      *
-     * <pre>curl http://localhost:9000/rest/log/foo &gt; foo.xes.gz</pre>
+     * <pre>curl http://localhost:9000/rest/Home/foo &gt; foo.xes.gz</pre>
      *
      * @return a GZIPped XES XML document
      */
     @GET
     @Path("{path:(.*/)*}{name}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getLog(final @HeaderParam("Authorization") String authorization,
-                         final @PathParam("path") String path,
-                         final @PathParam("name") String name) throws Exception {
+    public Response getLog(final @HeaderParam("Authorization") String authorization,
+                           final @PathParam("path") String path,
+                           final @PathParam("name") String name) throws Exception {
+
+        // Only authorize admin accounts
+        UserType user = ResourceUtilities.authenticatedUser(authorization, servletContext);
+        ResourceUtilities.authorize(user, "ROLE_ADMIN");
 
         // Try to access the folder using the given credentials
-        String username = ResourceUtilities.authenticatedUser(authorization, servletContext)
-                                           .getUsername();
-        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
-        String userId = securityService.getUserByName(username).getRowGuid();
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
-        int folderId = findFolderIdByPath(path, userId, workspaceService);
+        int folderId = findFolderIdByPath(path, user.getId(), workspaceService);
 
         // Look for the event log in the folder
         LogRepository logRepository = ResourceUtilities.getOSGiService(LogRepository.class, servletContext);
@@ -100,13 +98,17 @@ public final class ArtifactResource {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         eventLogService.exportToStream(baos, xLog);
 
-        return baos.toByteArray();
+        return Response.status(Response.Status.OK)
+                       .header("Content-Encoding", "gzip")  // In JAX-RS 2, could use .encoding("gzip")
+                       .type(MediaType.APPLICATION_XML)
+                       .entity(baos.toByteArray())
+                       .build();
     }
 
     /**
      * Logs may only be created, not modified.
      *
-     * <pre>curl http://localhost:9000/rest/log/foo --header "Content-Type: application/xml" --data @foo.xes</pre>
+     * <pre>curl http://localhost:9000/rest/Home/foo --header "Content-Type: application/xml" --data @foo.xes</pre>
      *
      * @param body  the log to upload in uncompressed XES XML format
      * @return the actual event log created, including the generated id
@@ -116,14 +118,16 @@ public final class ArtifactResource {
     @Path("{path:(.*/)*}{name}")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("ADMIN")
     public LogSummaryType postLog(final @HeaderParam("Authorization") String authorization,
                                   final @PathParam("path") String path,
                                   final @PathParam("name") String name,
                                   final String body) throws Exception {
 
-        // Try to access the folder using the given credentials
+        // Only authorize admin accounts
         UserType user = ResourceUtilities.authenticatedUser(authorization, servletContext);
+        ResourceUtilities.authorize(user, "ROLE_ADMIN");
+
+        // Try to access the folder using the given credentials
         WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
         int folderId = findFolderIdByPath(path, user.getId(), workspaceService);
 
@@ -134,13 +138,14 @@ public final class ArtifactResource {
             folderId,
             name,
             new StringBufferInputStream(body),
-            "xes",  // extension; controls whether GZIP is applied or not
+            "xes",  // extension; specifies uncompressed (no GZIP) XES format
             "",  // domain
             DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
             true); // publicModel
 
         // Return a description of the created event log
-        LogSummaryType createdLogSummary = new LogSummaryType();
+        UserInterfaceHelper uiHelper = ResourceUtilities.getOSGiService(UserInterfaceHelper.class, servletContext);
+        LogSummaryType createdLogSummary = (LogSummaryType) uiHelper.buildLogSummary(log);
         return createdLogSummary;
     }
 
@@ -149,7 +154,8 @@ public final class ArtifactResource {
      *
      * This method ought to be made part of the {@link WorkspaceService}.
      *
-     * @param path  a slash-delimited folder path, e.g. "foo/bar/"
+     * @param path  a slash-delimited folder path, e.g. "foo/bar/".  Empty string denotes the root folder.
+     *     Beware that "/" would be treated as a subfolder inside the root folder with the name "".
      * @param userId  the row GUID of the user under whose authority the folder is accessed
      * @param workspaceService  used to access folders
      * @return the primary key of the folder at the given <var>path</var>
@@ -173,7 +179,7 @@ public final class ArtifactResource {
                     }
                 }
                 throw new ResourceException(Response.Status.NOT_FOUND,
-                    "Subfolder " + pathElement + " does not exist");
+                    "Subfolder \"" + pathElement + "\" of \" " + path + "\" does not exist");
             }
         }
 
