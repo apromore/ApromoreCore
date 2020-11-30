@@ -1,7 +1,16 @@
 Ap.userAdmin = Ap.userAdmin || {}
 
+// https://forum.zkoss.org/question/72022/intercepting-tab-selection/
+Ap.userAdmin.switchTab = (notify, init) => {
+  if (this.desktop && !init && notify) {
+    zAu.send(new zk.Event(this, 'onSwitchTab'));
+  } else {
+    this.$_sel(notify, init); // call the original method
+  }
+}
+
 // Common toggle click
-const toggleClick = (widgetId, param, event) => {
+Ap.userAdmin.toggleClick = (widgetId, param, event) => {
   if (event.metaKey || event.shiftKey || event.ctrlKey) { return; } // do not toggle for multiple selections
   zAu.send(new zk.Event(zk.Widget.$(widgetId), 'onToggleClick', param));
 }
@@ -14,7 +23,7 @@ const toggleClick = (widgetId, param, event) => {
  * @param event {Event} Click Event
  */
 Ap.userAdmin.toggleUserClick = (name, event) => {
-  toggleClick('$userEditBtn', { name }, event);
+  Ap.userAdmin.toggleClick('$userEditBtn', { name }, event);
 }
 
 /**
@@ -25,7 +34,7 @@ Ap.userAdmin.toggleUserClick = (name, event) => {
  * @param event {Event} Click Event
  */
 Ap.userAdmin.toggleGroupClick = (id, event) => {
-  toggleClick('$groupEditBtn', { id }, event);
+  Ap.userAdmin.toggleClick('$groupEditBtn', { id }, event);
 }
 
 Ap.userAdmin.editUser = (userName) => {
