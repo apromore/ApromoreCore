@@ -45,7 +45,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
 import org.apromore.security.util.SecurityUtil;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;;
+import org.osgi.framework.ServiceReference;
 //import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
