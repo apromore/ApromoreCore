@@ -99,7 +99,7 @@ public class Calendars extends SelectorComposer<Window> {
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.addAll(calendarService.getCalendars());
-        calendarListModel.setMultiple(true);
+        calendarListModel.setMultiple(false);
         calendarListbox.setModel(calendarListModel);
     }
 
@@ -109,7 +109,7 @@ public class Calendars extends SelectorComposer<Window> {
         getSelf().detach();
     }
 
-    @Listen("onClick = #publishBtn")
+    @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
         calendarEventQueue.publish(
                 new Event("onCalendarPublish", null, calendarListModel.getSelection())

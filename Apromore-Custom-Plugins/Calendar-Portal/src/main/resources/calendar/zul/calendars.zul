@@ -39,11 +39,11 @@
         <button id="addNewCalendarBtn" iconSclass="z-icon-plus-circle">
           Add New Calendar
         </button>
-        <button id="publishBtn">
-          Publish Changes
+        <button id="selectBtn">
+          Select Calender
         </button>
       </hbox>
-      <listbox checkmark="true" multiple="true" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">
+      <listbox checkmark="true" multiple="false" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">
         <listhead>
           <listheader align="left" label="Name" hflex="1" />
           <listheader align="left" label="Created on" width="120px" />
