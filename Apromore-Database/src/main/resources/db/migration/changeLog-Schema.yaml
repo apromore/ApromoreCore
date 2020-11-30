@@ -518,7 +518,18 @@ databaseChangeLog:
        - dropTable:
            cascadeConstraints:  true
            tableName:  dashboard_layout
-           
+
+ - changeSet:
+     id: 20201021113000
+     author: frankm
+     changes:
+       - addColumn:
+           tableName: usermetadata
+           columns:
+             - column:
+                 name: name
+                 type: varchar(255)
+
  - changeSet:
      id: 20201109125100
      author: nolantellis
@@ -531,4 +542,3 @@ databaseChangeLog:
                   type: varchar(50))
                   constraints:
                       nullable: false
-                  

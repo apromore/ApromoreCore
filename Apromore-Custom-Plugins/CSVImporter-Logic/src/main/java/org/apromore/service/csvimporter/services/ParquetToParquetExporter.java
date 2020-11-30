@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
@@ -43,7 +42,7 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHea
 class ParquetToParquetExporter implements ParquetExporter {
 
     private List<LogErrorReport> logErrorReport;
-    private LogProcessor logProcessor;
+    private LogProcessorParquet logProcessorParquet;
     private ParquetReader<Group> reader;
     private ParquetFileWriter writer;
 
@@ -71,16 +70,16 @@ class ParquetToParquetExporter implements ParquetExporter {
                 return null;
 
             String[] header = getHeaderFromParquet(tempFileSchema).toArray(new String[0]);
-            MessageType sampleSchema = createParquetSchema(header, sample);
+            MessageType sampleSchema = createParquetSchema(header);
             writer = new ParquetLocalFileWriter().getParquetWriter(outputParquet, sampleSchema);
 
-            logProcessor = new LogProcessorImpl();
+            logProcessorParquet = new LogProcessorParquetImpl();
             logErrorReport = new ArrayList<>();
             int lineIndex = 0;
             int numOfValidEvents = 0;
             String[] line;
             boolean rowLimitExceeded = false;
-            LogEventModelExt logEventModelExt;
+            ParquetEventLogModel parquetEventLogModel;
 
             Group g;
             while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
@@ -106,10 +105,10 @@ class ParquetToParquetExporter implements ParquetExporter {
                 }
 
                 //Construct an event
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+                parquetEventLogModel = logProcessorParquet.processLog(line, header, sample, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
-                if (!logEventModelExt.isValid()) {
+                if (!parquetEventLogModel.isValid()) {
                     if (skipInvalidRow) {
                         continue;
                     } else {
@@ -118,7 +117,7 @@ class ParquetToParquetExporter implements ParquetExporter {
                     }
                 }
 
-                writer.write(logEventModelExt);
+                writer.write(parquetEventLogModel.getEvent());
                 numOfValidEvents++;
             }
 

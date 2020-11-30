@@ -89,4 +89,6 @@ interface Constants {
     String autoParsed = "autoParsed";
     String manualParsed = "manualParsed";
     String errorParsing = "errorParsing";
+
+    String specifyTimestampformat= "Specify timestamp format";
 }

@@ -85,6 +85,9 @@ public interface WorkspaceService {
 
     String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
+    String saveLogAccessRights(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                            boolean hasOwnership, boolean shareUserMetadata);
+
     String removeFolderPermissions(Integer folderId, String userId);
 
     String removeProcessPermissions(Integer processId, String userId);

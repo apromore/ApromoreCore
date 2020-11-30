@@ -36,8 +36,10 @@ import java.util.TreeMap;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,6 +143,10 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                     try {
                         Menupopup userMenupopup = menu.getMenupopup();
                         userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
+                        UserType userType = UserSessionManager.getCurrentUser();
+                        if (userType != null) {
+                            menu.setLabel(userType.getUsername());
+                        }
                         menubar.appendChild(menu);
                     } catch (Exception e) {
                         LOGGER.warn("Unable to set Account menu to current user name", e);

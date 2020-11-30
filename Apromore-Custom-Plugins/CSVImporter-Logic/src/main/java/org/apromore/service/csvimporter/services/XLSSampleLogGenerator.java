@@ -90,7 +90,7 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
                     for (Cell c : r) {
                         if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
                             throw new Exception("header must have non-empty value!");
-                        header.add(c.getStringCellValue());
+                        header.add(c.getStringCellValue().trim());
                     }
                     break;
                 }

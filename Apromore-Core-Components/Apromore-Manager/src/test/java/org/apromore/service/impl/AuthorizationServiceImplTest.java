@@ -25,6 +25,7 @@ import junit.framework.Assert;
 import org.apromore.AbstractTest;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
 import org.junit.Before;
@@ -41,6 +42,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
     private AuthorizationServiceImpl authorizationService;
     private WorkspaceService workspaceService;
+    private UserMetadataService userMetadataService;
 
     private Group group1;
     private Group group2;
@@ -55,7 +57,8 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     public void setUp() {
 
         workspaceService = createMock(WorkspaceService.class);
-        authorizationService = new AuthorizationServiceImpl(workspaceService);
+        userMetadataService = createMock(UserMetadataService.class);
+        authorizationService = new AuthorizationServiceImpl(workspaceService, userMetadataService);
 
         // Set up test data
         group1 = createGroup(1, Group.Type.GROUP);

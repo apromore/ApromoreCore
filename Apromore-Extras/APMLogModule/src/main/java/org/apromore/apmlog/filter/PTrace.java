@@ -470,7 +470,12 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         averageProcessingTime = totalProcessingTime > 0 ? totalProcessingTime / activities.size() : 0;
         averageWaitingTime = totalWaitingTime > 0 ? totalWaitingTime / (activities.size()-1) : 0;
         double dur = getDuration();
-        caseUtilization = totalProcessingTime > 0 && totalProcessingTime < dur ? totalProcessingTime / dur : 0;
+
+        if (totalWaitingTime > 0 && totalWaitingTime > 0) {
+            caseUtilization = totalProcessingTime / (totalProcessingTime + totalWaitingTime);
+        } else {
+            caseUtilization = totalProcessingTime > 0 && totalProcessingTime < dur ? totalProcessingTime / dur : 1.0;
+        }
     }
 
 

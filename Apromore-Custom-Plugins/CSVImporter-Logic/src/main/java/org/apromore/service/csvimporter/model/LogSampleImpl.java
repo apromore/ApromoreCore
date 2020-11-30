@@ -26,7 +26,6 @@ package org.apromore.service.csvimporter.model;
 
 import lombok.Data;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.utilities.NameComparator;
 
 import java.util.*;
@@ -34,11 +33,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
+
 
 @Data
 public class LogSampleImpl implements LogSample, Constants {
-
-    private final Parse parse = new Parse();
 
     private List<String> header;
     private List<List<String>> lines;
@@ -89,8 +89,10 @@ public class LogSampleImpl implements LogSample, Constants {
                 activityPos = pos;
             } else if (endTimestampPos == -1 && match(possibleEndTimestamp, header.get(pos)) && isParsable(pos)) {
                 endTimestampPos = pos;
+                endTimestampFormat = detectDateTimeFormat(pos);
             } else if (startTimestampPos == -1 && match(possibleStartTimestamp, header.get(pos)) && isParsable(pos)) {
                 startTimestampPos = pos;
+                startTimestampFormat = detectDateTimeFormat(pos);
             } else if (resourcePos == -1 && match(possibleResource, header.get(pos))) {
                 resourcePos = pos;
             }
@@ -101,24 +103,40 @@ public class LogSampleImpl implements LogSample, Constants {
     public boolean isParsable(int pos) {
         int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if (myLine.get(pos).isEmpty()) {
+            if (myLine.get(pos).isEmpty() || determineDateFormat(myLine.get(pos)) == null) {
                 emptyCount++;
-            } else if (parse.tryParsing(myLine.get(pos)) == null) {
-                return false;
             }
         }
         return emptyCount < lines.size();
+    }
+
+    private String detectDateTimeFormat(int pos) {
+
+        List<String> dateTimeFormatCollections = new ArrayList<>();
+        for (List<String> myLine : lines) {
+            if (determineDateFormat(myLine.get(pos)) != null)
+                dateTimeFormatCollections.add(determineDateFormat(myLine.get(pos)));
+        }
+        // Get the most common date format
+        if (dateTimeFormatCollections.size() > 0) {
+            return dateTimeFormatCollections.stream()
+                    .collect(Collectors.groupingBy(w -> w, Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .max(Comparator.comparing(Map.Entry::getValue))
+                    .get()
+                    .getKey();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean isParsableWithFormat(int pos, String format) {
         int emptyCount = 0;
         for (List<String> myLine : lines) {
-            if (myLine.get(pos).isEmpty()) {
+            if (myLine.get(pos).isEmpty() || parseToTimestamp(myLine.get(pos), format) == null)
                 emptyCount++;
-            } else if (format == null || parse.tryParsingWithFormat(myLine.get(pos), format) == null) {
-                return false;
-            }
         }
         return emptyCount < lines.size();
     }
@@ -126,7 +144,7 @@ public class LogSampleImpl implements LogSample, Constants {
     private void setOtherTimestamps() {
         for (int pos = 0; pos < header.size(); pos++) {
             if (isNOTUniqueAttribute(pos) && couldBeTimestamp(pos) && isParsable(pos)) {
-                otherTimestamps.put(pos, null);
+                otherTimestamps.put(pos, detectDateTimeFormat(pos));
             }
         }
     }
@@ -162,12 +180,14 @@ public class LogSampleImpl implements LogSample, Constants {
 
     // If only one timestamp found then set it as endTimestamp
     private void onlyOnetimestampFound() {
-        if (endTimestampPos == -1 && startTimestampPos == -1 && otherTimestamps.size() == 1) {
+        if (endTimestampPos == -1 && startTimestampPos == -1 && otherTimestamps.size() > 0) {
             endTimestampPos = otherTimestamps.keySet().stream().findFirst().get();
             otherTimestamps.remove(endTimestampPos);
-        } else if (endTimestampPos == -1 && (otherTimestamps == null || otherTimestamps.isEmpty()) && startTimestampPos != -1){
+            endTimestampFormat = detectDateTimeFormat(endTimestampPos);
+        } else if (endTimestampPos == -1 && (otherTimestamps == null || otherTimestamps.isEmpty()) && startTimestampPos != -1) {
             endTimestampPos = startTimestampPos;
             startTimestampPos = -1;
+            endTimestampFormat = detectDateTimeFormat(endTimestampPos);
         }
     }
 
@@ -198,15 +218,12 @@ public class LogSampleImpl implements LogSample, Constants {
                     iterator.remove();
                 }
             }
-
         }
     }
-
 
     private boolean isNOTUniqueAttribute(int pos) {
         return (pos != caseIdPos && pos != activityPos && pos != endTimestampPos && pos != startTimestampPos && pos != resourcePos);
     }
-
 
     @Override
     public void validateSample() throws Exception {
