@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringBufferInputStream;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -33,7 +32,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeFactory;
@@ -55,13 +53,10 @@ import org.slf4j.LoggerFactory;
  * Artifacts are organized in a folder tree whose root URL path is <code>/rest/Home/</code>.
  */
 @Path("/Home")
-public final class ArtifactResource {
+public final class ArtifactResource extends AbstractResource {
 
     /** Logger.  Named after the class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactResource.class);
-
-    @Context
-    private ServletContext servletContext;
 
     /**
      * Download a log.
@@ -77,23 +72,22 @@ public final class ArtifactResource {
                            final @PathParam("name") String name) throws Exception {
 
         // Only authorize admin accounts
-        UserType user = ResourceUtilities.authenticatedUser(authorization, servletContext);
-        ResourceUtilities.authorize(user, "ROLE_ADMIN");
+        UserType user = authenticatedUser(authorization);
+        authorize(user, "ROLE_ADMIN");
 
         // Try to access the folder using the given credentials
-        WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
+        WorkspaceService workspaceService = osgiService(WorkspaceService.class);
         int folderId = findFolderIdByPath(path, user.getId(), workspaceService);
 
         // Look for the event log in the folder
-        LogRepository logRepository = ResourceUtilities.getOSGiService(LogRepository.class, servletContext);
-        Log log = logRepository.findByNameAndFolderId(name, folderId == 0 ? null : folderId);
+        Log log = osgiService(LogRepository.class).findByNameAndFolderId(name, folderId == 0 ? null : folderId);
         if (log == null) {
             throw new ResourceException(Response.Status.NOT_FOUND,
                 "No log named \"" + name + "\" in folder " + path);
         }
 
         // Obtain the serialization of the event log
-        EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
+        EventLogService eventLogService = osgiService(EventLogService.class);
         XLog xLog = eventLogService.getXLog(log.getId());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         eventLogService.exportToStream(baos, xLog);
@@ -124,16 +118,14 @@ public final class ArtifactResource {
                                   final String body) throws Exception {
 
         // Only authorize admin accounts
-        UserType user = ResourceUtilities.authenticatedUser(authorization, servletContext);
-        ResourceUtilities.authorize(user, "ROLE_ADMIN");
+        UserType user = authenticatedUser(authorization);
+        authorize(user, "ROLE_ADMIN");
 
         // Try to access the folder using the given credentials
-        WorkspaceService workspaceService = ResourceUtilities.getOSGiService(WorkspaceService.class, servletContext);
-        int folderId = findFolderIdByPath(path, user.getId(), workspaceService);
+        int folderId = findFolderIdByPath(path, user.getId(), osgiService(WorkspaceService.class));
 
         // Import the event log
-        EventLogService eventLogService = ResourceUtilities.getOSGiService(EventLogService.class, servletContext);
-        Log log = eventLogService.importLog(
+        Log log = osgiService(EventLogService.class).importLog(
             user.getUsername(),
             folderId,
             name,
@@ -144,9 +136,7 @@ public final class ArtifactResource {
             true); // publicModel
 
         // Return a description of the created event log
-        UserInterfaceHelper uiHelper = ResourceUtilities.getOSGiService(UserInterfaceHelper.class, servletContext);
-        LogSummaryType createdLogSummary = (LogSummaryType) uiHelper.buildLogSummary(log);
-        return createdLogSummary;
+        return (LogSummaryType) osgiService(UserInterfaceHelper.class).buildLogSummary(log);
     }
 
     /**

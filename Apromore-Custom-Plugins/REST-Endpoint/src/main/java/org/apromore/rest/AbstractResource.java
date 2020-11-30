@@ -26,6 +26,7 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import org.apromore.mapper.UserMapper;
 import org.apromore.portal.model.RoleType;
@@ -40,14 +41,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-abstract class ResourceUtilities {
+/**
+ * Common methods shared by {@link ArtifactResource} and {@link UserResource}.
+ */
+abstract class AbstractResource {
 
     /**
      * Logger.
      *
      * Named after the class.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceUtilities.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResource.class);
 
     /**
      * Regular expression for HTTP Authorization headers.
@@ -64,16 +68,17 @@ abstract class ResourceUtilities {
      */
     private static final Pattern BASIC_PAYLOAD_PATTERN = Pattern.compile("(?<name>[^:]*):(?<password>.*)");
 
+    @Context
+    private ServletContext servletContext;
+
     /**
      * Perform HTTP Basic authentication.
      *
      * @param authorization  the HTTP Authorization header; <code>null</code> indicates absent header
-     * @param servletContext  used to obtain the Spring authentication manager
      * @return the authenticated user
      * @throws ResourceException if authentication fails
      */
-    static UserType authenticatedUser(final String authorization, final ServletContext context)
-        throws ResourceException {
+    protected UserType authenticatedUser(final String authorization) throws ResourceException {
 
         // Validate the presence of HTTP Basic authentication
         if (authorization == null) {
@@ -93,8 +98,7 @@ abstract class ResourceUtilities {
         }
 
         // Authenticate using Spring Security
-        AuthenticationManager authenticationManager =
-            ResourceUtilities.getOSGiService(AuthenticationManager.class, context);
+        AuthenticationManager authenticationManager = osgiService(AuthenticationManager.class);
         try {
             String name = matcher2.group("name");
             String password = matcher2.group("password");
@@ -103,7 +107,7 @@ abstract class ResourceUtilities {
             assert authentication.isAuthenticated();
 
             // Success!  Return the authenticated user DTO
-            SecurityService securityService = getOSGiService(SecurityService.class, context);
+            SecurityService securityService = osgiService(SecurityService.class);
             return UserMapper.convertUserTypes(securityService.getUserByName(name), securityService);
 
         } catch (AuthenticationException e) {
@@ -118,7 +122,7 @@ abstract class ResourceUtilities {
      * @param role  the role while the <var>user</var> ought to have
      * @throws ResourceException if the <var>user</var> lacks the <var>role</var>
      */
-    static void authorize(final UserType user, final String role) throws ResourceException {
+    protected void authorize(final UserType user, final String role) throws ResourceException {
         for (RoleType userRole: user.getRoles()) {
             if (userRole.getName().equals(role)) {
                 return;  // Success
@@ -136,11 +140,10 @@ abstract class ResourceUtilities {
      * This obtains the bundle context from the servlet context of the web application.
      *
      * @param clazz  the type of the service; there must be exactly one registered service of this type
-     * @param context  the servlet context, use to access the OSGi service registry
      * @return the service instance
      */
-    static <T> T getOSGiService(final Class<T> clazz, final ServletContext context) {
-        BundleContext bundleContext = (BundleContext) context.getAttribute("osgi-bundlecontext");
+    protected <T> T osgiService(final Class<T> clazz) {
+        BundleContext bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
         ServiceReference serviceReference = bundleContext.getServiceReference(clazz);
         T service = (T) bundleContext.getService(serviceReference);
 

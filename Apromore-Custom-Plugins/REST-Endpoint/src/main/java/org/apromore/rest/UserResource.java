@@ -21,7 +21,6 @@
  */
 package org.apromore.rest;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,7 +29,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apromore.dao.model.User;
@@ -47,13 +45,10 @@ import org.slf4j.LoggerFactory;
  * Only JSON payloads supported.
  */
 @Path("/user")
-public final class UserResource {
+public final class UserResource extends AbstractResource {
 
     /** Logger.  Named after the class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
-
-    @Context
-    private ServletContext servletContext;
 
     @DELETE
     @Path("{name}")
@@ -61,11 +56,11 @@ public final class UserResource {
                                final @PathParam("name") String name) throws ResourceException {
 
         // Authenticate and authorize the request
-        UserType authenticatedUser = ResourceUtilities.authenticatedUser(authorization, servletContext);
-        ResourceUtilities.authorize(authenticatedUser, "ROLE_ADMIN");
+        UserType authenticatedUser = authenticatedUser(authorization);
+        authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Perform the deletion
-        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
+        SecurityService securityService = osgiService(SecurityService.class);
         User user = findUserByName(name, securityService);
         securityService.deleteUser(user);
 
@@ -79,11 +74,11 @@ public final class UserResource {
                             final @PathParam("name") String name) throws ResourceException {
 
         // Authenticate and authorize the request
-        UserType authenticatedUser = ResourceUtilities.authenticatedUser(authorization, servletContext);
-        ResourceUtilities.authorize(authenticatedUser, "ROLE_ADMIN");
+        UserType authenticatedUser = authenticatedUser(authorization);
+        authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Lookup the user and convert to DTO
-        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
+        SecurityService securityService = osgiService(SecurityService.class);
         User user = findUserByName(name, securityService);
         UserType userType = UserMapper.convertUserTypes(user, securityService);
 
@@ -106,8 +101,8 @@ public final class UserResource {
                              final UserType userType) throws ResourceException {
 
         // Authenticate and authorize the request
-        UserType authenticatedUser = ResourceUtilities.authenticatedUser(authorization, servletContext);
-        ResourceUtilities.authorize(authenticatedUser, "ROLE_ADMIN");
+        UserType authenticatedUser = authenticatedUser(authorization);
+        authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Validate the request
         if (userType.getId() != null) {
@@ -135,7 +130,7 @@ public final class UserResource {
         creatingUserType.setOrganization(userType.getOrganization());
 
         // Ask the security service to create the user
-        SecurityService securityService = ResourceUtilities.getOSGiService(SecurityService.class, servletContext);
+        SecurityService securityService = osgiService(SecurityService.class);
         User user = UserMapper.convertFromUserType(creatingUserType, securityService);
         User createdUser = securityService.createUser(user);
 
