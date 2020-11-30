@@ -34,8 +34,8 @@ public interface GroupUsermetadataRepository extends JpaRepository<GroupUsermeta
     /**
      * Find a row by its natural primary key (group and process).
      *
-     * @param group
-     * @param usermetadata
+     * @param group Group
+     * @param usermetadata Usermetadata
      * @return the identified process
      */
     GroupUsermetadata findByGroupAndUsermetadata(final Group group, final Usermetadata usermetadata);
@@ -43,7 +43,7 @@ public interface GroupUsermetadataRepository extends JpaRepository<GroupUsermeta
     List<GroupUsermetadata> findByGroup(final Group group);
 
     /**
-     * @param usermetadataId
+     * @param usermetadataId Usermetadata id
      * @return all groups containing the Usermetadata identified by <var>UsermetadataID</var>
      */
     @Query("SELECT gp FROM GroupUsermetadata gp WHERE (gp.usermetadata.id = ?1)")

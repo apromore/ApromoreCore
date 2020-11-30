@@ -348,27 +348,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         }
     }
 
-    private String storeMappingAsJSON(Media media, LogSample logSample, Log log) throws UserNotFoundException {
+    private void storeMappingAsJSON(Media media, LogSample logSample, Log log) throws UserNotFoundException {
 
         String username = portalContext.getCurrentUser().getUsername();
 
-        String jsonStr = null;
-
-//        JSONObject jsonMapping = new JSONObject();
-//
-//        jsonMapping.put("header", logSample.getHeader());
-//        jsonMapping.put("caseIdPos", logSample.getCaseIdPos());
-//        jsonMapping.put("activityPos", logSample.getActivityPos());
-//        jsonMapping.put("endTimestampPos", logSample.getEndTimestampPos());
-//        jsonMapping.put("startTimestampPos", logSample.getStartTimestampPos());
-//        jsonMapping.put("resourcePos", logSample.getResourcePos());
-//        jsonMapping.put("caseAttributesPos", logSample.getCaseAttributesPos());
-//        jsonMapping.put("eventAttributesPos", logSample.getEventAttributesPos());
-//        jsonMapping.put("otherTimestamps", logSample.getOtherTimestamps());
-//        jsonMapping.put("ignoredPos", logSample.getIgnoredPos());
-//        jsonMapping.put("endTimestampFormat", logSample.getEndTimestampFormat());
-//        jsonMapping.put("startTimestampFormat", logSample.getStartTimestampFormat());
-
+        String jsonStr = "";
 
         // Creating Object of ObjectMapper define in Jakson Api
         ObjectMapper Obj = new ObjectMapper();
@@ -378,9 +362,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             e.printStackTrace();
         }
 
-        userMetadataService.saveUserMetadataLinkedToOneLog(jsonStr, UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
+        userMetadataService.saveUserMetadataLinkedToOneLog("Default CSV schema mapping name", jsonStr,
+                UserMetadataTypeEnum.CSV_IMPORTER, username,
+                log.getId());
 
-        return null;
     }
 
     public ResourceBundle getLabels() {
@@ -407,7 +392,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             window.setWidth(size + "px");
         }
         window.setTitle("CSV Importer - " + media.getName());
-
 
         setDropDownLists();
         setCSVGrid();
@@ -552,6 +536,17 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             textbox.setId(popUpTextBoxId + pos);
             textbox.setWidth("98%");
             textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
+            if (pos == sample.getEndTimestampPos()) {
+                textbox.setPlaceholder(sample.getEndTimestampFormat());
+                textbox.setValue(sample.getEndTimestampFormat());
+            } else if (pos == sample.getStartTimestampPos()) {
+                textbox.setPlaceholder(sample.getStartTimestampFormat());
+                textbox.setValue(sample.getStartTimestampFormat());
+            } else if (sample.getOtherTimestamps().containsKey(pos)) {
+                textbox.setPlaceholder(sample.getOtherTimestamps().get(pos));
+                textbox.setValue(sample.getOtherTimestamps().get(pos));
+            }
+
             textbox.setPopup(helpP);
             textbox.setClientAttribute("spellcheck", "false");
             textbox.setPopupAttributes(helpP, "after_start", "", "", "toggle");
@@ -563,18 +558,27 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 resetSelect(colPos);
 
                 if (StringUtils.isBlank(event.getValue())) {
-                    if (sample.isParsable(colPos)) {
-                        parsedAuto(colPos, selected);
-                    } else {
-                        textbox.setPlaceholder(getLabels().getString("specify_timestamp_format"));
-                        failedToParse(colPos);
-                    }
+//                    if (sample.isParsable(colPos)) {
+//                        parsedAuto(colPos, selected);
+//                    } else {
+                    textbox.setValue("");
+                    textbox.setPlaceholder(getLabels().getString("specify_timestamp_format"));
+                    failedToParse(colPos);
+//                    }
                 } else {
                     String format = event.getValue();
-                    if (sample.isParsableWithFormat(colPos, format)) {
-                        parsedManual(colPos, selected, format);
-                    } else {
+                    try {
+                        if (sample.isParsableWithFormat(colPos, format)) {
+                            parsedManual(colPos, selected, format);
+                        } else {
+                            failedToParse(colPos);
+                        }
+                    } catch (IllegalArgumentException e) {
                         failedToParse(colPos);
+                        throw e;
+                    } catch (Exception e) {
+                        failedToParse(colPos);
+                        throw new Exception(e.getMessage());
                     }
                 }
             });
@@ -628,7 +632,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                         (myItem.getKey().equals(caseAttributeLabel) && sample.getCaseAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(eventAttributeLabel) && sample.getEventAttributesPos().contains(pos)) ||
                         (myItem.getKey().equals(ignoreLabel) && sample.getIgnoredPos().contains(pos))
-                        ) {
+                ) {
                     item.setSelected(true);
                 }
                 box.appendChild(item);
@@ -803,6 +807,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private void showFormatBtn(Button myButton) {
         myButton.setSclass("ap-csv-importer-format-icon");
+        myButton.setTooltiptext(specifyTimestampformat);
     }
 
     private void hideFormatBtn(Button myButton) {

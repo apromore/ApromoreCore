@@ -24,8 +24,7 @@ package org.apromore.service.csvimporter.services.legacy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apromore.service.csvimporter.constants.Constants.CSV_FILE_EXTENSION;
-import static org.apromore.service.csvimporter.constants.Constants.XLSX_FILE_EXTENSION;
+import static org.apromore.service.csvimporter.constants.Constants.*;
 
 public class LogReaderProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderProvider.class);
@@ -37,6 +36,8 @@ public class LogReaderProvider {
             return new LogReaderImpl();
         } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
             return new XLSXLogReaderImpl();
+        } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
+            return new ParquetLogReaderImpl();
         } else {
             return null;
         }

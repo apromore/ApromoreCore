@@ -33,11 +33,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
+import com.google.common.base.Strings;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +62,19 @@ public class UserMenuController extends SelectorComposer<Menubar> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserMenuController.class);
 
     private Menuitem aboutMenuitem;
+
+    public static final String getDisplayName(UserType userType) {
+        String displayName = "";
+        String firstName = userType.getFirstName();
+        String lastName = userType.getLastName();
+
+        if (Strings.isNullOrEmpty(firstName)) {
+            displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
+        } else {
+            displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : lastName + ", " + firstName;
+        }
+        return displayName;
+    }
 
     @Override
     public void doAfterCompose(Menubar menubar) {
@@ -141,6 +156,10 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                     try {
                         Menupopup userMenupopup = menu.getMenupopup();
                         userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
+                        UserType userType = UserSessionManager.getCurrentUser();
+                        if (userType != null) {
+                            menu.setLabel(getDisplayName(userType));
+                        }
                         menubar.appendChild(menu);
                     } catch (Exception e) {
                         LOGGER.warn("Unable to set Account menu to current user name", e);

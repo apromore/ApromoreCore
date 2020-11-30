@@ -80,6 +80,7 @@
     <osgi:reference id="roleRepository" interface="org.apromore.dao.RoleRepository"/>
     <osgi:reference id="searchHistoryRepository" interface="org.apromore.dao.SearchHistoryRepository"/>
     <osgi:reference id="usermetadataLogRepository" interface="org.apromore.dao.UsermetadataLogRepository"/>
+    <osgi:reference id="usermetadataProcessRepository" interface="org.apromore.dao.UsermetadataProcessRepository"/>
     <osgi:reference id="usermetadataRepository" interface="org.apromore.dao.UsermetadataRepository"/>
     <osgi:reference id="usermetadataTypeRepository" interface="org.apromore.dao.UsermetadataTypeRepository"/>
     <osgi:reference id="userRepository" interface="org.apromore.dao.UserRepository"/>
