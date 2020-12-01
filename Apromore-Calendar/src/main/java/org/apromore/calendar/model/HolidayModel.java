@@ -19,6 +19,13 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+/*
+ * This is a Pojo which is a DTO to Holiday model in JPA.
+ * This contains all holiday information which is associated with a calendar.
+ * This is used in calucation of duration. where the number of hours is 0 for a holiday period.
+ */
+
 package org.apromore.calendar.model;
 
 import java.io.Serializable;

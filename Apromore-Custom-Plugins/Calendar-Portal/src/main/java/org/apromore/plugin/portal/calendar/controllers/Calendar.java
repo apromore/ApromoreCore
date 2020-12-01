@@ -88,7 +88,7 @@ public class Calendar extends SelectorComposer<Window> {
 
   private CalendarModel calendarModel;
   
-  private boolean calenderExists=false;
+  private boolean calendarExists=false;
 
   /**
    * For searching time zone id
@@ -150,8 +150,8 @@ public class Calendar extends SelectorComposer<Window> {
     super.doAfterCompose(win);
 
     Long calendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-    calenderExists=calendarId!=null;
-    calendarModel = !calenderExists ? new CalendarModel(): calendarService.getCalendar(calendarId);
+    calendarExists=calendarId!=null;
+    calendarModel = !calendarExists ? new CalendarModel(): calendarService.getCalendar(calendarId);
 
     populateTimeZone();
     initialize();
@@ -430,7 +430,7 @@ public class Calendar extends SelectorComposer<Window> {
   private void toModels() {
 
 
-    if(calenderExists)
+    if(calendarExists)
     {
     	try {
     		
