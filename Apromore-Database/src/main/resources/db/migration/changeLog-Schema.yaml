@@ -544,6 +544,17 @@ databaseChangeLog:
                       nullable: false
 
  - changeSet:
+     id: 20201125100000
+     author: dreamind
+     changes:
+       - createIndex:
+           columns:
+             - column:
+                 name: name
+           indexName: IDX_LOG_NAME
+           tableName: log
+
+ - changeSet:
     id: 20201121125100
     author: nolantellis
     changes:

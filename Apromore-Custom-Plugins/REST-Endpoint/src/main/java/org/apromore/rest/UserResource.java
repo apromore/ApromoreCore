@@ -121,6 +121,7 @@ public final class UserResource extends AbstractResource {
         // Copy just the required fields from the request template to the one we'll actually use
         MembershipType membershipType = new MembershipType();
         membershipType.setEmail(userType.getMembership().getEmail());
+        membershipType.setPassword(userType.getMembership().getPassword());
 
         UserType creatingUserType = new UserType();
         creatingUserType.setUsername(name);
