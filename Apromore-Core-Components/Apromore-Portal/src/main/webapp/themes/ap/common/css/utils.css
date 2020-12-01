@@ -552,3 +552,7 @@ div.ap-window-footer-actions {
     color: grey;
     cursor: pointer;
 }
+
+.ap-user-menu .z-icon-caret-down:before {
+    display: none;
+}

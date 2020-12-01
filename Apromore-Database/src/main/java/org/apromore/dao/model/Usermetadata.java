@@ -40,7 +40,11 @@ public class Usermetadata implements Serializable {
      */
     private Integer id;
     /**
-     * FK User mtadata type id
+     * The name of user metadata
+     */
+    private String name;
+    /**
+     * FK User metadata type id
      */
     private UsermetadataType usermetadataType;
     /**
@@ -84,6 +88,26 @@ public class Usermetadata implements Serializable {
      */
     private Set<UsermetadataProcess> usermetadataProcessSet = new HashSet<>();
 
+    private Set<Log> logs = new HashSet<>();
+
+    /**
+     * @return all the logs this user metadata is linked to
+     */
+    @ManyToMany
+    @JoinTable(name = "usermetadata_log",
+            joinColumns = @JoinColumn(name = "usermetadata_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "log_id", referencedColumnName = "id"))
+    public Set<Log> getLogs() {
+        return logs;
+    }
+
+    /**
+     * @param newLogs all the log which this user metadata linked to
+     */
+    public void setLogs(final Set<Log> newLogs) {
+        this.logs = newLogs;
+    }
+
     /**
      * ID
      */
@@ -102,7 +126,22 @@ public class Usermetadata implements Serializable {
     }
 
     /**
-     * FK User mtadata type id
+     * The name of user metadata
+     */
+    @Column(name = "name")
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * The name of user metadata
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * FK User metadata type id
      */
     @ManyToOne
     @JoinColumn(name = "type_id")
@@ -111,7 +150,7 @@ public class Usermetadata implements Serializable {
     }
 
     /**
-     * FK User mtadata type id
+     * FK User metadata type id
      */
     public void setUsermetadataType(UsermetadataType usermetadataType) {
         this.usermetadataType = usermetadataType;
@@ -195,6 +234,7 @@ public class Usermetadata implements Serializable {
     /**
      * reserve for optimistic lock
      */
+    @Version
     @Column(name = "revision")
     public Integer getRevision() {
         return this.revision;

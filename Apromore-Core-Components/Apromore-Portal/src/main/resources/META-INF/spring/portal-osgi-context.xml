@@ -53,6 +53,7 @@
     <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" cardinality="0..N"/>
     <list id="portalProcessAttributePlugins" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" cardinality="0..N"/>
 
+    <service ref="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager"/>
     <service ref="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 
 </beans:beans>
