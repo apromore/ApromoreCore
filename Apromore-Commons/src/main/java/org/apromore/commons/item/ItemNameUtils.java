@@ -119,4 +119,10 @@ public final class ItemNameUtils {
         }
         return mergedName + ItemNameUtils.MERGED;
     }
+
+    public static final String deriveName(List<String> existingNames, String commonName, String suffix) {
+        int nth = existingNames.size() + 1;
+        return commonName + suffix + " " + Integer.toString(nth);
+    }
 }
+

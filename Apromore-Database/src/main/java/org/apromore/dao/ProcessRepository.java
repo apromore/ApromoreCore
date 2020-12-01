@@ -56,6 +56,9 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
     @Query("SELECT p FROM Process p WHERE p.name = ?1 AND p.folder is null")
     Process findUniqueByName(String processName);
 
+    @Query("SELECT p FROM Process p WHERE p.name LIKE CONCAT(?1, '%')")
+    List<Process> findWithPrefix(String prefix);
+
     /**
      * Finds if a process with a particular name in a particular folder exists.
      * @param processName the process name

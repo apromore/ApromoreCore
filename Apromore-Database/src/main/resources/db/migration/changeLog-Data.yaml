@@ -84,3 +84,30 @@ databaseChangeLog:
                 name: is_valid
                 value: "1"
 
+  - changeSet:
+      id:  20201124091000
+      author:  frankma
+      changes:
+        -  update:
+             columns:
+               -  column:
+                    name:  revision
+                    value: 1
+             tableName:  usermetadata
+             where:  revision is null
+
+        - update:
+            columns:
+              - column:
+                  name:  name
+                  value: "My dashboard"
+            tableName:  usermetadata
+            where:  name is null and type_id = 2
+
+        - update:
+            columns:
+              - column:
+                  name:  name
+                  valueComputed: substring(content,10,instr(content,'\",\"criteria')-10)
+            tableName:  usermetadata
+            where:  name is null and type_id = 1
