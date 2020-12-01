@@ -54,6 +54,9 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
     @Query("SELECT l FROM Log l WHERE l.name = ?1 AND l.folder is null")
     Log findUniqueByName(String logName);
 
+    @Query("SELECT l FROM Log l WHERE l.name LIKE CONCAT(?1, '%')")
+    List<Log> findWithPrefix(String prefix);
+
     /**
      * Finds if a process with a particular name in a particular folder exists.
      * @param logName the process name
