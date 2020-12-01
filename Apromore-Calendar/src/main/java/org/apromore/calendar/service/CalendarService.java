@@ -39,15 +39,15 @@ public interface CalendarService {
 	public CalendarModel createBusinessCalendar(String description, boolean weekendsOff, String zoneId)
 			throws CalendarAlreadyExistsException;
 
-	public CalendarModel getCalender(Long id);
+	public CalendarModel getCalendar(Long id);
 
 	public List<CalendarModel> getCalendars();
 
-	public void deleteCalender(Long calendarId);
+	public void deleteCalendar(Long calendarId);
 
 	public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException;
 	
-	public void updateCalenderName(Long id, String calenderName) throws CalendarNotExistsException;
+	public void updateCalendarName(Long id, String calendarName) throws CalendarNotExistsException;
 
 	public void updateWorkDays(Long id, List<WorkDayModel> model) throws CalendarNotExistsException;
 

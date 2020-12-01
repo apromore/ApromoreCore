@@ -46,13 +46,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CalendarServiceIntegrationTest extends BaseTestClass {
   
   @Autowired
-  CustomCalendarService calenderService;
+  CustomCalendarService calendarService;
 
   @Test
-  public void testCreateCalender() throws CalendarAlreadyExistsException {
+  public void testCreateCalendar() throws CalendarAlreadyExistsException {
     
 //    when
-    CalendarModel model=calenderService.createGenericCalendar("Generic", true,ZoneId.systemDefault().toString());
+    CalendarModel model=calendarService.createGenericCalendar("Generic", true,ZoneId.systemDefault().toString());
     
  // Then
     assertThat(model.getId()).isNotNull();
@@ -66,11 +66,11 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   
   
   @Test
-  public void testGetCalender() throws CalendarAlreadyExistsException {
+  public void testGetCalendar() throws CalendarAlreadyExistsException {
 //    Given
-    CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
+    CalendarModel model=calendarService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
 //    when
-    CalendarModel modelExpected=calenderService.getCalender(model.getId());
+    CalendarModel modelExpected=calendarService.getCalendar(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();
@@ -81,15 +81,15 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   
   
   @Test
-  public void testGetCalenderWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
+  public void testGetCalendarWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
 //    Given
-    CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
+    CalendarModel model=calendarService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
  
     HolidayModel holiday = new HolidayModel("CUSTOM","Test Holiday", "Test Holiday Desc", LocalDate.of(2020, 01, 01));
-    calenderService.updateHoliday(model.getId(),Arrays.asList(holiday));
+    calendarService.updateHoliday(model.getId(),Arrays.asList(holiday));
    
 //    when
-    CalendarModel modelExpected=calenderService.getCalender(model.getId());
+    CalendarModel modelExpected=calendarService.getCalendar(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();
@@ -101,16 +101,16 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   }
   
   @Test
-  public void testGetCalenderWithCustomHolidayRemoved() throws CalendarAlreadyExistsException, CalendarNotExistsException {
+  public void testGetCalendarWithCustomHolidayRemoved() throws CalendarAlreadyExistsException, CalendarNotExistsException {
 //    Given
-    CalendarModel model=calenderService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
+    CalendarModel model=calendarService.createGenericCalendar(UUID.randomUUID().toString(), true,ZoneId.systemDefault().toString());
     HolidayModel holiday1 = new HolidayModel("CUSTOM","Test Holiday1", "Test Holiday Desc1", LocalDate.of(2020, 01, 01));
     HolidayModel holiday2 = new HolidayModel("CUSTOM","Test Holiday2", "Test Holiday Desc2", LocalDate.of(2020, 01, 02));
     HolidayModel holiday3 = new HolidayModel("CUSTOM","Test Holiday3", "Test Holiday Desc3", LocalDate.of(2020, 01, 03));
-    calenderService.updateHoliday(model.getId(),Arrays.asList(holiday1,holiday2,holiday3));
+    calendarService.updateHoliday(model.getId(),Arrays.asList(holiday1,holiday2,holiday3));
    
 //    when
-    CalendarModel modelExpected=calenderService.getCalender(model.getId());
+    CalendarModel modelExpected=calendarService.getCalendar(model.getId());
     
  // Then
     assertThat(modelExpected.getId()).isNotNull();
@@ -122,8 +122,8 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     List<Long> holidayIdList = Arrays.asList(modelExpected.getHolidays().get(0).getId(),
         modelExpected.getHolidays().get(1).getId());
     String leftHolidayDesc=modelExpected.getHolidays().get(2).getDescription();
-    calenderService.removeHoliday(model.getId(), holidayIdList);
-    modelExpected=calenderService.getCalender(model.getId());
+    calendarService.removeHoliday(model.getId(), holidayIdList);
+    modelExpected=calendarService.getCalendar(model.getId());
     
 //    Then
     

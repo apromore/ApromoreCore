@@ -66,7 +66,7 @@ public class Calendars extends SelectorComposer<Window> {
     Listbox calendarListbox;
 
     @Wire("#addNewCalendarBtn")
-    Button addNewCalender;
+    Button addNewCalendar;
 
     @WireVariable("calendarService")
     CalendarService calendarService;
@@ -117,12 +117,12 @@ public class Calendars extends SelectorComposer<Window> {
     }
 
     @Listen("onClick = #addNewCalendarBtn")
-    public void onClickAddNewCalender() {
+    public void onClickAddNewCalendar() {
     	
     	CalendarModel model;
 		try {
-			String calenderName="Generic Calender 9 to 5 created on"+LocalDateTime.now();
-			model = calendarService.createBusinessCalendar(calenderName, true, ZoneId.systemDefault().toString());
+			String calendarName="Generic Calender 9 to 5 created on"+LocalDateTime.now();
+			model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
 			calendarListModel.add(model);
 			
 		} catch (CalendarAlreadyExistsException e) {

@@ -151,7 +151,7 @@ public class Calendar extends SelectorComposer<Window> {
 
     Long calendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
     calenderExists=calendarId!=null;
-    calendarModel = !calenderExists ? new CalendarModel(): calendarService.getCalender(calendarId);
+    calendarModel = !calenderExists ? new CalendarModel(): calendarService.getCalendar(calendarId);
 
     populateTimeZone();
     initialize();

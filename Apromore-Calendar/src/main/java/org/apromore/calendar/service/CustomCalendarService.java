@@ -72,9 +72,9 @@ public class CustomCalendarService implements CalendarService {
 
 		OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
-		CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
-		CalendarModel calenderModel = modelMapper.getMapper().map(customCalender, CalendarModel.class);
-		return calenderModel;
+		CustomCalendar customCalendar = createCalendar(description, weekendsOff, startTime, endTime);
+		CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
+		return calendarModel;
 	}
 
 	@Override
@@ -84,15 +84,15 @@ public class CustomCalendarService implements CalendarService {
 		OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 		OffsetTime endTime = OffsetTime.of(LocalTime.of(17, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
-		CustomCalendar customCalender = createCalendar(description, weekendsOff, startTime, endTime);
-		CalendarModel calenderModel = modelMapper.getMapper().map(customCalender, CalendarModel.class);
+		CustomCalendar customCalendar = createCalendar(description, weekendsOff, startTime, endTime);
+		CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
 
-		return calenderModel;
+		return calendarModel;
 
 	}
 
 	@Override
-	public CalendarModel getCalender(Long id) {
+	public CalendarModel getCalendar(Long id) {
 
 		return modelMapper.getMapper().map(calendarRepo.findById(id), CalendarModel.class);
 
@@ -112,14 +112,14 @@ public class CustomCalendarService implements CalendarService {
 	private CustomCalendar createCalendar(String description, boolean weekendsOff, OffsetTime start, OffsetTime end)
 			throws CalendarAlreadyExistsException {
 
-		validateCalenderExists(calendarRepo.findByName(description));
+		validateCalendarExists(calendarRepo.findByName(description));
 
 		final CustomCalendar calendar = new CustomCalendar(description);
 		for (WorkDay workDay : getWorkDays(start, end, weekendsOff)) {
 			calendar.addWorkDay(workDay);
 		}
-		CustomCalendar newcalender = calendarRepo.saveAndFlush(calendar);
-		return newcalender;
+		CustomCalendar newcalendar = calendarRepo.saveAndFlush(calendar);
+		return newcalendar;
 
 	}
 
@@ -135,7 +135,7 @@ public class CustomCalendarService implements CalendarService {
 
 	}
 
-	private void validateCalenderExists(CustomCalendar calendar) throws CalendarAlreadyExistsException {
+	private void validateCalendarExists(CustomCalendar calendar) throws CalendarAlreadyExistsException {
 
 		if (calendar != null) {
 			throw new CalendarAlreadyExistsException("Calendar already exists");
@@ -144,7 +144,7 @@ public class CustomCalendarService implements CalendarService {
 	}
 
 	public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException {
-		CustomCalendar calendar = getExistingCalender(id);
+		CustomCalendar calendar = getExistingCalendar(id);
 
 		List<Holiday> holidays = new ArrayList<Holiday>();
 		for (HolidayModel h : holidayModels) {
@@ -160,11 +160,11 @@ public class CustomCalendarService implements CalendarService {
 
 	}
 
-	private CustomCalendar getExistingCalender(Long id) throws CalendarNotExistsException {
+	private CustomCalendar getExistingCalendar(Long id) throws CalendarNotExistsException {
 		CustomCalendar calendar = calendarRepo.findById(id);
 
 		if (calendar == null) {
-			throw new CalendarNotExistsException("calender does not exist");
+			throw new CalendarNotExistsException("calendar does not exist");
 		}
 		return calendar;
 	}
@@ -182,16 +182,16 @@ public class CustomCalendarService implements CalendarService {
 	}
 
 	@Override
-	public void deleteCalender(Long calendarId) {
+	public void deleteCalendar(Long calendarId) {
 		calendarRepo.delete(calendarId);
 
 	}
 
 	@Override
-	public void updateCalenderName(Long id, String calenderName) throws CalendarNotExistsException {
-		CustomCalendar calendar = getExistingCalender(id);
+	public void updateCalendarName(Long id, String calendarName) throws CalendarNotExistsException {
+		CustomCalendar calendar = getExistingCalendar(id);
 
-		calendar.setName(calenderName);
+		calendar.setName(calendarName);
 
 		calendarRepo.save(calendar);
 
@@ -199,7 +199,7 @@ public class CustomCalendarService implements CalendarService {
 
 	@Override
 	public void updateWorkDays(Long id, List<WorkDayModel> workDayModels) throws CalendarNotExistsException {
-		CustomCalendar calendar = getExistingCalender(id);
+		CustomCalendar calendar = getExistingCalendar(id);
 
 		List<WorkDay> workDays = new ArrayList<WorkDay>();
 		for (WorkDayModel w : workDayModels) {
@@ -221,7 +221,7 @@ public class CustomCalendarService implements CalendarService {
 
 	@Override
 	public void updateZoneInfo(Long id, String zoneId) throws CalendarNotExistsException {
-		CustomCalendar calendar = getExistingCalender(id);		
+		CustomCalendar calendar = getExistingCalendar(id);		
 		calendar.setZoneId(zoneId);
 		calendarRepo.save(calendar);
 	}

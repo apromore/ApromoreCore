@@ -40,7 +40,7 @@
           Add New Calendar
         </button>
         <button id="selectBtn">
-          Select Calender
+          Select Calendar
         </button>
       </hbox>
       <listbox checkmark="true" multiple="false" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">

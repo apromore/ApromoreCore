@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.calender.builder;
+package org.apromore.calendar.builder;
 
 import java.time.DayOfWeek;
 import java.time.Duration;

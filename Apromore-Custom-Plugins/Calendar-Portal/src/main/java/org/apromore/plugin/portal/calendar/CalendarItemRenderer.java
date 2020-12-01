@@ -90,7 +90,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
     
     public void removeCalendar(Long calendarId) {
         try {
-            calendarService.deleteCalender(calendarId);  
+            calendarService.deleteCalendar(calendarId);  
         } catch(Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);
             // Notification.error("Unable to create custom calendar dialog");
@@ -99,7 +99,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
 
     public void updateCalendarName(String newName, Long calendarId) {
     	try {
-			calendarService.updateCalenderName(calendarId, newName);
+			calendarService.updateCalendarName(calendarId, newName);
 		} catch (CalendarNotExistsException e) {
 //			Need to handle this via publishing message in event queue
 			LOGGER.error("Unable to update custom calendar dialog", e);
