@@ -222,6 +222,45 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    public void shareSimulationMetadata(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                        boolean hasOwnership) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        // Assign specified group with the same permission to the simulation metadata
+        if (hasRead || hasWrite || hasOwnership) {
+
+            // All the user metadata that linked to this log
+            Set<UsermetadataLog> usermetadataLogSet =
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+
+            if (usermetadataLogSet.size() != 0) {
+
+                for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                    Usermetadata u = usermetadataLog.getUsermetadata();
+
+                    if (UserMetadataTypeEnum.SIMULATOR.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
+
+                        GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
+
+                        // Inherit permission from log
+                        if (g == null) {
+                            g = new GroupUsermetadata(group,
+                                    u, hasRead, hasWrite, hasOwnership);
+                            u.getGroupUserMetadata().add(g);
+                        } else {
+                            g.setAccessRights(new AccessRights(hasRead, hasWrite, hasOwnership));
+
+                        }
+                        groupUsermetadataRepo.save(g);
+                        userMetadataRepo.save(u);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     @Transactional
     public void removeUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
