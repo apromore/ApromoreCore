@@ -122,6 +122,13 @@
                                     </attribute>
                                 </textbox>
                             </span>
+                            <space spacing="10px" />
+                            <label value="${mainWindow$composer.labels.locale_label}"/>
+                            <combobox id="setLocale" autodrop="true" value="" width="200px" readonly="true">
+                                <template name="model">
+                                    <comboitem label="${each}" />
+                                </template>
+                            </combobox>
                         </div>
                         <div width="240px" style="text-align: right;">
                             <button id="toXESButton" label="${mainWindow$composer.labels.toXESButton_label}" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;padding-left:2px;" width="120px"  />
