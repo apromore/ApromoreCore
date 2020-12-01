@@ -164,6 +164,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 if (sample != null) setUpUI();
             });
 
+            Combobox setLocale = (Combobox) window.getFellow(setLocaleId);
+            setLocale.setModel(getTimeZoneList());
+
+            setLocale.addEventListener("onSelect", event -> {
+                sampleLogGenerator.validateLog(getInputSream(media), getFileEncoding());
+                this.sample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+                if (sample != null) setUpUI();
+            });
+
 
             sampleLogGenerator.validateLog(getInputSream(media), getFileEncoding());
             LogSample tempSample = sampleLogGenerator.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
@@ -1131,5 +1140,19 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         if (media.getName().lastIndexOf('.') < 0)
             throw new Exception("Can't read file format");
         return media.getName().substring(media.getName().lastIndexOf('.') + 1);
+    }
+
+    private ListModelList<String> getTimeZoneList() {
+
+        ListModelList<String> listModelList = new ListModelList<>();
+        String[] ids = TimeZone.getAvailableIDs();
+        for (String id : ids) {
+            TimeZone zone = TimeZone.getTimeZone(id);
+            int offset = zone.getRawOffset() / 1000;
+            int hour = offset / 3600;
+            int minutes = (offset % 3600) / 60;
+            listModelList.add(String.format("(GMT%+d:%02d) %s", hour, minutes, id));
+        }
+        return listModelList;
     }
 }

@@ -104,6 +104,7 @@ public class DateUtil extends DatePatterns {
         Date date;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(""));
         try {
             date = simpleDateFormat.parse(dateString);
             Calendar calendar = toCalendar(date);
