@@ -19,44 +19,25 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+package org.apromore.rest;
 
-.ap-share-detail > span {
-    display: inline-block;
-    vertical-align: middle;
-}
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.ws.rs.core.Application;
 
-.ap-share-detail .z-label {
-    margin-left: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    color: black;
-}
+/**
+ * Explicitly register all JAX-RS providers.
+ *
+ * Annotation-based configuration via <code>@Provider</code> does not work with Virgo.
+ */
+public class ApromoreApplication extends Application {
 
-.ap-share-detail .ap-icon {
-    display: inline-block;
-}
-
-.ap-share-detail .z-listcell-content {
-    padding: 2px 5px 2px 5px;
-}
-
-.ap-share-detail .ap-icon {
-    background-size: auto 16px !important;
-    height: 22px !important;
-}
-
-.ap-share-related-deps .note {
-    margin-top: 3px;
-    background-color: var(--ap-c-maroon-light-5);
-    padding: 7px;
-    border-radius: 2px;
-}
-
-.ap-share-related-deps .body > span {
-    display: block;
-    margin: 7px 0;
-}
-
-.ap-share-win .z-listitem:not([class^="selected"]):hover > .z-listcell {
-    background: transparent !important;
+    @Override
+    public Set<Class<?>> getClasses() {
+        return Stream.of(ArtifactResource.class,
+                         ResourceExceptionMapper.class,
+                         UserResource.class)
+                     .collect(Collectors.toSet());
+    }
 }
