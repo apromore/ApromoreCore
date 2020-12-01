@@ -52,12 +52,12 @@ public class Holiday implements Serializable {
 	private Long id;
 
 	private Long referenceId;
-	
-	private HOLIDAYTYPE holidayType=HOLIDAYTYPE.PUBLIC;
+
+	private HOLIDAYTYPE holidayType = HOLIDAYTYPE.PUBLIC;
 
 	private String name;
 	private String description;
-	private String holidayDate;	
+	private String holidayDate;
 	private String createdBy;
 	private String updatedBy;
 
@@ -123,9 +123,8 @@ public class Holiday implements Serializable {
 
 	@Transient
 	public LocalDate getLocalDateHolidayDate() {
-		return LocalDate.parse(holidayDate);		
+		return LocalDate.parse(holidayDate);
 	}
-	
 
 	public void setCustomCalendar(CustomCalendar customCalendar) {
 		this.customCalendar = customCalendar;
@@ -144,18 +143,17 @@ public class Holiday implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	
 	public Holiday(String name, String description, LocalDate localDateHolidayDate) {
-		this(null,name,description,localDateHolidayDate,HOLIDAYTYPE.PUBLIC);
+		this(null, name, description, localDateHolidayDate, HOLIDAYTYPE.PUBLIC);
 
 	}
-	
-	public Holiday(Long id,String name, String description, LocalDate localDateHolidayDate,HOLIDAYTYPE holidaytype) {
-		this.id=id;
+
+	public Holiday(Long id, String name, String description, LocalDate localDateHolidayDate, HOLIDAYTYPE holidaytype) {
+		this.id = id;
 		this.name = name;
-		this.description = description;		
-		this.holidayDate=localDateHolidayDate.toString();
-		this.holidayType=holidaytype;
+		this.description = description;
+		this.holidayDate = localDateHolidayDate.toString();
+		this.holidayType = holidaytype;
 
 	}
 

@@ -47,7 +47,7 @@ import static org.mockito.Mockito.ignoreStubs;
 // This is to test compute load with 100k records, 
 //With 2 months difference the response comes in 860 milliseconds.
 
-@Ignore
+@Ignore("Ignored as this is a intensive test")
 public class DurationCalculationUnixTsLoadUnitTest {
 
   CalendarModelBuilder calendarModelBuilder;
