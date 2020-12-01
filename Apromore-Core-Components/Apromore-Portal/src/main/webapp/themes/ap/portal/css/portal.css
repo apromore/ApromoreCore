@@ -331,6 +331,7 @@
 }
 
 .ap-portal .ap-header-actions {
+  top: 3px;
   right: 5px;
 }
 
@@ -396,7 +397,7 @@
   padding: 0 !important;
   margin: 0 0 0 0 !important;
   cursor: pointer;
-  top: -1px;
+  top: -2px;
   filter: var(--ap-filter-ico-normal-light);
 }
 
