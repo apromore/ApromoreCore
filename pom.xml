@@ -46,6 +46,7 @@
 		<module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
 		<module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
 		<module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
+		<module>Apromore-OSGI-Bundles/jersey-osgi</module>
 		<module>Apromore-OSGI-Bundles/json-osgi</module>
 		<module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
 		<module>Apromore-OSGI-Bundles/xlsx-streamer-osgi</module>
@@ -90,6 +91,7 @@
 		<module>Apromore-Custom-Plugins/Merge-Portal-Plugin</module>
 		<module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
 		<module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/REST-Endpoint</module>
 		<module>Apromore-Custom-Plugins/Similarity-Search-Logic</module>
 		<module>Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin</module>
 
