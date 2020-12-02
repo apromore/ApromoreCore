@@ -21,12 +21,12 @@
  */
 /*
  * 
- * This is the calender model, used for getting duration based on start and end time.
+ * This is the calendar model, used for getting duration based on start and end time.
  * The start time can be a ZonedDateTime, or Unix timestamp.
  * This model is thread safe.
- * This is a model created from Calender which is in the db layer.
- * The duration calculation is based on number of working days and holidays associated to the calender
- * @see CalendarService.getCalender(id) for details
+ * This is a model created from Calendar which is in the db layer.
+ * The duration calculation is based on number of working days and holidays associated to the calendar
+ * @see CalendarService.getCalendar(id) for details
  * 
  */
 

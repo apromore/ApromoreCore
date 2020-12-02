@@ -22,8 +22,8 @@
 
 /*
  * 
- * This is the DurationModel model, used as a container to retain the final result of the duration calculated from @calenderModel.
- * 
+ * This is the DurationModel model, used as a container to retain the final result of the duration calculated from
+ * {@link CalendarModel}.
  */
 
 package org.apromore.calendar.model;

@@ -23,8 +23,9 @@
 /*
  * This is a Pojo which is a DTO to WorkDay model in JPA.
  * This contains all WorkDay information which is associated with a calendar.
- * This is used in calucation of duration. where the number of hours is the difference between start and end time for a holiday period.
- * The start and end time is adjusted for the start and end day,based on the time provided in the argument.
+ * This is used in calculation of duration, where the number of hours is the difference between start and end
+ * time for a holiday period.
+ * The start and end time is adjusted for the start and end day, based on the time provided in the argument.
  */
 package org.apromore.calendar.model;
 
