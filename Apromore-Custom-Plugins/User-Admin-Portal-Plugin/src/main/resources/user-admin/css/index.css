@@ -81,3 +81,7 @@
 .ap-form-sublist table td:first-child .z-listcell-content {
     text-align: left !important;
 }
+
+.ap-usrmgt-tab-user .ap-form-sublist .z-checkbox-content {
+    display: none;
+}
