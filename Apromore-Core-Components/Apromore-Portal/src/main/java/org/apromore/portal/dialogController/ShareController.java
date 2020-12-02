@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.dialogController;
 
+import com.google.common.base.Strings;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
 import org.apromore.dao.model.Usermetadata;
@@ -50,6 +51,7 @@ import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 import java.util.*;
@@ -177,20 +179,21 @@ public class ShareController extends SelectorComposer<Window> {
         loadCandidateAssignee();
         loadRelatedDependencies();
 
-        editBtn.addEventListener("onUpdate", new EventListener<Event>() {
+        assignmentListbox.addEventListener("onChange", new EventListener<Event>() {
             @Override
-            public void onEvent(Event event) throws Exception {
-                JSONObject param = (JSONObject) event.getData();
-                String rowGuid = (String) param.get("rowGuid");
-                String name = (String) param.get("name");
-                String access = (String) param.get("access");
-                Assignment assignment = assignmentMap.get(rowGuid);
-                if (assignment != null) {
-                    assignment.setAccess(access);
-                    if (Objects.equals(access, AccessType.OWNER.getLabel())) {
-                        ownerMap.put(rowGuid, assignment);
-                    }
+            public void onEvent(Event ev) {
+                try {
+                    ForwardEvent event = (ForwardEvent) ev;
+                    InputEvent inputEvent = (InputEvent) event.getOrigin();
+                    Combobox combobox = (Combobox) inputEvent.getTarget();
+                    String access = (String) combobox.getValue();
+                    String rowGuid = (String) combobox.getClientDataAttribute("id");
+                    updateAssignment(rowGuid, access);
+                } catch(Exception e) {
+                    LOGGER.error("Something is wrong in updating access");
+                    Messagebox.show("Unable to update permission", "Apromore", Messagebox.OK, Messagebox.ERROR);
                 }
+
             }
         });
 
@@ -202,7 +205,7 @@ public class ShareController extends SelectorComposer<Window> {
                 String name = (String) param.get("name");
                 Assignment assignment = assignmentMap.get(rowGuid);
                 if (ownerMap.containsKey(rowGuid) && ownerMap.size() == 1) {
-                    Messagebox.show("At least one owner must remain", "Delete access error", Messagebox.OK, Messagebox.ERROR);
+                    ensureOneOwnerWarning();
                     return;
                 }
                 if (assignment != null) {
@@ -229,6 +232,43 @@ public class ShareController extends SelectorComposer<Window> {
                 }
             }
         });
+    }
+
+    private boolean updateAssignment(String rowGuid, String access) {
+        if (Strings.isNullOrEmpty(access) || Strings.isNullOrEmpty(rowGuid)) {
+            LOGGER.error("New empty access assignment is returned");
+            return false;
+        }
+        Assignment assignment = assignmentMap.get(rowGuid);
+        if (assignment == null) {
+            return false;
+        }
+        String oldAccess = assignment.getAccess();
+        if (Strings.isNullOrEmpty(oldAccess)) {
+            LOGGER.error("Previous access assignment is empty");
+            return false;
+        }
+        if (oldAccess.equals(access)) { // No change please ignore
+            return true;
+        }
+        String ownerLabel = AccessType.OWNER.getLabel();
+        // If an attempt tries change the last owner access type
+        if (ownerLabel.equals(oldAccess) && !ownerLabel.equals(access) && ownerMap.size() == 1 && ownerMap.containsKey(rowGuid)) {
+            Clients.evalJavaScript("Ap.share.revertCombobox('" + rowGuid + "', '" + oldAccess + "')");
+            ensureOneOwnerWarning();
+            return false;
+        }
+        assignment.setAccess(access);
+        if (ownerLabel.equals(access)) {
+            ownerMap.put(rowGuid, assignment);
+        } else if (ownerMap.containsKey(rowGuid)){
+            ownerMap.remove(rowGuid);
+        }
+        return true;
+    }
+
+    private void ensureOneOwnerWarning() {
+        Messagebox.show("You cannot remove the only owner for this file", "Apromore", Messagebox.OK, Messagebox.ERROR);
     }
 
     private void loadCandidateAssignee() {

@@ -112,6 +112,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button btnSecurity;
     private final Button btnUserMgmt;
     private final Button btnShare;
+    private final Button btnCalendar;
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -151,6 +152,8 @@ public abstract class BaseListboxController extends BaseController {
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
         btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
         btnShare = (Button) mainController.getFellow("btnShare");
+        btnCalendar = (Button) mainController.getFellow("btnCalendar");
+        btnCalendar.setVisible(config.getEnableCalendar());
 
         attachEvents();
 
@@ -328,6 +331,12 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                launchCalendar();
+            }
+        });
     }
 
     public void setTileView(boolean tileOn) {
@@ -723,7 +732,18 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    protected void launchCalendar() {
+        PortalPlugin calendarPlugin;
 
+        getMainController().eraseMessage();
+        try {
+            calendarPlugin = portalPluginMap.get("Manage calendars");
+            calendarPlugin.execute(portalContext);
+        } catch(Exception e) {
+            LOGGER.error("Unable to create custom calendar dialog", e);
+            Messagebox.show("Unable to create custom calendar dialog");
+        }
+    }
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {

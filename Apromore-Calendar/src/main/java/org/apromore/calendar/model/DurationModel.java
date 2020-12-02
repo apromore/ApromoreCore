@@ -19,6 +19,13 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+/*
+ * 
+ * This is the DurationModel model, used as a container to retain the final result of the duration calculated from
+ * {@link CalendarModel}.
+ */
+
 package org.apromore.calendar.model;
 
 import java.time.Duration;

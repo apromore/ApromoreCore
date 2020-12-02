@@ -1,0 +1,129 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+  <window xmlns:ca="client/attribute"
+          xmlns:client="client"
+          xmlns:n="native"
+          sclass="ap-calendar-win"
+          width="1380px" height="600px" position="center"
+          style="max-width: 1400px;"
+          closable="true"
+          client:onBind="Ap.calendar.syncRows()"
+          title="Custom Calendar" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
+    <div id="actionBridge" visible="false" />
+    <vbox height="100%" hflex="1" spacing="0">
+      <hbox hflex="1" vflex="1">
+        <vbox id="daysOfWeekWrapper" hflex="1" vflex="1" spacing="0">
+          <hbox sclass="ap-window-header-actions" hflex="1" align="center" pack="start" spacing="0"
+                style="padding: 8px;">
+            <button id="template9To5Btn"
+                    ca:onClick="Ap.calendar.applyTemplate('9to5')">
+              9AM-5PM 5 Business Days
+            </button>
+            <button id="template24hBtn"
+                    ca:onClick="Ap.calendar.applyTemplate('24h')">
+              24hr 5 Business Days
+            </button>
+            <label style="padding-right: 5px">Time zone</label>
+            <combobox id="zoneCombobox" placeholder="Select a time zone" width="270px">
+              <template name="model">
+                <comboitem label="${each.displayName}" />
+              </template>
+            </combobox>
+          </hbox>
+          <listbox id="dayOfWeekListbox" vflex="1" hflex="1" nonselectableTags="*">
+            <listhead>
+              <listheader align="center" label="" width="36px" /><!-- icon -->
+              <listheader align="left" label="" width="100px" />
+              <listheader align="left" label="" hflex="1" />
+            </listhead>
+            <template name="model">
+              <listitem sclass="${each.workingDay ? 'workday' : 'offday'}">
+                <listcell>
+                  <button sclass="ap-icon ${each.workingDay ? 'ap-icon-workday' : 'ap-icon-holiday'}"
+                          style="display: inline-block"
+                          ca:onClick="Ap.calendar.toggleWorkday(${forEachStatus.index + 1})"
+                  />
+                </listcell>
+                <listcell>
+                  ${each.dayOfWeek}
+                </listcell>
+                <listcell sclass="ap-period-picker-wrapper">
+                  <div visible="${each.workingDay}"
+                       sclass="ap-period-picker"
+                       ca:data-dow="${forEachStatus.index + 1}">
+                  </div>
+                </listcell>
+              </listitem>
+            </template>
+          </listbox>
+        </vbox>
+        <vbox id="holidaysWrapper" sclass="ap-holidays" width="500px" vflex="1" spacing="0">
+          <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
+                style="padding: 8px;">
+            <button id="importHolidaysBtn">Add public holidays</button>
+            <button id="addHolidayBtn">Add a custom holiday</button>
+          </hbox>
+          <listbox id="holidayListbox" vflex="1" hflex="1" nonselectableTags="*">
+            <listhead>
+              <listheader align="center" label="" width="36px" /><!-- icon -->
+              <listheader align="center" label="" width="120px" sort="auto(date)" />
+              <listheader align="center" label="" hflex="1" sort="auto(description)" />
+              <listheader align="center" label="" width="36px" style="cursor:pointer;" /><!-- delete/add icon -->
+            </listhead>
+            <template name="model">
+              <listitem>
+                <listcell>
+                  <span sclass="ap-icon ap-icon-holiday ${c:toLowerCase(each.holidayType)}"
+                        style="display: inline-block; cursor: default;"
+                  />
+                </listcell>
+                <listcell>
+                  <datebox hflex="1"
+                           format="yyyy MMM dd"
+                           value="${each.getDate()}"
+                           forward="onChanging=holidayListbox.onUpdateHolidayDate, onChange=holidayListbox.onUpdateHolidayDate"
+                  />
+                </listcell>
+                <listcell>
+                  <textbox hflex="1" value="${each.description}"
+                           forward="onChanging=holidayListbox.onUpdateHolidayDescription, onChange=holidayListbox.onUpdateHolidayDescription"
+                  ></textbox>
+                </listcell>
+                <listcell>
+                  <button sclass="ap-icon ap-icon-trash"
+                          tooltiptext="Remove"
+                          forward="onClick=holidayListbox.onRemoveHoliday(${each})"/>
+                </listcell>
+              </listitem>
+            </template>
+          </listbox>
+        </vbox>
+      </hbox>
+      <div sclass="ap-window-footer-actions" height="42px">
+        <button id="applyBtn" label="Apply Changes" iconSclass="z-icon-check-circle" />
+        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle"></button>
+      </div>
+    </vbox>
+  </window>
+</zk>

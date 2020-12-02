@@ -1,5 +1,11 @@
 Ap.share = Ap.share || {};
 
+Ap.share.revertCombobox = (rowGuid, access) => {
+  let combobox = zk.Widget.$(jq("[data-id='" + rowGuid + "']")[0]);
+  combobox.setValue(access);
+  zAu.send(new zk.Event(combobox, 'onChange', access)); // sync with server
+};
+
 /**
  * Update access (Viewer, Editor, Owner)
  *
