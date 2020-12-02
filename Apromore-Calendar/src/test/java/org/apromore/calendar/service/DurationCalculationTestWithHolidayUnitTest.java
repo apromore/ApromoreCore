@@ -28,9 +28,10 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.DurationModel;
-import org.apromore.calender.builder.CalendarModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class DurationCalculationTestWithHolidayUnitTest {
 
-  CalendarModelBuilder calenderModelBuilder;
+  CalendarModelBuilder calendarModelBuilder;
   OffsetDateTime startDateTime;
   OffsetDateTime endDateTime;
   Duration expected;
@@ -48,7 +49,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
 
   @Before
   public void Setup() {
-    calenderModelBuilder = new CalendarModelBuilder();
+    calendarModelBuilder = new CalendarModelBuilder();
   }
 
  public DurationCalculationTestWithHolidayUnitTest(OffsetDateTime startDateTime,OffsetDateTime endDateTime,Duration expected)
@@ -74,10 +75,10 @@ public class DurationCalculationTestWithHolidayUnitTest {
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
    
-    CalendarModel calenderModel = calenderModelBuilder.with5DayWorking().withZoneId(ZoneId.systemDefault().toString()).build();
+    CalendarModel calendarModel = calendarModelBuilder.with5DayWorking().withZoneId(ZoneId.systemDefault().toString()).build();
 
     // When
-    DurationModel durationModel = calenderModel.getDuration(startDateTime, endDateTime);  
+    DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);  
     
     // Then
     assertThat(durationModel.getDuration()).isEqualTo(expected);

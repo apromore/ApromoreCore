@@ -62,6 +62,9 @@ public class ConfigBean implements Serializable {
     private boolean  enableFullUserReg;
     private boolean  enableSubscription;
 
+    // Switch for custom calendar
+    private boolean  enableCalendar;
+
     public ConfigBean() {}
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore,
@@ -70,7 +73,8 @@ public class ConfigBean implements Serializable {
                       String ldapProviderURL, String ldapUserContext, String ldapUsernameAttribute,
                       String ldapEmailAttribute, String ldapFirstNameAttribute, String ldapLastNameAttribute,
                       boolean enablePublish, boolean enableTC, boolean enablePP,
-                      boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription) {
+                      boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
+                      boolean enableCalendar) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -108,6 +112,8 @@ public class ConfigBean implements Serializable {
         this.enableUserReg      = enableUserReg;
         this.enableFullUserReg  = enableFullUserReg;
         this.enableSubscription = enableSubscription;
+
+        this.enableCalendar     = enableCalendar;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -134,6 +140,8 @@ public class ConfigBean implements Serializable {
     public boolean getEnableUserReg()       { return enableUserReg; }
     public boolean getEnableFullUserReg()   { return enableFullUserReg; }
     public boolean getEnableSubscription()  { return enableSubscription; }
+
+    public boolean getEnableCalendar()  { return enableCalendar; }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
