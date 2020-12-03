@@ -87,6 +87,19 @@ public interface UserMetadataService {
                                                    boolean hasOwnership);
 
     /**
+     * Automatically share simulation user metadata when a BIMP simulation MXML Log is shared.
+     *
+     * @param logId        log ID
+     * @param groupRowGuid group guid
+     * @param hasRead      Log READ permission
+     * @param hasWrite     Log WRITE permission
+     * @param hasOwnership Log OWNER permission
+     */
+    void shareSimulationMetadata(Integer logId, String groupRowGuid, boolean hasRead,
+                                                   boolean hasWrite,
+                                                   boolean hasOwnership);
+
+    /**
      * Remove permissions of user metadata assigned to specified group and log
      *
      * @param logId        log ID
