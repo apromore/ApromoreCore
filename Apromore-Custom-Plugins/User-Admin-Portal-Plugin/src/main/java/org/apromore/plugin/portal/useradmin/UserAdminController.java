@@ -307,7 +307,9 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
 
         // Set default to nothing
+        refreshUsers();
         setSelectedUsers(null);
+        refreshGroups();
         setSelectedGroup(null);
 
         /**
