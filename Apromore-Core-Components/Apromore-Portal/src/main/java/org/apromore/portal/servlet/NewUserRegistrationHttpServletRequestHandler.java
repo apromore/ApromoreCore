@@ -123,31 +123,31 @@ public class NewUserRegistrationHttpServletRequestHandler extends BaseServletReq
         boolean ok = true;
         if (StringUtils.isEmpty(request.getParameter(USERNAME))) {
             ok = false;
-            messages.add("Username can not be empty!");
+            messages.add("Username cannot be empty!");
         }
         if (StringUtils.isEmpty(request.getParameter(FIRSTNAME))) {
             ok = false;
-            messages.add("First Name can not be empty!");
+            messages.add("First Name cannot be empty!");
         }
         if (StringUtils.isEmpty(request.getParameter(SURNAME))) {
             ok = false;
-            messages.add("Surname can not be empty!");
+            messages.add("Surname cannot be empty!");
         }
         if (StringUtils.isEmpty(request.getParameter(EMAIL))) {
             ok = false;
-            messages.add("Email can not be empty!");
+            messages.add("Email cannot be empty!");
         }
         if (StringUtils.isEmpty(request.getParameter(PASSWORD))) {
             ok = false;
-            messages.add("Password can not be empty!");
+            messages.add("Password cannot be empty!");
         }
         if (StringUtils.isEmpty(request.getParameter(CONFIRM_PASSWORD))) {
             ok = false;
-            messages.add("Confirm Password can not be empty!");
+            messages.add("Confirm Password cannot be empty!");
         }
         if (ok && !request.getParameter(PASSWORD).equals(request.getParameter(CONFIRM_PASSWORD))) {
             ok = false;
-            messages.add("Password and Confirm Password Don't match!");
+            messages.add("Password and Confirm Password do not match!");
         }
         return ok;
     }

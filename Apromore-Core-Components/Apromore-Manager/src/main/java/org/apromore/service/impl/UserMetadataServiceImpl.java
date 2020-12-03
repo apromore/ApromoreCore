@@ -186,13 +186,12 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                            boolean hasOwnership) {
+    public void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, AccessType accessType) {
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
         // Assign specified group with the same permission to all the user metadata that linked to the specified log
-        if (hasRead || hasWrite || hasOwnership) {
+        if (accessType.isRead() || accessType.isWrite() || accessType.isOwner()) {
 
             // All the user metadata that linked to this log
             Set<UsermetadataLog> usermetadataLogSet =
@@ -207,10 +206,10 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                     // Inherit permission from log
                     if (g == null) {
                         g = new GroupUsermetadata(group,
-                                u, hasRead, hasWrite, hasOwnership);
+                                u, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
                         u.getGroupUserMetadata().add(g);
                     } else {
-                        g.setAccessRights(new AccessRights(hasRead, hasWrite, hasOwnership));
+                        g.setAccessRights(new AccessRights(accessType.isRead(), accessType.isWrite(), accessType.isOwner()));
 
                     }
                     groupUsermetadataRepo.save(g);
@@ -218,6 +217,44 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                 }
             }
 
+        }
+    }
+
+    @Override
+    public void shareSimulationMetadata(Integer logId, String groupRowGuid, AccessType accessType) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        // Assign specified group with the same permission to the simulation metadata
+        if (accessType.isRead() || accessType.isWrite() || accessType.isOwner()) {
+
+            // All the user metadata that linked to this log
+            Set<UsermetadataLog> usermetadataLogSet =
+                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+
+            if (usermetadataLogSet.size() != 0) {
+
+                for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+                    Usermetadata u = usermetadataLog.getUsermetadata();
+
+                    if (UserMetadataTypeEnum.SIMULATOR.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
+
+                        GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
+
+                        // Inherit permission from log
+                        if (g == null) {
+                            g = new GroupUsermetadata(group,
+                                    u, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
+                            u.getGroupUserMetadata().add(g);
+                        } else {
+                            g.setAccessRights(new AccessRights(accessType.isRead(), accessType.isWrite(), accessType.isOwner()));
+
+                        }
+                        groupUsermetadataRepo.save(g);
+                        userMetadataRepo.save(u);
+                    }
+                }
+            }
         }
     }
 

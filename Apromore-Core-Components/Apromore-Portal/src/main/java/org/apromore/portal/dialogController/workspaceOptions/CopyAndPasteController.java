@@ -224,7 +224,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    notify("A folder can not be copied into its subfolder", "error");
+                    notify("A folder cannot be copied into its subfolder", "error");
                 } else {
                     cloneFolder(folder, selectedTargetFolderId, 0);
                 }
@@ -241,7 +241,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    notify("A folder can not be moved into its subfolder", "error");
+                    notify("A folder cannot be moved into its subfolder", "error");
                 } else {
                     moveFolder(folder, selectedTargetFolderId, 0);
                 }

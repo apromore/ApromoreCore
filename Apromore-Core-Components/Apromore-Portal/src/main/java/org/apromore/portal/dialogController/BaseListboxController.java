@@ -490,7 +490,7 @@ public abstract class BaseListboxController extends BaseController {
                 Notification.error("Please select a log or model to share");
                 return;
             } else if (getSelectionCount() > 1) {
-                Notification.error("You can not share multiple selections");
+                Notification.error("You cannot share multiple selections");
                 return;
             }
             Object selectedItem = getSelection().iterator().next();
