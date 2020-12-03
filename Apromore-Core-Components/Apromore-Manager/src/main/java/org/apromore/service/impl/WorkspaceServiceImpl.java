@@ -371,6 +371,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    @Transactional
     public String saveLogAccessRights(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
                                       boolean hasOwnership, boolean shareUserMetadata) {
         Log log = logRepo.findOne(logId);
@@ -389,6 +390,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             // Sync permission with user metadata that linked to specified log
             userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, hasRead, hasWrite,
                     hasOwnership);
+        } else {
+            // Automatically share simulation user metadata when the log is shared
+            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, hasRead, hasWrite, hasOwnership);
         }
 
         return "";

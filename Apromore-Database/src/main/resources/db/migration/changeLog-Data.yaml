@@ -111,3 +111,23 @@ databaseChangeLog:
                   valueComputed: substring(content,10,instr(content,'\",\"criteria')-10)
             tableName:  usermetadata
             where:  name is null and type_id = 1
+
+  - changeSet:
+      id:  20201127091000
+      author:  frankma
+      changes:
+        - insert:
+            tableName: usermetadata_type
+            columns:
+              - column:
+                  name: id
+                  value: "6"
+              - column:
+                  name: type
+                  value: "SIMULATOR"
+              - column:
+                  name: version
+                  value: "1"
+              - column:
+                  name: is_valid
+                  value: "1"
