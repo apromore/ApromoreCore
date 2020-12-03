@@ -34,7 +34,6 @@ import org.apromore.service.csvimporter.model.*;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
@@ -44,7 +43,7 @@ public class XLSToParquetExporter implements ParquetExporter {
     private List<LogErrorReport> logErrorReport;
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
-    private LogProcessor logProcessor;
+    private LogProcessorParquet logProcessorParquet;
     private ParquetFileWriter writer;
 
     @Override
@@ -69,7 +68,7 @@ public class XLSToParquetExporter implements ParquetExporter {
 
             String[] header = sample.getHeader().toArray(new String[0]);
 
-            MessageType parquetSchema = createParquetSchema(header, sample);
+            MessageType parquetSchema = createParquetSchema(header);
             // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
             Thread thread = Thread.currentThread();
             synchronized (thread) {
@@ -82,13 +81,13 @@ public class XLSToParquetExporter implements ParquetExporter {
                 }
             }
 
-            logProcessor = new LogProcessorImpl();
+            logProcessorParquet = new LogProcessorParquetImpl();
             logErrorReport = new ArrayList<>();
             int lineIndex = 0;
             int numOfValidEvents = 0;
             String[] line;
-            LogEventModelExt logEventModelExt;
             boolean rowLimitExceeded = false;
+            ParquetEventLogModel parquetEventLogModel;
 
             for (Row r : sheet) {
 
@@ -119,10 +118,11 @@ public class XLSToParquetExporter implements ParquetExporter {
                 if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
                     continue;
 
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+                //Construct an event
+                parquetEventLogModel = logProcessorParquet.processLog(line, header, sample, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
-                if (!logEventModelExt.isValid()) {
+                if (!parquetEventLogModel.isValid()) {
                     if (skipInvalidRow) {
                         continue;
                     } else {
@@ -130,7 +130,7 @@ public class XLSToParquetExporter implements ParquetExporter {
                     }
                 }
 
-                writer.write(logEventModelExt);
+                writer.write(parquetEventLogModel.getEvent());
                 numOfValidEvents++;
             }
             //If file empty, delete it

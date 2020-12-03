@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Cookie;
 
+import org.apromore.dao.model.Group;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.notification.Notification;
@@ -57,7 +58,7 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.service.SecurityService;
+import org.apromore.util.AccessType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button btnSecurity;
     private final Button btnUserMgmt;
     private final Button btnShare;
+    private final Button btnCalendar;
 
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -150,6 +152,8 @@ public abstract class BaseListboxController extends BaseController {
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
         btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
         btnShare = (Button) mainController.getFellow("btnShare");
+        btnCalendar = (Button) mainController.getFellow("btnCalendar");
+        btnCalendar.setVisible(config.getEnableCalendar());
 
         attachEvents();
 
@@ -327,6 +331,12 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                launchCalendar();
+            }
+        });
     }
 
     public void setTileView(boolean tileOn) {
@@ -477,22 +487,41 @@ public abstract class BaseListboxController extends BaseController {
     protected void share() {
         try {
             if (getSelectionCount() == 0) {
-                Messagebox.show("Please select a log or model to share", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("Please select a log or model to share");
                 return;
             } else if (getSelectionCount() > 1) {
-                Messagebox.show("You can not share multiple selections", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("You can not share multiple selections");
                 return;
             }
             Object selectedItem = getSelection().iterator().next();
             if (selectedItem instanceof FolderType) {
-                Messagebox.show("You can only share a log or model", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Notification.error("You can only share a log or model");
                 return;
             }
-            Map arg = new HashMap<>();
-            arg.put("selectedItem", selectedItem);
-            arg.put("currentUser", UserSessionManager.getCurrentUser());
-            Window window = (Window) Executions.getCurrent().createComponents("macros/share.zul", null, arg);
-            window.doModal();
+            SummaryType summaryType = (SummaryType) selectedItem;
+            UserType userType = UserSessionManager.getCurrentUser();
+            String userName = userType.getUsername();
+            Group userAsGroup = getSecurityService().getGroupByName(userName);
+            Map<Group, AccessType> groupAccessMap;
+            Integer selectedItemId = summaryType.getId();
+            if (summaryType instanceof ProcessSummaryType) {
+                groupAccessMap = getAuthorizationService().getProcessAccessType(selectedItemId);
+            } else if (summaryType instanceof LogSummaryType) {
+                groupAccessMap = getAuthorizationService().getLogAccessType(selectedItemId);
+            } else {
+                Notification.error("Unsupported resource type");
+                return;
+            }
+            if (groupAccessMap.containsKey(userAsGroup) && groupAccessMap.get(userAsGroup).equals(AccessType.OWNER)) {
+                Map arg = new HashMap<>();
+                arg.put("selectedItem", selectedItem);
+                arg.put("currentUser", userType);
+                Window window = (Window) Executions.getCurrent().createComponents("macros/share.zul", null, arg);
+                window.doModal();
+            } else {
+                Notification.error("Only owner can share");
+                return;
+            };
         } catch (Exception e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -703,7 +732,18 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    protected void launchCalendar() {
+        PortalPlugin calendarPlugin;
 
+        getMainController().eraseMessage();
+        try {
+            calendarPlugin = portalPluginMap.get("Manage calendars");
+            calendarPlugin.execute(portalContext);
+        } catch(Exception e) {
+            LOGGER.error("Unable to create custom calendar dialog", e);
+            Messagebox.show("Unable to create custom calendar dialog");
+        }
+    }
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
     private void deleteElements(MainController mainController) throws Exception {

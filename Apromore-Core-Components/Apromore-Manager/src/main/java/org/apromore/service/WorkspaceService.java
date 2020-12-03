@@ -59,6 +59,10 @@ public interface WorkspaceService {
 
     List<GroupProcess> getGroupProcesses(String userId, Integer folderId);
 
+    List<Process> getProcessesByPrefix(String prefix);
+
+    List<Log> getLogsByPrefix(String prefix);
+
     Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable);
 
     Page<Log> getLogs(String userId, Integer folderId, Pageable pageable);
@@ -84,6 +88,9 @@ public interface WorkspaceService {
     String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
     String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+
+    String saveLogAccessRights(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                            boolean hasOwnership, boolean shareUserMetadata);
 
     String removeFolderPermissions(Integer folderId, String userId);
 

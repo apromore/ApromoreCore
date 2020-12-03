@@ -41,11 +41,10 @@ import org.apache.parquet.hadoop.ParquetWriter;
 import org.apache.parquet.hadoop.api.WriteSupport;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.apache.parquet.schema.MessageType;
-import org.apromore.service.csvimporter.model.LogEventModel;
 
 import java.io.IOException;
 
-public class ParquetFileWriter extends ParquetWriter<LogEventModel> {
+public class ParquetFileWriter extends ParquetWriter<String[]> {
 
   public ParquetFileWriter(Path file, MessageType schema) throws IOException {
     this(file, schema, false);
@@ -57,6 +56,5 @@ public class ParquetFileWriter extends ParquetWriter<LogEventModel> {
   
   public ParquetFileWriter(Path file, MessageType schema, CompressionCodecName codecName, boolean enableDictionary) throws IOException {
     super(file, (WriteSupport) new ParquetWriteSupport(schema), codecName, DEFAULT_BLOCK_SIZE, DEFAULT_PAGE_SIZE, enableDictionary, false);
-
   }
 }

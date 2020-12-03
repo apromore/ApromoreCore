@@ -22,8 +22,8 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.*;
-import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
@@ -31,6 +31,7 @@ import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,6 +58,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private UsermetadataRepository userMetadataRepo;
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;
+    private UsermetadataProcessRepository usermetadataProcessRepo;
     private GroupRepository groupRepo;
 
     /**
@@ -72,6 +74,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                    final UsermetadataRepository userMetadataRepo,
                                    final UsermetadataTypeRepository usermetadataTypeRepo,
                                    final UsermetadataLogRepository usermetadataLogRepo,
+                                   final UsermetadataProcessRepository usermetadataProcessRepo,
                                    final GroupRepository groupRepository) {
         this.logRepo = logRepository;
         this.groupLogRepo = groupLogRepository;
@@ -80,25 +83,26 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         this.userMetadataRepo = userMetadataRepo;
         this.usermetadataTypeRepo = usermetadataTypeRepo;
         this.usermetadataLogRepo = usermetadataLogRepo;
+        this.usermetadataProcessRepo = usermetadataProcessRepo;
         this.groupRepo = groupRepository;
        
     }
 
     @Override
     @Transactional
-    public void saveUserMetadataLinkedToOneLog(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+    public void saveUserMetadataLinkedToOneLog(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                                String username,
                                                Integer logId) throws UserNotFoundException {
 
         List<Integer> logIds = new LinkedList<>();
         logIds.add(logId);
 
-        saveUserMetadata(userMetadataContent, userMetadataTypeEnum, username, logIds);
+        saveUserMetadata(userMetadataName, userMetadataContent, userMetadataTypeEnum, username, logIds);
     }
 
     @Override
     @Transactional
-    public void saveUserMetadata(String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
+    public Usermetadata saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum, String username,
                                  List<Integer> logIds) throws UserNotFoundException {
 
         //TODO:
@@ -119,11 +123,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         for (Integer logId : logIds) {
             // Assign READ permission to all groups that have read permission to the linked artifact
-            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
-                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
-                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
-                }
-            }
+//            for (GroupLog gl : groupLogRepo.findByLogId(logId)) {
+//                if (gl.getHasRead() && !gl.getGroup().getName().equals(username)) { // exclude owner of user metadata
+//                    groupUserMetadataSet.add(new GroupUsermetadata(gl.getGroup(), userMetadata, true, false, false));
+//                }
+//            }
 
             // Add linked artifact to the UsermetadataLog linked table
             usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
@@ -137,10 +141,12 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setCreatedBy(user.getRowGuid());
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(userMetadataContent);
+        userMetadata.setName(userMetadataName);
 
         // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Create user metadata ID: {} TYPE: {}.", userMetadata.getId(), userMetadataTypeEnum.toString());
+        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username, userMetadata.getId(),
+                userMetadataTypeEnum.toString());
+        return userMetadataRepo.saveAndFlush(userMetadata);
 
     }
 
@@ -180,12 +186,12 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveUserMetadataPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+    public void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
                                             boolean hasOwnership) {
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
-        // Assign specified group with READ permission to all the user metadata that linked to the specified log
+        // Assign specified group with the same permission to all the user metadata that linked to the specified log
         if (hasRead || hasWrite || hasOwnership) {
 
             // All the user metadata that linked to this log
@@ -198,15 +204,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                     Usermetadata u = usermetadataLog.getUsermetadata();
                     GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
 
-                    // Inherit permission from log (simplified at stage 1, only assign READ permission)
+                    // Inherit permission from log
                     if (g == null) {
                         g = new GroupUsermetadata(group,
-                                u, true, false, false);
+                                u, hasRead, hasWrite, hasOwnership);
                         u.getGroupUserMetadata().add(g);
                     } else {
-                        g.setHasRead(true);
-                        g.setHasWrite(false);
-                        g.setHasOwnership(false);
+                        g.setAccessRights(new AccessRights(hasRead, hasWrite, hasOwnership));
 
                     }
                     groupUsermetadataRepo.save(g);
@@ -219,7 +223,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void removeUserMetadataPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+    public void removeUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
         Set<GroupUsermetadata> groupUsermetadataSet;
 
@@ -237,47 +241,69 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void updateUserMetadata(Integer usermetadataId, String username, String content) throws UserNotFoundException {
+    public Usermetadata updateUserMetadata(Usermetadata userMetadata, String username, String content) throws UserNotFoundException, JpaOptimisticLockingFailureException {
 
         User user = userSrv.findUserByLogin(username);
 
-        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
+        // Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
         userMetadata.setContent(content);
         userMetadata.setUpdatedBy(user.getRowGuid());
         userMetadata.setUpdatedTime(dateFormat.format(new Date()));
 
         // Persist Usermetadata
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Update user metadata ID: {}.", userMetadata.getId());
+        LOGGER.info("User: {} update user metadata ID: {}.", username, userMetadata.getId());
+        return userMetadataRepo.saveAndFlush(userMetadata);
+    }
 
+    @Override
+    public Usermetadata updateUserMetadataName(Integer userMetadataId, String username, String name) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        // Optimistic locking version check is not necessary here since consistency should be guaranteed by EventQueue
+        Usermetadata userMetadata = userMetadataRepo.findOne(userMetadataId);
+        userMetadata.setName(name);
+        userMetadata.setUpdatedBy(user.getRowGuid());
+        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
+
+        // Persist Usermetadata
+        LOGGER.info("User: {} update user metadata ID: {}.", username, userMetadata.getId());
+        return userMetadataRepo.saveAndFlush(userMetadata);
     }
 
     @Override
     @Transactional
     public void deleteUserMetadata(Integer usermetadataId, String username) throws UserNotFoundException {
 
-        User user = userSrv.findUserByLogin(username);
-
-        Usermetadata userMetadata = userMetadataRepo.findOne(usermetadataId);
-        userMetadata.setUpdatedBy(user.getRowGuid());
-        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
-        userMetadata.setIsValid(false);
-
-        // Delete all UsermetadataLog
-        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
-        usermetadataLogSet.clear();
-        userMetadata.setUsermetadataLog(usermetadataLogSet);
-        usermetadataLogRepo.delete(usermetadataLogSet);
-
-        // Delete all GroupUsermetadata
-        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
-        groupUserMetadataSet.clear();
-        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
-        groupUsermetadataRepo.delete(groupUserMetadataSet);
-
-        // Invalidate Usermetadata
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Delete user metadata ID: {}.", userMetadata.getId());
+//        User user = userSrv.findUserByLogin(username);
+//
+//        Usermetadata userMetadata = userMetadataRepo.findById(usermetadataId);
+//        userMetadata.setUpdatedBy(user.getRowGuid());
+//        userMetadata.setUpdatedTime(dateFormat.format(new Date()));
+//        userMetadata.setIsValid(false);
+//
+//        // Delete all UsermetadataLog
+//        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+//        usermetadataLogSet.clear();
+//        userMetadata.setUsermetadataLog(usermetadataLogSet);
+//        usermetadataLogRepo.delete(usermetadataLogSet);
+//
+//        // Delete all UsermetadataLog
+//        Set<UsermetadataProcess> usermetadataProcessSet = userMetadata.getUsermetadataProcess();
+//        usermetadataProcessSet.clear();
+//        userMetadata.setUsermetadataProcess(usermetadataProcessSet);
+//        usermetadataProcessRepo.delete(usermetadataProcessSet);
+//
+//        // Delete all GroupUsermetadata
+//        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
+//        groupUserMetadataSet.clear();
+//        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
+//        groupUsermetadataRepo.delete(groupUserMetadataSet);
+//
+//        // Delete Usermetadata
+//        userMetadataRepo.saveAndFlush(userMetadata);
+        userMetadataRepo.delete(usermetadataId);
+        LOGGER.info("User: {} Delete user metadata ID: {}.", username, usermetadataId);
     }
 
     @Override
@@ -355,7 +381,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadataByUserAndLog(String username, Integer logId,
                                              UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
-        return getUserMetadata(username, new ArrayList<>(logId), userMetadataTypeEnum);
+        return getUserMetadata(username, Collections.singletonList(logId), userMetadataTypeEnum);
     }
 
     @Override
@@ -388,7 +414,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata) {
 
         GroupUsermetadata gu = groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
-        return AccessType.getAccessType(gu.getHasRead(), gu.getHasWrite(), gu.getHasOwnership());
+
+        if (gu != null) {
+            return AccessType.getAccessType(gu.getHasRead(), gu.getHasWrite(), gu.getHasOwnership());
+        }
+        return null;
     }
 
     @Override
@@ -421,7 +451,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setContent(content);
 
         userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("Create user metadata ID: {} TYPE: {}.",
+        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username,
                 userMetadata.getId(), UserMetadataTypeEnum.DASH_TEMPLATE.toString());
     }
 
@@ -458,6 +488,121 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     public User findUserByRowGuid(String rowGuid) throws UserNotFoundException {
         return userSrv.findUserByRowGuid(rowGuid);
+    }
+
+    @Override
+    public List<GroupUsermetadata> getGroupUserMetadata(Integer userMetadataId) {
+        return groupUsermetadataRepo.findByUsermetadataId(userMetadataId);
+    }
+
+    @Override
+    @Transactional
+    public void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, boolean hasRead,
+                                             boolean hasWrite, boolean hasOwnership) {
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
+        AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        GroupUsermetadata gu =
+                groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+
+        if (gu == null) {
+            gu = new GroupUsermetadata(group, usermetadata, accessRights);
+        } else {
+            gu.setAccessRights(accessRights);
+        }
+        groupUsermetadataRepo.save(gu);
+
+        // Assign the same access right to logs if there is no access. Do nothing if there's already access.
+        if (!canAccessAssociatedLog(userMetadataId, groupRowGuid)) {
+
+            Set<Log> logs = findById(userMetadataId).getLogs();
+            for (Log l : logs) {
+                Set<Group> groups = new HashSet<>();
+
+                for (GroupLog gl : l.getGroupLogs()) {
+                    groups.add(gl.getGroup());
+                }
+
+                if(!groups.contains(group)) {
+                    groupLogRepo.save(new GroupLog(group, l, accessRights));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
+
+        saveUserMetadataAccessRights(userMetadataId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
+                accessType.isOwner());
+    }
+
+    @Override
+    public void removeUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
+
+        groupUsermetadataRepo.delete(groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata));
+    }
+
+    @Override
+    public Usermetadata findById(Integer id) {
+        return userMetadataRepo.findById(id);
+    }
+
+    @Override
+    public boolean canDeleteUserMetadata(Integer userMetadataId, String groupRowGuid) {
+
+        List<GroupUsermetadata> groupUsermetadataList = getGroupUserMetadata(userMetadataId);
+        List<GroupUsermetadata> ownerList = new ArrayList<>();
+
+        // Using lambda here would cause runtime error
+//        groupUsermetadataList =
+//                groupUsermetadataList.stream()
+//                        .filter(g -> g.getAccessRights().isOwnerShip())
+//                        .collect(Collectors.toList());
+//        return (groupUsermetadataList.size() == 1 && groupUsermetadataList.get(0).getGroup().getRowGuid().equals(groupRowGuid));
+
+
+        for (GroupUsermetadata g :groupUsermetadataList) {
+            if(g.getAccessRights().isOwnerShip()) {
+                ownerList.add(g);
+            }
+        }
+
+        return (ownerList.size() == 1 && ownerList.get(0).getGroup().getRowGuid().equals(groupRowGuid));
+    }
+
+    @Override
+    public boolean canAccessAssociatedLog(Integer userMetadataId, String groupRowGuid) {
+
+        Set<Log> logs = findById(userMetadataId).getLogs();
+
+        // If this metadata doesn't link to log, then turn true.
+        if(logs.size() == 0) {
+            return true;
+        }
+
+        Set<Group> groups = new HashSet<>();
+        Set<Group> intersection = new HashSet<>();
+        for (Log l : logs) {
+            // Assume groups can't be empty since this log is shown in UI, which means at least one user/group have
+            // access to it.
+            for (GroupLog gl : l.getGroupLogs()) {
+                groups.add(gl.getGroup());
+            }
+
+            if (!intersection.isEmpty()) {
+                groups.retainAll(intersection);
+                intersection.clear();
+            }
+
+            intersection.addAll(groups);
+            groups.clear();
+        }
+
+        return intersection.contains(groupRepo.findByRowGuid(groupRowGuid));
     }
 
     @Override

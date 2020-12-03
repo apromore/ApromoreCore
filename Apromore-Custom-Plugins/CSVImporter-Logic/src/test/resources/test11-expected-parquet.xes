@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 2.0 -->
+<!-- OpenXES library version: 2.27 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="2.27">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+	<string key="lifecycle:model" value="standard"/>
+	<trace>
+		<string key="מסלקוח" value="221"/>
+		<string key="concept:name" value="SO10000001"/>
+		<event>
+			<string key="concept:name" value="טיוטא"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-11-06T16:59:00.000+02:00"/>
+			<string key="לטיפול" value="24"/>
+		</event>
+		<event>
+			<string key="concept:name" value="מבוטלת"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-11-17T13:30:00.000+02:00"/>
+			<string key="לטיפול" value="1"/>
+		</event>
+		<event>
+			<string key="concept:name" value="בעית אובליגו"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-12-08T17:29:00.000+02:00"/>
+			<string key="לטיפול" value="25"/>
+		</event>
+		<event>
+			<string key="concept:name" value="מבוטלת"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-12-18T09:12:00.000+02:00"/>
+			<string key="לטיפול" value="24"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="מסלקוח" value="452"/>
+		<string key="concept:name" value="SO11000099"/>
+		<event>
+			<string key="concept:name" value="טיוטא"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-11-01T16:08:00.000+02:00"/>
+			<string key="לטיפול" value="38"/>
+		</event>
+	</trace>
+</log>

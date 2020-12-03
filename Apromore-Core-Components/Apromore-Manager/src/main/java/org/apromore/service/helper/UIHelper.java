@@ -24,44 +24,25 @@
 
 package org.apromore.service.helper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.*;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.helper.Version;
-import org.apromore.portal.model.FolderSummaryType;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.ProcessVersionType;
-import org.apromore.portal.model.ProcessVersionsType;
-import org.apromore.portal.model.SummariesType;
-import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.model.*;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.*;
 
 /**
 * Used By the Services to generate the data objects used by the UI.
@@ -82,11 +63,12 @@ public class UIHelper implements UserInterfaceHelper {
     private GroupFolderRepository gfRepository;
     private ProcessModelVersionRepository pmvRepository;
     private WorkspaceService workspaceService;
+    private UserMetadataService userMetadataService;
 
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param annotationRepository Annotations Repository.
+     * @param logRepository Log Repository.
      * @param processRepository process Repository.
      * @param groupProcessRepository process access control group Repository
      * @param processModelVersionRepository process model version Repository.
@@ -103,6 +85,7 @@ public class UIHelper implements UserInterfaceHelper {
                     final FolderRepository folderRepository,
                     final GroupFolderRepository groupFolderRepository,
                     final WorkspaceService workspaceService,
+                    final UserMetadataService userMetadataService,
                     final ConfigBean config) {
 
         this.fRepository = folderRepository;
@@ -113,6 +96,7 @@ public class UIHelper implements UserInterfaceHelper {
         this.gfRepository = groupFolderRepository;
         this.pmvRepository = processModelVersionRepository;
         this.workspaceService = workspaceService;
+        this.userMetadataService = userMetadataService;
     }
 
 
@@ -150,7 +134,7 @@ public class UIHelper implements UserInterfaceHelper {
 
     /**
      * Used for the Search on the Main Screen Page
-     * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.portal.model.ProcessVersionsType)
+     * @see UserInterfaceHelper#buildLogSummaryList(String, Integer, Integer, Integer)
      * {@inheritDoc}
      */
     @Override
@@ -265,6 +249,32 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         return logSummaries;
+    }
+
+    @Override
+    public UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata,
+                                                            AccessType accessType) throws UserNotFoundException {
+
+        UserMetadataSummaryType userMetadataSummaryType = new UserMetadataSummaryType();
+
+        userMetadataSummaryType.setId(usermetadata.getId());
+        userMetadataSummaryType.setCreatedBy(userMetadataService.findUserByRowGuid(usermetadata.getCreatedBy()).getUsername());
+        userMetadataSummaryType.setGroupName(group.getName());
+        userMetadataSummaryType.setGroupUID(group.getRowGuid());
+        userMetadataSummaryType.setUpdatedTime(Objects.equals(usermetadata.getUpdatedTime(), null) ?
+                usermetadata.getCreatedTime() :
+                usermetadata.getUpdatedTime());
+        userMetadataSummaryType.setHasOwnership(accessType.isOwner());
+        userMetadataSummaryType.setHasWrite(accessType.isWrite());
+        userMetadataSummaryType.setHasRead(accessType.isRead());
+        userMetadataSummaryType.setName(usermetadata.getName());
+        userMetadataSummaryType.setOwner(usermetadata.getCreatedBy());
+        userMetadataSummaryType.setAccessType(accessType.getLabel());
+        userMetadataSummaryType.setCanShare(accessType.isOwner());
+        userMetadataSummaryType.setCanEdit(accessType.isWrite());
+        userMetadataSummaryType.setCanView(accessType.isRead());
+
+        return userMetadataSummaryType;
     }
 
     /**

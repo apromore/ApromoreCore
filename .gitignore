@@ -4,6 +4,8 @@
 **/target/*
 **/upload/*
 **/.idea/*
+**/bin/*
+**/.checkstyle
 **/dependency-reduced-pom.xml
 **/catalina.home_IS_UNDEFINED
 

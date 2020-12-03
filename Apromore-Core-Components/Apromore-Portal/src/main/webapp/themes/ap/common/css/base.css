@@ -235,8 +235,8 @@
 
 .ap-header-actions {
     position: absolute;
-    top: 4px;
-    right: 34px;
+    top: 3px;
+    right: 5px;
     z-index: var(--ap-z-header-help);
 }
 

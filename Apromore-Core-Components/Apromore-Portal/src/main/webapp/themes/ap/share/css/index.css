@@ -56,3 +56,11 @@
     display: block;
     margin: 7px 0;
 }
+
+.ap-share-win .z-listitem:not([class*="selected"]):hover > .z-listcell {
+    background: transparent !important;
+}
+
+.ap-share-win .z-combobox-readonly>input {
+    background: white !important;
+}

@@ -34,13 +34,15 @@ public class Assignment {
     public Type type;
     public boolean isGroup;
     public String access; // Viewer, Editor, Owner (UI front for AccessType)
+    public boolean shareUserMetadata;
+    public boolean showWarning;
 
     public Assignment(String name, String rowGuid, Type type, String access) {
         this.name = name;
         this.rowGuid = rowGuid;
         this.type = type;
         this.access = access;
-        this.isGroup = (type == Type.GROUP) ? true : false;
+        this.isGroup = type == Type.GROUP;
     }
 
     public String getName() {
@@ -65,6 +67,22 @@ public class Assignment {
 
     public String getAccess() {
         return access;
+    }
+
+    public boolean isShareUserMetadata() {
+        return shareUserMetadata;
+    }
+
+    public void setShareUserMetadata(boolean shareUserMetadata) {
+        this.shareUserMetadata = shareUserMetadata;
+    }
+
+    public boolean isShowWarning() {
+        return showWarning;
+    }
+
+    public void setShowWarning(boolean showWarning) {
+        this.showWarning = showWarning;
     }
 
     @Override

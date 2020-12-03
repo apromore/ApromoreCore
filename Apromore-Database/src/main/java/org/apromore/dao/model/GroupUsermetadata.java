@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -46,18 +46,8 @@ public class GroupUsermetadata implements Serializable {
      * FK USER METADATA ID
      */
     private Usermetadata usermetadata;
-    /**
-     * Has read permission
-     */
-    private boolean hasRead;
-    /**
-     * Has write permission
-     */
-    private boolean hasWrite;
-    /**
-     * Has owner permission
-     */
-    private boolean hasOwnership;
+
+    private AccessRights accessRights;
 
     /**
      * Default Constructor.
@@ -68,13 +58,15 @@ public class GroupUsermetadata implements Serializable {
     /**
      * Convenient constructor.
      */
-    public GroupUsermetadata(Group newGroup, Usermetadata newUsermetadata, boolean newHasRead, boolean newHasWrite,
-                             boolean newHasOwnership) {
+    public GroupUsermetadata(Group newGroup, Usermetadata newUsermetadata, AccessRights accessRights) {
         this.group = newGroup;
         this.usermetadata = newUsermetadata;
-        this.hasRead = newHasRead;
-        this.hasWrite = newHasWrite;
-        this.hasOwnership = newHasOwnership;
+        this.accessRights = accessRights;
+    }
+
+    public GroupUsermetadata(Group group, Usermetadata usermetadata, boolean isRead, boolean isWrite,
+                             boolean isOwnerShip) {
+        this(group, usermetadata, new AccessRights(isRead, isWrite, isOwnerShip));
     }
 
     /**
@@ -92,6 +84,15 @@ public class GroupUsermetadata implements Serializable {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Embedded
+    public AccessRights getAccessRights() {
+        return accessRights;
+    }
+
+    public void setAccessRights(AccessRights accessRights) {
+        this.accessRights = accessRights;
     }
 
     /**
@@ -126,48 +127,19 @@ public class GroupUsermetadata implements Serializable {
         this.usermetadata = usermetadata;
     }
 
-    /**
-     * Has read permission
-     */
-    @Column(name = "has_read")
-    public boolean getHasRead() {
-        return this.hasRead;
+    public Boolean getHasRead() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isReadOnly();
     }
 
-    /**
-     * Has read permission
-     */
-    public void setHasRead(boolean hasRead) {
-        this.hasRead = hasRead;
+    public Boolean getHasWrite() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isWriteOnly();
     }
 
-    /**
-     * Has write permission
-     */
-    @Column(name = "has_write")
-    public boolean getHasWrite() {
-        return this.hasWrite;
+    public Boolean getHasOwnership() {
+        // TODO Auto-generated method stub
+        return getAccessRights().isOwnerShip();
     }
 
-    /**
-     * Has write permission
-     */
-    public void setHasWrite(boolean hasWrite) {
-        this.hasWrite = hasWrite;
-    }
-
-    /**
-     * Has owner permission
-     */
-    @Column(name = "has_ownership")
-    public boolean getHasOwnership() {
-        return this.hasOwnership;
-    }
-
-    /**
-     * Has owner permission
-     */
-    public void setHasOwnership(boolean hasOwnership) {
-        this.hasOwnership = hasOwnership;
-    }
 }

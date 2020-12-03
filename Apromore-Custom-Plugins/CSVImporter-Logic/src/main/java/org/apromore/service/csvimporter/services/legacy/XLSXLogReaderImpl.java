@@ -26,9 +26,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.dateparser.Parse;
 import org.apromore.service.csvimporter.io.XLSReader;
 import org.apromore.service.csvimporter.model.*;
+import org.apromore.service.csvimporter.services.LogProcessor;
+import org.apromore.service.csvimporter.services.LogProcessorImpl;
 import org.apromore.service.csvimporter.utilities.XEventComparator;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
@@ -46,10 +47,8 @@ import java.util.*;
 
 public class XLSXLogReaderImpl implements LogReader, Constants {
 
-    private final Parse parse = new Parse();
-    boolean preferMonthFirstChanged;
     private List<LogErrorReport> logErrorReport;
-    private boolean validRow;
+    private LogProcessor logProcessor;
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
 
@@ -57,40 +56,23 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
 
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
-
             sample.validateSample();
-
             if (workbook == null)
                 throw new Exception("Unable to import file");
 
             // Process first sheet only
             Sheet sheet = workbook.getSheetAt(0);
-
             //Get the header
             if (sheet == null)
                 throw new Exception("Unable to import file");
 
             String[] header = sample.getHeader().toArray(new String[0]);
-
+            logProcessor = new LogProcessorImpl();
             logErrorReport = new ArrayList<>();
             int lineIndex = 0;
             int numOfValidEvents = 0;
-            boolean preferMonthFirst = preferMonthFirstChanged = parse.getPreferMonthFirst();
-
             String[] line;
-
-            String caseId;
-            String activity;
-            Timestamp endTimestamp;
-            Timestamp startTimestamp;
-            String resource;
-            HashMap<String, String> caseAttributes;
-            HashMap<String, String> eventAttributes;
-            HashMap<String, Timestamp> otherTimestamps;
-
             TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
-
-            String errorMessage = "Field is empty or has a null value!";
             boolean rowLimitExceeded = false;
 
             //XES
@@ -107,9 +89,9 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             xLog.getExtensions().add(resourceXes);
 
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
+            LogEventModelExt logEventModelExt;
 
             for (Row r : sheet) {
-
                 //Skip header
                 if (r.getRowNum() == 0)
                     continue;
@@ -118,7 +100,6 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     break;
 
                 // new row, new event.
-                validRow = true;
                 lineIndex++;
 
                 //Validate num of column
@@ -138,106 +119,29 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     continue;
 
                 //Construct an event
-                startTimestamp = null;
-                resource = null;
-                caseAttributes = new HashMap<>();
-                eventAttributes = new HashMap<>();
-                otherTimestamps = new HashMap<>();
-
-                // Case id:
-                caseId = line[sample.getCaseIdPos()];
-                if (caseId == null || caseId.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], errorMessage));
-                }
-
-                // Activity
-                activity = line[sample.getActivityPos()];
-                if (activity == null || activity.isEmpty()) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], errorMessage));
-                }
-
-                // End Timestamp
-                endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
-                if (endTimestamp == null) {
-                    invalidRow(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], parse.getParseFailMess()));
-                }
-                // Start Timestamp
-                if (sample.getStartTimestampPos() != -1) {
-                    startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
-                    if (startTimestamp == null) {
-                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], parse.getParseFailMess()));
-                    }
-                }
-
-                // Other timestamps
-                if (!sample.getOtherTimestamps().isEmpty()) {
-                    for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                        Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue());
-                        if (tempTimestamp != null) {
-                            otherTimestamps.put(header[otherTimestamp.getKey()], tempTimestamp);
-                        } else {
-                            invalidRow(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], parse.getParseFailMess()));
-                        }
-                    }
-                }
-
-//                // If PreferMonthFirst changed to True, we have to start over.
-//                if (!preferMonthFirst && preferMonthFirstChanged) {
-//                    if(in.markSupported()){
-//                        in.mark(0);
-//                        in.reset();
-//                        readLogs(in, sample, charset, skipInvalidRow);
-//                    }
-//                }
-
-                // Resource
-                if (sample.getResourcePos() != -1) {
-                    resource = line[sample.getResourcePos()];
-                    if (resource == null || resource.isEmpty()) {
-                        invalidRow(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], errorMessage));
-                    }
-                }
+                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
-                if (!validRow) {
+                if (!logEventModelExt.isValid()) {
                     if (skipInvalidRow) {
                         continue;
                     } else {
                         return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                     }
                 }
-
-                // Case Attributes
-                if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
-                    for (int columnPos : sample.getCaseAttributesPos()) {
-                        caseAttributes.put(header[columnPos], line[columnPos]);
-                    }
-                }
-
-                // Event Attributes
-                if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
-                    for (int columnPos : sample.getEventAttributesPos()) {
-                        eventAttributes.put(header[columnPos], line[columnPos]);
-                    }
-                }
-
                 //Construct a Trace if it's not exists
-                if (tracesHistory.isEmpty() || !tracesHistory.containsKey(caseId)) {
+                if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModelExt.getCaseID())) {
                     XTrace xT = xFactory.createTrace();
-                    concept.assignName(xT, caseId);
-                    assignEventsToTrace(
-                            new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
-                            xT);
-                    assignMyCaseAttributes(caseAttributes, xT);
-                    tracesHistory.put(caseId, xT);
+                    concept.assignName(xT, logEventModelExt.getCaseID());
+                    assignEventsToTrace(logEventModelExt, xT);
+                    assignMyCaseAttributes(logEventModelExt.getCaseAttributes(), xT);
+                    tracesHistory.put(logEventModelExt.getCaseID(), xT);
                     numOfValidEvents++;
 
                 } else {
-                    XTrace xT = tracesHistory.get(caseId);
-                    assignEventsToTrace(
-                            new LogEventModel(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes),
-                            xT);
-                    assignMyCaseAttributes(caseAttributes, xT);
+                    XTrace xT = tracesHistory.get(logEventModelExt.getCaseID());
+                    assignEventsToTrace(logEventModelExt, xT);
+                    assignMyCaseAttributes(logEventModelExt.getCaseAttributes(), xT);
                     numOfValidEvents++;
                 }
             }
@@ -250,8 +154,8 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
-            return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
 
+            return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -261,30 +165,6 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
 
     public boolean isValidLineCount(int lineCount) {
         return true;
-    }
-
-    private Timestamp parseTimestampValue(String theValue, String format) {
-        Timestamp stamp;
-        if (format != null && !format.isEmpty()) {
-            stamp = parse.tryParsingWithFormat(theValue, format);
-            if (stamp == null) {
-                stamp = parse.tryParsing(theValue);
-                if (!preferMonthFirstChanged) {
-                    preferMonthFirstChanged = parse.getPreferMonthFirst();
-                }
-            }
-        } else {
-            stamp = parse.tryParsing(theValue);
-            if (!preferMonthFirstChanged) {
-                preferMonthFirstChanged = parse.getPreferMonthFirst();
-            }
-        }
-        return stamp;
-    }
-
-    private void invalidRow(LogErrorReportImpl error) {
-        logErrorReport.add(error);
-        validRow = false;
     }
 
     private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {
@@ -299,12 +179,9 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     }
 
     private void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xTrace) {
-
-
         XAttributeMap xAttributeMap = xTrace.getAttributes();
 
         if (caseAttributes != null && !caseAttributes.isEmpty()) {
-
             XAttribute attribute;
             for (Map.Entry<String, String> entry : caseAttributes.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().trim().length() != 0 && !xAttributeMap.containsKey(entry.getKey())) {
@@ -312,15 +189,12 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     xTrace.getAttributes().put(entry.getKey(), attribute);
                 }
             }
-
         }
     }
 
     private XEvent createEvent(LogEventModel myEvent, Boolean isEndTimestamp) {
-
         XFactory xFactory = new XFactoryNaiveImpl();
         XEvent xEvent = xFactory.createEvent();
-
         XConceptExtension concept = XConceptExtension.instance();
         concept.assignName(xEvent, myEvent.getActivity());
 

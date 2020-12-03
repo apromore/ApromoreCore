@@ -46,6 +46,7 @@
     <reference id="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider"/>
     <reference id="workspaceService" interface="org.apromore.service.WorkspaceService"/>
     <reference id="userMetadataService" interface="org.apromore.service.UserMetadataService"/>
+    <reference id="calendarService" interface="org.apromore.calendar.service.CalendarService"/>
 
     <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" cardinality="0..N"/>
     <list id="bpmnEditorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" cardinality="0..N"/>
@@ -53,6 +54,7 @@
     <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" cardinality="0..N"/>
     <list id="portalProcessAttributePlugins" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" cardinality="0..N"/>
 
+    <service ref="authenticationManager" interface="org.springframework.security.authentication.AuthenticationManager"/>
     <service ref="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 
 </beans:beans>

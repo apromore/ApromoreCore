@@ -54,13 +54,15 @@
     <osgi:service ref="roleRepository" interface="org.apromore.dao.RoleRepository" auto-export="interfaces"/>
     <osgi:service ref="searchHistoryRepository" interface="org.apromore.dao.SearchHistoryRepository" auto-export="interfaces"/>
     <osgi:service ref="usermetadataLogRepository" interface="org.apromore.dao.UsermetadataLogRepository" auto-export="interfaces"/>
+    <osgi:service ref="usermetadataProcessRepository" interface="org.apromore.dao.UsermetadataProcessRepository"
+                  auto-export="interfaces"/>
     <osgi:service ref="usermetadataRepository" interface="org.apromore.dao.UsermetadataRepository" auto-export="interfaces"/>
     <osgi:service ref="usermetadataTypeRepository" interface="org.apromore.dao.UsermetadataTypeRepository" auto-export="interfaces"/>
     <osgi:service ref="userRepository" interface="org.apromore.dao.UserRepository" auto-export="interfaces"/>
     <osgi:service ref="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository" auto-export="interfaces"/>
     <osgi:service ref="transactionManager" interface="org.springframework.transaction.PlatformTransactionManager" auto-export="interfaces"/>
     <osgi:service ref="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository" auto-export="interfaces"/>
-    <osgi:service ref="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository" auto-export="interfaces"/>
+    <osgi:service ref="customCalendarInfoRepository" interface="org.apromore.dao.CustomCalendarInfoRepository" auto-export="interfaces"/>
     
     
 

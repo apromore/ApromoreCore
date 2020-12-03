@@ -139,6 +139,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    public List<Process> getProcessesByPrefix(String prefix) {
+        return processRepo.findWithPrefix(prefix);
+    }
+
+    @Override
+    public List<Log> getLogsByPrefix(String prefix) {
+        return logRepo.findWithPrefix(prefix);
+    }
+
+    @Override
     public Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable) {
 	return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
 	                       : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
@@ -319,7 +329,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         removeGroupLog(group, log);
 
         // Sync permission with user metadata that linked to specified log
-        userMetadataServ.removeUserMetadataPermissions(logId, groupRowGuid, username);
+        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
 
         return "";
     }
@@ -357,8 +367,29 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             parentFolder = parentFolder.getParentFolder();
         }
 
-        // Sync permission with user metadata that linked to specified log
-        userMetadataServ.saveUserMetadataPermissions(logId, groupRowGuid, hasRead, hasWrite, hasOwnership);
+        return "";
+    }
+
+    @Override
+    public String saveLogAccessRights(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                      boolean hasOwnership, boolean shareUserMetadata) {
+        Log log = logRepo.findOne(logId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+
+        Folder parentFolder = log.getFolder();
+        while (parentFolder != null && parentFolder.getId() > 0) {
+            parentFolder = folderRepo.findOne(parentFolder.getId());
+            createGroupFolder(group, parentFolder, true, false, false);
+            parentFolder = parentFolder.getParentFolder();
+        }
+
+        if (shareUserMetadata){
+            // Sync permission with user metadata that linked to specified log
+            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, hasRead, hasWrite,
+                    hasOwnership);
+        }
 
         return "";
     }

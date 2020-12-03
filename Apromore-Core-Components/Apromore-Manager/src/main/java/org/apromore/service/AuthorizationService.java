@@ -37,18 +37,26 @@ public interface AuthorizationService {
     Map<Group, AccessType> getLogAccessType(Integer logId);
 
     /**
-     * Get list of Group and AccessType pair of Log
+     * Get list of Group and AccessType pair of Process
      * @param processId Process ID
      * @return list of Group and AccessType pair
      */
     Map<Group, AccessType> getProcessAccessType(Integer processId);
 
     /**
-     * Get list of Group and AccessType pair of Log
+     * Get list of Group and AccessType pair of Folder
      * @param folderId Folder ID
      * @return list of Group and AccessType pair
      */
     Map<Group, AccessType> getFolderAccessType(Integer folderId);
+
+    /**
+     * Get list of Group and AccessType pair of User metadata
+     * @param userMetadataId User metadata ID
+     * @return list of Group and AccessType pair
+     */
+    Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId);
+
 
     /**
      * Save new GroupLog or update existing one
@@ -56,7 +64,7 @@ public interface AuthorizationService {
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType);
+    void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata);
 
     /**
      * Save new GroupProcess or update existing one
@@ -68,15 +76,23 @@ public interface AuthorizationService {
 
     /**
      * Save new GroupFolder or update existing one
-     * @param folderId Log ID
+     * @param folderId Folder ID
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
     void saveFolderAccessType(Integer folderId, String groupRowGuid, AccessType accessType);
 
     /**
+     * Save new GroupUsermetadata or update existing one
+     * @param userMetadataId User metadata ID
+     * @param groupRowGuid Group UID
+     * @param accessType AccessType
+     */
+    void saveUserMetadtarAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType);
+
+    /**
      * Delete one GroupLog record
-     * @param logId Folder ID
+     * @param logId Log ID
      * @param groupRowGuid Group UID
      * @param username User username
      * @throws UserNotFoundException Client side should handle this exception and prompt user as error
@@ -92,8 +108,15 @@ public interface AuthorizationService {
 
     /**
      * Delete one GroupLog record
-     * @param folderId Process ID
+     * @param folderId Folder ID
      * @param groupRowGuid Group UID
      */
     void deleteFolderAccess(Integer folderId, String groupRowGuid);
+
+    /**
+     * Delete one GroupUsermetadata record
+     * @param userMetadataId User metadata ID
+     * @param groupRowGuid Group UID
+     */
+    void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid);
 }
