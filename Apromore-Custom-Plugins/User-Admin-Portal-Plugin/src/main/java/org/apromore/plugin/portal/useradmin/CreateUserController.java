@@ -71,7 +71,7 @@ public class CreateUserController extends SelectorComposer<Window> {
 
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
-            Messagebox.show("Unable to create user: " + e.getMessage());
+            Messagebox.show("Unable to create user. The user could have been present in the system.");
         }
     }
 
