@@ -44,7 +44,7 @@
 
 
 <window closable="true" id="errorWindow" maximizable="false" hflex="min" vflex="min" height="230px" width="672px"
-        position="center" title="Invalid Data Encountered!">
+        position="center" title="Invalid data encountered!">
     <style src="/themes/ap/csv-importer/css/index.css"/>
     <style src="/themes/ap/common/css/utils.css"/>
     <borderlayout>

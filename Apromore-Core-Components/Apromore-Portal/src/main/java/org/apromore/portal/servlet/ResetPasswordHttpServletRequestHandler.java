@@ -115,7 +115,7 @@ public class ResetPasswordHttpServletRequestHandler extends BaseServletRequestHa
         boolean ok = true;
         if (StringUtils.isEmpty(request.getParameter(USERNAME))) {
             ok = false;
-            messages.add("Username can not be empty!");
+            messages.add("Username cannot be empty!");
         }
         return ok;
     }
