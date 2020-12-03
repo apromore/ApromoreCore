@@ -78,13 +78,9 @@ public interface UserMetadataService {
      *
      * @param logId        log ID
      * @param groupRowGuid group guid
-     * @param hasRead      Log READ permission
-     * @param hasWrite     Log WRITE permission
-     * @param hasOwnership Log OWNER permission
+     * @param accessType   Access type
      */
-    void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, boolean hasRead,
-                                                   boolean hasWrite,
-                                                   boolean hasOwnership);
+    void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, AccessType accessType);
 
     /**
      * Automatically share simulation user metadata when a BIMP simulation MXML Log is shared.
@@ -95,9 +91,7 @@ public interface UserMetadataService {
      * @param hasWrite     Log WRITE permission
      * @param hasOwnership Log OWNER permission
      */
-    void shareSimulationMetadata(Integer logId, String groupRowGuid, boolean hasRead,
-                                                   boolean hasWrite,
-                                                   boolean hasOwnership);
+    void shareSimulationMetadata(Integer logId, String groupRowGuid, AccessType accessType);
 
     /**
      * Remove permissions of user metadata assigned to specified group and log
