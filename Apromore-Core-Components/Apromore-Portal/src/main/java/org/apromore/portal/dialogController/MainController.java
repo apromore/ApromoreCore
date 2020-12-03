@@ -422,7 +422,7 @@ public class MainController extends BaseController implements MainControllerInte
             displayMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
-            Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Deletion failed. You are not the owner of this file", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 

@@ -119,8 +119,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
 
         if (!AccessType.NONE.equals(accessType)) {
-            workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
-                    accessType.isOwner(), shareUserMetadata);
+            workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType, shareUserMetadata);
         }
 
     }
@@ -147,8 +146,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public void saveUserMetadtarAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
         if (!AccessType.NONE.equals(accessType)) {
-            userMetadataService.saveUserMetadataAccessRights(userMetadataId, groupRowGuid, accessType.isRead(),
-                    accessType.isWrite(), accessType.isOwner());
+            userMetadataService.saveUserMetadataAccessType(userMetadataId, groupRowGuid, accessType);
         }
     }
 

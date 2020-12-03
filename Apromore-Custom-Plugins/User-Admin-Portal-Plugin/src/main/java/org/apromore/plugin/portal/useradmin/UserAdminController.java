@@ -307,7 +307,9 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
 
         // Set default to nothing
+        refreshUsers();
         setSelectedUsers(null);
+        refreshGroups();
         setSelectedGroup(null);
 
         /**
@@ -931,7 +933,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             return;
         }
         if (selectedUsers.contains(currentUser)) {
-            Notification.error("You can not delete your own account");
+            Notification.error("You cannot delete your own account");
             return;
         }
         List<String> users = new ArrayList<>();

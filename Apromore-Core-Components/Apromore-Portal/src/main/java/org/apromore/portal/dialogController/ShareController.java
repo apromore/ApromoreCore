@@ -405,7 +405,7 @@ public class ShareController extends SelectorComposer<Window> {
                     authorizationService.deleteLogAccess(selectedItemId, rowGuid, name);
                 } catch (UserNotFoundException e) {
                     LOGGER.error("User not found", e.getMessage(), e);
-                    Messagebox.show("The user can not be found.", "Delete access error", Messagebox.OK,
+                    Messagebox.show("The user cannot be found.", "Delete access error", Messagebox.OK,
                             Messagebox.ERROR);
                 }
             } else if (selectedItem instanceof UserMetadataSummaryType) {
