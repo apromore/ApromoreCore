@@ -19,19 +19,20 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.rest;
+package org.apromore.rest.manager;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Application;
+import org.apromore.rest.ResourceExceptionMapper;
 
 /**
  * Explicitly register all JAX-RS providers.
  *
  * Annotation-based configuration via <code>@Provider</code> does not work with Virgo.
  */
-public class ApromoreApplication extends Application {
+public class ManagerApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {

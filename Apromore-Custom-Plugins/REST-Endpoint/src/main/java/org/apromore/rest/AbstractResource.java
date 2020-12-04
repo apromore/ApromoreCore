@@ -44,7 +44,7 @@ import org.springframework.security.core.AuthenticationException;
 /**
  * Common methods shared by {@link ArtifactResource} and {@link UserResource}.
  */
-abstract class AbstractResource {
+public abstract class AbstractResource {
 
     /**
      * Logger.
@@ -118,7 +118,7 @@ abstract class AbstractResource {
     /**
      * Authorize a user against a role.
      *
-     * @param user  a user, usually obtained via {@link #authenticateUser}
+     * @param user  a user, usually obtained via {@link #authenticatedUser}
      * @param role  the role while the <var>user</var> ought to have
      * @throws ResourceException if the <var>user</var> lacks the <var>role</var>
      */

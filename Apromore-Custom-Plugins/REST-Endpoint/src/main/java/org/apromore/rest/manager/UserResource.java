@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.rest;
+package org.apromore.rest.manager;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,6 +35,8 @@ import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
 import org.apromore.portal.model.MembershipType;
 import org.apromore.portal.model.UserType;
+import org.apromore.rest.AbstractResource;
+import org.apromore.rest.ResourceException;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

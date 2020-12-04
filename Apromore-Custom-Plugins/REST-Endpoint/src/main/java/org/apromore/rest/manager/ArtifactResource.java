@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.rest;
+package org.apromore.rest.manager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringBufferInputStream;
@@ -39,6 +39,8 @@ import org.apromore.dao.LogRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.UserType;
+import org.apromore.rest.AbstractResource;
+import org.apromore.rest.ResourceException;
 import org.apromore.service.EventLogService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;

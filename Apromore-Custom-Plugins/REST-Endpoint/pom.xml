@@ -33,6 +33,9 @@
                         <DynamicImport-Package>
                             com.sun.jersey.*  <!-- Jersey implementation of JAX-RS dynamically loaded -->
                         </DynamicImport-Package>
+                        <Export-Package>
+                            org.apromore.rest
+                        </Export-Package>
                         <Web-ContextPath>/rest</Web-ContextPath>
                     </instructions>
                 </configuration>
