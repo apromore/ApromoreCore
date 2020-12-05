@@ -17,6 +17,13 @@
     <bundle>mvn:org.apromore.plugin/apromore-bpmneditor/1.1</bundle>
   </feature>
 
+  <feature name="apromore-calendar" version="${project.version}" description="Apromore calendar">
+    <feature>apromore-manager</feature>
+    <bundle>mvn:org.modelmapper/modelmapper/2.3.0</bundle>
+    <bundle>mvn:org.apromore/apromore-commons/1.0</bundle>
+    <bundle>mvn:org.apromore/apromore-calendar/1.0</bundle>
+  </feature>
+
   <feature name="apromore-common" version="${project.version}" description="Apromore common to all editions">
     <feature>apromore-portal</feature>
     <feature>opencsv</feature>
@@ -30,8 +37,6 @@
 <!--
     <bundle>mvn:org.apromore/apmlog/1.0.0</bundle>
 -->
-    <bundle>mvn:org.apromore/apromore-calendar/1.0</bundle>
-    <bundle>mvn:org.apromore/apromore-commons/1.0</bundle>
     <bundle>mvn:org.apromore/hpi-bpt-osgi/1.0</bundle>
     <bundle>mvn:org.apromore/jgraph-osgi/1.0</bundle>
     <bundle>mvn:org.apromore/log-logic/1.0.0</bundle>
@@ -39,7 +44,6 @@
     <bundle>mvn:org.apromore/prom-bpmn-osgi/1.0</bundle>
     <bundle>mvn:org.apromore/prom-models-osgi/1.0</bundle>
     <bundle>mvn:org.apromore/prom-widgets-osgi/1.0</bundle>
-    <bundle>mvn:org.modelmapper/modelmapper/2.3.0</bundle>
 
     <feature>apromore-bpmn-editor</feature>
     <feature>apromore-csv-importer</feature>
@@ -122,6 +126,7 @@
   </feature>
 
   <feature name="apromore-portal" version="${project.version}" description="Apromore core web browser interface">
+    <feature>apromore-calendar</feature>
     <feature>apromore-manager</feature>
     <feature version="3.1.4.RELEASE">spring-jms</feature>
     <feature>pax-war</feature>
