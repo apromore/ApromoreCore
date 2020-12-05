@@ -40,9 +40,12 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -96,7 +99,6 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
-
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
@@ -420,7 +422,7 @@ public class MainController extends BaseController implements MainControllerInte
             displayMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
-            Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Deletion failed. You are not the owner of this file", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -955,4 +957,15 @@ public class MainController extends BaseController implements MainControllerInte
         this.breadCrumbs.setContent(content);
         Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
     }
+
+    public String deriveName(ProcessSummaryType processSummaryType, String suffix) {
+        String processName = processSummaryType.getName();
+        List<Log> existingLogs = getWorkspaceService().getLogsByPrefix(processName + suffix);
+        List<String> existingNames = new ArrayList<>();
+        for (Log log : existingLogs) {
+            existingNames.add(log.getName());
+        }
+        return ItemNameUtils.deriveName(existingNames, processName, suffix);
+    }
+
 }

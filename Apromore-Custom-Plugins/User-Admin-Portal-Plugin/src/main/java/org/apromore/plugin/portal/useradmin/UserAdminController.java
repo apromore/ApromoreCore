@@ -45,7 +45,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
 import org.apromore.security.util.SecurityUtil;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;;
+import org.osgi.framework.ServiceReference;
 //import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -80,6 +80,7 @@ import org.zkoss.zul.ListModels;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
@@ -159,8 +160,14 @@ public class UserAdminController extends SelectorComposer<Window> {
     private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
     private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
 
-    @Wire("#groupsTab")
-    Tab groupsTab;
+    @Wire("#tabbox")
+    Tabbox tabbox;
+
+    @Wire("#userTab")
+    Tab userTab;
+    @Wire("#groupTab")
+    Tab groupTab;
+
     @Wire("#userListView")
     Vbox userListView;
 
@@ -300,7 +307,9 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
 
         // Set default to nothing
+        refreshUsers();
         setSelectedUsers(null);
+        refreshGroups();
         setSelectedGroup(null);
 
         /**
@@ -339,6 +348,40 @@ public class UserAdminController extends SelectorComposer<Window> {
                 if (item.isSelected() && groupListbox.getSelectedCount() == 1) {
                     groupListbox.clearSelection();
                     setSelectedGroup(null);
+                }
+            }
+        });
+
+        String onSwitchTab = "function (notify, init) { " +
+                "console.log('user', arguments);" +
+                "if (this.desktop && !init && notify) { zAu.send(new zk.Event(this, 'onSwitchTab')); }" +
+                "else { this.$_sel(notify, init); }" +
+                "}";
+        // https://forum.zkoss.org/question/72022/intercepting-tab-selection/
+        // https://forum.zkoss.org/question/55097/set-selected-tab/
+        // prevent select at client side
+        userTab.setWidgetOverride("_sel", onSwitchTab);
+        groupTab.setWidgetOverride("_sel", onSwitchTab);
+        userTab.setSelected(true);
+
+        groupTab.addEventListener("onSwitchTab", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws InterruptedException {
+                Tab tab = (Tab) event.getTarget();
+                Tab selectedTab = tabbox.getSelectedTab();
+                if (userTab.equals(selectedTab)) {
+                    checkDirtyUser(null, null, null, tab);
+                }
+            }
+        });
+
+        userTab.addEventListener("onSwitchTab", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws InterruptedException {
+                Tab tab = (Tab) event.getTarget();
+                Tab selectedTab = tabbox.getSelectedTab();
+                if (groupTab.equals(selectedTab)) {
+                    checkDirtyGroup(null, null, null, tab);
                 }
             }
         });
@@ -759,7 +802,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
         Set<User> prevUsers = event.getPreviousSelectedObjects();
         Set<User> newUsers = event.getSelectedObjects();
-        checkDirtyUser(prevUsers, newUsers, null);
+        checkDirtyUser(prevUsers, newUsers, null, null);
     }
 
     public void selectBulk(SearchableListbox list, boolean select) {
@@ -778,7 +821,7 @@ public class UserAdminController extends SelectorComposer<Window> {
      * @param select Null do nothing, true select all, false unselect all
      * @return
      */
-    public void checkDirtyUser(Set<User> prevUsers, Set<User> newUsers, Boolean select) {
+    public void checkDirtyUser(Set<User> prevUsers, Set<User> newUsers, Boolean select, Tab tab) {
         if (isUserDetailDirty) {
             Messagebox.show("There is unsaved user detail. Do you want to save the information?",
                     "Question",
@@ -794,11 +837,19 @@ public class UserAdminController extends SelectorComposer<Window> {
                                 return;
                             } else if (Messagebox.ON_YES.equals(buttonName)) {
                                 onClickUserSaveButton();
+                            } else {
+                                refreshUsers();
+                                setSelectedUsers(null);
                             }
                             if (select != null) {
                                 selectBulk(userList, select);
                             }
-                            updateUserDetail(newUsers);
+                            if (newUsers != null) {
+                                updateUserDetail(newUsers);
+                            }
+                            if (tab != null) {
+                                 tab.setSelected(true);
+                            }
                         }
                     }
             );
@@ -806,7 +857,14 @@ public class UserAdminController extends SelectorComposer<Window> {
             if (select != null) {
                 selectBulk(userList, select);
             }
-            updateUserDetail(newUsers);
+            if (newUsers != null) {
+                updateUserDetail(newUsers);
+            }
+            if (tab != null) {
+                tab.setSelected(true);
+                refreshGroups();
+                setSelectedGroup(null);
+            }
         }
     }
 
@@ -875,7 +933,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             return;
         }
         if (selectedUsers.contains(currentUser)) {
-            Notification.error("You can not delete your own account");
+            Notification.error("You cannot delete your own account");
             return;
         }
         List<String> users = new ArrayList<>();
@@ -951,7 +1009,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
         Set<Group> newGroups = event.getSelectedObjects();
         Set<Group> prevGroups = event.getPreviousSelectedObjects();
-        checkDirtyGroup(prevGroups, newGroups, null);
+        checkDirtyGroup(prevGroups, newGroups, null, null);
     }
 
     /**
@@ -962,7 +1020,7 @@ public class UserAdminController extends SelectorComposer<Window> {
      * @param select Null do nothing, true select all, false unselect all
      * @return
      */
-    public void checkDirtyGroup(Set<Group> prevGroups, Set<Group> newGroups, Boolean select) {
+    public void checkDirtyGroup(Set<Group> prevGroups, Set<Group> newGroups, Boolean select, Tab tab) {
         if (isGroupDetailDirty) {
             Messagebox.show("There is unsaved group detail. Do you want to save the information?",
                     "Question",
@@ -978,11 +1036,20 @@ public class UserAdminController extends SelectorComposer<Window> {
                                 return;
                             } else if (Messagebox.ON_YES.equals(buttonName)) {
                                 onClickGroupSaveButton();
+                            } else {
+                                isGroupDetailDirty = false;
+                                refreshGroups();
+                                setSelectedGroup(null);
                             }
                             if (select != null) {
                                 selectBulk(groupList, select);
                             }
-                            updateGroupDetail(newGroups);
+                            if (newGroups != null) {
+                                updateGroupDetail(newGroups);
+                            }
+                            if (tab != null) {
+                                tab.setSelected(true);
+                            }
                         }
                     }
             );
@@ -990,7 +1057,14 @@ public class UserAdminController extends SelectorComposer<Window> {
             if (select != null) {
                 selectBulk(groupList, select);
             }
-            updateGroupDetail(newGroups);
+            if (newGroups != null) {
+                updateGroupDetail(newGroups);
+            }
+            if (tab != null) {
+                tab.setSelected(true);
+                refreshUsers();
+                setSelectedUsers(null);
+            }
         }
     }
 
@@ -1169,22 +1243,22 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     @Listen("onClick = #userSelectAllBtn")
     public void onUserSelectAllBtn() {
-        checkDirtyUser(null, null, true);
+        checkDirtyUser(null, null, true, null);
     }
 
     @Listen("onClick = #userSelectNoneBtn")
     public void onUserSelectNoneBtn() {
-        checkDirtyUser(null, null, false);
+        checkDirtyUser(null, null, false, null);
     }
 
     @Listen("onClick = #groupSelectAllBtn")
     public void onGroupSelectAllBtn() {
-        checkDirtyGroup(null, null, true);
+        checkDirtyGroup(null, null, true, null);
     }
 
     @Listen("onClick = #groupSelectNoneBtn")
     public void onGroupSelectNoneBtn() {
-        checkDirtyGroup(null, null, false);
+        checkDirtyGroup(null, null, false, null);
     }
 
     @Listen("onClick = #okBtn")

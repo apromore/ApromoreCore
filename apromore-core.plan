@@ -28,8 +28,8 @@
     <!-- Database -->
     <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.database" version="[1.0, 2)"/> 
-    
+    <artifact type="bundle" name="org.apromore.database" version="[1.0, 2)"/>
+
      <!-- Cache -->
     <artifact type="bundle" name="org.apromore.cache" version="[1.0, 2)"/>
 
@@ -49,7 +49,12 @@
     <artifact type="bundle" name="org.apromore.portal" version="[1.1.0, 2)">
         <property name="header:Web-ContextPath" value="/" />
     </artifact>
-    
+
+    <!-- REST endpoints -->
+    <artifact type="bundle" name="org.apromore.jersey-osgi" version="[1, 2)"/>
+    <artifact type="bundle" name="jackson-xc" version="[1.9, 2)"/>
+    <artifact type="bundle" name="org.apromore.rest-endpoint" version="[1.0, 2)"/>
+
     <!-- CORE CUSTOM PLUGINS -->
     <artifact type="bundle" name="org.apromore.apmlog" version="[1.0.0, 2)"/>
     
@@ -67,6 +72,7 @@
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.calendar-portal-plugin" version="[1.0.0, 2)"/>
     
      <artifact type="bundle" name="@csvimporter-logic.bundle@" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.csvimporter-portal" version="[1.0.0, 2)"/>

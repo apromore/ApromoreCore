@@ -102,10 +102,14 @@
 							org.apromore.dao.*,
 							org.springframework.beans.factory.annotation,
 							org.apromore.commons.mapper.converter;version="[1.0,2)",
-							org.apromore.commons.mapper;version="[1.0,2)"							
+							org.apromore.commons.mapper;version="[1.0,2)",
+							org.apromore.commons.datetime;version="[1.0,2)",
+							org.modelmapper						
 						</Import-Package>
 						<Export-Package>
-							org.apromore.calendar.service
+							org.apromore.calendar.service,
+							org.apromore.calendar.model,
+							org.apromore.calendar.exception
 						</Export-Package>
 					</instructions>
 				</configuration>

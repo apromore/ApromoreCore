@@ -21,11 +21,11 @@
   -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <window
-        xmlns:ca="client/attribute"
-        sclass="ap-share-win"
-        width="700px" height="80%" position="center"
-        closable="true"
-        title="Sharing process log or model" apply="org.apromore.portal.dialogController.ShareController">
+    xmlns:ca="client/attribute"
+    sclass="ap-share-win"
+    width="700px" height="80%" position="center"
+    closable="true"
+    title="File sharing" apply="org.apromore.portal.dialogController.ShareController">
     <script type="text/javascript" src="/themes/ap/share/js/index.js"/>
     <style src="/themes/ap/share/css/index.css"/>
 
@@ -86,7 +86,9 @@
                             <combobox value="${each.access}"
                                       readonly="true"
                                       hflex="1"
-                                      ca:onSelect="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
+                                      forward="onChange=assignmentListbox.onChange"
+                                      ca:data-id="${each.rowGuid}"
+                                      ca:onSelectDisabled="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
                                 <comboitem label="Viewer"/>
                                 <comboitem label="Editor"/>
                                 <comboitem label="Owner"/>

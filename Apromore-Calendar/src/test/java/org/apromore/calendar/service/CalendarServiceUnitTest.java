@@ -103,7 +103,7 @@ public class CalendarServiceUnitTest {
 
 
   @Test(expected = CalendarAlreadyExistsException.class)
-  public void testCreateCalenderWithException() throws CalendarAlreadyExistsException {
+  public void testCreateCalendarWithException() throws CalendarAlreadyExistsException {
     // Given
     CustomCalendar calendar = new CustomCalendar("Test Desc");
     calendar.setId(1l);

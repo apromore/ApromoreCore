@@ -218,7 +218,9 @@
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="Manage users and groups"/>
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
-                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share"/>
+                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file"/>
+                            <h:span class="ap-action-sep"></h:span>
+                            <button id="btnCalendar" visible="false" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="Manage calendars"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />

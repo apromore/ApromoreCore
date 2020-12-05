@@ -226,12 +226,18 @@ public class LogFactory {
                         String lifecycle = nEvent.getAttributes().containsKey("lifecycle:transition") ?
                                 nEvent.getAttributes().get("lifecycle:transition").toString().toLowerCase() :
                                 "complete";
+
+                        long nT = getTimestamp(nEvent);
+
+                        if (lifecycle.equals("start")) {
+                            startTime = nT;
+                        }
+
                         if (lifecycle.equals("complete") ||
                                 lifecycle.equals("manualskip") ||
                                 lifecycle.equals("autoskip")) {
                             eventIndexList.add(i);
 
-                            long nT = getTimestamp(nEvent);
                             if (nT > endTime) endTime = nT;
 
                             break;

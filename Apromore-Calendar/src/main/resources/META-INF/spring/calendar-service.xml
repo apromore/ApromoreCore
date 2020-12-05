@@ -32,6 +32,7 @@
 
     <bean id="calendarService" class="org.apromore.calendar.service.CustomCalendarService">
         <property name="calendarRepo" ref="customCalendarRepository"/>
+        <property name="calendarInfoRepo" ref="customCalendarInfoRepository"/>
         <property name="modelMapper" ref="customMapper"/>
     </bean>
     

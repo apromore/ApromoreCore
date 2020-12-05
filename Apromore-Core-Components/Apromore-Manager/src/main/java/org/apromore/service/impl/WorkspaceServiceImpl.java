@@ -139,6 +139,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    public List<Process> getProcessesByPrefix(String prefix) {
+        return processRepo.findWithPrefix(prefix);
+    }
+
+    @Override
+    public List<Log> getLogsByPrefix(String prefix) {
+        return logRepo.findWithPrefix(prefix);
+    }
+
+    @Override
     public Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable) {
 	return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
 	                       : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
@@ -361,12 +371,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public String saveLogAccessRights(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                      boolean hasOwnership, boolean shareUserMetadata) {
+    @Transactional
+    public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
         Log log = logRepo.findOne(logId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
-        createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+        createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
 
         Folder parentFolder = log.getFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
@@ -377,8 +387,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         if (shareUserMetadata){
             // Sync permission with user metadata that linked to specified log
-            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, hasRead, hasWrite,
-                    hasOwnership);
+            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, accessType);
+        } else {
+            // Automatically share simulation user metadata when the log is shared
+            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, accessType);
         }
 
         return "";

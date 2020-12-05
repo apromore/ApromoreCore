@@ -123,6 +123,7 @@
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.exception,
                             org.apromore.portal.servlet,
+                            org.apromore.portal.types,
                             org.apromore.portal.util
                         </Export-Package>
                         <Web-ContextPath>${site.portal}</Web-ContextPath>
@@ -174,6 +175,13 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>com.springsource.javax.xml.bind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -445,6 +453,11 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

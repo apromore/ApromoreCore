@@ -46,6 +46,7 @@
 		<module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
 		<module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
 		<module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
+		<module>Apromore-OSGI-Bundles/jersey-osgi</module>
 		<module>Apromore-OSGI-Bundles/json-osgi</module>
 		<module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
 		<module>Apromore-OSGI-Bundles/xlsx-streamer-osgi</module>
@@ -60,6 +61,11 @@
 		<module>Apromore-Core-Components/Apromore-Portal</module>
 		<module>Apromore-Core-Components/Apromore-Manager</module>
 		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
+
+		<module>Apromore-Cache</module>
+		<module>Apromore-Database</module>
+		<module>Apromore-Calendar</module>
+		<module>Apromore-Commons</module>
 
 		<!-- Custom Plugins -->
 		<module>Apromore-Plugins</module>
@@ -85,10 +91,12 @@
 		<module>Apromore-Custom-Plugins/Merge-Portal-Plugin</module>
 		<module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
 		<module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/REST-Endpoint</module>
 		<module>Apromore-Custom-Plugins/Similarity-Search-Logic</module>
 		<module>Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin</module>
 
 		<module>Apromore-Custom-Plugins/User-Admin-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/Calendar-Portal</module>
 		<!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
 		<!-- Clients that we can distribute -->
@@ -109,11 +117,7 @@
 		<module>Apromore-Assembly/Manager-Assembly</module>
 		<module>Apromore-Assembly/Portal-Assembly</module>
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
-    	<module>Apromore-Cache</module>
-    	<module>Apromore-Calendar</module>
-    	<module>Apromore-Database</module>
-
-		<module>Apromore-Commons</module>
+    	
   </modules>
 
 	<properties>
@@ -137,6 +141,7 @@
 		<apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
 		<apromore-cache.version>1.0</apromore-cache.version>
 		<apromore-database.version>1.0</apromore-database.version>
+		<apromore-calendar.version>1.0</apromore-calendar.version>
 
 		<gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 		<httpcomponents.version>4.2.1</httpcomponents.version>
@@ -518,7 +523,15 @@
 				<artifactId>apromore-database</artifactId>
 				<version>${apromore-database.version}</version>
 			</dependency>
-	
+
+			<!-- Apromore Calendar  -->
+
+			<dependency>
+				<groupId>org.apromore</groupId>
+				<artifactId>apromore-calendar</artifactId>
+				<version>${apromore-calendar.version}</version>
+			</dependency>
+
 			<!-- Plugin API -->
 			<dependency>
 				<groupId>org.apromore.plugin</groupId>

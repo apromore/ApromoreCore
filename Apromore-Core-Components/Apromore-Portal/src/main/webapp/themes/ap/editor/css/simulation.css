@@ -31,3 +31,7 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
 .x-layout-collapsed.x-layout-collapsed-east text {
     fill: #aaaaaa;
 }
+
+.x-layout-collapsed.x-layout-collapsed-east svg {
+    overflow: visible;
+}
