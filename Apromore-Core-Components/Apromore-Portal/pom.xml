@@ -124,7 +124,8 @@
                             org.apromore.portal.exception,
                             org.apromore.portal.servlet,
                             org.apromore.portal.types,
-                            org.apromore.portal.util
+                            org.apromore.portal.util,
+                            org.apromore.portal.plugin
                         </Export-Package>
                         <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>
