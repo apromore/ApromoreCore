@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.deckfour.xes.model.XLog;
 
+@Deprecated
 public interface LogAnimationService {
 
    class Log {
