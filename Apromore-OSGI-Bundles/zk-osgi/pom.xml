@@ -57,6 +57,7 @@
                             org.apromore.plugin.portal.*,
                             dashboard,
                             org.apache.poi.ooxml,
+                            org.zkoss.chart.*,
                             zul.*
                         </DynamicImport-Package>                        
                         <Export-Package>
