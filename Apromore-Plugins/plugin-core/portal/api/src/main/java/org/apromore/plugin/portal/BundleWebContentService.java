@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 /**
  * A {@link WebContentService} serving resources from a specified {@link BundleContext}.
  *
- * Serves any file in the component's src/main/resource directory as the corresponding URL.
+ * Serves files in the component's src/main/resource directory as the corresponding URL.
  * E.g. src/main/resource/test.zul is accessible as http://localhost:9000/test.zul.
- * Resources ending in .class or within the META-INF or WEB-INF directories are excluded.
+ * Regular expressions can be configured to include or exclude particular paths.
  *
  * A component can employ it by configuring a bean in its Spring context and exporting it as an OSGi service.
  * The bean must be passed a {@link BundleContext} constructor argument specifying the source bundle.
@@ -74,7 +74,7 @@ public class BundleWebContentService implements WebContentService {
     private Pattern excludePattern = Pattern.compile("WEB-INF/.*|.*\\.class|.*/");
 
     /**
-     * Paths which don't matching the given pattern will never be exposed by this service.
+     * Paths which don't match the given pattern will never be exposed by this service.
      */
     private Pattern includePattern = Pattern.compile(".*");
 
