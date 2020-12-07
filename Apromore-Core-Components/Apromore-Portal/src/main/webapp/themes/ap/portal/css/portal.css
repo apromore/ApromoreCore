@@ -581,7 +581,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 }
 
 /* hack for trash icon in menu */
-.z-menuitem-text img[src='portalPluginResource/File/Delete/trash.svg'] {
+.z-menuitem-text img[src='trash.svg'] {
   margin-left: -2px !important;
   margin-right: 10px !important;
 }
