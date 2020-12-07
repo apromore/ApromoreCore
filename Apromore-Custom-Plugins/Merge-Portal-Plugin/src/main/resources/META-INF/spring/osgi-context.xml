@@ -41,4 +41,11 @@
     <osgi:reference id="mergeService" interface="org.apromore.plugin.merge.logic.MergeService"/>
     <osgi:reference id="domainService" interface="org.apromore.service.DomainService"/>
 
+    <osgi:service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.BundleWebContentService">
+            <beans:constructor-arg ref="bundleContext"/>
+            <beans:property name="include" value="/merge/icon.svg"/>
+        </beans:bean>
+    </osgi:service>
+
 </beans:beans>

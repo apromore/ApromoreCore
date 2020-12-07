@@ -112,6 +112,11 @@ public class MergePlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "merge/icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         try {
             LOGGER.info("Executing");

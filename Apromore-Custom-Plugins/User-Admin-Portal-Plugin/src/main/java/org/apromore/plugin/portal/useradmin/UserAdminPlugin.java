@@ -66,6 +66,11 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "user-admin/icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
 
         try {

@@ -115,15 +115,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                 Menu menu = menuMap.get(menuName);
                 Menuitem menuitem = new Menuitem();
                 if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
-                    try {
-                        menuitem.setImage("portalPluginResource/"
-                            + URLEncoder.encode(plugin.getGroupLabel(Locale.getDefault()), "utf-8") + "/"
-                            + URLEncoder.encode(plugin.getLabel(Locale.getDefault()), "utf-8") + "/"
-                            + plugin.getIconPath());
-
-                    } catch (UnsupportedEncodingException e) {
-                        throw new Error("Hardcoded UTF-8 encoding failed", e);
-                    }
+                    menuitem.setImage(plugin.getIconPath());
                 } else {
                     menuitem.setImageContent(plugin.getIcon());
                 }

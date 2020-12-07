@@ -80,6 +80,11 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
     }
 
     @Override
+    public String getIconPath() {
+        return "loganimation/icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
 
         List<Object[]> processes = new ArrayList<>();

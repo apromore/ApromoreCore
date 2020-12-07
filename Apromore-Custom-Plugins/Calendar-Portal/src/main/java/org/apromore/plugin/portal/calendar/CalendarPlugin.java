@@ -54,6 +54,11 @@ public class CalendarPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "calendar/icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
 
         try {

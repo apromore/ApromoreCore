@@ -116,11 +116,6 @@
     <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
   </servlet>
   
-  <servlet>
-    <servlet-name>portalPluginResource</servlet-name>
-    <servlet-class>org.apromore.portal.servlet.PortalPluginResourceServlet</servlet-class>
-  </servlet>
-
   <servlet-mapping>
     <servlet-name>zkLoader</servlet-name>
     <url-pattern>*.zul</url-pattern>
@@ -171,11 +166,6 @@
     <url-pattern>/register/resetPassword/*</url-pattern>
   </servlet-mapping>
   
-  <servlet-mapping>
-    <servlet-name>portalPluginResource</servlet-name>
-    <url-pattern>/portalPluginResource/*</url-pattern>
-  </servlet-mapping>
-
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>

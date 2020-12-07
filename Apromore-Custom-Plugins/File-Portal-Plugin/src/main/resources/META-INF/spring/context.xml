@@ -75,4 +75,11 @@
         <beans:bean class="org.apromore.plugin.portal.file.DeleteSelectionPlugin"/>
     </osgi:service>
 
+    <osgi:service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.BundleWebContentService">
+            <beans:constructor-arg ref="bundleContext"/>
+            <beans:property name="include" value=".*\.svg"/>
+        </beans:bean>
+    </osgi:service>
+
 </beans:beans>

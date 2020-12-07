@@ -42,5 +42,13 @@
     <!-- Exposes the component as OSGI service -->
     <osgi:service ref="similaritySearchPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
     <osgi:reference id="similarityService" interface="org.apromore.plugin.similaritysearch.logic.SimilarityService"/>
+
+    <!-- Exposes static web content (SVG image) -->
+    <osgi:service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.BundleWebContentService">
+            <beans:constructor-arg ref="bundleContext"/>
+            <beans:property name="include" value="/similaritysearch/icon.svg"/>
+        </beans:bean>
+    </osgi:service>
        
 </beans:beans>

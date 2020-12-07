@@ -66,6 +66,11 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
     public void setGroupLabel(String groupLabel) {
         this.groupLabel = groupLabel;
     }
+
+    @Override
+    public String getIconPath() {
+        return "processdiscoverer/icon.svg";
+    }
     
     @Override
     public void execute(PortalContext context) {
