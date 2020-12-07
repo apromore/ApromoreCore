@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.portal.plugin;
+package org.apromore.portal.plugincontrol;
 
 import java.util.HashMap;
 import java.util.Map;

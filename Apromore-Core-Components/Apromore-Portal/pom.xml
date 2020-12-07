@@ -125,7 +125,7 @@
                             org.apromore.portal.servlet,
                             org.apromore.portal.types,
                             org.apromore.portal.util,
-                            org.apromore.portal.plugin
+                            org.apromore.portal.plugincontrol
                         </Export-Package>
                         <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>

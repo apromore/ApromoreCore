@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.plugin.PluginExecution;
-import org.apromore.portal.plugin.PluginExecutionManager;
+import org.apromore.portal.plugincontrol.PluginExecution;
+import org.apromore.portal.plugincontrol.PluginExecutionManager;
 
 /**
  * This servlet is used to establish a communication channel for the browsers to send data request
