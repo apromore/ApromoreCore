@@ -205,6 +205,7 @@
         <n:span class="ap-action-sep"></n:span>
         <!-- <button ca:data-t="animate" id="animate" w:onClick="Ap.pd.animate()" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/> -->
         <button ca:data-t="animate" id="animate" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/>
+        <button ca:data-t="animate" id="animate_new" tooltiptext="Animate NEW" sclass="ap-icon ap-icon-play-circle"/>
       </div>
       <div hflex="1" align="right">
         <!-- Exact single search -->
