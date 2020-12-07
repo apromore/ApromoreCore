@@ -84,7 +84,8 @@
 		<module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
 
 		<module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
-		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
+		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>     
 
 		<module>Apromore-Custom-Plugins/Log-Logic</module>
 		<module>Apromore-Custom-Plugins/Merge-Logic</module>
