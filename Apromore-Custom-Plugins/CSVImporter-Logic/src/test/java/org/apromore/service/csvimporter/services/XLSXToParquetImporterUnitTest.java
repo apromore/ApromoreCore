@@ -24,8 +24,8 @@ package org.apromore.service.csvimporter.services;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,10 +43,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class XLSXToParquetExporterUnitTest {
+public class XLSXToParquetImporterUnitTest {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXToParquetExporterUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXToParquetImporterUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
@@ -55,23 +55,23 @@ public class XLSXToParquetExporterUnitTest {
 
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private ParquetExporter parquetExporter;
+    private MetaDataService metaDataService;
+    private ParquetImporter parquetImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
                 .getParquetFactory("xlsx")
-                .createSampleLogGenerator();
-        parquetExporter = parquetFactoryProvider
+                .getMetaDataService();
+        parquetImporter = parquetFactoryProvider
                 .getParquetFactory("xlsx")
-                .createParquetExporter();
+                .getParquetImporter();
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
+     * Test {@link MetaDataService} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
      */
     @Test
     public void testSampleCSV_undersample() throws Exception {
@@ -80,15 +80,20 @@ public class XLSXToParquetExporterUnitTest {
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
-        LogSample sample = sampleLogGenerator
+        // Perform the test
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+
+        List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+
         // Validate result
-        assertEquals(SAMPLE_EXPECTED_HEADER, sample.getHeader());
-        assertEquals(2, sample.getLines().size());
+        assertEquals(SAMPLE_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(2, sampleLog.size());
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.xlsx</code>.
+     * Test {@link MetaDataService} sampling more lines than contained in <code>test1-valid.xlsx</code>.
      */
     @Test
     public void testSampleCSV_oversample() throws Exception {
@@ -97,16 +102,19 @@ public class XLSXToParquetExporterUnitTest {
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
-        LogSample sample = sampleLogGenerator
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+
+        List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
 
         // Validate result
-        assertEquals(SAMPLE_EXPECTED_HEADER, sample.getHeader());
-        assertEquals(3, sample.getLines().size());
+        assertEquals(SAMPLE_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(3, sampleLog.size());
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an valid xlsx log <code>test1-valid.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
     @Test
     public void test1_valid() throws Exception {
@@ -120,15 +128,15 @@ public class XLSXToParquetExporterUnitTest {
         File tempOutput = File.createTempFile("test", "parquet");
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
-        //Generate sample
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+        // Perform the test
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -147,7 +155,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test2_missing_columns() throws Exception {
@@ -161,15 +169,15 @@ public class XLSXToParquetExporterUnitTest {
         // Set up inputs and expected outputs
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
-        //Generate sample
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+        // Perform the test
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -187,7 +195,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
@@ -202,14 +210,14 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -227,7 +235,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
@@ -242,14 +250,14 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -267,7 +275,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test5-expected.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
@@ -282,14 +290,14 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -307,7 +315,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test6_record_invalid() throws Exception {
@@ -322,18 +330,18 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setStartTimestampPos(2);
-        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        logMetaData.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -351,7 +359,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test7_all_invalid() throws Exception {
@@ -362,14 +370,14 @@ public class XLSXToParquetExporterUnitTest {
         File tempOutput = File.createTempFile("test", "parquet");
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -381,7 +389,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
@@ -396,21 +404,21 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setEndTimestampPos(3);
-        sample.setStartTimestampPos(2);
-        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+        logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setEndTimestampPos(3);
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -427,7 +435,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test9_detect_name() throws Exception {
@@ -442,14 +450,14 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         tempOutput,
                         true);
@@ -467,7 +475,7 @@ public class XLSXToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link XLSToParquetExporter} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
+     * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
     @Ignore
     @Test
@@ -483,17 +491,18 @@ public class XLSXToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
 
-        sample.setActivityPos(1);
-        sample.getEventAttributesPos().remove(Integer.valueOf(1));
-        sample.setEndTimestampFormat("MM/dd/yy HH:mm");
+        logMetaData.setActivityPos(1);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
+        logMetaData.setEndTimestampFormat("MM/dd/yy HH:mm");
+
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "windows-1255",
                         tempOutput,
                         true);

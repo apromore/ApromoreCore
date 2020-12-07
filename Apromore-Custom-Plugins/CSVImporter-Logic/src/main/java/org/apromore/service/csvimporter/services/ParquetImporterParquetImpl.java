@@ -39,7 +39,7 @@ import java.util.List;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
-class ParquetToParquetExporter implements ParquetExporter {
+class ParquetImporterParquetImpl implements ParquetImporter {
 
     private List<LogErrorReport> logErrorReport;
     private LogProcessorParquet logProcessorParquet;
@@ -47,10 +47,10 @@ class ParquetToParquetExporter implements ParquetExporter {
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParqeuetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         try {
-            ParquetLogSampleImpl parquetLogSample = (ParquetLogSampleImpl) sample;
+            ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) sample;
             parquetLogSample.validateSample();
 
             //If file exist, delete it
@@ -112,8 +112,8 @@ class ParquetToParquetExporter implements ParquetExporter {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        //Upon migrating to parquet, xlog need to be removed and LogModelXLogImpl need to be renamed
-                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                     }
                 }
 
@@ -128,8 +128,8 @@ class ParquetToParquetExporter implements ParquetExporter {
             if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;
 
-            //Upon migrating to parquet, xlog need to be removed and LogModelXLogImpl need to be renamed
-            return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
+            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
         } finally {
             closeQuietly(in);
         }

@@ -24,8 +24,8 @@
 
 package org.apromore.service.csvimporter.services.legacy;
 
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ import java.io.InputStream;
  * to convert the entire document.
  * The converted XES model is obtained using {@link LogModel#getXLog}.
  */
-public interface LogReader {
+public interface LogImporter {
 
     /**
      * Process an entire CSV document using a given header configuration.
@@ -48,6 +48,6 @@ public interface LogReader {
      * @param sample header configuration
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception;
+    LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception;
 
 }

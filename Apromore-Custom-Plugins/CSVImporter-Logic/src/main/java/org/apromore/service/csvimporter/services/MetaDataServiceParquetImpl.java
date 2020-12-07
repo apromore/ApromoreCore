@@ -27,8 +27,8 @@ import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.FileWriter;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
-import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.model.ParquetLogSampleImpl;
+import org.apromore.service.csvimporter.model.LogMetaData;
+import org.apromore.service.csvimporter.model.ParquetLogMetaData;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,14 +38,47 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
-class ParquetSampleLogGenerator implements SampleLogGenerator {
+class MetaDataServiceParquetImpl extends MetaDataService {
     private ParquetReader<Group> reader;
 
     @Override
-    public void validateLog(InputStream in, String charset) { /**To be Implemented**/}
+    public void validateLog(InputStream in, String charset) throws Exception {
+        try {
+            //Write InputStream to a file
+            File tempFile = File.createTempFile("samplelog", "parquet");
+            new FileWriter(in, tempFile).writeToFile();
+            //Read Parquet file
+            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+            MessageType schema = parquetLocalFileReader.getSchema();
+
+            if (schema == null || schema.getColumns().size() <= 0)
+                throw new Exception("Unable to import file. Schema is missing.");
+
+        } catch (Exception e) {
+            throw new Exception("Unable to import file");
+        } finally {
+            in.close();
+        }
+    }
 
     @Override
-    public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
+    public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
+        try {
+            //Write InputStream to a file
+            File tempFile = File.createTempFile("samplelog", "parquet");
+            new FileWriter(in, tempFile).writeToFile();
+            //Read Parquet file
+            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+            MessageType schema = parquetLocalFileReader.getSchema();
+            return new ParquetLogMetaData(getHeaderFromParquet(schema), tempFile);
+
+        } finally {
+            in.close();
+        }
+    }
+
+    @Override
+    public List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
         try {
             //Write InputStream to a file
@@ -66,7 +99,7 @@ class ParquetSampleLogGenerator implements SampleLogGenerator {
                 lineIndex++;
             }
 
-            return new ParquetLogSampleImpl(getHeaderFromParquet(schema), lines, tempFile);
+            return lines;
 
         } finally {
             reader.close();

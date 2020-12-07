@@ -22,10 +22,10 @@
 package org.apromore.service.csvimporter.services.legacy;
 
 import com.google.common.io.ByteStreams;
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
+import org.apromore.service.csvimporter.services.MetaDataService;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
@@ -41,30 +41,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class ParquetLogReaderImplUnitTest {
+public class ParquetLogImporterCSVImplUnitTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParquetLogReaderImplUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParquetLogImporterCSVImplUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
     private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private LogReader logReader;
+    private MetaDataService metaDataService;
+    private LogImporter logImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
                 .getParquetFactory("parquet")
-                .createSampleLogGenerator();
-        logReader = new ParquetLogReaderImpl();
+                .getMetaDataService();
+        logImporter = new LogImporterParquetImpl();
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.parquet</code>.
+     * Test {@link MetaDataService} sampling fewer lines than contained in <code>test1-valid.parquet</code>.
      */
     @Test
     public void testSampleParquet_undersample() throws Exception {
@@ -73,17 +73,18 @@ public class ParquetLogReaderImplUnitTest {
 
         String testFile = "/test1-valid.parquet";
 
-        // Perform the test
-        LogSample sample = sampleLogGenerator
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
 
         // Validate result
-        assertEquals(PARQUET_EXPECTED_HEADER, sample.getHeader());
-        assertEquals(2, sample.getLines().size());
+        assertEquals(PARQUET_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(2, sampleLog.size());
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.parquet</code>.
+     * Test {@link MetaDataService} sampling more lines than contained in <code>test1-valid.parquet</code>.
      */
     @Test
     public void testSampleCSV_oversample() throws Exception {
@@ -92,16 +93,18 @@ public class ParquetLogReaderImplUnitTest {
         String testFile = "/test1-valid.parquet";
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
 
         // Validate result
-        assertEquals(PARQUET_EXPECTED_HEADER, sample.getHeader());
-        assertEquals(3, sample.getLines().size());
+        assertEquals(PARQUET_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(3, sampleLog.size());
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an valid parquet log <code>test1-valid.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an valid parquet log <code>test1-valid.parquet</code>.
      */
     @Test
     public void test1_valid() throws Exception {
@@ -115,12 +118,11 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
-
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -137,7 +139,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test3-invalid-end-timestamp.parquetv</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test3-invalid-end-timestamp.parquetv</code>.
      */
     @Test
     public void test3_invalid_end_timestamp() throws Exception {
@@ -150,12 +152,11 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
-
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -171,7 +172,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test4-invalid-start-timestamp.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test4-invalid-start-timestamp.parquet</code>.
      */
     @Test
     public void test4_invalid_start_timestamp() throws Exception {
@@ -184,12 +185,11 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
-
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -205,7 +205,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test5-empty-caseID.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test5-empty-caseID.parquet</code>.
      */
     @Test
     public void test5_empty_caseID() throws Exception {
@@ -218,12 +218,11 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
-
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -239,7 +238,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test8-all-invalid.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test8-all-invalid.parquet</code>.
      */
     @Test
     public void test7_all_invalid() throws Exception {
@@ -249,12 +248,11 @@ public class ParquetLogReaderImplUnitTest {
         String testFile = "/test8-all-invalid.parquet";
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
-
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -263,7 +261,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test9-differentiate-dates.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test9-differentiate-dates.parquet</code>.
      */
     @Test
     public void test8_differentiate_dates() throws Exception {
@@ -276,19 +274,19 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        sample.setEndTimestampPos(3);
-        sample.setStartTimestampPos(2);
-        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+        logMetaData.setEndTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        logMetaData.setStartTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        logMetaData.setEndTimestampPos(3);
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -304,7 +302,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test10-eventAttribute.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test10-eventAttribute.parquet</code>.
      */
     @Test
     public void test9_detect_name() throws Exception {
@@ -317,12 +315,11 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
-
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -338,7 +335,7 @@ public class ParquetLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link ParquetLogReaderImpl} against an invalid parquet log <code>test11-encoding.parquet</code>.
+     * Test {@link LogImporterParquetImpl} against an invalid parquet log <code>test11-encoding.parquet</code>.
      */
     @Test
     public void test10_encoding() throws Exception {
@@ -351,14 +348,15 @@ public class ParquetLogReaderImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(this.getClass().getResourceAsStream(expectedFile)), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "windows-1255");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+        logMetaData.setActivityPos(1);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
-        sample.setActivityPos(1);
-        sample.getEventAttributesPos().remove(Integer.valueOf(1));
         //Export parquet
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "windows-1255", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true);
+
         //Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 

@@ -21,12 +21,10 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import com.opencsv.CSVReader;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.io.XLSReader;
+import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.*;
 import org.apromore.service.csvimporter.services.LogProcessor;
 import org.apromore.service.csvimporter.services.LogProcessorImpl;
@@ -41,36 +39,47 @@ import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class XLSXLogReaderImpl implements LogReader, Constants {
+import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
+
+public class LogImporterCSVImpl implements LogImporter, Constants {
 
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
-    private final int BUFFER_SIZE = 2048;
-    private final int DEFAULT_NUMBER_OF_ROWS = 100;
+    private Reader readerin;
+    private BufferedReader brReader;
+    private InputStream in2;
+    private CSVReader reader;
 
     @Override
-    public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
+    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception {
 
-        try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
+        try {
             sample.validateSample();
-            if (workbook == null)
-                throw new Exception("Unable to import file");
+            // Read the header
+            readerin = new InputStreamReader(in, Charset.forName(charset));
+            brReader = new BufferedReader(readerin);
+            String firstLine = brReader.readLine();
+            firstLine = firstLine.replaceAll("\"", "");
+            char separator = getMaxOccurringChar(firstLine);
+            String[] header = firstLine.split("\\s*" + separator + "\\s*");
 
-            // Process first sheet only
-            Sheet sheet = workbook.getSheetAt(0);
-            //Get the header
-            if (sheet == null)
-                throw new Exception("Unable to import file");
+            // Read the reset of the log
+            in2 = new ReaderInputStream(brReader, charset);
+            reader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
-            String[] header = sample.getHeader().toArray(new String[0]);
+            if (reader == null)
+                return null;
+
             logProcessor = new LogProcessorImpl();
             logErrorReport = new ArrayList<>();
-            int lineIndex = 0;
+            int lineIndex = 1; // set to 1 since first line is the header
             int numOfValidEvents = 0;
+
             String[] line;
             TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
             boolean rowLimitExceeded = false;
@@ -82,41 +91,30 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             XTimeExtension timestamp = XTimeExtension.instance();
             XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
 
-            XLog xLog = xFactory.createLog();
+            XLog xLog;
+            xLog = xFactory.createLog();
             xLog.getExtensions().add(concept);
             xLog.getExtensions().add(lifecycle);
             xLog.getExtensions().add(timestamp);
             xLog.getExtensions().add(resourceXes);
-
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
+
             LogEventModelExt logEventModelExt;
 
-            for (Row r : sheet) {
-                //Skip header
-                if (r.getRowNum() == 0)
-                    continue;
-
-                if (!isValidLineCount(lineIndex - 1))
-                    break;
+            while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
                 // new row, new event.
                 lineIndex++;
 
-                //Validate num of column
-                if (r.getPhysicalNumberOfCells() > header.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
-                    continue;
-                }
-
-                line = new String[header.length];
-                //Get the rows
-                for (Cell c : r) {
-                    line[c.getColumnIndex()] = c.getStringCellValue();
-                }
-
                 //empty row
                 if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
                     continue;
+
+                //Validate num of column
+                if (header.length != line.length) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                    continue;
+                }
 
                 //Construct an event
                 logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
@@ -126,9 +124,10 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                     }
                 }
+
                 //Construct a Trace if it's not exists
                 if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModelExt.getCaseID())) {
                     XTrace xT = xFactory.createTrace();
@@ -155,11 +154,10 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
-            return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
-        } catch (Exception e) {
-            throw e;
+            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
+
         } finally {
-            in.close();
+            closeQuietly(in);
         }
     }
 
@@ -179,9 +177,11 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     }
 
     private void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xTrace) {
+
         XAttributeMap xAttributeMap = xTrace.getAttributes();
 
         if (caseAttributes != null && !caseAttributes.isEmpty()) {
+
             XAttribute attribute;
             for (Map.Entry<String, String> entry : caseAttributes.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().trim().length() != 0 && !xAttributeMap.containsKey(entry.getKey())) {
@@ -193,8 +193,10 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
     }
 
     private XEvent createEvent(LogEventModel myEvent, Boolean isEndTimestamp) {
+
         XFactory xFactory = new XFactoryNaiveImpl();
         XEvent xEvent = xFactory.createEvent();
+
         XConceptExtension concept = XConceptExtension.instance();
         concept.assignName(xEvent, myEvent.getActivity());
 
@@ -213,6 +215,7 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             timestamp.assignTimestamp(xEvent, myEvent.getStartTimestamp());
         }
 
+
         XAttribute attribute;
         if (myEvent.getOtherTimestamps() != null) {
             Map<String, Timestamp> otherTimestamps = myEvent.getOtherTimestamps();
@@ -230,5 +233,18 @@ public class XLSXLogReaderImpl implements LogReader, Constants {
             }
         }
         return xEvent;
+    }
+
+    private void closeQuietly(InputStream in) throws IOException {
+        if (in != null)
+            in.close();
+        if (this.readerin != null)
+            this.readerin.close();
+        if (this.brReader != null)
+            this.brReader.close();
+        if (this.reader != null)
+            this.reader.close();
+        if (this.in2 != null)
+            this.in2.close();
     }
 }

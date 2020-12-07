@@ -21,14 +21,14 @@
  */
 package org.apromore.service.csvimporter.services;
 
-class CsvFactory implements ConvertToParquetFactory{
+class ParquetImporterFactoryParquetImpl implements ParquetImporterFactory {
     @Override
-    public SampleLogGenerator createSampleLogGenerator() {
-        return new CSVSampleLogGenerator();
+    public MetaDataService getMetaDataService() {
+        return new MetaDataServiceParquetImpl();
     }
 
     @Override
-    public ParquetExporter createParquetExporter() {
-        return new CSVToParquetExporter();
+    public ParquetImporter getParquetImporter() {
+        return new ParquetImporterParquetImpl();
     }
 }

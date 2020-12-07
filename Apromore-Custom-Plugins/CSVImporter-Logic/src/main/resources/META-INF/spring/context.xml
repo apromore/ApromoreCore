@@ -38,12 +38,12 @@
         <bean class="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
     </osgi:service>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogReader">
-        <bean class="org.apromore.service.csvimporter.services.legacy.LogReaderImpl"/>
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterCSVImpl"/>
     </osgi:service>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogReaderProvider">
-        <bean class="org.apromore.service.csvimporter.services.legacy.LogReaderProvider"/>
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporterProvider">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterProvider"/>
     </osgi:service>
 
 </beans>

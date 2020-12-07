@@ -38,7 +38,7 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.createParquetSchema;
 
-public class XLSToParquetExporter implements ParquetExporter {
+public class ParquetImporterXLSXImpl implements ParquetImporter {
 
     private List<LogErrorReport> logErrorReport;
     private final int BUFFER_SIZE = 2048;
@@ -47,7 +47,7 @@ public class XLSToParquetExporter implements ParquetExporter {
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParqeuetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         //If file exist, delete it
         if (outputParquet.exists())
@@ -126,7 +126,7 @@ public class XLSToParquetExporter implements ParquetExporter {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                     }
                 }
 
@@ -140,7 +140,7 @@ public class XLSToParquetExporter implements ParquetExporter {
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
-            return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
         } finally {
             writer.close();
             in.close();

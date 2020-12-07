@@ -26,8 +26,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apromore.service.csvimporter.io.XLSReader;
-import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.model.LogSampleImpl;
+import org.apromore.service.csvimporter.model.LogMetaData;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class XLSSampleLogGenerator implements SampleLogGenerator {
+public class MetaDataServiceXLSXImpl extends MetaDataService {
 
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 10;
@@ -72,7 +71,36 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
     }
 
     @Override
-    public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
+    public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
+
+        try (Workbook workbook = new XLSReader().readXLS(in, 10, BUFFER_SIZE)) {
+            List<String> header = new ArrayList<>();
+
+            if (workbook == null)
+                return null;
+
+            Sheet sheet = workbook.getSheetAt(0);
+            //Get the header
+            if (sheet != null) {
+                for (Row r : sheet) {
+                    for (Cell c : r) {
+                        if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
+                            throw new Exception("header must have non-empty value!");
+                        header.add(c.getStringCellValue().trim());
+                    }
+                    break;
+                }
+            }
+            return new LogMetaData(header);
+
+        } finally {
+            if (in != null)
+                in.close();
+        }
+    }
+
+    @Override
+    public List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
         try (Workbook workbook = new XLSReader().readXLS(in, sampleSize + 1, BUFFER_SIZE)) {
             List<String> header = new ArrayList<>();
@@ -108,7 +136,7 @@ public class XLSSampleLogGenerator implements SampleLogGenerator {
                     lines.add(Arrays.asList(line));
                 }
             }
-            return new LogSampleImpl(header, lines);
+            return lines;
 
         } finally {
             if (in != null)

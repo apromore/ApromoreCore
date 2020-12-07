@@ -26,18 +26,18 @@ import org.slf4j.LoggerFactory;
 
 import static org.apromore.service.csvimporter.constants.Constants.*;
 
-public class LogReaderProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderProvider.class);
+public class LogImporterProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogImporterProvider.class);
 
-    public LogReader getLogReader(String fileExtension) {
+    public LogImporter getLogReader(String fileExtension) {
 
         LOGGER.info("File Format: " + fileExtension);
         if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
-            return new LogReaderImpl();
+            return new LogImporterCSVImpl();
         } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
-            return new XLSXLogReaderImpl();
+            return new LogImporterXLSXImpl();
         } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
-            return new ParquetLogReaderImpl();
+            return new LogImporterParquetImpl();
         } else {
             return null;
         }

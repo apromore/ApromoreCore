@@ -22,10 +22,10 @@
 
 package org.apromore.service.csvimporter.services.legacy;
 
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.services.MetaDataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
@@ -39,30 +39,30 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class LogReaderImplUnitTest {
+public class LogImporterCSVImplUnitTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogReaderImplUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogImporterCSVImplUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
     private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private LogReader logReader;
+    private MetaDataService metaDataService;
+    private LogImporter logImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
                 .getParquetFactory("csv")
-                .createSampleLogGenerator();
-        logReader = new LogReaderImpl();
+                .getMetaDataService();
+        logImporter = new LogImporterCSVImpl();
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.csv</code>.
+     * Test {@link MetaDataService} sampling fewer lines than contained in <code>test1-valid.csv</code>.
      */
     @Test
     public void testSampleCSV_undersample() throws Exception {
@@ -71,16 +71,18 @@ public class LogReaderImplUnitTest {
 
         // Test file data
         String testFile = "/test1-valid.csv";
-        LogSample logSample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+
+        List<List<String>> sampleLog = metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
 
         // Validate result
-        assertEquals(TEST1_EXPECTED_HEADER, logSample.getHeader());
-        assertEquals(2, logSample.getLines().size());
+        assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(2, sampleLog.size());
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.csv</code>.
+     * Test {@link MetaDataService} sampling more lines than contained in <code>test1-valid.csv</code>.
      */
     @Test
     public void testSampleCSV_oversample() throws Exception {
@@ -89,16 +91,18 @@ public class LogReaderImplUnitTest {
 
         // Test file data
         String testFile = "/test1-valid.csv";
-        LogSample logSample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+
+        List<List<String>> sampleLog = metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
 
         // Validate result
-        assertEquals(TEST1_EXPECTED_HEADER, logSample.getHeader());
-        assertEquals(3, logSample.getLines().size());
+        assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(3, sampleLog.size());
     }
 
     /**
-     * Test {@link LogReaderImpl} against an valid CSV log <code>test1-valid.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an valid CSV log <code>test1-valid.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test1_valid() throws Exception {
@@ -111,11 +115,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -132,7 +136,7 @@ public class LogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test2_missing_columns() throws Exception {
@@ -145,11 +149,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -165,7 +169,7 @@ public class LogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test3-invalid-end-timestamp.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test3-invalid-end-timestamp.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
@@ -178,11 +182,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -198,7 +202,7 @@ public class LogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test4-invalid-start-timestamp.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test4-invalid-start-timestamp.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
@@ -211,11 +215,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -232,7 +236,7 @@ public class LogReaderImplUnitTest {
 
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test5-empty-caseID.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test5-empty-caseID.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
@@ -245,11 +249,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -266,7 +270,7 @@ public class LogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test6-different-delimiters.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test6-different-delimiters.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test6_different_delimiters() throws Exception {
@@ -279,11 +283,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -300,7 +304,7 @@ public class LogReaderImplUnitTest {
 
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test7-record-invalid.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test7-record-invalid.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test7_record_invalid() throws Exception {
@@ -313,15 +317,16 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setStartTimestampPos(2);
-        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        logMetaData.getCaseAttributesPos().remove(Integer.valueOf(2));
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -338,7 +343,7 @@ public class LogReaderImplUnitTest {
 
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test8-all-invalid.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test8-all-invalid.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test8_all_invalid() throws Exception {
@@ -348,11 +353,11 @@ public class LogReaderImplUnitTest {
         // Test file data
         String testFile = "/test8-all-invalid.csv";
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -362,7 +367,7 @@ public class LogReaderImplUnitTest {
 
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test9-differentiate-dates.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test9-differentiate-dates.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
@@ -375,18 +380,18 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setEndTimestampPos(3);
-        sample.setStartTimestampPos(2);
-        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+        logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setEndTimestampPos(3);
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -403,7 +408,7 @@ public class LogReaderImplUnitTest {
 
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test10-eventAttribute.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test10-eventAttribute.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test10_detect_name() throws Exception {
@@ -416,11 +421,11 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -436,7 +441,7 @@ public class LogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link LogReaderImpl} against an invalid CSV log <code>test11-encoding.csv</code>.
+     * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test11-encoding.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test11_encoding() throws Exception {
@@ -449,14 +454,15 @@ public class LogReaderImplUnitTest {
         // Set up inputs and expected outputs
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
 
-        sample.setActivityPos(1);
-        sample.getEventAttributesPos().remove(Integer.valueOf(1));
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+        logMetaData.setActivityPos(1);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "windows-1255", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true);
+
         //Continue with the XES conversion
         XLog xlog = logModel.getXLog();
 

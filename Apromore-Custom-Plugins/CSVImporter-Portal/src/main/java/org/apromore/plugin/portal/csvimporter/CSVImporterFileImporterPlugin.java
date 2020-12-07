@@ -30,7 +30,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.legacy.LogReaderProvider;
+import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
     private ParquetFactoryProvider parquetFactoryProvider;
-    LogReaderProvider logReaderProvider;
+    LogImporterProvider logImporterProvider;
     private UserMetadataService userMetadataService;
 
     public ParquetFactoryProvider getParquetFactoryProvider() {
@@ -64,12 +64,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.parquetFactoryProvider = parquetFactoryProvider;
     }
 
-    public LogReaderProvider getLogReaderProvider() {
-        return logReaderProvider;
+    public LogImporterProvider getLogReaderProvider() {
+        return logImporterProvider;
     }
 
-    public void setLogReaderProvider(LogReaderProvider logReaderProvider) {
-        this.logReaderProvider = logReaderProvider;
+    public void setLogReaderProvider(LogImporterProvider logImporterProvider) {
+        this.logImporterProvider = logImporterProvider;
     }
 
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
@@ -90,7 +90,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
         arg.put("parquetFactoryProvider", parquetFactoryProvider);
-        arg.put("logReaderProvider", logReaderProvider);
+        arg.put("logImporterProvider", logImporterProvider);
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");

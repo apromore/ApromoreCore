@@ -21,14 +21,14 @@
  */
 package org.apromore.service.csvimporter.services;
 
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
 
 import java.io.File;
 import java.io.InputStream;
 
-public interface ParquetExporter {
+public interface ParquetImporter {
 
-    LogModel generateParqeuetFile(InputStream in, LogSample sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception;
+    LogModel importParqeuetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception;
 
 }

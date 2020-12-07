@@ -1,8 +1,6 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- *
- * Copyright (C) 2020 University of Tartu
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
  * %%
@@ -10,35 +8,40 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 package org.apromore.service.csvimporter.model;
 
-import org.apromore.service.csvimporter.services.legacy.CreateXLog;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
 
+//Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
 public class LogModelImpl implements LogModel {
-
-    private List<LogEventModel> rows;
+    private XLog xLog;
     private List<LogErrorReport> logErrorReport;
     private boolean rowLimitExceeded = false;
+    private int numOfEvents;
 
-    public LogModelImpl(List<LogEventModel> rows, List<LogErrorReport> logErrorReportImpl, boolean rowLimitExceeded) {
-        this.rows = rows;
+    public LogModelImpl(XLog xLog, List<LogErrorReport> logErrorReportImpl, boolean rowLimitExceeded, int numOfEvents) {
+        this.xLog = xLog;
         this.logErrorReport = logErrorReportImpl;
         this.rowLimitExceeded = rowLimitExceeded;
+        this.numOfEvents = numOfEvents;
+    }
+
+    @Override
+    public int getRowsCount() {
+        return numOfEvents;
     }
 
     @Override
@@ -47,15 +50,13 @@ public class LogModelImpl implements LogModel {
     }
 
     @Override
-    public int getRowsCount() {
-        return rows.size();
-    }
-
-    @Override
     public XLog getXLog() {
-        return new CreateXLog().generateXLog(rows);
+        return xLog;
     }
 
     @Override
-    public boolean isRowLimitExceeded() { return rowLimitExceeded; }
+    public boolean isRowLimitExceeded() {
+        return rowLimitExceeded;
+    }
+
 }

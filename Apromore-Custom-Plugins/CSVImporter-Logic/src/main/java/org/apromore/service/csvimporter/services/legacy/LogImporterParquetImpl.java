@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -21,10 +21,12 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
-import com.opencsv.CSVReader;
-import org.apache.commons.io.input.ReaderInputStream;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.example.data.Group;
+import org.apache.parquet.hadoop.ParquetReader;
+import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.io.CSVFileReader;
+import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.*;
 import org.apromore.service.csvimporter.services.LogProcessor;
 import org.apromore.service.csvimporter.services.LogProcessorImpl;
@@ -39,50 +41,47 @@ import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
+import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
-public class LogReaderImpl implements LogReader, Constants {
-
+public class LogImporterParquetImpl implements LogImporter, Constants {
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
-    private Reader readerin;
-    private BufferedReader brReader;
-    private InputStream in2;
-    private CSVReader reader;
+    private ParquetReader<Group> reader;
 
     @Override
-    public LogModel readLogs(InputStream in, LogSample sample, String charset, boolean skipInvalidRow) throws Exception {
-
+    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception {
         try {
-            sample.validateSample();
-            // Read the header
-            readerin = new InputStreamReader(in, Charset.forName(charset));
-            brReader = new BufferedReader(readerin);
-            String firstLine = brReader.readLine();
-            firstLine = firstLine.replaceAll("\"", "");
-            char separator = getMaxOccurringChar(firstLine);
-            String[] header = firstLine.split("\\s*" + separator + "\\s*");
+            ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) sample;
+            parquetLogSample.validateSample();
 
-            // Read the reset of the log
-            in2 = new ReaderInputStream(brReader, charset);
-            reader = new CSVFileReader().newCSVReader(in2, charset, separator);
+            File tempFile = parquetLogSample.getParquetTempFile();
+            if (tempFile == null)
+                throw new Exception("Imported file cant be found!");
+
+            //Read Parquet file
+            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+            MessageType tempFileSchema = parquetLocalFileReader.getSchema();
+            reader = parquetLocalFileReader.getParquetReader();
 
             if (reader == null)
                 return null;
 
+            String[] header = getHeaderFromParquet(tempFileSchema).toArray(new String[0]);
+
             logProcessor = new LogProcessorImpl();
             logErrorReport = new ArrayList<>();
-            int lineIndex = 1; // set to 1 since first line is the header
+            int lineIndex = 0;
             int numOfValidEvents = 0;
-
             String[] line;
             TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); //Keep track of traces
             boolean rowLimitExceeded = false;
+            LogEventModelExt logEventModelExt;
 
             //XES
             XFactory xFactory = new XFactoryNaiveImpl();
@@ -99,9 +98,14 @@ public class LogReaderImpl implements LogReader, Constants {
             xLog.getExtensions().add(resourceXes);
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
-            LogEventModelExt logEventModelExt;
-
-            while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
+            Group g;
+            while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
+                try {
+                    line = readGroup(g, tempFileSchema);
+                } catch (Exception e) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Cant read line. " + e.getMessage()));
+                    continue;
+                }
 
                 // new row, new event.
                 lineIndex++;
@@ -124,7 +128,8 @@ public class LogReaderImpl implements LogReader, Constants {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelXLogImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
                     }
                 }
 
@@ -151,18 +156,29 @@ public class LogReaderImpl implements LogReader, Constants {
                 xLog.add(v);
             });
 
-            if (!isValidLineCount(lineIndex - 1))
+            if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;
 
-            return new LogModelXLogImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
 
         } finally {
             closeQuietly(in);
         }
     }
 
-    public boolean isValidLineCount(int lineCount) {
+    private boolean isValidLineCount(int lineCount) {
         return true;
+    }
+
+    private String[] readGroup(Group g, MessageType schema) {
+
+        String[] line = new String[schema.getColumns().size()];
+        for (int j = 0; j < schema.getFieldCount(); j++) {
+
+            String valueToString = g.getValueToString(j, 0);
+            line[j] = valueToString;
+        }
+        return line;
     }
 
     private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {
@@ -238,13 +254,7 @@ public class LogReaderImpl implements LogReader, Constants {
     private void closeQuietly(InputStream in) throws IOException {
         if (in != null)
             in.close();
-        if (this.readerin != null)
-            this.readerin.close();
-        if (this.brReader != null)
-            this.brReader.close();
         if (this.reader != null)
             this.reader.close();
-        if (this.in2 != null)
-            this.in2.close();
     }
 }

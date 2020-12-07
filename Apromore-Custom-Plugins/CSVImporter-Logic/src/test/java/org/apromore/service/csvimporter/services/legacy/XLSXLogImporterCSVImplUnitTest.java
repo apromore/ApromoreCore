@@ -21,10 +21,10 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.services.MetaDataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
@@ -38,30 +38,30 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class XLSXLogReaderImplUnitTest {
+public class XLSXLogImporterCSVImplUnitTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXLogReaderImplUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XLSXLogImporterCSVImplUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
     private final List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private LogReader logReader;
+    private MetaDataService metaDataService;
+    private LogImporter logImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
                 .getParquetFactory("xlsx")
-                .createSampleLogGenerator();
-        logReader = new XLSXLogReaderImpl();
+                .getMetaDataService();
+        logImporter = new LogImporterXLSXImpl();
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
+     * Test {@link MetaDataService} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
      */
     @Test
     public void testSampleCSV_undersample() throws Exception {
@@ -70,16 +70,18 @@ public class XLSXLogReaderImplUnitTest {
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+
+        List<List<String>> sampleLog = metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
 
         // Validate result
-        assertEquals(TEST1_EXPECTED_HEADER, sample.getHeader());
-        assertEquals(2, sample.getLines().size());
+        assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(2, sampleLog.size());
     }
 
     /**
-     * Test {@link SampleLogGenerator} sampling more lines than contained in <code>test1-valid.xlsx</code>.
+     * Test {@link MetaDataService} sampling more lines than contained in <code>test1-valid.xlsx</code>.
      */
     @Test
     public void testSampleCSV_oversample() throws Exception {
@@ -88,16 +90,19 @@ public class XLSXLogReaderImplUnitTest {
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+
+        List<List<String>> sampleLog = metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
+
 
         // Validate result
-        assertEquals(TEST1_EXPECTED_HEADER, sample.getHeader());
-        assertEquals(3, sample.getLines().size());
+        assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
+        assertEquals(3, sampleLog.size());
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an valid xlsx log <code>test1-valid.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
     @Test
     public void test1_valid() throws Exception {
@@ -111,11 +116,11 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         //Generate sample
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -134,7 +139,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test2_missing_columns() throws Exception {
@@ -147,11 +152,11 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         //Generate sample
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
 
         // Validate result
@@ -170,7 +175,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
@@ -184,11 +189,11 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
 
         // Validate result
@@ -207,7 +212,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
@@ -221,11 +226,11 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -243,7 +248,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
@@ -257,11 +262,11 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -280,7 +285,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test6_record_invalid() throws Exception {
@@ -294,15 +299,16 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setStartTimestampPos(2);
-        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        logMetaData.getCaseAttributesPos().remove(Integer.valueOf(2));
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+
 
         // Validate result
         assertNotNull(logModel);
@@ -320,7 +326,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test7_all_invalid() throws Exception {
@@ -329,11 +335,11 @@ public class XLSXLogReaderImplUnitTest {
         String testFile = "/test8-all-invalid.xlsx";
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -342,7 +348,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
@@ -356,19 +362,18 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setEndTimestampPos(3);
-        sample.setStartTimestampPos(2);
-        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+        logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setEndTimestampPos(3);
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
-
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         assertNotNull(logModel);
         assertEquals(13, logModel.getRowsCount());
@@ -385,7 +390,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test9_detect_name() throws Exception {
@@ -399,11 +404,11 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
 
         // Validate result
         assertNotNull(logModel);
@@ -420,7 +425,7 @@ public class XLSXLogReaderImplUnitTest {
     }
 
     /**
-     * Test {@link XLSXLogReaderImpl} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
+     * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
     @Test
     public void testPrepareXesModel_test10_encoding() throws Exception {
@@ -434,15 +439,15 @@ public class XLSXLogReaderImplUnitTest {
         String expectedXES = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
 
-        sample.setEndTimestampFormat("MM/dd/yy HH:mm");
-        sample.setActivityPos(1);
-        sample.getEventAttributesPos().remove(Integer.valueOf(1));
+        logMetaData.setEndTimestampFormat("MM/dd/yy HH:mm");
+        logMetaData.setActivityPos(1);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
-        LogModel logModel = logReader
-                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "windows-1255", true);
+        LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true);
 
         // Validate result
         assertNotNull(logModel);

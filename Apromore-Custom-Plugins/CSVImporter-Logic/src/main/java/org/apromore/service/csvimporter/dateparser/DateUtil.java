@@ -96,7 +96,7 @@ public class DateUtil extends DatePatterns {
         return simpleDateFormat.parse(dateString);
     }
 
-    public static Timestamp parseToTimestamp(String dateString, String dateFormat) {
+    public static Timestamp parseToTimestamp(String dateString, String dateFormat, TimeZone timeZone) {
         if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty())
             return null;
 
@@ -104,7 +104,9 @@ public class DateUtil extends DatePatterns {
         Date date;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(""));
+        if (timeZone != null)
+            simpleDateFormat.setTimeZone(timeZone);
+
         try {
             date = simpleDateFormat.parse(dateString);
             Calendar calendar = toCalendar(date);

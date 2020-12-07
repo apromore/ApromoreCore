@@ -25,8 +25,7 @@ import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.CSVFileReader;
-import org.apromore.service.csvimporter.model.LogSample;
-import org.apromore.service.csvimporter.model.LogSampleImpl;
+import org.apromore.service.csvimporter.model.LogMetaData;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -36,7 +35,7 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
-class CSVSampleLogGenerator implements SampleLogGenerator {
+class MetaDataServiceCSVImpl extends MetaDataService {
 
     private Reader reader;
     private BufferedReader brReader;
@@ -55,9 +54,8 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
             }
 
             char separator = getMaxOccurringChar(firstLine);
-            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator)))) {
+            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
                 throw new Exception("Try different encoding");
-            }
 
         } catch (IOException e) {
             throw new Exception("Unable to import file");
@@ -66,9 +64,30 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
         }
     }
 
+    @Override
+    public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
+        try {
+            reader = new InputStreamReader(in, Charset.forName(charset));
+            brReader = new BufferedReader(reader);
+            String firstLine = brReader.readLine();
+            firstLine = firstLine.replaceAll("\"", "");
+            char separator = getMaxOccurringChar(firstLine);
+
+            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
+                throw new Exception("Try different encoding");
+
+            List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+
+            return new LogMetaData(header);
+
+        } finally {
+            closeQuietly(in);
+        }
+    }
+
 
     @Override
-    public LogSample generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
+    public List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
         try {
             reader = new InputStreamReader(in, Charset.forName(charset));
@@ -97,7 +116,7 @@ class CSVSampleLogGenerator implements SampleLogGenerator {
                 lines.add(Arrays.asList(myLine));
             }
 
-            return new LogSampleImpl(header, lines);
+            return lines;
 
         } finally {
             closeQuietly(in);

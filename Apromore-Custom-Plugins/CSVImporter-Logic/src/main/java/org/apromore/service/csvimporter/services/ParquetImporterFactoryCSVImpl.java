@@ -21,10 +21,14 @@
  */
 package org.apromore.service.csvimporter.services;
 
-public class XLSFactory implements ConvertToParquetFactory {
+class ParquetImporterFactoryCSVImpl implements ParquetImporterFactory {
     @Override
-    public SampleLogGenerator createSampleLogGenerator() {return new XLSSampleLogGenerator(); }
+    public MetaDataService getMetaDataService() {
+        return new MetaDataServiceCSVImpl();
+    }
 
     @Override
-    public ParquetExporter createParquetExporter() {return new XLSToParquetExporter();}
+    public ParquetImporter getParquetImporter() {
+        return new ParquetImporterCSVImpl();
+    }
 }

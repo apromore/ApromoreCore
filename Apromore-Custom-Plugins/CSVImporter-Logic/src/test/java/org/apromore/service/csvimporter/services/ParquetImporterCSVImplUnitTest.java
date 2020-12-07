@@ -24,8 +24,8 @@ package org.apromore.service.csvimporter.services;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.model.LogSample;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -41,32 +41,32 @@ import static org.apromore.service.csvimporter.services.utilities.TestUtilities.
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 import static org.junit.Assert.assertEquals;
 
-public class CSVToParquetExporterUnitTest {
+public class ParquetImporterCSVImplUnitTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVToParquetExporterUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParquetImporterCSVImplUnitTest.class);
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
     private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private ParquetExporter parquetExporter;
+    private MetaDataService metaDataService;
+    private ParquetImporter parquetImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
                 .getParquetFactory("csv")
-                .createSampleLogGenerator();
-        parquetExporter = parquetFactoryProvider
+                .getMetaDataService();
+        parquetImporter = parquetFactoryProvider
                 .getParquetFactory("csv")
-                .createParquetExporter();
+                .getParquetImporter();
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an valid csv log <code>test1-valid.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an valid csv log <code>test1-valid.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test1_valid() throws Exception {
@@ -82,14 +82,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -107,7 +107,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test2-missing-columns.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
     public void _test2_missing_columns() throws Exception {
@@ -122,14 +122,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -147,7 +147,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test3-invalid-end-timestamp.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test3-invalid-end-timestamp.csv</code>.
      */
     @Test
     public void test3_invalid_end_timestamp() throws Exception {
@@ -163,14 +163,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -188,7 +188,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test4-invalid-start-timestamp.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test4-invalid-start-timestamp.csv</code>.
      */
     @Test
     public void test4_invalid_start_timestamp() throws Exception {
@@ -204,14 +204,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -230,7 +230,7 @@ public class CSVToParquetExporterUnitTest {
 
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test5-empty-caseID.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test5-empty-caseID.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test5_empty_caseID() throws Exception {
@@ -245,14 +245,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -270,7 +270,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test6-different-delimiters.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test6-different-delimiters.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test6_different_delimiters() throws Exception {
@@ -285,14 +285,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -311,7 +311,7 @@ public class CSVToParquetExporterUnitTest {
 
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test7-record-invalid.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test7-record-invalid.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test7_record_invalid() throws Exception {
@@ -326,18 +326,18 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setStartTimestampPos(2);
-        sample.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        sample.getCaseAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        logMetaData.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -356,7 +356,7 @@ public class CSVToParquetExporterUnitTest {
 
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test8-all-invalid.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test8-all-invalid.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test8_all_invalid() throws Exception {
@@ -368,14 +368,14 @@ public class CSVToParquetExporterUnitTest {
         File outputParquet = File.createTempFile("test", "parquet");
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -387,7 +387,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test9-differentiate-dates.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test9-differentiate-dates.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
@@ -402,21 +402,21 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
-        sample.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
-        sample.setEndTimestampPos(3);
-        sample.setStartTimestampPos(2);
-        sample.getEventAttributesPos().remove(Integer.valueOf(2));
-        sample.getEventAttributesPos().remove(Integer.valueOf(3));
+        logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
+        logMetaData.setEndTimestampPos(3);
+        logMetaData.setStartTimestampPos(2);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -435,7 +435,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test10-eventAttribute.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test10-eventAttribute.csv</code>.
      */
     @Test
     public void testPrepareXesModel_test10_detect_name() throws Exception {
@@ -450,14 +450,14 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "UTF-8",
                         outputParquet,
                         true);
@@ -476,7 +476,7 @@ public class CSVToParquetExporterUnitTest {
     }
 
     /**
-     * Test {@link CSVToParquetExporter} against an invalid CSV log <code>test11-encoding.csv</code>.
+     * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test11-encoding.csv</code>.
      */
     @Ignore
     @Test
@@ -492,17 +492,17 @@ public class CSVToParquetExporterUnitTest {
         String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
-        LogSample sample = sampleLogGenerator
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "windows-1255");
+        LogMetaData logMetaData = metaDataService
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
 
-        sample.setActivityPos(1);
-        sample.getEventAttributesPos().remove(Integer.valueOf(1));
+        logMetaData.setActivityPos(1);
+        logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
         //Export parquet
-        LogModel logModel = parquetExporter
-                .generateParqeuetFile(
+        LogModel logModel = parquetImporter
+                .importParqeuetFile(
                         this.getClass().getResourceAsStream(testFile),
-                        sample,
+                        logMetaData,
                         "windows-1255",
                         outputParquet,
                         true);
