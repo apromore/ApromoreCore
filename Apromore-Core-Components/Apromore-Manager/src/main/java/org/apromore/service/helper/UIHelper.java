@@ -327,13 +327,18 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaryType.setDomain(log.getDomain());
         logSummaryType.setRanking(log.getRanking());
 
+        if (log.getUser() != null) {
+        	logSummaryType.setOwner(log.getUser().getUsername());
+        }
+        
         List<GroupLog> groupLogs = glRepository.findByLogId(log.getId());
-        boolean hasRead = true, hasWrite = true, hasOwnership = true;
+        boolean hasRead = false, hasWrite = false, hasOwnership = false;
         for (GroupLog groupLog: groupLogs) {
           hasRead = hasRead || groupLog.getAccessRights().isReadOnly();
           hasWrite = hasWrite || groupLog.getAccessRights().isWriteOnly();
           hasOwnership = hasOwnership || groupLog.getAccessRights().isOwnerShip();
         }
+        
         logSummaryType.setHasRead(hasRead);
         logSummaryType.setHasWrite(hasWrite);
         logSummaryType.setHasOwnership(hasOwnership);
@@ -347,7 +352,7 @@ public class UIHelper implements UserInterfaceHelper {
         folderSummaryType.setName(folder.getName());
 
         List<GroupFolder> groupFolders = gfRepository.findByFolderId(folder.getId());
-        boolean hasRead = true, hasWrite = true, hasOwnership = true;
+        boolean hasRead = false, hasWrite = false, hasOwnership = false;
         for (GroupFolder groupFolder: groupFolders) {
             hasRead = hasRead || groupFolder.isHasRead();
             hasWrite = hasWrite || groupFolder.isHasWrite();

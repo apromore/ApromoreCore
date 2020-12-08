@@ -590,7 +590,7 @@ databaseChangeLog:
      id: 20201205122400
      author: nolantellis
      preConditions:
-       - onFail: MARK_RAN
+       - onFail: HALT
        - not:
           - foreignKeyConstraintExists:
              foreignKeyName: fk_group_log_group
@@ -689,5 +689,26 @@ databaseChangeLog:
            onUpdate: CASCADE
            referencedColumnNames: id
            referencedTableName: group
+           validate: true
+
+ - changeSet:
+     id: 20201205021800
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_history_user
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: userId
+           baseTableName: history_event
+           constraintName: fk_history_user
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
            validate: true
 
