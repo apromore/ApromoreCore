@@ -25,6 +25,7 @@ import org.apromore.dao.model.Log;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,11 +35,7 @@ import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION
 
 public class EventLogImporter {
 
-    private EventLogService eventLogService;
-
-    public EventLogService getEventLogService() {
-        return eventLogService;
-    }
+    @Inject EventLogService eventLogService;
 
     public void setEventLogService(EventLogService eventLogService) {
         this.eventLogService = eventLogService;
