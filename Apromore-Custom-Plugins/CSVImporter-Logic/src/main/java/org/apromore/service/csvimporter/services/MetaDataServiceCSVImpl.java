@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
-class MetaDataServiceCSVImpl extends MetaDataService {
+class MetaDataServiceCSVImpl implements MetaDataService {
 
     private Reader reader;
     private BufferedReader brReader;

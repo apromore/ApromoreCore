@@ -34,10 +34,7 @@ import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.model.LogErrorReport;
 import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
-import org.apromore.service.csvimporter.services.MetaDataService;
-import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.ParquetImporter;
-import org.apromore.service.csvimporter.services.ParquetImporterFactory;
+import org.apromore.service.csvimporter.services.*;
 import org.apromore.service.csvimporter.services.legacy.LogImporter;
 import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
@@ -126,18 +123,19 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     ParquetImporterFactory parquetImporterFactory;
     MetaDataService metaDataService;
     ParquetImporter parquetImporter;
+    MetaDataUtilities metaDataUtilities;
 
     LogImporter logImporter;
 
     @Override
     public void doFinally() throws Exception {
         super.doFinally();
-
         // Populate the window
         try {
             parquetImporterFactory = parquetFactoryProvider.getParquetFactory(getMediaFormat(media));
             metaDataService = parquetImporterFactory.getMetaDataService();
             parquetImporter = parquetImporterFactory.getParquetImporter();
+            metaDataUtilities = parquetImporterFactory.getMetaDataUtilities();
             logImporter = logImporterProvider.getLogReader(getMediaFormat(media));
 
             Properties props = new Properties();
@@ -161,7 +159,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 metaDataService.validateLog(getInputSream(media), getFileEncoding());
                 this.logMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
                 this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
-                this.logMetaData = metaDataService.processMetadata(this.logMetaData, this.sampleLog);
+                this.logMetaData = metaDataUtilities.processMetaData(this.logMetaData, this.sampleLog);
 
                 if (logMetaData != null && sampleLog.size() > 0) setUpUI();
             });
@@ -190,7 +188,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
             this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
-            tempLogMetaData = metaDataService.processMetadata(tempLogMetaData, this.sampleLog);
+            tempLogMetaData = metaDataUtilities.processMetaData(tempLogMetaData, this.sampleLog);
 
             if (mappingJSON != null) {
 //        jsonMapping.put("header", logSample.getHeader());
@@ -603,7 +601,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 } else {
                     String format = event.getValue();
                     try {
-                        if (metaDataService.isTimestamp(colPos, format, sampleLog)) {
+                        if (metaDataUtilities.isTimestamp(colPos, format, sampleLog)) {
                             parsedManual(colPos, selected, format);
                         } else {
                             failedToParse(colPos);
@@ -769,9 +767,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private void timestampSelected(int colPos, String selected) {
         showFormatBtn(formatBtns[colPos]);
         String possibleFormat = getPopUpFormatText(colPos);
-        if (possibleFormat != null && !possibleFormat.isEmpty() && metaDataService.isTimestamp(colPos, possibleFormat, sampleLog)) {
+        if (possibleFormat != null && !possibleFormat.isEmpty() && metaDataUtilities.isTimestamp(colPos, possibleFormat, sampleLog)) {
             parsedManual(colPos, selected, possibleFormat);
-        } else if (metaDataService.isTimestamp(colPos, sampleLog)) {
+        } else if (metaDataUtilities.isTimestamp(colPos, sampleLog)) {
             parsedAuto(colPos, selected);
         } else {
             failedToParse(colPos);

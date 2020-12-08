@@ -49,20 +49,17 @@ public class ParquetImporterCSVImplUnitTest {
      */
     private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
     private TestUtilities utilities;
-    private ParquetFactoryProvider parquetFactoryProvider;
     private MetaDataService metaDataService;
     private ParquetImporter parquetImporter;
+    private MetaDataUtilities metaDataUtilities;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
-        parquetFactoryProvider = new ParquetFactoryProvider();
-        metaDataService = parquetFactoryProvider
-                .getParquetFactory("csv")
-                .getMetaDataService();
-        parquetImporter = parquetFactoryProvider
-                .getParquetFactory("csv")
-                .getParquetImporter();
+        ParquetImporterFactory parquetImporterFactory = new ParquetFactoryProvider().getParquetFactory("csv");
+        metaDataService = parquetImporterFactory.getMetaDataService();
+        metaDataUtilities = parquetImporterFactory.getMetaDataUtilities();
+        parquetImporter = parquetImporterFactory.getParquetImporter();
     }
 
     /**
@@ -89,7 +86,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -136,7 +133,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -184,7 +181,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         2,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -232,7 +229,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         2,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -280,7 +277,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -327,7 +324,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -375,7 +372,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setStartTimestampPos(2);
@@ -424,7 +421,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         2,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -465,7 +462,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
         logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
         logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
@@ -519,7 +516,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         100,
                         "UTF-8");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
@@ -568,7 +565,7 @@ public class ParquetImporterCSVImplUnitTest {
                         this.getClass().getResourceAsStream(testFile),
                         3,
                         "windows-1255");
-        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setActivityPos(1);

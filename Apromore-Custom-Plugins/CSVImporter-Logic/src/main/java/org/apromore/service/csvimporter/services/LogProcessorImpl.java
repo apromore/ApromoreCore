@@ -49,7 +49,6 @@ public class LogProcessorImpl implements LogProcessor {
 
     @Override
     public LogEventModelExt processLog(List<String> line, List<String> header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport) {
-
         //Construct an event
         startTimestamp = null;
         resource = null;

@@ -57,7 +57,6 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     @Override
     public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
                               String username, Integer folderId, String logName) throws Exception {
-
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
             sample.validateSample();
             if (workbook == null)

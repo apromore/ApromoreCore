@@ -34,7 +34,7 @@ import static org.apromore.service.csvimporter.constants.Constants.*;
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 
-public class MetaDataProcessorImpl implements MetaDataProcessor {
+public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     private List<List<String>> lines;
     private LogMetaData logMetaData;
 

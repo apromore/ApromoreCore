@@ -26,24 +26,12 @@ import org.apromore.service.csvimporter.model.LogMetaData;
 import java.io.InputStream;
 import java.util.List;
 
-public abstract class MetaDataService {
+public interface MetaDataService {
 
-    public abstract void validateLog(InputStream in, String charset) throws Exception;
+    void validateLog(InputStream in, String charset) throws Exception;
 
-    public abstract LogMetaData extractMetadata(InputStream in, String charset) throws Exception;
+    LogMetaData extractMetadata(InputStream in, String charset) throws Exception;
 
-    public abstract List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception;
-
-    public LogMetaData processMetadata(LogMetaData logMetaData, List<List<String>> lines) {
-        return new MetaDataProcessorImpl().processMetaData(logMetaData, lines);
-    }
-
-    public boolean isTimestamp(int colPos, List<List<String>> lines) {
-        return new MetaDataProcessorImpl().isTimestamp(colPos, lines);
-    }
-
-    public boolean isTimestamp(int colPos, String format, List<List<String>> lines) {
-        return new MetaDataProcessorImpl().isTimestamp(colPos, format, lines);
-    }
+    List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception;
 
 }

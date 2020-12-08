@@ -25,7 +25,7 @@ import org.apromore.service.csvimporter.model.LogMetaData;
 
 import java.util.List;
 
-public interface MetaDataProcessor {
+public interface MetaDataUtilities {
 
     LogMetaData processMetaData(LogMetaData logMetaData, List<List<String>> lines);
 

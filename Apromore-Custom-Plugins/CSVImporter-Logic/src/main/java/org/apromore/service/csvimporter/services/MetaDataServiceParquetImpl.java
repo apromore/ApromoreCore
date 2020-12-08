@@ -38,7 +38,7 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
-class MetaDataServiceParquetImpl extends MetaDataService {
+class MetaDataServiceParquetImpl implements MetaDataService {
     private ParquetReader<Group> reader;
 
     @Override

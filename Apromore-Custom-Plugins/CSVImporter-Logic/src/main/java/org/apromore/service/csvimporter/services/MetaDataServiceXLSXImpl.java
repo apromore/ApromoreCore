@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MetaDataServiceXLSXImpl extends MetaDataService {
+public class MetaDataServiceXLSXImpl implements MetaDataService {
 
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 10;

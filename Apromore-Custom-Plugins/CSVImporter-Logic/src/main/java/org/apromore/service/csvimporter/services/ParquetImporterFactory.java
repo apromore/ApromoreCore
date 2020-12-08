@@ -27,4 +27,6 @@ public interface ParquetImporterFactory {
 
     ParquetImporter getParquetImporter();
 
+    default MetaDataUtilities getMetaDataUtilities(){ return new MetaDataUtilitiesImpl();}
+
 }
