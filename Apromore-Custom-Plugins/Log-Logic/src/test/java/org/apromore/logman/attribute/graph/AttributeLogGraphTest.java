@@ -714,4 +714,43 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0, graph.getArcMedianDuration(7), 0.0);
         Assert.assertEquals(0, graph.getArcMedianDuration(8), 0.0);      
     }
+    
+    @Test
+    // Special graph: this graph has start node connecting to distinct activity connecting to the end node.
+    // No arcs between activity nodes.
+    public void test_readLogWithTraceWithOneSingleUniqueEvent() {
+        ALog log = new ALog(readLogWithTraceWithOneSingleUniqueEvent());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLogGraph graph = attLog.getGraphView();
+        
+        Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4), graph.getNodes());
+        Assert.assertEquals(IntSets.mutable.of(4,9,14,15,16,17), graph.getArcs());
+        Assert.assertEquals("a", graph.getNodeName(0));
+        Assert.assertEquals("b", graph.getNodeName(1));
+        Assert.assertEquals("c", graph.getNodeName(2));
+        Assert.assertEquals(Constants.START_NAME, graph.getNodeName(3));
+        Assert.assertEquals(Constants.END_NAME, graph.getNodeName(4));  
+        
+        graph.buildSubGraphs(false);
+        
+        //Each node-based subgraph has itself as the only subgraph
+        Assert.assertEquals(1, graph.getSubGraphs().get(0).getSubGraphs().size());
+        Assert.assertEquals(1, graph.getSubGraphs().get(1).getSubGraphs().size());
+        Assert.assertEquals(1, graph.getSubGraphs().get(2).getSubGraphs().size());
+        
+        Assert.assertEquals(graph.getSubGraphs().get(0).getNodes(), 
+                                graph.getSubGraphs().get(0).getSubGraphs().get(0).getNodes());
+        Assert.assertEquals(graph.getSubGraphs().get(0).getArcs(), 
+                                graph.getSubGraphs().get(0).getSubGraphs().get(0).getArcs());
+        
+        Assert.assertEquals(graph.getSubGraphs().get(1).getNodes(), 
+                graph.getSubGraphs().get(1).getSubGraphs().get(0).getNodes());
+        Assert.assertEquals(graph.getSubGraphs().get(1).getArcs(), 
+                graph.getSubGraphs().get(1).getSubGraphs().get(0).getArcs());
+        
+        Assert.assertEquals(graph.getSubGraphs().get(2).getNodes(), 
+                graph.getSubGraphs().get(2).getSubGraphs().get(0).getNodes());
+        Assert.assertEquals(graph.getSubGraphs().get(2).getArcs(), 
+                graph.getSubGraphs().get(2).getSubGraphs().get(0).getArcs());  
+    }
 }

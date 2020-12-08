@@ -91,6 +91,10 @@ public class DataSetup {
         return this.readXESFile("src/test/logs/L1_start_complete_overlapping.xes");
     }
     
+    public XLog readLogWithTraceWithOneSingleUniqueEvent() {
+        return this.readXESFile("src/test/logs/L1_3trace_each_trace_1event.xes");
+    }
+    
     public XLog readRealLog_BPI15() {
         return this.readXESCompressedFile("src/test/logs/BPIC15Municipality1.xes");
         
