@@ -32,18 +32,16 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.model.LogMetaData;
+import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.services.MetaDataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.ParquetImporter;
 import org.apromore.service.csvimporter.services.ParquetImporterFactory;
 import org.apromore.service.csvimporter.services.legacy.LogImporter;
 import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
-import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
@@ -60,7 +58,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.*;
 
-import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -164,6 +161,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 metaDataService.validateLog(getInputSream(media), getFileEncoding());
                 this.logMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
                 this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+                this.logMetaData = metaDataService.processMetadata(this.logMetaData, this.sampleLog);
 
                 if (logMetaData != null && sampleLog.size() > 0) setUpUI();
             });
@@ -191,7 +189,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
-
+            tempLogMetaData = metaDataService.processMetadata(tempLogMetaData, this.sampleLog);
 
             if (mappingJSON != null) {
 //        jsonMapping.put("header", logSample.getHeader());
@@ -350,7 +348,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             parquetFile,
                             false);
                 } else {
-                    logModel = logImporter.importLog(getInputSream(media), logMetaData, getFileEncoding(), true);
+                    logModel = logImporter
+                            .importLog(getInputSream(media),
+                                    logMetaData,
+                                    getFileEncoding(),
+                                    true,
+                                    portalContext.getCurrentUser().getUsername(),
+                                    portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                                    media.getName().replaceFirst("[.][^.]+$", ""));
                 }
 
 
@@ -963,7 +968,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                                     parquetFile,
                                     false);
                         } else {
-                            logModelSkippedCol = logImporter.importLog(getInputSream(media), logMetaData, getFileEncoding(), true);
+                            logModelSkippedCol = logImporter.importLog(getInputSream(media),
+                                    logMetaData,
+                                    getFileEncoding(),
+                                    true,
+                                    portalContext.getCurrentUser().getUsername(),
+                                    portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                                    media.getName().replaceFirst("[.][^.]+$", ""));
                         }
 
                         if (logModelSkippedCol != null) {
@@ -999,7 +1010,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                                 true);
 
                     } else {
-                        logModelSkippedRow = logImporter.importLog(getInputSream(media), logMetaData, getFileEncoding(), true);
+                        logModelSkippedRow = logImporter.importLog(
+                                getInputSream(media),
+                                logMetaData,
+                                getFileEncoding(),
+                                true,
+                                portalContext.getCurrentUser().getUsername(),
+                                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                                media.getName().replaceFirst("[.][^.]+$", ""));
                     }
 
                     if (logModelSkippedRow != null)
@@ -1069,27 +1087,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 portalContext.refreshContent();
 
             } else {
-
-                XLog xlog = logModel.getXLog();
-                if (xlog == null)
-                    throw new InvalidCSVException(getLabels().getString("failed_to_create_XES_log"));
-
-                String name = media.getName().replaceFirst("[.][^.]+$", "");
-                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                eventLogService.exportToStream(outputStream, xlog);
-                int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
-
-                Log savedLog = eventLogService.importLog(
-                        portalContext.getCurrentUser().getUsername(),
-                        folderId,
-                        name,
-                        new ByteArrayInputStream(outputStream.toByteArray()),
-                        "xes.gz",
-                        "",  // domain
-                        DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                        isPublic  // public?
-                );
-                storeMappingAsJSON(media, logMetaData, savedLog);
+                storeMappingAsJSON(media, logMetaData, logModel.getImportLog());
                 String successMessage;
                 if (logModel.isRowLimitExceeded()) {
                     successMessage = MessageFormat.format(getLabels().getString("limit_reached"), logModel.getRowsCount());
@@ -1144,8 +1142,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 //                LOGGER.info("RESULT :" + usermetadata.getId() + usermetadata.getContent());
 //            }
 
-        } catch (InvalidCSVException e) {
-            Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
             Messagebox.show(getLabels().getString("failed_to_write_log") + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }

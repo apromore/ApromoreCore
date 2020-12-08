@@ -23,6 +23,8 @@ package org.apromore.service.csvimporter.services.legacy;
 
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
+import org.apromore.dao.model.Log;
+import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.CSVFileReader;
 import org.apromore.service.csvimporter.model.*;
@@ -56,7 +58,8 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
     private CSVReader reader;
 
     @Override
-    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception {
+    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
+                              String username, Integer folderId, String logName) throws Exception {
 
         try {
             sample.validateSample();
@@ -100,6 +103,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
             LogEventModelExt logEventModelExt;
+            Log log = null;
 
             while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
@@ -124,7 +128,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
                     }
                 }
 
@@ -154,7 +158,14 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
-            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            //Import XES
+            if (xLog != null &&
+                    (username != null && !username.isEmpty()) &&
+                    folderId != null &&
+                    (logName != null && !logName.isEmpty()))
+                log = new EventLogImporter().importXesLog(xLog, username, folderId, logName);
+
+            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
 
         } finally {
             closeQuietly(in);

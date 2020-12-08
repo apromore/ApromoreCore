@@ -95,6 +95,7 @@ public class LogImporterCSVImplUnitTest {
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
 
         List<List<String>> sampleLog = metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
 
         // Validate result
         assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
@@ -117,9 +118,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -151,9 +158,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -184,9 +197,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -217,9 +236,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -251,9 +276,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -285,9 +316,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -319,13 +356,19 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
         logMetaData.setStartTimestampPos(2);
         logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         logMetaData.getCaseAttributesPos().remove(Integer.valueOf(2));
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
 
         // Continue with the XES conversion
@@ -355,9 +398,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -382,16 +431,22 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        3,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
         logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
         logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
         logMetaData.setEndTimestampPos(3);
         logMetaData.setStartTimestampPos(2);
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(2));
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -423,9 +478,15 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -457,11 +518,18 @@ public class LogImporterCSVImplUnitTest {
 
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        3,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
         logMetaData.setActivityPos(1);
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true, null,null,null);
 
         //Continue with the XES conversion
         XLog xlog = logModel.getXLog();

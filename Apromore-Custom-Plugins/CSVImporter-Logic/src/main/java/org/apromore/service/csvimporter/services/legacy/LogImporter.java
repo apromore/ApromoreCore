@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -43,11 +43,13 @@ public interface LogImporter {
 
     /**
      * Process an entire CSV document using a given header configuration.
+     * <p>
+     * //     * @param reader a source of CSV data; this must be open to the beginning of the data so that the header may be read
      *
-//     * @param reader a source of CSV data; this must be open to the beginning of the data so that the header may be read
      * @param sample header configuration
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
-    LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception;
+    LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
+                       String username, Integer folderId, String logName) throws Exception;
 
 }

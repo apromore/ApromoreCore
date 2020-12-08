@@ -25,6 +25,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apromore.dao.model.Log;
+import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.XLSReader;
 import org.apromore.service.csvimporter.model.*;
@@ -53,7 +55,8 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
 
     @Override
-    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception {
+    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
+                              String username, Integer folderId, String logName) throws Exception {
 
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
             sample.validateSample();
@@ -90,6 +93,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
 
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
             LogEventModelExt logEventModelExt;
+            Log log = null;
 
             for (Row r : sheet) {
                 //Skip header
@@ -126,7 +130,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
                     }
                 }
                 //Construct a Trace if it's not exists
@@ -155,7 +159,14 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
-            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            //Import XES
+            if (xLog != null &&
+                    (username != null && !username.isEmpty()) &&
+                    folderId != null  &&
+                    (logName != null && !logName.isEmpty()))
+                log = new EventLogImporter().importXesLog(xLog, username, folderId, logName);
+
+            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
         } catch (Exception e) {
             throw e;
         } finally {

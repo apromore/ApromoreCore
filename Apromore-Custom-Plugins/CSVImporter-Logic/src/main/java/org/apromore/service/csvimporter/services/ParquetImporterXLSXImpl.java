@@ -126,7 +126,7 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
                     }
                 }
 
@@ -140,7 +140,7 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
-            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
         } finally {
             writer.close();
             in.close();

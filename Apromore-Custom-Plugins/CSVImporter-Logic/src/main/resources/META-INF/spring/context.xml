@@ -22,7 +22,6 @@
   -->
 
 
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:osgi="http://www.springframework.org/schema/osgi"
@@ -34,16 +33,31 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
+    <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+
     <osgi:service interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider">
         <bean class="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
-    </osgi:service>
-
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
-        <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterCSVImpl"/>
     </osgi:service>
 
     <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporterProvider">
         <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterProvider"/>
     </osgi:service>
 
+    <osgi:service interface="org.apromore.service.csvimporter.common.EventLogImporter">
+        <bean class="org.apromore.service.csvimporter.common.EventLogImporter">
+            <property name="eventLogService" ref="eventLogService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterCSVImpl"/>
+    </osgi:service>
+
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterParquetImpl"/>
+    </osgi:service>
+
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
+        <bean class="org.apromore.service.csvimporter.services.legacy.LogImporterXLSXImpl"/>
+    </osgi:service>
 </beans>

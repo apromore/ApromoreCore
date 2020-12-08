@@ -118,9 +118,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         //Generate sample
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        3,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -154,9 +161,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         //Generate sample
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        3,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
 
         // Validate result
@@ -191,9 +205,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
 
         // Validate result
@@ -228,9 +249,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -264,9 +292,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -301,13 +336,20 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setStartTimestampPos(2);
         logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         logMetaData.getCaseAttributesPos().remove(Integer.valueOf(2));
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
 
         // Validate result
@@ -337,9 +379,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -364,6 +413,13 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
         logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
@@ -373,7 +429,7 @@ public class XLSXLogImporterCSVImplUnitTest {
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         assertNotNull(logModel);
         assertEquals(13, logModel.getRowsCount());
@@ -406,9 +462,16 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -441,13 +504,20 @@ public class XLSXLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        3,
+                        "windows-1255");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setEndTimestampFormat("MM/dd/yy HH:mm");
         logMetaData.setActivityPos(1);
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true, null, null, null);
 
         // Validate result
         assertNotNull(logModel);

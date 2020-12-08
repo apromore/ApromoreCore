@@ -21,6 +21,7 @@
  */
 package org.apromore.service.csvimporter.model;
 
+import org.apromore.dao.model.Log;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
@@ -31,12 +32,14 @@ public class LogModelImpl implements LogModel {
     private List<LogErrorReport> logErrorReport;
     private boolean rowLimitExceeded = false;
     private int numOfEvents;
+    private Log log;
 
-    public LogModelImpl(XLog xLog, List<LogErrorReport> logErrorReportImpl, boolean rowLimitExceeded, int numOfEvents) {
+    public LogModelImpl(XLog xLog, List<LogErrorReport> logErrorReport, boolean rowLimitExceeded, int numOfEvents, Log log) {
         this.xLog = xLog;
-        this.logErrorReport = logErrorReportImpl;
+        this.logErrorReport = logErrorReport;
         this.rowLimitExceeded = rowLimitExceeded;
         this.numOfEvents = numOfEvents;
+        this.log = log;
     }
 
     @Override
@@ -57,6 +60,11 @@ public class LogModelImpl implements LogModel {
     @Override
     public boolean isRowLimitExceeded() {
         return rowLimitExceeded;
+    }
+
+    @Override
+    public Log getImportLog() {
+        return this.log;
     }
 
 }

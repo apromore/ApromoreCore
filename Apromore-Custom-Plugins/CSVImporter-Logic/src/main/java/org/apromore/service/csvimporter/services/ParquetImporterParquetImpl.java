@@ -113,7 +113,7 @@ class ParquetImporterParquetImpl implements ParquetImporter {
                         continue;
                     } else {
                         //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
                     }
                 }
 
@@ -129,7 +129,7 @@ class ParquetImporterParquetImpl implements ParquetImporter {
                 rowLimitExceeded = true;
 
             //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
-            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
         } finally {
             closeQuietly(in);
         }

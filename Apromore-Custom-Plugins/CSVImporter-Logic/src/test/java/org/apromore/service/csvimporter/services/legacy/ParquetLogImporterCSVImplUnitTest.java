@@ -120,9 +120,16 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -154,9 +161,16 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
-        LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -187,9 +201,16 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
-        LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -220,9 +241,16 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
-        LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -250,9 +278,16 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        2,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
-        LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Validate result
         assertNotNull(logModel);
@@ -276,7 +311,13 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
-
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         logMetaData.setEndTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
         logMetaData.setStartTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
         logMetaData.setEndTimestampPos(3);
@@ -285,8 +326,8 @@ public class ParquetLogImporterCSVImplUnitTest {
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(3));
 
         //Export parquet
-        LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -317,9 +358,16 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "UTF-8");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
-        LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true);
+                LogModel logModel = logImporter
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
 
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();
@@ -350,12 +398,19 @@ public class ParquetLogImporterCSVImplUnitTest {
         // Perform the test
         LogMetaData logMetaData = metaDataService
                 .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+        List<List<String>> sampleLog = metaDataService
+                .generateSampleLog(
+                        this.getClass().getResourceAsStream(testFile),
+                        100,
+                        "windows-1255");
+        logMetaData = metaDataService.processMetadata(logMetaData, sampleLog);
+        logMetaData.setTimeZone("Australia/Melbourne");
         logMetaData.setActivityPos(1);
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
         //Export parquet
         LogModel logModel = logImporter
-                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true);
+                .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "windows-1255", true, null, null,null);
 
         //Continue with the XES conversion
         XLog xlog = logModel.getXLog();

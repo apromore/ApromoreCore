@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,6 +25,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
+import org.apromore.dao.model.Log;
+import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.*;
@@ -50,12 +52,14 @@ import java.util.*;
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 public class LogImporterParquetImpl implements LogImporter, Constants {
+
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private ParquetReader<Group> reader;
 
     @Override
-    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow) throws Exception {
+    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
+                              String username, Integer folderId, String logName) throws Exception {
         try {
             ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) sample;
             parquetLogSample.validateSample();
@@ -98,6 +102,8 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
             xLog.getExtensions().add(resourceXes);
             lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
+            Log log = null;
+
             Group g;
             while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
                 try {
@@ -129,7 +135,7 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
                         continue;
                     } else {
                         //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
                     }
                 }
 
@@ -159,7 +165,14 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
             if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;
 
-            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            //Import XES
+            if (xLog != null &&
+                    (username != null && !username.isEmpty()) &&
+                    folderId != null &&
+                    (logName != null && !logName.isEmpty()))
+                log = new EventLogImporter().importXesLog(xLog, username, folderId, logName);
+
+            return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents,log);
 
         } finally {
             closeQuietly(in);

@@ -115,7 +115,7 @@ class ParquetImporterCSVImpl implements ParquetImporter {
                     if (skipInvalidRow) {
                         continue;
                     } else {
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
                     }
                 }
 
@@ -130,7 +130,7 @@ class ParquetImporterCSVImpl implements ParquetImporter {
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
-            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents);
+            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
 
         } finally {
             closeQuietly(in);
