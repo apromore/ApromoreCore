@@ -29,6 +29,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.jgraph.ProMJGraph;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Messagebox;
 
 public class AnimationController extends AbstractController {
     public AnimationController(PDController controller) {
@@ -41,20 +42,25 @@ public class AnimationController extends AbstractController {
             return;
         }
         
+        if (parent.getLogAnimationPluginCE() == null) {
+            Messagebox.show("Log Animation Plugin CE version is not available.");
+            return;
+        }
+        
         Abstraction abs = parent.getOutputData().getAbstraction();
         if (abs.getLayout() == null) {
             throw new MissingLayoutException("Missing layout of the process map for animating");
         }
         
         if (parent.getBPMNMode()) {
-            parent.getLogAnimationPlugin().execute(
+            parent.getLogAnimationPluginCE().execute(
                     parent.getContextData().getPortalContext(), 
                     getBPMN(abs.getValidBPMNDiagram(), abs.getLayout().getGraphLayout()), 
                     parent.getLogData().getLog().getActualXLog(), 
                     parent.getContextData().getLogName());
         }
         else {
-            parent.getLogAnimationPlugin().execute(
+            parent.getLogAnimationPluginCE().execute(
                     parent.getContextData().getPortalContext(), 
                     getBPMN(abs.getValidBPMNDiagram(), null), 
                     getBPMN(abs.getDiagram(), abs.getLayout().getGraphLayout()), 
