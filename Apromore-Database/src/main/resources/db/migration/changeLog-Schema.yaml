@@ -590,7 +590,7 @@ databaseChangeLog:
      id: 20201205122400
      author: nolantellis
      preConditions:
-       - onFail: HALT
+       - onFail: MARK_RAN
        - not:
           - foreignKeyConstraintExists:
              foreignKeyName: fk_group_log_group
