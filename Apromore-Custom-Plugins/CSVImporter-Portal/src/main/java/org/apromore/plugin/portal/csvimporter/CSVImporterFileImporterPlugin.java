@@ -53,7 +53,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
     private ParquetFactoryProvider parquetFactoryProvider;
-    LogImporterProvider logImporterProvider;
+    private LogImporterProvider logImporterProvider;
     private UserMetadataService userMetadataService;
 
     public ParquetFactoryProvider getParquetFactoryProvider() {
@@ -64,11 +64,11 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.parquetFactoryProvider = parquetFactoryProvider;
     }
 
-    public LogImporterProvider getLogReaderProvider() {
+    public LogImporterProvider getLogImporterProvider() {
         return logImporterProvider;
     }
 
-    public void setLogReaderProvider(LogImporterProvider logImporterProvider) {
+    public void setLogImporterProvider(LogImporterProvider logImporterProvider) {
         this.logImporterProvider = logImporterProvider;
     }
 

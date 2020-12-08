@@ -30,9 +30,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.GregorianCalendar;
 
+import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
+
 public class EventLogImporter {
 
     private EventLogService eventLogService;
+
+    public EventLogService getEventLogService() {
+        return eventLogService;
+    }
 
     public void setEventLogService(EventLogService eventLogService) {
         this.eventLogService = eventLogService;
@@ -48,7 +54,7 @@ public class EventLogImporter {
                 folderId,
                 logName,
                 new ByteArrayInputStream(outputStream.toByteArray()),
-                "xes.gz",
+                XES_EXTENSION,
                 "",  // domain
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                 true  // public?

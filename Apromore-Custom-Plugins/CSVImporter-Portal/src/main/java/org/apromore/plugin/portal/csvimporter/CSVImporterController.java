@@ -189,6 +189,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
+            this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
             tempLogMetaData = metaDataService.processMetadata(tempLogMetaData, this.sampleLog);
 
             if (mappingJSON != null) {
