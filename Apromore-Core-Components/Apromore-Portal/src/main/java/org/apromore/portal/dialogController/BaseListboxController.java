@@ -467,17 +467,16 @@ public abstract class BaseListboxController extends BaseController {
 				return;
 			}
 			Object selectedItem = getSelection().iterator().next();
-			
-			
-			boolean canRename = false;
+
+			boolean canChange = false;
 			try {
-				canRename = isRenameable(selectedItem);
+				canChange = isChangeable(selectedItem);
 			} catch (ValidationException e) {
 				Notification.error(e.getMessage());
 				return;
 			}
 
-			if (canRename) {
+			if (canChange) {
 				List<Integer> folderIds = getMainController().getPortalSession().getSelectedFolderIds();
 				if (folderIds.size() == 0) {
 					renameLogOrProcess();
@@ -494,11 +493,11 @@ public abstract class BaseListboxController extends BaseController {
 		}
 	}
 
-	private boolean isRenameable(Object selectedItem) {
+	private boolean isChangeable(Object selectedItem) {
 		Map<Group, AccessType> groupAccessMap = new HashMap<Group, AccessType>();
-			groupAccessMap=selectedItem.getClass().equals(FolderType.class)?
-					getAuthorizationService().getFolderAccessType(((FolderType)selectedItem).getId()):
-						getGroupAccessFromSummaryType((SummaryType) selectedItem);
+		groupAccessMap = selectedItem.getClass().equals(FolderType.class)
+				? getAuthorizationService().getFolderAccessType(((FolderType) selectedItem).getId())
+				: getGroupAccessFromSummaryType((SummaryType) selectedItem);
 		Group userAsGroup = getSecurityService().getGroupByName(UserSessionManager.getCurrentUser().getUsername());
 		boolean canEdit = AccessType.OWNER.equals(groupAccessMap.get(userAsGroup))
 				|| AccessType.EDITOR.equals(groupAccessMap.get(userAsGroup));
@@ -598,7 +597,21 @@ public abstract class BaseListboxController extends BaseController {
 	}
 
 	public void cut() {
-		copyAndPasteController.cut(getSelection(), getSelectionCount());
+		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+
+		boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
+		try {
+			canChange = canChange || isChangeable(currentFolder);
+		} catch (ValidationException e) {
+			Notification.error(e.getMessage());
+			return;
+		}
+
+		if (canChange) {
+			copyAndPasteController.cut(getSelection(), getSelectionCount());
+		} else {
+			Notification.error("Only Owner/Editor can cut from here.");
+		}
 	}
 
 	public void copy() {
@@ -608,11 +621,25 @@ public abstract class BaseListboxController extends BaseController {
 	public void paste() throws Exception {
 		// FolderType currentFolder = UserSessionManager.getCurrentFolder();
 		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-		Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
+
+		boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
 		try {
-			copyAndPasteController.paste(targetFolderId);
-		} catch (Exception e) {
-			Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK, Messagebox.ERROR);
+			canChange = canChange || isChangeable(currentFolder);
+		} catch (ValidationException e) {
+			Notification.error(e.getMessage());
+			return;
+		}
+
+		if (canChange) {
+			Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
+			try {
+				copyAndPasteController.paste(targetFolderId);
+			} catch (Exception e) {
+				Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK,
+						Messagebox.ERROR);
+			}
+		} else {
+			Notification.error("Only Owner/Editor can paste here.");
 		}
 		refreshContent();
 	}
