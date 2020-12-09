@@ -44,6 +44,7 @@ import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
@@ -55,6 +56,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     private LogProcessor logProcessor;
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
+    @Inject EventLogImporter eventLogImporter;
 
     @Override
     public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
@@ -176,7 +178,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
                     (username != null && !username.isEmpty()) &&
                     folderId != null  &&
                     (logName != null && !logName.isEmpty()))
-                log = new EventLogImporter().importXesLog(xLog, username, folderId, logName);
+                log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
 
             return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
         } catch (Exception e) {

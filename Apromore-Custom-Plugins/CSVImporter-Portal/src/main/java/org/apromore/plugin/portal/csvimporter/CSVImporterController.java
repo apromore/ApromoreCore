@@ -164,7 +164,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 if (logMetaData != null && sampleLog.size() > 0) setUpUI();
             });
 
-            Combobox setLocale = (Combobox) window.getFellow(setLocaleId);
+            Combobox setTimeZone = (Combobox) window.getFellow(setLocaleId);
 
             Calendar cal = Calendar.getInstance();
             TimeZone timeZone = cal.getTimeZone();
@@ -177,11 +177,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             model.addToSelection(defaultValue);
             System.out.println(model.getSelection());
             System.out.println("defaultValue " + defaultValue);
-            setLocale.setModel(model);
-            setLocale.setValue(defaultValue);
+            setTimeZone.setModel(model);
+            setTimeZone.setValue(defaultValue);
 
-            setLocale.addEventListener("onSelect", event -> {
-                this.logMetaData.setTimeZone(getTimeZone());
+            setTimeZone.addEventListener("onSelect", event -> {
+                if (getTimeZone() == null) {
+                    this.logMetaData.setTimeZone(defaultValue.split(" ")[1]);
+                } else {
+                    this.logMetaData.setTimeZone(getTimeZone());
+                }
             });
 
 
@@ -255,6 +259,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
                 tempLogMetaData.getOtherTimestamps().clear();
                 tempLogMetaData.getOtherTimestamps().putAll(otherTimestampsMap2);
+
+                if (getTimeZone() == null) {
+                    tempLogMetaData.setTimeZone(defaultValue.split(" ")[1]);
+                } else {
+                    tempLogMetaData.setTimeZone(getTimeZone());
+                }
 
             }
 

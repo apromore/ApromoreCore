@@ -58,7 +58,7 @@ public class XLSXLogImporterCSVImplUnitTest {
         ParquetImporterFactory parquetImporterFactory = new ParquetFactoryProvider().getParquetFactory("xlsx");
         metaDataService = parquetImporterFactory.getMetaDataService();
         metaDataUtilities = parquetImporterFactory.getMetaDataUtilities();
-        logImporter = new LogImporterProvider().getLogReader("xlsx");
+        logImporter = new LogImporterXLSXImpl();
     }
 
     /**

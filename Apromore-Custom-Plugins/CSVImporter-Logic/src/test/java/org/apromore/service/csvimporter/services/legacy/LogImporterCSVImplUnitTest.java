@@ -59,7 +59,7 @@ public class LogImporterCSVImplUnitTest {
         ParquetImporterFactory parquetImporterFactory = new ParquetFactoryProvider().getParquetFactory("csv");
         metaDataService = parquetImporterFactory.getMetaDataService();
         metaDataUtilities = parquetImporterFactory.getMetaDataUtilities();
-        logImporter = new LogImporterProvider().getLogReader("csv");
+        logImporter = new LogImporterCSVImpl();
     }
 
     /**
