@@ -47,5 +47,6 @@
 
     <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
     <osgi:service ref="logAnimationServiceImpl" interface="org.apromore.service.loganimation.LogAnimationService" auto-export="interfaces"/>
+    <osgi:service ref="logAnimationServiceImpl2" interface="org.apromore.service.loganimation.LogAnimationService2" auto-export="interfaces"/>
 
 </beans>

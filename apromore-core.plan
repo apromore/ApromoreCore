@@ -85,6 +85,7 @@
     <artifact type="bundle" name="org.apromore.plugin.apromore-bpmneditor" version="[1.1.0, 2)"/>
     
     <artifact type="bundle" name="org.apromore.log-animation-logic" version="[1.0.0,1.0.0]"/>
+    <artifact type="bundle" name="org.apromore.plugin.log-animation-portal-plugin-api" version="[1.0.0,1.0.0]"/>
 	<artifact type="bundle" name="org.apromore.plugin.log-animation-portal-plugin" version="[1.0.0,1.0.0]"/>
     
     <artifact type="bundle" name="org.apromore.log-logic" version="[1.0.0,1.0.0]"/>

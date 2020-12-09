@@ -691,3 +691,24 @@ databaseChangeLog:
            referencedTableName: group
            validate: true
 
+ - changeSet:
+     id: 20201205021800
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_history_user
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: userId
+           baseTableName: history_event
+           constraintName: fk_history_user
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
+           validate: true
+

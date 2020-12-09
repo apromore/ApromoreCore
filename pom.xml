@@ -84,7 +84,8 @@
 		<module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
 
 		<module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
-		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
+		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>     
 
 		<module>Apromore-Custom-Plugins/Log-Logic</module>
 		<module>Apromore-Custom-Plugins/Merge-Logic</module>
@@ -314,7 +315,7 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.4.13-java7</version>
+				<version>1.4.14-java7</version>
 			</dependency>
 
 			<dependency>

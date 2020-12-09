@@ -39,6 +39,13 @@ import javax.xml.bind.JAXBException;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.loganimation.LogAnimationService;
+import org.apromore.service.loganimation.json.AnimationJSONBuilder;
+import org.apromore.service.loganimation.replay.AnimationLog;
+import org.apromore.service.loganimation.replay.BPMNDiagramHelper;
+import org.apromore.service.loganimation.replay.Optimizer;
+import org.apromore.service.loganimation.replay.ReplayParams;
+import org.apromore.service.loganimation.replay.ReplayTrace;
+import org.apromore.service.loganimation.replay.Replayer;
 // Third party packages
 import org.deckfour.xes.model.XLog;
 import org.json.JSONException;
@@ -51,8 +58,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-// Local classes
-import de.hpi.bpmn2_0.animation.AnimationJSONBuilder;
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
@@ -62,16 +67,11 @@ import de.hpi.bpmn2_0.model.Process;
 import de.hpi.bpmn2_0.model.activity.Task;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.model.event.Event;
-import de.hpi.bpmn2_0.replay.AnimationLog;
-import de.hpi.bpmn2_0.replay.BPMNDiagramHelper;
-import de.hpi.bpmn2_0.replay.Optimizer;
-import de.hpi.bpmn2_0.replay.ReplayParams;
-import de.hpi.bpmn2_0.replay.ReplayTrace;
-import de.hpi.bpmn2_0.replay.Replayer;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 
 @Service
+@Deprecated 
 public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin implements LogAnimationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationServiceImpl.class);
@@ -383,7 +383,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
         for (AnimationLog animationLog : replayedLogs) {
             transformToNonGateways(animationLog, diagramMapping);
         }
-        
+        LOGGER.info("Finish replaying log over model");
 
         /*
         * ------------------------------------------
@@ -400,7 +400,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
             String string = json.toString();
             //LOGGER.info(string);
             jsonBuilder.clear();
-
+            LOGGER.info("Finish generating JSON and start sending to the browser");
             return string;
         }
         else {

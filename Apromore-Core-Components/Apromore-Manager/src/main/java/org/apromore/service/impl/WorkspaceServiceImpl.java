@@ -208,13 +208,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new NotAuthorizedException("User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
         }
         Folder folder = folderRepo.findOne(folderId);
-        if(folderName != null && !folderName.isEmpty()) folder.setName(folderName);
+        if(folderName != null && !folderName.isEmpty()) 
+        	folder.setName(folderName);
         if(isGEDMatrixReady != null) {
             folder.setGEDMatrixReady(isGEDMatrixReady);
             for(Folder subfolder : folder.getSubFolders()) {
                 updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
             }
         }
+        folderRepo.save(folder);
     }
 
     /**
