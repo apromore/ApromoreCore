@@ -70,7 +70,6 @@ public class NodeBasedGraph extends AbstractFilteredGraph {
         }
         
         buildRemovableArcsIndependently(arcInverted);
-        //buildRemovableArcsDependently(preGraph, arcInverted);
         
         if (!removableArcs.isEmpty()) {
             // Now remove arcs from the graph and create arc-based graphs
@@ -90,15 +89,16 @@ public class NodeBasedGraph extends AbstractFilteredGraph {
                 if (totalRemainingArcs <= MAX_ALLOWED_NUMBER_ARCS) subGraphs.add(arcBasedGraph);
                 batchCount += removedBatchSize;
             }
-            
-            // Always keep the smallest subgraph even it has more arcs than the limit
-            if (subGraphs.isEmpty()) {
-                subGraphs.add(arcBasedGraph);
-            }
+        }
+        
+        // The default is the whole node-based graph itself, never let subgraphs empty. 
+        if (subGraphs.isEmpty()) {
+            subGraphs.add(arcBasedGraph);
         }
     }
     
     // Compute removable arcs in continuation with the previous node-based graph
+    @Deprecated
     public void buildRemovableArcsDependently(NodeBasedGraph preGraph, boolean arcInverted) {
         IntList preRemovableArcs = (preGraph == null ? IntLists.immutable.empty() : preGraph.getRemovableArcs());
         IntList preBackboneArcs = (preGraph == null ? IntLists.immutable.empty() : preGraph.getBackboneArcs());

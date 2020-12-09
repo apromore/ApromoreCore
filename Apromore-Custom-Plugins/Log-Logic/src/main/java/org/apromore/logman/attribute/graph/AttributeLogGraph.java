@@ -48,6 +48,8 @@ import org.eclipse.collections.impl.factory.primitive.IntDoubleMaps;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AttributeLogGraph is a {@link WeightedAttributeGraph} for an {@link AttributeLog}.
@@ -102,6 +104,8 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private IntDoubleMap arcWeightsForGraphStructure = arcCaseFreqs;
     private boolean nodeInverted = false; 
     private boolean arcInverted = false;
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttributeLogGraph.class.getCanonicalName());
     
     public AttributeLogGraph(AttributeLog attLog) {
         super(attLog.getAttribute());
@@ -477,8 +481,8 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
      * @param invertedElementSelection: if true, nodes and arcs are selected from the end of the list and backward
      */
     public void buildSubGraphs(boolean invertedElementSelection) {
-        System.out.println("Total Number of nodes: " + this.getNodes().size());
-        System.out.println("Total Number of arcs: " + this.getArcs().size());
+        LOGGER.debug("Total Number of nodes: " + this.getNodes().size());
+        LOGGER.debug("Total Number of arcs: " + this.getArcs().size());
         
         long timer = System.currentTimeMillis();
         
@@ -509,11 +513,12 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             preGraph = (NodeBasedGraph)nodeGraph;
         }
         
-        System.out.println("Build all graphs: " + (System.currentTimeMillis() - timer) + " ms.");
+        LOGGER.debug("Build all graphs: " + (System.currentTimeMillis() - timer) + " ms.");
     }
     
     // This method only builds bins of nodes based on one single connected node
     // (i.e. the node that after removing them the graph remains connected).
+    @Deprecated
     private MutableList<MutableIntList> buildRemovaleNodes() {
         MutableIntList sortedNodes = (!nodeInverted ? getSortedNodes().toList() : getSortedNodes().toReversed().toList()) ;
         sortedNodes.remove(getSourceNode());
@@ -608,7 +613,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         for (int i=0;i<subGraphs.size();i++) {
             if (subGraphs.get(i).getNodes().size() <= numberOfNodes) {
                 nodeBasedGraph = subGraphs.get(i);
-                System.out.println("The node slider graph at level " + i + "/" + subGraphs.size() + " is selected.");
+                LOGGER.debug("The node slider graph at level " + i + "/" + subGraphs.size() + " is selected.");
                 break;
             }
         }
@@ -619,7 +624,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         for (int i=0;i<arcSubGraphs.size();i++) {
             if (arcSubGraphs.get(i).getArcs().size() <= numberOfArcs) {
                 arcBasedGraph = arcSubGraphs.get(i);
-                System.out.println("The arc slider graph at level " + i + "/" + arcSubGraphs.size() + " is selected.");
+                LOGGER.debug("The arc slider graph at level " + i + "/" + arcSubGraphs.size() + " is selected.");
                 break;
             }
         }
