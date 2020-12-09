@@ -21,6 +21,8 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
+import java.util.Map;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +31,18 @@ import static org.apromore.service.csvimporter.constants.Constants.*;
 public class LogImporterProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogImporterProvider.class);
 
+    Map<String, LogImporter> logImporterMap;
+
+    /**
+     * @param map  keys are lowercase log file extensions, values are the corresponding log importers
+     */
+    public void setLogImporterMap(Map<String, LogImporter> map) {
+        this.logImporterMap = map;
+    }
+
     public LogImporter getLogReader(String fileExtension) {
 
         LOGGER.info("File Format: " + fileExtension);
-        if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
-            return new LogImporterCSVImpl();
-        } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
-            return new LogImporterXLSXImpl();
-        } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
-            return new LogImporterParquetImpl();
-        } else {
-            return null;
-        }
+        return logImporterMap.get(fileExtension.toLowerCase());
     }
 }

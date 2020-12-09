@@ -108,10 +108,17 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         // Get the most common date format
         if (dateTimeFormatCollections.size() > 0) {
             return dateTimeFormatCollections.stream()
-                    .collect(Collectors.groupingBy(w -> w, Collectors.counting()))
+                    .collect(Collectors.groupingBy(java.util.function.Function.identity(), Collectors.counting()))
                     .entrySet()
                     .stream()
-                    .max(Comparator.comparing(Map.Entry::getValue))
+                    .max(Comparator.comparing(
+                        //Map.Entry::getValue  // Java 8
+                        new java.util.function.Function<Map.Entry<String, Long>, Long>() {
+                            public Long apply(Map.Entry<String, Long> entry) {
+                                return entry.getValue();
+                            }
+                        }
+                    ))
                     .get()
                     .getKey();
         } else {
@@ -177,7 +184,14 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
             // sort by case id
             List<List<String>> myLines = new ArrayList<>(lines);
             Comparator<String> nameOrder = new NameComparator();
-            myLines.sort((o1, o2) -> nameOrder.compare(o1.get(logMetaData.getCaseIdPos()), o2.get(logMetaData.getCaseIdPos())));
+            myLines.sort(
+                //(o1, o2) -> nameOrder.compare(o1.get(logMetaData.getCaseIdPos()), o2.get(logMetaData.getCaseIdPos()))  // Java 8
+                new java.util.Comparator<List<String>>() {
+                    public int compare(List<String> o1, List<String> o2) {
+                        return nameOrder.compare(o1.get(logMetaData.getCaseIdPos()), o2.get(logMetaData.getCaseIdPos()));
+                    }
+                }
+            );
 
             List<CaseAttributesDiscovery> discoverList;
             Iterator<Integer> iterator = logMetaData.getEventAttributesPos().iterator();
@@ -186,10 +200,24 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
                 boolean caseAttribute = true;
                 int pos = (int) iterator.next();
                 for (List<String> myLine : myLines) {
-                    if (discoverList.isEmpty() || discoverList.stream().noneMatch(p -> p.getCaseId().equals(myLine.get(logMetaData.getCaseIdPos())))) { // new case id
+                    if (discoverList.isEmpty() || discoverList.stream().noneMatch(
+                        //p -> p.getCaseId().equals(myLine.get(logMetaData.getCaseIdPos()))  // Java 8
+                        new java.util.function.Predicate<CaseAttributesDiscovery>() {
+                            public boolean test(CaseAttributesDiscovery p) {
+                                return p.getCaseId().equals(myLine.get(logMetaData.getCaseIdPos()));
+                            }
+                        }
+                    )) { // new case id
                         discoverList = new ArrayList<>();
                         discoverList.add(new CaseAttributesDiscovery(myLine.get(logMetaData.getCaseIdPos()), pos, myLine.get(pos)));
-                    } else if (!discoverList.stream().filter(p -> p.getPosition() == pos).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(pos))) {
+                    } else if (!discoverList.stream().filter(
+                        //p -> p.getPosition() == pos  // Java 8
+                        new java.util.function.Predicate<CaseAttributesDiscovery>() {
+                            public boolean test(CaseAttributesDiscovery p) {
+                                return p.getPosition() == pos;
+                            }
+                        }
+                    ).collect(Collectors.toList()).get(0).getValue().equals(myLine.get(pos))) {
                         caseAttribute = false;
                         break;
                     }

@@ -22,43 +22,40 @@
   -->
 
 
-<beans:beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:beans="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:osgi="http://www.springframework.org/schema/osgi"
        xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
-            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+            http://www.springframework.org/schema/util            http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <!-- Inject dependencies for @Autowired/@Inject annotations -->
+    <context:annotation-config/>
+
+    <!-- Create Spring beans for classes annotated with @Component/@Service -->
+    <context:component-scan base-package="org.apromore.service.csvimporter"/>
+
+    <!-- Import OSGi services as beans -->
     <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider">
-        <beans:bean class="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
-    </osgi:service>
+    <util:map id="logImporterMap" map-class="java.util.HashMap" key-type="java.lang.String" value-type="org.apromore.service.csvimporter.services.legacy.LogImporter">
+        <entry key="csv"     value-ref="csvLogImporter"/>
+        <entry key="parquet" value-ref="parquetLogImporter"/>
+        <entry key="xlsx"    value-ref="xlsxLogImporter"/>
+    </util:map>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporterProvider">
-        <beans:bean class="org.apromore.service.csvimporter.services.legacy.LogImporterProvider"/>
-    </osgi:service>
+    <bean id="logImporterProvider" class="org.apromore.service.csvimporter.services.legacy.LogImporterProvider">
+        <property name="logImporterMap" ref="logImporterMap"/>
+    </bean>
 
-    <osgi:service interface="org.apromore.service.csvimporter.common.EventLogImporter" auto-export="interfaces">
-        <beans:bean class="org.apromore.service.csvimporter.common.EventLogImporter">
-            <beans:property name="eventLogService" ref="eventLogService"/>
-        </beans:bean>
-    </osgi:service>
+    <!-- Export beans as OSGi services -->
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporterProvider" ref="logImporterProvider"/>
+    <osgi:service interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider" ref="parquetFactoryProvider"/>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
-        <beans:bean class="org.apromore.service.csvimporter.services.legacy.LogImporterCSVImpl"/>
-    </osgi:service>
-
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
-        <beans:bean class="org.apromore.service.csvimporter.services.legacy.LogImporterParquetImpl"/>
-    </osgi:service>
-
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporter">
-        <beans:bean class="org.apromore.service.csvimporter.services.legacy.LogImporterXLSXImpl"/>
-    </osgi:service>
-</beans:beans>
+</beans>

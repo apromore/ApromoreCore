@@ -132,7 +132,14 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
                     for (Cell c : r) {
                         line[c.getColumnIndex()] = c.getStringCellValue();
                     }
-                    Arrays.asList(line).replaceAll(val -> val == null ? "" : val);
+                    Arrays.asList(line).replaceAll(
+                        //val -> val == null ? "" : val  // Java 8
+                        new java.util.function.UnaryOperator<String>() {
+                            public String apply(String val) {
+                                return val == null ? "" : val;
+                            }
+                        }
+                    );
                     lines.add(Arrays.asList(line));
                 }
             }
