@@ -42,17 +42,21 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
+import javax.inject.Inject;
 
 import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
+@Service("parquetLogImporter")
 public class LogImporterParquetImpl implements LogImporter, Constants {
 
+    @Inject EventLogImporter eventLogImporter;
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private ParquetReader<Group> reader;
@@ -157,10 +161,20 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
             }
 
             //Sort and feed xLog
-            tracesHistory.forEach((k, v) -> {
-                v.sort(new XEventComparator());
-                xLog.add(v);
-            });
+            tracesHistory.forEach(
+                /* Java 8
+                (k, v) -> {
+                    v.sort(new XEventComparator());
+                    xLog.add(v);
+                }
+                */
+                new java.util.function.BiConsumer<String, XTrace>() {
+                    public void accept(String k, XTrace v) {
+                        v.sort(new XEventComparator());
+                        xLog.add(v);
+                    }
+                }
+            );
 
             if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;
@@ -170,7 +184,7 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
                     (username != null && !username.isEmpty()) &&
                     folderId != null &&
                     (logName != null && !logName.isEmpty()))
-                log = new EventLogImporter().importXesLog(xLog, username, folderId, logName);
+                log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
 
             return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents,log);
 

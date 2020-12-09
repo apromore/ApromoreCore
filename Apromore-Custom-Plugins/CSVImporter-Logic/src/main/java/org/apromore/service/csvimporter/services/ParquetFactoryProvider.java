@@ -23,9 +23,11 @@ package org.apromore.service.csvimporter.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import static org.apromore.service.csvimporter.constants.Constants.*;
 
+@Service("parquetFactoryProvider")
 public class ParquetFactoryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetFactoryProvider.class);
 

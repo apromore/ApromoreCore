@@ -42,11 +42,13 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
+@Service("xlsxLogImporter")
 public class LogImporterXLSXImpl implements LogImporter, Constants {
 
     private List<LogErrorReport> logErrorReport;
@@ -57,6 +59,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     @Override
     public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
                               String username, Integer folderId, String logName) throws Exception {
+
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
             sample.validateSample();
             if (workbook == null)
@@ -150,10 +153,20 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
             }
 
             //Sort and feed xLog
-            tracesHistory.forEach((k, v) -> {
-                v.sort(new XEventComparator());
-                xLog.add(v);
-            });
+            tracesHistory.forEach(
+                /* Java 8
+                (k, v) -> {
+                    v.sort(new XEventComparator());
+                    xLog.add(v);
+                }
+                */
+                new java.util.function.BiConsumer<String, XTrace>() {
+                    public void accept(String k, XTrace v) {
+                        v.sort(new XEventComparator());
+                        xLog.add(v);
+                    }
+                }
+            );
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;

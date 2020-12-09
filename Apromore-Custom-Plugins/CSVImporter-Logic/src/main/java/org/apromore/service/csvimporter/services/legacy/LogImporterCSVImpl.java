@@ -40,14 +40,17 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
+import javax.inject.Inject;
 
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
+@Service("csvLogImporter")
 public class LogImporterCSVImpl implements LogImporter, Constants {
 
     private List<LogErrorReport> logErrorReport;
@@ -56,6 +59,8 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
     private BufferedReader brReader;
     private InputStream in2;
     private CSVReader reader;
+
+    @Inject EventLogImporter eventLogImporter;
 
     @Override
     public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
@@ -150,10 +155,20 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
             }
 
             //Sort and feed xLog
-            tracesHistory.forEach((k, v) -> {
-                v.sort(new XEventComparator());
-                xLog.add(v);
-            });
+            tracesHistory.forEach(
+                /* Java 8
+                (k, v) -> {
+                    v.sort(new XEventComparator());
+                    xLog.add(v);
+                }
+                */
+                new java.util.function.BiConsumer<String, XTrace>() {
+                    public void accept(String k, XTrace v) {
+                        v.sort(new XEventComparator());
+                        xLog.add(v);
+                    }
+                }
+            );
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
@@ -163,7 +178,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                     (username != null && !username.isEmpty()) &&
                     folderId != null &&
                     (logName != null && !logName.isEmpty()))
-                log = new EventLogImporter().importXesLog(xLog, username, folderId, logName);
+                log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
 
             return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
 

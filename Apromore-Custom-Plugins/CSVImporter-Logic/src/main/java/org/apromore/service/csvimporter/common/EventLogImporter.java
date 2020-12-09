@@ -24,6 +24,7 @@ package org.apromore.service.csvimporter.common;
 import org.apromore.dao.model.Log;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
@@ -33,6 +34,7 @@ import java.util.GregorianCalendar;
 
 import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
 
+@Service("eventLogImporter")
 public class EventLogImporter {
 
     @Inject EventLogService eventLogService;
