@@ -21,15 +21,12 @@
  */
 package org.apromore.service.impl;
 
-import static org.easymock.EasyMock.expect;
-import static org.hamcrest.Matchers.equalTo;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.expect;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verify;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import java.text.DateFormat;
@@ -221,9 +218,10 @@ public class UserMetadataServiceImplUnitTest {
 	when(usermetadataLogRepo.findByLog(log1)).thenReturn(usermetadataLogSet);
 	when(usermetadataLogRepo.findByLog(log2)).thenReturn(usermetadataLogSet1);
 
+//	When
 	Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLogs(Arrays.asList(log1.getId(), log2.getId()),
 		UserMetadataTypeEnum.FILTER);
-
+//	Then
 	assertThat(usermetadataSet).containsAll(usermetadataSetExpect);
 
     }
@@ -270,13 +268,13 @@ public class UserMetadataServiceImplUnitTest {
 	when(userSrv.findUserByLogin(user.getUsername())).thenReturn(user);
 	when(groupUsermetadataRepo.findByLogAndUser(usermetadataId, user.getRowGuid())).thenReturn(groupUsermetadataList);
 
+//	When
 	boolean result = userMetadataService.canUserEditMetadata(user.getUsername(), 1);
-
+//	Then
 	assertThat(result).isFalse();
     }
 
     @Test
-    @Rollback
     public void testCanUserEditMetadata_returnTrue() throws UserNotFoundException {
 
 	// Given
@@ -306,7 +304,9 @@ public class UserMetadataServiceImplUnitTest {
 	when(userSrv.findUserByLogin(user.getUsername())).thenReturn(user);
 	when(groupUsermetadataRepo.findByLogAndUser(usermetadataId, user.getRowGuid())).thenReturn(groupUsermetadataList);
 
+//	When
 	boolean result = userMetadataService.canUserEditMetadata(user.getUsername(), 1);
+//	Then
 	assertThat(result).isTrue();
     }
 
@@ -314,64 +314,42 @@ public class UserMetadataServiceImplUnitTest {
     @Rollback
     public void testGetUserMetadataWithoutLog() throws UserNotFoundException {
 
-	String username = "test_username";
+	// Given
+	User user = userBuilder.withUser("test_username", "RowGuid")
+		.withDummyUserGroup()
+		.buildUser();
 
-	User user = new User();
-	String rowGuid = "RowGuid";
-	user.setRowGuid(rowGuid);
-	Set<Group> groupSet = new HashSet<>();
-	Group g1 = new Group(1);
-	groupSet.add(g1);
-	user.setGroups(groupSet);
+	UsermetadataType usermetadataType1 = userBuilder
+		.withUserMetaDataType("FILTER", 1, true, 1)
+		.getUserMetaDataType();
 
-	UsermetadataType usermetadataType1 = new UsermetadataType();
-	usermetadataType1.setIsValid(true);
-	usermetadataType1.setType("FILTER");
-	usermetadataType1.setVersion(1);
-	usermetadataType1.setId(1);
+	UsermetadataType usermetadataType2 = userBuilder
+		.withUserMetaDataType("DASHBOARD", 1, true, 2)
+		.getUserMetaDataType();
 
-	UsermetadataType usermetadataType2 = new UsermetadataType();
-	usermetadataType2.setIsValid(true);
-	usermetadataType2.setType("DASHBOARD");
-	usermetadataType2.setVersion(1);
-	usermetadataType2.setId(2);
+	Usermetadata um = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
 
-	Usermetadata um = new Usermetadata();
-	um.setId(1);
-	um.setContent("test content");
-	um.setCreatedBy("user_UUID");
-	um.setCreatedTime(now);
-	um.setIsValid(true);
-	um.setRevision(1);
-	um.setUsermetadataType(usermetadataType1);
-	um.setUpdatedBy("user_UUID");
-	um.setUpdatedTime(now);
+	Usermetadata um1 = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType2)
+		.getUserMetaData();
 
-	Usermetadata um1 = new Usermetadata();
-	um1.setId(2);
-	um1.setContent("test content");
-	um1.setCreatedBy("user_UUID");
-	um1.setCreatedTime(now);
-	um1.setIsValid(true);
-	um1.setRevision(1);
-	um1.setUsermetadataType(usermetadataType2);
-	um1.setUpdatedBy("user_UUID");
-	um1.setUpdatedTime(now);
-
-	List<GroupUsermetadata> groupUsermetadataList = new ArrayList<>();
-	groupUsermetadataList.add(new GroupUsermetadata(g1, um, true, false, false));
-	groupUsermetadataList.add(new GroupUsermetadata(g1, um, true, true, true));
+	List<GroupUsermetadata> groupUsermetadataList = userBuilder
+		.withGroupUserMetaData(user.getGroups().iterator().next(), um, true, false, false)
+		.withGroupUserMetaData(user.getGroups().iterator().next(), um, true, true, true)
+		.getGroupUserMetaDataList();
 
 	Set<Usermetadata> usermetadataSetExpect = new HashSet<>();
 	usermetadataSetExpect.add(um);
 
-	expect(userSrv.findUserByLogin(username)).andReturn(user);
-	expect(groupUsermetadataRepo.findByGroup(g1)).andReturn(groupUsermetadataList);
-	replayAll();
+	when(userSrv.findUserByLogin(user.getUsername())).thenReturn(user);
+	when(groupUsermetadataRepo.findByGroup(user.getGroups().iterator().next())).thenReturn(groupUsermetadataList);
 
-	Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataWithoutLog(UserMetadataTypeEnum.FILTER,
-		username);
-	verifyAll();
+//	When
+	Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataWithoutLog(UserMetadataTypeEnum.FILTER, user.getUsername());
+
+//	Then
 	assertThat(usermetadataSet).containsAll(usermetadataSetExpect);
 
     }
@@ -379,169 +357,88 @@ public class UserMetadataServiceImplUnitTest {
     @Test
     public void testGetDependentLog() {
 
-	String username = "test_username";
+	// Given
+	User user = userBuilder.withUser("test_username", "RowGuid")
+		.withDummyUserGroup()
+		.buildUser();
 
-	User user = new User();
-	String rowGuid = "RowGuid";
-	user.setRowGuid(rowGuid);
-	Set<Group> groupSet = new HashSet<>();
-	Group g1 = new Group(1);
-	groupSet.add(g1);
-	user.setGroups(groupSet);
+	UsermetadataType usermetadataType1 = userBuilder
+		.withUserMetaDataType("FILTER", 1, true, 1)
+		.getUserMetaDataType();
 
-	List<Integer> logIds = new ArrayList<>();
-	logIds.add(1);
-	logIds.add(2);
+	UsermetadataType usermetadataType2 = userBuilder
+		.withUserMetaDataType("DASHBOARD", 1, true, 2)
+		.getUserMetaDataType();
+
+	Usermetadata um = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
+
+	Usermetadata um1 = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
+
+	Usermetadata um2 = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
+
+	List<GroupUsermetadata> groupUsermetadataList = userBuilder
+		.withGroupUserMetaData(user.getGroups().iterator().next(), um, true, false, false)
+		.withGroupUserMetaData(user.getGroups().iterator().next(), um, true, true, true)
+		.getGroupUserMetaDataList();
 
 	Log log1 = new Log(1);
 	Log log2 = new Log(2);
 
-	UsermetadataType usermetadataType1 = new UsermetadataType();
-	usermetadataType1.setIsValid(true);
-	usermetadataType1.setType("FILTER");
-	usermetadataType1.setVersion(1);
-	usermetadataType1.setId(1);
+	List<UsermetadataLog> usermetadataLogSet = userBuilder
+		.withNewUserMetaDataLogList()
+		.withUserMetaDataLog(um1, log1)
+		.withUserMetaDataLog(um1, log2)
+		.getUserMetaDataLogList();
 
-	UsermetadataType usermetadataType2 = new UsermetadataType();
-	usermetadataType2.setIsValid(true);
-	usermetadataType2.setType("DASHBOARD");
-	usermetadataType2.setVersion(1);
-	usermetadataType2.setId(2);
+	um1.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet));
 
-	Usermetadata um = new Usermetadata();
-	um.setId(1);
-	um.setContent("test content");
-	um.setCreatedBy("user_UUID");
-	um.setCreatedTime(now);
-	um.setIsValid(true);
-	um.setRevision(1);
-	um.setUsermetadataType(usermetadataType1);
-	um.setUpdatedBy("user_UUID");
-	um.setUpdatedTime(now);
+	List<UsermetadataLog> usermetadataLogSet1 = userBuilder
+		.withNewUserMetaDataLogList()
+		.withUserMetaDataLog(um2, log1)
+		.withUserMetaDataLog(um2, log2)
+		.getUserMetaDataLogList();
 
-	Usermetadata um1 = new Usermetadata();
-	um1.setId(2);
-	um1.setContent("test content");
-	um1.setCreatedBy("user_UUID");
-	um1.setCreatedTime(now);
-	um1.setIsValid(true);
-	um1.setRevision(1);
-	um1.setUsermetadataType(usermetadataType1);
-	um1.setUpdatedBy("user_UUID");
-	um1.setUpdatedTime(now);
-
-	Usermetadata um2 = new Usermetadata();
-	um2.setId(3);
-	um2.setContent("test content");
-	um2.setCreatedBy("user_UUID");
-	um2.setCreatedTime(now);
-	um2.setIsValid(true);
-	um2.setRevision(1);
-	um2.setUsermetadataType(usermetadataType1);
-	um2.setUpdatedBy("user_UUID");
-	um2.setUpdatedTime(now);
-
-	List<GroupUsermetadata> groupUsermetadataList = new ArrayList<>();
-	groupUsermetadataList.add(new GroupUsermetadata(g1, um, true, false, false));
-	groupUsermetadataList.add(new GroupUsermetadata(g1, um, true, true, true));
-
-	Set<UsermetadataLog> usermetadataLogSet = new HashSet<>();
-	Set<UsermetadataLog> usermetadataLogSet1 = new HashSet<>();
-	UsermetadataLog ul1 = new UsermetadataLog(um1, log1);
-	UsermetadataLog ul2 = new UsermetadataLog(um1, log2);
-	UsermetadataLog ul3 = new UsermetadataLog(um2, log1);
-	UsermetadataLog ul4 = new UsermetadataLog(um2, log2);
-	usermetadataLogSet.add(ul1);
-	usermetadataLogSet.add(ul2);
-	um1.setUsermetadataLog(usermetadataLogSet);
-	usermetadataLogSet1.add(ul3);
-	usermetadataLogSet1.add(ul4);
-	um2.setUsermetadataLog(usermetadataLogSet1);
-
-	List<UsermetadataLog> usermetadataLogList1 = new ArrayList<>();
-	usermetadataLogList1.add(ul1);
-	usermetadataLogList1.add(ul3);
-
-	List<UsermetadataLog> usermetadataLogList2 = new ArrayList<>();
-	usermetadataLogList2.add(ul2);
-	usermetadataLogList2.add(ul4);
+	um2.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet1));
 
 	List<Log> expectedResult = new ArrayList<>();
 	expectedResult.add(log1);
 	expectedResult.add(log2);
 
+//	When
 	List<Log> result = userMetadataService.getDependentLog(um1);
+//	Then
 	assertThat(result).containsAll(expectedResult);
     }
 
     @Test
     public void testGetDependentProcess() {
 
-	String username = "test_username";
+	// Given
+	User user = userBuilder.withUser("test_username", "RowGuid")
+		.withDummyUserGroup()
+		.buildUser();
 
-	User user = new User();
-	String rowGuid = "RowGuid";
-	user.setRowGuid(rowGuid);
-	Set<Group> groupSet = new HashSet<>();
-	Group g1 = new Group(1);
-	groupSet.add(g1);
-	user.setGroups(groupSet);
+	UsermetadataType usermetadataType1 = userBuilder
+		.withUserMetaDataType("FILTER", 1, true, 1)
+		.getUserMetaDataType();
 
-	List<Integer> logIds = new ArrayList<>();
-	logIds.add(1);
-	logIds.add(2);
+	UsermetadataType usermetadataType2 = userBuilder
+		.withUserMetaDataType("DASHBOARD", 1, true, 2)
+		.getUserMetaDataType();
 
-	Log log1 = new Log(1);
-	Log log2 = new Log(2);
+	Usermetadata um = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
 
-	UsermetadataType usermetadataType1 = new UsermetadataType();
-	usermetadataType1.setIsValid(true);
-	usermetadataType1.setType("FILTER");
-	usermetadataType1.setVersion(1);
-	usermetadataType1.setId(1);
-
-	UsermetadataType usermetadataType2 = new UsermetadataType();
-	usermetadataType2.setIsValid(true);
-	usermetadataType2.setType("DASHBOARD");
-	usermetadataType2.setVersion(1);
-	usermetadataType2.setId(2);
-
-	Usermetadata um = new Usermetadata();
-	um.setId(1);
-	um.setContent("test content");
-	um.setCreatedBy("user_UUID");
-	um.setCreatedTime(now);
-	um.setIsValid(true);
-	um.setRevision(1);
-	um.setUsermetadataType(usermetadataType1);
-	um.setUpdatedBy("user_UUID");
-	um.setUpdatedTime(now);
-
-	Usermetadata um1 = new Usermetadata();
-	um1.setId(2);
-	um1.setContent("test content");
-	um1.setCreatedBy("user_UUID");
-	um1.setCreatedTime(now);
-	um1.setIsValid(true);
-	um1.setRevision(1);
-	um1.setUsermetadataType(usermetadataType1);
-	um1.setUpdatedBy("user_UUID");
-	um1.setUpdatedTime(now);
-
-	Usermetadata um2 = new Usermetadata();
-	um2.setId(3);
-	um2.setContent("test content");
-	um2.setCreatedBy("user_UUID");
-	um2.setCreatedTime(now);
-	um2.setIsValid(true);
-	um2.setRevision(1);
-	um2.setUsermetadataType(usermetadataType1);
-	um2.setUpdatedBy("user_UUID");
-	um2.setUpdatedTime(now);
-
-	List<GroupUsermetadata> groupUsermetadataList = new ArrayList<>();
-	groupUsermetadataList.add(new GroupUsermetadata(g1, um, true, false, false));
-	groupUsermetadataList.add(new GroupUsermetadata(g1, um, true, true, true));
+	Usermetadata um1 = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
 
 	Set<UsermetadataProcess> usermetadataProcessSet = new HashSet<>();
 
@@ -569,23 +466,14 @@ public class UserMetadataServiceImplUnitTest {
 	Group g1 = new Group(1);
 	Group g2 = new Group(2);
 	Group g3 = new Group(3);
+	
+	UsermetadataType usermetadataType1 = userBuilder
+		.withUserMetaDataType("FILTER", 1, true, 1)
+		.getUserMetaDataType();
 
-	UsermetadataType usermetadataType1 = new UsermetadataType();
-	usermetadataType1.setIsValid(true);
-	usermetadataType1.setType("FILTER");
-	usermetadataType1.setVersion(1);
-	usermetadataType1.setId(1);
-
-	Usermetadata um = new Usermetadata();
-	um.setId(1);
-	um.setContent("test content");
-	um.setCreatedBy("user_UUID");
-	um.setCreatedTime(now);
-	um.setIsValid(true);
-	um.setRevision(1);
-	um.setUsermetadataType(usermetadataType1);
-	um.setUpdatedBy("user_UUID");
-	um.setUpdatedTime(now);
+	Usermetadata um = userBuilder
+		.withUserMetaData("test content", "user_UUID", true, 1, usermetadataType1)
+		.getUserMetaData();
 
 	GroupUsermetadata gu = new GroupUsermetadata(g1, um, true, true, true);
 	GroupUsermetadata gu2 = new GroupUsermetadata(g2, um, true, true, false);
@@ -599,10 +487,10 @@ public class UserMetadataServiceImplUnitTest {
 
 	AccessType expectedResult = AccessType.OWNER;
 
-	expect(groupUsermetadataRepo.findByGroupAndUsermetadata(g1, um)).andReturn(gu);
-	expect(groupUsermetadataRepo.findByGroupAndUsermetadata(g2, um)).andReturn(gu2);
-	expect(groupUsermetadataRepo.findByGroupAndUsermetadata(g3, um)).andReturn(gu3);
-	replayAll();
+	when(groupUsermetadataRepo.findByGroupAndUsermetadata(g1, um)).thenReturn(gu);
+	when(groupUsermetadataRepo.findByGroupAndUsermetadata(g2, um)).thenReturn(gu2);
+	when(groupUsermetadataRepo.findByGroupAndUsermetadata(g3, um)).thenReturn(gu3);
+	
 
 	AccessType result = userMetadataService.getUserMetadataAccessType(g1, um);
 	assertThat(result).isEqualTo(expectedResult);
