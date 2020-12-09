@@ -116,7 +116,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Usermetadata userMetadata = new Usermetadata();
 
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
-        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+//        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+        Set<Log> logs = new HashSet<>();
 
         // Assign OWNER permission to the user's personal group
         groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
@@ -130,18 +131,20 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 //            }
 
             // Add linked artifact to the UsermetadataLog linked table
-            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+//            usermetadataLogSet.add(new UsermetadataLog(userMetadata, logRepo.findUniqueByID(logId)));
+            logs.add(logRepo.findUniqueByID(logId));
         }
 
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
-        userMetadata.setUsermetadataLog(usermetadataLogSet);
+//        userMetadata.setUsermetadataLog(usermetadataLogSet);
         userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(userMetadataContent);
         userMetadata.setName(userMetadataName);
+        userMetadata.setLogs(logs);
 
         // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
         LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username, userMetadata.getId(),
@@ -382,10 +385,11 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         for (Set<Usermetadata> umSet : lists) {
             for (Usermetadata u : umSet) {
                 int count = 0;
-                Set<UsermetadataLog> umlSet = u.getUsermetadataLog();
-                if (umlSet.size() == logIds.size()) {  // May have duplicated UsermetadataLog umlSet.size()
-                    for (UsermetadataLog uml : umlSet) {
-                        if (logIds.contains(uml.getLog().getId())) {
+//                Set<UsermetadataLog> umlSet = u.getUsermetadataLog();
+                Set<Log> logs = u.getLogs();
+                if (logs.size() == logIds.size()) {  // May have duplicated UsermetadataLog umlSet.size()
+                    for (Log l : logs) {
+                        if (logIds.contains(l.getId())) {
                             count += 1;
                         }
                     }
@@ -468,7 +472,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         Usermetadata userMetadata = new Usermetadata();
 
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
-        Set<UsermetadataLog> usermetadataLogSet = userMetadata.getUsermetadataLog();
+        Set<Log> logs = userMetadata.getLogs();
 
         // Assign OWNER permission to the user's personal group
         groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
@@ -480,7 +484,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
-        userMetadata.setUsermetadataLog(usermetadataLogSet);
+        userMetadata.setLogs(logs);
         userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
@@ -644,14 +648,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     public List<Log> getDependentLog(Usermetadata usermetadata) {
-        List<Log> logs = new ArrayList<>();
-        Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();
+        Set<Log> logSet = usermetadata.getLogs();
 
-        for (UsermetadataLog ul : usermetadataLogSet) {
-            logs.add(ul.getLog());
-        }
-
-        return logs;
+        return new ArrayList<>(logSet);
     }
 
     @Override
