@@ -123,6 +123,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         params.setMaxNodeDistance(Integer.valueOf(props.getProperty("MaxNodeDistance")).intValue());
         params.setTimelineSlots(Integer.valueOf(props.getProperty("TimelineSlots")).intValue());
         params.setTotalEngineSeconds(Integer.valueOf(props.getProperty("TotalEngineSeconds")).intValue());
+        params.setTotalEngineSeconds(600); //Override this setting for testing
         params.setProgressCircleBarRadius(Integer.valueOf(props.getProperty("ProgressCircleBarRadius")).intValue());
         params.setSequenceTokenDiffThreshold(Integer.valueOf(props.getProperty("SequenceTokenDiffThreshold")).intValue());
         params.setMaxTimePerTrace(Long.valueOf(props.getProperty("MaxTimePerTrace")).longValue());
