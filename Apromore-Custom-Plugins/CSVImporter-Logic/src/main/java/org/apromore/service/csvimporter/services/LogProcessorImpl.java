@@ -127,7 +127,6 @@ public class LogProcessorImpl implements LogProcessor {
 
     private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
         if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
-
             return (timeZone == null || timeZone.isEmpty()) ?
                     parseToTimestamp(theValue, format, null)
                     : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));

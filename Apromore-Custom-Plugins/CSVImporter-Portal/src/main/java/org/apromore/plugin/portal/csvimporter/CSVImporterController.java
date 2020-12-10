@@ -259,7 +259,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 tempLogMetaData.getOtherTimestamps().putAll(otherTimestampsMap2);
 
             }
-            
+
             if (getTimeZone() == null) {
                 tempLogMetaData.setTimeZone(defaultValue.split(" ")[1]);
             } else {

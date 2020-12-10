@@ -47,10 +47,10 @@ class ParquetImporterParquetImpl implements ParquetImporter {
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         try {
-            ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) sample;
+            ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) logMetaData;
             parquetLogSample.validateSample();
 
             //If file exist, delete it
@@ -105,7 +105,7 @@ class ParquetImporterParquetImpl implements ParquetImporter {
                 }
 
                 //Construct an event
-                parquetEventLogModel = logProcessorParquet.processLog(line, header, sample, lineIndex, logErrorReport);
+                parquetEventLogModel = logProcessorParquet.processLog(line, header, logMetaData, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!parquetEventLogModel.isValid()) {

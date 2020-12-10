@@ -63,11 +63,11 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
     @Inject EventLogImporter eventLogImporter;
 
     @Override
-    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
+    public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
                               String username, Integer folderId, String logName) throws Exception {
 
         try {
-            sample.validateSample();
+            logMetaData.validateSample();
             // Read the header
             readerin = new InputStreamReader(in, Charset.forName(charset));
             brReader = new BufferedReader(readerin);
@@ -126,7 +126,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                 }
 
                 //Construct an event
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), logMetaData, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!logEventModelExt.isValid()) {

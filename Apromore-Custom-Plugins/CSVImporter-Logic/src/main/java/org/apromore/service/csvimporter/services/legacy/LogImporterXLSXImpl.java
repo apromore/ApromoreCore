@@ -59,11 +59,11 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     @Inject EventLogImporter eventLogImporter;
 
     @Override
-    public LogModel importLog(InputStream in, LogMetaData sample, String charset, boolean skipInvalidRow,
+    public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
                               String username, Integer folderId, String logName) throws Exception {
 
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
-            sample.validateSample();
+            logMetaData.validateSample();
             if (workbook == null)
                 throw new Exception("Unable to import file");
 
@@ -73,7 +73,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
             if (sheet == null)
                 throw new Exception("Unable to import file");
 
-            String[] header = sample.getHeader().toArray(new String[0]);
+            String[] header = logMetaData.getHeader().toArray(new String[0]);
             logProcessor = new LogProcessorImpl();
             logErrorReport = new ArrayList<>();
             int lineIndex = 0;
@@ -127,7 +127,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
                     continue;
 
                 //Construct an event
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), sample, lineIndex, logErrorReport);
+                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), logMetaData, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!logEventModelExt.isValid()) {

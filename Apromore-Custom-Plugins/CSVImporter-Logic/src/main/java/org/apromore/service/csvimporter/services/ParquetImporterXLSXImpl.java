@@ -47,7 +47,7 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         //If file exist, delete it
         if (outputParquet.exists())
@@ -55,7 +55,7 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
 
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
 
-            sample.validateSample();
+            logMetaData.validateSample();
 
             if (workbook == null)
                 throw new Exception("Unable to import file");
@@ -66,7 +66,7 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
             if (sheet == null)
                 throw new Exception("Unable to import file");
 
-            String[] header = sample.getHeader().toArray(new String[0]);
+            String[] header = logMetaData.getHeader().toArray(new String[0]);
 
             MessageType parquetSchema = createParquetSchema(header);
             // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
@@ -119,7 +119,7 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
                     continue;
 
                 //Construct an event
-                parquetEventLogModel = logProcessorParquet.processLog(line, header, sample, lineIndex, logErrorReport);
+                parquetEventLogModel = logProcessorParquet.processLog(line, header, logMetaData, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!parquetEventLogModel.isValid()) {
