@@ -14,7 +14,7 @@
 
   <modules>
     <module>core-app-dynamic</module>
-    <module>core-app-static</module>
+    <!-- <module>core-app-static</module> -->
     <module>core-dependencies</module>
     <module>core-features</module>
     <module>virgo-compatibility</module>
