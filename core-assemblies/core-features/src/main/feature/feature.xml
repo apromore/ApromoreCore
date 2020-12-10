@@ -130,7 +130,7 @@
     <feature>apromore-calendar</feature>
     <feature>apromore-manager</feature>
     <feature version="3.1.4.RELEASE">spring-jms</feature>
-    <feature>pax-war</feature>
+    <feature>war</feature>
     <feature>zk-framework</feature>
     <bundle>mvn:com.google.guava/guava/20.0</bundle>
     <bundle>mvn:javax.validation/com.springsource.javax.validation/1.0.0.GA</bundle>
@@ -194,7 +194,7 @@
   </feature>
 
   <feature name="virgo-compatibility" version="${project.version}" description="Eclipse Virgo environment">
-    <feature>pax-web-http</feature>
+    <feature>http</feature>
     <feature>spring-dm</feature>
     <feature version="${virgo.spring.version}">spring-aspects</feature>
     <feature version="${virgo.spring.version}">spring-orm</feature>
@@ -204,7 +204,7 @@
   </feature>
 
   <feature name="zk-framework" version="${project.version}" description="ZK framework">
-    <feature>pax-web-http</feature>
+    <feature>http</feature>
     <bundle>mvn:com.google.guava/guava/20.0</bundle>
     <bundle>mvn:commons-codec/commons-codec/1.14</bundle>
     <bundle>mvn:commons-io/commons-io/2.6</bundle>
