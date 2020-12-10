@@ -65,7 +65,7 @@ interface Constants {
     // UI ids
     String setEncodingId = "setEncoding";
     String myGridId = "myGrid";
-    String setLocaleId = "setLocale";
+    String setTimeZoneId = "setTimeZone";
 
     String ignoreToEventBtnId = "setOtherAll";
     String eventToIgnoreBtnId = "setIgnoreAll";

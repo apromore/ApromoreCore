@@ -92,8 +92,8 @@
                                 </textbox>
                             </span>
                             <space spacing="10px" />
-                            <label value="${mainWindow$composer.labels.locale_label}"/>
-                            <combobox id="setLocale" autodrop="true" width="200px" readonly="true">
+                            <label value="${mainWindow$composer.labels.timeZone_label}"/>
+                            <combobox id="setTimeZone" autodrop="true" width="200px" readonly="true">
                                 <template name="model">
                                     <comboitem label="${each}" />
                                 </template>

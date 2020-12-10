@@ -164,7 +164,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 if (logMetaData != null && sampleLog.size() > 0) setUpUI();
             });
 
-            Combobox setTimeZone = (Combobox) window.getFellow(setLocaleId);
+            Combobox setTimeZone = (Combobox) window.getFellow(setTimeZoneId);
 
             Calendar cal = Calendar.getInstance();
             TimeZone timeZone = cal.getTimeZone();
@@ -175,8 +175,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             String defaultValue = String.format("(GMT%+d:%02d) %s", hour, minutes, timeZone.getID());
 
             model.addToSelection(defaultValue);
-            System.out.println(model.getSelection());
-            System.out.println("defaultValue " + defaultValue);
             setTimeZone.setModel(model);
             setTimeZone.setValue(defaultValue);
 
@@ -260,14 +258,13 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 tempLogMetaData.getOtherTimestamps().clear();
                 tempLogMetaData.getOtherTimestamps().putAll(otherTimestampsMap2);
 
-                if (getTimeZone() == null) {
-                    tempLogMetaData.setTimeZone(defaultValue.split(" ")[1]);
-                } else {
-                    tempLogMetaData.setTimeZone(getTimeZone());
-                }
-
             }
-
+            
+            if (getTimeZone() == null) {
+                tempLogMetaData.setTimeZone(defaultValue.split(" ")[1]);
+            } else {
+                tempLogMetaData.setTimeZone(getTimeZone());
+            }
             this.logMetaData = tempLogMetaData;
 
             if (this.logMetaData != null) {
@@ -420,7 +417,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private String getTimeZone() {
-        Combobox setTimeZone = (Combobox) window.getFellow(setLocaleId);
+        Combobox setTimeZone = (Combobox) window.getFellow(setTimeZoneId);
         return setTimeZone.getValue().split(" ")[1];
     }
 
