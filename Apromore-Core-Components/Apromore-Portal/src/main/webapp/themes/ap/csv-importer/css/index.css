@@ -165,7 +165,7 @@
             var(--ap-c-soft-blue-dark-4),
             var(--ap-c-soft-blue-dark-4)
     );
-    background-size: 100% 67px;
+    background-size: 100% 66px;
     background-position: 0 0;
     background-repeat: no-repeat;
     background-color: white;
@@ -175,6 +175,7 @@
     line-height: 24px !important;
 }
 
+.ap-csv-importer-header button,
 .ap-csv-importer-footer button {
     font-family: 'Source Sans Pro', FontAwesome, sans-serif !important;
 }
