@@ -21,41 +21,10 @@
  */
 package org.apromore.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.expect;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apromore.builder.UserManagementBuilder;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.GroupUsermetadataRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.UsermetadataLogRepository;
-import org.apromore.dao.UsermetadataProcessRepository;
-import org.apromore.dao.UsermetadataRepository;
-import org.apromore.dao.UsermetadataTypeRepository;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupUsermetadata;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Usermetadata;
-import org.apromore.dao.model.UsermetadataLog;
-import org.apromore.dao.model.UsermetadataProcess;
-import org.apromore.dao.model.UsermetadataType;
+import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserService;
 import org.apromore.util.AccessType;
@@ -69,6 +38,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserMetadataServiceImplUnitTest {
@@ -192,31 +168,27 @@ public class UserMetadataServiceImplUnitTest {
 		.getGroupUserMetaDataList();
 
 	Log log1 = new Log(1);
+	Set<Usermetadata> usermetadataSet1 = new HashSet<>();
+	usermetadataSet1.add(um1);
+	log1.setUsermetadataSet(usermetadataSet1);
 	Log log2 = new Log(2);
+	Set<Usermetadata> usermetadataSet2 = new HashSet<>();
+	usermetadataSet2.add(um2);
+	log1.setUsermetadataSet(usermetadataSet2);
 
-	List<UsermetadataLog> usermetadataLogSet = userBuilder
-		.withNewUserMetaDataLogList()
-		.withUserMetaDataLog(um1, log1)
-		.withUserMetaDataLog(um1, log2)
-		.getUserMetaDataLogList();
+	Set<Log> logs = new HashSet<>();
+	logs.add(log1);
+	logs.add(log2);
 
-	um1.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet));
+	um1.setLogs(logs);
+	um2.setLogs(logs);
 
-	List<UsermetadataLog> usermetadataLogSet1 = userBuilder
-		.withNewUserMetaDataLogList()
-		.withUserMetaDataLog(um2, log1)
-		.withUserMetaDataLog(um2, log2)
-		.getUserMetaDataLogList();
-
-	um2.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet1));
 	Set<Usermetadata> usermetadataSetExpect = new HashSet<>();
 	usermetadataSetExpect.add(um1);
 	usermetadataSetExpect.add(um2);
 
 	when(logRepo.findUniqueByID(log1.getId())).thenReturn(log1);
 	when(logRepo.findUniqueByID(log2.getId())).thenReturn(log2);
-	when(usermetadataLogRepo.findByLog(log1)).thenReturn(usermetadataLogSet);
-	when(usermetadataLogRepo.findByLog(log2)).thenReturn(usermetadataLogSet1);
 
 //	When
 	Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLogs(Arrays.asList(log1.getId(), log2.getId()),
@@ -388,7 +360,17 @@ public class UserMetadataServiceImplUnitTest {
 		.getGroupUserMetaDataList();
 
 	Log log1 = new Log(1);
+	Set<Usermetadata> usermetadataSet1 = new HashSet<>();
+	usermetadataSet1.add(um1);
+	log1.setUsermetadataSet(usermetadataSet1);
 	Log log2 = new Log(2);
+	Set<Usermetadata> usermetadataSet2 = new HashSet<>();
+	usermetadataSet2.add(um2);
+	log1.setUsermetadataSet(usermetadataSet2);
+
+	Set<Log> logs = new HashSet<>();
+	logs.add(log1);
+	logs.add(log2);
 
 	List<UsermetadataLog> usermetadataLogSet = userBuilder
 		.withNewUserMetaDataLogList()
@@ -396,7 +378,8 @@ public class UserMetadataServiceImplUnitTest {
 		.withUserMetaDataLog(um1, log2)
 		.getUserMetaDataLogList();
 
-	um1.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet));
+//	um1.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet));
+	um1.setLogs(logs);
 
 	List<UsermetadataLog> usermetadataLogSet1 = userBuilder
 		.withNewUserMetaDataLogList()
@@ -404,7 +387,8 @@ public class UserMetadataServiceImplUnitTest {
 		.withUserMetaDataLog(um2, log2)
 		.getUserMetaDataLogList();
 
-	um2.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet1));
+//	um2.setUsermetadataLog(new HashSet<UsermetadataLog>(usermetadataLogSet1));
+	um2.setLogs(logs);
 
 	List<Log> expectedResult = new ArrayList<>();
 	expectedResult.add(log1);

@@ -87,9 +87,7 @@ public interface UserMetadataService {
      *
      * @param logId        log ID
      * @param groupRowGuid group guid
-     * @param hasRead      Log READ permission
-     * @param hasWrite     Log WRITE permission
-     * @param hasOwnership Log OWNER permission
+     * @param accessType   Access Type
      */
     void shareSimulationMetadata(Integer logId, String groupRowGuid, AccessType accessType);
 
