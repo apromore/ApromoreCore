@@ -73,7 +73,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
      */
     static final String SESSION_ATTRIBUTE_KEY = "csvimport";
 
-    private static final int ROW_INDEX_START_FROM = 2;
+    private static final int ROW_INDEX_START_FROM = 1;
 
     // Fields injected from Spring beans/OSGi services
     private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
