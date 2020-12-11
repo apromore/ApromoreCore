@@ -30,6 +30,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <DynamicImport-Package>
                             com.sun.jersey.*  <!-- Jersey implementation of JAX-RS dynamically loaded -->
                         </DynamicImport-Package>
