@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
+import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -43,16 +44,14 @@ import org.junit.Test;
 
 public class ProcessDiscovererTest extends LogicDataSetup {
     
-    private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
-                            MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
-                                        MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
-                                        MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
-                                        boolean bpmn) throws Exception {
-        ALog log = new ALog(xlog);
-        IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
-        AttributeLog attLog = new AttributeLog(log, mainAttribute);
-        ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
-        AbstractionParams params = new AbstractionParams(
+    private AbstractionParams createAbstrationParams(IndexableAttribute mainAttribute,
+            double nodeSlider, double arcSlider, double paraSlider,
+            MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
+            MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
+            MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
+            boolean bpmn) throws Exception {
+        
+        return new AbstractionParams(
                 mainAttribute,
                 nodeSlider,
                 arcSlider,
@@ -72,9 +71,51 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 secondaryRelation,
                 null,
                 null);
+    }
+    
+    private Abstraction discoverProcess(AttributeLog attLog, double nodeSlider, double arcSlider, double paraSlider,
+            MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
+            MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
+            MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
+            boolean bpmn) throws Exception {
         
+        ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
+        AbstractionParams params = createAbstrationParams(attLog.getAttribute(), 
+                                        nodeSlider, arcSlider, paraSlider, 
+                                        structureType, structureAggregate, structureRelation, 
+                                        primaryType, primaryAggregate, primaryRelation, 
+                                        secondaryType, secondaryAggregate, secondaryRelation, bpmn);
         Abstraction dfgAbs = pd.generateDFGAbstraction(params);
         return (!bpmn ? dfgAbs : pd.generateBPMNAbstraction(params, dfgAbs));
+    }
+    
+    private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
+            MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
+                        MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
+                        MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
+                        boolean bpmn) throws Exception {
+
+        return discoverProcess(createAttributeLog(xlog), 
+                        nodeSlider, 
+                        arcSlider, 
+                        paraSlider, 
+                        structureType, 
+                        structureAggregate, 
+                        structureRelation, 
+                        primaryType, 
+                        primaryAggregate, 
+                        primaryRelation, 
+                        secondaryType, 
+                        secondaryAggregate, 
+                        secondaryRelation, 
+                        bpmn);
+    }   
+    
+    private AttributeLog createAttributeLog(XLog xlog) {
+        ALog log = new ALog(xlog);
+        IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
+        AttributeLog attLog = new AttributeLog(log, mainAttribute);
+        return attLog;
     }
     
     private Abstraction discoverTraceAbstraction(XLog xlog, String traceID) throws Exception {
@@ -946,5 +987,68 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         }
         
     }
+    
+    @Test
+    public void testDFG_ApplyThenClearFilterCriteria() {
+        try {
+            AttributeLog attLog = createAttributeLog(readLogWithCompleteEventsOnly());
+            ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
+            AbstractionParams params = createAbstrationParams(attLog.getAttribute(), 
+                                                1.0, 0.1, 0.4, 
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.FREQUENCY,
+                                                MeasureAggregation.CASES,
+                                                MeasureRelation.ABSOLUTE,
+                                                MeasureType.DURATION,
+                                                MeasureAggregation.MEAN,
+                                                MeasureRelation.ABSOLUTE,
+                                                false);
+            
+            // Before filter diagram
+            BPMNDiagram beforeFilterDiagram = pd.generateDFGAbstraction(params).getDiagram();
+            if (!beforeFilterDiagram.checkSimpleEquality(readDFG_LogWithCompleteEventsOnly_100_10())) {
+                fail("BPMNDiagram is different");
+            }
+            
+            // Apply filter criteria
+            LogBitMap logBitMap = new LogBitMap(attLog.getOriginalTraces().size());
+            logBitMap.setTraceBitSet(LogBitMap.newBitSet(6, 0, 1), 6); // keep the first trace
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(5), 5); // keep all events including start and end events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events    
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events  
+            attLog.updateLogStatus(logBitMap);
+            
+            // Generate abstraction and check diagram 
+            BPMNDiagram afterFilterDiagram = pd.generateDFGAbstraction(params).getDiagram();
+            if (!afterFilterDiagram.checkSimpleEquality(readDFG_LogWithCompleteEventsOnly_100_10_Filtered())) {
+                fail("BPMNDiagram is different");
+            }
+
+            // Clear filter criteria
+            LogBitMap logBitMapAll = new LogBitMap(attLog.getOriginalTraces().size());
+            logBitMapAll.setTraceBitSet(LogBitMap.newBitSet(6, 0, 6), 6); // keep all traces
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(5), 5); // keep all events including start and end events
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events    
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events  
+            attLog.updateLogStatus(logBitMapAll);
+            
+            // Generate abstraction and check diagram 
+            BPMNDiagram afterClearingFilterDiagram = pd.generateDFGAbstraction(params).getDiagram();
+            if (!afterClearingFilterDiagram.checkSimpleEquality(readDFG_LogWithCompleteEventsOnly_100_10())) {
+                fail("BPMNDiagram is different");
+            }
+            
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    } 
 
 }

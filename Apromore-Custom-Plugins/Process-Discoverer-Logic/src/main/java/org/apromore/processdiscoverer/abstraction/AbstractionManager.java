@@ -83,7 +83,7 @@ public class AbstractionManager {
     		}
         }
         
-    	if (structuralWeightChanged || attributeChanged) {
+    	if (structuralWeightChanged || attributeChanged || log.isDataStatusChanged()) {
     		graph.sortNodesAndArcs(params.getFixedType(), params.getFixedAggregation());
     	}
     	graph.buildSubGraphs(params.invertedNodes());
