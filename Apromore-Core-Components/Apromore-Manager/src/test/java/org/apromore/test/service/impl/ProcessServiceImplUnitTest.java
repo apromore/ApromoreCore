@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import com.google.common.io.CharStreams;
 import junit.framework.Assert;
@@ -42,6 +42,7 @@ import org.apromore.service.LockService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.impl.ProcessServiceImpl;
 import org.apromore.service.model.ProcessData;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;

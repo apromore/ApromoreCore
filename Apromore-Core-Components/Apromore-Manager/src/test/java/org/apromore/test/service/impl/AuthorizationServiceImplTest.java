@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import junit.framework.Assert;
 import org.apromore.AbstractTest;
@@ -27,6 +27,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.impl.AuthorizationServiceImpl;
 import org.apromore.util.AccessType;
 import org.junit.Before;
 import org.junit.Test;

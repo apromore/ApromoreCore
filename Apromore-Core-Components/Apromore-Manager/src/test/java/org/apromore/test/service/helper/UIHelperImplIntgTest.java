@@ -23,7 +23,7 @@
  * #L%
  */
 
-package org.apromore.service.helper;
+package org.apromore.test.service.helper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -40,6 +40,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.service.ProcessService;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

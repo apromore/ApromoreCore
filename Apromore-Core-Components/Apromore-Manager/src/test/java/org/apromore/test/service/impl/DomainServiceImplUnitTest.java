@@ -22,9 +22,10 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import org.apromore.dao.ProcessRepository;
+import org.apromore.service.impl.DomainServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 

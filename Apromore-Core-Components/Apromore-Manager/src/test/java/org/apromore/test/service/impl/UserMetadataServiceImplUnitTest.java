@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.expect;
@@ -58,6 +58,7 @@ import org.apromore.dao.model.UsermetadataProcess;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserService;
+import org.apromore.service.impl.UserMetadataServiceImpl;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.junit.Before;
@@ -120,9 +121,11 @@ public class UserMetadataServiceImplUnitTest {
     @Test
     public void testGetUserMetadataByUser() throws UserNotFoundException {
 // Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
 
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)
@@ -165,11 +168,13 @@ public class UserMetadataServiceImplUnitTest {
     @Test
     public void testGetUserMetadataByLogs() {
 
-	// Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
-
+//	Given
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
+	
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)
 		.getUserMetaDataType();
@@ -242,9 +247,11 @@ public class UserMetadataServiceImplUnitTest {
     public void testCanUserEditMetadata_returnFalse() throws UserNotFoundException {
 
 	// Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
 
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)
@@ -278,9 +285,11 @@ public class UserMetadataServiceImplUnitTest {
     public void testCanUserEditMetadata_returnTrue() throws UserNotFoundException {
 
 	// Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
 
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)
@@ -315,10 +324,12 @@ public class UserMetadataServiceImplUnitTest {
     public void testGetUserMetadataWithoutLog() throws UserNotFoundException {
 
 	// Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
-
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
+	
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)
 		.getUserMetaDataType();
@@ -358,9 +369,11 @@ public class UserMetadataServiceImplUnitTest {
     public void testGetDependentLog() {
 
 	// Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
 
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)
@@ -420,9 +433,11 @@ public class UserMetadataServiceImplUnitTest {
     public void testGetDependentProcess() {
 
 	// Given
-	User user = userBuilder.withUser("test_username", "RowGuid")
-		.withDummyUserGroup()
-		.buildUser();
+	User user = userBuilder.withGroup(userBuilder.withGroup("testGroup1", "USER")
+		.buildGroup())
+		.withRole(userBuilder.withRole("testRole").buildRole())
+		.withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
 
 	UsermetadataType usermetadataType1 = userBuilder
 		.withUserMetaDataType("FILTER", 1, true, 1)

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import static org.easymock.EasyMock.expect;
 
@@ -43,6 +43,8 @@ import org.apromore.dao.model.Process;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.impl.FolderServiceImpl;
+import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.apromore.util.AccessType;
 import org.easymock.EasyMock;
 import org.junit.Before;

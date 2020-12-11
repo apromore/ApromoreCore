@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.service.search;
+package org.apromore.test.service.search;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +30,8 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+
+import org.apromore.service.search.SearchExpressionBuilder;
 
 /**
  * Unit test the Search Expression builder.
