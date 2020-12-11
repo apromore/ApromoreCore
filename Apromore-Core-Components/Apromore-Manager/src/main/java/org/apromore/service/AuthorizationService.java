@@ -88,7 +88,7 @@ public interface AuthorizationService {
      * @param groupRowGuid Group UID
      * @param accessType AccessType
      */
-    void saveUserMetadtarAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType);
+    void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType);
 
     /**
      * Delete one GroupLog record

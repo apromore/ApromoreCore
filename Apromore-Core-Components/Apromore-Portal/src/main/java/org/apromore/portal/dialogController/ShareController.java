@@ -384,7 +384,7 @@ public class ShareController extends SelectorComposer<Window> {
                     }
                 }
             } else if (selectedItem instanceof UserMetadataSummaryType) {
-                authorizationService.saveUserMetadtarAccessType(selectedItemId, rowGuid, accessType);
+                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
             } else {
                 LOGGER.error("Unknown item type.");
             }
