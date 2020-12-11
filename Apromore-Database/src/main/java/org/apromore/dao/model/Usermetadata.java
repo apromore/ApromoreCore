@@ -82,10 +82,6 @@ public class Usermetadata implements Serializable {
     /**
      * Set of UserMetadataLog from linked table
      */
-    private Set<UsermetadataLog> usermetadataLogSet = new HashSet<>();
-    /**
-     * Set of UserMetadataLog from linked table
-     */
     private Set<UsermetadataProcess> usermetadataProcessSet = new HashSet<>();
 
     private Set<Log> logs = new HashSet<>();
@@ -273,18 +269,6 @@ public class Usermetadata implements Serializable {
 
     public void setGroupUserMetadata(Set<GroupUsermetadata> newGroupUserMetadata) {
         this.groupUserMetadata = newGroupUserMetadata;
-    }
-
-    /**
-     * Set of UserMetadataLog from linked table
-     */
-    @OneToMany(mappedBy = "usermetadata", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<UsermetadataLog> getUsermetadataLog() {
-        return this.usermetadataLogSet;
-    }
-
-    public void setUsermetadataLog(Set<UsermetadataLog> newUsermetadataLogSet) {
-        this.usermetadataLogSet = newUsermetadataLogSet;
     }
 
     /**
