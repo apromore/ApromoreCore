@@ -32,6 +32,20 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- TODO: Enable bill-of-materials to synchronize dependency versions with Karaf's provided
+                 defaults and replace all of the following per-artifact version declarations.
+
+                 See http://blog.nanthrax.net/?p=1038 for details.
+
+      <dependency>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>karaf-bom</artifactId>
+        <version>${karaf.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      -->
+
       <dependency>
         <groupId>org.apache.karaf.features</groupId>
         <artifactId>enterprise</artifactId>

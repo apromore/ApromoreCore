@@ -39,14 +39,12 @@
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.spring-web</artifactId>
       <version>3.2.18.RELEASE_1</version>
-      <type>bundle</type>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-web</artifactId>
       <version>1.2.1</version>
-      <type>bundle</type>
     </dependency>
   </dependencies>
 </project>
