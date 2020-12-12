@@ -194,7 +194,7 @@
 		<json.version>20090211</json.version>
 		<inject.version>1.0.0</inject.version>
 		<sardine.version>5.0.1</sardine.version>
-		<jackson.version>1.9.12</jackson.version>
+		<jackson.version>1.9.13</jackson.version>
 		<xmlbeans.version>3.1.0</xmlbeans.version>
 
 		<zk.version>8.6.0.1</zk.version>

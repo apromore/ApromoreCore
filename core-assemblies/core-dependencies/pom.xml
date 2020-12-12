@@ -712,14 +712,14 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-lgpl</artifactId>
-      <version>1.9.12</version>
+      <version>${jackson.version}</version>
       <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-lgpl</artifactId>
-      <version>1.9.12</version>
+      <version>${jackson.version}</version>
       <scope>runtime</scope>
     </dependency>
 
