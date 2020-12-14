@@ -23,6 +23,7 @@
 package org.apromore.plugin.portal.csvimporter;
 
 import com.opencsv.CSVReader;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataLog;
 import org.apromore.exception.UserNotFoundException;
@@ -154,13 +155,11 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                             String formattedTime = new SimpleDateFormat("HH:mm:ss").format(date);
 
                             Label fileNameLabel = (Label) matchedMappingPopUp.getFellow("fileNameLabel");
-                            Set<UsermetadataLog> usermetadataLogSet = usermetadata.getUsermetadataLog();
+                            Set<Log> logs = usermetadata.getLogs();
 
-                            Iterator itr = usermetadataLogSet.iterator();
-                            while (itr.hasNext()) {
-                                UsermetadataLog usermetadataLog = (UsermetadataLog) itr.next();
-                                fileNameLabel.setValue("  This mapping was extracted from file \"" + usermetadataLog.getLog().getName() + "\", uploaded at " +
-                                        formattedTime + " on " + formattedDate);
+                            for (Log log : logs) {
+                                fileNameLabel.setValue("  This mapping was extracted from file \"" + log.getName() +
+                                        "\", uploaded at " + formattedTime + " on " + formattedDate);
                             }
 
                             Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(

@@ -76,6 +76,14 @@ public class LogicDataSetup {
         return this.readBPMNDiagram("src/test/logs/L1_complete_events_only_with_resources_DFG.bpmn");
     }
     
+    public BPMNDiagram readDFG_LogWithCompleteEventsOnly_100_10() throws FileNotFoundException, Exception {
+        return this.readBPMNDiagram("src/test/logs/L1_complete_events_only_with_resources_DFG_100_10.bpmn");
+    }
+    
+    public BPMNDiagram readDFG_LogWithCompleteEventsOnly_100_10_Filtered() throws FileNotFoundException, Exception {
+        return this.readBPMNDiagram("src/test/logs/L1_complete_events_only_with_resources_DFG_100_10_filtered.bpmn");
+    }
+    
     public BPMNDiagram readBPMN_LogWithCompleteEventsOnly() throws FileNotFoundException, Exception {
         return this.readBPMNDiagram("src/test/logs/L1_complete_events_only_with_resources_BPMN.bpmn");
     }
@@ -111,4 +119,13 @@ public class LogicDataSetup {
     public BPMNDiagram readDFG_Sepsis_100_10() throws FileNotFoundException, Exception {
         return this.readBPMNDiagram("src/test/logs/Sepsis_100_10_DFG.bpmn");
     }
+    
+    public XLog read_SimpleLog3Traces() {
+        return this.readXESFile("src/test/logs/L1_complete_events_only_with_resources_3traces.xes");
+    }
+    
+    public BPMNDiagram readDFG_SimpleLog3Traces_100_10() throws FileNotFoundException, Exception {
+        return this.readBPMNDiagram("src/test/logs/L1_complete_events_only_with_resources_3traces.bpmn");
+    }
+    
 }
