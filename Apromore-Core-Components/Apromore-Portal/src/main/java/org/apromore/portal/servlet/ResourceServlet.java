@@ -50,8 +50,9 @@ import org.osgi.framework.ServiceReference;
  * Only GET requests are supported for static content.
  * For ZUML templates, use the <code>zkLoader</code> servlet instead.
  *
- * For POST requests, the service must have a <code>osgi.http.whiteboard.servlet.pattern</code>
+ * For POST requests, the service must have a <code>org.apromore.portal.servlet.pattern</code>
  * service property, which must match the servlet path exactly (regex patterns unsupported).
+ * This is similar to OSGi HTTP Whiteboard's <code>osgi.http.whiteboard.servlet.pattern</code>.
  */
 public class ResourceServlet extends HttpServlet {
 
@@ -84,7 +85,7 @@ public class ResourceServlet extends HttpServlet {
             // Check the HttpServlet services for a handler
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
                 HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
-                if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
+                if (req.getServletPath().equals(serviceReference.getProperty("org.apromore.portal.servlet.pattern"))) {
                     servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
                     servlet.service(req, resp);
                     return;

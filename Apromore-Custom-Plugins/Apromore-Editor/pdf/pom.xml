@@ -46,9 +46,10 @@
                             !org.apache.xpath.*,
                             !org.mozilla.javascript,
                             !org.w3c.css.sac,
+                            org.w3c.dom,
                             !org.w3c.dom.smil,
                             !org.w3c.dom.svg,
-                            !org.w3c.dom.xpath,
+                            org.w3c.dom.xpath,
                             *
                         </Import-Package>
                         <Export-Package>
