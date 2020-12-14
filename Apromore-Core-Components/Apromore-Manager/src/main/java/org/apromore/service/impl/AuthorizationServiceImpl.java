@@ -121,7 +121,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (!AccessType.NONE.equals(accessType)) {
             workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType, shareUserMetadata);
         }
-
     }
 
     @Override
@@ -143,7 +142,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void saveUserMetadtarAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
+    public void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
         if (!AccessType.NONE.equals(accessType)) {
             userMetadataService.saveUserMetadataAccessType(userMetadataId, groupRowGuid, accessType);

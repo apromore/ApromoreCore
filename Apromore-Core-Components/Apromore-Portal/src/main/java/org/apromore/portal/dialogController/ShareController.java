@@ -44,13 +44,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zhtml.Table;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
@@ -60,25 +63,21 @@ import java.util.*;
  * Controller for handling share interface
  * Corresponds to macros/share.zul
  */
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ShareController extends SelectorComposer<Window> {
-
-    /**
-     * For searching assignee (user or group)
-     */
-    private Comparator assigneeComparator = new Comparator() {
-        @Override
-        public int compare(Object o1, Object o2) {
-            String input = (String) o1;
-            Assignee assignee = (Assignee) o2;
-            return assignee.getName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
-        }
-    };
 
     private static Logger LOGGER = LoggerFactory.getLogger(ShareController.class);
 
+    @WireVariable("managerService")
     private ManagerService managerService;
+    
+    @WireVariable("securityService")
     private SecurityService securityService;
+    
+    @WireVariable("authorizationService")
     private AuthorizationService authorizationService;
+    
+    @WireVariable("userMetadataService")
     private UserMetadataService userMetadataService;
 
     Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
@@ -138,24 +137,12 @@ public class ShareController extends SelectorComposer<Window> {
     @Wire("#editBtn")
     Button editBtn;
 
-//    @Wire("#shareUMCheckbox")
-//    Checkbox shareUMCheckbox;
-//
-//    @Wire("#shareUM")
-//    Listheader shareUM;
-
     @Wire("#umWarning")
     Div umWarning;
 
     private Window mainWindow;
 
     public ShareController() throws Exception {
-        // TO DO: Common constants
-        this.managerService = (ManagerService) SpringUtil.getBean("managerClient");
-        this.securityService = (SecurityService) SpringUtil.getBean("securityService");
-        this.authorizationService = (AuthorizationService) SpringUtil.getBean("authorizationService");
-        this.userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
-
         selectedItem = Executions.getCurrent().getArg().get("selectedItem");
         currentUser = (UserType) Executions.getCurrent().getArg().get("currentUser");
         userName = currentUser.getUsername();
@@ -168,13 +155,9 @@ public class ShareController extends SelectorComposer<Window> {
         super.doAfterCompose(win);
         mainWindow = win;
 
-        if (isLogSelected()) {
-            win.setWidth("1000px");
-            artifactListbox.setVisible(true);
-        } else {
-            win.setWidth("500px");
-            artifactListbox.setVisible(false);
-        }
+        artifactListbox.setVisible(isLogSelected());
+        win.setWidth(isLogSelected()?"1000px":"500px");
+        
         loadItem(selectedItem);
         loadCandidateAssignee();
         loadRelatedDependencies();
@@ -271,17 +254,25 @@ public class ShareController extends SelectorComposer<Window> {
         Messagebox.show("You cannot remove the only owner for this file", "Apromore", Messagebox.OK, Messagebox.ERROR);
     }
 
-    private void loadCandidateAssignee() {
+    @SuppressWarnings("unchecked")
+	private void loadCandidateAssignee() {
         List<Group> groups = securityService.findAllGroups();
         List<Assignee> candidates = new ArrayList<Assignee>();
-
+        
         for (Group group : groups) {
             String groupName = group.getName();
             candidates.add(new Assignee(groupName, group.getRowGuid(), group.getType()));
         }
         candidateAssigneeModel = new ListModelList<>(candidates, false);
         candidateAssigneeModel.setMultiple(false);
-        candidateAssigneeCombobox.setModel(ListModels.toListSubModel(candidateAssigneeModel, assigneeComparator, 20));
+        candidateAssigneeCombobox.setModel(ListModels.toListSubModel(candidateAssigneeModel, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                String input = (String) o1;
+                Assignee assignee = (Assignee) o2;
+                return assignee.getName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
+            }
+        }, 20));
     }
 
     private void loadAssignments(Map<Group, AccessType> groupAccessTypeMap) {
@@ -306,7 +297,7 @@ public class ShareController extends SelectorComposer<Window> {
     }
 
     public boolean isLogSelected() {
-        return selectedItem instanceof LogSummaryType;
+        return selectedItem.getClass().equals(LogSummaryType.class);
     }
 
     public void updateArtifacts(String rowGuid) {
@@ -384,7 +375,7 @@ public class ShareController extends SelectorComposer<Window> {
                     }
                 }
             } else if (selectedItem instanceof UserMetadataSummaryType) {
-                authorizationService.saveUserMetadtarAccessType(selectedItemId, rowGuid, accessType);
+                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
             } else {
                 LOGGER.error("Unknown item type.");
             }
@@ -429,7 +420,7 @@ public class ShareController extends SelectorComposer<Window> {
         selectedIconMetadata.setVisible(false);
 
         if (selectedItem instanceof FolderType) {
-            FolderType folder = (FolderType) selectedItem;
+            FolderType folder = (FolderType) selectedItem;										            						
             selectedItemId = folder.getId();
             selectedItemName = folder.getFolderName();
             groupAccessTypeMap = authorizationService.getFolderAccessType(selectedItemId);

@@ -22,67 +22,136 @@
 package org.apromore.dao.jpa.usermanagement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Date;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
 import org.apromore.dao.RoleRepository;
 import org.apromore.dao.UserRepository;
+import org.apromore.dao.UsermetadataLogRepository;
+import org.apromore.dao.UsermetadataRepository;
+import org.apromore.dao.UsermetadataTypeRepository;
 import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataLog;
+import org.apromore.dao.model.UsermetadataType;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserManagementUnitTest extends BaseTestClass {
 
-	@Autowired
-	GroupRepository groupRepository;
-	
-	@Autowired
-	UserRepository userRepository;
-	
-	@Autowired
-	RoleRepository roleRepository;
+    @Autowired
+    GroupRepository groupRepository;
 
+    @Autowired
+    UserRepository userRepository;
 
-	UserManagementBuilder builder;
+    @Autowired
+    RoleRepository roleRepository;
 
-	@Before
-	public void Setup() {
-		builder = new UserManagementBuilder();
+    UserManagementBuilder builder;
 
-	}
+    @Autowired
+    UsermetadataRepository usermetadataRepository;
 
-	@Test
-	public void testSaveGroup() {
-		// given
-		Group userGroup = builder.withGroup("testGroup", "USER").buildGroup();
+    @Autowired
+    UsermetadataTypeRepository usermetadataTypeRepository;
 
-		// when
-		Group savedUSerGroup = groupRepository.saveAndFlush(userGroup);
-		// then
-		assertThat(savedUSerGroup.getId()).isNotNull();
-		assertThat(savedUSerGroup.getName()).isEqualTo(userGroup.getName());
-		assertThat(savedUSerGroup.getType()).isEqualTo(userGroup.getType());
-		
-			
-	}
-	
-	@Test
-	public void testSaveUser() {
-		// given
-		Group group=groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
-		Role role=roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
-		User user = builder.withGroup(group)
-				.withRole(role)
-				.withMembership("n@t.com")
-				.withUser("TestUser", "first", "last", "org")
-				.buildUser();
-		// when
-		User savedUSer = userRepository.saveAndFlush(user);
-		// then
-		assertThat(savedUSer.getId()).isNotNull();
-		assertThat(savedUSer.getMembership().getEmail()).isEqualTo(user.getMembership().getEmail());
-	}
+    @Autowired
+    LogRepository logRepository;
+
+    @Autowired
+    UsermetadataLogRepository usermetadataLogRepository;
+
+    @Before
+    public void Setup() {
+	builder = new UserManagementBuilder();
+
+    }
+
+    @Test
+    public void testSaveGroup() {
+	// given
+	Group userGroup = builder.withGroup("testGroup", "USER").buildGroup();
+
+	// when
+	Group savedUSerGroup = groupRepository.saveAndFlush(userGroup);
+	// then
+	assertThat(savedUSerGroup.getId()).isNotNull();
+	assertThat(savedUSerGroup.getName()).isEqualTo(userGroup.getName());
+	assertThat(savedUSerGroup.getType()).isEqualTo(userGroup.getType());
+
+    }
+
+    @Test
+    public void testSaveUser() {
+	// given
+	Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
+	Role role = roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
+	User user = builder.withGroup(group).withRole(role).withMembership("n@t.com").withUser("TestUser", "first",
+		"last", "org").buildUser();
+	// when
+	User savedUSer = userRepository.saveAndFlush(user);
+	// then
+	assertThat(savedUSer.getId()).isNotNull();
+	assertThat(savedUSer.getMembership().getEmail()).isEqualTo(user.getMembership().getEmail());
+    }
+
+    @Test
+    public void insertUsermetadataTest() {
+//	 		Given
+	Usermetadata um = builder.withUserMetaDataType("test Type", 1).withUserMetaData("Test", "test")
+		.buildUserMetaData();
+
+	UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());
+	um.setUsermetadataType(type);
+
+//	        When
+	um = usermetadataRepository.saveAndFlush(um);
+	Usermetadata umExpected = usermetadataRepository.findById(um.getId());
+
+//	        Then
+	assertThat(um.getId()).isNotNull();
+	assertThat(umExpected.getId()).isNotNull();
+	assertThat(umExpected.getCreatedTime()).isEqualTo(um.getCreatedTime());
+
+    }
+
+    @Test
+    public void insertUsermetadataLogTest() {
+
+// 		Given
+	Usermetadata um = builder.withUserMetaDataType("test Type2", 1).withUserMetaData("Test2", "test2")
+		.buildUserMetaData();
+
+	UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());
+	um.setUsermetadataType(type);
+	um = usermetadataRepository.saveAndFlush(um);
+
+	Log logs = new Log();
+	logs.setName("Test Log");
+	logs.setFilePath("Test Log");
+	logs.setDomain("Test Log");
+	logs.setRanking("1");
+	logs.setCreateDate(new Date().toLocaleString());
+	logs = logRepository.saveAndFlush(logs);
+
+//    when
+	UsermetadataLog ul = new UsermetadataLog();
+	ul.setLog(logs);
+	ul.setUsermetadata(um);
+
+	ul = usermetadataLogRepository.saveAndFlush(ul);
+
+//        Then
+	assertThat(ul.getId()).isNotNull();
+
+    }
 
 }

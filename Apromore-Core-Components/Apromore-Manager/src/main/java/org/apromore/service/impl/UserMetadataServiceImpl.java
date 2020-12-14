@@ -244,6 +244,44 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         }
     }
 
+//    @Override
+//    public void shareUserMetadataWithLog(Integer logId, String groupRowGuid, AccessType accessType) {
+//
+//        Group group = groupRepo.findByRowGuid(groupRowGuid);
+//
+//        // Assign specified group with the same permission to the simulation metadata
+//        if (accessType.isRead() || accessType.isWrite() || accessType.isOwner()) {
+//
+//            // All the user metadata that linked to this log
+//            Set<UsermetadataLog> usermetadataLogSet =
+//                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
+//
+//            if (usermetadataLogSet.size() != 0) {
+//
+//                for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
+//                    Usermetadata u = usermetadataLog.getUsermetadata();
+//
+//                    if (UserMetadataTypeEnum.SIMULATOR.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
+//
+//                        GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
+//
+//                        // Inherit permission from log
+//                        if (g == null) {
+//                            g = new GroupUsermetadata(group,
+//                                    u, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
+//                            u.getGroupUserMetadata().add(g);
+//                        } else {
+//                            g.setAccessRights(new AccessRights(accessType.isRead(), accessType.isWrite(), accessType.isOwner()));
+//
+//                        }
+//                        groupUsermetadataRepo.save(g);
+//                        userMetadataRepo.save(u);
+//                    }
+//                }
+//            }
+//        }
+//    }
+
     @Override
     @Transactional
     public void removeUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
@@ -361,10 +399,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadataByLog(Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) {
 
         Set<Usermetadata> umSet = new HashSet<>();
-        Set<UsermetadataLog> usermetadataLogSet =
-                new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
-        for (UsermetadataLog ul : usermetadataLogSet) {
-            Usermetadata u = ul.getUsermetadata();
+        Set<Usermetadata> usermetadataSet = logRepo.findUniqueByID(logId).getUsermetadataSet();
+        for (Usermetadata u : usermetadataSet) {
             if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
                 umSet.add(u);
             }
