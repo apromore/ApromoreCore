@@ -44,6 +44,8 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.stats.DurSubGraph;
+import org.apromore.commons.datetime.DateTimeUtils;
+import org.apromore.commons.datetime.DurationUtils;
 import org.apromore.logman.ALog;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.log.AttributeInfo;
@@ -52,9 +54,6 @@ import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.commons.datetime.DateTimeUtils;
-import org.apromore.commons.datetime.DurationUtils;
-
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -90,10 +89,20 @@ public class LogDataWithAPMLog extends LogData {
         return this.filteredPLog;
     }
     
-    private boolean filter(LogFilterRule filterCriterion) throws Exception {
+    public void clearFilter() throws Exception {
+        this.filter(new ArrayList<LogFilterRule>());
+    }
+    
+    // Apply a filter criterion on top of the current filter criteria
+    public boolean filterAdditive(LogFilterRule filterCriterion) throws Exception {
         List<LogFilterRule> criteria = (List<LogFilterRule>)currentFilterCriteria;
         criteria.add(filterCriterion);
-        this.apmLogFilter.filter(criteria); 
+        return this.filter(criteria);
+    }
+    
+    // Apply a filter criterion on top of the current filter criteria
+    public boolean filter(List<LogFilterRule> criteria) throws Exception {
+        this.apmLogFilter.filter(criteria);
         if (apmLogFilter.getPLog().getPTraceList().isEmpty()) { // Restore to the last state
             apmLogFilter.filter((List<LogFilterRule>)currentFilterCriteria);
             return false;
@@ -143,49 +152,49 @@ public class LogDataWithAPMLog extends LogData {
   
     @Override
     public boolean filter_RemoveTracesAnyValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
+        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
                     getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RetainTracesAnyValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
+        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
                 getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RemoveTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ALL_VALUES,
+        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ALL_VALUES,
                 getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RetainTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ALL_VALUES,
+        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ALL_VALUES,
                 getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));        
     }
     
     @Override
     public boolean filter_RemoveEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.EVENT, Inclusion.ANY_VALUE,
+        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.EVENT, Inclusion.ANY_VALUE,
                 getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RetainEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filter(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.EVENT, Inclusion.ANY_VALUE,
+        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.EVENT, Inclusion.ANY_VALUE,
                 getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));
     }
     
     @Override
     public boolean filter_RemoveTracesAnyValueOfDirectFollowRelation(String value, String attKey) throws Exception {
-        return filter(getDirectFollowFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
+        return filterAdditive(getDirectFollowFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
                 getDirectFollowRuleValue(value, attKey)));
     }
     
     @Override
     public boolean filter_RetainTracesAnyValueOfDirectFollowRelation(String value, String attKey) throws Exception {
-        return filter(getDirectFollowFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
+        return filterAdditive(getDirectFollowFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
                 getDirectFollowRuleValue(value, attKey)));
     }
 
