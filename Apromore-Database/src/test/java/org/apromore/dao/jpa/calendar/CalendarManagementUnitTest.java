@@ -30,9 +30,12 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import org.apromore.config.BaseTestClass;
+import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
+import org.apromore.dao.model.CustomCalendarInfo;
 import org.apromore.dao.model.Holiday;
 import org.apromore.dao.model.WorkDay;
 import org.assertj.core.api.Condition;
@@ -43,85 +46,89 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 
 	@Autowired
 	CustomCalendarRepository customCal;
+	
+	@Autowired
+    CustomCalendarInfoRepository customCalInfo;
+
 
 	@Test
-	public void createCustomCalender() {
+	public void createCustomCalendar() {
 //		Given
-		CustomCalendar calender = new CustomCalendar("Test Calender",ZoneId.of("UTC"));
+		CustomCalendar calendar = new CustomCalendar("Test Calendar",ZoneId.of("UTC"));
 
 //		When
-		calender = customCal.saveAndFlush(calender);
+		calendar = customCal.saveAndFlush(calendar);
 
 //		Then
-		assertThat(calender.getId()).isNotNull();
+		assertThat(calendar.getId()).isNotNull();
 	}
 
 	@Test
-	public void testGetCusomCalenderByDesc() {
+	public void testGetCusomCalendarByDesc() {
 
 //		Given
-		CustomCalendar calenderToSave = new CustomCalendar("Test Calender Desc");
-		customCal.saveAndFlush(calenderToSave);
+		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Desc");
+		customCal.saveAndFlush(calendarToSave);
 
 //		When
-		CustomCalendar calenderExpected = customCal.findByName("Test Calender Desc");
+		CustomCalendar calendarExpected = customCal.findByName("Test Calendar Desc");
 
 //		Then
-		assertThat(calenderExpected.getId()).isNotNull();
-		assertThat(calenderExpected.getCreated()).startsWith(calenderToSave.getCreated().subSequence(0, 15));
-		assertThat(calenderExpected.getUpdated()).startsWith(calenderToSave.getUpdated().subSequence(0, 15));
-		assertThat(calenderExpected.getCreateOffsetDateTime()).isNotNull();
-		assertThat(calenderExpected.getUpdateOffsetDateTime()).isNotNull();
+		assertThat(calendarExpected.getId()).isNotNull();
+		assertThat(calendarExpected.getCreated()).startsWith(calendarToSave.getCreated().subSequence(0, 15));
+		assertThat(calendarExpected.getUpdated()).startsWith(calendarToSave.getUpdated().subSequence(0, 15));
+		assertThat(calendarExpected.getCreateOffsetDateTime()).isNotNull();
+		assertThat(calendarExpected.getUpdateOffsetDateTime()).isNotNull();
 
 	}
 
 	@Test
-	public void testAddCustomCalenderWithWorkDayMonday() {
+	public void testAddCustomCalendarWithWorkDayMonday() {
 //		Given
-		CustomCalendar calenderToSave = new CustomCalendar("Test Calender Work Day");
+		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Work Day");
 //		customCal.saveAndFlush(calenderToSave);
 
 		OffsetTime startTime = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
 		OffsetTime endTime = OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC);
 		WorkDay workDayMonDay = new WorkDay(DayOfWeek.MONDAY, startTime, endTime, true);
-		calenderToSave.addWorkDay(workDayMonDay);
+		calendarToSave.addWorkDay(workDayMonDay);
 
 //		When
-		CustomCalendar calenderExpected = customCal.saveAndFlush(calenderToSave);
+		CustomCalendar calendarExpected = customCal.saveAndFlush(calendarToSave);
 
 //		Then
-		assertThat(calenderExpected.getId()).isNotNull();
-		assertThat(calenderExpected.getWorkDays().get(0).getId()).isNotNull();
-		assertThat(calenderExpected.getWorkDays().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
+		assertThat(calendarExpected.getId()).isNotNull();
+		assertThat(calendarExpected.getWorkDays().get(0).getId()).isNotNull();
+		assertThat(calendarExpected.getWorkDays().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
 
 	}
 
 	@Test
-	public void testAddCustomCalenderWithNonWorkDaySaturday() {
+	public void testAddCustomCalendarWithNonWorkDaySaturday() {
 //		Given
-		CustomCalendar calenderToSave = new CustomCalendar("Test Calender Non Work Day");
+		CustomCalendar calendarToSave = new CustomCalendar("Test Calender Non Work Day");
 //		customCal.saveAndFlush(calenderToSave);
 
 		OffsetTime startTime = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
 		OffsetTime endTime = OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC);
 		WorkDay workDayMonDay = new WorkDay(DayOfWeek.SATURDAY, startTime, endTime, false);
-		calenderToSave.addWorkDay(workDayMonDay);
+		calendarToSave.addWorkDay(workDayMonDay);
 
 //		When
-		CustomCalendar calenderExpected = customCal.saveAndFlush(calenderToSave);
+		CustomCalendar calendarExpected = customCal.saveAndFlush(calendarToSave);
 
 //		Then
-		assertThat(calenderExpected.getId()).isNotNull();
-		assertThat(calenderExpected.getWorkDays().get(0).getId()).isNotNull();
-		assertThat(calenderExpected.getWorkDays().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.SATURDAY);
-		assertThat(calenderExpected.getWorkDays().get(0).isWorkingDay()).isFalse();
+		assertThat(calendarExpected.getId()).isNotNull();
+		assertThat(calendarExpected.getWorkDays().get(0).getId()).isNotNull();
+		assertThat(calendarExpected.getWorkDays().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.SATURDAY);
+		assertThat(calendarExpected.getWorkDays().get(0).isWorkingDay()).isFalse();
 
 	}
 
 	@Test
-	public void testAddCustomCalenderWithBusinessDays() {
+	public void testAddCustomCalendarWithBusinessDays() {
 //		Given
-		CustomCalendar calenderToSave = new CustomCalendar("Test Calender Business Calender");
+		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Business Calendar");
 //		customCal.saveAndFlush(calenderToSave);
 
 		OffsetTime startTime = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
@@ -133,17 +140,17 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 			}
 			WorkDay workDayMonDay = new WorkDay(dayOfWeek, startTime, endTime, isWorkDay);
 
-			calenderToSave.addWorkDay(workDayMonDay);
+			calendarToSave.addWorkDay(workDayMonDay);
 		}
 
 //		When
-		CustomCalendar calenderExpected = customCal.saveAndFlush(calenderToSave);
+		CustomCalendar calendarExpected = customCal.saveAndFlush(calendarToSave);
 
 //		Then
-		assertThat(calenderExpected.getId()).isNotNull();
+		assertThat(calendarExpected.getId()).isNotNull();
 		
 		  
-		assertThat(calenderExpected.getWorkDays()).hasSize(7);
+		assertThat(calendarExpected.getWorkDays()).hasSize(7);
 
 		Condition<WorkDay> workDaysFilter = new Condition<WorkDay>() {
 			@Override
@@ -156,25 +163,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 //		Need assert for holiday check, after lambda function work.
 	}
 	
-	@Test
-	public void testAddCustomCalenderWithHoliday() {
-//		Given
-		CustomCalendar calenderToSave = new CustomCalendar("Test Calender Holiday Day");
-//		customCal.saveAndFlush(calenderToSave);
-
-		LocalDate holidayDate = LocalDate.now();
-		Holiday holiday=new Holiday("TestName", "TestDesc", holidayDate);
-		calenderToSave.addHoliday(holiday);
-    
-//		When
-		CustomCalendar calenderExpected = customCal.saveAndFlush(calenderToSave);
-
-//		Then
-		assertThat(calenderExpected.getId()).isNotNull();
-		assertThat(calenderExpected.getHolidays().get(0).getId()).isNotNull();
-		assertThat(calenderExpected.getHolidays().get(0).getLocalDateHolidayDate()).isEqualTo(holidayDate);
-
-	}
+	
 	
 
 }

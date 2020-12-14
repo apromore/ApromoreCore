@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Parameter type for the
  *
- * {@link org.apromore.service.impl.UserMetadataServiceImpl#saveUserMetadata(String, UserMetadataTypeEnum, String, List)}.
+ * {@link org.apromore.service.impl.UserMetadataServiceImpl#saveUserMetadata(String, String, UserMetadataTypeEnum, String, List)}.
  * These user metadata type must be a subset of the ones in the database.
  */
 
@@ -36,7 +36,8 @@ public enum UserMetadataTypeEnum {
     DASHBOARD(2),
     CSV_IMPORTER(3),
     LOG_ANIMATION(4),
-    DASH_TEMPLATE(5);
+    DASH_TEMPLATE(5),
+    SIMULATOR(6);
 
     private final Integer userMetadataTypeId;
 

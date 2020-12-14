@@ -28,7 +28,6 @@ package org.apromore.portal.dialogController;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -77,9 +76,9 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -92,7 +91,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -131,6 +129,7 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
+    private PluginExecutionManager pluginManager = new PluginExecutionManager();
 	
 	public static MainController getController() {
         return controller;
@@ -150,6 +149,10 @@ public class MainController extends BaseController implements MainControllerInte
 
     public PortalSession getPortalSession() {
         return portalSession;
+    }
+    
+    public PluginExecutionManager getPluginExecutionManager() {
+        return this.pluginManager;
     }
 
     /**
@@ -422,7 +425,7 @@ public class MainController extends BaseController implements MainControllerInte
             displayMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
-            Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Deletion failed. You are not the owner of this file", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -928,7 +931,7 @@ public class MainController extends BaseController implements MainControllerInte
         win.addEventListener("onOK", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                Events.sendEvent("onClick", (Button)dialog.getFellow("btnOK"), null);
+                Events.sendEvent("onClick", dialog.getFellow("btnOK"), null);
             }
         });
 

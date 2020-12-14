@@ -130,7 +130,7 @@ public class SearchableListbox {
         } else {
             searchCount.setValue("(" + listModel.size() + "/" + sourceListModel.size() + ")");
         }
-        listheader.setLabel(title + " (" + listbox.getSelectedCount() + "/" + listbox.getItemCount() + ")");
+        listheader.setLabel(title + " (" + listbox.getSelectedCount() + "/" + sourceListModel.size() + ")");
     }
 
     public void doSearch(String input) {

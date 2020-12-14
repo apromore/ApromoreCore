@@ -72,6 +72,8 @@ public class PerspectiveDetailsController extends DataListController {
 
     @Override
     public void onEvent(Event event) throws Exception {
+    	if(perspectiveDetailsWindow==null)
+    	{
         perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, null);
         perspectiveDetailsWindow.setTitle(parent.getPerspective());
         Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");
@@ -96,6 +98,14 @@ public class PerspectiveDetailsController extends DataListController {
             // ignore the exception and proceed with default centered window
         }
         perspectiveDetailsWindow.doOverlapped();
+        
+        perspectiveDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				perspectiveDetailsWindow = null;				
+			}
+		});
+    	}
     }
 
     public Window getWindow() {

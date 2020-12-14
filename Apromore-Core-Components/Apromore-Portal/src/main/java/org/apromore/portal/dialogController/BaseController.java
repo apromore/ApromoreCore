@@ -25,10 +25,11 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
 // Java 2 Standard Edition packages
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 // Third party packages
@@ -226,6 +227,10 @@ public class BaseController extends Window {
     }
     private void setEventLogService(final EventLogService eventLogService) {
         this.eventLogService = eventLogService;
+    }
+
+    public String processRequest(Map<String,String[]> parameterMap) {
+        return "";
     }
     private void setSecurityService(final SecurityService securityService) {
         this.securityService = securityService;

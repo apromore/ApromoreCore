@@ -34,10 +34,4 @@ import javax.persistence.QueryHint;
 public interface UsermetadataRepository extends JpaRepository<Usermetadata, Integer> {
 
     Usermetadata findById(Integer id);
-//
-//    @Query("SELECT um FROM Usermetadata WHERE um.id = ?1 FOR UPDATE")
-//    @org.springframework.data.jpa.repository.QueryHints(value = {
-//            @QueryHint(name= QueryHints.PESSIMISTIC_LOCK, value= PessimisticLock.Lock)
-//    }, forCounting = false)
-//    Usermetadata getUsermetadataForUpdate(Integer id);
 }

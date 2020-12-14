@@ -21,7 +21,7 @@
   -->
 <?component name="groupListboxComp" macroURI="/user-admin/zul/group-listbox.zul" inline="true" ?>
 <?component name="assignedUserListboxComp" macroURI="/user-admin/zul/assigned-user-listbox.zul" inline="true" ?>
-<hbox vflex="1" hflex="1" spacing="0" style="padding: 0;" xmlns:h="http://www.w3.org/1999/xhtml">
+<hbox vflex="1" hflex="1" spacing="0" style="padding: 0;" xmlns:h="http://www.w3.org/1999/xhtml" sclass="ap-usrmgt-tab-group">
   <vbox hflex="1" vflex="1" spacing="0">
     <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
       <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
