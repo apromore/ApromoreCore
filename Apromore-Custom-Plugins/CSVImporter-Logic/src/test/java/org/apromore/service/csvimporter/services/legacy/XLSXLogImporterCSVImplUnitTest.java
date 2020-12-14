@@ -125,7 +125,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         3,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -168,7 +168,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         3,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -212,7 +212,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -256,7 +256,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -299,7 +299,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -343,7 +343,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setStartTimestampPos(2);
         logMetaData.setStartTimestampFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -386,7 +386,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -420,7 +420,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
         logMetaData.setStartTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
@@ -469,7 +469,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
@@ -511,7 +511,7 @@ public class XLSXLogImporterCSVImplUnitTest {
                         3,
                         "windows-1255");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
 
         logMetaData.setEndTimestampFormat("MM/dd/yy HH:mm");
         logMetaData.setActivityPos(1);

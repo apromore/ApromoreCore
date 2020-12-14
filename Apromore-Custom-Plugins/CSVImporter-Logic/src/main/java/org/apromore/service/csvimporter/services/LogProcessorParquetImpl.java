@@ -101,7 +101,9 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
 
     private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
         if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
-            return parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
+            return (timeZone == null || timeZone.isEmpty()) ?
+                    parseToTimestamp(theValue, format, null)
+                    : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
         } else {
             return null;
         }
