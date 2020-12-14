@@ -127,7 +127,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
         LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
@@ -168,7 +168,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
                 LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
@@ -208,7 +208,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
                 LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
@@ -248,7 +248,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
                 LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
@@ -285,7 +285,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         2,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
                 LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
@@ -318,7 +318,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         logMetaData.setEndTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
         logMetaData.setStartTimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
         logMetaData.setEndTimestampPos(3);
@@ -365,7 +365,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         100,
                         "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
                 LogModel logModel = logImporter
                 .importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null,null,null);
@@ -405,7 +405,7 @@ public class ParquetLogImporterCSVImplUnitTest {
                         100,
                         "windows-1255");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
-        logMetaData.setTimeZone("Australia/Melbourne");
+        //logMetaData.setTimeZone("Australia/Melbourne");
         logMetaData.setActivityPos(1);
         logMetaData.getEventAttributesPos().remove(Integer.valueOf(1));
 
