@@ -22,16 +22,18 @@
 package org.apromore.rest.manager;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeFactory;
@@ -43,6 +45,9 @@ import org.apromore.rest.AbstractResource;
 import org.apromore.rest.ResourceException;
 import org.apromore.service.EventLogService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.csvimporter.model.LogMetaData;
+import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
+import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.FolderTreeNode;
 import org.deckfour.xes.model.XLog;
@@ -60,10 +65,13 @@ public final class ArtifactResource extends AbstractResource {
     /** Logger.  Named after the class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactResource.class);
 
+    /** Used to check the media type of uploaded logs (CSV, Excel, Parquet, XES) */
+    @Context private HttpHeaders httpHeaders;
+
     /**
      * Download a log.
      *
-     * <pre>curl http://localhost:9000/rest/Home/foo &gt; foo.xes.gz</pre>
+     * <pre>curl http://localhost:9000/rest/Home/foo -u admin:password &gt; foo.xes.gz</pre>
      *
      * @return a GZIPped XES XML document
      */
@@ -104,7 +112,25 @@ public final class ArtifactResource extends AbstractResource {
     /**
      * Logs may only be created, not modified.
      *
-     * <pre>curl http://localhost:9000/rest/Home/foo --header "Content-Type: application/xml" --data @foo.xes</pre>
+     * <pre>curl http://localhost:9000/rest/Home/foo \
+     *     -u admin:password \
+     *     --header "Content-Type: application/xml" \
+     *     --data @foo.xes</pre>
+     *
+     * For CSV and parquet, additional log metadata must be passed in the Apromore-Log-Metadata header
+     * in JSON format.
+     *
+     * <pre>curl http://localhost:9000/rest/Home/bar \
+     *     -u admin:password \
+     *     --header "Apromore-Log-Metadata: `tr '\n' ' ' &lt; bar.json`" \
+     *     --header "Content-Type: text/csv" \
+     *     --data @bar.csv</pre>
+     *
+     * <pre>curl http://localhost:9000/rest/Home/baz \
+     *     -u admin:password \
+     *     --header "Apromore-Log-Metadata: `tr '\n' ' ' &lt; baz.json`" \
+     *     --header "Content-Type: application/x-parquet" \
+     *     --data @baz.parquet</pre>
      *
      * @param body  the log to upload in uncompressed XES XML format
      * @return the actual event log created, including the generated id
@@ -112,12 +138,12 @@ public final class ArtifactResource extends AbstractResource {
      */
     @POST
     @Path("{path:(.*/)*}{name}")
-    @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
     public LogSummaryType postLog(final @HeaderParam("Authorization") String authorization,
+                                  final @HeaderParam("Apromore-Log-Metadata") String logMetaDataHeader,
                                   final @PathParam("path") String path,
                                   final @PathParam("name") String name,
-                                  final String body) throws Exception {
+                                  final InputStream body) throws Exception {
 
         // Only authorize admin accounts
         UserType user = authenticatedUser(authorization);
@@ -126,19 +152,55 @@ public final class ArtifactResource extends AbstractResource {
         // Try to access the folder using the given credentials
         int folderId = findFolderIdByPath(path, user.getId(), osgiService(WorkspaceService.class));
 
+        LOGGER.info("Media type " + httpHeaders.getMediaType());
+
         // Import the event log
-        Log log = osgiService(EventLogService.class).importLog(
-            user.getUsername(),
-            folderId,
-            name,
-            new StringBufferInputStream(body),
-            "xes",  // extension; specifies uncompressed (no GZIP) XES format
-            "",  // domain
-            DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-            true); // publicModel
+        Log log;
+        if (httpHeaders.getMediaType().isCompatible(MediaType.valueOf(MediaType.APPLICATION_XML))) {
+            log = osgiService(EventLogService.class).importLog(
+                user.getUsername(),
+                folderId,
+                name,
+                body,
+                "xes",  // extension; specifies uncompressed (no GZIP) XES format
+                "",  // domain
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                true); // publicModel
+
+        } else if (httpHeaders.getMediaType().isCompatible(new MediaType("text", "csv"))) {
+            log = logWithMetadata("csv", body, logMetaDataHeader, user, name, folderId);
+
+        } else if (httpHeaders.getMediaType().isCompatible(new MediaType("application", "x-parquet"))) {
+            log = logWithMetadata("parquet", body, logMetaDataHeader, user, name, folderId);
+
+        } else {
+            throw new ResourceException(Response.Status.UNSUPPORTED_MEDIA_TYPE,
+                "Request had content type " + httpHeaders.getMediaType() + " but only " +
+                MediaType.APPLICATION_XML + ", text/csv, application/x-parquet are supported");
+        }
 
         // Return a description of the created event log
         return (LogSummaryType) osgiService(UserInterfaceHelper.class).buildLogSummary(log);
+    }
+
+    private Log logWithMetadata(final String mediaFormat, final InputStream body, final String logMetaDataHeader,
+                                final UserType user, final String name, final int folderId) throws Exception {
+
+        if (logMetaDataHeader == null) {
+            throw new ResourceException(Response.Status.BAD_REQUEST,
+                "Requests with content type " + mediaFormat +
+                " require an Apromore-Log-Metadata header containing log metadata in JSON format.");
+        }
+
+        LogMetaData logMetaData = osgiService(ParquetFactoryProvider.class)
+            .getParquetFactory(mediaFormat)
+            .getMetaDataService()
+            .extractMetadata(new StringBufferInputStream(logMetaDataHeader), "UTF-8");
+
+        return osgiService(LogImporterProvider.class)
+            .getLogReader(mediaFormat)
+            .importLog(body, logMetaData, "UTF-8", true, user.getUsername(), folderId, name)
+            .getImportLog();
     }
 
     /**
