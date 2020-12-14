@@ -129,7 +129,7 @@ public class ResourceServlet extends HttpServlet {
             BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
                 HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
-                if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
+                if (req.getServletPath().equals(serviceReference.getProperty("org.apromore.portal.servlet.pattern"))) {
                     servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
                     servlet.service(req, resp);
                     return;
