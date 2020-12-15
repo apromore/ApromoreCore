@@ -362,7 +362,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             e.printStackTrace();
         }
 
-        userMetadataService.saveUserMetadataLinkedToOneLog("Default CSV schema mapping name", jsonStr,
+        userMetadataService.saveUserMetadata("Default CSV schema mapping name", jsonStr,
                 UserMetadataTypeEnum.CSV_IMPORTER, username,
                 log.getId());
 

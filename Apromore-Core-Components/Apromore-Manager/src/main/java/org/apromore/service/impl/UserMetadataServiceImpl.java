@@ -25,6 +25,7 @@ import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.util.AccessType;
@@ -60,6 +61,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private UsermetadataLogRepository usermetadataLogRepo;
     private UsermetadataProcessRepository usermetadataProcessRepo;
     private GroupRepository groupRepo;
+    private AuthorizationService authorizationService;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -75,7 +77,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                    final UsermetadataTypeRepository usermetadataTypeRepo,
                                    final UsermetadataLogRepository usermetadataLogRepo,
                                    final UsermetadataProcessRepository usermetadataProcessRepo,
-                                   final GroupRepository groupRepository) {
+                                   final GroupRepository groupRepository,
+                                   final AuthorizationService authorizationService) {
         this.logRepo = logRepository;
         this.groupLogRepo = groupLogRepository;
         this.userSrv = userSrv;
@@ -85,17 +88,16 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         this.usermetadataLogRepo = usermetadataLogRepo;
         this.usermetadataProcessRepo = usermetadataProcessRepo;
         this.groupRepo = groupRepository;
-       
+        this.authorizationService = authorizationService;
     }
 
     @Override
     @Transactional
-    public void saveUserMetadataLinkedToOneLog(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+    public void saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                                String username,
                                                Integer logId) throws UserNotFoundException {
 
-        List<Integer> logIds = new LinkedList<>();
-        logIds.add(logId);
+        ArrayList<Integer> logIds = new ArrayList<>(Collections.singletonList(logId));
 
         saveUserMetadata(userMetadataName, userMetadataContent, userMetadataTypeEnum, username, logIds);
     }
@@ -106,21 +108,14 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                  List<Integer> logIds) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
-
         Usermetadata userMetadata = new Usermetadata();
 
-        Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
         Set<Log> logs = new HashSet<>();
-
-        // Assign OWNER permission to the user's personal group
-        groupUserMetadataSet.add(new GroupUsermetadata(user.getGroup(), userMetadata, true, true, true));
-
         for (Integer logId : logIds) {
             logs.add(logRepo.findUniqueByID(logId));
         }
 
         // Assemble Usermetadata
-        userMetadata.setGroupUserMetadata(groupUserMetadataSet);
         userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
@@ -129,11 +124,12 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setName(userMetadataName);
         userMetadata.setLogs(logs);
 
-        // Persist Usermetadata, GroupUsermetadata and UsermetadataLog
+        // Persist Usermetadata and UsermetadataLog
+        userMetadata = userMetadataRepo.saveAndFlush(userMetadata);
         LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username, userMetadata.getId(),
                 userMetadataTypeEnum.toString());
-        return userMetadataRepo.saveAndFlush(userMetadata);
 
+        return userMetadata;
     }
 
     /**
@@ -144,6 +140,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
      * @return Set of GroupUsermetadata
      */
     private  Set<GroupUsermetadata> findByLogAndGroup(Integer logId, String groupRowGuid) {
+
+        // TODO change logic here
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         Set<GroupUsermetadata> result = new HashSet<>();
@@ -173,6 +171,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     @Transactional
     public void saveUserMetadataAccessRightsByLogAndGroup(Integer logId, String groupRowGuid, AccessType accessType) {
+
+    // Disabled from UI side, since restricted share is not allowed in release 7.19
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
@@ -244,43 +244,65 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         }
     }
 
-//    @Override
-//    public void shareUserMetadataWithLog(Integer logId, String groupRowGuid, AccessType accessType) {
-//
-//        Group group = groupRepo.findByRowGuid(groupRowGuid);
-//
-//        // Assign specified group with the same permission to the simulation metadata
-//        if (accessType.isRead() || accessType.isWrite() || accessType.isOwner()) {
-//
-//            // All the user metadata that linked to this log
-//            Set<UsermetadataLog> usermetadataLogSet =
-//                    new HashSet<>(usermetadataLogRepo.findByLog(logRepo.findUniqueByID(logId)));
-//
-//            if (usermetadataLogSet.size() != 0) {
-//
-//                for (UsermetadataLog usermetadataLog : usermetadataLogSet) {
-//                    Usermetadata u = usermetadataLog.getUsermetadata();
-//
-//                    if (UserMetadataTypeEnum.SIMULATOR.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
-//
-//                        GroupUsermetadata g = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
-//
-//                        // Inherit permission from log
-//                        if (g == null) {
-//                            g = new GroupUsermetadata(group,
-//                                    u, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
-//                            u.getGroupUserMetadata().add(g);
-//                        } else {
-//                            g.setAccessRights(new AccessRights(accessType.isRead(), accessType.isWrite(), accessType.isOwner()));
-//
-//                        }
-//                        groupUsermetadataRepo.save(g);
-//                        userMetadataRepo.save(u);
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @Override
+    public void shareUserMetadataWithLog(Integer logId, String groupRowGuid, AccessType accessType) {
+
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        // Assign specified group with the same permission to the simulation metadata
+        if (accessType.isRead() || accessType.isWrite() || accessType.isOwner()) {
+
+            // All the user metadata that linked to this log
+            Set<Usermetadata> usermetadataSet = logRepo.findUniqueByID(logId).getUsermetadataSet();
+
+            if (usermetadataSet.size() != 0) {
+
+                for (Usermetadata u : usermetadataSet) {
+
+                    Set<Log> logs = u.getLogs();
+                    AccessType at;
+
+                    if (logs.size() == 0) { // null-log user metadata
+                        return;
+
+                    } else if (logs.size() == 1) { // single-log user metadata
+                        at = accessType;
+
+                    } else { // multi-log user metadata
+
+                        // Identify group's access rights on this user metadata, which is the most restrictive of the
+                        // access rights across all the logs associated to this user metadata.
+                        List<AccessType> accessTypes = new ArrayList<>();
+
+                        for (Log l : logs) {
+                            accessTypes.add(AccessType.getAccessType(groupLogRepo.findByGroupAndLog(group, l).getAccessRights()));
+                        }
+
+                        if (accessTypes.contains(AccessType.NONE)) {
+                            return;
+                        } else if (accessTypes.contains(AccessType.VIEWER)) {
+                            at = AccessType.VIEWER;
+                        } else if (accessTypes.contains(AccessType.EDITOR)) {
+                            at = AccessType.EDITOR;
+                        } else at = AccessType.OWNER;
+                    }
+
+                    GroupUsermetadata gu = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
+
+                    // Inherit permission from log
+                    if (gu == null) {
+                        gu = new GroupUsermetadata(group, u, at.isRead(), at.isWrite(), at.isOwner());
+                        u.getGroupUserMetadata().add(gu);
+                    } else {
+                        gu.setAccessRights(new AccessRights(accessType.isRead(), accessType.isWrite(),
+                                accessType.isOwner()));
+                    }
+                    groupUsermetadataRepo.save(gu);
+                    userMetadataRepo.save(u);
+                }
+            }
+        }
+    }
 
     @Override
     @Transactional
@@ -396,6 +418,46 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    public Set<Usermetadata> getUserMetadataByLogs(String username, List<Integer> logIds,
+                                                   UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+        Set<Usermetadata> result = new HashSet<>();
+
+        if (null == logIds || logIds.size() == 0) {
+            return result;
+        }
+
+        User user = userSrv.findUserByLogin(username);
+
+        // Get all the user metadata that linked to specified logs, and the specified user has access to
+        List<Set<Usermetadata>> lists = new ArrayList<>();
+        for (Integer logId : logIds) {
+            if(authorizationService.getLogAccessTypeByUser(logId, user) == AccessType.NONE) {
+                return result; // If specified user doesn't have access to one log, return empty result
+            }
+            lists.add(getUserMetadataByLog(logId, userMetadataTypeEnum));
+        }
+        // Find intersection of user metadata lists that get from specified logIds
+        for (Set<Usermetadata> umSet : lists) {
+            for (Usermetadata u : umSet) {
+                int count = 0;
+                Set<Log> logs = u.getLogs();
+                if (logs.size() == logIds.size()) {  // May have duplicated UsermetadataLog umlSet.size()
+                    for (Log l : logs) {
+                        if (logIds.contains(l.getId())) {
+                            count += 1;
+                        }
+                    }
+                    if (count == logIds.size()) {
+                        result.add(u);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
     public Set<Usermetadata> getUserMetadataByLog(Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) {
 
         Set<Usermetadata> umSet = new HashSet<>();
@@ -419,13 +481,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
                                              UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
-        Set<Usermetadata> umSetLinkedToUser = getUserMetadataByUser(username, userMetadataTypeEnum);
-        Set<Usermetadata> umSetLinkedToLogs = getUserMetadataByLogs(logIds, userMetadataTypeEnum);
-
-        // Find intersection of user metadata lists that get from 2 linked tables (log, group)
-        umSetLinkedToUser.retainAll(umSetLinkedToLogs);
-
-        return umSetLinkedToUser;
+        // Since restricted viewer is not supported at version 7.19, criteria is simplified here
+        // TODO: Add logic to get usermetadata based on GroupUsermetadata in 7.20
+        return getUserMetadataByLogs(username, logIds, userMetadataTypeEnum);
     }
 
 
@@ -442,7 +500,71 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    public boolean canUserCreateMetadata(String username, Integer logId) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        List<AccessType> accessTypes = new ArrayList<>();
+        for (Group g : user.getGroups()) {
+            accessTypes.add(AccessType.getAccessType(groupLogRepo.findByGroupAndLog(g,
+                    logRepo.findUniqueByID(logId)).getAccessRights()));
+        }
+
+        return getLeastRestrictiveAccessType(accessTypes) == AccessType.OWNER
+                || getLeastRestrictiveAccessType(accessTypes) == AccessType.EDITOR;
+    }
+
+    private AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {
+
+        if (accessTypes == null || accessTypes.size() == 0) {
+            return AccessType.NONE;
+        }
+
+        if (accessTypes.contains(AccessType.OWNER)) {
+            return AccessType.OWNER;
+        } else if (accessTypes.contains(AccessType.EDITOR)) {
+            return AccessType.EDITOR;
+        } else if (accessTypes.contains(AccessType.VIEWER)) {
+            return AccessType.VIEWER;
+        } else return AccessType.NONE;
+    }
+
+    @Override
+    public boolean canUserCreateMetadata(String username, List<Integer> logIds) throws UserNotFoundException {
+
+
+
+        return false;
+    }
+
+    @Override
+    public AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group) {
+
+        AccessType at;
+
+        // Identify group's access rights on this user metadata, which is the most restrictive of the
+        // access rights across all the logs associated to this user metadata.
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Log l : logs) {
+            accessTypes.add(AccessType.getAccessType(groupLogRepo.findByGroupAndLog(group, l).getAccessRights()));
+        }
+
+        if (accessTypes.contains(AccessType.NONE)) {
+            at = AccessType.NONE;
+        } else if (accessTypes.contains(AccessType.VIEWER)) {
+            at = AccessType.VIEWER;
+        } else if (accessTypes.contains(AccessType.EDITOR)) {
+            at = AccessType.EDITOR;
+        } else at = AccessType.OWNER;
+
+        return at;
+    }
+
+    @Override
     public AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata) {
+
+        // TODO change logic if necessary
 
         GroupUsermetadata gu = groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
 
@@ -450,6 +572,12 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             return AccessType.getAccessType(gu.getHasRead(), gu.getHasWrite(), gu.getHasOwnership());
         }
         return null;
+    }
+
+    @Override
+    public AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) throws UserNotFoundException {
+
+        return authorizationService.getUserMetadataAccessTypeByUser(usermetadataId, user);
     }
 
     @Override
