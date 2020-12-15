@@ -21,6 +21,7 @@ if [ -z "$cur_dev" ]
 	    echo "Failed to get develop!" 1>&2
 	exit 1
 fi
+git stash -- site.properties
 git checkout $cur_dev -- site.properties
 git checkout $cur_dev
 if [ "$?" = "0" ]; then
@@ -32,7 +33,7 @@ if [ "$?" = "0" ]; then
     case $yn in
         [Yy]* ) echo 'Rebasing ...';
         	git rebase $cur_dev $cur_branch;
-        	cp site.properties.template site.properties
+        	git stash pop
         	exit;;
         [Nn]* ) git checkout $cur_branch;
         	exit;;

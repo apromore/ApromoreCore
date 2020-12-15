@@ -236,13 +236,13 @@
                       <h:span>
                         I agree with the
                         <html id="tcAgree">
-                          <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a>
+                          <h:a href="${labels.brand.urlTandC}">Terms &amp; Conditions</h:a>
                         </html>
                         <html id="andAgree">
                         and the
                         </html>
                         <html id="ppAgree">
-                          <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+                          <h:a href="${labels.brand.urlPrivacy}">Privacy Policy</h:a>
                         </html>
                       </h:span>
                     </div>
@@ -275,10 +275,10 @@
           <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
           <h:div class="ap-h-links">
             <html id="tcLink">
-              <a href="https://apromore.org/terms-and-conditions/">Terms &amp; Conditions</a>
+              <h:a href="${labels.brand.urlTandC}">Terms &amp; Conditions</h:a>
             </html>
             <html id="ppLink">
-              <a href="https://apromore.org/privacy-policy/">Privacy Policy</a>
+              <h:a href="${labels.brand.urlPrivacy}">Privacy Policy</h:a>
             </html>
             <html>${labels.e.common.contact.text}</html>
           </h:div>
@@ -289,7 +289,7 @@
 
       <h:div class="ap-right-panel">
         <h:div class="ap-logo ap-centered">
-          <h:a href="https://apromore.org">
+          <h:a href="${labels.brand.urlMain}">
             <image id="logoWithTag" src="/themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
           </h:a>
         </h:div>

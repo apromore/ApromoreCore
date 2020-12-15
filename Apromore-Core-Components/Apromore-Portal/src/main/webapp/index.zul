@@ -35,7 +35,7 @@
 <?link rel="prefetch" href="themes/${labels.theme}/common/img/brand/loader.svg" ?>
 <?link rel="stylesheet" type="text/css" href="themes/ap/common/css/headload.css" ?>
 <?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/index.css" ?>
-<?link rel="stylesheet" type="text/css" href="themes/ap/portal/css/portal.css" ?>
+<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/portal/css/portal.css" ?>
 <?script src="themes/ap/common/js/index.js"?>
 <?script src="themes/ap/portal/js/portal.js" ?>
 
