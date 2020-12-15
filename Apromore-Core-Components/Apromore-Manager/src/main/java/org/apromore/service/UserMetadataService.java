@@ -225,8 +225,6 @@ public interface UserMetadataService {
 
     boolean canUserCreateMetadata(String username, List<Integer> logIds) throws UserNotFoundException;
 
-    AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group);
-
     /**
      * Find AccessType given a Group and Usermetadata
      * @param group Group
@@ -236,7 +234,8 @@ public interface UserMetadataService {
     AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata);
 
     /**
-     * Find a set of user metadata which is not linked to log.
+     * Find a set of user metadata which are associated with the logs that
+     * this specified user has access to
      *
      * @param username username
      * @return A set of user metadata

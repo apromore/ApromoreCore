@@ -537,8 +537,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         return false;
     }
 
-    @Override
-    public AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group) {
+    private AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group) {
 
         AccessType at;
 
@@ -617,21 +616,20 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     public Set<Usermetadata> getUserMetadataWithoutLog(UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException {
 
+        // Currently for CSV_IMPORTER only. Get all the artifacts that are associated with the logs this specified
+        // user has access to.
+
+        Set<Usermetadata> usermetadataSet = new HashSet<>();
+
         User user = userSrv.findUserByLogin(username);
+        List<GroupLog> groupLogList = groupLogRepo.findLogsByUser(user.getRowGuid());
 
         // Get all the user metadata that can be accessed by groups that contain specified user
-        Set<GroupUsermetadata> groupUsermetadataSet = new HashSet<>();
-        for (Group group : user.getGroups()) {
-            groupUsermetadataSet.addAll(groupUsermetadataRepo.findByGroup(group));
+        for(GroupLog gl : groupLogList) {
+            usermetadataSet.addAll(getUserMetadataByLog(gl.getLog().getId(), userMetadataTypeEnum));
         }
-        Set<Usermetadata> usermetadataList = new HashSet<>();
-        for (GroupUsermetadata groupUsermetadata : groupUsermetadataSet) {
-            Usermetadata u = groupUsermetadata.getUsermetadata();
-            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
-                usermetadataList.add(u);
-            }
-        }
-        return usermetadataList.size() > 0 ? usermetadataList : null;
+
+        return usermetadataSet.size() > 0 ? usermetadataSet : null;
     }
 
     @Override
