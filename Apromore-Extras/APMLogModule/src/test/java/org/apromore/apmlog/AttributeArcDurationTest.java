@@ -22,10 +22,13 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.stats.DurSubGraph;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -251,5 +254,40 @@ public class AttributeArcDurationTest {
         } else {
             parent.printString("'Attribute arc duration (3)' test PASS.\n");
         }
+    }
+
+    public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        PLog pLog = apmLogFilter.getPLog();
+        pLog.updateStats();
+        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A");
+        DoubleArrayList durList = subGraph.getValDurListMap().get("A");
+        double avg = getAverage(durList);
+        double twoHours = 1000 * 60 * 60 * 2d;
+        if (avg != twoHours) {
+            throw new AssertionError("TEST FAILED. RESULT MISMATCH.\n expected value=" + twoHours +
+                    "; output value=" + avg);
+        } else {
+            parent.printString("'Attribute arc duration (4) - Average duration' test PASS.\n");
+        }
+    }
+
+    public static double getAverage(DoubleArrayList doubleList) {
+        if (doubleList.size() > 0) {
+            double sum = getTotal(doubleList);
+            return doubleList.size() > 1 ? sum / doubleList.size() : sum;
+        }
+        return 0;
+    }
+
+    public static double getTotal(DoubleArrayList doubleList) {
+        if (doubleList.size() > 0) {
+            double sum = 0;
+            for (int i = 0; i < doubleList.size(); i++) {
+                sum += doubleList.get(i);
+            }
+            return sum;
+        }
+        return 0;
     }
 }

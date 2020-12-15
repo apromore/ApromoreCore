@@ -125,6 +125,8 @@ public class AAttributeGraph {
                     if (nST > aET) {
                         long dur = nST - aET;
                         subGraph.addDuration(nVal, dur, traceIndex);
+                    } else {
+                        subGraph.addDuration(nVal, 0, traceIndex);
                     }
                 }
             }

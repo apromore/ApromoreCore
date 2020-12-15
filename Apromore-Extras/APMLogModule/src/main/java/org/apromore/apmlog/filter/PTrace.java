@@ -398,6 +398,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         if (fromIndex == eventList.size() - 1) proceed = false;
         if (baseLife.equals("complete")) proceed = false;
 
+        boolean foundStart = baseLife.equals("start");
+
         if (proceed) {
             for (int i = fromIndex + 1; i < eventList.size(); i++) {
                 if (!markedIndexes.contains(i)) {
@@ -415,7 +417,14 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
                             break;
                         } else {
-                            eventIndexList.add(i);
+                            if (lifecycle.equals("start")){
+                                if (!foundStart) {
+                                    eventIndexList.add(i);
+                                    foundStart = true;
+                                }
+                            } else {
+                                eventIndexList.add(i);
+                            }
                         }
                     }
                 }
