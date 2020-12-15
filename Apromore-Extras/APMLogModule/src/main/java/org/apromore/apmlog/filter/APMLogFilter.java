@@ -41,10 +41,25 @@
 
 package org.apromore.apmlog.filter;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.typefilters.*;
+import org.apromore.apmlog.filter.typefilters.AttributeArcDurationFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionAttributeCombinationFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionCaseAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionEventAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseTimeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseUtilisationFilter;
+import org.apromore.apmlog.filter.typefilters.DurationFilter;
+import org.apromore.apmlog.filter.typefilters.EventAttributeDurationFilter;
+import org.apromore.apmlog.filter.typefilters.EventSectionAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.EventTimeFilter;
+import org.apromore.apmlog.filter.typefilters.PathFilter;
+import org.apromore.apmlog.filter.typefilters.ReworkFilter;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.AAttributeGraph;
@@ -52,10 +67,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
 
 /**
  * This class handles log filtering mechanisms for APMLog.
@@ -195,6 +206,11 @@ public class APMLogFilter {
 
         PTrace filteredTrace = pTrace;
 
+        // Set all events as selected first
+        BitSet validEventBS = (BitSet)pTrace.getOriginalValidEventIndexBS().clone();
+        filteredTrace.setValidEventIndexBS(validEventBS);
+        
+        // Filter events and set bits accordingly
         for (int i = 0; i < logFilterRules.size(); i++) {
             LogFilterRule logFilterRule = logFilterRules.get(i);
 
@@ -206,7 +222,6 @@ public class APMLogFilter {
                     return null;
                 }
             } else { //Event section
-                BitSet validEventBS = pTrace.getValidEventIndexBitSet();
 
                 List<AEvent> eventList = pTrace.getOriginalEventList();
 
@@ -230,12 +245,12 @@ public class APMLogFilter {
             }
         }
 
+        // Prepare returning result
         if (filteredTrace!= null) {
             if (filteredTrace.getValidEventIndexBitSet().cardinality() == 0) {
                 filteredTrace = null;
             }
         }
-
         return filteredTrace;
     }
 

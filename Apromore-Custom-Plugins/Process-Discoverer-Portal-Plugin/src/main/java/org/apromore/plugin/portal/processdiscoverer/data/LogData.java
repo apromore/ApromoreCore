@@ -40,6 +40,7 @@ import org.eclipse.collections.api.list.ListIterable;
 
 /**
  * LogData contains all log data needed for calculation or display on UI
+ * It also manages data after applying filter criteria
  * 
  * @author Bruce Nguyen
  *
