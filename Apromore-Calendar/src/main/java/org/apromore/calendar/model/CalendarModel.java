@@ -19,6 +19,17 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+/*
+ * 
+ * This is the calendar model, used for getting duration based on start and end time.
+ * The start time can be a ZonedDateTime, or Unix timestamp.
+ * This model is thread safe.
+ * This is a model created from Calendar which is in the db layer.
+ * The duration calculation is based on number of working days and holidays associated to the calendar
+ * @see CalendarService.getCalendar(id) for details
+ * 
+ */
+
 package org.apromore.calendar.model;
 
 import java.time.DayOfWeek;
@@ -31,15 +42,15 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
 import lombok.Data;
-import sun.security.provider.certpath.CollectionCertStore;
+
 
 @Data
 public class CalendarModel {
@@ -197,6 +208,12 @@ public class CalendarModel {
 
     return duration.isNegative() ? Duration.ZERO : duration;
 
+  }
+  
+  public List<WorkDayModel> getOrderedWorkDay()
+  {
+	  workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
+	  return workDays;
   }
 
 

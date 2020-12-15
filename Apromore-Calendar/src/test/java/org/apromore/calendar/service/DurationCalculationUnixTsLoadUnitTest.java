@@ -32,9 +32,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.DurationModel;
-import org.apromore.calender.builder.CalendarModelBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,14 +47,14 @@ import static org.mockito.Mockito.ignoreStubs;
 // This is to test compute load with 100k records, 
 //With 2 months difference the response comes in 860 milliseconds.
 
-@Ignore
+@Ignore("Ignored as this is a intensive test")
 public class DurationCalculationUnixTsLoadUnitTest {
 
-  CalendarModelBuilder calenderModelBuilder;
+  CalendarModelBuilder calendarModelBuilder;
 
   @Before
   public void Setup() {
-    calenderModelBuilder = new CalendarModelBuilder();
+    calendarModelBuilder = new CalendarModelBuilder();
   }
 
 
@@ -93,14 +94,14 @@ public class DurationCalculationUnixTsLoadUnitTest {
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
 
-    CalendarModel calenderModel = calenderModelBuilder.with7DayWorking().withZoneId("UTC").build();
+    CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId("UTC").build();
 
     Container container=params();
     // When
     LocalDateTime start = LocalDateTime.now();
     System.out.println("Start="+start);
     
-    Long[] durationModel = calenderModel.getDuration(container.getStart().toArray(new Long[container.getStart().size()]),
+    Long[] durationModel = calendarModel.getDuration(container.getStart().toArray(new Long[container.getStart().size()]),
         container.getEnd().toArray(new Long[container.getStart().size()]));
 
     LocalDateTime end = LocalDateTime.now();

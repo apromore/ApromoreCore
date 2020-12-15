@@ -45,111 +45,111 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 public class CaseDetailsController extends DataListController {
-    private Window caseDetailsWindow;
-    private GraphVisController visController;
+	private Window caseDetailsWindow;
+	private GraphVisController visController;
 
-    public CaseDetailsController(PDController controller) {
-        super(controller);
-        visController = new GraphVisController(controller);
-    }
- 
-    private void generateData() {
-        List<CaseDetails> caseDetails = parent.getLogData().getCaseDetails();
-        records = new ListModelList();
-        rows = new ArrayList<String []>();
-        for (CaseDetails c : caseDetails) {
-            records.add(c);
-            rows.add(new String []{c.getCaseId(), Integer.toString(c.getCaseEvents()), 
-                                Integer.toString(c.getCaseVariantId()), c.getCaseVariantFreqStr()});
-        }
-    }
+	public CaseDetailsController(PDController controller) {
+		super(controller);
+		visController = new GraphVisController(controller);
+	}
 
-    private void populateCasesBasedOnActivities(Listbox listbox) {
-        generateData();
-        listbox.setModel(records);
-    }
+	private void generateData() {
+		List<CaseDetails> caseDetails = parent.getLogData().getCaseDetails();
+		records = new ListModelList();
+		rows = new ArrayList<String[]>();
+		for (CaseDetails c : caseDetails) {
+			records.add(c);
+			rows.add(new String[] { c.getCaseId(), Integer.toString(c.getCaseEvents()),
+					Integer.toString(c.getCaseVariantId()), c.getCaseVariantFreqStr() });
+		}
+	}
 
-    @Override
-    public String[] getDataHeaders () {
-        return new String[]{"Case ID", "Events", "Case Variant", "Percentage (%)"};
-    }
+	private void populateCasesBasedOnActivities(Listbox listbox) {
+		generateData();
+		listbox.setModel(records);
+	}
 
-    @Override
-    public String getExportFilename () {
-        return parent.getLogName() + ".csv";
-    }
+	@Override
+	public String[] getDataHeaders() {
+		return new String[] { "Case ID", "Events", "Case Variant", "Percentage (%)" };
+	}
 
-    @Override
-    public void onEvent(Event event) throws Exception {
-        caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
-        caseDetailsWindow.setTitle("Cases");
+	@Override
+	public String getExportFilename() {
+		return parent.getLogName() + ".csv";
+	}
 
-        caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                caseDetailsWindow = null;
-                visController.displayDiagram(parent.getOutputData().getVisualizedText());
-            }
-        });
+	@Override
+	public void onEvent(Event event) throws Exception {
+		if (caseDetailsWindow == null) {
+			caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
+			caseDetailsWindow.setTitle("Cases");
 
-        Listbox listbox = (Listbox) caseDetailsWindow.getFellow("caseDetailsList");
-        populateCasesBasedOnActivities(listbox);
-        // populateCasesBasedOnPerspective (Listbox listbox);
+			caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					caseDetailsWindow = null;
+					visController.displayDiagram(parent.getOutputData().getVisualizedText());
+				}
+			});
 
-        listbox.addEventListener("onSelect", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                try {
-                    String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
-                    AbstractionParams params = parent.genAbstractionParamsSimple(
-                        false, true, false,
-                        MeasureType.DURATION, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE,
-                        MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE
-                    );
-                    Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
-                    String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);
-                    visController.displayTraceDiagram(visualizedText);
-                } catch(Exception e) {
-                    Messagebox.show(e.getMessage());
-                }
-            }
-        });
+			Listbox listbox = (Listbox) caseDetailsWindow.getFellow("caseDetailsList");
+			populateCasesBasedOnActivities(listbox);
+			// populateCasesBasedOnPerspective (Listbox listbox);
 
-        Button save = (Button) caseDetailsWindow.getFellow("downloadCSV");
-        save.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                exportData();
-            }
-        });
-        try {
-            JSONObject param = (JSONObject) event.getData();
-            caseDetailsWindow.setPosition("nocenter");
-            caseDetailsWindow.setLeft((String)param.get("left"));
-            caseDetailsWindow.setTop((String)param.get("top"));
-        } catch (Exception e) {
-            // ignore the exception and proceed with default centered window
-        }
-        caseDetailsWindow.doOverlapped();
-    }
+			listbox.addEventListener("onSelect", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					try {
+						String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
+						AbstractionParams params = parent.genAbstractionParamsSimple(false, true, false,
+								MeasureType.DURATION, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE,
+								MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
+						Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
+						String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);
+						visController.displayTraceDiagram(visualizedText);
+					} catch (Exception e) {
+						Messagebox.show(e.getMessage());
+					}
+				}
+			});
 
-    public Window getWindow() {
-        return caseDetailsWindow;
-    }
+			Button save = (Button) caseDetailsWindow.getFellow("downloadCSV");
+			save.addEventListener("onClick", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					exportData();
+				}
+			});
+			try {
+				JSONObject param = (JSONObject) event.getData();
+				caseDetailsWindow.setPosition("nocenter");
+				caseDetailsWindow.setLeft((String) param.get("left"));
+				caseDetailsWindow.setTop((String) param.get("top"));
+			} catch (Exception e) {
+				// ignore the exception and proceed with default centered window
+			}
+			caseDetailsWindow.doOverlapped();
+		}
+	}
 
-    private void populateCasesBasedOnPerspective(Listbox listbox) {
-        int i = 1;
-        List<String> cells = new ArrayList<>();
+	public Window getWindow() {
+		return caseDetailsWindow;
+	}
 
-        for (CaseInfo caseInfo : parent.getLogData().getCaseInfoList()) {
-            cells.add(i + "");
-            cells.add(caseInfo.getCaseID());
-            cells.add(caseInfo.getCaseLength() + "");
-            cells.add(caseInfo.getVariantIndex() + 1 + "");
-            cells.add(parent.getDecimalFormatter().format(100 * caseInfo.getVariantFrequency()));
-            listbox.appendChild(genListItem(cells));
-            i++;
-        }
-    }
+	private void populateCasesBasedOnPerspective(Listbox listbox) {
+		int i = 1;
+		List<String> cells = new ArrayList<>();
+
+		for (CaseInfo caseInfo : parent.getLogData().getCaseInfoList()) {
+			cells.add(i + "");
+			cells.add(caseInfo.getCaseID());
+			cells.add(caseInfo.getCaseLength() + "");
+			cells.add(caseInfo.getVariantIndex() + 1 + "");
+			cells.add(parent.getDecimalFormatter().format(100 * caseInfo.getVariantFrequency()));
+			listbox.appendChild(genListItem(cells));
+			i++;
+		}
+	}
 
 }

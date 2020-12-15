@@ -47,20 +47,21 @@
 
     <beans:bean id="plugin" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="Analyze" />
-        <beans:property name="label" value="Animate logs" />
+        <beans:property name="label" value="Animate logs (CE)" />
     </beans:bean>
 
-    <beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
+    <beans:bean id="logAnimationPlugin" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="" />
         <beans:property name="label" value="" />
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
-    <!-- <context:component-scan base-package="org.apromore.plugin.editor.loganimation" /> -->
-
-    <!-- <context:component-scan base-package="org.apromore.plugin.portal.loganimation" /> -->
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" />
-    <service ref="plugin2" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
+    <service ref="logAnimationPlugin" interface="org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface">
+        <service-properties>
+            <beans:entry key="org.apromore.plugin.portal.loganimation.variant" value="CE" />
+        </service-properties>
+    </service>
 
     <!-- Exposes the component's resources as web content -->
     <service interface="org.apromore.plugin.portal.WebContentService">

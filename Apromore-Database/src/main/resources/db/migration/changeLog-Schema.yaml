@@ -553,3 +553,162 @@ databaseChangeLog:
                  name: name
            indexName: IDX_LOG_NAME
            tableName: log
+
+ - changeSet:
+    id: 20201121125100
+    author: nolantellis
+    changes:
+     - addColumn:
+        tableName: holiday
+        columns:
+         - column:
+            name: holiday_type
+            type: varchar(20)
+
+ - changeSet:
+     id: 20201205121100
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_group_log_log
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: logId
+           baseTableName: group_log
+           constraintName: fk_group_log_log
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: log
+           validate: true
+
+ - changeSet:
+     id: 20201205122400
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_group_log_group
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: groupId
+           baseTableName: group_log
+           constraintName: fk_group_log_group
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: group
+           validate: true
+
+ - changeSet:
+     id: 20201205124000
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_group_process_process
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: processId
+           baseTableName: group_process
+           constraintName: fk_group_process_process
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: process
+           validate: true
+
+ - changeSet:
+     id: 20201205124400
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_group_process_group
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: groupId
+           baseTableName: group_process
+           constraintName: fk_group_process_group
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: group
+           validate: true
+
+ - changeSet:
+     id: 20201205124600
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_group_folder_folder
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: folderId
+           baseTableName: group_folder
+           constraintName: fk_group_folder_folder
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: folder
+           validate: true
+
+ - changeSet:
+     id: 20201205124700
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_group_folder_group
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: groupId
+           baseTableName: group_folder
+           constraintName: fk_group_folder_group
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: group
+           validate: true
+
+ - changeSet:
+     id: 20201205021800
+     author: nolantellis
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+          - foreignKeyConstraintExists:
+             foreignKeyName: fk_history_user
+     changes:
+       - addForeignKeyConstraint:
+           baseColumnNames: userId
+           baseTableName: history_event
+           constraintName: fk_history_user
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
+           validate: true
+

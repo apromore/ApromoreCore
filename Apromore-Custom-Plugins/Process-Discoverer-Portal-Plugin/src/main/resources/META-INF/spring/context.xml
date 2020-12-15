@@ -47,15 +47,17 @@
 
     <!-- Other OSGi services this component consumes -->
     <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
-    <osgi:reference id="logAnimationPlugin" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
     <osgi:reference id="domainService" interface="org.apromore.service.DomainService"/>
     <osgi:reference id="processService" interface="org.apromore.service.ProcessService"/>
 	<osgi:reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     <osgi:reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
-	<!--<osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>-->
+
     <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin" cardinality="0..1"/>
 
     <osgi:list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" cardinality="0..N"/><!-- required for font-icon -->
+    
+    <osgi:reference id="logAnimationPluginCE" interface="org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface" filter="(org.apromore.plugin.portal.loganimation.variant=CE)" cardinality="0..1"/>
+    <osgi:reference id="logAnimationPluginEE" interface="org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface" filter="(org.apromore.plugin.portal.loganimation.variant=EE)" cardinality="0..1"/>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer.plugins" />

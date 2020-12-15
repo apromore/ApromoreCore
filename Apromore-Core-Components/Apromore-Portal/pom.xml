@@ -123,7 +123,9 @@
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.exception,
                             org.apromore.portal.servlet,
-                            org.apromore.portal.util
+                            org.apromore.portal.types,
+                            org.apromore.portal.util,
+                            org.apromore.portal.plugincontrol
                         </Export-Package>
                         <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>
@@ -174,6 +176,13 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>com.springsource.javax.xml.bind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

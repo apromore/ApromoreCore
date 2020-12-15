@@ -208,13 +208,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new NotAuthorizedException("User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
         }
         Folder folder = folderRepo.findOne(folderId);
-        if(folderName != null && !folderName.isEmpty()) folder.setName(folderName);
+        if(folderName != null && !folderName.isEmpty()) 
+        	folder.setName(folderName);
         if(isGEDMatrixReady != null) {
             folder.setGEDMatrixReady(isGEDMatrixReady);
             for(Folder subfolder : folder.getSubFolders()) {
                 updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
             }
         }
+        folderRepo.save(folder);
     }
 
     /**
@@ -371,12 +373,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public String saveLogAccessRights(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                      boolean hasOwnership, boolean shareUserMetadata) {
+    @Transactional
+    public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
         Log log = logRepo.findOne(logId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
-        createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+        createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
 
         Folder parentFolder = log.getFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
@@ -387,8 +389,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         if (shareUserMetadata){
             // Sync permission with user metadata that linked to specified log
-            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, hasRead, hasWrite,
-                    hasOwnership);
+            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, accessType);
+        } else {
+            // Automatically share simulation user metadata when the log is shared
+            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, accessType);
         }
 
         return "";

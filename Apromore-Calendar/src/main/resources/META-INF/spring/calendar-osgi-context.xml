@@ -29,7 +29,8 @@
 
    
   
-    <osgi:reference id="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository"/>
-   <osgi:service ref="calendarService" interface="org.apromore.calendar.service.CustomCalendarService" auto-export="interfaces"/>
+   <osgi:reference id="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository"/>
+   <osgi:reference id="customCalendarInfoRepository" interface="org.apromore.dao.CustomCalendarInfoRepository"/>
+   <osgi:service ref="calendarService" interface="org.apromore.calendar.service.CalendarService" auto-export="interfaces"/>
 
 </beans:beans>

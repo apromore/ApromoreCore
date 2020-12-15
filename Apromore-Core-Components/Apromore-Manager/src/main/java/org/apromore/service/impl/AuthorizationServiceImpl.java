@@ -48,7 +48,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private UserMetadataService userMetadataService;
 
     @Inject
-    public AuthorizationServiceImpl(final WorkspaceService workspaceService, UserMetadataService userMetadataService) {
+    public AuthorizationServiceImpl(final WorkspaceService workspaceService,
+                                    final UserMetadataService userMetadataService) {
         this.workspaceService = workspaceService;
         this.userMetadataService = userMetadataService;
     }
@@ -117,9 +118,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
 
-        if (!accessType.equals(AccessType.NONE)) {
-            workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
-                    accessType.isOwner(), shareUserMetadata);
+        if (!AccessType.NONE.equals(accessType)) {
+            workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType, shareUserMetadata);
         }
 
     }
@@ -127,7 +127,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveProcessAccessType(Integer processId, String groupRowGuid, AccessType accessType) {
 
-        if (!accessType.equals(AccessType.NONE)) {
+        if (!AccessType.NONE.equals(accessType)) {
             workspaceService.saveProcessPermissions(processId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
                     accessType.isOwner());
         }
@@ -136,7 +136,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveFolderAccessType(Integer folderId, String groupRowGuid, AccessType accessType) {
 
-        if (!accessType.equals(AccessType.NONE)) {
+        if (!AccessType.NONE.equals(accessType)) {
             workspaceService.saveFolderPermissions(folderId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
                     accessType.isOwner());
         }
@@ -145,9 +145,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveUserMetadtarAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
-        if (!accessType.equals(AccessType.NONE)) {
-            userMetadataService.saveUserMetadataAccessRights(userMetadataId, groupRowGuid, accessType.isRead(),
-                    accessType.isWrite(), accessType.isOwner());
+        if (!AccessType.NONE.equals(accessType)) {
+            userMetadataService.saveUserMetadataAccessType(userMetadataId, groupRowGuid, accessType);
         }
     }
 

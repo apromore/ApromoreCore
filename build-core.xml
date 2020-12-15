@@ -71,6 +71,7 @@
         <include name="Apromore-Custom-Plugins/File-Portal-Plugin/target/file-portal-plugin-1.0.jar"/>
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API/target/log-animation-portal-plugin-api-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.jar"/>
         
         <include name="Apromore-Custom-Plugins/Log-Logic/target/log-logic-1.0.0.jar"/>
@@ -82,6 +83,7 @@
         <include name="Apromore-Custom-Plugins/Similarity-Search-Logic/target/similaritysearch-logic-1.1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Similarity-Search-Portal-Plugin/target/similaritysearch-portal-1.1.0.jar"/>
         <include name="Apromore-Custom-Plugins/User-Admin-Portal-Plugin/target/user-admin-portal-plugin-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Calendar-Portal/target/calendar-portal-plugin-1.0.jar"/>
     </fileset>
     
     <fileset id="fileset-core-extras" dir="${core-dir-extras}">
