@@ -24,6 +24,7 @@ package org.apromore.service.impl;
 import junit.framework.Assert;
 import org.apromore.AbstractTest;
 import org.apromore.dao.GroupUsermetadataRepository;
+import org.apromore.dao.LogRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
@@ -46,6 +47,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     private WorkspaceService workspaceService;
     private GroupUsermetadataRepository groupUsermetadataRepository;
     private UsermetadataRepository usermetadataRepository;
+    private LogRepository logRepository;
 
 
     private Group group1;
@@ -63,7 +65,9 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         workspaceService = createMock(WorkspaceService.class);
         groupUsermetadataRepository = createMock(GroupUsermetadataRepository.class);
         usermetadataRepository = createMock(UsermetadataRepository.class);
-        authorizationService = new AuthorizationServiceImpl(workspaceService, groupUsermetadataRepository, usermetadataRepository);
+        logRepository = createMock(LogRepository.class);
+        authorizationService = new AuthorizationServiceImpl(workspaceService, groupUsermetadataRepository,
+                usermetadataRepository, logRepository);
 
         // Set up test data
         group1 = createGroup(1, Group.Type.GROUP);
