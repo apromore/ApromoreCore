@@ -22,6 +22,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.GroupUsermetadataRepository;
+import org.apromore.dao.LogRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
@@ -47,14 +48,17 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private WorkspaceService workspaceService;
     private GroupUsermetadataRepository groupUsermetadataRepository;
     private UsermetadataRepository usermetadataRepository;
+    private LogRepository logRepository;
 
     @Inject
     public AuthorizationServiceImpl(final WorkspaceService workspaceService,
                                     final GroupUsermetadataRepository groupUsermetadataRepository,
-                                    final UsermetadataRepository usermetadataRepository) {
+                                    final UsermetadataRepository usermetadataRepository,
+                                    final LogRepository logRepository) {
         this.workspaceService = workspaceService;
         this.groupUsermetadataRepository = groupUsermetadataRepository;
         this.usermetadataRepository = usermetadataRepository;
+        this.logRepository = logRepository;
     }
 
     @Override
@@ -100,6 +104,17 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         return getMostRestrictiveAccessType(accessTypes);
+    }
+
+    @Override
+    public AccessType getLogsAccessTypeByUser(List<Integer> logIds, User user) {
+        Set<Log> logSet = new HashSet<>();
+
+        for(Integer logId : logIds) {
+            logSet.add(logRepository.findUniqueByID(logId));
+        }
+
+        return getLogsAccessTypeByUser(logSet, user);
     }
 
     private AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {

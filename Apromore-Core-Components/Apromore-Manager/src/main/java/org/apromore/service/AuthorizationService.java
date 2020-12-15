@@ -27,6 +27,7 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.AccessType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -83,6 +84,8 @@ public interface AuthorizationService {
     AccessType getLogAccessTypeByUser(Integer logId, User user) throws UserNotFoundException;
 
     AccessType getLogsAccessTypeByUser(Set<Log> logSet, User user) throws UserNotFoundException;
+
+    AccessType getLogsAccessTypeByUser(List<Integer> logIds, User user);
 
     /**
      * Get list of Group and AccessType pair of Process
