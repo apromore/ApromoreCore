@@ -156,12 +156,17 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             setEncoding.setModel(new ListModelList<>(fileEncoding));
 
             setEncoding.addEventListener("onSelect", event -> {
-                metaDataService.validateLog(getInputSream(media), getFileEncoding());
-                this.logMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
-                this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
-                this.logMetaData = metaDataUtilities.processMetaData(this.logMetaData, this.sampleLog);
+                try {
+                    metaDataService.validateLog(getInputSream(media), getFileEncoding());
+                    this.logMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
+                    this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), logSampleSize, getFileEncoding());
+                    this.logMetaData = metaDataUtilities.processMetaData(this.logMetaData, this.sampleLog);
 
-                if (logMetaData != null && sampleLog.size() > 0) setUpUI();
+                } catch (Exception e) {
+                    Messagebox.show(getLabels().getString("failed_to_read_log") + " " + "Please select different encoding", "Error", Messagebox.OK, Messagebox.ERROR);
+                } finally {
+                    if (logMetaData != null && sampleLog.size() > 0) setUpUI();
+                }
             });
 
             Combobox setTimeZone = (Combobox) window.getFellow(setTimeZoneId);
