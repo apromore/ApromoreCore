@@ -77,12 +77,11 @@ public final class ArtifactResource extends AbstractResource {
      */
     @GET
     @Path("{path:(.*/)*}{name}")
-    public Response getLog(final @HeaderParam("Authorization") String authorization,
-                           final @PathParam("path") String path,
+    public Response getLog(final @PathParam("path") String path,
                            final @PathParam("name") String name) throws Exception {
 
         // Only authorize admin accounts
-        UserType user = authenticatedUser(authorization);
+        UserType user = authenticatedUser();
         authorize(user, "ROLE_ADMIN");
 
         // Try to access the folder using the given credentials
@@ -139,14 +138,13 @@ public final class ArtifactResource extends AbstractResource {
     @POST
     @Path("{path:(.*/)*}{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public LogSummaryType postLog(final @HeaderParam("Authorization") String authorization,
-                                  final @HeaderParam("Apromore-Log-Metadata") String logMetaDataHeader,
+    public LogSummaryType postLog(final @HeaderParam("Apromore-Log-Metadata") String logMetaDataHeader,
                                   final @PathParam("path") String path,
                                   final @PathParam("name") String name,
                                   final InputStream body) throws Exception {
 
         // Only authorize admin accounts
-        UserType user = authenticatedUser(authorization);
+        UserType user = authenticatedUser();
         authorize(user, "ROLE_ADMIN");
 
         // Try to access the folder using the given credentials
