@@ -22,30 +22,34 @@
   -->
 
 <?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
-<?component name="Permissions" macroURI="/macros/permissions.zul" ?>
+<?component name="AccessControl" macroURI="/components/access/access.zul" ?>
 <?component name="Groups" macroURI="/macros/groups.zul" ?>
-
-<window width="900px" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
+<window width="1000px" height="90%" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
     <style>
         .z-tree-icon {
         vertical-align: middle;
         }
 
     </style>
-    <hbox spacing="0" width="100%" widths="30%,70%" height="670px">
-        <borderlayout vflex="true" width="100%">
+    <hbox spacing="0" widths="30%,70%" hflex="1" vflex="1">
+        <borderlayout vflex="1" width="100%">
             <center title="My Workspace" flex="true" border="none">
                 <FolderTree id="mainTree"/>
             </center>
         </borderlayout>
         <splitter id="s2" collapse="before"/>
-        <borderlayout vflex="true" width="100%">
-            <north title="Permissions" flex="true" splittable="true" height="330px" border="none">
-                <Permissions id="existingPermissions"/>
+        <borderlayout vflex="1" width="100%">
+            <center hflex="1" vflex="1" border="none">
+                <AccessControl vflex="1" hflex="1" id="accessControl" currentUser="${arg.currentUser}" selectedItem="${arg.selectedItem}" autoInherit="${arg.autoInherit}" />
+            </center>
+            <!--
+            <north title="Permissions" splittable="true" hflex="1" vflex="1" border="none">
+                <AccessControl vflex="1" hflex="1" id="accessControl" currentUser="${arg.currentUser}" selectedItem="${arg.selectedItem}" autoInherit="${arg.autoInherit}" />
             </north>
             <center title="Users &amp; Groups" flex="true" border="none">
                 <Groups id="findGroups" vflex="true"/>
             </center>
+            -->
         </borderlayout>
     </hbox>
 </window>
