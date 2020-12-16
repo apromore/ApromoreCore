@@ -21,13 +21,16 @@
  */
 package org.apromore.rest.manager;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
@@ -111,35 +114,48 @@ public final class ArtifactResource extends AbstractResource {
     /**
      * Logs may only be created, not modified.
      *
+     * A content type is mandatory.  The supported MIME types are <code>application/xml</code> for XES
+     * documents, <code>test/csv</code> for comma-separated values, and <code>application/x-parquet</code>
+     * for Apache Parquet files.
+     *
+     * XES documents are the most straightforward to POST, requiring only the HTTP Basic authentication
+     * and the content type to be specified.
+     *
      * <pre>curl http://localhost:9000/rest/Home/foo \
      *     -u admin:password \
      *     --header "Content-Type: application/xml" \
      *     --data @foo.xes</pre>
      *
-     * For CSV and parquet, additional log metadata must be passed in the Apromore-Log-Metadata header
-     * in JSON format.
+     * For CSV and parquet, additional <code>Apromore-Log-*</code> HTTP headers must be present for every
+     * attribute in the POSTed document, specifying its type.
+     * Timestamp attributes must be passed as a colon-delimited value with the data format to the right of
+     * the colon.
      *
      * <pre>curl http://localhost:9000/rest/Home/bar \
      *     -u admin:password \
-     *     --header "Apromore-Log-Metadata: `tr '\n' ' ' &lt; bar.json`" \
+     *     --header "Apromore-Log-Case-ID: Service ID" \
+     *     --header "Apromore-Log-Activity: Operation" \
+     *     --header "Apromore-Log-End-Timestamp: End Date;dd MM yy HH mm" \
+     *     --header "Apromore-Log-Start-Timestamp: Start Date;dd MM yy HH mm" \
+     *     --header "Apromore-Log-Resource: Agent" \
+     *     --header "Apromore-Log-Event-Attribute: Agent Position" \
+     *     --header "Apromore-Log-Case-Attribute: Customer ID" \
+     *     --header "Apromore-Log-Case-Attribute: Product" \
+     *     --header "Apromore-Log-Case-Attribute: Service Type" \
+     *     --header "Apromore-Log-Time-Zone: GMT+10:00" \
      *     --header "Content-Type: text/csv" \
-     *     --data @bar.csv</pre>
+     *     --data-binary @bar.csv</pre>
      *
-     * <pre>curl http://localhost:9000/rest/Home/baz \
-     *     -u admin:password \
-     *     --header "Apromore-Log-Metadata: `tr '\n' ' ' &lt; baz.json`" \
-     *     --header "Content-Type: application/x-parquet" \
-     *     --data @baz.parquet</pre>
-     *
-     * @param body  the log to upload in uncompressed XES XML format
+     * @param path  the folder in which to create the log
+     * @param name  the name of the created log
+     * @param body  the content of the log in the expected content type
      * @return the actual event log created, including the generated id
      * @throws ResourceException if <var>logSummary</var> isn't suitable
      */
     @POST
     @Path("{path:(.*/)*}{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public LogSummaryType postLog(final @HeaderParam("Apromore-Log-Metadata") String logMetaDataHeader,
-                                  final @PathParam("path") String path,
+    public LogSummaryType postLog(final @PathParam("path") String path,
                                   final @PathParam("name") String name,
                                   final InputStream body) throws Exception {
 
@@ -149,8 +165,6 @@ public final class ArtifactResource extends AbstractResource {
 
         // Try to access the folder using the given credentials
         int folderId = findFolderIdByPath(path, user.getId(), osgiService(WorkspaceService.class));
-
-        LOGGER.info("Media type " + httpHeaders.getMediaType());
 
         // Import the event log
         Log log;
@@ -166,10 +180,10 @@ public final class ArtifactResource extends AbstractResource {
                 true); // publicModel
 
         } else if (httpHeaders.getMediaType().isCompatible(new MediaType("text", "csv"))) {
-            log = logWithMetadata("csv", body, logMetaDataHeader, user, name, folderId);
+            log = logWithMetadata("csv", body, user, name, folderId);
 
         } else if (httpHeaders.getMediaType().isCompatible(new MediaType("application", "x-parquet"))) {
-            log = logWithMetadata("parquet", body, logMetaDataHeader, user, name, folderId);
+            log = logWithMetadata("parquet", body, user, name, folderId);
 
         } else {
             throw new ResourceException(Response.Status.UNSUPPORTED_MEDIA_TYPE,
@@ -181,24 +195,77 @@ public final class ArtifactResource extends AbstractResource {
         return (LogSummaryType) osgiService(UserInterfaceHelper.class).buildLogSummary(log);
     }
 
-    private Log logWithMetadata(final String mediaFormat, final InputStream body, final String logMetaDataHeader,
+    @SuppressWarnings("checkstyle:MagicNumber")
+    private Log logWithMetadata(final String mediaFormat, final InputStream body,
                                 final UserType user, final String name, final int folderId) throws Exception {
 
-        if (logMetaDataHeader == null) {
-            throw new ResourceException(Response.Status.BAD_REQUEST,
-                "Requests with content type " + mediaFormat +
-                " require an Apromore-Log-Metadata header containing log metadata in JSON format.");
-        }
+        InputStream inputStream = body.markSupported() ? body : new BufferedInputStream(body);
+        assert inputStream.markSupported();
 
+        // Workaround because MetaDataService.extractMetaData will otherwise close inputStream, making
+        // it unusable the second time for LogReader.importLog
+        final int headerBufferLength = 1024;
+        inputStream.mark(headerBufferLength);  // 1K buffer to read the header
+        byte[] line = new byte[headerBufferLength];
+        inputStream.read(line);
+        inputStream.reset();  // put the header back into the stream
+        InputStream headerInputStream = new ByteArrayInputStream(line);
+
+        // Read the header
         LogMetaData logMetaData = osgiService(ParquetFactoryProvider.class)
             .getParquetFactory(mediaFormat)
             .getMetaDataService()
-            .extractMetadata(new StringBufferInputStream(logMetaDataHeader), "UTF-8");
+            .extractMetadata(headerInputStream, "UTF-8");
+
+        // Populate log metadata
+        List<String> h = logMetaData.getHeader();
+        logMetaData.setCaseIdPos(h.indexOf(findAttribute("Apromore-Log-Case-ID")));
+        logMetaData.setActivityPos(h.indexOf(findAttribute("Apromore-Log-Activity")));
+
+        String endTimestampHeader = findAttribute("Apromore-Log-End-Timestamp");
+        if (endTimestampHeader != null) {
+            String[] fields = endTimestampHeader.split(";", 2);
+            logMetaData.setEndTimestampPos(h.indexOf(fields[0]));
+            logMetaData.setEndTimestampFormat(fields[1]);
+        }
+
+        String startTimestampHeader = findAttribute("Apromore-Log-Start-Timestamp");
+        if (startTimestampHeader != null) {
+            String[] fields = startTimestampHeader.split(";", 2);
+            logMetaData.setStartTimestampPos(h.indexOf(fields[0]));
+            logMetaData.setStartTimestampFormat(fields[1]);
+        }
+
+        HashMap<Integer, String> map = new HashMap<>();
+        for (String otherTimestampHeader: findAttributes("Apromore-Log-Other-Timestamp")) {
+            String[] fields = otherTimestampHeader.split(";", 2);
+            map.put(h.indexOf(fields[0]), fields[1]);
+        }
+        logMetaData.setOtherTimestamps(map);
+
+        logMetaData.setResourcePos(h.indexOf(findAttribute("Apromore-Log-Resource")));
+        logMetaData.setEventAttributesPos(findAttributes("Apromore-Log-Event-Attribute")
+            .stream().map(s -> h.indexOf(s)).collect(Collectors.toList()));
+        logMetaData.setCaseAttributesPos(findAttributes("Apromore-Log-Case-Attribute")
+            .stream().map(s -> h.indexOf(s)).collect(Collectors.toList()));
+        logMetaData.setIgnoredPos(findAttributes("Apromore-Log-Ignored")
+            .stream().map(s -> h.indexOf(s)).collect(Collectors.toList()));
+        logMetaData.setTimeZone(findAttribute("Apromore-Log-Time-Zone"));
 
         return osgiService(LogImporterProvider.class)
             .getLogReader(mediaFormat)
-            .importLog(body, logMetaData, "UTF-8", true, user.getUsername(), folderId, name)
+            .importLog(inputStream, logMetaData, "UTF-8", true, user.getUsername(), folderId, name)
             .getImportLog();
+    }
+
+    private String findAttribute(final String name) {
+        return httpHeaders.getRequestHeader(name).stream().findFirst().orElse(null);
+    }
+
+    private List<String> findAttributes(final String name) {
+        List<String> requestHeaders = httpHeaders.getRequestHeader(name);
+
+        return requestHeaders == null ? Collections.emptyList() : requestHeaders;
     }
 
     /**
