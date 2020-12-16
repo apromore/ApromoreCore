@@ -317,8 +317,10 @@ public abstract class BaseListboxController extends BaseController {
 				}
 			});
 			this.btnUserMgmt.setVisible(true);
+			this.btnSecurity.setVisible(true);
 		} else {
 			this.btnUserMgmt.setVisible(false);
+			this.btnSecurity.setVisible(false);
 		}
 
 		this.btnShare.addEventListener("onClick", new EventListener<Event>() {
@@ -484,7 +486,7 @@ public abstract class BaseListboxController extends BaseController {
 					renameFolder();
 				}
 			} else {
-				Notification.error("Only owner/editor can rename");
+				Notification.error("Only users with role Owner or Editor can share");
 				return;
 			}
 
@@ -529,10 +531,11 @@ public abstract class BaseListboxController extends BaseController {
 				Map arg = new HashMap<>();
 				arg.put("selectedItem", selectedItem);
 				arg.put("currentUser", UserSessionManager.getCurrentUser());
-				Window window = (Window) Executions.getCurrent().createComponents("macros/share.zul", null, arg);
+				arg.put("autoInherit", true);
+				Window window = (Window) Executions.getCurrent().createComponents("components/access/share.zul", null, arg);
 				window.doModal();
 			} else {
-				Notification.error("Only owner can share");
+				Notification.error("Only users with role Owner can share");
 				return;
 			}
 			;
@@ -791,9 +794,15 @@ public abstract class BaseListboxController extends BaseController {
 
 	/* Setup the Security controller. */
 	protected void security() throws InterruptedException {
+		Object selectedItem;
 		getMainController().eraseMessage();
 		try {
-			new SecuritySetupController(getMainController());
+			if (getSelectionCount() == 0 || getSelectionCount() > 1) {
+				selectedItem = null;
+			} else {
+				selectedItem = getSelection().iterator().next();
+			}
+			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem);
 		} catch (DialogException e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}

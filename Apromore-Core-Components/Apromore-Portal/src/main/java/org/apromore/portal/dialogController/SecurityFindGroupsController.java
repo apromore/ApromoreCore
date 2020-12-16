@@ -115,10 +115,11 @@ public class SecurityFindGroupsController extends BaseController {
                                     break;
                                 }
                                 if (message.isEmpty()) {
-                                    securitySetupController.getPermissionsController().loadUsers(
-                                            UserSessionManager.getCurrentSecurityItem(),
-                                            UserSessionManager.getCurrentSecurityType());
-                                    processedItems.add(item);
+                                    // TO DO
+//                                    securitySetupController.getPermissionsController().loadUsers(
+//                                            UserSessionManager.getCurrentSecurityItem(),
+//                                            UserSessionManager.getCurrentSecurityType());
+//                                    processedItems.add(item);
                                 } else {
                                     Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
                                 }
