@@ -24,43 +24,19 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Objects;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ValidationException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Cookie;
-
 import org.apromore.dao.model.Group;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
+import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.model.ExportFormatResultType;
-import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.ImportProcessResultType;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SummariesType;
-import org.apromore.portal.model.SummaryType;
-import org.apromore.portal.model.UserType;
-import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.model.*;
 import org.apromore.util.AccessType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -68,14 +44,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listhead;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Paging;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
+import java.util.*;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -536,21 +510,18 @@ public abstract class BaseListboxController extends BaseController {
 				window.doModal();
 			} else {
 				Notification.error("Only users with role Owner can share");
-				return;
 			}
-			;
 		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
 	private boolean isShareable(Object selectedItem) {
-		Map<Group, AccessType> groupAccessMap = new HashMap<Group, AccessType>();
+		Map<Group, AccessType> groupAccessMap;
 
 		groupAccessMap = getGroupAccessFromSummaryType((SummaryType) selectedItem);
 		Group userAsGroup = getSecurityService().getGroupByName(UserSessionManager.getCurrentUser().getUsername());
-		boolean canShare = AccessType.OWNER.equals(groupAccessMap.get(userAsGroup));
-		return canShare;
+		return AccessType.OWNER.equals(groupAccessMap.get(userAsGroup));
 	}
 
 	private Map<Group, AccessType> getGroupAccessFromSummaryType(SummaryType summaryType) {
@@ -570,7 +541,6 @@ public abstract class BaseListboxController extends BaseController {
 	private void validateNotFolderTypeItem(Object selectedItem) {
 		if (selectedItem instanceof FolderType) {
 			Notification.error("You can only share a log or model");
-			return;
 		}
 	}
 
@@ -602,7 +572,7 @@ public abstract class BaseListboxController extends BaseController {
 	public void cut() {
 		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-		boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
+		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
 			canChange = canChange || isChangeable(currentFolder);
 		} catch (ValidationException e) {
@@ -625,7 +595,7 @@ public abstract class BaseListboxController extends BaseController {
 		// FolderType currentFolder = UserSessionManager.getCurrentFolder();
 		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-		boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
+		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
 			canChange = canChange || isChangeable(currentFolder);
 		} catch (ValidationException e) {
