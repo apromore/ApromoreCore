@@ -24,7 +24,11 @@ package org.apromore.rest.manager;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -180,10 +184,11 @@ public final class ArtifactResource extends AbstractResource {
                 true); // publicModel
 
         } else if (httpHeaders.getMediaType().isCompatible(new MediaType("text", "csv"))) {
-            log = logWithMetadata("csv", body, user, name, folderId);
+            final int bufferSize = 1024;  // maximum size of the header line of any potential CSV log
+            log = logWithMetadata("csv", splitInputStreamUsingMemory(body, bufferSize), user, name, folderId);
 
         } else if (httpHeaders.getMediaType().isCompatible(new MediaType("application", "x-parquet"))) {
-            log = logWithMetadata("parquet", body, user, name, folderId);
+            log = logWithMetadata("parquet", splitInputStreamUsingTempFile(body), user, name, folderId);
 
         } else {
             throw new ResourceException(Response.Status.UNSUPPORTED_MEDIA_TYPE,
@@ -195,27 +200,49 @@ public final class ArtifactResource extends AbstractResource {
         return (LogSummaryType) osgiService(UserInterfaceHelper.class).buildLogSummary(log);
     }
 
-    @SuppressWarnings("checkstyle:MagicNumber")
-    private Log logWithMetadata(final String mediaFormat, final InputStream body,
-                                final UserType user, final String name, final int folderId) throws Exception {
+    private static InputStream[] splitInputStreamUsingMemory(final InputStream inputStream,
+        final int headerBufferLength) throws Exception {
 
-        InputStream inputStream = body.markSupported() ? body : new BufferedInputStream(body);
-        assert inputStream.markSupported();
+        InputStream bodyInputStream = inputStream.markSupported() ? inputStream : new BufferedInputStream(inputStream);
+        assert bodyInputStream.markSupported();
 
-        // Workaround because MetaDataService.extractMetaData will otherwise close inputStream, making
-        // it unusable the second time for LogReader.importLog
-        final int headerBufferLength = 1024;
-        inputStream.mark(headerBufferLength);  // 1K buffer to read the header
+        bodyInputStream.mark(headerBufferLength);  // reserve enough of a buffer to fit the header
         byte[] line = new byte[headerBufferLength];
-        inputStream.read(line);
-        inputStream.reset();  // put the header back into the stream
+        bodyInputStream.read(line);
+        bodyInputStream.reset();  // put the header back into the stream
         InputStream headerInputStream = new ByteArrayInputStream(line);
+
+        return new InputStream[] {headerInputStream, bodyInputStream};
+    }
+
+    /**
+     * Workaround because {@link MetaDataService#extractMetaData} will otherwise close inputStream, making
+     * it unusable the second time for {@link LogReader#importLog}.
+     */
+    private static InputStream[] splitInputStreamUsingTempFile(final InputStream inputStream) throws Exception {
+        File tmpFile = File.createTempFile("apromore-rest-log-upload-", null);
+        Files.copy(inputStream, tmpFile.toPath(), REPLACE_EXISTING);
+        inputStream.close();
+
+        return new InputStream[] {new FileInputStream(tmpFile), new FileInputStream(tmpFile)};
+    }
+
+    /**
+     * @param mediaFormat  the extension for the required format, e.g. "csv", "xlsx", "parquet", etc.
+     * @param inputStreams  an array of two streams, the first of which will be used for the header and the
+     *     second will be used for the body
+     * @param user  the owner of the created log
+     @ @param name  the name of the created log
+     * @param folderId  the folder containing the created log
+     */
+    private Log logWithMetadata(final String mediaFormat, final InputStream[] inputStreams,
+                                final UserType user, final String name, final int folderId) throws Exception {
 
         // Read the header
         LogMetaData logMetaData = osgiService(ParquetFactoryProvider.class)
             .getParquetFactory(mediaFormat)
             .getMetaDataService()
-            .extractMetadata(headerInputStream, "UTF-8");
+            .extractMetadata(inputStreams[0], "UTF-8");
 
         // Populate log metadata
         List<String> h = logMetaData.getHeader();
@@ -254,7 +281,7 @@ public final class ArtifactResource extends AbstractResource {
 
         return osgiService(LogImporterProvider.class)
             .getLogReader(mediaFormat)
-            .importLog(inputStream, logMetaData, "UTF-8", true, user.getUsername(), folderId, name)
+            .importLog(inputStreams[1], logMetaData, "UTF-8", true, user.getUsername(), folderId, name)
             .getImportLog();
     }
 
