@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hlayout;
@@ -166,6 +167,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 try {
                     int selectedId = 0;
                     List<GroupAccessType> groups = Collections.emptyList();
+                    Object selectedItem = null;
 
                     ManagerService service = (ManagerService) SpringUtil.getBean("managerClient");
                     switch (clickedNodeValue.getType()) {
@@ -177,6 +179,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         } else {
                             groups = service.getFolderGroups(selectedId);
                         }
+                        selectedItem = selectedFolder;
                         break;
   
                     case Process:
@@ -184,6 +187,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         if(summaryType instanceof ProcessSummaryType) {
                             ProcessSummaryType process = (ProcessSummaryType) summaryType;
                             selectedId = process.getId();
+                            selectedItem = process;
                             groups = service.getProcessGroups(selectedId);
                         }
                         break;
@@ -193,6 +197,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         if(lsummaryType instanceof LogSummaryType) {
                             LogSummaryType log = (LogSummaryType) lsummaryType;
                             selectedId = log.getId();
+                            selectedItem = log;
                             groups = service.getLogGroups(selectedId);
                         }
                         break;
@@ -204,10 +209,12 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                     UserSessionManager.setCurrentSecurityOwnership(currentUserHasOwnership(groups));
                     UserSessionManager.setCurrentSecurityItem(selectedId);
                     UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
-                    if (securitySetupController != null) {
-                        securitySetupController.getPermissionsController().loadUsers(selectedId, clickedNodeValue.getType());
-                        securitySetupController.getFindGroupsController().updateSelection();
-                    }
+                    EventQueues.lookup("accessControl", EventQueues.DESKTOP, true)
+                            .publish(new Event("onSelect", null, selectedItem));
+//                    if (securitySetupController != null) {
+//                        securitySetupController.getPermissionsController().loadUsers(selectedId, clickedNodeValue.getType());
+//                        securitySetupController.getFindGroupsController().updateSelection();
+//                    }
                 } catch (Exception ex) {
                     LOGGER.error("SecurityFolderTree Renderer failed to render an item", ex);
                 }

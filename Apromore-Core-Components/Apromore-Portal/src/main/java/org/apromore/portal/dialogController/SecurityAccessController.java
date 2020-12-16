@@ -54,16 +54,16 @@ import org.zkoss.zul.Window;
  * Used to setup access groups for processes and folders.
  * NOTE: To be deprecated
  */
-public class SecurityPermissionsController extends BaseController {
+public class SecurityAccessController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPermissionsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityAccessController.class);
 
-    private Listbox lstPermissions;
+    private Listbox accessListbox;
     private SecuritySetupController securitySetupController;
 
-    public SecurityPermissionsController(SecuritySetupController securitySetupController, Window win) throws DialogException {
+    public SecurityAccessController(SecuritySetupController securitySetupController, Window win) throws DialogException {
         this.securitySetupController = securitySetupController;
-        this.lstPermissions = (Listbox)win.getFellow("existingPermissions").getFellow("lstPermissions");
+        this.accessListbox = (Listbox)win.getFellow("accessControl").getFellow("accessListbox");
     }
 
     @SuppressWarnings("unchecked")
@@ -89,8 +89,8 @@ public class SecurityPermissionsController extends BaseController {
             groups = Collections.emptyList();
         }
 
-        lstPermissions.getItems().clear();
-        lstPermissions.setPageSize(6);
+        accessListbox.getItems().clear();
+        accessListbox.setPageSize(6);
         UserSessionManager.setCurrentSecurityItem(id);
         UserSessionManager.setCurrentSecurityType(type);
         boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
@@ -190,7 +190,7 @@ public class SecurityPermissionsController extends BaseController {
             cellCommand.appendChild(btnRemove);
             newItem.appendChild(cellCommand);
 
-            lstPermissions.getItems().add(newItem);
+            accessListbox.getItems().add(newItem);
         }
     }
 }
