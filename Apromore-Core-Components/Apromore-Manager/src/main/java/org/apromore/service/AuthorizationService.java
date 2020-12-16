@@ -127,12 +127,30 @@ public interface AuthorizationService {
     Map<Group, AccessType> getProcessAccessType(Integer processId);
 
     /**
+     * Get the least restrictive AccessType the specified user has on the specified process
+     *
+     * @param processId Process Id
+     * @param user      user
+     * @return AccessType
+     */
+    AccessType getProcessAccessTypeByUser(Integer processId, User user);
+
+    /**
      * Get list of Group and AccessType pair of Folder
      *
      * @param folderId Folder ID
      * @return list of Group and AccessType pair
      */
     Map<Group, AccessType> getFolderAccessType(Integer folderId);
+
+    /**
+     * Get the least restrictive AccessType the specified user has on the specified folder
+     *
+     * @param folderId Folder Id
+     * @param user     user
+     * @return AccessType
+     */
+    AccessType getFolderAccessTypeByUser(Integer folderId, User user);
 
     /**
      * Get list of Group and AccessType pair of User metadata

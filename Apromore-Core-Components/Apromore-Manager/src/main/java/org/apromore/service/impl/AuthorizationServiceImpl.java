@@ -170,6 +170,22 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    public AccessType getProcessAccessTypeByUser(Integer processId, User user) {
+
+        Map<Group, AccessType> accessTypeMap = getProcessAccessType(processId);
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Group g : user.getGroups()) {
+            if (accessTypeMap.containsKey(g)) {
+                accessTypes.add(accessTypeMap.get(g));
+            }
+        }
+
+        return getLeastRestrictiveAccessType(accessTypes);
+    }
+
+    @Override
     public Map<Group, AccessType> getFolderAccessType(Integer processId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
@@ -180,6 +196,22 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         return groupAccessTypeMap;
+    }
+
+    @Override
+    public AccessType getFolderAccessTypeByUser(Integer folderId, User user) {
+
+        Map<Group, AccessType> accessTypeMap = getFolderAccessType(folderId);
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Group g : user.getGroups()) {
+            if (accessTypeMap.containsKey(g)) {
+                accessTypes.add(accessTypeMap.get(g));
+            }
+        }
+
+        return getLeastRestrictiveAccessType(accessTypes);
     }
 
     @Override
