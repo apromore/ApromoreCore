@@ -42,7 +42,7 @@ public interface AuthorizationService {
     Map<Group, AccessType> getLogAccessType(Integer logId);
 
     /**
-     * Get list of Group and AccessType pairs associated with specified log and user
+     * Get the least restrictive AccessType the specified user has on the specified log
      *
      * How to identify a user’s access type to a Log?
      *
@@ -59,6 +59,15 @@ public interface AuthorizationService {
      * User U is an OWNER of the log L, if and only if one of the following conditions holds:
      * 1. U is an owner of L
      * 2. U belongs to a group that is an owner of L
+     *
+     * @param logId    Log Id
+     * @param user     User
+     * @return AccessType
+     */
+    AccessType getLogAccessTypeByUser(Integer logId, User user);
+
+    /**
+     * Get the least restrictive AccessType the specified user has on the specified multi-log
      *
      * How to identify a user’s access type to multi-log?
      *
@@ -77,14 +86,36 @@ public interface AuthorizationService {
      * 1. U is an owner of Li
      * 2. U belongs to a group that is an owner of Li
      *
-     * @param logId    Log Id
+     * @param logSet   Set of Log
      * @param user     User
-     * @return list of Group and AccessType pair
+     * @return AccessType
      */
-    AccessType getLogAccessTypeByUser(Integer logId, User user) throws UserNotFoundException;
+    AccessType getLogsAccessTypeByUser(Set<Log> logSet, User user);
 
-    AccessType getLogsAccessTypeByUser(Set<Log> logSet, User user) throws UserNotFoundException;
-
+    /**
+     * Get the least restrictive AccessType the specified user has on the specified multi-log
+     *
+     * How to identify a user’s access type to multi-log?
+     *
+     * User U is a VIEWER of the multi-log {L1, …, Ln}, if and only if the following condition holds for EACH log Li
+     * in {L1, …, Ln}:
+     * 1. U is a full viewer of Li
+     * 2. U belongs to a group that is a full viewer of Li
+     *
+     * User U is an EDITOR of the multi-log {L1, …, Ln}, if and only if the following condition holds for EACH log Li
+     * in {L1, …, Ln}:
+     * 1. U is an owner or an editor of Li
+     * 2. U belongs to a group that is an owner or editor of Li
+     *
+     * User U is an OWNER of the multi-log {L1, …, Ln}, if and only if the following condition holds for EACH log Li
+     * in {L1, …, Ln}:
+     * 1. U is an owner of Li
+     * 2. U belongs to a group that is an owner of Li
+     *
+     * @param logIds   List of Log Id
+     * @param user     User
+     * @return AccessType
+     */
     AccessType getLogsAccessTypeByUser(List<Integer> logIds, User user);
 
     /**
