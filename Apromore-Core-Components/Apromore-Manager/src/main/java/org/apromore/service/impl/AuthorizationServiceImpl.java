@@ -29,8 +29,6 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -42,8 +40,6 @@ import java.util.*;
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class AuthorizationServiceImpl implements AuthorizationService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
 
     private WorkspaceService workspaceService;
     private GroupUsermetadataRepository groupUsermetadataRepository;
