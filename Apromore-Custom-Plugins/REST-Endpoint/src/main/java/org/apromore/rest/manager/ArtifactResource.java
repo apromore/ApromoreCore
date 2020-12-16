@@ -302,7 +302,9 @@ public final class ArtifactResource extends AbstractResource {
     }
 
     private String findAttribute(final String name) {
-        return httpHeaders.getRequestHeader(name).stream().findFirst().orElse(null);
+        List<String> values = httpHeaders.getRequestHeader(name);
+        
+        return values == null ? null : values.stream().findFirst().orElse(null);
     }
 
     private List<String> findAttributes(final String name) {
