@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -72,8 +74,8 @@ public final class ArtifactResource extends AbstractResource {
     /** Logger.  Named after the class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactResource.class);
 
-    /** Used to check the media type of uploaded logs (CSV, Excel, Parquet, XES) */
-    @Context private HttpHeaders httpHeaders;
+    @Context
+    private HttpHeaders httpHeaders;
 
     /**
      * Download a log.
@@ -132,15 +134,15 @@ public final class ArtifactResource extends AbstractResource {
      *
      * For CSV and parquet, additional <code>Apromore-Log-*</code> HTTP headers must be present for every
      * attribute in the POSTed document, specifying its type.
-     * Timestamp attributes must be passed as a colon-delimited value with the data format to the right of
-     * the colon.
+     * Timestamp attributes Apromore-Log-Start-Timestamp, Apromore-Log-End-Timestamp, and
+     * Apromore-Log-Other-Timestamp must include a format parameter.
      *
      * <pre>curl http://localhost:9000/rest/Home/bar \
      *     -u admin:password \
      *     --header "Apromore-Log-Case-ID: Service ID" \
      *     --header "Apromore-Log-Activity: Operation" \
-     *     --header "Apromore-Log-End-Timestamp: End Date;dd MM yy HH mm" \
-     *     --header "Apromore-Log-Start-Timestamp: Start Date;dd MM yy HH mm" \
+     *     --header "Apromore-Log-End-Timestamp: End Date; format=\"dd MM yy HH mm\"" \
+     *     --header "Apromore-Log-Start-Timestamp: Start Date; format=\"dd MM yy HH mm\"" \
      *     --header "Apromore-Log-Resource: Agent" \
      *     --header "Apromore-Log-Event-Attribute: Agent Position" \
      *     --header "Apromore-Log-Case-Attribute: Customer ID" \
@@ -249,24 +251,38 @@ public final class ArtifactResource extends AbstractResource {
         logMetaData.setCaseIdPos(h.indexOf(findAttribute("Apromore-Log-Case-ID")));
         logMetaData.setActivityPos(h.indexOf(findAttribute("Apromore-Log-Activity")));
 
+        final Pattern pattern = Pattern.compile("(?<name>[^;]*);\\s*format\\s*=\\s*\"(?<format>[^\"]*)\"\\s*");
+
         String endTimestampHeader = findAttribute("Apromore-Log-End-Timestamp");
         if (endTimestampHeader != null) {
-            String[] fields = endTimestampHeader.split(";", 2);
-            logMetaData.setEndTimestampPos(h.indexOf(fields[0]));
-            logMetaData.setEndTimestampFormat(fields[1]);
+            Matcher matcher = pattern.matcher(endTimestampHeader);
+            if (!matcher.matches()) {
+                throw new ResourceException(Response.Status.BAD_REQUEST,
+                    "Malformed Apromore-Log-End-Timestamp header");
+            }
+            logMetaData.setEndTimestampPos(h.indexOf(matcher.group("name")));
+            logMetaData.setEndTimestampFormat(matcher.group("format"));
         }
 
         String startTimestampHeader = findAttribute("Apromore-Log-Start-Timestamp");
         if (startTimestampHeader != null) {
-            String[] fields = startTimestampHeader.split(";", 2);
-            logMetaData.setStartTimestampPos(h.indexOf(fields[0]));
-            logMetaData.setStartTimestampFormat(fields[1]);
+            Matcher matcher = pattern.matcher(startTimestampHeader);
+            if (!matcher.matches()) {
+                throw new ResourceException(Response.Status.BAD_REQUEST,
+                    "Malformed Apromore-Log-Start-Timestamp header");
+            }
+            logMetaData.setStartTimestampPos(h.indexOf(matcher.group("name")));
+            logMetaData.setStartTimestampFormat(matcher.group("format"));
         }
 
         HashMap<Integer, String> map = new HashMap<>();
         for (String otherTimestampHeader: findAttributes("Apromore-Log-Other-Timestamp")) {
-            String[] fields = otherTimestampHeader.split(";", 2);
-            map.put(h.indexOf(fields[0]), fields[1]);
+            Matcher matcher = pattern.matcher(otherTimestampHeader);
+            if (!matcher.matches()) {
+                throw new ResourceException(Response.Status.BAD_REQUEST,
+                    "Malformed Apromore-Log-Other-Timestamp header");
+            }
+            map.put(h.indexOf(matcher.group("name")), matcher.group("format"));
         }
         logMetaData.setOtherTimestamps(map);
 
