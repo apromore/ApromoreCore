@@ -24,9 +24,10 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.dao.model.Group;
+import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.access.Helpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.PluginPortalContext;
@@ -36,7 +37,6 @@ import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteControl
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.*;
-import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -89,6 +89,8 @@ public abstract class BaseListboxController extends BaseController {
 	private final Button btnShare;
 	private final Button btnCalendar;
 
+	private User currentUser;
+
 	private PortalContext portalContext;
 	private Map<String, PortalPlugin> portalPluginMap;
 	private ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
@@ -140,6 +142,11 @@ public abstract class BaseListboxController extends BaseController {
 		}
 
 		portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+		try {
+			currentUser = getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId());
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+		}
 	}
 
 	public void setPersistedView(String view) {
@@ -446,8 +453,8 @@ public abstract class BaseListboxController extends BaseController {
 
 			boolean canChange = false;
 			try {
-				canChange = isChangeable(selectedItem);
-			} catch (ValidationException e) {
+				canChange = Helpers.isChangeable(selectedItem, currentUser);
+			} catch (Exception e) {
 				Notification.error(e.getMessage());
 				return;
 			}
@@ -460,24 +467,12 @@ public abstract class BaseListboxController extends BaseController {
 					renameFolder();
 				}
 			} else {
-				Notification.error("Only users with role Owner or Editor can share");
-				return;
-			}
+				Notification.error("Only users with role Owner or Editor can rename");
+            }
 
 		} catch (DialogException e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
-	}
-
-	private boolean isChangeable(Object selectedItem) {
-		Map<Group, AccessType> groupAccessMap = new HashMap<Group, AccessType>();
-		groupAccessMap = selectedItem.getClass().equals(FolderType.class)
-				? getAuthorizationService().getFolderAccessType(((FolderType) selectedItem).getId())
-				: getGroupAccessFromSummaryType((SummaryType) selectedItem);
-		Group userAsGroup = getSecurityService().getGroupByName(UserSessionManager.getCurrentUser().getUsername());
-		boolean canEdit = AccessType.OWNER.equals(groupAccessMap.get(userAsGroup))
-				|| AccessType.EDITOR.equals(groupAccessMap.get(userAsGroup));
-		return canEdit;
 	}
 
 	/**
@@ -496,7 +491,7 @@ public abstract class BaseListboxController extends BaseController {
 			validateNotFolderTypeItem(selectedItem);
 			boolean canShare = false;
 			try {
-				canShare = isShareable(selectedItem);
+				canShare = Helpers.isShareable(selectedItem, currentUser);
 			} catch (ValidationException e) {
 				Notification.error(e.getMessage());
 				return;
@@ -509,39 +504,19 @@ public abstract class BaseListboxController extends BaseController {
 				Window window = (Window) Executions.getCurrent().createComponents("components/access/share.zul", null, arg);
 				window.doModal();
 			} else {
-				Notification.error("Only users with role Owner can share");
+				Notification.error("Only users with access rights Owner can share");
+				return;
 			}
+			;
 		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
-	private boolean isShareable(Object selectedItem) {
-		Map<Group, AccessType> groupAccessMap;
-
-		groupAccessMap = getGroupAccessFromSummaryType((SummaryType) selectedItem);
-		Group userAsGroup = getSecurityService().getGroupByName(UserSessionManager.getCurrentUser().getUsername());
-		return AccessType.OWNER.equals(groupAccessMap.get(userAsGroup));
-	}
-
-	private Map<Group, AccessType> getGroupAccessFromSummaryType(SummaryType summaryType) {
-
-		Map<Group, AccessType> groupAccessMap;
-		Integer selectedItemId = summaryType.getId();
-		if (summaryType instanceof ProcessSummaryType) {
-			groupAccessMap = getAuthorizationService().getProcessAccessType(selectedItemId);
-		} else if (summaryType instanceof LogSummaryType) {
-			groupAccessMap = getAuthorizationService().getLogAccessType(selectedItemId);
-		} else {
-			throw new ValidationException("Invalid Resource type");
-		}
-		return groupAccessMap;
-	}
-
 	private void validateNotFolderTypeItem(Object selectedItem) {
 		if (selectedItem instanceof FolderType) {
 			Notification.error("You can only share a log or model");
-		}
+        }
 	}
 
 	protected void removeFolder() throws Exception {
@@ -574,8 +549,8 @@ public abstract class BaseListboxController extends BaseController {
 
 		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-			canChange = canChange || isChangeable(currentFolder);
-		} catch (ValidationException e) {
+			canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
+		} catch (Exception e) {
 			Notification.error(e.getMessage());
 			return;
 		}
@@ -597,8 +572,8 @@ public abstract class BaseListboxController extends BaseController {
 
 		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-			canChange = canChange || isChangeable(currentFolder);
-		} catch (ValidationException e) {
+			canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
+		} catch (Exception e) {
 			Notification.error(e.getMessage());
 			return;
 		}
