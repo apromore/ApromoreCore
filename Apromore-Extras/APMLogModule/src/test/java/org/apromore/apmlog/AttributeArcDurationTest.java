@@ -262,7 +262,7 @@ public class AttributeArcDurationTest {
         pLog.updateStats();
         DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A");
         DoubleArrayList durList = subGraph.getValDurListMap().get("A");
-        double avg = getAverage(durList);
+        double avg = durList.average();
         double twoHours = 1000 * 60 * 60 * 2d;
         if (avg != twoHours) {
             throw new AssertionError("TEST FAILED. RESULT MISMATCH.\n expected value=" + twoHours +
@@ -270,24 +270,5 @@ public class AttributeArcDurationTest {
         } else {
             parent.printString("'Attribute arc duration (4) - Average duration' test PASS.\n");
         }
-    }
-
-    public static double getAverage(DoubleArrayList doubleList) {
-        if (doubleList.size() > 0) {
-            double sum = getTotal(doubleList);
-            return doubleList.size() > 1 ? sum / doubleList.size() : sum;
-        }
-        return 0;
-    }
-
-    public static double getTotal(DoubleArrayList doubleList) {
-        if (doubleList.size() > 0) {
-            double sum = 0;
-            for (int i = 0; i < doubleList.size(); i++) {
-                sum += doubleList.get(i);
-            }
-            return sum;
-        }
-        return 0;
     }
 }
