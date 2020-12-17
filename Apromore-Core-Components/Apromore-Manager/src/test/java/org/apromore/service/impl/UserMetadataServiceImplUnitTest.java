@@ -180,7 +180,7 @@ public class UserMetadataServiceImplUnitTest {
 
 //	When
         Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLogs(Arrays.asList(log1.getId(),
-				log2.getId()),
+                log2.getId()),
                 UserMetadataTypeEnum.FILTER);
 //	Then
         assertThat(usermetadataSet).containsAll(usermetadataSetExpect);
@@ -333,7 +333,7 @@ public class UserMetadataServiceImplUnitTest {
 
         //	When
         Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataWithoutLog(UserMetadataTypeEnum.FILTER
-				, user.getUsername());
+                , user.getUsername());
 
         //	Then
         assertThat(usermetadataSet).containsAll(usermetadataSetExpect);
@@ -459,7 +459,7 @@ public class UserMetadataServiceImplUnitTest {
     }
 
     @Test
-    public void getUserMetadataAccessType() {
+    public void testGetUserMetadataAccessType() {
 
         Group g1 = new Group(1);
         Group g2 = new Group(2);

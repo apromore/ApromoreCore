@@ -62,7 +62,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
-        for (GroupLog g : workspaceService.getGroupLogs(logId)) {
+        List<GroupLog> groupLogs = workspaceService.getGroupLogs(logId);
+
+        for (GroupLog g : groupLogs) {
             AccessRights accessRights = g.getAccessRights();
             groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
         }
@@ -113,7 +115,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return getLogsAccessTypeByUser(logSet, user);
     }
 
-    private AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {
+    public AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {
 
         if (accessTypes == null || accessTypes.size() == 0) {
             return AccessType.NONE;
@@ -128,7 +130,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         } else return AccessType.NONE;
     }
 
-    private AccessType getMostRestrictiveAccessType(List<AccessType> accessTypes) {
+    public AccessType getMostRestrictiveAccessType(List<AccessType> accessTypes) {
 
         if (accessTypes == null || accessTypes.size() == 0) {
             return AccessType.NONE;
@@ -265,10 +267,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
         // Explicitly share User metadata disabled in version 7.19
-
-//        if (!AccessType.NONE.equals(accessType)) {
-//            userMetadataService.saveUserMetadataAccessType(userMetadataId, groupRowGuid, accessType);
-//        }
     }
 
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
@@ -293,11 +291,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid) {
-//        userMetadataService.removeUserMetadataAccessRights(userMetadataId, groupRowGuid);
+        // Explicitly share User metadata disabled in version 7.19
     }
 
-    @Override
-    public boolean canShareLog(String username, Integer logId) {
-        return false;
-    }
 }

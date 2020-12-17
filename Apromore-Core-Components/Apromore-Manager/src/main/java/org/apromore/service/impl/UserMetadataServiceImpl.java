@@ -529,14 +529,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         } else return AccessType.NONE;
     }
 
-    @Override
-    public boolean canUserCreateMetadata(String username, List<Integer> logIds) throws UserNotFoundException {
-
-
-
-        return false;
-    }
-
     private AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group) {
 
         AccessType at;

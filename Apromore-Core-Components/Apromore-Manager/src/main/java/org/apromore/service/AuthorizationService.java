@@ -233,5 +233,4 @@ public interface AuthorizationService {
      */
     void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid);
 
-    boolean canShareLog(String username, Integer logId);
 }

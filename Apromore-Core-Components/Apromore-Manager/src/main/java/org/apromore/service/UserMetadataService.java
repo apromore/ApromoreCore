@@ -223,8 +223,6 @@ public interface UserMetadataService {
      */
     boolean canUserCreateMetadata(String username, Integer logId) throws UserNotFoundException;
 
-    boolean canUserCreateMetadata(String username, List<Integer> logIds) throws UserNotFoundException;
-
     /**
      * Find AccessType given a Group and Usermetadata
      * @param group Group
