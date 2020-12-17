@@ -20,16 +20,16 @@
   #L%
   -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<window
+<div
     xmlns:ca="client/attribute"
     sclass="ap-share-win"
-    width="700px" height="80%" position="center"
-    closable="true"
-    title="File sharing" apply="org.apromore.portal.dialogController.ShareController">
+    id="accessContainer"
+    vflex="1" hflex="1"
+    apply="org.apromore.portal.access.controllers.AccessController">
     <script type="text/javascript" src="/themes/ap/share/js/index.js"/>
     <style src="/themes/ap/share/css/index.css"/>
 
-    <vbox height="100%" hflex="1" spacing="0">
+    <vbox vflex="1" hflex="1" spacing="0">
         <button id="editBtn" visible="false"/>
         <div style="padding: 8px;margin-bottom: 3px;" vflex="min">
             <div sclass="ap-share-detail">
@@ -39,7 +39,7 @@
                 <span id="selectedIconMetadata" sclass="ap-icon ap-icon-metadata"/>
                 <label id="selectedName">Resource name</label>
             </div>
-            <div id="relatedDepsWrapper" sclass="ap-share-related-deps" visible="true">
+            <div id="relatedDepsWrapper" sclass="ap-share-related-deps" visible="false">
                 <div sclass="note">
                     The following files will also be automatically shared to the assigned users with the same permission
                     level.
@@ -137,4 +137,4 @@
             <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"/>
         </div>
     </vbox>
-</window>
+</div>

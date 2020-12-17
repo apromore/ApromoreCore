@@ -33,16 +33,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -77,6 +68,7 @@ public class Log implements Serializable {
     private Set<GroupLog> groupLogs = new HashSet<>();
     private Set<UsermetadataLog> usermetadataLogs = new HashSet<>();
 //    private List<ProcessBranch> processBranches = new ArrayList<>();
+    private Set<Usermetadata> usermetadataSet = new HashSet<>();
 
 
     /**
@@ -177,13 +169,22 @@ public class Log implements Serializable {
         this.groupLogs = newGroupLogs;
     }
 
-    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<UsermetadataLog> getUsermetadataLogs() {
-        return this.usermetadataLogs;
+    /**
+     * @return all the logs this user metadata is linked to
+     */
+    @ManyToMany
+    @JoinTable(name = "usermetadata_log",
+            joinColumns = @JoinColumn(name = "log_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "usermetadata_id", referencedColumnName = "id"))
+    public Set<Usermetadata> getUsermetadataSet() {
+        return usermetadataSet;
     }
 
-    public void setUsermetadataLogs(Set<UsermetadataLog> newUsermetadataLogs) {
-        this.usermetadataLogs = newUsermetadataLogs;
+    /**
+     * @param newUsermetadataSet all the user metadata which are created on top of this
+     */
+    public void setUsermetadataSet(final Set<Usermetadata> newUsermetadataSet) {
+        this.usermetadataSet = newUsermetadataSet;
     }
     
     @Override

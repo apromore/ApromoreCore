@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.portal.dialogController;
+package org.apromore.portal.access.controllers;
 
 import com.google.common.base.Strings;
 import org.apromore.dao.model.Group;
@@ -29,9 +29,10 @@ import org.apromore.dao.model.UsermetadataType;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.common.access.Artifact;
-import org.apromore.portal.common.access.Assignee;
-import org.apromore.portal.common.access.Assignment;
+import org.apromore.portal.access.Artifact;
+import org.apromore.portal.access.Assignee;
+import org.apromore.portal.access.Assignment;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.model.*;
 import org.apromore.portal.types.EventQueueTypes;
@@ -50,7 +51,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
@@ -58,32 +61,29 @@ import java.util.*;
 
 /**
  * Controller for handling share interface
- * Corresponds to macros/share.zul
+ * Corresponds to components/access/access.zul
  */
-public class ShareController extends SelectorComposer<Window> {
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+public class AccessController extends SelectorComposer<Div> {
 
-    /**
-     * For searching assignee (user or group)
-     */
-    private Comparator assigneeComparator = new Comparator() {
-        @Override
-        public int compare(Object o1, Object o2) {
-            String input = (String) o1;
-            Assignee assignee = (Assignee) o2;
-            return assignee.getName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
-        }
-    };
+    private static Logger LOGGER = LoggerFactory.getLogger(AccessController.class);
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ShareController.class);
-
+    @WireVariable("managerService")
     private ManagerService managerService;
+
+    @WireVariable("securityService")
     private SecurityService securityService;
+
+    @WireVariable("authorizationService")
     private AuthorizationService authorizationService;
+
+    @WireVariable("userMetadataService")
     private UserMetadataService userMetadataService;
 
     Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
     private Object selectedItem = argMap.get("selectedItem");
     private UserType currentUser = (UserType) argMap.get("currentUser");
+    Boolean autoInherit = (Boolean) argMap.get("autoInherit");
     private String userName;
 
     private Integer selectedItemId;
@@ -138,46 +138,38 @@ public class ShareController extends SelectorComposer<Window> {
     @Wire("#editBtn")
     Button editBtn;
 
-//    @Wire("#shareUMCheckbox")
-//    Checkbox shareUMCheckbox;
-//
-//    @Wire("#shareUM")
-//    Listheader shareUM;
-
     @Wire("#umWarning")
     Div umWarning;
 
-    private Window mainWindow;
+    private Div container;
 
-    public ShareController() throws Exception {
-        // TO DO: Common constants
-        this.managerService = (ManagerService) SpringUtil.getBean("managerClient");
-        this.securityService = (SecurityService) SpringUtil.getBean("securityService");
-        this.authorizationService = (AuthorizationService) SpringUtil.getBean("authorizationService");
-        this.userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
+    public AccessController() throws Exception {
 
         selectedItem = Executions.getCurrent().getArg().get("selectedItem");
         currentUser = (UserType) Executions.getCurrent().getArg().get("currentUser");
+        autoInherit = (Boolean) Executions.getCurrent().getArg().get("autoInherit");
+        if (currentUser == null) {
+            currentUser = UserSessionManager.getCurrentUser();
+        }
         userName = currentUser.getUsername();
         selectedAssignment = null;
         groupArtifactsMap = new HashMap<String, ListModelList<Artifact>>();
     }
 
     @Override
-    public void doAfterCompose(Window win) throws Exception {
-        super.doAfterCompose(win);
-        mainWindow = win;
+    public void doAfterCompose(Div div) throws Exception {
+        super.doAfterCompose(div);
+        container = div;
 
-        if (isLogSelected()) {
-            win.setWidth("1000px");
-            artifactListbox.setVisible(true);
-        } else {
-            win.setWidth("500px");
+        if (autoInherit || !isLogSelected()) {
             artifactListbox.setVisible(false);
+        } else {
+            artifactListbox.setVisible(true);
         }
-        loadItem(selectedItem);
         loadCandidateAssignee();
-        loadRelatedDependencies();
+        if (selectedItem != null) {
+            setSelectedItem(selectedItem);
+        }
 
         assignmentListbox.addEventListener("onChange", new EventListener<Event>() {
             @Override
@@ -232,6 +224,23 @@ public class ShareController extends SelectorComposer<Window> {
                 }
             }
         });
+
+        EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).subscribe(
+            new EventListener() {
+                public void onEvent(Event evt) {
+                    if ("onSelect".equals(evt.getName())) {
+                        Object selItem = evt.getData();
+                        if (selItem != null) {
+                            setSelectedItem(selItem);
+                        }
+                    }
+                }
+            });
+    }
+
+    public void destroy() {
+        getSelf().detach();
+        EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).publish(new Event("onClose", null, null));
     }
 
     private boolean updateAssignment(String rowGuid, String access) {
@@ -271,6 +280,7 @@ public class ShareController extends SelectorComposer<Window> {
         Messagebox.show("You cannot remove the only owner for this file", "Apromore", Messagebox.OK, Messagebox.ERROR);
     }
 
+    @SuppressWarnings("unchecked")
     private void loadCandidateAssignee() {
         List<Group> groups = securityService.findAllGroups();
         List<Assignee> candidates = new ArrayList<Assignee>();
@@ -281,7 +291,14 @@ public class ShareController extends SelectorComposer<Window> {
         }
         candidateAssigneeModel = new ListModelList<>(candidates, false);
         candidateAssigneeModel.setMultiple(false);
-        candidateAssigneeCombobox.setModel(ListModels.toListSubModel(candidateAssigneeModel, assigneeComparator, 20));
+        candidateAssigneeCombobox.setModel(ListModels.toListSubModel(candidateAssigneeModel, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                String input = (String) o1;
+                Assignee assignee = (Assignee) o2;
+                return assignee.getName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
+            }
+        }, 20));
     }
 
     private void loadAssignments(Map<Group, AccessType> groupAccessTypeMap) {
@@ -306,7 +323,7 @@ public class ShareController extends SelectorComposer<Window> {
     }
 
     public boolean isLogSelected() {
-        return selectedItem instanceof LogSummaryType;
+        return selectedItem.getClass().equals(LogSummaryType.class);
     }
 
     public void updateArtifacts(String rowGuid) {
@@ -384,7 +401,7 @@ public class ShareController extends SelectorComposer<Window> {
                     }
                 }
             } else if (selectedItem instanceof UserMetadataSummaryType) {
-                authorizationService.saveUserMetadtarAccessType(selectedItemId, rowGuid, accessType);
+                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
             } else {
                 LOGGER.error("Unknown item type.");
             }
@@ -421,12 +438,17 @@ public class ShareController extends SelectorComposer<Window> {
         relatedDependencies.appendChild(new Label("Process Model: Dependent model"));
     }
 
-    public void loadItem(Object selectedItem) {
+    public void setSelectedItem(Object selectedItem) {
         Span selectedIcon;
         selectedIconFolder.setVisible(false);
         selectedIconLog.setVisible(false);
         selectedIconModel.setVisible(false);
         selectedIconMetadata.setVisible(false);
+
+        if (selectedItem == null) {
+            return;
+        }
+        this.selectedItem = selectedItem;
 
         if (selectedItem instanceof FolderType) {
             FolderType folder = (FolderType) selectedItem;
@@ -457,10 +479,10 @@ public class ShareController extends SelectorComposer<Window> {
         } else {
             return;
         }
+        loadRelatedDependencies();
         loadAssignments(groupAccessTypeMap);
         selectedIcon.setVisible(true);
         selectedName.setValue(selectedItemName);
-        // mainWindow.setTitle("Sharing: " + selectedItemName);
     }
 
     @Listen("onClick = #candidateAssigneeAdd")
@@ -504,7 +526,7 @@ public class ShareController extends SelectorComposer<Window> {
     @Listen("onClick = #btnApply")
     public void onClickBtnApply() {
         applyChanges();
-        getSelf().detach();
+        destroy();
         Notification.info("Sharing is susccessfully applied");
 
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
@@ -517,7 +539,7 @@ public class ShareController extends SelectorComposer<Window> {
 
     @Listen("onClick = #btnCancel")
     public void onClickBtnCancel() {
-        getSelf().detach();
+        destroy();
     }
 
 }

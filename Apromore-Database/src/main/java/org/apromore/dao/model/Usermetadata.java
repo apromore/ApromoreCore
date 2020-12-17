@@ -152,6 +152,7 @@ public class Usermetadata implements Serializable {
         this.usermetadataType = usermetadataType;
     }
 
+    
     /**
      * The user create this metadata
      */
@@ -282,32 +283,37 @@ public class Usermetadata implements Serializable {
         this.usermetadataProcessSet = newUsermetadataProcessSet;
     }
 
-    /**
-     * Test equality of another object
-     *
-     * @return true if equal
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if(!(obj instanceof Usermetadata)){
-            return false;
-        }
-        Usermetadata u = (Usermetadata) obj;
-
-        return (this.id.equals(u.id));
-    }
-
-    /**
-     * Override default hashCode
-     *
-     * @return hash code value
-     */
     @Override
     public int hashCode() {
-        if (id == null) {
-            return 0;
-        }
-        return id.hashCode();
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((createdTime == null) ? 0 : createdTime.hashCode());
+	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (getClass() != obj.getClass())
+	    return false;
+	Usermetadata other = (Usermetadata) obj;
+	if (createdTime == null) {
+	    if (other.createdTime != null)
+		return false;
+	} else if (!createdTime.equals(other.createdTime))
+	    return false;
+	if (name == null) {
+	    if (other.name != null)
+		return false;
+	} else if (!name.equals(other.name))
+	    return false;
+	return true;
+    }
+
+   
 
 }

@@ -22,12 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
-import java.util.ArrayList;
-
-import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.APMLogFilterPackage;
 import org.apromore.apmlog.filter.PLog;
-import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterContext;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterInputParams;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
@@ -83,14 +79,13 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         // This has been replaced with ZK Event Queue in onEvent().
     }
 
+    @Override
     public void clearFilter() throws Exception {
-        APMLog apmLog = logData.getOriginalAPMLog();
-        PLog pLog = new PLog(apmLog);
-        parent.getLogData().setCurrentFilterCriteria(new ArrayList<LogFilterRule>());
-        logData.updateLog(pLog, apmLog);
+        logData.clearFilter();
         parent.updateUI(true);
     }
 
+    @Override
     public void subscribeFilterResult() {
         // Process filtering result
         EventQueue<Event> filterEventQueue = EventQueues.lookup("apmlog_filter_package", EventQueues.DESKTOP, true);

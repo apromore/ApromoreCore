@@ -98,7 +98,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
         // Only works for CSV
         try {
-            if (getMediaFormat(media) == "csv") {
+            if ("csv".equals(getMediaFormat(media))) {
                 String username = portalContext.getCurrentUser().getUsername();
                 // Get header from imported CSV
                 List<String> header = new ArrayList<>();

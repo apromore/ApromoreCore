@@ -44,6 +44,7 @@ import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
@@ -56,6 +57,7 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.apromore.portal.common.LabelConstants;
 
 public class UserMenuController extends SelectorComposer<Menubar> {
 
@@ -72,6 +74,9 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
         } else {
             displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : lastName + ", " + firstName;
+        }
+        if (LabelConstants.TRUE.equals(Labels.getLabel(LabelConstants.IS_DISPLAYNAME_CAPITALIZED))) {
+            displayName = displayName.toUpperCase();
         }
         return displayName;
     }
