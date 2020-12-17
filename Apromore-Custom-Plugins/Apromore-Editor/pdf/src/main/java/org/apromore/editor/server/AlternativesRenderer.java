@@ -74,8 +74,8 @@ public class AlternativesRenderer extends HttpServlet {
 
     private static final long serialVersionUID = 8526319871562210085L;
 
-    private String inFile;
-    private String outFile;
+    private File inFile;
+    private File outFile;
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) {
         String data = req.getParameter("data");
@@ -86,17 +86,22 @@ public class AlternativesRenderer extends HttpServlet {
             e1.printStackTrace();
         }
 
-        String tmpPath = this.getServletContext().getRealPath("/") + File.separator + "tmp" + File.separator;
-
         // create tmp folder
-        File tmpFolder = new File(tmpPath);
+        File tmpFolder;
+        try {
+            tmpFolder = new File(System.getProperty("java.io.tmpdir"));
+        } catch (Exception e) {
+            throw new Error("Wrong!", e);
+        }
+        //File tmpFolder = new File(tmpPath);
         if (!tmpFolder.exists()) {
             tmpFolder.mkdirs();
         }
 
         String baseFilename = String.valueOf(System.currentTimeMillis());
-        this.inFile = tmpPath + baseFilename + ".svg";
-        this.outFile = tmpPath + baseFilename + ".pdf";
+        this.inFile = new File(tmpFolder, baseFilename + ".svg");
+        this.outFile = new File(tmpFolder, baseFilename + ".pdf");
+        log("Real file " + this.outFile);
 
         try {
             String contextPath = req.getContextPath();
@@ -104,13 +109,14 @@ public class AlternativesRenderer extends HttpServlet {
             out.write(data);
             out.close();
             makePDF(inFile, outFile);
+            log("Virtual path " + contextPath + "/tmp/" + baseFilename + ".pdf");
             res.getOutputStream().print(contextPath + "/tmp/" + baseFilename + ".pdf");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected static void makePDF(String inFile, String outFile) throws TranscoderException, IOException {
+    protected static void makePDF(File inFile, File outFile) throws TranscoderException, IOException {
         PDFTranscoder transcoder = new PDFTranscoder();
         InputStream in = new java.io.FileInputStream(inFile);
 

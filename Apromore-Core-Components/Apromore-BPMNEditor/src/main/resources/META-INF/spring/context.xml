@@ -76,4 +76,12 @@
         </service-properties>
     </service>
 
+    <!-- Display the temporary files the PDF export servlet produces -->
+    <beans:bean id="tmpFileServlet" class="org.apromore.editor.server.TemporaryFileServlet"/>
+    <service ref="tmpFileServlet" interface="javax.servlet.http.HttpServlet">
+        <service-properties>
+            <beans:entry key="org.apromore.portal.servlet.pattern" value="/tmp/*" />
+        </service-properties>
+    </service>
+
 </beans:beans>
