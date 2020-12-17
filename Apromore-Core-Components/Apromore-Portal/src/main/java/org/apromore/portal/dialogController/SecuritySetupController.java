@@ -24,13 +24,21 @@
 
 package org.apromore.portal.dialogController;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Window;
+import org.apromore.portal.model.UserType;
+
+import org.apromore.portal.access.controllers.AccessController;
 
 /**
  * Controller used to setup security for folders and processes.
@@ -41,35 +49,47 @@ public class SecuritySetupController extends BaseController {
 
     private MainController mainController;
     private SecurityFindGroupsController findGroupsController;
-    private SecurityPermissionsController permissionsController;
+    private AccessController accessController;
     private SecurityFolderTreeController folderTreeController;
 
-    public SecuritySetupController(MainController mainController) throws DialogException {
+    public SecuritySetupController(MainController mainController, UserType currentUser, Object selectedItem) throws DialogException {
         this.mainController = mainController;
+
+        Map arg = new HashMap<>();
+        arg.put("selectedItem", selectedItem);
+        arg.put("currentUser", currentUser);
+        arg.put("autoInherit", true);
         try {
-            final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, null);
+            final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, arg);
             // FolderType currentFolder = UserSessionManager.getCurrentFolder();
             FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-            this.permissionsController = new SecurityPermissionsController(this, win);
-            this.findGroupsController = new SecurityFindGroupsController(this, win);
+            // this.accessController = new SecurityAccessController(this, win);
+            // this.findGroupsController = new SecurityFindGroupsController(this, win);
             this.folderTreeController = new SecurityFolderTreeController(this, win, currentFolder.getId());
 
             win.doModal();
-
             win.addEventListener("onClose", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     getMainController().loadWorkspace();
                 }
             });
+            EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).subscribe(
+                    new EventListener() {
+                        public void onEvent(Event evt) {
+                            if ("onClose".equals(evt.getName())) {
+                                win.detach();
+                            }
+                        }
+                    });
 
         } catch (Exception e) {
             throw new DialogException("Error in controller: " + e.getMessage());
         }
     }
 
-    public SecurityPermissionsController getPermissionsController(){
-        return this.permissionsController;
+    public AccessController getAccessController(){
+        return this.accessController;
     }
 
     public SecurityFindGroupsController getFindGroupsController(){

@@ -21,6 +21,8 @@
  */
 package org.apromore.dao.jpa.usermanagement;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +32,8 @@ import org.apromore.dao.model.Group.Type;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataType;
 
 public class UserManagementBuilder {
 
@@ -39,7 +43,11 @@ public class UserManagementBuilder {
 	Set<Role> roles=new HashSet<Role>();
 	Set<Group> groups=new HashSet<Group>();
 	Membership membership;
+	
+	Usermetadata usermetadata;
+	UsermetadataType usermetadataType;
 
+	DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");		
 	public UserManagementBuilder() {
 
 	}
@@ -52,6 +60,15 @@ public class UserManagementBuilder {
 		user.setUsername(username);
 		user.setOrganization(org);
 		user.setDateCreated(new Date());
+		return this;
+
+	}
+	
+	public UserManagementBuilder withUserMetaDataType(String type,int version) {
+		  usermetadataType = new UsermetadataType();
+	        usermetadataType.setIsValid(true);
+	        usermetadataType.setType(type);
+	        usermetadataType.setVersion(version);
 		return this;
 
 	}
@@ -116,6 +133,23 @@ public class UserManagementBuilder {
 		roles.clear();
 		roles.add(role);
 		return this;
+	}
+
+	public UserManagementBuilder withUserMetaData(String content,String createdBy) {
+			usermetadata = new Usermetadata();
+			usermetadata.setContent(content);
+			usermetadata.setCreatedBy(createdBy);
+			usermetadata.setCreatedTime(dateFormat.format(new Date()));
+			usermetadata.setIsValid(true);	        
+			usermetadata.setUsermetadataType(usermetadataType);
+			usermetadata.setUpdatedBy(createdBy);
+			usermetadata.setUpdatedTime(dateFormat.format(new Date()));
+		return this;
+	}
+
+	public Usermetadata buildUserMetaData() {
+		// TODO Auto-generated method stub
+		return usermetadata;
 	}
 
 }

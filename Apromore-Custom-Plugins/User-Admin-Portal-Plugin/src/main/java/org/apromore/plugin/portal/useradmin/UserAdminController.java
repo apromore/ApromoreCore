@@ -149,8 +149,8 @@ public class UserAdminController extends SelectorComposer<Window> {
     TristateItemRenderer assignedRoleItemRenderer;
     TristateItemRenderer assignedGroupItemRenderer;
 
-    boolean isUserDetailDirty = false;
-    boolean isGroupDetailDirty = false;
+    private boolean isUserDetailDirty = false;
+    private boolean isGroupDetailDirty = false;
 
     boolean canViewUsers;
     boolean canEditUsers;
@@ -1144,7 +1144,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                 nonAssignedUserList.reset();
                 assignedUserList.reset();
             }
-            isGroupDetailDirty = false;
+            isGroupDetailDirty = true;
         }
     }
 
@@ -1165,7 +1165,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                 nonAssignedUserList.reset();
                 assignedUserList.reset();
             }
-            isGroupDetailDirty = false;
+            isGroupDetailDirty = true;
         }
     }
 

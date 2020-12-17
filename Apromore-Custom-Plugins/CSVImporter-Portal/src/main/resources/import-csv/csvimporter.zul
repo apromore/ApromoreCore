@@ -25,7 +25,7 @@
 
 <?link rel="stylesheet" type="text/css" href="/themes/ap/common/css/headload.css" ?>
 <?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/common/css/index.css" ?>
-<?link rel="stylesheet" type="text/css" href="/themes/ap/portal/css/portal.css" ?>
+<?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/portal/css/portal.css" ?>
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
     <window closable="true" id="mainWindow" minimizable="false" sizable="false" maximizable="false" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="${mainWindow$composer.labels.mainWindow_title}" style="min-width: 1024px;max-width: 95vw;min-height: 600px; max-height: 95vh;" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer"
             apply="org.apromore.plugin.portal.csvimporter.CSVImporterController">
