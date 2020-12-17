@@ -131,3 +131,12 @@ databaseChangeLog:
               - column:
                   name: is_valid
                   value: "1"
+
+
+  - changeSet:
+      id:  20201217141000
+      author:  frankma
+      changes:
+        - delete:
+            tableName: native_type
+            where: id IN (1, 2, 3, 4, 6)
