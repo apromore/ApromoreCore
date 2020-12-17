@@ -89,7 +89,7 @@ public class UserMetadataServiceImplUnitTest {
                 .buildUser();
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -135,7 +135,7 @@ public class UserMetadataServiceImplUnitTest {
                 .buildUser();
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -208,7 +208,7 @@ public class UserMetadataServiceImplUnitTest {
                 .buildUser();
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -244,7 +244,7 @@ public class UserMetadataServiceImplUnitTest {
                 .buildUser();
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -296,11 +296,11 @@ public class UserMetadataServiceImplUnitTest {
         log2.getGroupLogs().add(gl2);
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         UsermetadataType usermetadataType2 = userBuilder
-                .withUserMetaDataType("DASHBOARD", 1, true, 2)
+                .withUserMetadataType("DASHBOARD", 1, true, 2)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -349,11 +349,11 @@ public class UserMetadataServiceImplUnitTest {
                 .buildUser();
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         UsermetadataType usermetadataType2 = userBuilder
-                .withUserMetaDataType("DASHBOARD", 1, true, 2)
+                .withUserMetadataType("DASHBOARD", 1, true, 2)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -423,11 +423,11 @@ public class UserMetadataServiceImplUnitTest {
                 .buildUser();
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         UsermetadataType usermetadataType2 = userBuilder
-                .withUserMetaDataType("DASHBOARD", 1, true, 2)
+                .withUserMetadataType("DASHBOARD", 1, true, 2)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder
@@ -466,7 +466,7 @@ public class UserMetadataServiceImplUnitTest {
         Group g3 = new Group(3);
 
         UsermetadataType usermetadataType1 = userBuilder
-                .withUserMetaDataType("FILTER", 1, true, 1)
+                .withUserMetadataType("FILTER", 1, true, 1)
                 .getUserMetaDataType();
 
         Usermetadata um = userBuilder

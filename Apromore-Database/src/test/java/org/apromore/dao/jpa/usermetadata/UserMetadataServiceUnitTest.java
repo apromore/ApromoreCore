@@ -86,32 +86,18 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
         Group userGroup = builder.withGroup("testGroup1", "GROUP").buildGroup();
 
         // when
-        Group savedUSerGroup = groupRepository.saveAndFlush(userGroup);
+        Group savedUserGroup = groupRepository.saveAndFlush(userGroup);
         // then
-        assertThat(savedUSerGroup.getId()).isNotNull();
-        assertThat(savedUSerGroup.getName()).isEqualTo(userGroup.getName());
-        assertThat(savedUSerGroup.getType()).isEqualTo(userGroup.getType());
+        assertThat(savedUserGroup.getId()).isNotNull();
+        assertThat(savedUserGroup.getName()).isEqualTo(userGroup.getName());
+        assertThat(savedUserGroup.getType()).isEqualTo(userGroup.getType());
 
-    }
-
-    @Test
-    public void testSaveUser() {
-        // given
-        Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
-        Role role = roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
-        User user = builder.withGroup(group).withRole(role).withMembership("n@t.com").withUser("TestUser", "first",
-                "last", "org").buildUser();
-        // when
-        User savedUSer = userRepository.saveAndFlush(user);
-        // then
-        assertThat(savedUSer.getId()).isNotNull();
-        assertThat(savedUSer.getMembership().getEmail()).isEqualTo(user.getMembership().getEmail());
     }
 
     @Test
     public void insertUsermetadataTest() {
 //	 		Given
-        Usermetadata um = builder.withUserMetaDataType("test Type", 1).withUserMetaData("Test", "test")
+        Usermetadata um = builder.withUserMetadataType("test Type", 1).withUserMetaData("Test", "test")
                 .buildUserMetaData();
 
         UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());
@@ -132,7 +118,7 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
     public void insertUsermetadataLogTest() {
 
 // 		Given
-        Usermetadata um = builder.withUserMetaDataType("test Type2", 1).withUserMetaData("Test2", "test2")
+        Usermetadata um = builder.withUserMetadataType("test Type2", 1).withUserMetaData("Test2", "test2")
                 .buildUserMetaData();
 
         UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());
