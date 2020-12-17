@@ -44,7 +44,14 @@ public class CreateGroupController extends SelectorComposer<Window> {
             throw new Exception("Cannot edit groups without permission");
         }
 
-        securityService.createGroup(groupNameTextbox.getValue());
+        try {
+            securityService.createGroup(groupNameTextbox.getValue());
+            getSelf().detach();
+
+        } catch (Exception e) {
+            LOGGER.error("Unable to create group", e);
+            Messagebox.show("Unable to create group. The group could have been present in the system.");
+        }
         getSelf().detach();
     }
 
