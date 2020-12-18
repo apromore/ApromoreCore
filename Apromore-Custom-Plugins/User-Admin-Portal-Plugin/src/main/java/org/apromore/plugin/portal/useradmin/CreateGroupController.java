@@ -27,10 +27,15 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CreateGroupController extends SelectorComposer<Window> {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(CreateGroupController.class);
 
     private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
     private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
