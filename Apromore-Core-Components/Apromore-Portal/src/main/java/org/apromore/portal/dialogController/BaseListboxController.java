@@ -390,12 +390,25 @@ public abstract class BaseListboxController extends BaseController {
 	}
 
 	protected void importFile() throws InterruptedException {
-		getMainController().eraseMessage();
+	    getMainController().eraseMessage();
+	    FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+
+	    boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
+	    try {
+		canChange = canChange || isChangeable(currentFolder);
+	    } catch (ValidationException e) {
+		Notification.error(e.getMessage());
+		return;
+	    }
+	    if (canChange) {
 		try {
-			new ImportController(getMainController());
+		    new ImportController(getMainController());
 		} catch (DialogException e) {
-			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+		    Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
+	    } else {
+		Messagebox.show("Cannot upload in readonly folder", "Attention", Messagebox.OK, Messagebox.ERROR);
+	    }
 	}
 
 	protected void exportFile() throws Exception {
@@ -519,7 +532,11 @@ public abstract class BaseListboxController extends BaseController {
 				return;
 			}
 			Object selectedItem = getSelection().iterator().next();
-			validateNotFolderTypeItem(selectedItem);
+		
+			if (selectedItem instanceof FolderType) {
+				Notification.error("You can only share a log or model");
+				return;
+			}
 			boolean canShare = false;
 			try {
 				canShare = isShareable(selectedItem);
@@ -567,12 +584,7 @@ public abstract class BaseListboxController extends BaseController {
 		return groupAccessMap;
 	}
 
-	private void validateNotFolderTypeItem(Object selectedItem) {
-		if (selectedItem instanceof FolderType) {
-			Notification.error("You can only share a log or model");
-			return;
-		}
-	}
+	
 
 	protected void removeFolder() throws Exception {
 		// See if the user has mixed folders and process models. we handle everything

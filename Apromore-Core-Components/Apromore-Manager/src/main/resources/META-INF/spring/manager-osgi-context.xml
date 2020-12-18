@@ -85,5 +85,8 @@
     <osgi:reference id="usermetadataTypeRepository" interface="org.apromore.dao.UsermetadataTypeRepository"/>
     <osgi:reference id="userRepository" interface="org.apromore.dao.UserRepository"/>
     <osgi:reference id="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository"/>
+    <osgi:reference id="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository"/>
+    
+    <osgi:reference id="transactionManager" interface="org.springframework.transaction.PlatformTransactionManager"/>
 
 </beans:beans>
