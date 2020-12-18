@@ -188,6 +188,21 @@ public class AbstractTest extends EasyMockSupport {
         log.setCreateDate(now);
         return log;
     }
+
+    public Log createLogWithId(Integer id, User user, Folder folder) {
+        Log log = new Log();
+        log.setId(id);
+        log.setName("LogName");
+        log.setDomain("Domain");
+        log.setRanking("Ranking");
+        log.setFilePath("FileTimestamp");
+        log.setUser(user);
+        log.setFolder(folder);
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        log.setCreateDate(now);
+        return log;
+    }
     
     public Folder createFolder(String name, Folder parentFolder, Workspace workspace) {
         Folder folder = new Folder();

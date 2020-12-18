@@ -22,6 +22,7 @@
 package org.apromore.util;
 
 import lombok.Getter;
+import org.apromore.dao.model.AccessRights;
 
 import java.util.Arrays;
 
@@ -75,6 +76,10 @@ public enum AccessType {
         return Arrays.asList(AccessType.values()).stream().filter(accessType -> accessType.isRead == isRead &&
                 accessType.isWrite == isWrite &&
                 accessType.isOwner == isOwner).findFirst().orElse(AccessType.NONE);
+    }
+
+    public static AccessType getAccessType(AccessRights accessRights) {
+        return getAccessType(accessRights.isReadOnly(), accessRights.isWriteOnly(), accessRights.isOwnerShip());
     }
 
 
