@@ -21,10 +21,8 @@
  */
 package org.apromore.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -32,13 +30,17 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+
 import javax.annotation.Resource;
+
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
 import org.apromore.cache.ehcache.CacheRepository;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.jpa.LogRepositoryCustomImpl;
 import org.apromore.dao.model.Log;
+import org.apromore.storage.StorageClient;
+import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
@@ -74,10 +76,12 @@ public class TemporaryCacheService {
   @Resource
   private ConfigBean config;
   
+  @Resource
+  private StorageManagementFactory<StorageClient> storageFacotry;
   
-  
+ 
 
-  public CacheRepository getCacheRepo() {
+public CacheRepository getCacheRepo() {
     return cacheRepo;
   }
 
@@ -101,7 +105,17 @@ public class TemporaryCacheService {
     this.config = config;
   }
 
-  private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
+  
+  public StorageManagementFactory<StorageClient> getStorageFacotry() {
+    return storageFacotry;
+}
+
+public void setStorageFacotry(StorageManagementFactory<StorageClient> storageFacotry) {
+    this.storageFacotry = storageFacotry;
+}
+
+
+private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
 
   public String storeProcessLog(final Integer folderId, final String logName, XLog log,
       final Integer userID,
@@ -149,10 +163,10 @@ public class TemporaryCacheService {
   public void deleteProcessLog(Log log) {
     if (log != null) {
       try {
+	StorageClient storageClient=storageFacotry.getStorageClient(config.getStoragePath());	
         String name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
-        File file = new File(config.getLogsDir() + "/" + name);
-        file.delete();
-
+        
+        storageClient.delete("",name);
         // Remove corresponding object from cache
         String key = log.getFilePath();
         cacheRepo.evict(key);
@@ -192,10 +206,14 @@ public class TemporaryCacheService {
         LOGGER.info("Cache for [KEY: " + key + "] is null.");
 
         try {
+          StorageClient storageClient=storageFacotry.getStorageClient(config.getStoragePath());
+          
           String name =
               config.getLogsDir() + "/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
           XFactory factory = getXFactory(factoryName);
-          XLog xlog = importFromFile(factory, name);
+          XLog xlog = importFromFile(factory,
+        	  storageClient.getInputStream(null, log.getFilePath() + "_" + log.getName() + ".xes.gz"),
+        	  log.getName() + ".xes.gz");
 
 
           // ******* profiling code start here ********
@@ -362,15 +380,15 @@ public class TemporaryCacheService {
   /* ************************** Util Methods ******************************* */
 
 
-  public XLog importFromFile(XFactory factory, String location) throws Exception {
+  public XLog importFromFile(XFactory factory, InputStream inputStream,String location) throws Exception {
     if (location.endsWith("mxml.gz")) {
-      return importFromInputStream(new FileInputStream(location), new XMxmlGZIPParser(factory));
+      return importFromInputStream(inputStream, new XMxmlGZIPParser(factory));
     } else if (location.endsWith("mxml")) {
-      return importFromInputStream(new FileInputStream(location), new XMxmlParser(factory));
+      return importFromInputStream(inputStream, new XMxmlParser(factory));
     } else if (location.endsWith("xes.gz")) {
-      return importFromInputStream(new FileInputStream(location), new XesXmlGZIPParser(factory));
+      return importFromInputStream(inputStream, new XesXmlGZIPParser(factory));
     } else if (location.endsWith("xes")) {
-      return importFromInputStream(new FileInputStream(location), new XesXmlParser(factory));
+      return importFromInputStream(inputStream, new XesXmlParser(factory));
     }
     return null;
   }
@@ -432,23 +450,11 @@ public class TemporaryCacheService {
   }
 
   public void exportToInputStream(XLog log, String path, String name, XSerializer serializer) {
-    FileOutputStream outputStream;
+   
     try {
-      File directory = new File(path);
-      if (!directory.exists())
-        directory.mkdirs();
-      File file = new File(path + name);
-      if (!file.exists())
-        file.createNewFile();
-      outputStream = new FileOutputStream(file);
+      OutputStream outputStream=storageFacotry.getStorageClient(config.getStoragePath()).getOutputStream("log",name);      
       serializer.serialize(log, outputStream);
       outputStream.close();
-
-      if (file.exists() && file.isFile()) {
-        LOGGER.info(String.valueOf(file.length()));
-      } else {
-        LOGGER.info("file doesn't exist or is not a file");
-      }
 
     } catch (Exception e) {
       e.printStackTrace();

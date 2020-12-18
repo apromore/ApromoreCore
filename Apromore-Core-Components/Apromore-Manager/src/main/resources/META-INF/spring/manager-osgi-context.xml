@@ -52,6 +52,8 @@
                       
     <osgi:service ref="userMetadataServiceImpl" interface="org.apromore.service.UserMetadataService"
                   auto-export="interfaces"/>
+                  
+    <osgi:reference id="storageFactory" interface="org.apromore.storage.factory.StorageManagementFactory"/>
 
 
 	<osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>

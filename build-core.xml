@@ -44,6 +44,7 @@
         <include name="prom-models-osgi/target/prom-models-osgi-1.0.jar"/>
         <include name="prom-widgets-osgi/target/prom-widgets-osgi-1.0.jar"/>
         <include name="prom-bpmn-osgi/target/prom-bpmn-osgi-1.0.jar"/>
+        <include name="aws-clients-osgi/target/aws-clients-osgi-1.0.jar"/>
         <!--<include name="${core-dir}/Apromore-OSGI-Bundles/ehcache-virgo/target/ehcache-virgo-3.8.1.jar"/>-->
         <!--<include name="**/target/ini4j-osgi-0.5.2.jar"/>-->
         <!--<include name="**/target/jdom2-osgi-2.0.6.jar"/>  -->        

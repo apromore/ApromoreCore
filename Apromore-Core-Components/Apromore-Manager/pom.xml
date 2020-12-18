@@ -428,6 +428,11 @@
             <groupId>org.apromore</groupId>
             <artifactId>apromore-cache</artifactId>
         </dependency>
+        
+         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-storage</artifactId>
+        </dependency>
 		
 		<!-- GUI related dependencies -->
         <dependency>

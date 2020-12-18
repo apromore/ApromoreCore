@@ -1,0 +1,64 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+package org.apromore.test.storage;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.apromore.storage.FileStorageClient;
+import org.apromore.storage.StorageClient;
+import org.apromore.storage.StorageType;
+import org.apromore.storage.exception.ObjectNotFoundException;
+import org.apromore.storage.factory.StorageManagementFactory;
+import org.apromore.storage.factory.StorageManagementFactoryImpl;
+import org.junit.Before;
+import org.junit.Test;
+
+public class StorageFactoryUnitTest {
+    
+    StorageManagementFactory<StorageClient> storageManagementFactory;
+    @Before
+    public void setup()
+    {
+	 storageManagementFactory=new StorageManagementFactoryImpl<StorageClient>();
+    }
+    
+    
+    @Test
+    public void testFileStorageFactory() throws ObjectNotFoundException
+    {
+//	Given
+	ClassLoader classLoader = StorageFactoryUnitTest.class.getClassLoader();	
+	File file = new File(classLoader.getResource("baseFolder"+File.separator+"test.csv").getFile());
+	
+//	When
+	StorageClient client=storageManagementFactory.getStorageClient("FILE::"+file.getParent());
+	InputStream stream =client.getInputStream("", "test.csv");
+	
+//	Then
+	assertThat(client).isInstanceOf(FileStorageClient.class);
+	
+    }
+
+}

@@ -28,6 +28,7 @@ public class ConfigBean {
     private String logsDir = "../Event-Logs-Repository";
     private String numOfEvent;
     private String numOfTrace;
+    private String storagePath = "FILE::../Event-Logs-Repository";
 
     public String getLogsDir() {
         return logsDir;
@@ -52,4 +53,14 @@ public class ConfigBean {
     public void setNumOfTrace(final String numOfTrace) {
         this.numOfTrace = numOfTrace;
     }
+
+    public String getStoragePath() {
+        return storagePath;
+    }
+
+    public void setStoragePath(String storagePath) {
+        this.storagePath = storagePath;
+    }
+    
+    
 }

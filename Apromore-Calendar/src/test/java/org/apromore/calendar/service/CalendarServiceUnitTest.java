@@ -28,19 +28,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.time.Duration;
+
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.commons.mapper.converter.StringToLocalDate;
 import org.apromore.commons.mapper.converter.StringToOffsetDateTime;
