@@ -24,6 +24,7 @@
 
 package org.apromore.service.csvimporter.model;
 
+import org.apromore.dao.model.Log;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
@@ -36,4 +37,6 @@ public interface LogModel {
     XLog getXLog();
 
     boolean isRowLimitExceeded();
+
+    Log getImportLog();
 }

@@ -22,12 +22,12 @@
 package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.ParquetEventLogModel;
 
 import java.util.List;
 
 public interface LogProcessorParquet {
 
-    ParquetEventLogModel processLog(String[] line, String[] header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport);
+    ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport);
 }

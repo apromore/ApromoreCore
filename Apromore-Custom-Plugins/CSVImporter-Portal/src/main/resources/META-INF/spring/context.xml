@@ -36,7 +36,7 @@
 
     <reference id="parquetFactoryProvider"
                interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
-    <reference id="logReaderProvider" interface="org.apromore.service.csvimporter.services.legacy.LogReaderProvider"/>
+    <reference id="logImporterProvider" interface="org.apromore.service.csvimporter.services.legacy.LogImporterProvider"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="userMetadataService" interface="org.apromore.service.UserMetadataService"/>
 
@@ -44,7 +44,7 @@
 
         <beans:property name="parquetFactoryProvider" ref="parquetFactoryProvider"/>
         <!-- Once parquet exporter get implemented this property need to be deleted -->
-        <beans:property name="logReaderProvider" ref="logReaderProvider"/>
+        <beans:property name="logImporterProvider" ref="logImporterProvider"/>
         <beans:property name="userMetadataService" ref="userMetadataService"/>
 
     </beans:bean>

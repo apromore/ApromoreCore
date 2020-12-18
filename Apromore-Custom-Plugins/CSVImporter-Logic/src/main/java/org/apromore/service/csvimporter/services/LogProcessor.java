@@ -23,11 +23,11 @@ package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.model.LogErrorReport;
 import org.apromore.service.csvimporter.model.LogEventModelExt;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.model.LogMetaData;
 
 import java.util.List;
 
 public interface LogProcessor {
 
-    LogEventModelExt processLog(List<String> line, List<String> header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport);
+    LogEventModelExt processLog(List<String> line, List<String> header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport);
 }

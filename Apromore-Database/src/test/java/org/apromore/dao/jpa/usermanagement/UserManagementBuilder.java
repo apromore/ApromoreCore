@@ -64,7 +64,7 @@ public class UserManagementBuilder {
 
 	}
 	
-	public UserManagementBuilder withUserMetaDataType(String type,int version) {
+	public UserManagementBuilder withUserMetadataType(String type,int version) {
 		  usermetadataType = new UsermetadataType();
 	        usermetadataType.setIsValid(true);
 	        usermetadataType.setType(type);

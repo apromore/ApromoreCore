@@ -23,21 +23,23 @@ package org.apromore.service.csvimporter.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import static org.apromore.service.csvimporter.constants.Constants.*;
 
+@Service("parquetFactoryProvider")
 public class ParquetFactoryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetFactoryProvider.class);
 
-    public ConvertToParquetFactory getParquetFactory(String fileExtension) {
+    public ParquetImporterFactory getParquetFactory(String fileExtension) {
 
         LOGGER.info("File Format: " + fileExtension);
         if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
-            return new CsvFactory();
+            return new ParquetImporterFactoryCSVImpl();
         } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
-            return new ParquetFactory();
+            return new ParquetImporterFactoryParquetImpl();
         } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
-            return new XLSFactory();
+            return new ParquetImporterFactoryXLSXImpl();
         } else {
             return null;
         }

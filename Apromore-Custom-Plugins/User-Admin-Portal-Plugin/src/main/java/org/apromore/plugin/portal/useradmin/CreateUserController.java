@@ -67,12 +67,11 @@ public class CreateUserController extends SelectorComposer<Window> {
 
         try {
             securityService.createUser(user);
-            getSelf().detach();
-
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
             Messagebox.show("Unable to create user. The user could have been present in the system.");
         }
+        getSelf().detach();
     }
 
     @Listen("onClick = #cancelBtn")
