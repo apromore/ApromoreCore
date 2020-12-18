@@ -87,5 +87,6 @@ public interface UserInterfaceHelper {
 
     SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 
-    UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata, AccessType accessType) throws UserNotFoundException;
+    UserMetadataSummaryType buildUserMetadataSummary(String username, Usermetadata usermetadata,
+                                                     AccessType accessType) throws UserNotFoundException;
 }

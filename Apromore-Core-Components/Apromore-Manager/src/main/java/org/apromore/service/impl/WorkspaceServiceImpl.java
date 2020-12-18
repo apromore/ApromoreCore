@@ -31,7 +31,6 @@ import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
-import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
 import org.apromore.util.AccessType;
@@ -67,7 +66,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
     private EventLogFileService logFileService;
-    private UserMetadataService userMetadataServ;
     private FolderServiceImpl folderService;
 
     @Resource
@@ -93,7 +91,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final GroupProcessRepository groupProcessRepository,
                                 final GroupLogRepository groupLogRepository,
                                 final EventLogFileService eventLogFileService,
-                                final UserMetadataService userMetadataService,
                                 final FolderServiceImpl folderService) {
 
         workspaceRepo = workspaceRepository;
@@ -107,7 +104,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupProcessRepo = groupProcessRepository;
         groupLogRepo = groupLogRepository;
         logFileService = eventLogFileService;
-        userMetadataServ = userMetadataService;
         this.folderService = folderService;
     }
 
@@ -331,7 +327,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         removeGroupLog(group, log);
 
         // Sync permission with user metadata that linked to specified log
-        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
+//        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
 
         return "";
     }
@@ -389,10 +385,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         if (shareUserMetadata){
             // Sync permission with user metadata that linked to specified log
-            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, accessType);
+//            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, accessType);
         } else {
             // Automatically share simulation user metadata when the log is shared
-            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, accessType);
+//            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, accessType);
         }
 
         return "";
