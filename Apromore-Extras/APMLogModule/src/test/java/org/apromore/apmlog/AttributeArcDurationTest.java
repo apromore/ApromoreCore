@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+
 public class AttributeArcDurationTest {
     public static void testRetain1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
@@ -102,11 +104,10 @@ public class AttributeArcDurationTest {
             System.out.println(trace.getCaseId());
         }
 
-        if (hasC1 || hasC2 || hasC3 || !hasC4) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute arc duration (1)' test PASS.\n");
-        }
+        assert !hasC1;
+        assert !hasC2;
+        assert !hasC3;
+        assert hasC4;
     }
 
     public static void testRetain2(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -174,11 +175,10 @@ public class AttributeArcDurationTest {
             System.out.println(trace.getCaseId());
         }
 
-        if (hasC1 || !hasC2 || hasC3 || !hasC4) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute arc duration (2)' test PASS.\n");
-        }
+        assert !hasC1;
+        assert hasC2;
+        assert !hasC3;
+        assert hasC4;
     }
 
     public static void testRetain3(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -249,11 +249,10 @@ public class AttributeArcDurationTest {
             System.out.println(trace.getCaseId());
         }
 
-        if (hasC1 || hasC2 || hasC3 || !hasC4) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute arc duration (3)' test PASS.\n");
-        }
+        assert !hasC1;
+        assert !hasC2;
+        assert !hasC3;
+        assert hasC4;
     }
 
     public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -262,13 +261,7 @@ public class AttributeArcDurationTest {
         pLog.updateStats();
         DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A");
         DoubleArrayList durList = subGraph.getValDurListMap().get("A");
-        double avg = durList.average();
-        double twoHours = 1000 * 60 * 60 * 2d;
-        if (avg != twoHours) {
-            throw new AssertionError("TEST FAILED. RESULT MISMATCH.\n expected value=" + twoHours +
-                    "; output value=" + avg);
-        } else {
-            parent.printString("'Attribute arc duration (4) - Average duration' test PASS.\n");
-        }
+
+        assertEquals(1000 * 60 * 60 * 2d, durList.average(), 0 /* comparison tolerance */);
     }
 }
