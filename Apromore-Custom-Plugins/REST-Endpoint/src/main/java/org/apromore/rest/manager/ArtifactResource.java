@@ -190,6 +190,7 @@ public final class ArtifactResource extends AbstractResource {
             log = logWithMetadata("csv", splitInputStreamUsingMemory(body, bufferSize), user, name, folderId);
 
         } else if (httpHeaders.getMediaType().isCompatible(new MediaType("application", "x-parquet"))) {
+            // Because parquet's metadata is at the end of the stream, we have to copy into a temp file
             log = logWithMetadata("parquet", splitInputStreamUsingTempFile(body), user, name, folderId);
 
         } else {
@@ -202,6 +203,14 @@ public final class ArtifactResource extends AbstractResource {
         return (LogSummaryType) osgiService(UserInterfaceHelper.class).buildLogSummary(log);
     }
 
+    /**
+     * Split an {@link InputStream} into two by buffering the beginning of it into memory and rewinding.
+     *
+     * @param inputStream  an open stream which hasn't yet been read
+     * @param headerBufferLength  how many bytes to read into the initial buffer
+     * @return a pair of copies of the <var>inputStream</var>, the first of which contains only the
+     *     first <var>headerBufferLength</var> bytes, the second of which contains everything
+     */
     private static InputStream[] splitInputStreamUsingMemory(final InputStream inputStream,
         final int headerBufferLength) throws Exception {
 
@@ -218,8 +227,10 @@ public final class ArtifactResource extends AbstractResource {
     }
 
     /**
-     * Workaround because {@link MetaDataService#extractMetaData} will otherwise close inputStream, making
-     * it unusable the second time for {@link LogReader#importLog}.
+     * Split an {@link InputStream} into two by copying its content into a temporary file.
+     *
+     * @param inputStream  an open stream which hasn't yet been read
+     * @return a pair of file-backed copies of the <var>inputStream</var>
      */
     private static InputStream[] splitInputStreamUsingTempFile(final InputStream inputStream) throws Exception {
         File tmpFile = File.createTempFile("apromore-rest-log-upload-", null);
