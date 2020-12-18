@@ -21,13 +21,15 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import org.apromore.service.csvimporter.model.LogErrorReport;
 import org.apromore.service.csvimporter.model.LogMetaData;
-import org.apromore.service.csvimporter.model.ParquetEventLogModel;
 
 import java.util.List;
 
-public interface LogProcessorParquet {
+public interface MetaDataUtilities {
 
-    ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport);
+    LogMetaData processMetaData(LogMetaData logMetaData, List<List<String>> lines);
+
+    boolean isTimestamp(int colPos, List<List<String>> lines);
+
+    boolean isTimestamp(int colPos, String format, List<List<String>> lines);
 }

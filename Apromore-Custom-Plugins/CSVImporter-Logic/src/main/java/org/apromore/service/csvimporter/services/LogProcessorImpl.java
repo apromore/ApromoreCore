@@ -21,13 +21,16 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import org.apromore.service.csvimporter.dateparser.Parse;
-import org.apromore.service.csvimporter.model.*;
+import org.apromore.service.csvimporter.model.LogErrorReport;
+import org.apromore.service.csvimporter.model.LogErrorReportImpl;
+import org.apromore.service.csvimporter.model.LogEventModelExt;
+import org.apromore.service.csvimporter.model.LogMetaData;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 
@@ -45,8 +48,7 @@ public class LogProcessorImpl implements LogProcessor {
 
 
     @Override
-    public LogEventModelExt processLog(List<String> line, List<String> header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport) {
-
+    public LogEventModelExt processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex, List<LogErrorReport> logErrorReport) {
         //Construct an event
         startTimestamp = null;
         resource = null;
@@ -56,38 +58,38 @@ public class LogProcessorImpl implements LogProcessor {
         validRow = true;
 
         // Case id:
-        caseId = line.get(sample.getCaseIdPos());
+        caseId = line.get(logMetaData.getCaseIdPos());
         if (caseId == null || caseId.isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header.get(sample.getCaseIdPos()), "Case id is empty or has a null value!"));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getCaseIdPos(), header.get(logMetaData.getCaseIdPos()), "Case id is empty or has a null value!"));
             validRow = false;
         }
 
         // Activity
-        activity = line.get(sample.getActivityPos());
+        activity = line.get(logMetaData.getActivityPos());
         if (activity == null || activity.isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header.get(sample.getActivityPos()), "Activity is empty or has a null value!"));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getActivityPos(), header.get(logMetaData.getActivityPos()), "Activity is empty or has a null value!"));
             validRow = false;
         }
 
         // End Timestamp
-        endTimestamp = parseTimestampValue(line.get(sample.getEndTimestampPos()), sample.getEndTimestampFormat());
+        endTimestamp = parseTimestampValue(line.get(logMetaData.getEndTimestampPos()), logMetaData.getEndTimestampFormat(), logMetaData.getTimeZone());
         if (endTimestamp == null) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header.get(sample.getEndTimestampPos()), "End timestamp Can not parse!"));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getEndTimestampPos(), header.get(logMetaData.getEndTimestampPos()), "End timestamp Can not parse!"));
             validRow = false;
         }
         // Start Timestamp
-        if (sample.getStartTimestampPos() != -1) {
-            startTimestamp = parseTimestampValue(line.get(sample.getStartTimestampPos()), sample.getStartTimestampFormat());
+        if (logMetaData.getStartTimestampPos() != -1) {
+            startTimestamp = parseTimestampValue(line.get(logMetaData.getStartTimestampPos()), logMetaData.getStartTimestampFormat(), logMetaData.getTimeZone());
             if (startTimestamp == null) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header.get(sample.getStartTimestampPos()), "Start timestamp Can not parse!"));
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getStartTimestampPos(), header.get(logMetaData.getStartTimestampPos()), "Start timestamp Can not parse!"));
                 validRow = false;
             }
         }
 
         // Other timestamps
-        if (!sample.getOtherTimestamps().isEmpty()) {
-            for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()), otherTimestamp.getValue());
+        if (!logMetaData.getOtherTimestamps().isEmpty()) {
+            for (Map.Entry<Integer, String> otherTimestamp : logMetaData.getOtherTimestamps().entrySet()) {
+                Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()), otherTimestamp.getValue(), logMetaData.getTimeZone());
                 if (tempTimestamp != null) {
                     otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
                 } else {
@@ -98,24 +100,24 @@ public class LogProcessorImpl implements LogProcessor {
         }
 
         // Resource
-        if (sample.getResourcePos() != -1) {
-            resource = line.get(sample.getResourcePos());
+        if (logMetaData.getResourcePos() != -1) {
+            resource = line.get(logMetaData.getResourcePos());
             if (resource == null || resource.isEmpty()) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header.get(sample.getResourcePos()), "Resource is empty or has a null value!"));
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getResourcePos(), header.get(logMetaData.getResourcePos()), "Resource is empty or has a null value!"));
                 validRow = false;
             }
         }
 
         // Case Attributes
-        if (sample.getCaseAttributesPos() != null && !sample.getCaseAttributesPos().isEmpty()) {
-            for (int columnPos : sample.getCaseAttributesPos()) {
+        if (logMetaData.getCaseAttributesPos() != null && !logMetaData.getCaseAttributesPos().isEmpty()) {
+            for (int columnPos : logMetaData.getCaseAttributesPos()) {
                 caseAttributes.put(header.get(columnPos), line.get(columnPos));
             }
         }
 
         // Event Attributes
-        if (sample.getEventAttributesPos() != null && !sample.getEventAttributesPos().isEmpty()) {
-            for (int columnPos : sample.getEventAttributesPos()) {
+        if (logMetaData.getEventAttributesPos() != null && !logMetaData.getEventAttributesPos().isEmpty()) {
+            for (int columnPos : logMetaData.getEventAttributesPos()) {
                 eventAttributes.put(header.get(columnPos), line.get(columnPos));
             }
         }
@@ -123,9 +125,11 @@ public class LogProcessorImpl implements LogProcessor {
         return new LogEventModelExt(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource, eventAttributes, caseAttributes, validRow);
     }
 
-    private Timestamp parseTimestampValue(String theValue, String format) {
+    private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
         if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
-            return parseToTimestamp(theValue, format);
+            return (timeZone == null || timeZone.isEmpty()) ?
+                    parseToTimestamp(theValue, format, null)
+                    : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
         } else {
             return null;
         }
