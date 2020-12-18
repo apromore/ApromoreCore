@@ -23,12 +23,13 @@ package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.model.LogErrorReport;
 import org.apromore.service.csvimporter.model.LogErrorReportImpl;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.ParquetEventLogModel;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 
@@ -37,7 +38,7 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
     private boolean validRow;
 
     @Override
-    public ParquetEventLogModel processLog(String[] line, String[] header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport) {
+    public ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport) {
 
         //Construct an event
         validRow = true;
@@ -55,7 +56,7 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
         }
 
         // End Timestamp
-        Timestamp endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat());
+        Timestamp endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat(), sample.getTimeZone());
         if (endTimestamp == null) {
             logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "End timestamp Can not parse!"));
             validRow = false;
@@ -65,7 +66,7 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
 
         // Start Timestamp
         if (sample.getStartTimestampPos() != -1) {
-            Timestamp startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat());
+            Timestamp startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat(), sample.getTimeZone());
             if (startTimestamp == null) {
                 logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Start timestamp Can not parse!"));
                 validRow = false;
@@ -77,7 +78,7 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
         // Other timestamps
         if (!sample.getOtherTimestamps().isEmpty()) {
             for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue());
+                Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue(), sample.getTimeZone());
                 if (tempTimestamp != null) {
                     line[otherTimestamp.getKey()] = tempTimestamp.toString();
                 } else {
@@ -98,9 +99,11 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
         return new ParquetEventLogModel(line, validRow);
     }
 
-    private Timestamp parseTimestampValue(String theValue, String format) {
+    private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
         if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
-            return parseToTimestamp(theValue, format);
+            return (timeZone == null || timeZone.isEmpty()) ?
+                    parseToTimestamp(theValue, format, null)
+                    : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
         } else {
             return null;
         }

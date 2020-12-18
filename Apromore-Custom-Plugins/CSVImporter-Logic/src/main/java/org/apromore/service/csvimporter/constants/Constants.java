@@ -41,4 +41,5 @@ public interface Constants {
     String PARQUET_FILE_EXTENSION = "parquet";
     String XLS_FILE_EXTENSION = "xls" ;
     String XLSX_FILE_EXTENSION = "xlsx" ;
+    String XES_EXTENSION= "xes.gz";
 }

@@ -21,13 +21,12 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogMetaData;
-import org.apromore.service.csvimporter.model.ParquetEventLogModel;
+public interface ParquetImporterFactory {
 
-import java.util.List;
+    MetaDataService getMetaDataService();
 
-public interface LogProcessorParquet {
+    ParquetImporter getParquetImporter();
 
-    ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport);
+    default MetaDataUtilities getMetaDataUtilities(){ return new MetaDataUtilitiesImpl();}
+
 }

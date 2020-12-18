@@ -22,9 +22,9 @@
 package org.apromore.service.csvimporter.dateparser;
 
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
-import org.apromore.service.csvimporter.services.legacy.LogReader;
-import org.apromore.service.csvimporter.services.legacy.XLSXLogReaderImpl;
+import org.apromore.service.csvimporter.services.MetaDataService;
+import org.apromore.service.csvimporter.services.legacy.LogImporter;
+import org.apromore.service.csvimporter.services.legacy.LogImporterXLSXImpl;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -45,20 +45,20 @@ public class DebugUnitTest {
     private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private LogReader logReader;
+    private MetaDataService metaDataService;
+    private LogImporter logImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
 //                .getParquetFactory("csv")
                 .getParquetFactory("xlsx")
-                .createSampleLogGenerator();
-//        logReader = new LogReaderImpl();
+                .getMetaDataService();
+//        logImporter = new LogImporterCSVImpl();
 
-        logReader = new XLSXLogReaderImpl();
+        logImporter = new LogImporterXLSXImpl();
     }
 
     @Test
@@ -67,11 +67,11 @@ public class DebugUnitTest {
         System.out.println("\n************************************\ntest");
 
 //        String testFile = "/TEST.xlsx";
-//        LogSample sample = sampleLogGenerator
+//        LogMetaData sample = metaDataService
 //                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
 //        System.out.println("getEndTimestampFormat " + sample.getEndTimestampFormat());
 //
-//        LogModel logModel = logReader
+//        LogModel logModel = logImporter
 //                .readLogs(this.getClass().getResourceAsStream(testFile), sample, "UTF-8", true);
 //
 //        System.out.println("getRowsCount " + logModel.getRowsCount());
@@ -86,7 +86,7 @@ public class DebugUnitTest {
 
         if (determineDateFormat(dattime) != null) {
             System.out.println("Parsing " + determineDateFormat(dattime));
-            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime));
+            Timestamp timestamp = parseToTimestamp(dattime, determineDateFormat(dattime), null);
             System.out.println("timestamp " + timestamp.toString());
 
         } else {

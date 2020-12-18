@@ -24,7 +24,6 @@ package org.apromore.rest.manager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
@@ -54,11 +53,10 @@ public final class UserResource extends AbstractResource {
 
     @DELETE
     @Path("{name}")
-    public Response deleteUser(final @HeaderParam("Authorization") String authorization,
-                               final @PathParam("name") String name) throws ResourceException {
+    public Response deleteUser(final @PathParam("name") String name) throws ResourceException {
 
         // Authenticate and authorize the request
-        UserType authenticatedUser = authenticatedUser(authorization);
+        UserType authenticatedUser = authenticatedUser();
         authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Perform the deletion
@@ -72,11 +70,10 @@ public final class UserResource extends AbstractResource {
     @GET
     @Path("{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(final @HeaderParam("Authorization") String authorization,
-                            final @PathParam("name") String name) throws ResourceException {
+    public Response getUser(final @PathParam("name") String name) throws ResourceException {
 
         // Authenticate and authorize the request
-        UserType authenticatedUser = authenticatedUser(authorization);
+        UserType authenticatedUser = authenticatedUser();
         authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Lookup the user and convert to DTO
@@ -98,12 +95,11 @@ public final class UserResource extends AbstractResource {
     @Path("{name}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public UserType postUser(final @HeaderParam("Authorization") String authorization,
-                             final @PathParam("name") String name,
+    public UserType postUser(final @PathParam("name") String name,
                              final UserType userType) throws ResourceException {
 
         // Authenticate and authorize the request
-        UserType authenticatedUser = authenticatedUser(authorization);
+        UserType authenticatedUser = authenticatedUser();
         authorize(authenticatedUser, "ROLE_ADMIN");
 
         // Validate the request
