@@ -45,6 +45,7 @@
 		<module>Apromore-OSGI-Bundles/log-osgi</module>
 		<module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
 		<module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
+		<module>Apromore-OSGI-Bundles/docx4j-osgi</module>
 		<module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
 		<module>Apromore-OSGI-Bundles/jersey-osgi</module>
 		<module>Apromore-OSGI-Bundles/json-osgi</module>

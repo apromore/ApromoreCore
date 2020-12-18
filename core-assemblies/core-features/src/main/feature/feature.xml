@@ -9,8 +9,11 @@
 
   <feature name="apromore-bpmn-editor" version="${project.version}" description="Apromore BPMN editor">
     <feature>apromore-portal</feature>
+    <feature>docx4j</feature>
     <bundle>mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.2.0</bundle>
     <bundle>mvn:org.apache.ant/com.springsource.org.apache.tools.ant/1.8.3</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.fop/2.5_1</bundle>
+
     <bundle>mvn:org.apromore/editor-platform-extension-diagram/1.2</bundle>
     <bundle>mvn:org.apromore/editor-platform-extension-bpmn2_0/1.2</bundle>
     <bundle>mvn:org.apromore/editor-platform-extension-pdf/1.2</bundle>
@@ -160,6 +163,25 @@
     <bundle>mvn:org.springframework.ws/org.springframework.ws.support/2.1.0.RELEASE</bundle>
     <!-- <bundle>webbundle:mvn:org.apromore/apromore-portal/1.1/war?Web-ContextPath=</bundle> -->
     <bundle>mvn:org.apromore/apromore-portal/1.1/war</bundle>
+  </feature>
+
+  <feature name="docx4j" version="8.2.4" description="Docx4J Word format support">
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.3</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.11.3</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.11.3</bundle>
+    <bundle>mvn:net.engio/mbassador/1.3.2</bundle>
+    <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.13</bundle>
+    <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.14</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr-runtime/3.5.2_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.batik/1.13_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.bcel/5.2_4</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.gae/1.9.82_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.stringtemplate/3.2_5</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/2.7.2_3</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/2.12.0_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlgraphics-commons/2.4_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlresolver/1.2_5</bundle>
+    <bundle>mvn:org.apromore/docx4j-osgi/8.2.4</bundle>
   </feature>
 
   <feature name="hadoop">
