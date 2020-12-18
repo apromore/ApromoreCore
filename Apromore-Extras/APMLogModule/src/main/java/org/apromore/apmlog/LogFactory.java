@@ -204,8 +204,6 @@ public class LogFactory {
         XEvent baseEvent = xTrace.get(fromIndex);
         eventIndexList.add(fromIndex);
 
-
-
         long baseT = getTimestamp(baseEvent);
 
         long startTime = baseT;
@@ -217,7 +215,10 @@ public class LogFactory {
         if (fromIndex == xTrace.size() - 1) proceed = false;
         if (baseLife.equals("complete")) proceed = false;
 
+        boolean foundStart = baseLife.equals("start");
+
         if (proceed) {
+
             for (int i = fromIndex + 1; i < xTrace.size(); i++) {
                 if (!markedIndexes.contains(i)) {
                     XEvent nEvent = xTrace.get(i);
@@ -236,13 +237,21 @@ public class LogFactory {
                         if (lifecycle.equals("complete") ||
                                 lifecycle.equals("manualskip") ||
                                 lifecycle.equals("autoskip")) {
-                            eventIndexList.add(i);
 
+                            eventIndexList.add(i);
                             if (nT > endTime) endTime = nT;
 
                             break;
+
                         } else {
-                            eventIndexList.add(i);
+                            if (lifecycle.equals("start")){
+                                if (!foundStart) {
+                                    eventIndexList.add(i);
+                                    foundStart = true;
+                                }
+                            } else {
+                                eventIndexList.add(i);
+                            }
                         }
                     }
                 }
@@ -263,7 +272,6 @@ public class LogFactory {
     private static boolean haveCommonMainAttributes(XEvent event1, XEvent event2) {
         String name1 = event1.getAttributes().get("concept:name").toString();
         String name2 = event2.getAttributes().get("concept:name").toString();
-
         return name1.equals(name2);
     }
 
