@@ -84,14 +84,9 @@ public class AlternativesRenderer extends HttpServlet {
 
     private static final long serialVersionUID = 8526319871562210085L;
 
-    private File inFile;
-    private File outFile;
-
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse res)
         throws IOException, ServletException {
-
-        String data = new String(req.getParameter("data").getBytes("UTF-8"));
 
         // create tmp folder
         File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
@@ -101,18 +96,15 @@ public class AlternativesRenderer extends HttpServlet {
         }
 
         String baseFilename = String.valueOf(System.currentTimeMillis());
-        this.inFile = new File(tmpFolder, baseFilename + ".svg");
-        this.outFile = new File(tmpFolder, baseFilename + ".pdf");
-        log("Real file " + this.outFile);
+        File inFile = new File(tmpFolder, baseFilename + ".svg");
+        File outFile = new File(tmpFolder, baseFilename + ".pdf");
 
         try {
-            String contextPath = req.getContextPath();
             BufferedWriter out = new BufferedWriter(new FileWriter(inFile));
-            out.write(data);
+            out.write(req.getParameter("data"));
             out.close();
             makePDF(inFile, outFile);
-            log("Virtual path " + contextPath + "/tmp/" + baseFilename + ".pdf");
-            res.getOutputStream().print(contextPath + "/tmp/" + baseFilename + ".pdf");
+            res.getOutputStream().print(req.getContextPath() + "/tmp/" + baseFilename + ".pdf");
         } catch (TranscoderException e) {
             throw new ServletException("Unable to convert SVG to PDF", e);
         }
