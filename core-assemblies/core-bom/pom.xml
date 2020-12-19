@@ -7,8 +7,9 @@
     <artifactId>core-assemblies</artifactId>
     <version>1.0</version>
   </parent>
-  <artifactId>core-dependencies</artifactId>
+  <artifactId>core-bom</artifactId>
   <packaging>pom</packaging>
+  <description>Apromore core edition "bill of materials", specifying the versions of all components</description>
 
   <properties>
     <checkstyle.skip>false</checkstyle.skip>

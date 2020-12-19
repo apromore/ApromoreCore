@@ -7,8 +7,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apromore</groupId>
-    <artifactId>core-assemblies</artifactId>
-    <version>1.0</version>
+    <artifactId>apromore</artifactId>
+    <version>1.1</version>
   </parent>
 
   <artifactId>virgo-compatibility</artifactId>

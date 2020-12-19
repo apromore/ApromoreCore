@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>core-dependencies</artifactId>
+      <artifactId>core-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>
