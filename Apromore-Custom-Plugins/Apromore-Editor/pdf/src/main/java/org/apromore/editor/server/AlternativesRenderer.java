@@ -74,19 +74,24 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.fop.svg.PDFTranscoder;
 
 /**
- * Convert an SVG image into a PDF document in the temporary file directory, and return the file path.
+ * This servlet allows a PDF in the Java's temporary file area to be displayed.
  *
- * The file path can then be used by {@link TemporaryFileServlet} to serve the PDF.
- * The SVG image must be passed in the "data" parameter of the servlet request.
- * The returned file path will always start with "/tmp" and end with ".pdf".
+ * The temporary file area is determined by the <code>java.io.tmpdir</code> system property.
+ * Only servlet paths starting with "/tmp" and ending in ".pdf" are acceptable; this is a
+ * minimum effort to prevent misuse to snoop the temporary file area.
  */
 public class AlternativesRenderer extends HttpServlet {
 
     private static final long serialVersionUID = 8526319871562210085L;
 
+    private File inFile;
+    private File outFile;
+
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse res)
         throws IOException, ServletException {
+
+        String data = new String(req.getParameter("data").getBytes("UTF-8"));
 
         // create tmp folder
         File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
@@ -96,22 +101,24 @@ public class AlternativesRenderer extends HttpServlet {
         }
 
         String baseFilename = String.valueOf(System.currentTimeMillis());
-        File inFile = new File(tmpFolder, baseFilename + ".svg");
-        File outFile = new File(tmpFolder, baseFilename + ".pdf");
+        this.inFile = new File(tmpFolder, baseFilename + ".svg");
+        this.outFile = new File(tmpFolder, baseFilename + ".pdf");
+        log("Real file " + this.outFile);
 
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(inFile))) {
-            out.write(req.getParameter("data"));  // write the SVG passed via the data parameter to inFile
-            makePDF(inFile, outFile);  // transform the SVG from inFile to a PDF document in outFile
-
+        try {
+            String contextPath = req.getContextPath();
+            BufferedWriter out = new BufferedWriter(new FileWriter(inFile));
+            out.write(data);
+            out.close();
+            makePDF(inFile, outFile);
+            log("Virtual path " + contextPath + "/tmp/" + baseFilename + ".pdf");
+            res.getOutputStream().print(contextPath + "/tmp/" + baseFilename + ".pdf");
         } catch (TranscoderException e) {
             throw new ServletException("Unable to convert SVG to PDF", e);
         }
-
-        // respond with the path to the PDF document
-        res.getOutputStream().print(req.getContextPath() + "/tmp/" + baseFilename + ".pdf");
     }
 
-    static void makePDF(final File inFile, final File outFile) throws TranscoderException, IOException {
+    protected static void makePDF(final File inFile, final File outFile) throws TranscoderException, IOException {
         try (InputStream in = new FileInputStream(inFile);
              OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile))) {
 
@@ -119,4 +126,5 @@ public class AlternativesRenderer extends HttpServlet {
             transcoder.transcode(new TranscoderInput(in), new TranscoderOutput(out));
         }
     }
+
 }
