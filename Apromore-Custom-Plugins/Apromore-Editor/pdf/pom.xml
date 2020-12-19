@@ -16,6 +16,10 @@
     <version>1.2</version>
     <name>Apromore Editor Extension: PDF</name>
 
+    <properties>
+        <checkstyle.skip>false</checkstyle.skip>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
