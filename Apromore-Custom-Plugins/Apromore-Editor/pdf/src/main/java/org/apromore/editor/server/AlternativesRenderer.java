@@ -99,12 +99,14 @@ public class AlternativesRenderer extends HttpServlet {
         File inFile = new File(tmpFolder, baseFilename + ".svg");
         File outFile = new File(tmpFolder, baseFilename + ".pdf");
 
-        try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(inFile));
+        try (BufferedWriter out = new BufferedWriter(new FileWriter(inFile))) {
             out.write(req.getParameter("data"));
-            out.close();
+        }
+
+        try {
             makePDF(inFile, outFile);
             res.getOutputStream().print(req.getContextPath() + "/tmp/" + baseFilename + ".pdf");
+
         } catch (TranscoderException e) {
             throw new ServletException("Unable to convert SVG to PDF", e);
         }
