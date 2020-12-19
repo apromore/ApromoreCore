@@ -48,6 +48,7 @@ public class TemporaryFileServlet extends HttpServlet {
 
         // A minimal security check: only allow filenames that look like PDFs
         if (!req.getServletPath().startsWith(PREFIX) || !req.getServletPath().endsWith(SUFFIX)) {
+            log(String.format("Denied access to temporary file area for non-PDF path %s", req.getServletPath()));
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
