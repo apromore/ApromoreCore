@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,7 +78,8 @@ public class AlternativesRenderer extends HttpServlet {
     private File inFile;
     private File outFile;
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         String data = req.getParameter("data");
 
         try {
@@ -93,7 +95,7 @@ public class AlternativesRenderer extends HttpServlet {
         } catch (Exception e) {
             throw new Error("Wrong!", e);
         }
-        //File tmpFolder = new File(tmpPath);
+
         if (!tmpFolder.exists()) {
             tmpFolder.mkdirs();
         }
@@ -111,8 +113,8 @@ public class AlternativesRenderer extends HttpServlet {
             makePDF(inFile, outFile);
             log("Virtual path " + contextPath + "/tmp/" + baseFilename + ".pdf");
             res.getOutputStream().print(contextPath + "/tmp/" + baseFilename + ".pdf");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (TranscoderException e) {
+            throw new ServletException("Unable to convert SVG to PDF", e);
         }
     }
 

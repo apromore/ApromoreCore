@@ -32,19 +32,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This servlet allows a PDF in the standard temporary file area to be displayed.
+ * This servlet allows a PDF in the Java's temporary file area to be displayed.
+ *
+ * The temporary file area is determined by the <code>java.io.tmpdir</code> system property.  
+ * Only servlet paths starting with "/tmp" and ending in ".pdf" are acceptable; this is a
+ * minimum effort to prevent misuse to snoop the temporary file area.
  */
 public class TemporaryFileServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        log("context path " + req.getContextPath());
-        log("servlet path " + req.getServletPath());
-        log("path info " + req.getPathInfo());
-        
+        // A minimal security check: only allow filenames that look like PDFs
+        if (!req.getServletPath().startsWith("/tmp") || !req.getServletPath().endsWith(".pdf")) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        // Reconstruct the real path to the PDF in the temporary folder
         File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
         File pdfFile = new File(tmpFolder, req.getServletPath().substring("/tmp".length()));
-        log("real path " + pdfFile);
 
         // Return the file, presumed to be a PDF
         res.setContentType("application/pdf");
