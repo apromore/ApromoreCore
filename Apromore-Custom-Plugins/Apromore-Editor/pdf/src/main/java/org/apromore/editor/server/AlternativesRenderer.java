@@ -54,7 +54,10 @@ package org.apromore.editor.server;
  **/
 
 import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,21 +83,10 @@ public class AlternativesRenderer extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-        String data = req.getParameter("data");
-
-        try {
-            data = new String(data.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
+        String data = new String(req.getParameter("data").getBytes("UTF-8"));
 
         // create tmp folder
-        File tmpFolder;
-        try {
-            tmpFolder = new File(System.getProperty("java.io.tmpdir"));
-        } catch (Exception e) {
-            throw new Error("Wrong!", e);
-        }
+        File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
 
         if (!tmpFolder.exists()) {
             tmpFolder.mkdirs();
@@ -119,25 +111,11 @@ public class AlternativesRenderer extends HttpServlet {
     }
 
     protected static void makePDF(File inFile, File outFile) throws TranscoderException, IOException {
-        PDFTranscoder transcoder = new PDFTranscoder();
-        InputStream in = new java.io.FileInputStream(inFile);
-
-        try {
-            TranscoderInput input = new TranscoderInput(in);
-
-            // Setup output
-            OutputStream out = new java.io.FileOutputStream(outFile);
-            out = new java.io.BufferedOutputStream(out);
-            try {
-                TranscoderOutput output = new TranscoderOutput(out);
-
-                // Do the transformation
-                transcoder.transcode(input, output);
-            } finally {
-                out.close();
+        try (InputStream in = new FileInputStream(inFile)) {
+            try (OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile))) {
+                PDFTranscoder transcoder = new PDFTranscoder();
+                transcoder.transcode(new TranscoderInput(in), new TranscoderOutput(out));
             }
-        } finally {
-            in.close();
         }
     }
 
