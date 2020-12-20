@@ -53,6 +53,7 @@ package org.apromore.editor.server;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import java.io.File;
 import org.junit.Test;
 
 /**
@@ -64,6 +65,6 @@ public class AlternativesRendererUnitTest extends AlternativesRenderer {
 
   /** Dummy test. */
   @Test public void testMakePDF() throws Exception {
-      AlternativesRenderer.makePDF("src/test/resources/makePDF.svg", "target/makePDF.pdf");
+      AlternativesRenderer.makePDF(new File("src/test/resources/makePDF.svg"), new File("target/makePDF.pdf"));
   }
 }
