@@ -13,8 +13,8 @@
   <version>1.0</version>
 
   <modules>
-    <module>core-app-dynamic</module>
-    <!-- <module>core-app-static</module> -->
+    <module>apromore-core-dynamic</module>
+    <!-- <module>apromore-core-static</module> -->
     <module>core-bom</module>
     <module>core-features</module>
   </modules>
