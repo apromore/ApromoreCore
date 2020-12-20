@@ -141,9 +141,6 @@
   </feature>
 
   <feature name="apromore-portal" version="${project.version}" description="Apromore core web browser interface">
-    <config name="org.ops4j.pax.web">
-      org.osgi.service.http.port=9000
-    </config>
     <feature>apromore-calendar</feature>
     <feature>apromore-manager</feature>
     <feature>war</feature>
