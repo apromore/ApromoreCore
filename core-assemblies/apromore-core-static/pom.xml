@@ -73,23 +73,20 @@
         </executions>
         <configuration>
           <startupFeatures>
-            <startupFeature>static-framework</startupFeature>
-            <startupFeature>eventadmin</startupFeature>
-            <startupFeature>jaas</startupFeature>
-            <startupFeature>jpa</startupFeature>
-            <startupFeature>shell</startupFeature>
-            <startupFeature>war</startupFeature>
+            <feature>static-framework</feature>
+            <feature>eventadmin</feature>
+            <feature>jaas</feature>
+            <feature>jpa</feature>
+            <feature>war</feature>
 
-            <startupFeature>webconsole</startupFeature>
+            <feature>shell</feature>
+            <feature>webconsole</feature>
 
-            <startupFeature>virgo-compatibility</startupFeature>
-            <startupFeature>apromore-core</startupFeature>
+            <feature>apromore-core</feature>
           </startupFeatures>
           <startupBundles>
-            <startupBundle>mvn:org.apache.felix/org.apache.felix.fileinstall/3.6.4</startupBundle>
-<!--
-            <startupBundle>mvn:org.ops4j.pax.logging/pax-logging-api/2.0.6</startupBundle>
--->
+            <bundle>mvn:org.apache.felix/org.apache.felix.fileinstall/3.6.4</bundle>
+            <bundle>mvn:org.apache.geronimo.specs/geronimo-jms_1.1_spec/1.1.1</bundle>
           </startupBundles>
           <framework>static</framework>
           <useReferenceUrls>true</useReferenceUrls>
