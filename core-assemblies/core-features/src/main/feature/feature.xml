@@ -29,7 +29,6 @@
 
   <feature name="apromore-common" version="${project.version}" description="Apromore common to all editions">
     <feature>apromore-portal</feature>
-    <feature>opencsv</feature>
     <bundle>mvn:commons-beanutils/commons-beanutils/1.9.3</bundle>
     <bundle>mvn:commons-collections/commons-collections/3.2.2</bundle>
     <bundle>mvn:org.apache.commons/commons-collections4/4.4</bundle>
@@ -46,7 +45,6 @@
     <bundle>mvn:org.apromore/prom-widgets-osgi/1.0</bundle>
 
     <feature>apromore-bpmn-editor</feature>
-    <feature>apromore-csv-importer</feature>
     <bundle>mvn:org.apromore/csvexporter-logic/1.0</bundle>
     <bundle>mvn:org.apromore/csvexporter-portal-plugin/1.0</bundle>
     
@@ -73,7 +71,8 @@
   </feature>
 
   <feature name="apromore-core" version="${project.version}" description="Apromore core edition">
-    <feature prerequisite="true">apromore-common</feature>
+    <feature>apromore-common</feature>
+    <feature>apromore-csv-importer</feature>
   </feature>
 
   <feature name="apromore-csv-importer" version="${project.version}" description="Apromore CSV importer">
