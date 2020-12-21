@@ -31,15 +31,23 @@
 
     <vbox vflex="1" hflex="1" spacing="0">
         <button id="editBtn" visible="false"/>
-        <div style="padding: 8px;margin-bottom: 3px;" vflex="min">
-            <div sclass="ap-share-detail">
-                <span id="selectedIconLog" sclass="ap-icon ap-icon-log"/>
-                <span id="selectedIconModel" sclass="ap-icon ap-icon-bpmn-model"/>
-                <span id="selectedIconFolder" sclass="ap-icon ap-icon-folder"/>
-                <span id="selectedIconMetadata" sclass="ap-icon ap-icon-metadata"/>
-                <label id="selectedName">Resource name</label>
+        <div vflex="min">
+            <div sclass="ap-share-detail" style="padding: 6px;" height="34px">
+                <span id="selectedIconLog" visible="false" >
+                    <image src="/themes/ap/common/img/icons/log.svg" />
+                </span>
+                <span id="selectedIconModel" visible="false" >
+                    <image src="/themes/ap/common/img/icons/bpmn-model.svg" />
+                </span>
+                <span id="selectedIconFolder" visible="false" >
+                    <image src="/themes/ap/common/img/icons-2/folder-solid.svg" />
+                </span>
+                <span id="selectedIconMetadata" visible="false" >
+                    <image src="/themes/ap/common/img/icons/metadata.svg" />
+                </span>
+                <label id="selectedName"></label>
             </div>
-            <div id="relatedDepsWrapper" sclass="ap-share-related-deps" visible="false">
+            <div id="relatedDepsWrapper" vflex="1" sclass="ap-share-related-deps" visible="false">
                 <div sclass="note">
                     The following files will also be automatically shared to the assigned users with the same permission
                     level.
