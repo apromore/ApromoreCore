@@ -59,6 +59,7 @@ public class SecuritySetupController extends BaseController {
         arg.put("selectedItem", selectedItem);
         arg.put("currentUser", currentUser);
         arg.put("autoInherit", true);
+        arg.put("showRelatedArtifacts", true);
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, arg);
             // FolderType currentFolder = UserSessionManager.getCurrentFolder();
