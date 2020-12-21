@@ -61,19 +61,9 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
-        <targetPath>${project.build.directory}/assembly</targetPath>
-      </resource>
-
-      <resource>
         <directory>src/main/resources-filtered</directory>
         <filtering>true</filtering>
         <targetPath>${project.build.directory}/assembly</targetPath>
-      </resource>
-
-      <resource>
-        <directory>../../target/classes/META-INF</directory>
-        <targetPath>${project.build.directory}/assembly/etc</targetPath>
       </resource>
     </resources>
 
@@ -199,6 +189,17 @@
             <configuration>
               <sourceFile>${project.basedir}/../../Supplements/Virgo/portalContext-security.xml</sourceFile>
               <destinationFile>${project.build.directory}/assembly/configuration/portalContext-security.xml</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>site.cfg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.basedir}/../../site.properties</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/etc/site.cfg</destinationFile>
             </configuration>
           </execution>
         </executions>
