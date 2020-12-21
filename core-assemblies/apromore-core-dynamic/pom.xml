@@ -55,13 +55,13 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <targetPath>${project.build.directory}</targetPath>
+        <targetPath>${project.build.directory}/assembly</targetPath>
       </resource>
 
       <resource>
         <directory>src/main/resources-filtered</directory>
         <filtering>true</filtering>
-        <targetPath>${project.build.directory}</targetPath>
+        <targetPath>${project.build.directory}/assembly</targetPath>
       </resource>
     </resources>
 
@@ -120,6 +120,8 @@
             <feature>apromore-core</feature>
           </bootFeatures>
           <javase>${java.version}</javase>
+          <archiveTarGz>false</archiveTarGz>
+          <archiveZip>false</archiveZip>
         </configuration>
       </plugin>
 
