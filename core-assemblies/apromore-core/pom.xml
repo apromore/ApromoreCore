@@ -16,6 +16,13 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.coderplus.maven.plugins</groupId>
+      <artifactId>copy-rename-maven-plugin</artifactId>
+      <version>1.0.1</version>
+      <type>maven-plugin</type>
+    </dependency>
+
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>core-bom</artifactId>
       <version>${project.version}</version>
@@ -62,6 +69,11 @@
         <directory>src/main/resources-filtered</directory>
         <filtering>true</filtering>
         <targetPath>${project.build.directory}/assembly</targetPath>
+      </resource>
+
+      <resource>
+        <directory>../../target/classes/META-INF</directory>
+        <targetPath>${project.build.directory}/assembly/etc</targetPath>
       </resource>
     </resources>
 
@@ -136,6 +148,58 @@
             <goals>
               <goal>resources</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <executions>
+          <execution>
+            <id>git.cfg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.basedir}/../../target/classes/META-INF/git.properties</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/etc/git.cfg</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>git.core.cfg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.basedir}/../../target/classes/META-INF/git.properties</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/etc/git.core.cfg</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ehcache.xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.basedir}/../../Apromore-Cache/src/main/resources/ehcache.xml</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/configuration/ehcache.xml</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>portalContext-security.xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.basedir}/../../Supplements/Virgo/portalContext-security.xml</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/configuration/portalContext-security.xml</destinationFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
