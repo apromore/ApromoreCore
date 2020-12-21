@@ -13,7 +13,7 @@
   <version>7.20-SNAPSHOT</version>
 
   <modules>
-    <module>apromore-core-dynamic</module>
+    <module>apromore-core</module>
     <!-- <module>apromore-core-static</module> -->
     <module>core-bom</module>
     <module>core-features</module>
