@@ -23,6 +23,8 @@
     <checkstyle.skip>false</checkstyle.skip>
     <enforcer.skip>true</enforcer.skip>
     <java.version>1.8</java.version>
+    <karaf.archive.tar.gz>false</karaf.archive.tar.gz>
+    <karaf.archive.zip>false</karaf.archive.zip>
     <karaf.version>4.3.0</karaf.version>
     <license.skipUpdateLicense>true</license.skipUpdateLicense>
     <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -94,6 +96,12 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.coderplus.maven.plugins</groupId>
+          <artifactId>copy-rename-maven-plugin</artifactId>
+          <version>1.0.1</version>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>

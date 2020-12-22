@@ -11,18 +11,10 @@
   <packaging>pom</packaging>
 
   <properties>
-    <checkstyle.skip>false</checkstyle.skip>
     <version.edition>Apromore Core</version.edition>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.coderplus.maven.plugins</groupId>
-      <artifactId>copy-rename-maven-plugin</artifactId>
-      <version>1.0.1</version>
-      <type>maven-plugin</type>
-    </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>core-bom</artifactId>
@@ -62,7 +54,7 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources-filtered</directory>
+        <directory>src/main/resources</directory>
         <filtering>true</filtering>
         <targetPath>${project.build.directory}/assembly</targetPath>
       </resource>
@@ -123,8 +115,8 @@
             <feature>apromore-core</feature>
           </bootFeatures>
           <javase>${java.version}</javase>
-          <archiveTarGz>false</archiveTarGz>
-          <archiveZip>false</archiveZip>
+          <archiveTarGz>${karaf.archive.tar.gz}</archiveTarGz>
+          <archiveZip>${karaf.archive.zip}</archiveZip>
         </configuration>
       </plugin>
 
