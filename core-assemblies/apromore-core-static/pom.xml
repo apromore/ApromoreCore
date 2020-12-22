@@ -11,7 +11,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <checkstyle.skip>false</checkstyle.skip>
+    <core.basedir>${project.basedir}/../..</core.basedir>
+    <version.edition>Apromore Core (static assembly)</version.edition>
   </properties>
 
   <dependencies>
@@ -43,6 +44,14 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <targetPath>${project.build.directory}/assembly</targetPath>
+      </resource>
+    </resources>
+
     <plugins>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
@@ -92,7 +101,109 @@
           <useReferenceUrls>true</useReferenceUrls>
           <environment>static</environment>
           <javase>${java.version}</javase>
+          <archiveTarGz>${karaf.archive.tar.gz}</archiveTarGz>
+          <archiveZip>${karaf.archive.zip}</archiveZip>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <propertiesEncoding>UTF-8</propertiesEncoding>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>site.properties</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <delimiters>
+                <delimiter>@</delimiter>
+              </delimiters>
+              <outputDirectory>${project.build.directory}/assembly/etc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${core.basedir}</directory>
+                  <includes>
+                    <include>site.properties</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <executions>
+          <execution>
+            <id>git.cfg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${core.basedir}/target/classes/META-INF/git.properties</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/etc/git.cfg</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>git.core.cfg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${core.basedir}/target/classes/META-INF/git.properties</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/etc/git.core.cfg</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ehcache.xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${core.basedir}/Apromore-Cache/src/main/resources/ehcache.xml</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/configuration/ehcache.xml</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>portalContext-security.xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${core.basedir}/Supplements/Virgo/portalContext-security.xml</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/configuration/portalContext-security.xml</destinationFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>site.cfg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>rename</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.build.directory}/assembly/etc/site.properties</sourceFile>
+              <destinationFile>${project.build.directory}/assembly/etc/site.cfg</destinationFile>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
