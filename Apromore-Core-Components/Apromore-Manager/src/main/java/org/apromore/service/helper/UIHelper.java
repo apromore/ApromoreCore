@@ -63,7 +63,6 @@ public class UIHelper implements UserInterfaceHelper {
     private GroupFolderRepository gfRepository;
     private ProcessModelVersionRepository pmvRepository;
     private WorkspaceService workspaceService;
-    private UserMetadataService userMetadataService;
 
 
     /**
@@ -85,7 +84,6 @@ public class UIHelper implements UserInterfaceHelper {
                     final FolderRepository folderRepository,
                     final GroupFolderRepository groupFolderRepository,
                     final WorkspaceService workspaceService,
-                    final UserMetadataService userMetadataService,
                     final ConfigBean config) {
 
         this.fRepository = folderRepository;
@@ -96,7 +94,6 @@ public class UIHelper implements UserInterfaceHelper {
         this.gfRepository = groupFolderRepository;
         this.pmvRepository = processModelVersionRepository;
         this.workspaceService = workspaceService;
-        this.userMetadataService = userMetadataService;
     }
 
 
@@ -252,15 +249,13 @@ public class UIHelper implements UserInterfaceHelper {
     }
 
     @Override
-    public UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata,
-                                                            AccessType accessType) throws UserNotFoundException {
+    public UserMetadataSummaryType buildUserMetadataSummary(String username, Usermetadata usermetadata,
+                                                            AccessType accessType) {
 
         UserMetadataSummaryType userMetadataSummaryType = new UserMetadataSummaryType();
 
         userMetadataSummaryType.setId(usermetadata.getId());
-        userMetadataSummaryType.setCreatedBy(userMetadataService.findUserByRowGuid(usermetadata.getCreatedBy()).getUsername());
-        userMetadataSummaryType.setGroupName(group.getName());
-        userMetadataSummaryType.setGroupUID(group.getRowGuid());
+        userMetadataSummaryType.setCreatedBy(usermetadata.getCreatedBy());
         userMetadataSummaryType.setUpdatedTime(Objects.equals(usermetadata.getUpdatedTime(), null) ?
                 usermetadata.getCreatedTime() :
                 usermetadata.getUpdatedTime());

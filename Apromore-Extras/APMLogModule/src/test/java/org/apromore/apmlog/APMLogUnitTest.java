@@ -332,6 +332,14 @@ public class APMLogUnitTest {
         AttributeArcDurationTest.testRetain3(apmLog, this);
     }
 
+    @Test
+    public void testAttrArcDur4() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (4) - arc average duration'");
+        XLog xLog = getXLog("files/2TracesArcDurTest.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        AttributeArcDurationTest.testAvgDur1(apmLog, this);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");

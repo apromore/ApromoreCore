@@ -35,7 +35,6 @@
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
     <osgi:reference id="apmLogService" interface="org.apromore.apmlog.APMLogService"/>
 
-    <osgi:service ref="authorizationServiceImpl" interface="org.apromore.service.AuthorizationService" auto-export="interfaces"/>
     <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>
     <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>
     <osgi:service ref="formatServiceImpl" interface="org.apromore.service.FormatService" auto-export="interfaces"/>
@@ -52,8 +51,10 @@
                       
     <osgi:service ref="userMetadataServiceImpl" interface="org.apromore.service.UserMetadataService"
                   auto-export="interfaces"/>
-                  
+
+               
     <osgi:reference id="storageFactory" interface="org.apromore.storage.factory.StorageManagementFactory"/>
+    <osgi:service ref="authorizationServiceImpl" interface="org.apromore.service.AuthorizationService" auto-export="interfaces"/>
 
 
 	<osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
@@ -87,5 +88,8 @@
     <osgi:reference id="usermetadataTypeRepository" interface="org.apromore.dao.UsermetadataTypeRepository"/>
     <osgi:reference id="userRepository" interface="org.apromore.dao.UserRepository"/>
     <osgi:reference id="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository"/>
+    <osgi:reference id="workspaceRepository" interface="org.apromore.dao.WorkspaceRepository"/>
+    
+    <osgi:reference id="transactionManager" interface="org.springframework.transaction.PlatformTransactionManager"/>
 
 </beans:beans>
