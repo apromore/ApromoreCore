@@ -12,6 +12,7 @@
 
   <properties>
     <checkstyle.skip>false</checkstyle.skip>
+    <version.edition>Apromore Core</version.edition>
   </properties>
 
   <dependencies>
@@ -139,6 +140,28 @@
               <goal>resources</goal>
             </goals>
           </execution>
+          <execution>
+            <id>site.properties</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <delimiters>
+                <delimiter>@</delimiter>
+              </delimiters>
+              <outputDirectory>${project.build.directory}/assembly/etc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/../..</directory>
+                  <includes>
+                    <include>site.properties</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -195,10 +218,10 @@
             <id>site.cfg</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>rename</goal>
             </goals>
             <configuration>
-              <sourceFile>${project.basedir}/../../site.properties</sourceFile>
+              <sourceFile>${project.build.directory}/assembly/etc/site.properties</sourceFile>
               <destinationFile>${project.build.directory}/assembly/etc/site.cfg</destinationFile>
             </configuration>
           </execution>
