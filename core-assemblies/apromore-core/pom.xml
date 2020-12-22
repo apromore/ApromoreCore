@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
 
   <properties>
+    <core.basedir>${project.basedir}/../..</core.basedir>
     <version.edition>Apromore Core</version.edition>
   </properties>
 
@@ -145,7 +146,7 @@
               <outputDirectory>${project.build.directory}/assembly/etc</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/../..</directory>
+                  <directory>${core.basedir}</directory>
                   <includes>
                     <include>site.properties</include>
                   </includes>
@@ -169,7 +170,7 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <sourceFile>${project.basedir}/../../target/classes/META-INF/git.properties</sourceFile>
+              <sourceFile>${core.basedir}/target/classes/META-INF/git.properties</sourceFile>
               <destinationFile>${project.build.directory}/assembly/etc/git.cfg</destinationFile>
             </configuration>
           </execution>
@@ -180,7 +181,7 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <sourceFile>${project.basedir}/../../target/classes/META-INF/git.properties</sourceFile>
+              <sourceFile>${core.basedir}/target/classes/META-INF/git.properties</sourceFile>
               <destinationFile>${project.build.directory}/assembly/etc/git.core.cfg</destinationFile>
             </configuration>
           </execution>
@@ -191,7 +192,7 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <sourceFile>${project.basedir}/../../Apromore-Cache/src/main/resources/ehcache.xml</sourceFile>
+              <sourceFile>${core.basedir}/Apromore-Cache/src/main/resources/ehcache.xml</sourceFile>
               <destinationFile>${project.build.directory}/assembly/configuration/ehcache.xml</destinationFile>
             </configuration>
           </execution>
@@ -202,7 +203,7 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <sourceFile>${project.basedir}/../../Supplements/Virgo/portalContext-security.xml</sourceFile>
+              <sourceFile>${core.basedir}/Supplements/Virgo/portalContext-security.xml</sourceFile>
               <destinationFile>${project.build.directory}/assembly/configuration/portalContext-security.xml</destinationFile>
             </configuration>
           </execution>
