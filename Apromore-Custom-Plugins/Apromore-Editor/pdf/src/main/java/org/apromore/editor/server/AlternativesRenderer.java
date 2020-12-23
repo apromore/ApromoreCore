@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2015 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -54,13 +54,16 @@ package org.apromore.editor.server;
  **/
 
 import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,62 +77,40 @@ public class AlternativesRenderer extends HttpServlet {
 
     private static final long serialVersionUID = 8526319871562210085L;
 
-    private String inFile;
-    private String outFile;
-
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) {
-        String data = req.getParameter("data");
-
-        try {
-            data = new String(data.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-
-        String tmpPath = this.getServletContext().getRealPath("/") + File.separator + "tmp" + File.separator;
+    @Override
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse res)
+        throws IOException, ServletException {
 
         // create tmp folder
-        File tmpFolder = new File(tmpPath);
+        File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
+
         if (!tmpFolder.exists()) {
             tmpFolder.mkdirs();
         }
 
         String baseFilename = String.valueOf(System.currentTimeMillis());
-        this.inFile = tmpPath + baseFilename + ".svg";
-        this.outFile = tmpPath + baseFilename + ".pdf";
+        File inFile = new File(tmpFolder, baseFilename + ".svg");
+        File outFile = new File(tmpFolder, baseFilename + ".pdf");
+
+        try (BufferedWriter out = new BufferedWriter(new FileWriter(inFile))) {
+            out.write(req.getParameter("data"));
+        }
 
         try {
-            String contextPath = req.getContextPath();
-            BufferedWriter out = new BufferedWriter(new FileWriter(inFile));
-            out.write(data);
-            out.close();
             makePDF(inFile, outFile);
-            res.getOutputStream().print(contextPath + "/tmp/" + baseFilename + ".pdf");
-        } catch (Exception e) {
-            e.printStackTrace();
+            res.getOutputStream().print(req.getContextPath() + "/tmp/" + baseFilename + ".pdf");
+
+        } catch (TranscoderException e) {
+            throw new ServletException("Unable to convert SVG to PDF", e);
         }
     }
 
-    protected static void makePDF(String inFile, String outFile) throws TranscoderException, IOException {
-        PDFTranscoder transcoder = new PDFTranscoder();
-        InputStream in = new java.io.FileInputStream(inFile);
+    protected static void makePDF(final File inFile, final File outFile) throws TranscoderException, IOException {
+        try (InputStream in = new FileInputStream(inFile);
+             OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile))) {
 
-        try {
-            TranscoderInput input = new TranscoderInput(in);
-
-            // Setup output
-            OutputStream out = new java.io.FileOutputStream(outFile);
-            out = new java.io.BufferedOutputStream(out);
-            try {
-                TranscoderOutput output = new TranscoderOutput(out);
-
-                // Do the transformation
-                transcoder.transcode(input, output);
-            } finally {
-                out.close();
-            }
-        } finally {
-            in.close();
+            PDFTranscoder transcoder = new PDFTranscoder();
+            transcoder.transcode(new TranscoderInput(in), new TranscoderOutput(out));
         }
     }
 
