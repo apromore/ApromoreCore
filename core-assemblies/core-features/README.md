@@ -3,8 +3,8 @@
 This artifact is a Karaf-specific XML definition of various bundle assemblies ("features").
 It serves the same role as Eclipse Virgo's plan artifacts.
 
-Eventually it should be possible to deploy Apromore Enterprise Edition to a stock Karaf server
-using a series of commands similar to the following:
+Eventually it should be possible to deploy Apromore Core to a stock Karaf server using a
+series of commands similar to the following:
 ```
 config:install mvn:org.apromore/karaf-shell-branding/1.0/properties branding.properties
 config:install file:/wherever/ApromoreCore/Apromore-Cache/src/main/resources/ehcache.xml ehcache.xml
