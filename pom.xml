@@ -119,7 +119,9 @@
 		<module>Apromore-Assembly/Manager-Assembly</module>
 		<module>Apromore-Assembly/Portal-Assembly</module>
 		<module>Apromore-Assembly/Custom-Plugins-Assembly</module>
-    	
+		<module>core-assemblies</module>
+		<module>karaf-shell-branding</module>
+		<module>virgo-compatibility</module>
   </modules>
 
 	<properties>

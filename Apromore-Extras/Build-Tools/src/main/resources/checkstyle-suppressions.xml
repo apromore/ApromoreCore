@@ -6,6 +6,10 @@
 
 <suppressions>
 
+  <!-- The ANSI escape codes in branding.properties make for very long lines, which are
+       even more confusing if one source line doesn't correspond to one output line. -->
+  <suppress checks="LineLength" files="branding.properties"/>
+
   <!-- The automatically-included license header contains trailing spaces -->
   <suppress checks="RegexpSingleline" files="\S*\.java" lines="11, 16"/>
 
