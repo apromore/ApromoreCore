@@ -73,13 +73,6 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.fop.svg.PDFTranscoder;
 
-/**
- * This servlet allows a PDF in the Java's temporary file area to be displayed.
- *
- * The temporary file area is determined by the <code>java.io.tmpdir</code> system property.
- * Only servlet paths starting with "/tmp" and ending in ".pdf" are acceptable; this is a
- * minimum effort to prevent misuse to snoop the temporary file area.
- */
 public class AlternativesRenderer extends HttpServlet {
 
     private static final long serialVersionUID = 8526319871562210085L;
