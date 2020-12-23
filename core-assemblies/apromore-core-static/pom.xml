@@ -12,15 +12,31 @@
 
   <properties>
     <core.basedir>${project.basedir}/../..</core.basedir>
+    <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
     <version.edition>Apromore Core (static assembly)</version.edition>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>core-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>core-features</artifactId>
       <version>${project.version}</version>
       <type>xml</type>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>karaf-shell-branding</artifactId>
+      <version>1.0</version>
+      <type>properties</type>
     </dependency>
 
     <dependency>
@@ -46,7 +62,7 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
+        <directory>${project.build.directory}/templates</directory>
         <filtering>true</filtering>
         <targetPath>${project.build.directory}/assembly</targetPath>
       </resource>
@@ -148,6 +164,17 @@
         <artifactId>copy-rename-maven-plugin</artifactId>
         <version>1.0.1</version>
         <executions>
+          <execution>
+            <id>branding.properties</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${maven.repo.local}/org/apromore/karaf-shell-branding/1.0/karaf-shell-branding-1.0.properties</sourceFile>
+              <destinationFile>${project.build.directory}/templates/etc/branding.properties</destinationFile>
+            </configuration>
+          </execution>
           <execution>
             <id>git.cfg</id>
             <phase>process-resources</phase>
