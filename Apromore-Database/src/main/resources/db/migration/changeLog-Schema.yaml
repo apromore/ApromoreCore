@@ -712,3 +712,73 @@ databaseChangeLog:
            referencedTableName: user
            validate: true
 
+ - changeSet:
+    id: 20201222022311
+    author: nolantellis
+    changes:
+      - createTable:
+           tableName: storage
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_storage_id                  
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: false
+                name: storage_path
+                type: VARCHAR(200)
+                remarks: 'Storage path'
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: false
+                name: prefix
+                type: VARCHAR(100)
+                remarks: 'prefix for storage'
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: false
+                name: key
+                type: VARCHAR(200)
+                remarks: 'key for storage'
+             - column:
+                constraints:
+                   nullable: false
+                name: created
+                type: VARCHAR(100)
+                remarks: 'creation time for the storage'             
+             - column:
+                constraints:
+                   nullable: false
+                name: updated
+                type: VARCHAR(100)
+                remarks: 'update time for the storage'
+
+      - addColumn:
+            tableName: log
+            columns:
+               - column:
+                  name: storage_id
+                  type: BIGINT
+                  constraints:
+                      nullable: true
+
+      - addForeignKeyConstraint:
+           baseColumnNames: storage_id
+           baseTableName: log
+           constraintName: fk_log_storage
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: storage
+           validate: true
+ 
+           
+

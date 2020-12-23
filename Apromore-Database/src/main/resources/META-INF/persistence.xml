@@ -58,6 +58,7 @@
         <class>org.apromore.dao.model.CustomCalendarInfo</class>
         <class>org.apromore.dao.model.WorkDay</class>
         <class>org.apromore.dao.model.Holiday</class>
+        <class>org.apromore.dao.model.Storage</class>
     </persistence-unit>
 
 </persistence>
