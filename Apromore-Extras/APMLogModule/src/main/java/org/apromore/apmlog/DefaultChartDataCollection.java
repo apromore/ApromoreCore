@@ -26,6 +26,7 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.sorted.mutable.TreeSortedMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -195,15 +196,8 @@ public class DefaultChartDataCollection {
                 caseUtilKeys
         };
 
-        List<TreeSortedMap<Double, Integer>> seriesMapsList = new ArrayList<>();
-        seriesMapsList.add(caseDurMap);
-        seriesMapsList.add(ttlPTMap);
-        seriesMapsList.add(avgPTMap);
-        seriesMapsList.add(maxPTMap);
-        seriesMapsList.add(ttlWTMap);
-        seriesMapsList.add(avgWTMap);
-        seriesMapsList.add(maxWTMap);
-        seriesMapsList.add(caseUtilMap);
+        List<TreeSortedMap<Double, Integer>> seriesMapsList =
+                Arrays.asList(caseDurMap, ttlPTMap, avgPTMap, maxPTMap, ttlWTMap, avgWTMap, maxWTMap, caseUtilMap);
 
         for(int i = 0; i< apmLog.size(); i++) {
             ATrace aTrace = apmLog.get(i);
