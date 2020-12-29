@@ -23,12 +23,14 @@ package org.apromore.dao.model;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -40,7 +42,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import lombok.NoArgsConstructor;
 
 @Entity
-@ReadOnly
 @Table(name = "storage")
 @Configurable("storage")
 @Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
@@ -66,21 +67,6 @@ public class Storage implements Serializable {
 	return id;
     }
 
-    public void setId(Long id) {
-	this.id = id;
-    }
-
-    public void setCreated(String created) {
-	this.created = created;
-    }
-
-    public void setUpdated(String updated) {
-	this.updated = updated;
-
-    }
-    
-    
-
     @Transient
     public OffsetDateTime getCreateOffsetDateTime() {
 	return OffsetDateTime.parse(created);
@@ -91,8 +77,7 @@ public class Storage implements Serializable {
     public OffsetDateTime getUpdateOffsetDateTime() {
 	return OffsetDateTime.parse(updated);
     }
-    
-    
+
     @Column(name = "storage_path")
     public String getStoragePath() {
 	return storagePath;
@@ -122,12 +107,25 @@ public class Storage implements Serializable {
 
     @Column(name = "created")
     public String getCreated() {
-        return created;
+	return created;
     }
 
     @Column(name = "updated")
     public String getUpdated() {
-        return updated;
+	return updated;
+    }
+
+    public void setId(Long id) {
+	this.id = id;
+    }
+
+    public void setCreated(String created) {
+	this.created = created;
+    }
+
+    public void setUpdated(String updated) {
+	this.updated = updated;
+
     }
 
 }

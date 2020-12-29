@@ -23,6 +23,8 @@ package org.apromore.service.impl;
 
 import static org.easymock.EasyMock.expect;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 import org.apromore.AbstractTest;
@@ -36,6 +38,7 @@ import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.StorageRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.WorkspaceRepository;
 import org.apromore.dao.model.*;
@@ -43,6 +46,8 @@ import org.apromore.dao.model.Process;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.storage.StorageClient;
+import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -71,6 +76,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository pmvRepo;
     private UserRepository userRepo;
+    private StorageRepository storageRepository;
+    private StorageManagementFactory<StorageClient> storageFacotry;
 
     private ConfigBean config;
     
@@ -90,6 +97,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         pmvRepo = createMock(ProcessModelVersionRepository.class);
         userRepo = createMock(UserRepository.class);
         folderServiceImpl = createMock(FolderServiceImpl.class);
+        storageFacotry = createMock(StorageManagementFactory.class);
+        storageRepository = createMock(StorageRepository.class);
         
         config = new ConfigBean();
 
@@ -104,7 +113,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupProcessRepo,
                                                 groupLogRepo,
                                                 logFileService,
-                                                folderServiceImpl);
+                                                folderServiceImpl,
+                                                storageFacotry,storageRepository);
     }
 
     @Test
@@ -130,7 +140,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         expect(logRepo.findUniqueByID(logId)).andReturn(log);
         expect(folderRepo.findUniqueByID(targetFolderId)).andReturn(targetFolder);
         expect(userRepo.findByUsername(userName)).andReturn(user);
-        logFileService.copyFile(EasyMock.anyObject(), EasyMock.anyObject());
+        logFileService.copyFile(EasyMock.anyObject(InputStream.class), EasyMock.anyObject(OutputStream.class));
         expect(logRepo.save((Log)EasyMock.anyObject())).andReturn(newLog);
         replayAll();
         

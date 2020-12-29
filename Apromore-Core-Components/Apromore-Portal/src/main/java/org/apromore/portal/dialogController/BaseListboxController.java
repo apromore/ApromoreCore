@@ -608,29 +608,29 @@ public abstract class BaseListboxController extends BaseController {
 	}
 
 	public void paste() throws Exception {
-		// FolderType currentFolder = UserSessionManager.getCurrentFolder();
-		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+	    // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+	    FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
+	    boolean canChange = currentFolder == null || currentFolder.getId() == 0;
+	    try {
+		canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
+	    } catch (Exception e) {
+		Notification.error(e.getMessage());
+		return;
+	    }
+
+	    if (canChange) {
+		Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
 		try {
-			canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
+		    copyAndPasteController.paste(targetFolderId);
 		} catch (Exception e) {
-			Notification.error(e.getMessage());
-			return;
+		    Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK,
+			    Messagebox.ERROR);
 		}
-
-		if (canChange) {
-			Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
-			try {
-				copyAndPasteController.paste(targetFolderId);
-			} catch (Exception e) {
-				Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK,
-						Messagebox.ERROR);
-			}
-		} else {
-			Notification.error("Only Owner/Editor can paste here.");
-		}
-		refreshContent();
+	    } else {
+		Notification.error("Only Owner/Editor can paste here.");
+	    }
+	    refreshContent();
 	}
 
 	private ArrayList<FolderType> getSelectedFolders() {

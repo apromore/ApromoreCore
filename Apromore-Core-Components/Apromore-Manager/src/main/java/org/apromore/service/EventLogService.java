@@ -74,6 +74,9 @@ public interface EventLogService {
     Log importLog(String username, Integer folderId, String logName, InputStream log, String extension,
                   String domain, String created, boolean publicModel)
             throws Exception;
+    
+    
+    Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel, User user, XLog xLog) ;
     /**
      * @param username  a username
      * @param logId identifier for a log

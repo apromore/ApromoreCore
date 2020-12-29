@@ -191,7 +191,7 @@ public class Log implements Serializable {
     
     
     
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToOne
     @JoinColumn(name = "storage_id",nullable = true)
     public Storage getStorage() {
         return storage;

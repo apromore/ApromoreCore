@@ -24,6 +24,7 @@ package org.apromore.integration;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -33,12 +34,12 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CustomCalendarService;
-import org.apromore.dao.model.Holiday;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

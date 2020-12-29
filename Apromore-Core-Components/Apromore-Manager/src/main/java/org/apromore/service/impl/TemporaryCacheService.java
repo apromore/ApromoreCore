@@ -78,7 +78,7 @@ public class TemporaryCacheService {
     private ConfigBean config;
 
     @Resource
-    private StorageManagementFactory<StorageClient> storageFacotry;
+    private StorageManagementFactory<StorageClient> storageFactory;
 
     public CacheRepository getCacheRepo() {
 	return cacheRepo;
@@ -104,12 +104,12 @@ public class TemporaryCacheService {
 	this.config = config;
     }
 
-    public StorageManagementFactory<StorageClient> getStorageFacotry() {
-	return storageFacotry;
+    public StorageManagementFactory<StorageClient> getStorageFactory() {
+	return storageFactory;
     }
 
-    public void setStorageFacotry(StorageManagementFactory<StorageClient> storageFacotry) {
-	this.storageFacotry = storageFacotry;
+    public void setStorageFactory(StorageManagementFactory<StorageClient> storageFactory) {
+	this.storageFactory = storageFactory;
     }
 
     private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
@@ -167,12 +167,13 @@ public class TemporaryCacheService {
 		String storagePath = "FILE::" + config.getLogsDir();
 		String prefix = null;
 		String key = log.getFilePath() + "_" + log.getName() + ".xes.gz";
+		
 		if (log.getStorage() != null) {
 		    storagePath = log.getStorage().getStoragePath();
 		    prefix = log.getStorage().getPrefix();
 		    key = log.getStorage().getKey();
 		}
-		StorageClient storageClient = storageFacotry.getStorageClient(log.getStorage().getStoragePath());
+		StorageClient storageClient = storageFactory.getStorageClient(storagePath);
 		String name = key;
 
 		storageClient.delete(prefix, name);
@@ -224,7 +225,7 @@ public class TemporaryCacheService {
 		LOGGER.info("Cache for [KEY: " + key + "] is null.");
 
 		try {
-		    StorageClient storageClient = storageFacotry.getStorageClient(storagePath);
+		    StorageClient storageClient = storageFactory.getStorageClient(storagePath);
 
 		    XFactory factory = getXFactory(factoryName);
 		    InputStream inputStream = storageClient.getInputStream(prefix, key);
@@ -467,7 +468,7 @@ public class TemporaryCacheService {
     public void exportToInputStream(XLog log, String name, XSerializer serializer) {
 
 	try {
-	    OutputStream outputStream = storageFacotry.getStorageClient(config.getStoragePath()).getOutputStream("log", name);
+	    OutputStream outputStream = storageFactory.getStorageClient(config.getStoragePath()).getOutputStream("log", name);
 	    serializer.serialize(log, outputStream);
 	    outputStream.close();
 

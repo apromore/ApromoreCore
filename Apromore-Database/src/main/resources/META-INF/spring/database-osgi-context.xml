@@ -63,6 +63,7 @@
     <osgi:service ref="transactionManager" interface="org.springframework.transaction.PlatformTransactionManager" auto-export="interfaces"/>
     <osgi:service ref="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository" auto-export="interfaces"/>
     <osgi:service ref="customCalendarInfoRepository" interface="org.apromore.dao.CustomCalendarInfoRepository" auto-export="interfaces"/>
+    <osgi:service ref="storageRepository" interface="org.apromore.dao.StorageRepository" auto-export="interfaces"/>
     
     
 

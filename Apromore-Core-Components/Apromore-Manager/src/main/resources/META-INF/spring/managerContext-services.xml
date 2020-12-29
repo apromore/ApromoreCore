@@ -41,7 +41,7 @@
         <property name="cacheRepo" ref="cacheRepo"/>
         <property name="config" ref="config"/>
         <property name="apmLogService" ref="apmLogService"/>
-        <property name="storageFacotry" ref="storageFactory"/>
+        <property name="storageFactory" ref="storageFactory"/>
     </bean>
     
     

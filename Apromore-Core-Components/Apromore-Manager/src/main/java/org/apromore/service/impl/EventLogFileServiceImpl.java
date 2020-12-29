@@ -23,6 +23,8 @@ package org.apromore.service.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.inject.Inject;
 
@@ -34,41 +36,54 @@ import org.deckfour.xes.out.XSerializer;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventLogFileServiceImpl implements EventLogFileService  {
+public class EventLogFileServiceImpl implements EventLogFileService {
     private String directoryPath;
-    
+
     @Inject
     public EventLogFileServiceImpl(final ConfigBean configBean) {
-        this.directoryPath = configBean.getLogsDir();
+	this.directoryPath = configBean.getLogsDir();
     }
-    
-    @Override
-    public void serializeXLog(XLog log, String name, XSerializer serializer) throws Exception {
-        FileOutputStream outputStream;
-        try {
-            File directory = new File(directoryPath);
-            if (!directory.exists()) directory.mkdirs();
-            File file = new File(directoryPath + name);
-            if (!file.exists()) file.createNewFile();
-            outputStream = new FileOutputStream(file);
-            serializer.serialize(log, outputStream);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error");
-        }
-    }
-    
+
+//    @Override
+//    public void serializeXLog(XLog log, String name, XSerializer serializer) throws Exception {
+//        FileOutputStream outputStream;
+//        try {
+//            File directory = new File(directoryPath);
+//            if (!directory.exists()) directory.mkdirs();
+//            File file = new File(directoryPath + name);
+//            if (!file.exists()) file.createNewFile();
+//            outputStream = new FileOutputStream(file);
+//            serializer.serialize(log, outputStream);
+//            outputStream.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Error");
+//        }
+//    }
+
     // Only work for "xes.gz" extension
     @Override
     public void copyFile(String sourceFileName, String targetFileName) throws Exception {
-        File currentFile = new File(directoryPath + "/" + sourceFileName);
-        File newFile = new File(directoryPath + "/" + targetFileName);
-        FileUtils.copyFile(currentFile, newFile);
+	File currentFile = new File(directoryPath + "/" + sourceFileName);
+	File newFile = new File(directoryPath + "/" + targetFileName);
+	FileUtils.copyFile(currentFile, newFile);
     }
-    
+
     @Override
     public void deleteFileIfExist(String fileFullName) throws Exception {
-        FileUtils.deleteQuietly(new File(fileFullName));
+	FileUtils.deleteQuietly(new File(fileFullName));
+    }
+
+    @Override
+    public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception {
+	byte[] buf = new byte[8192];
+	int length;
+	while ((length = sourceFile.read(buf)) > 0) {
+	    targetFile.write(buf, 0, length);
+	}
+	
+	sourceFile.close();
+	targetFile.close();
+
     }
 }
