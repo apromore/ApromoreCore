@@ -114,19 +114,17 @@
                     </listitem>
                 </template>
             </listbox>
-            <listbox id="artifactListbox" multiple="true" checkmark="true" nonselectableTags="*" vflex="1" hflex="1"
+            <listbox id="artifactListbox" multiple="false" checkmark="false" nonselectableTags="*" vflex="1" hflex="1"
                      visible="false">
                 <listhead>
-                    <listheader label="" width="30px"/>
                     <listheader align="center" label="" width="40px"/><!-- type icon -->
                     <listheader align="left" hflex="1" label="Associated artifacts" sort="auto(name)"/>
                     <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
                 </listhead>
                 <template name="model">
                     <listitem>
-                        <listcell/>
                         <listcell>
-                            <span sclass="ap-icon ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-speed'}"
+                            <span sclass="ap-icon ap-icon-static ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-speed'}"
                                   style="display: inline-block"/>
                         </listcell>
                         <listcell label="${each.name}"/>
@@ -136,9 +134,10 @@
             </listbox>
 
         </hbox>
-        <div id="umWarning" visible="false" sclass="z-icon-exclamation-circle">
-            No access to the associated log. By sharing this dashboard,
-            this user or group will also gain the same access right on the associated log.​
+        <div id="umWarning" visible="false" style="padding:6px;display:flex;">
+            <span sclass="z-icon-exclamation-circle" style="margin-right: 4px;"/>
+            <span>No access to the associated log. By sharing this dashboard, this user or group will also gain the same access right on the associated log.​
+            </span>
         </div>
         <div sclass="ap-window-footer-actions" height="42px">
             <button id="btnApply" label="Apply Changes" iconSclass="z-icon-check-circle"/>
