@@ -64,7 +64,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
  public static Collection params() {
     return Arrays.asList(new Object[][] {
        { OffsetDateTime.of(2020, 10, 03, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 03, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
-       { OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 06, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(24, ChronoUnit.HOURS)},
+       { OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 06, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(22, ChronoUnit.HOURS)},
        { OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(24, ChronoUnit.HOURS)},
        {  OffsetDateTime.of(2020, 10, 02, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(21, ChronoUnit.HOURS)},
        {  OffsetDateTime.of(2020, 10, 02, 17, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(16, ChronoUnit.HOURS)},
@@ -75,7 +75,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
    
-    CalendarModel calendarModel = calendarModelBuilder.with5DayWorking().withZoneId(ZoneId.systemDefault().toString()).build();
+    CalendarModel calendarModel = calendarModelBuilder.with5DayWorking().withZoneId("UTC").build();
 
     // When
     DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);  
