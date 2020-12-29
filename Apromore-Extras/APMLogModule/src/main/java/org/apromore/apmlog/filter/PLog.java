@@ -488,7 +488,7 @@ public class PLog extends LaLog {
 
         }
 
-
+        updateActivityOccurMaxMap();
 
         attributeGraph = new AAttributeGraph(this);
         defaultChartDataCollection = new DefaultChartDataCollection(this);
