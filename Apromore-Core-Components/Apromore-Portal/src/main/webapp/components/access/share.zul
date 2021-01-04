@@ -23,5 +23,10 @@
     width="700px" height="80%" position="center"
     closable="true"
     title="File sharing" apply="org.apromore.portal.access.controllers.ShareController">
-    <AccessControl vflex="1" hflex="1" id="accessControl" currentUser="${arg.currentUser}" selectedItem="${arg.selectedItem}" autoInherit="${arg.autoInherit}" />
+    <AccessControl vflex="1" hflex="1" id="accessControl"
+                   currentUser="${arg.currentUser}"
+                   selectedItem="${arg.selectedItem}"
+                   autoInherit="${arg.autoInherit}"
+                   showRelatedArtifacts="${arg.showRelatedArtifacts}"
+    />
 </window>

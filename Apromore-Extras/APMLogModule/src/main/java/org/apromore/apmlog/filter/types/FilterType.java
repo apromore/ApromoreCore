@@ -22,20 +22,8 @@
 package org.apromore.apmlog.filter.types;
 
 public enum FilterType {
-//    // standard event attributes            XES representation
-//    CASE_EVENT_ACTIVITY,                    // concept:name (filter in case section)
-//    CASE_EVENT_RESOURCE,                    // org:resource (filter in case section)
-//    CASE_EVENT_GROUP,                       // org:group (filter in case section)
-//    CASE_EVENT_ROLE,                        // org:role (filter in case section)
-//    CASE_EVENT_LIFECYCLE,                   // lifecycle:transition (filter in case section)
-//
-//    EVENT_EVENT_ACTIVITY,                   // concept:name (filter in event section)
-//    EVENT_EVENT_RESOURCE,                   // org:resource (filter in event section)
-//    EVENT_EVENT_GROUP,                      // org:group (filter in event section)
-//    EVENT_EVENT_ROLE,                       // org:role (filter in event section)
-//    EVENT_EVENT_LIFECYCLE,                  // lifecycle:transition (filter in event section)
 
-    // other attributes
+    // attributes
     EVENT_EVENT_ATTRIBUTE,
     CASE_EVENT_ATTRIBUTE,
     CASE_CASE_ATTRIBUTE,
@@ -58,16 +46,10 @@ public enum FilterType {
     TOTAL_WAITING_TIME,
     AVERAGE_WAITING_TIME,
     MAX_WAITING_TIME,
-//    ACTIVITY_DURATION,
-//    RESOURCE_DURATION,
-//    ACTIVITY_RESOURCE_FREQUENCY,
-//    ACTIVITY_TO_ACTIVITY_DURATION,
-//    RESOURCE_ACTIVITY_FREQUENCY,
-//    RESOURCE_TO_RESOURCE_DURATION,
-//    ATTRIBUTE_TO_ATTRIBUTE_DURATION,
     CASE_SECTION_ATTRIBUTE_COMBINATION,
     EVENT_ATTRIBUTE_DURATION,
     ATTRIBUTE_ARC_DURATION,
+    CASE_LENGTH,
 
     // path
     DIRECT_FOLLOW,

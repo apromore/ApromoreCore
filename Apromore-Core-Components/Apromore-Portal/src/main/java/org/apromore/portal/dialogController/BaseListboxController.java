@@ -508,7 +508,7 @@ public abstract class BaseListboxController extends BaseController {
 					renameFolder();
 				}
 			} else {
-				Notification.error("Only users with role Owner or Editor can rename");
+				Notification.error("Only Owner or Editor can rename an item");
             }
 
 		} catch (DialogException e) {
@@ -525,7 +525,7 @@ public abstract class BaseListboxController extends BaseController {
 				Notification.error("Please select a log or model to share");
 				return;
 			} else if (getSelectionCount() > 1) {
-				Notification.error("You cannot share multiple selections");
+				Notification.error("You cannot share multiple items");
 				return;
 			}
 			Object selectedItem = getSelection().iterator().next();
@@ -542,10 +542,11 @@ public abstract class BaseListboxController extends BaseController {
 				arg.put("selectedItem", selectedItem);
 				arg.put("currentUser", UserSessionManager.getCurrentUser());
 				arg.put("autoInherit", true);
+				arg.put("showRelatedArtifacts", true);
 				Window window = (Window) Executions.getCurrent().createComponents("components/access/share.zul", null, arg);
 				window.doModal();
 			} else {
-				Notification.error("Only users with access rights Owner can share");
+				Notification.error("Only Owner can share an item");
 				return;
 			}
 			;
@@ -599,7 +600,7 @@ public abstract class BaseListboxController extends BaseController {
 		if (canChange) {
 			copyAndPasteController.cut(getSelection(), getSelectionCount());
 		} else {
-			Notification.error("Only Owner/Editor can cut from here.");
+			Notification.error("Only Owner or Editor can cut from here.");
 		}
 	}
 
@@ -628,7 +629,7 @@ public abstract class BaseListboxController extends BaseController {
 						Messagebox.ERROR);
 			}
 		} else {
-			Notification.error("Only Owner/Editor can paste here.");
+			Notification.error("Only Owner or Editor can paste here.");
 		}
 		refreshContent();
 	}

@@ -84,6 +84,7 @@ public class AccessController extends SelectorComposer<Div> {
     private Object selectedItem = argMap.get("selectedItem");
     private UserType currentUser = (UserType) argMap.get("currentUser");
     Boolean autoInherit = (Boolean) argMap.get("autoInherit");
+    Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
     private String userName;
 
     private Integer selectedItemId;
@@ -145,9 +146,7 @@ public class AccessController extends SelectorComposer<Div> {
 
     public AccessController() throws Exception {
 
-        selectedItem = Executions.getCurrent().getArg().get("selectedItem");
-        currentUser = (UserType) Executions.getCurrent().getArg().get("currentUser");
-        autoInherit = (Boolean) Executions.getCurrent().getArg().get("autoInherit");
+        pullArgs();
         if (currentUser == null) {
             currentUser = UserSessionManager.getCurrentUser();
         }
@@ -156,12 +155,20 @@ public class AccessController extends SelectorComposer<Div> {
         groupArtifactsMap = new HashMap<String, ListModelList<Artifact>>();
     }
 
+    private void pullArgs() throws Exception {
+        Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
+        selectedItem = argMap.get("selectedItem");
+        currentUser = (UserType) argMap.get("currentUser");
+        autoInherit = (Boolean) argMap.get("autoInherit");
+        showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+    }
+
     @Override
     public void doAfterCompose(Div div) throws Exception {
         super.doAfterCompose(div);
         container = div;
 
-        if (autoInherit || !isLogSelected()) {
+        if (!showRelatedArtifacts || !isLogSelected()) {
             artifactListbox.setVisible(false);
         } else {
             artifactListbox.setVisible(true);
@@ -323,6 +330,9 @@ public class AccessController extends SelectorComposer<Div> {
     }
 
     public boolean isLogSelected() {
+        if (selectedItem == null) {
+            return false;
+        }
         return selectedItem.getClass().equals(LogSummaryType.class);
     }
 

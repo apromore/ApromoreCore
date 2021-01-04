@@ -44,21 +44,25 @@ public class ShareController extends SelectorComposer<Window> {
 
     private Object selectedItem;
     private Boolean autoInherit;
+    private Boolean showRelatedArtifacts;
     private Window win;
 
     public ShareController() throws Exception {
-        selectedItem = Executions.getCurrent().getArg().get("selectedItem");
-        autoInherit = (Boolean)Executions.getCurrent().getArg().get("autoInherit");
+        Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
+
+        selectedItem = argMap.get("selectedItem");
+        autoInherit = (Boolean)argMap.get("autoInherit");
+        showRelatedArtifacts = (Boolean)argMap.get("showRelatedArtifacts");
     }
 
     @Override
     public void doAfterCompose(Window win) throws Exception {
         this.win = win;
         super.doAfterCompose(win);
-        if (!selectedItem.getClass().equals(LogSummaryType.class) || autoInherit) {
-            win.setWidth("500px");
-        } else {
+        if (selectedItem.getClass().equals(LogSummaryType.class) || showRelatedArtifacts) {
             win.setWidth("1000px");
+        } else {
+            win.setWidth("500px");
         }
         EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).subscribe(
                 new EventListener() {

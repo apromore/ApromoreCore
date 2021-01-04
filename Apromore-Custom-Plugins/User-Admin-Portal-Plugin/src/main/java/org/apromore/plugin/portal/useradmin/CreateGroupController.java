@@ -50,6 +50,10 @@ public class CreateGroupController extends SelectorComposer<Window> {
         }
 
         try {
+            if(securityService.getGroupByName(groupNameTextbox.getValue())!=null)
+            {
+        	throw new Exception("Group already exists");
+            }
             securityService.createGroup(groupNameTextbox.getValue());
             getSelf().detach();
 

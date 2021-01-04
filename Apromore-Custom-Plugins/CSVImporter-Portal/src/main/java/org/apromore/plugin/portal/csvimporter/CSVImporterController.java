@@ -191,6 +191,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 }
             });
 
+            setTimeZone.addEventListener("onClientUpdate", event -> {
+                JSONObject param = (JSONObject) event.getData();
+                String gmtOffset = (String) param.get("offset");
+                String tz = (String) param.get("tz");
+                String value = String.format("(%s) %s", gmtOffset, tz);
+                setTimeZone.setValue(value);
+                this.logMetaData.setTimeZone(value);
+            });
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
@@ -288,6 +296,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         } catch (Exception e) {
             Messagebox.show(getLabels().getString("failed_to_read_log") + " " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
         }
+        Clients.evalJavaScript("Ap.common.pullClientTimeZone()");
     }
 
     //    @Listen("onClick = button#matchedMapping")
