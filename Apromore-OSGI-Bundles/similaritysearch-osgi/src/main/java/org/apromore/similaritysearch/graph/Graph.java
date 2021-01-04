@@ -5,7 +5,7 @@
  * Copyright (C) 2013 - 2016 Technical University of Eindhoven, Reina Uba.
  * Copyright (C) 2016 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
