@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -109,67 +109,79 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testDurationFilter1() throws Exception {
+    public void testPerfFilter1() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Duration'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testDuration(apmLog, this);
+        PerfFilterTest.testDuration(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter2() throws Exception {
+    public void testPerfFilter2() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Total Processing Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testTotalProcessTime(apmLog, this);
+        PerfFilterTest.testTotalProcessTime(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter3() throws Exception {
+    public void testPerfFilter3() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Average Processing Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testAverageProcessTime(apmLog, this);
+        PerfFilterTest.testAverageProcessTime(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter4() throws Exception {
+    public void testPerfFilter4() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Max Processing Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testMaxProcessTime(apmLog, this);
+        PerfFilterTest.testMaxProcessTime(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter5() throws Exception {
+    public void testPerfFilter5() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Total Waiting Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testTotalWaitTime(apmLog, this);
+        PerfFilterTest.testTotalWaitTime(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter6() throws Exception {
+    public void testPerfFilter6() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Average Waiting Time'");
         XLog xLog = getXLog("files/perf_avg_wt.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testAverageWaitTime(apmLog, this);
+        PerfFilterTest.testAverageWaitTime(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter7() throws Exception {
+    public void testPerfFilter7() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Max Waiting Time'");
         XLog xLog = getXLog("files/perf_avg_wt.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testMaxWaitTime(apmLog, this);
+        PerfFilterTest.testMaxWaitTime(apmLog, this);
     }
 
     @Test
-    public void testDurationFilter8() throws Exception {
+    public void testPerfFilter8() throws Exception {
         printString("\n(/ 'o')/ ~ Test Filter 'Case Utilization'");
         XLog xLog = getXLog("files/perf_avg_wt.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DurationFilterTest.testUtilization(apmLog, this);
+        PerfFilterTest.testUtilization(apmLog, this);
+    }
+
+    @Test
+    public void testPerfFilter9() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Filter 'Case Length'");
+        XLog xLog = getXLog("files/caseLengthTest.xes");
+        /**
+         * Note: Case length is the size of activities, not events.
+         * (an activity contains 1...N events)
+         */
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        PerfFilterTest.testCaseLength(apmLog);
     }
 
     @Test

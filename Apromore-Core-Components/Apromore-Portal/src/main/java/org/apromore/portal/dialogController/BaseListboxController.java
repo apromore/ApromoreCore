@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -508,7 +508,7 @@ public abstract class BaseListboxController extends BaseController {
 					renameFolder();
 				}
 			} else {
-				Notification.error("Only users with role Owner or Editor can rename");
+				Notification.error("Only Owner or Editor can rename an item");
             }
 
 		} catch (DialogException e) {
@@ -525,7 +525,7 @@ public abstract class BaseListboxController extends BaseController {
 				Notification.error("Please select a log or model to share");
 				return;
 			} else if (getSelectionCount() > 1) {
-				Notification.error("You cannot share multiple selections");
+				Notification.error("You cannot share multiple items");
 				return;
 			}
 			Object selectedItem = getSelection().iterator().next();
@@ -542,10 +542,11 @@ public abstract class BaseListboxController extends BaseController {
 				arg.put("selectedItem", selectedItem);
 				arg.put("currentUser", UserSessionManager.getCurrentUser());
 				arg.put("autoInherit", true);
+				arg.put("showRelatedArtifacts", true);
 				Window window = (Window) Executions.getCurrent().createComponents("components/access/share.zul", null, arg);
 				window.doModal();
 			} else {
-				Notification.error("Only users with access rights Owner can share");
+				Notification.error("Only Owner can share an item");
 				return;
 			}
 			;
@@ -599,7 +600,7 @@ public abstract class BaseListboxController extends BaseController {
 		if (canChange) {
 			copyAndPasteController.cut(getSelection(), getSelectionCount());
 		} else {
-			Notification.error("Only Owner/Editor can cut from here.");
+			Notification.error("Only Owner or Editor can cut from here.");
 		}
 	}
 
@@ -608,29 +609,29 @@ public abstract class BaseListboxController extends BaseController {
 	}
 
 	public void paste() throws Exception {
-	    // FolderType currentFolder = UserSessionManager.getCurrentFolder();
-	    FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+		// FolderType currentFolder = UserSessionManager.getCurrentFolder();
+		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-	    boolean canChange = currentFolder == null || currentFolder.getId() == 0;
-	    try {
-		canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
-	    } catch (Exception e) {
-		Notification.error(e.getMessage());
-		return;
-	    }
-
-	    if (canChange) {
-		Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
+		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-		    copyAndPasteController.paste(targetFolderId);
+			canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
 		} catch (Exception e) {
-		    Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK,
-			    Messagebox.ERROR);
+			Notification.error(e.getMessage());
+			return;
 		}
-	    } else {
-		Notification.error("Only Owner/Editor can paste here.");
-	    }
-	    refreshContent();
+
+		if (canChange) {
+			Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
+			try {
+				copyAndPasteController.paste(targetFolderId);
+			} catch (Exception e) {
+				Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK,
+						Messagebox.ERROR);
+			}
+		} else {
+			Notification.error("Only Owner or Editor can paste here.");
+		}
+		refreshContent();
 	}
 
 	private ArrayList<FolderType> getSelectedFolders() {

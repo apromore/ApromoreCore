@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,12 +31,11 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class DurationFilterTest {
+import static org.junit.Assert.*;
+
+public class PerfFilterTest {
 
     // (1)
     public static void testDuration(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -428,5 +427,44 @@ public class DurationFilterTest {
         } else {
             parent.printString("'Case Utilization' Test PASS.");
         }
+    }
+
+    // (9)
+    public static void testCaseLength(APMLog apmLog) {
+
+        long val1 = 1;
+        long val2 = 2;
+
+        String attrKey = "case:length";
+
+        FilterType filterType = FilterType.CASE_LENGTH;
+
+        RuleValue rv1 = new RuleValue(filterType, OperationType.GREATER_EQUAL, attrKey, val1);
+        RuleValue rv2 = new RuleValue(filterType, OperationType.LESS_EQUAL, attrKey, val2);
+
+        Set<RuleValue> primaryValues = new HashSet<>(Arrays.asList(rv1, rv2));
+
+        LogFilterRule logFilterRule = new LogFilterRuleImpl(Choice.RETAIN, Inclusion.ANY_VALUE, Section.CASE,
+                filterType, attrKey, primaryValues, null);
+
+        List<LogFilterRule> rules = Arrays.asList(logFilterRule);
+
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        apmLogFilter.filter(rules);
+
+        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+
+        int[] result = new int[]{0, 0};
+        int[] expected = new int[]{1, 0};
+
+        System.out.println("Result size:" + traceList.size());
+
+        for (ATrace trace : traceList) {
+            System.out.println(trace.getCaseId());
+            if (trace.getCaseId().equals("c1")) result[0] = 1;
+            if (trace.getCaseId().equals("c2")) result[1] = 1;
+        }
+
+        assertArrayEquals(expected, result);
     }
 }

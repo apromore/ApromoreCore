@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -53,6 +53,7 @@ package org.apromore.editor.server;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import java.io.File;
 import org.junit.Test;
 
 /**
@@ -64,6 +65,6 @@ public class AlternativesRendererUnitTest extends AlternativesRenderer {
 
   /** Dummy test. */
   @Test public void testMakePDF() throws Exception {
-      AlternativesRenderer.makePDF("src/test/resources/makePDF.svg", "target/makePDF.pdf");
+      AlternativesRenderer.makePDF(new File("src/test/resources/makePDF.svg"), new File("target/makePDF.pdf"));
   }
 }

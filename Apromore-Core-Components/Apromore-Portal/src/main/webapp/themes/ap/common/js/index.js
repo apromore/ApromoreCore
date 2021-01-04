@@ -63,3 +63,24 @@ Ap.common.setCookie = (name, value, days) => {
   let expires = 'expires=' + date.toUTCString();
   document.cookie = name + '=' + value + ';' + expires + ';path=/';
 };
+
+Ap.common.pullClientTimeZone = function () {
+  const pad = (num) => ('0' + num).slice(-2);
+
+  let tz = '';
+  let offset = new Date().getTimezoneOffset();
+  let sign = offset < 0 ? '-' : '+';
+  offset = Math.abs(offset);
+  const hours = pad(Math.floor(offset / 60));
+  const minutes = pad(offset % 60);
+  offset = 'GMT' + sign + hours + ':' + minutes;
+
+  try {
+    tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch (e) {
+    // pass
+  }
+  setTimeout(function () {
+    zAu.send(new zk.Event(zk.Widget.$('$setTimeZone'), 'onClientUpdate', { offset, tz } ));
+  }, 200);
+}
