@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -329,7 +329,8 @@ public abstract class BaseListboxController extends BaseController {
 			this.btnSecurity.setVisible(true);
 		} else {
 			this.btnUserMgmt.setVisible(false);
-			this.btnSecurity.setVisible(false);
+			// this.btnSecurity.setVisible(false); // pending for revival after folder share is enabled
+			this.btnSecurity.setVisible(true);
 		}
 
 		this.btnShare.addEventListener("onClick", new EventListener<Event>() {
