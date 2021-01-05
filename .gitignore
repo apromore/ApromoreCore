@@ -25,6 +25,7 @@
 **/.DS_Store
 
 # Maven artifacts (i.e. object files)
+**/pom.xml.versionsBackup
 **/target/*
 **/.settings/*
 **/*.h2.db
