@@ -1,21 +1,21 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- *
+ * 
  * Copyright (C) 2020 University of Tartu
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -191,6 +191,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 }
             });
 
+            setTimeZone.addEventListener("onClientUpdate", event -> {
+                JSONObject param = (JSONObject) event.getData();
+                String gmtOffset = (String) param.get("offset");
+                String tz = (String) param.get("tz");
+                String value = String.format("(%s) %s", gmtOffset, tz);
+                setTimeZone.setValue(value);
+                this.logMetaData.setTimeZone(value);
+            });
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData = metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
@@ -288,6 +296,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         } catch (Exception e) {
             Messagebox.show(getLabels().getString("failed_to_read_log") + " " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR, event -> close());
         }
+        Clients.evalJavaScript("Ap.common.pullClientTimeZone()");
     }
 
     //    @Listen("onClick = button#matchedMapping")

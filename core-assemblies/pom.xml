@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore</artifactId>
+    <version>1.1</version>
+  </parent>
+
+  <artifactId>core-assemblies</artifactId>
+  <packaging>pom</packaging>
+  <version>7.20-SNAPSHOT</version>
+
+  <modules>
+    <module>apromore-core</module>
+    <module>core-bom</module>
+    <module>core-features</module>
+  </modules>
+
+  <properties>
+    <checkstyle.skip>false</checkstyle.skip>
+    <enforcer.skip>true</enforcer.skip>
+    <java.version>1.8</java.version>
+    <karaf.archive.tar.gz>false</karaf.archive.tar.gz>
+    <karaf.archive.zip>false</karaf.archive.zip>
+    <karaf.version>4.3.0</karaf.version>
+    <license.skipUpdateLicense>true</license.skipUpdateLicense>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <virgo.spring.version>3.1.4.RELEASE</virgo.spring.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- TODO: Enable bill-of-materials to synchronize dependency versions with Karaf's provided
+                 defaults and replace all of the following per-artifact version declarations.
+
+                 See http://blog.nanthrax.net/?p=1038 for details.
+
+      <dependency>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>karaf-bom</artifactId>
+        <version>${karaf.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      -->
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>enterprise</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>framework</artifactId>
+        <type>kar</type>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>framework</artifactId>
+        <classifier>features</classifier>
+        <type>xml</type>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>standard</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.features</groupId>
+        <artifactId>static</artifactId>
+        <type>kar</type>
+        <version>${karaf.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.karaf.services</groupId>
+        <artifactId>org.apache.karaf.services.staticcm</artifactId>
+        <version>${karaf.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.coderplus.maven.plugins</groupId>
+          <artifactId>copy-rename-maven-plugin</artifactId>
+          <version>1.0.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>${karaf.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven.resources.plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

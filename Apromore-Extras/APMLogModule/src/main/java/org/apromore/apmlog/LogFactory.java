@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,6 +31,7 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -38,11 +39,16 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+/**
+ * @author Chii Chang
+ */
 public class LogFactory {
 
     public static APMLog convertXLog(XLog xLog) {
 
         ImmutableLog log = new ImmutableLog();
+
+        DoubleArrayList ttlPTList = new DoubleArrayList(xLog.size());
 
         for (int i = 0; i < xLog.size(); i++) {
             XTrace xTrace = xLog.get(i);
@@ -113,6 +119,8 @@ public class LogFactory {
             trace.setAverageWaitingTime(avgWaitTime);
             trace.setMaxWaitingTime(maxWaitTime);
 
+            ttlPTList.add(ttlProcTime);
+
             double dur = trace.getDuration();
             double caseUtil;
             if (ttlWaitTime > 0 && ttlProcTime > 0) {
@@ -120,6 +128,9 @@ public class LogFactory {
             } else {
                 caseUtil = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 1.0;
             }
+
+            if (caseUtil > 1.0) caseUtil = 1.0;
+
             trace.setCaseUtilization(caseUtil);
 
             log.add(trace);
@@ -284,7 +295,7 @@ public class LogFactory {
 
     public static void fillAttributeOccurMap(AActivity activity,
                                              UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>>
-                                                      attributeOccurMap) {
+                                                     attributeOccurMap) {
         UnifiedMap<String, String> attributes = activity.getAttributes();
         for (String key : attributes.keySet()) {
             String val = attributes.get(key);

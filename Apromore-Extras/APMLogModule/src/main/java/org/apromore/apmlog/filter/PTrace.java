@@ -1,21 +1,21 @@
 /*-
  * #%L
  * Process Discoverer Logic
- *
+ * 
  * This file is part of "Apromore".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,10 +29,8 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
-import org.apromore.apmlog.immutable.ImmutableActivity;
 import org.apromore.apmlog.immutable.ImmutableTrace;
 import org.apromore.apmlog.util.Util;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -53,6 +51,7 @@ import java.util.List;
  * Modified: Chii Chang (26/05/2020)
  * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
  * Modified: Chii Chang (11/11/2020)
+ * Modified: Chii Chang (23/12/2020)
  */
 public class PTrace implements Comparable<PTrace>, ATrace {
 
@@ -353,105 +352,28 @@ public class PTrace implements Comparable<PTrace>, ATrace {
             }
         }
 
-        IntArrayList markedIndexes = new IntArrayList(eventList.size());
-
         this.activityList = new ArrayList<>();
 
+        UnifiedSet<Integer> actIndexes = new UnifiedSet<>();
         for (int j = 0; j < eventList.size(); j++) {
+            AEvent aEvent = eventList.get(j);
+            int actIndex = aEvent.getParentActivityIndex();
+            actIndexes.put(actIndex);
+        }
 
-            int actSize = activityList.size();
+        List<Integer> actIndexList = new ArrayList<>(actIndexes);
+        Collections.sort(actIndexList);
 
-            if (!markedIndexes.contains(j)) {
-
-                AEvent jEvent = eventList.get(j);
-                AActivity activity = getActivity(actSize, j, markedIndexes);
-                activityList.add(activity);
-
-                if (activity.getEventIndexes().contains(j)) {
-                    jEvent.setParentActivityIndex(actSize);
-                }
-            }
-
+        for (int j = 0; j < actIndexList.size(); j++) {
+            int actIndex = actIndexList.get(j);
+            this.activityList.add(aTrace.getActivityList().get(actIndex));
         }
 
         updateStats(this.activityList);
 
     }
 
-    private AActivity getActivity(int index, int fromIndex, IntArrayList markedIndexes) {
 
-        IntArrayList eventIndexList = new IntArrayList();
-
-        boolean proceed = true;
-
-        AEvent baseEvent = eventList.get(fromIndex);
-
-        eventIndexList.add(fromIndex);
-
-        long baseT = baseEvent.getTimestampMilli();
-
-        long startTime = baseT;
-        long endTime = baseT;
-
-        String baseLife = baseEvent.getLifecycle();
-
-        if (fromIndex == eventList.size() - 1) proceed = false;
-        if (baseLife.equals("complete")) proceed = false;
-
-        boolean foundStart = baseLife.equals("start");
-
-        if (proceed) {
-            for (int i = fromIndex + 1; i < eventList.size(); i++) {
-                if (!markedIndexes.contains(i)) {
-                    AEvent nEvent = eventList.get(i);
-
-                    if (haveCommonMainAttributes(nEvent, baseEvent)) {
-                        String lifecycle = nEvent.getLifecycle();
-                        if (lifecycle.equals("complete") ||
-                                lifecycle.equals("manualskip") ||
-                                lifecycle.equals("autoskip")) {
-                            eventIndexList.add(i);
-
-                            long nT = nEvent.getTimestampMilli();
-                            if (nT > endTime) endTime = nT;
-
-                            break;
-                        } else {
-                            if (lifecycle.equals("start")){
-                                if (!foundStart) {
-                                    eventIndexList.add(i);
-                                    foundStart = true;
-                                }
-                            } else {
-                                eventIndexList.add(i);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        markedIndexes.addAll(eventIndexList);
-
-        UnifiedMap<String, String> attributes = baseEvent.getAttributeMap();
-
-        ImmutableActivity activity =
-                new ImmutableActivity(index, index, this, eventIndexList, startTime, endTime, attributes);
-
-        return activity;
-    }
-
-    private boolean haveCommonMainAttributes(AEvent event1, AEvent event2) {
-
-        try {
-            return event1.getName().equals(event2.getName());
-        } catch (Exception e) {
-            System.out.println("");
-            return false;
-        }
-
-
-    }
 
     private void updateStats(List<AActivity> activities) {
         this.totalProcessingTime = 0;
@@ -480,11 +402,12 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         averageWaitingTime = totalWaitingTime > 0 ? totalWaitingTime / (activities.size()-1) : 0;
         double dur = getDuration();
 
-        if (totalWaitingTime > 0 && totalWaitingTime > 0) {
+        if (totalWaitingTime > 0 && totalProcessingTime > 0) {
             caseUtilization = totalProcessingTime / (totalProcessingTime + totalWaitingTime);
         } else {
             caseUtilization = totalProcessingTime > 0 && totalProcessingTime < dur ? totalProcessingTime / dur : 1.0;
         }
+        if (caseUtilization > 1.0) caseUtilization = 1.0;
     }
 
 
