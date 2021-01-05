@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,7 @@
     --ap-filter-grey-light-5: invert(100%) sepia(0%) saturate(3124%) hue-rotate(194deg) brightness(119%) contrast(80%);
 
     /* ---ap-c-grey */
+    --ap-filter-ico-grey-dark: invert(0%) sepia(2%) saturate(3755%) hue-rotate(336deg) brightness(103%) contrast(84%);
     --ap-filter-ico-normal-dark: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);
     --ap-filter-ico-grey-minor: invert(63%) sepia(31%) saturate(0%) hue-rotate(228deg) brightness(101%) contrast(104%);;
     /* --ap-c-orange-light-3: #fdd69d; */

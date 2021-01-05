@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -87,5 +87,6 @@ public interface UserInterfaceHelper {
 
     SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 
-    UserMetadataSummaryType buildUserMetadataSummary(Group group, Usermetadata usermetadata, AccessType accessType) throws UserNotFoundException;
+    UserMetadataSummaryType buildUserMetadataSummary(String username, Usermetadata usermetadata,
+                                                     AccessType accessType) throws UserNotFoundException;
 }

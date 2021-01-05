@@ -3,7 +3,7 @@
   #%L
   This file is part of "Apromore Core".
   %%
-  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
   %%
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -22,28 +22,40 @@
   -->
 
 
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:osgi="http://www.springframework.org/schema/osgi"
        xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
-            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+            http://www.springframework.org/schema/util            http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider">
-        <bean class="org.apromore.service.csvimporter.services.ParquetFactoryProvider"/>
-    </osgi:service>
+    <!-- Inject dependencies for @Autowired/@Inject annotations -->
+    <context:annotation-config/>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogReader">
-        <bean class="org.apromore.service.csvimporter.services.legacy.LogReaderImpl"/>
-    </osgi:service>
+    <!-- Create Spring beans for classes annotated with @Component/@Service -->
+    <context:component-scan base-package="org.apromore.service.csvimporter"/>
 
-    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogReaderProvider">
-        <bean class="org.apromore.service.csvimporter.services.legacy.LogReaderProvider"/>
-    </osgi:service>
+    <!-- Import OSGi services as beans -->
+    <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+
+    <util:map id="logImporterMap" map-class="java.util.HashMap" key-type="java.lang.String" value-type="org.apromore.service.csvimporter.services.legacy.LogImporter">
+        <entry key="csv"     value-ref="csvLogImporter"/>
+        <entry key="parquet" value-ref="parquetLogImporter"/>
+        <entry key="xlsx"    value-ref="xlsxLogImporter"/>
+    </util:map>
+
+    <bean id="logImporterProvider" class="org.apromore.service.csvimporter.services.legacy.LogImporterProvider">
+        <property name="logImporterMap" ref="logImporterMap"/>
+    </bean>
+
+    <!-- Export beans as OSGi services -->
+    <osgi:service interface="org.apromore.service.csvimporter.services.legacy.LogImporterProvider" ref="logImporterProvider"/>
+    <osgi:service interface="org.apromore.service.csvimporter.services.ParquetFactoryProvider" ref="parquetFactoryProvider"/>
 
 </beans>

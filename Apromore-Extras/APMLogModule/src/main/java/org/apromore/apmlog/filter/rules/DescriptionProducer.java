@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -58,16 +58,14 @@ public class DescriptionProducer {
                 return EventSectionAttributeDesc.getDescription(logFilterRule);
             case EVENT_TIME:
                 return EventTimeDesc.getDescription(logFilterRule);
-//            case ACTIVITY_DURATION:
-//                return ActivityDurationDesc.getDescription(logFilterRule);
-//            case RESOURCE_DURATION:
-//                return ResourceDurationDesc.getDescription(logFilterRule);
             case EVENT_ATTRIBUTE_DURATION:
                 return EventAttributeDurationDesc.getDescription(logFilterRule);
             case CASE_SECTION_ATTRIBUTE_COMBINATION:
                 return CaseSectionEventAttributeCombinationDesc.getDescription(logFilterRule);
             case ATTRIBUTE_ARC_DURATION:
                 return AttributeArcDurationDesc.getDescription(logFilterRule);
+            case CASE_LENGTH:
+                return CaseLengthDesc.getDescription(logFilterRule);
             default:
                 break;
         }

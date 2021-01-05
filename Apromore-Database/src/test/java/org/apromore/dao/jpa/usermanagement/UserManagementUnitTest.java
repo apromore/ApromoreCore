@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -81,11 +81,11 @@ public class UserManagementUnitTest extends BaseTestClass {
 	Group userGroup = builder.withGroup("testGroup", "USER").buildGroup();
 
 	// when
-	Group savedUSerGroup = groupRepository.saveAndFlush(userGroup);
+	Group savedUserGroup = groupRepository.saveAndFlush(userGroup);
 	// then
-	assertThat(savedUSerGroup.getId()).isNotNull();
-	assertThat(savedUSerGroup.getName()).isEqualTo(userGroup.getName());
-	assertThat(savedUSerGroup.getType()).isEqualTo(userGroup.getType());
+	assertThat(savedUserGroup.getId()).isNotNull();
+	assertThat(savedUserGroup.getName()).isEqualTo(userGroup.getName());
+	assertThat(savedUserGroup.getType()).isEqualTo(userGroup.getType());
 
     }
 
@@ -106,7 +106,7 @@ public class UserManagementUnitTest extends BaseTestClass {
     @Test
     public void insertUsermetadataTest() {
 //	 		Given
-	Usermetadata um = builder.withUserMetaDataType("test Type", 1).withUserMetaData("Test", "test")
+	Usermetadata um = builder.withUserMetadataType("test Type", 1).withUserMetaData("Test", "test")
 		.buildUserMetaData();
 
 	UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());
@@ -127,7 +127,7 @@ public class UserManagementUnitTest extends BaseTestClass {
     public void insertUsermetadataLogTest() {
 
 // 		Given
-	Usermetadata um = builder.withUserMetaDataType("test Type2", 1).withUserMetaData("Test2", "test2")
+	Usermetadata um = builder.withUserMetadataType("test Type2", 1).withUserMetaData("Test2", "test2")
 		.buildUserMetaData();
 
 	UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());

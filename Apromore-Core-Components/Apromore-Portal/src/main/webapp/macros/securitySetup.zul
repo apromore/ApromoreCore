@@ -3,7 +3,7 @@
   This file is part of "Apromore Core".
   Copyright (C) 2012 - 2017 Queensland University of Technology.
   %%
-  Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
   %%
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -24,32 +24,32 @@
 <?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
 <?component name="AccessControl" macroURI="/components/access/access.zul" ?>
 <?component name="Groups" macroURI="/macros/groups.zul" ?>
-<window width="1000px" height="90%" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
+<window width="1200px" height="90%" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
+    <caption>
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/getting-started/navigating-the-apromore-portal/" target="_blank" />
+    </caption>
     <style>
         .z-tree-icon {
-        vertical-align: middle;
+            vertical-align: middle;
         }
 
+        .ap-security-setup-title .z-center-header {
+            height: 35px;
+            font-weight: bold;
+            font-size: 16px;
+        }
     </style>
-    <hbox spacing="0" widths="30%,70%" hflex="1" vflex="1">
-        <borderlayout vflex="1" width="100%">
-            <center title="My Workspace" flex="true" border="none">
-                <FolderTree id="mainTree"/>
-            </center>
-        </borderlayout>
-        <splitter id="s2" collapse="before"/>
-        <borderlayout vflex="1" width="100%">
-            <center hflex="1" vflex="1" border="none">
-                <AccessControl vflex="1" hflex="1" id="accessControl" currentUser="${arg.currentUser}" selectedItem="${arg.selectedItem}" autoInherit="${arg.autoInherit}" />
-            </center>
-            <!--
-            <north title="Permissions" splittable="true" hflex="1" vflex="1" border="none">
-                <AccessControl vflex="1" hflex="1" id="accessControl" currentUser="${arg.currentUser}" selectedItem="${arg.selectedItem}" autoInherit="${arg.autoInherit}" />
-            </north>
-            <center title="Users &amp; Groups" flex="true" border="none">
-                <Groups id="findGroups" vflex="true"/>
-            </center>
-            -->
-        </borderlayout>
-    </hbox>
+    <borderlayout hflex="1" vflex="1">
+        <west sclass="ap-security-setup-title" title="My Workspace" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
+            <FolderTree id="mainTree"/>
+        </west>
+        <center hflex="1" vflex="1" border="none">
+            <AccessControl vflex="1" hflex="1" id="accessControl"
+                           currentUser="${arg.currentUser}"
+                           selectedItem="${arg.selectedItem}"
+                           autoInherit="${arg.autoInherit}"
+                           showRelatedArtifacts="${arg.showRelatedArtifacts}"
+            />
+        </center>
+    </borderlayout>
 </window>

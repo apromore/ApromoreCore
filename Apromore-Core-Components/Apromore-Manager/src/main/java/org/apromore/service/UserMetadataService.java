@@ -2,18 +2,18 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -59,10 +59,12 @@ public interface UserMetadataService {
      * @param logId                logId
      * @throws UserNotFoundException Can't find a user with specified username
      */
-    void saveUserMetadataLinkedToOneLog(String userMetadataName, String userMetadataContent,
+    void saveUserMetadata(String userMetadataName, String userMetadataContent,
                                         UserMetadataTypeEnum userMetadataTypeEnum,
                                         String username,
                                         Integer logId) throws UserNotFoundException;
+
+    AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) throws UserNotFoundException;
 
     /**
      * Save a user metadata which is not linked to log. So it can not be shared to other users at stage one.
@@ -90,6 +92,15 @@ public interface UserMetadataService {
      * @param accessType   Access Type
      */
     void shareSimulationMetadata(Integer logId, String groupRowGuid, AccessType accessType);
+
+    /**
+     * Implicitly share all associated user metadata when a Log is shared
+     *
+     * @param logId        log Id
+     * @param groupRowGuid group guid
+     * @param accessType   Access Type
+     */
+    void shareUserMetadataWithLog(Integer logId, String groupRowGuid, AccessType accessType);
 
     /**
      * Remove permissions of user metadata assigned to specified group and log
@@ -138,7 +149,7 @@ public interface UserMetadataService {
     void deleteUserMetadataByLog(Log log, User user) throws UserNotFoundException;
 
     /**
-     * Find a set of user metadata
+     * Find a set of user metadata that linked to specified user and log/s
      *
      * @param username             username
      * @param logIds               List of logId
@@ -167,6 +178,9 @@ public interface UserMetadataService {
      * @return A set of user metadata
      */
     Set<Usermetadata> getUserMetadataByLogs(List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum);
+
+    Set<Usermetadata> getUserMetadataByLogs(String username, List<Integer> logIds,
+                                            UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
 
     /**
      * Find a set of user metadata that are linked to specified Log and type
@@ -200,6 +214,16 @@ public interface UserMetadataService {
     boolean canUserEditMetadata(String username, Integer UsermetadataId) throws UserNotFoundException;
 
     /**
+     * Return whether this specified user can create user metadata on the specified log
+     *
+     * @param username username
+     * @param logId    Id of Log
+     * @return boolen
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    boolean canUserCreateMetadata(String username, Integer logId) throws UserNotFoundException;
+
+    /**
      * Find AccessType given a Group and Usermetadata
      * @param group Group
      * @param usermetadata Usermetadata
@@ -208,7 +232,8 @@ public interface UserMetadataService {
     AccessType getUserMetadataAccessType(Group group, Usermetadata usermetadata);
 
     /**
-     * Find a set of user metadata which is not linked to log.
+     * Find a set of user metadata which are associated with the logs that
+     * this specified user has access to
      *
      * @param username username
      * @return A set of user metadata

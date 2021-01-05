@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,6 +49,7 @@ import org.apromore.service.SecurityService;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.portal.ConfigBean;
+import org.apromore.portal.common.Constants;
 
 /**
  * Base Controller that all controllers inherit.
@@ -57,11 +58,6 @@ import org.apromore.portal.ConfigBean;
  */
 public class BaseController extends Window {
 
-    public static final String MANAGER_SERVICE = "managerClient";
-    public static final String EVENT_LOG_SERVICE = "eventLogService";
-    public static final String SECURITY_SERVICE = "securityService";
-    public static final String AUTH_SERVICE = "authorizationService";
-    public static final String WORKSPACE_SERVICE = "workspaceService";
     private ManagerService managerService;
     private EventLogService eventLogService;
     private SecurityService securityService;
@@ -83,7 +79,7 @@ public class BaseController extends Window {
 
     public ManagerService getService() {
         if (managerService == null) {
-            managerService = (ManagerService) SpringUtil.getBean(MANAGER_SERVICE);
+            managerService = (ManagerService) SpringUtil.getBean(Constants.MANAGER_SERVICE);
             setManagerService(managerService);
         }
         return managerService;
@@ -91,7 +87,7 @@ public class BaseController extends Window {
 
     public EventLogService getEventLogService() {
         if (eventLogService == null) {
-            eventLogService = (EventLogService) SpringUtil.getBean(EVENT_LOG_SERVICE);
+            eventLogService = (EventLogService) SpringUtil.getBean(Constants.EVENT_LOG_SERVICE);
             setEventLogService(eventLogService);
         }
         return eventLogService;
@@ -99,7 +95,7 @@ public class BaseController extends Window {
 
     public SecurityService getSecurityService() {
         if (securityService == null) {
-            securityService = (SecurityService) SpringUtil.getBean(SECURITY_SERVICE);
+            securityService = (SecurityService) SpringUtil.getBean(Constants.SECURITY_SERVICE);
             setSecurityService(securityService);
         }
         return securityService;
@@ -107,7 +103,7 @@ public class BaseController extends Window {
 
     public AuthorizationService getAuthorizationService() {
         if (authorizationService == null) {
-            authorizationService = (AuthorizationService) SpringUtil.getBean(AUTH_SERVICE);
+            authorizationService = (AuthorizationService) SpringUtil.getBean(Constants.AUTH_SERVICE);
             setAuthorizationService(authorizationService);
         }
         return authorizationService;
@@ -115,7 +111,7 @@ public class BaseController extends Window {
 
     public WorkspaceService getWorkspaceService() {
         if (workspaceService == null) {
-            workspaceService = (WorkspaceService) SpringUtil.getBean(WORKSPACE_SERVICE);
+            workspaceService = (WorkspaceService) SpringUtil.getBean(Constants.WORKSPACE_SERVICE);
             setWorkspaceService(workspaceService);
         }
         return workspaceService;

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -177,6 +177,21 @@ public class AbstractTest extends EasyMockSupport {
     public Log createLog(User user, Folder folder) {
         Log log = new Log();
         log.setId(123);
+        log.setName("LogName");
+        log.setDomain("Domain");
+        log.setRanking("Ranking");
+        log.setFilePath("FileTimestamp");
+        log.setUser(user);
+        log.setFolder(folder);
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        log.setCreateDate(now);
+        return log;
+    }
+
+    public Log createLogWithId(Integer id, User user, Folder folder) {
+        Log log = new Log();
+        log.setId(id);
         log.setName("LogName");
         log.setDomain("Domain");
         log.setRanking("Ranking");

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,37 +21,40 @@
  */
 package org.apromore.service.impl;
 
+import org.apromore.dao.GroupUsermetadataRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.AuthorizationService;
-import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class AuthorizationServiceImpl implements AuthorizationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
-
     private WorkspaceService workspaceService;
-    private UserMetadataService userMetadataService;
+    private GroupUsermetadataRepository groupUsermetadataRepository;
+    private UsermetadataRepository usermetadataRepository;
+    private LogRepository logRepository;
 
     @Inject
     public AuthorizationServiceImpl(final WorkspaceService workspaceService,
-                                    final UserMetadataService userMetadataService) {
+                                    final GroupUsermetadataRepository groupUsermetadataRepository,
+                                    final UsermetadataRepository usermetadataRepository,
+                                    final LogRepository logRepository) {
         this.workspaceService = workspaceService;
-        this.userMetadataService = userMetadataService;
+        this.groupUsermetadataRepository = groupUsermetadataRepository;
+        this.usermetadataRepository = usermetadataRepository;
+        this.logRepository = logRepository;
     }
 
     @Override
@@ -59,12 +62,87 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
-        for (GroupLog g : workspaceService.getGroupLogs(logId)) {
+        List<GroupLog> groupLogs = workspaceService.getGroupLogs(logId);
+
+        for (GroupLog g : groupLogs) {
             AccessRights accessRights = g.getAccessRights();
             groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
         }
 
         return groupAccessTypeMap;
+    }
+
+    @Override
+    public AccessType getLogAccessTypeByUser(Integer logId, User user) {
+
+        Map<Group, AccessType> accessTypeMap = getLogAccessType(logId);
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Group g : user.getGroups()) {
+            if (accessTypeMap.containsKey(g)) {
+                accessTypes.add(accessTypeMap.get(g));
+            }
+        }
+
+        return getLeastRestrictiveAccessType(accessTypes);
+    }
+
+    @Override
+    public AccessType getLogsAccessTypeByUser(Set<Log> logSet, User user) {
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Log l : logSet) {
+            AccessType at = getLogAccessTypeByUser(l.getId(), user);
+            if ( at == AccessType.NONE) {
+                return AccessType.NONE; // If specified user can't access one of the multi-log, then return NONE
+            }
+            accessTypes.add(at);
+        }
+
+        return getMostRestrictiveAccessType(accessTypes);
+    }
+
+    @Override
+    public AccessType getLogsAccessTypeByUser(List<Integer> logIds, User user) {
+        Set<Log> logSet = new HashSet<>();
+
+        for(Integer logId : logIds) {
+            logSet.add(logRepository.findUniqueByID(logId));
+        }
+
+        return getLogsAccessTypeByUser(logSet, user);
+    }
+
+    public AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {
+
+        if (accessTypes == null || accessTypes.size() == 0) {
+            return AccessType.NONE;
+        }
+
+        if (accessTypes.contains(AccessType.OWNER)) {
+            return AccessType.OWNER;
+        } else if (accessTypes.contains(AccessType.EDITOR)) {
+            return AccessType.EDITOR;
+        } else if (accessTypes.contains(AccessType.VIEWER)) {
+            return AccessType.VIEWER;
+        } else return AccessType.NONE;
+    }
+
+    public AccessType getMostRestrictiveAccessType(List<AccessType> accessTypes) {
+
+        if (accessTypes == null || accessTypes.size() == 0) {
+            return AccessType.NONE;
+        }
+
+        if (accessTypes.contains(AccessType.NONE)) {
+            return AccessType.NONE;
+        } else if (accessTypes.contains(AccessType.VIEWER)) {
+            return  AccessType.VIEWER;
+        } else if (accessTypes.contains(AccessType.EDITOR)) {
+            return  AccessType.EDITOR;
+        } else return  AccessType.OWNER;
     }
 
     private AccessType getAccessType(AccessRights accessRights) {
@@ -90,6 +168,22 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    public AccessType getProcessAccessTypeByUser(Integer processId, User user) {
+
+        Map<Group, AccessType> accessTypeMap = getProcessAccessType(processId);
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Group g : user.getGroups()) {
+            if (accessTypeMap.containsKey(g)) {
+                accessTypes.add(accessTypeMap.get(g));
+            }
+        }
+
+        return getLeastRestrictiveAccessType(accessTypes);
+    }
+
+    @Override
     public Map<Group, AccessType> getFolderAccessType(Integer processId) {
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
@@ -103,16 +197,44 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    public AccessType getFolderAccessTypeByUser(Integer folderId, User user) {
+
+        Map<Group, AccessType> accessTypeMap = getFolderAccessType(folderId);
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Group g : user.getGroups()) {
+            if (accessTypeMap.containsKey(g)) {
+                accessTypes.add(accessTypeMap.get(g));
+            }
+        }
+
+        return getLeastRestrictiveAccessType(accessTypes);
+    }
+
+    @Override
     public Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId) {
+
+        // User metadata list on share window is disabled in version 7.19
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
-        for (GroupUsermetadata g : userMetadataService.getGroupUserMetadata(userMetadataId)) {
+        for (GroupUsermetadata g :
+                groupUsermetadataRepository.findByUsermetadataId(userMetadataId)) {
             AccessRights accessRights = g.getAccessRights();
             groupAccessTypeMap.put(g.getGroup(), getAccessType(accessRights));
         }
 
         return groupAccessTypeMap;
+    }
+
+    @Override
+    public AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) {
+
+        Usermetadata u = usermetadataRepository.findById(usermetadataId);
+        Set<Log> logSet = u.getLogs();
+
+        return getLogsAccessTypeByUser(logSet, user);
     }
 
     @Override
@@ -144,13 +266,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
-        if (!AccessType.NONE.equals(accessType)) {
-            userMetadataService.saveUserMetadataAccessType(userMetadataId, groupRowGuid, accessType);
-        }
+        // Explicitly share User metadata disabled in version 7.19
     }
 
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
-    // field
+    // field ( TODO: Unnecessary in 7.19 since no need to update user metadata after deleting of log )
     @Override
     public void deleteLogAccess(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
 
@@ -171,6 +291,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid) {
-        userMetadataService.removeUserMetadataAccessRights(userMetadataId, groupRowGuid);
+        // Explicitly share User metadata disabled in version 7.19
     }
+
 }

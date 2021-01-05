@@ -2,18 +2,18 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,7 +31,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.legacy.LogReaderProvider;
+import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
     private ParquetFactoryProvider parquetFactoryProvider;
-    LogReaderProvider logReaderProvider;
+    private LogImporterProvider logImporterProvider;
     private UserMetadataService userMetadataService;
 
     public ParquetFactoryProvider getParquetFactoryProvider() {
@@ -65,12 +65,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.parquetFactoryProvider = parquetFactoryProvider;
     }
 
-    public LogReaderProvider getLogReaderProvider() {
-        return logReaderProvider;
+    public LogImporterProvider getLogImporterProvider() {
+        return logImporterProvider;
     }
 
-    public void setLogReaderProvider(LogReaderProvider logReaderProvider) {
-        this.logReaderProvider = logReaderProvider;
+    public void setLogImporterProvider(LogImporterProvider logImporterProvider) {
+        this.logImporterProvider = logImporterProvider;
     }
 
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
@@ -91,7 +91,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         // Configure the arguments to pass to the CSV importer view
         Map arg = new HashMap<>();
         arg.put("parquetFactoryProvider", parquetFactoryProvider);
-        arg.put("logReaderProvider", logReaderProvider);
+        arg.put("logImporterProvider", logImporterProvider);
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");

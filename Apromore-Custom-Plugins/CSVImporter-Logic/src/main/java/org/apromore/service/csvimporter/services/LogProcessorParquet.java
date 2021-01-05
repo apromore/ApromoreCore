@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,12 +22,12 @@
 package org.apromore.service.csvimporter.services;
 
 import org.apromore.service.csvimporter.model.LogErrorReport;
-import org.apromore.service.csvimporter.model.LogSample;
+import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.ParquetEventLogModel;
 
 import java.util.List;
 
 public interface LogProcessorParquet {
 
-    ParquetEventLogModel processLog(String[] line, String[] header, LogSample sample, int lineIndex, List<LogErrorReport> logErrorReport);
+    ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport);
 }

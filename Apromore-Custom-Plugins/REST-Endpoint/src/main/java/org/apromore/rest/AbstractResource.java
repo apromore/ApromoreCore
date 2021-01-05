@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import org.apromore.mapper.UserMapper;
 import org.apromore.portal.model.RoleType;
@@ -69,16 +70,20 @@ public abstract class AbstractResource {
     private static final Pattern BASIC_PAYLOAD_PATTERN = Pattern.compile("(?<name>[^:]*):(?<password>.*)");
 
     @Context
+    private HttpHeaders httpHeaders;
+
+    @Context
     private ServletContext servletContext;
 
     /**
      * Perform HTTP Basic authentication.
      *
-     * @param authorization  the HTTP Authorization header; <code>null</code> indicates absent header
      * @return the authenticated user
      * @throws ResourceException if authentication fails
      */
-    protected UserType authenticatedUser(final String authorization) throws ResourceException {
+    protected UserType authenticatedUser() throws ResourceException {
+
+        String authorization = httpHeaders.getRequestHeader("Authorization").stream().findFirst().orElse(null);
 
         // Validate the presence of HTTP Basic authentication
         if (authorization == null) {

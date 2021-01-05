@@ -45,6 +45,7 @@
 		<module>Apromore-OSGI-Bundles/log-osgi</module>
 		<module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
 		<module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
+		<module>Apromore-OSGI-Bundles/docx4j-osgi</module>
 		<module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
 		<module>Apromore-OSGI-Bundles/jersey-osgi</module>
 		<module>Apromore-OSGI-Bundles/json-osgi</module>
@@ -194,7 +195,7 @@
 		<json.version>20090211</json.version>
 		<inject.version>1.0.0</inject.version>
 		<sardine.version>5.0.1</sardine.version>
-		<jackson.version>1.9.12</jackson.version>
+		<jackson.version>1.9.13</jackson.version>
 		<xmlbeans.version>3.1.0</xmlbeans.version>
 
 		<zk.version>8.6.0.1</zk.version>
@@ -315,7 +316,7 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.4.14-java7</version>
+				<version>1.4.15</version>
 			</dependency>
 
 			<dependency>

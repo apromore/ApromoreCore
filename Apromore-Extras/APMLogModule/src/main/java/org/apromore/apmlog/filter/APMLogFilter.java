@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,18 +48,7 @@ import java.util.List;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.typefilters.AttributeArcDurationFilter;
-import org.apromore.apmlog.filter.typefilters.CaseSectionAttributeCombinationFilter;
-import org.apromore.apmlog.filter.typefilters.CaseSectionCaseAttributeFilter;
-import org.apromore.apmlog.filter.typefilters.CaseSectionEventAttributeFilter;
-import org.apromore.apmlog.filter.typefilters.CaseTimeFilter;
-import org.apromore.apmlog.filter.typefilters.CaseUtilisationFilter;
-import org.apromore.apmlog.filter.typefilters.DurationFilter;
-import org.apromore.apmlog.filter.typefilters.EventAttributeDurationFilter;
-import org.apromore.apmlog.filter.typefilters.EventSectionAttributeFilter;
-import org.apromore.apmlog.filter.typefilters.EventTimeFilter;
-import org.apromore.apmlog.filter.typefilters.PathFilter;
-import org.apromore.apmlog.filter.typefilters.ReworkFilter;
+import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.AAttributeGraph;
@@ -77,6 +66,7 @@ import org.slf4j.LoggerFactory;
  * Modified: Chii Chang (10/04/2020)
  * Modified: Chii Chang (15/04/2020)
  * Modified: Chii Chang (17/04/2020) - bug fixed
+ * Modified: Chii Chang (24/12/2020) - added CaseLength filter
  */
 public class APMLogFilter {
 
@@ -175,7 +165,6 @@ public class APMLogFilter {
                         filteredPTrace.update(muIndex);
 
                         filteredPTraceList.add(filteredPTrace);
-//                        pTrace.setValidEventIndexBS(filteredPTrace.getValidEventIndexBitSet());
 
                         pLog.getPTraceList().add(pTrace);
                         pLog.getTraceList().add(pTrace);
@@ -288,6 +277,8 @@ public class APMLogFilter {
                 return EventAttributeDurationFilter.toKeep(trace, logFilterRule);
             case ATTRIBUTE_ARC_DURATION:
                 return AttributeArcDurationFilter.toKeep(trace, logFilterRule);
+            case CASE_LENGTH:
+                return CaseLengthFilter.toKeep(trace, logFilterRule);
             default:
                 return false;
         }

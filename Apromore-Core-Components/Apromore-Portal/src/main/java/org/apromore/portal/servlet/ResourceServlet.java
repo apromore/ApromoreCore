@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,8 +50,9 @@ import org.osgi.framework.ServiceReference;
  * Only GET requests are supported for static content.
  * For ZUML templates, use the <code>zkLoader</code> servlet instead.
  *
- * For POST requests, the service must have a <code>osgi.http.whiteboard.servlet.pattern</code>
+ * For POST requests, the service must have a <code>org.apromore.portal.servlet.pattern</code>
  * service property, which must match the servlet path exactly (regex patterns unsupported).
+ * This is similar to OSGi HTTP Whiteboard's <code>osgi.http.whiteboard.servlet.pattern</code>.
  */
 public class ResourceServlet extends HttpServlet {
 
@@ -84,7 +85,7 @@ public class ResourceServlet extends HttpServlet {
             // Check the HttpServlet services for a handler
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
                 HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
-                if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
+                if (pathMatchesPattern(req.getServletPath(), (String) serviceReference.getProperty("org.apromore.portal.servlet.pattern"))) {
                     servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
                     servlet.service(req, resp);
                     return;
@@ -129,7 +130,7 @@ public class ResourceServlet extends HttpServlet {
             BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
                 HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
-                if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
+                if (pathMatchesPattern(req.getServletPath(), (String) serviceReference.getProperty("org.apromore.portal.servlet.pattern"))) {
                     servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
                     servlet.service(req, resp);
                     return;
@@ -146,5 +147,25 @@ public class ResourceServlet extends HttpServlet {
     private String contentType(String path) {
         String extension = path.substring(path.lastIndexOf(".") + 1);
         return contentTypeMap.get(extension);
+    }
+
+    /**
+     * @param path  a URL path
+     * @param pattern  a servlet pattern
+     * @return whether the <var>path</var> matches the <var>pattern</var>
+     */
+    private boolean pathMatchesPattern(final String path, final String pattern) {
+
+        // e.g. "/img/*"
+        if (pattern.endsWith("*")) {
+            return path.startsWith(pattern.substring(0, pattern.length() - 1));
+        }
+
+        // e.g. "*.jpg"
+        if (pattern.startsWith("*")) {
+            return path.endsWith(pattern.substring(1));
+        }
+
+        return path.equals(pattern);
     }
 }

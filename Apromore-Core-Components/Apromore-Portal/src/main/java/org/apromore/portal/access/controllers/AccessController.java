@@ -2,18 +2,18 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -84,6 +84,7 @@ public class AccessController extends SelectorComposer<Div> {
     private Object selectedItem = argMap.get("selectedItem");
     private UserType currentUser = (UserType) argMap.get("currentUser");
     Boolean autoInherit = (Boolean) argMap.get("autoInherit");
+    Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
     private String userName;
 
     private Integer selectedItemId;
@@ -145,9 +146,7 @@ public class AccessController extends SelectorComposer<Div> {
 
     public AccessController() throws Exception {
 
-        selectedItem = Executions.getCurrent().getArg().get("selectedItem");
-        currentUser = (UserType) Executions.getCurrent().getArg().get("currentUser");
-        autoInherit = (Boolean) Executions.getCurrent().getArg().get("autoInherit");
+        pullArgs();
         if (currentUser == null) {
             currentUser = UserSessionManager.getCurrentUser();
         }
@@ -156,12 +155,20 @@ public class AccessController extends SelectorComposer<Div> {
         groupArtifactsMap = new HashMap<String, ListModelList<Artifact>>();
     }
 
+    private void pullArgs() throws Exception {
+        Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
+        selectedItem = argMap.get("selectedItem");
+        currentUser = (UserType) argMap.get("currentUser");
+        autoInherit = (Boolean) argMap.get("autoInherit");
+        showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+    }
+
     @Override
     public void doAfterCompose(Div div) throws Exception {
         super.doAfterCompose(div);
         container = div;
 
-        if (autoInherit || !isLogSelected()) {
+        if (!showRelatedArtifacts || !isLogSelected()) {
             artifactListbox.setVisible(false);
         } else {
             artifactListbox.setVisible(true);
@@ -323,6 +330,9 @@ public class AccessController extends SelectorComposer<Div> {
     }
 
     public boolean isLogSelected() {
+        if (selectedItem == null) {
+            return false;
+        }
         return selectedItem.getClass().equals(LogSummaryType.class);
     }
 

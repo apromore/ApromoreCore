@@ -2,18 +2,18 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,9 +22,9 @@
 package org.apromore.service.csvimporter.dateparser;
 
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
-import org.apromore.service.csvimporter.services.SampleLogGenerator;
-import org.apromore.service.csvimporter.services.legacy.LogReader;
-import org.apromore.service.csvimporter.services.legacy.LogReaderImpl;
+import org.apromore.service.csvimporter.services.MetaDataService;
+import org.apromore.service.csvimporter.services.legacy.LogImporter;
+import org.apromore.service.csvimporter.services.legacy.LogImporterCSVImpl;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,17 +43,17 @@ public class DateUtilUnitTest {
     private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
-    private SampleLogGenerator sampleLogGenerator;
-    private LogReader logReader;
+    private MetaDataService metaDataService;
+    private LogImporter logImporter;
 
     @Before
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
-        sampleLogGenerator = parquetFactoryProvider
+        metaDataService = parquetFactoryProvider
                 .getParquetFactory("csv")
-                .createSampleLogGenerator();
-        logReader = new LogReaderImpl();
+                .getMetaDataService();
+        logImporter = new LogImporterCSVImpl();
     }
 
     @Test
@@ -448,6 +448,7 @@ public class DateUtilUnitTest {
         assertEquals("yy MMM dd HH mm ss SSS", determineDateFormat("00 DEC 19 15 13 05 328"));
         assertEquals("yy MMMM dd HH mm ss SSS", determineDateFormat("00 DECEMBER 19 15 13 05 328"));
     }
+
     @Test
     public void test_timestamp_date_yy_only() {
 
@@ -456,6 +457,7 @@ public class DateUtilUnitTest {
         assertEquals("yyyy", determineDateFormat("2019"));
         assertEquals("yyyyMM", determineDateFormat("200012"));
     }
+
     @Test
     public void test_timestamp_date_week_day_only() {
 
@@ -464,6 +466,7 @@ public class DateUtilUnitTest {
         assertEquals("EEEE", determineDateFormat("Saturday"));
         assertEquals("EEEEE", determineDateFormat("SA"));
     }
+
     @Test
     public void test_timestamp_date_time_only() {
 
@@ -485,6 +488,7 @@ public class DateUtilUnitTest {
         assertEquals("mm:ss.S", determineDateFormat("59:59.8"));
         assertEquals("mm:ss.SSS", determineDateFormat("59:59.879"));
     }
+
     @Test
     public void test_timestamp_unsupported_separators() {
 

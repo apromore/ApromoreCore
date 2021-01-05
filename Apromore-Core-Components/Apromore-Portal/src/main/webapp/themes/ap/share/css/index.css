@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,9 +40,12 @@
     padding: 2px 5px 2px 5px;
 }
 
-.ap-share-detail .ap-icon {
-    background-size: auto 16px !important;
-    height: 22px !important;
+.ap-share-detail .z-span {
+    margin: 0 0 0 5px;
+}
+
+.ap-share-detail .z-image {
+    width: 20px;
 }
 
 .ap-share-related-deps .note {

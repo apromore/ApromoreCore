@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -64,7 +64,7 @@ public class UserManagementBuilder {
 
 	}
 	
-	public UserManagementBuilder withUserMetaDataType(String type,int version) {
+	public UserManagementBuilder withUserMetadataType(String type,int version) {
 		  usermetadataType = new UsermetadataType();
 	        usermetadataType.setIsValid(true);
 	        usermetadataType.setType(type);

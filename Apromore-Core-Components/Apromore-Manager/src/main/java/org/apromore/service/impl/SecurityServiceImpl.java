@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -66,7 +66,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class,value = "transactionManager")
 public class SecurityServiceImpl implements SecurityService {
 
     private static final Logger LOGGER = Logger.getLogger(SecurityServiceImpl.class.getCanonicalName());

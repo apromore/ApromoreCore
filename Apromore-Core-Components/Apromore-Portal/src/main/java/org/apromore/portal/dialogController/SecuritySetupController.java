@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,6 +59,7 @@ public class SecuritySetupController extends BaseController {
         arg.put("selectedItem", selectedItem);
         arg.put("currentUser", currentUser);
         arg.put("autoInherit", true);
+        arg.put("showRelatedArtifacts", true);
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, arg);
             // FolderType currentFolder = UserSessionManager.getCurrentFolder();

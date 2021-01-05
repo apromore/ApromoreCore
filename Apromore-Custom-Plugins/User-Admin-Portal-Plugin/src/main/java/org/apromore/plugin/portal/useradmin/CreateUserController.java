@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -67,12 +67,11 @@ public class CreateUserController extends SelectorComposer<Window> {
 
         try {
             securityService.createUser(user);
-            getSelf().detach();
-
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
             Messagebox.show("Unable to create user. The user could have been present in the system.");
         }
+        getSelf().detach();
     }
 
     @Listen("onClick = #cancelBtn")

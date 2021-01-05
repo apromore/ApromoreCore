@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,16 +22,21 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.stats.DurSubGraph;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 public class AttributeArcDurationTest {
     public static void testRetain1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -99,11 +104,10 @@ public class AttributeArcDurationTest {
             System.out.println(trace.getCaseId());
         }
 
-        if (hasC1 || hasC2 || hasC3 || !hasC4) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute arc duration (1)' test PASS.\n");
-        }
+        assert !hasC1;
+        assert !hasC2;
+        assert !hasC3;
+        assert hasC4;
     }
 
     public static void testRetain2(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -171,11 +175,10 @@ public class AttributeArcDurationTest {
             System.out.println(trace.getCaseId());
         }
 
-        if (hasC1 || !hasC2 || hasC3 || !hasC4) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute arc duration (2)' test PASS.\n");
-        }
+        assert !hasC1;
+        assert hasC2;
+        assert !hasC3;
+        assert hasC4;
     }
 
     public static void testRetain3(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -246,10 +249,19 @@ public class AttributeArcDurationTest {
             System.out.println(trace.getCaseId());
         }
 
-        if (hasC1 || hasC2 || hasC3 || !hasC4) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute arc duration (3)' test PASS.\n");
-        }
+        assert !hasC1;
+        assert !hasC2;
+        assert !hasC3;
+        assert hasC4;
+    }
+
+    public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        PLog pLog = apmLogFilter.getPLog();
+        pLog.updateStats();
+        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A");
+        DoubleArrayList durList = subGraph.getValDurListMap().get("A");
+
+        assertEquals(1000 * 60 * 60 * 2d, durList.average(), 0 /* comparison tolerance */);
     }
 }
