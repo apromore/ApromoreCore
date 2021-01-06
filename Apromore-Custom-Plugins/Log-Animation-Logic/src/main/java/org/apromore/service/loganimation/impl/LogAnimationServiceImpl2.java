@@ -186,9 +186,11 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
      * @param bpmnWithGateways: BPMN text with XOR gateways
      * @param bpmnNoGateways: corresponding BPMN text with no XOR gateways
      * @param logs: logs to be replayed
+     * @throws DiagramMappingException 
      */ 
     @Override
-    public Object[] createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) throws BpmnConverterException, IOException, JAXBException, JSONException {
+    public Object[] createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) 
+            throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException {
         
         Set<XLog> xlogs = new HashSet<>();
         for (Log log: logs) {
@@ -197,7 +199,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
 
         Definitions bpmnDefWithGateways = BPMN2DiagramConverter.parseBPMN(bpmnWithGateways, getClass().getClassLoader());
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());
-        Map<String,String> diagramMapping = buildDiagramMapping(bpmnDefWithGateways, bpmnDefNoGateways);
+        //Map<String,String> diagramMapping = buildDiagramMapping(bpmnDefWithGateways, bpmnDefNoGateways);
+        ElementIDMapper diagramMapping = new ElementIDMapper(bpmnDefNoGateways);
 
         /*
         * ------------------------------------------
@@ -333,7 +336,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
                 SequenceFlow corresponding = searchCorrespondingFlow(processNoGateways, flow);
                 if (corresponding != null) {
                     idMapping.put(flow.getId(), corresponding.getId());
-                }
+                }              
             }
         }
         return idMapping;
@@ -361,6 +364,22 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         return null; 
     }
     
+    /**
+     * Assume that the process model has only XOR gateways.
+     * Applicable sequence flows:
+     *      - Event -> Task
+     *      - Task -> Task
+     *      - Task -> Event
+     *      - XOR split -> Task
+     *      - Task -> XOR merge
+     * Non-applicable sequence flows:
+     *      - Task -> XOR split
+     *      - XOR Merge -> Task
+     *      - XOR -> XOR
+     * @param process
+     * @param flow
+     * @return: return null if not found any or not valid case
+     */
     private SequenceFlow searchCorrespondingFlow(Process process, SequenceFlow flow) {
         FlowNode source = (FlowNode)flow.getSourceRef();
         FlowNode target = (FlowNode)flow.getTargetRef();
@@ -392,14 +411,22 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     }
     
     // The input animation log will be modified after the call to this method
-    private void transformToNonGateways(AnimationLog diagramAnimationLog, Map<String,String> diagramMapping) {
+    private void transformToNonGateways(AnimationLog diagramAnimationLog, ElementIDMapper diagramMapping) throws DiagramMappingException {
         for (ReplayTrace trace : diagramAnimationLog.getTraces()) {
             trace.convertToNonGateways();
             for (FlowNode node : trace.getNodes()) {
-                node.setId(diagramMapping.get(node.getId()));
+                String newId = diagramMapping.getId(node);
+                if (newId.equals(ElementIDMapper.UNFOUND)) {
+                    throw new DiagramMappingException("Couldn't find id for the node with name = " + node.getName());
+                }
+                node.setId(newId);
             }
             for (SequenceFlow flow : trace.getSequenceFlows()) {
-                flow.setId(diagramMapping.get(flow.getId()));
+                String newId = diagramMapping.getId(flow);
+                if (newId.equals(ElementIDMapper.UNFOUND)) {
+                    throw new DiagramMappingException("Couldn't find id for the sequence flow with name = " + flow.getName());
+                }
+                flow.setId(newId);
             }
         }
     }
