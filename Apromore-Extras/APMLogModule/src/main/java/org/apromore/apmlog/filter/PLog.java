@@ -46,6 +46,7 @@ import org.apromore.apmlog.*;
 import org.apromore.apmlog.immutable.ImmutableLog;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -65,6 +66,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (12/05/2020)
  * Modified: Chii Chang (10/11/2020)
  * Modified: Chii Chang (11/11/2020)
+ * Modified: Chii Chang (06/01/2021)
  */
 public class PLog extends LaLog {
 
@@ -137,7 +139,6 @@ public class PLog extends LaLog {
 
     private AAttributeGraph originalAttributeGraph;
     private AAttributeGraph previousAttributeGraph;
-
 
 
     public void addToOriginalPerfMap(PTrace pTrace, String code) {
@@ -277,6 +278,8 @@ public class PLog extends LaLog {
         this.validTraceIndexBS = new BitSet(apmLog.getImmutableTraces().size());
         this.originalValidTraceIndexBS = new BitSet(apmLog.getImmutableTraces().size());
 
+
+
         for (ATrace aTrace : apmLog.getTraceList()) {
             int index = aTrace.getImmutableIndex();
             this.validTraceIndexBS.set(index);
@@ -304,12 +307,16 @@ public class PLog extends LaLog {
         this.pTraceList = new ArrayList<>(apmTraceList.size());
         this.originalPTraceList = new ArrayList<>(apmTraceList.size());
 
+        caseDurationList = new DoubleArrayList(apmLog.getTraceList().size());
+
         for(int i=0; i < apmTraceList.size(); i++) {
             ATrace aTrace = apmTraceList.get(i);
 
             PTrace pTrace = new PTrace(aTrace, apmLog);
 
             this.traceList.add(pTrace);
+
+            caseDurationList.add(pTrace.getDuration());
 
             addToPerfMap(pTrace, "duration");
             addToPerfMap(pTrace, "totalProcessingTime");
@@ -348,7 +355,6 @@ public class PLog extends LaLog {
         this.eventSize = apmLog.getEventSize();
         this.originalEventSize = apmLog.getEventSize();
 
-        this.minDuration = apmLog.getMinDuration();
         this.originalMinDuration = apmLog.getMinDuration();
 
         this.medianDuration = apmLog.getMedianDuration();
@@ -357,7 +363,6 @@ public class PLog extends LaLog {
         this.averageDuration = apmLog.getAverageDuration();
         this.originalAverageDuration = apmLog.getAverageDuration();
 
-        this.maxDuration = apmLog.getMaxDuration();
         this.originalMaxDuration = apmLog.getMaxDuration();
 
         this.startTime = apmLog.getStartTime();
@@ -390,9 +395,6 @@ public class PLog extends LaLog {
 
 
     public void updateStats(List<PTrace> filteredPTraceList) {
-
-        minDuration = 0;
-        maxDuration = 0;
         startTime = 0;
         endTime = 0;
 
@@ -417,10 +419,13 @@ public class PLog extends LaLog {
         eventAttributeValueFreqMap.clear();
         caseAttributeValueFreqMap.clear();
 
+        this.caseDurationList = new DoubleArrayList(pTraceList.size());
 
         for (int i = 0; i < pTraceList.size(); i++) {
 
             PTrace trace = pTraceList.get(i);
+
+            caseDurationList.add(trace.getDuration());
 
             trace.update(i);
 
@@ -445,9 +450,6 @@ public class PLog extends LaLog {
 
             if (startTime < 1 || trace.getStartTimeMilli() < startTime) startTime = trace.getStartTimeMilli();
             if (trace.getEndTimeMilli() > endTime) endTime = trace.getEndTimeMilli();
-
-            if (minDuration == 0 || trace.getDuration() < minDuration) minDuration = trace.getDuration();
-            if (trace.getDuration() > maxDuration) maxDuration = trace.getDuration();
 
             BitSet vEvents = trace.getValidEventIndexBitSet();
             eventSize += vEvents.cardinality();
@@ -567,8 +569,6 @@ public class PLog extends LaLog {
         pTraceList = originalPTraceList;
         caseVariantSize = originalCaseVariantSize;
         eventSize = originalEventSize;
-        minDuration = originalMinDuration;
-        maxDuration = originalMaxDuration;
         startTime = originalStartTime;
         endTime = originalEndTime;
         variantIdFreqMap = originalVariantIdFreqMap;
@@ -591,15 +591,16 @@ public class PLog extends LaLog {
 
             this.traceList.clear();
 
+            caseDurationList = new DoubleArrayList(pTraceList.size());
+
             for (int i = 0; i < pTraceList.size(); i++) {
                 pTraceList.get(i).resetPrevious();
                 this.traceList.add(pTraceList.get(i));
+                caseDurationList.add(pTraceList.get(i).getDuration());
             }
 
             caseVariantSize = previousCaseVariantSize;
             eventSize = previousEventSize;
-            minDuration = previousMinDuration;
-            maxDuration = previousMaxDuration;
             startTime = previousStartTime;
             endTime = previousEndTime;
             variantIdFreqMap = previousVariantIdFreqMap;
@@ -624,8 +625,6 @@ public class PLog extends LaLog {
 
         previousCaseVariantSize = caseVariantSize;
         previousEventSize = eventSize;
-        previousMinDuration = minDuration;
-        previousMaxDuration = maxDuration;
         previousStartTime = startTime;
         previousEndTime = endTime;
         previousVariantIdFreqMap = variantIdFreqMap;
@@ -945,8 +944,7 @@ public class PLog extends LaLog {
                 eventAttributeValueCasesFreqMap,
                 eventAttributeValueFreqMap,
                 caseAttributeValueFreqMap,
-                minDuration,
-                maxDuration,
+                caseDurationList,
                 timeZone,
                 startTime,
                 endTime,
