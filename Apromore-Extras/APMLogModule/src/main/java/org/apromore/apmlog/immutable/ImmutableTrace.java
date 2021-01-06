@@ -46,6 +46,7 @@ public class ImmutableTrace implements ATrace {
     private double ttlProcessTime, avgProcessTime, maxProcessTime, ttlWaitTime, avgWaitTime, maxWaitTime,
                     caseUtilization;
     private IntArrayList activityNameIndexes;
+    private long startTime = 0, endTime = 0;
 
     public ImmutableTrace(int immutableIndex, int mutableIndex, UnifiedMap<String, String> attributes) {
         this.immutableIndex = immutableIndex;
@@ -70,6 +71,8 @@ public class ImmutableTrace implements ATrace {
     public void addActivity(AActivity aActivity) {
         aActivity.setParentTrace(this);
         this.activities.add(aActivity);
+        if (startTime == 0 || aActivity.getStartTimeMilli() < startTime) startTime = aActivity.getStartTimeMilli();
+        if (endTime == 0 || aActivity.getEndTimeMilli() > endTime) endTime = aActivity.getEndTimeMilli();
     }
 
 
@@ -122,12 +125,12 @@ public class ImmutableTrace implements ATrace {
     @Override
     public long getStartTimeMilli() {
         if (activities.size() == 0) return 0;
-        return activities.get(0).getStartTimeMilli();
+        return startTime;
     }
 
     @Override
     public long getEndTimeMilli() {
-        return activities.get(activities.size()-1).getEndTimeMilli();
+        return endTime;
     }
 
     @Override

@@ -24,6 +24,7 @@ package org.apromore.apmlog.immutable;
 
 import org.apromore.apmlog.*;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
@@ -118,14 +119,15 @@ public class ImmutableLog extends LaLog {
             activityMaxOccurMapForClone.put(key, this.activityMaxOccurMap.get(key));
         }
 
+        DoubleArrayList caseDurationListClone = new DoubleArrayList(caseDurationList.toArray());
+
 
         ImmutableLog logClone = new ImmutableLog(traceListForClone,
                 variIdFreqMapForClone,
                 eventAttrValCasesFreqMapForClone,
                 eventAttrValFreqMapForClone,
                 caseAttrValFreqMapForClone,
-                this.minDuration,
-                this.maxDuration,
+                caseDurationListClone,
                 this.timeZone,
                 this.startTime,
                 this.endTime,
@@ -141,8 +143,7 @@ public class ImmutableLog extends LaLog {
                       UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap,
                       UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
                       UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
-                      double minDuration,
-                      double maxDuration,
+                        DoubleArrayList caseDurationList,
                       String timeZone,
                       long startTime,
                       long endTime,
@@ -156,8 +157,7 @@ public class ImmutableLog extends LaLog {
         this.eventAttributeValueCasesFreqMap = eventAttributeValueCasesFreqMap;
         this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
         this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
-        this.minDuration = minDuration;
-        this.maxDuration = maxDuration;
+        this.caseDurationList = caseDurationList;
         this.timeZone = timeZone;
         this.startTime = startTime;
         this.endTime = endTime;
