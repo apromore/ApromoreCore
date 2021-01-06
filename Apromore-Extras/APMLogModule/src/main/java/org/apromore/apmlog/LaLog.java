@@ -21,7 +21,6 @@
  */
 package org.apromore.apmlog;
 
-import org.apache.commons.math3.stat.descriptive.rank.Median;
 
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.stats.AAttributeGraph;

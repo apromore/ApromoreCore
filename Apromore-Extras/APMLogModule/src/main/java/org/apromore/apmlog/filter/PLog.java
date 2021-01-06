@@ -778,7 +778,7 @@ public class PLog extends LaLog {
         return pTraceUnifiedMap.get(caseId);
     }
 
-    public List<String> getActivityNameList(int caseVariantId) { //2019-10-31
+    public List<String> getActivityNameList(int caseVariantId) {
         for(PTrace pTrace : pTraceList) {
             if(pTrace.getCaseVariantId() == caseVariantId){
                 return pTrace.getActivityNameList();
@@ -906,8 +906,6 @@ public class PLog extends LaLog {
         List<PTrace> theCusPTraceList = new ArrayList<>();
 
         for (int i = 0; i < originalPTraceList.size(); i++) {
-//            PTrace pTrace = originalPTraceList.get(i);
-//            String theId = pTrace.getCaseId();
             PTrace pt = originalPTraceList.get(i);
             if(!currentBS.get(i)) {
                 pt.setValidEventIndexBS(new BitSet(pt.getEventSize()));

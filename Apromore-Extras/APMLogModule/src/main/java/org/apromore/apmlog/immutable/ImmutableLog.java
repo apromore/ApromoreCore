@@ -134,6 +134,8 @@ public class ImmutableLog extends LaLog {
                 this.eventSize,
                 this.activityNameMapper,
                 activityMaxOccurMapForClone);
+        logClone.setEventAttributeOccurMap(new UnifiedMap<>(this.eventAttributeOccurMap));
+        logClone.setActivityNameBiMap(new HashBiMap<>(this.activityNameBiMap));
 
         return logClone;
     }
