@@ -522,11 +522,8 @@ public class PLog extends LaLog {
     private void updateEventAttributeOccurMap() {
         eventAttributeOccurMap = new UnifiedMap<>();
 
-        for (int i = 0; i < pTraceList.size(); i++) {
-            PTrace pTrace = pTraceList.get(i);
-            List<AActivity> activityList = pTrace.getActivityList();
-            for (int j = 0; j < activityList.size(); j++) {
-                AActivity activity = activityList.get(j);
+        for (PTrace pTrace: pTraceList) {
+            for (AActivity activity: pTrace.getActivityList()) {
                 LogFactory.fillAttributeOccurMap(activity, eventAttributeOccurMap);
             }
         }
@@ -593,10 +590,10 @@ public class PLog extends LaLog {
 
             caseDurationList = new DoubleArrayList(pTraceList.size());
 
-            for (int i = 0; i < pTraceList.size(); i++) {
-                pTraceList.get(i).resetPrevious();
-                this.traceList.add(pTraceList.get(i));
-                caseDurationList.add(pTraceList.get(i).getDuration());
+            for (PTrace pTrace: pTraceList) {
+                pTrace.resetPrevious();
+                this.traceList.add(pTrace);
+                caseDurationList.add(pTrace.getDuration());
             }
 
             caseVariantSize = previousCaseVariantSize;
@@ -619,8 +616,8 @@ public class PLog extends LaLog {
         previousAttributeGraph = this.attributeGraph;
         previousPTraceList = this.pTraceList;
 
-        for (int i = 0; i < previousPTraceList.size(); i++) {
-            previousPTraceList.get(i).updatePrevious();
+        for (PTrace previousPTrace: previousPTraceList) {
+            previousPTrace.updatePrevious();
         }
 
         previousCaseVariantSize = caseVariantSize;
@@ -641,14 +638,12 @@ public class PLog extends LaLog {
 
         UnifiedMap<String, Integer> actMaxOccur = new UnifiedMap<>();
 
-        for (int i = 0; i < this.pTraceList.size(); i++) {
-            PTrace pTrace = pTraceList.get(i);
+        for (PTrace pTrace: pTraceList) {
             List<AActivity> aActivityList = pTrace.getActivityList();
 
             UnifiedMap<String, Integer> actOccurFreq = new UnifiedMap<>();
 
-            for (int j = 0; j < aActivityList.size(); j++) {
-                AActivity aActivity = aActivityList.get(j);
+            for (AActivity aActivity: aActivityList) {
                 String actName = aActivity.getName();
                 if (actOccurFreq.containsKey(actName)) {
                     int freq = actOccurFreq.get(actName) + 1;
@@ -678,8 +673,7 @@ public class PLog extends LaLog {
         UnifiedMap<Integer, Integer> variIdFreqMap = new UnifiedMap<>();
 
 
-        for(int i=0; i < this.pTraceList.size(); i++) {
-            PTrace pTrace = this.pTraceList.get(i);
+        for(PTrace pTrace: pTraceList) {
             List<String> actNameList = pTrace.getActivityNameList();
             if (variFreqMap.containsKey(actNameList)) {
                 int freq = variFreqMap.get(actNameList) + 1;
@@ -705,10 +699,9 @@ public class PLog extends LaLog {
             variIdFreqMap.put(id, freq);
         }
 
-        for (int i = 0; i < pTraceList.size(); i++) {
-            PTrace pTrace = pTraceList.get(i);
+        for (PTrace pTrace: pTraceList) {
             List<String> actNameList = pTrace.getActivityNameList();
-            pTraceList.get(i).setCaseVariantId(variantIdMap.get(actNameList));
+            pTrace.setCaseVariantId(variantIdMap.get(actNameList));
         }
 
         return variFreqMap.size();
@@ -868,8 +861,8 @@ public class PLog extends LaLog {
 
         List<PTrace> theOPTraceList = new ArrayList<>();
 
-        for (int i=0; i<list.size(); i++) {
-            PTrace pTrace = list.get(i).getKey();
+        for (HashBiMap.Entry<PTrace, Integer> entry: list) {
+            PTrace pTrace = entry.getKey();
             theOPTraceList.add(pTrace);
         }
 
@@ -933,8 +926,8 @@ public class PLog extends LaLog {
         UnifiedMap<String, ATrace> traceUM = new UnifiedMap<>();
 
         List<ATrace> traceList = new ArrayList<>();
-        for(int i=0; i < this.pTraceList.size(); i++) {
-            ATrace aTrace = this.pTraceList.get(i).toATrace();
+        for(PTrace pTrace: pTraceList) {
+            ATrace aTrace = pTrace.toATrace();
             traceList.add(aTrace);
             traceUM.put(aTrace.getCaseId(), aTrace);
         }
