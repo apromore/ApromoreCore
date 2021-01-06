@@ -255,7 +255,7 @@ public class UIHelper implements UserInterfaceHelper {
         UserMetadataSummaryType userMetadataSummaryType = new UserMetadataSummaryType();
 
         userMetadataSummaryType.setId(usermetadata.getId());
-        userMetadataSummaryType.setCreatedBy(usermetadata.getCreatedBy());
+        userMetadataSummaryType.setCreatedBy(username);
         userMetadataSummaryType.setUpdatedTime(Objects.equals(usermetadata.getUpdatedTime(), null) ?
                 usermetadata.getCreatedTime() :
                 usermetadata.getUpdatedTime());
