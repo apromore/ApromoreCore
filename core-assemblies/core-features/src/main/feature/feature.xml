@@ -4,6 +4,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0">
 
+  <repository>mvn:no.priv.bang.karaf/liquibase-core-karaf/${liquibase.version}/xml/features</repository>  <!-- Liquibase integration -->
   <repository>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</repository>  <!-- JEE support -->
   <repository>mvn:org.apache.karaf.features/spring-legacy/${karaf.version}/xml/features</repository>  <!-- Spring 3 and DM support -->
 
@@ -89,6 +90,7 @@
 
   <feature name="apromore-database" version="${project.version}" description="Apromore core persistence">
     <feature>eclipselink</feature>
+    <feature>liquibase-core</feature>
     <feature>virgo-compatibility</feature>
     <bundle>mvn:com.google.guava/guava/14.0.1</bundle>
     <bundle>mvn:com.h2database/h2/1.3.171</bundle>
@@ -97,10 +99,8 @@
     <bundle>mvn:com.jolbox/bonecp/0.7.1.RELEASE</bundle>
     <bundle>mvn:org.apromore.plugin/database-h2/1.1</bundle>
     <bundle>mvn:org.apromore.plugin/database-mysql/1.1</bundle>
-    <bundle>mvn:org.liquibase/liquibase-osgi/3.4.2</bundle>
     <bundle>mvn:org.springframework.data/spring-data-commons/1.6.1.RELEASE</bundle>
     <bundle>mvn:org.springframework.data/spring-data-jpa/1.4.1.RELEASE</bundle>
-    <bundle>mvn:org.yaml/snakeyaml/1.26</bundle>
     <bundle>mvn:org.apromore/apromore-database/1.0</bundle>
   </feature>
 
