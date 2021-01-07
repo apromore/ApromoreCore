@@ -352,6 +352,43 @@ public class APMLogUnitTest {
         AttributeArcDurationTest.testAvgDur1(apmLog, this);
     }
 
+    @Test
+    public void testAPMLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test APMLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        LogsDurationsTest.testAPMLogDurations(apmLog);
+    }
+
+    @Test
+    public void testPLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test PLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        LogsDurationsTest.testPLogDurations(apmLog);
+    }
+
+    @Test
+    public void testImmutableLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test ImmutableLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        LogsDurationsTest.testImmutableLogDurations(xLog);
+    }
+
+    @Test
+    public void testClonedImmutableLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Cloned ImmutableLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        LogsDurationsTest.testClonedImmutableLogDurations(xLog);
+    }
+
+    @Test
+    public void testImmutableTraceTimestamp() throws Exception {
+        printString("\n(/ 'o')/ ~ Test ImmutableTrace timestamp'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        ImmutableTraceTest.testStartEndTimestamps(xLog);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
