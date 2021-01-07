@@ -529,8 +529,8 @@ public abstract class BaseListboxController extends BaseController {
 				return;
 			}
 			Object selectedItem = getSelection().iterator().next();
-			validateNotFolderTypeItem(selectedItem);
 			boolean canShare = false;
+			// canShare = validateNotFolderTypeItem(selectedItem); // Allow folder
 			try {
 				canShare = Helpers.isShareable(selectedItem, currentUser);
 			} catch (ValidationException e) {
@@ -555,10 +555,12 @@ public abstract class BaseListboxController extends BaseController {
 		}
 	}
 
-	private void validateNotFolderTypeItem(Object selectedItem) {
+	private boolean validateNotFolderTypeItem(Object selectedItem) {
 		if (selectedItem instanceof FolderType) {
 			Notification.error("You can only share a log or model");
+			return false;
         }
+		return true;
 	}
 
 	protected void removeFolder() throws Exception {
