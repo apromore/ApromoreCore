@@ -22,6 +22,8 @@
 package org.apromore.plugin.portal.loganimation;
 
 import org.apromore.portal.common.UserSessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 
@@ -34,9 +36,11 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
  *
  */
 public class LogAnimationCleaner implements DesktopCleanup {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationCleaner.class.getCanonicalName());
+
     @Override
     public void cleanup(Desktop desktop) throws Exception {
-        System.out.println("LogAnimation cleanup starts for desktopID = " + desktop.getId());
+        LOGGER.info("LogAnimation cleanup starts for desktopID = " + desktop.getId());
         
         // Clean up this plugin
         // Log animation logic has no tricky resources to be cleaned up, auto cleaned by the GC
@@ -46,6 +50,6 @@ public class LogAnimationCleaner implements DesktopCleanup {
             UserSessionManager.removeEditSession(desktop.getAttribute("pluginSessionId").toString());
         }
         
-        System.out.println("LogAnimation cleanup is done for desktopID = " + desktop.getId());
+        LOGGER.info("LogAnimation cleanup is done for desktopID = " + desktop.getId());
     }
 }
