@@ -161,7 +161,7 @@ public class LogFactory {
     }
 
 
-    public static UnifiedMap<String, String> getAttributes(XEvent xEvent) {
+    private static UnifiedMap<String, String> getAttributes(XEvent xEvent) {
         UnifiedMap<String, String> map = new UnifiedMap<>();
         XAttributeMap xAttributeMap = xEvent.getAttributes();
         for (String key : xAttributeMap.keySet()) {
