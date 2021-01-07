@@ -292,7 +292,7 @@ public class EventLogServiceImpl implements EventLogService {
 
     private void updateLogName(Log log, String newName) throws Exception {
 
-	log.setName(newName);
+	
 	
 	if (log.getStorage() == null) {
 
@@ -312,8 +312,9 @@ public class EventLogServiceImpl implements EventLogService {
 	    outputStream = newStorage.getOutputStream("log", new_file_name);
 	    InputStream inputStream = currentStorage.getInputStream(null, file_name);
 	    logFileService.copyFile(inputStream, outputStream);
-
+	    
 	}
+	log.setName(newName);
 
     }
 
