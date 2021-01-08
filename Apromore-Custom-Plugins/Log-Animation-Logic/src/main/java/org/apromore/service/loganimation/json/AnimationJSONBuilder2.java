@@ -25,7 +25,6 @@
 package org.apromore.service.loganimation.json;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -72,17 +71,16 @@ import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 * The SlotDataUnit can be used to show the location of a specific event date on the timeline bar
 */
 public class AnimationJSONBuilder2 {
-    private ArrayList<AnimationLog> animations = null;
+    private List<AnimationLog> animations = null;
     private Collection<SequenceFlow> sequenceFlows = new HashSet<>();
     private Collection<FlowNode> nodes = new HashSet<>();
     private Interval totalRealInterval = null; //total time interval of all logs
     private ReplayParams params;
     private static final Logger LOGGER = Logger.getLogger(AnimationJSONBuilder2.class.getCanonicalName());
     
-    public AnimationJSONBuilder2(ArrayList<AnimationLog> animations, Definitions diagram, ReplayParams params) {
+    public AnimationJSONBuilder2(List<AnimationLog> animations, Definitions diagram, ReplayParams params) {
         this.animations = animations;
         this.params = params;
-        //this.collectModelElements(diagram);
         
         Set<DateTime> dateSet = new HashSet<>();
         for (AnimationLog animationLog : animations) {
