@@ -127,8 +127,8 @@ public class AccessController extends SelectorComposer<Div> {
     @Wire("#candidateAssigneeAdd")
     Button candidateAssigneeAdd;
 
-    @Wire("#applyBtn")
-    Button applyBtn;
+    @Wire("#btnApply")
+    Button btnApply;
 
     @Wire("#assignmentListbox")
     Listbox assignmentListbox;
@@ -174,9 +174,7 @@ public class AccessController extends SelectorComposer<Div> {
             artifactListbox.setVisible(true);
         }
         loadCandidateAssignee();
-        if (selectedItem != null) {
-            setSelectedItem(selectedItem);
-        }
+        setSelectedItem(selectedItem);
 
         assignmentListbox.addEventListener("onChange", new EventListener<Event>() {
             @Override
@@ -237,9 +235,7 @@ public class AccessController extends SelectorComposer<Div> {
                 public void onEvent(Event evt) {
                     if ("onSelect".equals(evt.getName())) {
                         Object selItem = evt.getData();
-                        if (selItem != null) {
-                            setSelectedItem(selItem);
-                        }
+                        setSelectedItem(selItem);
                     }
                 }
             });
@@ -329,6 +325,14 @@ public class AccessController extends SelectorComposer<Div> {
         assignmentListbox.setModel(assignmentModel);
     }
 
+    private void clearAssignments() {
+        assignmentMap = new HashMap<String, Assignment>();
+        ownerMap = new HashMap<String, Assignment>();
+        assignmentModel = new ListModelList<>();
+        assignmentListbox.setMultiple(false);
+        assignmentListbox.setModel(assignmentModel);
+    }
+
     public boolean isLogSelected() {
         if (selectedItem == null) {
             return false;
@@ -356,7 +360,7 @@ public class AccessController extends SelectorComposer<Div> {
             artifactModel.add(artifact);
             artifactMap.put(id, artifact);
         }
-        Set<Artifact> selectionSet = new HashSet<Artifact>();
+        // Set<Artifact> selectionSet = new HashSet<Artifact>();
         String selectedUserName = securityService.findGroupByRowGuid(rowGuid).getName();
         try {
             Set<Usermetadata> selectedUserMetadataSet = userMetadataService.getUserMetadataByUserAndLog(selectedUserName, selectedItemId, UserMetadataTypeEnum.FILTER);
@@ -367,14 +371,14 @@ public class AccessController extends SelectorComposer<Div> {
                 String updatedTime = userMetadata.getUpdatedTime();
                 UsermetadataType usermetadataType = userMetadata.getUsermetadataType();
                 Artifact artifact = new Artifact(id, name, updatedTime, usermetadataType);
-                selectionSet.add(artifact);
+                // selectionSet.add(artifact);
             }
         } catch (Exception e) {
             LOGGER.info("Cannot find usermeta data selection for the current user");
         }
         artifactModel.setMultiple(true);
         artifactListbox.setModel(artifactModel);
-        artifactModel.setSelection(selectionSet);
+        // artifactModel.setSelection(selectionSet);
     }
 
     /**
@@ -456,8 +460,13 @@ public class AccessController extends SelectorComposer<Div> {
         selectedIconMetadata.setVisible(false);
 
         if (selectedItem == null) {
+            clearAssignments();
+            btnApply.setDisabled(true);
+            candidateAssigneeAdd.setDisabled(true);
             return;
         }
+        btnApply.setDisabled(false);
+        candidateAssigneeAdd.setDisabled(false);
         this.selectedItem = selectedItem;
 
         if (selectedItem instanceof FolderType) {
