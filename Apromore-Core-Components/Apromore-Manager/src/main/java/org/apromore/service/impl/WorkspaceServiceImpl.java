@@ -292,7 +292,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Folder parentFolder = folder.getParentFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
             parentFolder = folderRepo.findOne(parentFolder.getId());
-            createGroupFolder(group, parentFolder, true, false, false);
+
+            // Assign READ access right to parent/ancestor folder only when specified group doesn't have access to it.
+            if(groupFolderRepo.findByGroupAndFolder(group, parentFolder) == null) {
+                createGroupFolder(group, parentFolder, true, false, false);
+            }
+
             parentFolder = parentFolder.getParentFolder();
         }
         saveSubFolderPermissions(folder, group, hasRead, hasWrite, hasOwnership);
@@ -343,7 +348,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Folder parentFolder = process.getFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
             parentFolder = folderRepo.findOne(parentFolder.getId());
-            createGroupFolder(group, parentFolder, true, false, false);
+
+            // Assign READ access right to parent/ancestor folder only when specified group doesn't have access to it.
+            if(groupFolderRepo.findByGroupAndFolder(group, parentFolder) == null) {
+                createGroupFolder(group, parentFolder, true, false, false);
+            }
+
             parentFolder = parentFolder.getParentFolder();
         }
 
@@ -361,7 +371,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Folder parentFolder = log.getFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
             parentFolder = folderRepo.findOne(parentFolder.getId());
-            createGroupFolder(group, parentFolder, true, false, false);
+
+            // Assign READ access right to parent/ancestor folder only when specified group doesn't have access to it.
+            if(groupFolderRepo.findByGroupAndFolder(group, parentFolder) == null) {
+                createGroupFolder(group, parentFolder, true, false, false);
+            }
+
             parentFolder = parentFolder.getParentFolder();
         }
 
@@ -379,16 +394,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Folder parentFolder = log.getFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
             parentFolder = folderRepo.findOne(parentFolder.getId());
-            createGroupFolder(group, parentFolder, true, false, false);
-            parentFolder = parentFolder.getParentFolder();
-        }
 
-        if (shareUserMetadata){
-            // Sync permission with user metadata that linked to specified log
-//            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, accessType);
-        } else {
-            // Automatically share simulation user metadata when the log is shared
-//            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, accessType);
+            // Assign READ access right to parent/ancestor folder only when specified group doesn't have access to it.
+            if(groupFolderRepo.findByGroupAndFolder(group, parentFolder) == null) {
+                createGroupFolder(group, parentFolder, true, false, false);
+            }
+
+            parentFolder = parentFolder.getParentFolder();
         }
 
         return "";
