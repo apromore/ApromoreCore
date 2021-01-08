@@ -120,6 +120,7 @@ public class AnimationJSONBuilder2 {
     }
     
     public JSONObject parseLog(AnimationLog animationLog) throws JSONException {
+        DecimalFormat df = new DecimalFormat("#.###"); 
         JSONObject json = new JSONObject();
         
         json.put("name", animationLog.getName());
@@ -127,7 +128,30 @@ public class AnimationJSONBuilder2 {
         json.put("color", animationLog.getColor());
         json.put("total", animationLog.getTraces().size() + animationLog.getUnplayTraces().size());        
         json.put("play", animationLog.getTraces().size());
-        json.put("progress", this.parseLogProgress(animationLog));
+        json.put("startDateLabel", animationLog.getStartDate().toString());
+        json.put("endDateLabel", animationLog.getEndDate().toString());
+        if (animationLog.getStartDate().isEqual(totalRealInterval.getStart())) {
+            json.put("startDatePos", 0);
+        } else {
+            json.put("startDatePos", Seconds.secondsBetween(totalRealInterval.getStart(), animationLog.getStartDate()).getSeconds()/
+                                     this.getSlotDataUnit());
+        }
+        
+        if (animationLog.getEndDate().isEqual(totalRealInterval.getEnd())) {
+            json.put("endDatePos", params.getTimelineSlots());
+        } else {
+            json.put("endDatePos", Seconds.secondsBetween(totalRealInterval.getStart(), animationLog.getEndDate()).getSeconds()/
+                                     this.getSlotDataUnit());
+        }  
+        json.put("unplayTraces", animationLog.getUnplayTracesString());
+        json.put("reliable", animationLog.getReliableTraceCount());
+        json.put("unreliableTraces", animationLog.getUnReliableTraceIDs());
+        if (params.isExactTraceFitnessCalculation()) {
+            json.put("exactTraceFitness", df.format(animationLog.getTraceFitness(animationLog.getMinBoundMoveOnModel())));
+        }
+        else {
+            json.put("exactTraceFitness", 0);
+        }
         
         return json;
     }
@@ -143,12 +167,12 @@ public class AnimationJSONBuilder2 {
         JSONObject json = new JSONObject();
         
         // log timelines
-        JSONArray logTimelines = new JSONArray();
-        for(AnimationLog log : this.animations) {
-            logTimelines.put(this.parseLogTimeline(log));
-        }
-        
-        json.put("logs", logTimelines);
+//        JSONArray logTimelines = new JSONArray();
+//        for(AnimationLog log : this.animations) {
+//            logTimelines.put(this.parseLogTimeline(log));
+//        }
+//        
+//        json.put("logs", logTimelines);
         json.put("startDateLabel", totalRealInterval.getStart().toString());
         json.put("startDateSlot", 0); //datepos is the ordinal number of the time bar on the timeline
         json.put("endDateLabel", totalRealInterval.getEnd().toString());
@@ -283,84 +307,6 @@ public class AnimationJSONBuilder2 {
         }
         
         return jsonTraces;
-    }
-
-    /**
-     * Generate json for the progress bar
-     * @param animationLog
-     * @return
-     * @throws JSONException 
-     * Bruce 24.08.2015: fix bug of start time and duration of the progress bar
-     * Add begin and duration attribute for the progress log tag, similar to SequenceFlow
-     */
-    protected JSONObject parseLogProgress(AnimationLog animationLog) throws JSONException {
-        String keyTimes = "";
-        String values = "";
-        final int PROGRESS_BAR_LEVELS = 100; //divide the progress bar into 100 levels
-        final int TOTAL_TRACES = animationLog.getTraces().size();
-        
-        DateTime logStart = animationLog.getStartDate();
-        DateTime logEnd = animationLog.getEndDate();        
-        double begin = Seconds.secondsBetween(totalRealInterval.getStart(), logStart).getSeconds()*this.getTimeConversionRatio();
-        double durEngine = (logEnd.getMillis() - logStart.getMillis())*this.getTimeConversionRatio(); // in milliseconds  
-        double durData = logEnd.getMillis() - logStart.getMillis(); // in milliseconds  
-        double levelTime = 1.0*durData/(1000*PROGRESS_BAR_LEVELS); //number of seconds for every movement level
-        
-        
-        //-------------------------------------------
-        // The progress bar is divided into PROGRESS_BAR_LEVELS levels
-        // Remember: keyTimes is the percentage relative to begin and duration value, within 0-1 range,
-        // values are relative to the length of the progress bar and must start from 0.        
-        // Calculate keyTimes: the percentage of the current level number over the total number of levels
-        // Calculate values: move to every level, calculate the level timestamp, then count
-        // the total number of traces that end after that timestamp
-        //-------------------------------------------
-        DateTime currentLevelTimestamp;
-        int traceCount;
-        double keyTimeVal;
-        double totalVal = 2*Math.PI*params.getProgressCircleBarRadius(); //the perimeter of the progress circle bar
-        DecimalFormat df = new DecimalFormat("#.##");
-        
-        for (int i=1; i<=PROGRESS_BAR_LEVELS; i++) { 
-            keyTimeVal = 1.0*i/PROGRESS_BAR_LEVELS; //params.getTimelineSlots();
-            currentLevelTimestamp = logStart.plusSeconds(Double.valueOf(i*levelTime).intValue());
-            traceCount = 0;
-            for (ReplayTrace trace : animationLog.getTraces()) {
-                if (trace.getInterval().getEnd().isBefore(currentLevelTimestamp) || 
-                    trace.getInterval().getEnd().isEqual(currentLevelTimestamp)) {
-                    traceCount++;
-                }
-            }
-            if (i==1) {
-                keyTimes += "0;"; //required by SVG keytimes specification
-                values += "0;"; //required by SVG values specification
-            }
-            else if (i==PROGRESS_BAR_LEVELS) {
-                keyTimes += "1;"; //required by SVG keyTimes specification
-                values += (df.format(totalVal) + ";"); //(Math.round((1.0*traceCount/animationLog.getTraces().size())*totalVal) + ";");
-            }
-            else {
-                keyTimes += (df.format(keyTimeVal) + ";");
-                double value = (1.0*traceCount/TOTAL_TRACES)*totalVal;
-                values += (df.format(value) + ";");
-            }
-        }
-        if (keyTimes.length() > 0) {
-            keyTimes = keyTimes.substring(0, keyTimes.length()-1);
-        }
-        if (values.length() > 0) {
-            values = values.substring(0, values.length()-1);
-        }
-        
-        JSONObject json = new JSONObject();
-        json.put("keyTimes", keyTimes);
-        json.put("values", values);
-        
-        df.applyPattern("#.#####");        
-        json.put("begin", df.format(begin));
-        json.put("dur", df.format(1.0*durEngine/1000));        
-        
-        return json;
     }
     
     protected JSONArray parseTraceStartDates() {
