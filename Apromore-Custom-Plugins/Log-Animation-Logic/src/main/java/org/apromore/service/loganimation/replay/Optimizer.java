@@ -114,6 +114,7 @@ public class Optimizer {
         Process process = (Process)rootElements.get(0);        
         for (FlowElement element : process.getFlowElement()) {
             if (element instanceof FlowNode) {
+                if (element.getName() == null) element.setName(""); //BPMN.io saves new gateway without name attribute (it is null)
                 ((FlowNode)element).setNameRef(cacheObject(element.getName()));
             }
         }
