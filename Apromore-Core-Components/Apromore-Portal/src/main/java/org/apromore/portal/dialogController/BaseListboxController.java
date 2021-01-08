@@ -329,7 +329,7 @@ public abstract class BaseListboxController extends BaseController {
 			this.btnSecurity.setVisible(true);
 		} else {
 			this.btnUserMgmt.setVisible(false);
-			this.btnSecurity.setVisible(true);
+			this.btnSecurity.setVisible(false);
 		}
 
 		this.btnShare.addEventListener("onClick", new EventListener<Event>() {
