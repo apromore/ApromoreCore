@@ -304,7 +304,7 @@ public class ImportController extends BaseController {
 
         } catch (MalformedURLException | URISyntaxException e) {
             okButton_URL.setDisabled(true);
-            throw new ExceptionImport("URL link is not correct.");
+            throw new ExceptionImport("URL link is empty or not correct.");
         } catch (IOException | NullPointerException e) {
             okButton_URL.setDisabled(true);
             throw new ExceptionImport("Couldn't find supported file. Please check the URL and try again. ");

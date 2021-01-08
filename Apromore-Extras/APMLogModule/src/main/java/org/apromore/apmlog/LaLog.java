@@ -21,13 +21,13 @@
  */
 package org.apromore.apmlog;
 
-import org.apache.commons.math3.stat.descriptive.rank.Median;
 
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -48,8 +48,6 @@ public class LaLog implements APMLog {
     public UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
     public UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
     public UnifiedMap<String, Integer> activityMaxOccurMap = new UnifiedMap<>();
-    public double minDuration = 0;
-    public double maxDuration = 0;
     public String timeZone = "";
     public long startTime = -1;
     public long endTime = -1;
@@ -64,6 +62,8 @@ public class LaLog implements APMLog {
 
     public AAttributeGraph attributeGraph;
 
+    public DoubleArrayList caseDurationList;
+
     public void updateStats() {
 
         actNameIdxCId = new HashBiMap<>();
@@ -76,11 +76,13 @@ public class LaLog implements APMLog {
 
         eventSize = 0;
 
-
+        caseDurationList = new DoubleArrayList(traceList.size());
 
         for (int i = 0; i < traceList.size(); i++) {
 
             ATrace trace = traceList.get(i);
+
+            caseDurationList.add(trace.getDuration());
 
             IntArrayList actNameIndexes = getActivityNameIndexes(trace);
             traceActNameIndexes.add(actNameIndexes);
@@ -93,10 +95,6 @@ public class LaLog implements APMLog {
 
             if (startTime < 1 || trace.getStartTimeMilli() < startTime) startTime = trace.getStartTimeMilli();
             if (trace.getEndTimeMilli() > endTime) endTime = trace.getEndTimeMilli();
-
-            if (minDuration == 0 || trace.getDuration() < minDuration) minDuration = trace.getDuration();
-            if (trace.getDuration() > maxDuration) maxDuration = trace.getDuration();
-
 
             if (trace instanceof PTrace) {
                 BitSet vEvents = ((PTrace) trace).getValidEventIndexBitSet();
@@ -158,14 +156,9 @@ public class LaLog implements APMLog {
             counter += 1;
         }
 
-
-        System.out.println("preparing default chart series");
-
         defaultChartDataCollection = new DefaultChartDataCollection(this);
 
         attributeGraph = new AAttributeGraph(this);
-
-        System.out.println("Log ready!");
     }
 
     public IntArrayList getActivityNameIndexes(ATrace aTrace) {
@@ -308,22 +301,20 @@ public class LaLog implements APMLog {
 
     @Override
     public double getMinDuration() {
-        return minDuration;
+        return !caseDurationList.isEmpty() ? caseDurationList.min() : 0;
     }
 
     @Override
     public void setMinDuration(double minDuration) {
-        this.minDuration = minDuration;
     }
 
     @Override
     public double getMaxDuration() {
-        return maxDuration;
+        return !caseDurationList.isEmpty() ? caseDurationList.max() : 0;
     }
 
     @Override
     public void setMaxDuration(double maxDuration) {
-        this.maxDuration = maxDuration;
     }
 
     @Override
@@ -395,34 +386,23 @@ public class LaLog implements APMLog {
 
     @Override
     public String getMinDurationString() {
-        return Util.durationStringOf(minDuration);
+        return Util.durationStringOf(getMinDuration());
     }
 
     @Override
     public String getMaxDurationString() {
-        return Util.durationStringOf(maxDuration);
+        return Util.durationStringOf(getMaxDuration());
     }
 
 
     @Override
     public double getAverageDuration() {
-        double durSum = 0;
-        for(int i=0; i < traceList.size(); i++) {
-            durSum += traceList.get(i).getDuration();
-        }
-        double avgDur = durSum / traceList.size();
-        return avgDur;
+        return caseDurationList.average();
     }
 
     @Override
     public double getMedianDuration() {
-        double[] dArray = new double[traceList.size()];
-        for (int i = 0; i < dArray.length; i++) {
-            dArray[i] = traceList.get(i).getDuration();
-        }
-        Median median = new Median();
-        double med =median.evaluate(dArray);
-        return med;
+        return caseDurationList.median();
     }
 
     @Override
