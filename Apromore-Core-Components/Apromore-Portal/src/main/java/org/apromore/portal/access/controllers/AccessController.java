@@ -163,16 +163,19 @@ public class AccessController extends SelectorComposer<Div> {
         showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
     }
 
+    private void checkShowRelatedArtifacts() {
+        if (showRelatedArtifacts && isLogSelected()) {
+            artifactListbox.setVisible(true);
+        } else {
+            artifactListbox.setVisible(false);
+        }
+    }
+
     @Override
     public void doAfterCompose(Div div) throws Exception {
         super.doAfterCompose(div);
         container = div;
 
-        if (!showRelatedArtifacts || !isLogSelected()) {
-            artifactListbox.setVisible(false);
-        } else {
-            artifactListbox.setVisible(true);
-        }
         loadCandidateAssignee();
         setSelectedItem(selectedItem);
 
@@ -340,6 +343,12 @@ public class AccessController extends SelectorComposer<Div> {
         return selectedItem.getClass().equals(LogSummaryType.class);
     }
 
+    public void clearArtifacts() {
+        artifactModel = new ListModelList<Artifact>();
+        artifactMap = new HashMap<Integer, Artifact>();
+        artifactListbox.setModel(artifactModel);
+    }
+
     public void updateArtifacts(String rowGuid) {
         if (!isLogSelected()) {
             return;
@@ -458,7 +467,10 @@ public class AccessController extends SelectorComposer<Div> {
         selectedIconLog.setVisible(false);
         selectedIconModel.setVisible(false);
         selectedIconMetadata.setVisible(false);
+        this.selectedItem = selectedItem;
 
+        checkShowRelatedArtifacts();
+        clearArtifacts();
         if (selectedItem == null) {
             clearAssignments();
             btnApply.setDisabled(true);
@@ -467,7 +479,6 @@ public class AccessController extends SelectorComposer<Div> {
         }
         btnApply.setDisabled(false);
         candidateAssigneeAdd.setDisabled(false);
-        this.selectedItem = selectedItem;
 
         if (selectedItem instanceof FolderType) {
             FolderType folder = (FolderType) selectedItem;
