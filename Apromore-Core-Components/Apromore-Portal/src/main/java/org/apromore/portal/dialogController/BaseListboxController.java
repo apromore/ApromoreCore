@@ -791,8 +791,9 @@ public abstract class BaseListboxController extends BaseController {
 			} else {
 				selectedItem = getSelection().iterator().next();
 			}
-			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem);
-		} catch (DialogException e) {
+			boolean canShare = Helpers.isShareable(selectedItem, currentUser);
+			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem, canShare);
+		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
