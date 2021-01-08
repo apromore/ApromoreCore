@@ -54,6 +54,7 @@
                             *
                         </Import-Package>
                         <DynamicImport-Package>
+                            org.apromore.etlplugin.portal.*,
                             org.apromore.plugin.portal.*,
                             dashboard,
                             org.apache.poi.ooxml,
