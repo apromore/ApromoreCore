@@ -28,20 +28,18 @@ import java.io.IOException;
 // Java 2 Standard Edition
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
+import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.apromore.service.loganimation.json.AnimationJSONBuilder2;
 import org.apromore.service.loganimation.replay.AnimationLog;
-import org.apromore.service.loganimation.replay.BPMNDiagramHelper;
 import org.apromore.service.loganimation.replay.Optimizer;
 import org.apromore.service.loganimation.replay.ReplayParams;
 import org.apromore.service.loganimation.replay.ReplayTrace;
@@ -61,12 +59,8 @@ import org.springframework.stereotype.Service;
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowElement;
 import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.Process;
-import de.hpi.bpmn2_0.model.activity.Task;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.model.event.Event;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 
@@ -76,7 +70,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationServiceImpl2.class);
 
     @Override
-    public Object[] createAnimation(String bpmn, List<Log> logs) throws BpmnConverterException, IOException, JAXBException, JSONException {
+    public AnimationResult createAnimation(String bpmn, List<Log> logs) 
+            throws BpmnConverterException, IOException, JAXBException, JSONException, AnimationException {
 
         Set<XLog> xlogs = new HashSet<>();
         for (Log log: logs) {
@@ -149,7 +144,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             }
 
         } else {
-            return new Object[] {};
+            throw new AnimationException("The BPMN diagram is not valid for animation");
         }
         
         for (AnimationLog animationLog : replayedLogs) {
@@ -165,10 +160,10 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             AnimationJSONBuilder2 jsonBuilder = new AnimationJSONBuilder2(replayedLogs, bpmnDefinition, params);
             JSONObject json = jsonBuilder.parseLogCollection();
             json.put("success", true);  // Ext2JS's file upload requires this flag
-            return new Object[] {json, replayedLogs.get(0)};
+            return new AnimationResult(replayedLogs, bpmnDefinition, json);
         }
         else {
-            return null;
+            throw new AnimationException("Internal error. No log is replayed successfully.");
         }
         
     }
@@ -187,10 +182,11 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
      * @param bpmnNoGateways: corresponding BPMN text with no XOR gateways
      * @param logs: logs to be replayed
      * @throws DiagramMappingException 
+     * @throws AnimationException 
      */ 
     @Override
-    public Object[] createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) 
-            throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException {
+    public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) 
+            throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException, AnimationException {
         
         Set<XLog> xlogs = new HashSet<>();
         for (Log log: logs) {
@@ -199,7 +195,6 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
 
         Definitions bpmnDefWithGateways = BPMN2DiagramConverter.parseBPMN(bpmnWithGateways, getClass().getClassLoader());
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());
-        //Map<String,String> diagramMapping = buildDiagramMapping(bpmnDefWithGateways, bpmnDefNoGateways);
         ElementIDMapper diagramMapping = new ElementIDMapper(bpmnDefNoGateways);
 
         /*
@@ -254,22 +249,19 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         params.setLastEventToEndEventDuration(Integer.valueOf(props.getProperty("LastEventToEndEventDuration")).intValue());
 
         Replayer replayer = new Replayer(bpmnDefWithGateways, params);
-        ArrayList<AnimationLog> replayedLogs = new ArrayList();
+        List<AnimationLog> replayedLogs = new ArrayList<>();
         if (replayer.isValidProcess()) {
-//            LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
             for (Log log: logs) {
-
                 AnimationLog animationLog = replayer.replay(log.xlog, log.color);
                 animationLog.setFileName(log.fileName);
                 
-                //AnimationLog animationLog = replayer.replayWithMultiThreading(log.xlog, log.color);
                 if (animationLog !=null && !animationLog.isEmpty()) {
                     replayedLogs.add(animationLog);
                 }
             }
 
         } else {
-//            LOGGER.info(replayer.getProcessCheckingMsg());
+            throw new AnimationException("The BPMN diagram is not valid for animation");
         }
         
         /*
@@ -289,9 +281,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         * Return Json animation
         * ------------------------------------------
         */
-//        LOGGER.info("Start sending back JSON animation script to browser");
         if (replayedLogs.size() > 0) {
-
             //To be replaced
             AnimationJSONBuilder2 jsonBuilder = new AnimationJSONBuilder2(replayedLogs, bpmnDefNoGateways, params);
             JSONObject json = jsonBuilder.parseLogCollection();
@@ -299,114 +289,10 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
 
             //return string;
             LOGGER.info("Finish generating JSON and start sending to the browser");
-            return new Object[] {json, replayedLogs.get(0)};
+            return new AnimationResult(replayedLogs, bpmnDefNoGateways, json);
         }
         else {
-            //return "{success:false, errors: {errormsg: '" + "No logs can be played." + "'}}";
-            return null;
-        }
-    }
-    
-    // Build id mapping from diagram with gateways to the corresponding diagram with no gateways
-    // Mapping rules:
-    //  - Events mapped to Events
-    //  - Activities mapped to Activities
-    //  - Arc activity->activity mapped to the same arc activity->activity
-    //  - Arc event->activity mapped to the same arc event->activity
-    //  - Arc activity->event mapped to the same arc activity->event
-    //  - A-->XORSplit-->B: the arc XORSplit-->B is mapped to the arc A-->B
-    //  - A-->XORJoin-->B: the arc A-->XORJoin is mapped to the arc A-->B
-    private Map<String,String> buildDiagramMapping(Definitions diagramWithGateways, Definitions diagramNoGateways) {
-        Map<String,String> idMapping = new HashMap<String, String>();
-        Process processWithGateways = (Process)diagramWithGateways.getRootElement().get(0);
-        Process processNoGateways = (Process)diagramNoGateways.getRootElement().get(0);
-        for (FlowElement ele: processWithGateways.getFlowElement()) {
-            if (ele instanceof FlowNode) {
-                FlowNode node = (FlowNode)ele;
-                // Direct mapping for activities and events
-                if (node instanceof Task || node instanceof Event) {
-                    FlowNode corresponding = searchCorrespondingNode(processNoGateways, node);
-                    if (corresponding != null) {
-                        idMapping.put(node.getId(), corresponding.getId());
-                    }
-                }
-            }
-            else if (ele instanceof SequenceFlow) {
-                SequenceFlow flow = (SequenceFlow)ele;
-                SequenceFlow corresponding = searchCorrespondingFlow(processNoGateways, flow);
-                if (corresponding != null) {
-                    idMapping.put(flow.getId(), corresponding.getId());
-                }              
-            }
-        }
-        return idMapping;
-    }
-    
-    private FlowNode searchCorrespondingNode(Process process, FlowNode node) {
-        for (FlowElement ele : process.getFlowElement()) {
-            if (ele instanceof FlowNode && ele.getName().equalsIgnoreCase(node.getName())) {
-                return (FlowNode)ele;
-            }
-        }
-        return null;
-    }
-    
-    private SequenceFlow searchCorrespondingFlow(Process process, FlowNode source, FlowNode target) {
-        for (FlowElement ele : process.getFlowElement()) {
-            if (ele instanceof SequenceFlow) {
-                SequenceFlow flow = (SequenceFlow)ele;
-                if (flow.getSourceRef().getName().equalsIgnoreCase(source.getName()) &&
-                    flow.getTargetRef().getName().equalsIgnoreCase(target.getName())) {
-                    return flow;
-                }
-            }
-        }
-        return null; 
-    }
-    
-    /**
-     * Assume that the process model has only XOR gateways.
-     * Applicable sequence flows:
-     *      - Event -> Task
-     *      - Task -> Task
-     *      - Task -> Event
-     *      - XOR split -> Task
-     *      - Task -> XOR merge
-     * Non-applicable sequence flows:
-     *      - Task -> XOR split
-     *      - XOR Merge -> Task
-     *      - XOR -> XOR
-     * @param process
-     * @param flow
-     * @return: return null if not found any or not valid case
-     */
-    private SequenceFlow searchCorrespondingFlow(Process process, SequenceFlow flow) {
-        FlowNode source = (FlowNode)flow.getSourceRef();
-        FlowNode target = (FlowNode)flow.getTargetRef();
-        
-        FlowNode searchSource = null, searchTarget = null;
-        if ((source instanceof Task || source instanceof Event) && 
-                (target instanceof Task || target instanceof Event)) {
-            searchSource = source;
-            searchTarget = target;
-        }
-        else if (BPMNDiagramHelper.isDecision(source) && (target instanceof Task || target instanceof Event)) { // no nested gateways
-            searchSource = (FlowNode)source.getIncomingSequenceFlows().get(0).getSourceRef(); 
-            searchTarget = target;
-        }
-        else if ((source instanceof Task || source instanceof Event) && BPMNDiagramHelper.isMerge(target)) { // no nested gateways
-            searchSource = source;
-            searchTarget = (FlowNode)target.getOutgoingSequenceFlows().get(0).getTargetRef();
-        }
-        else {
-            //assume not happen
-        }
-        
-        if (searchSource != null && searchTarget != null) {
-            return searchCorrespondingFlow(process, searchSource, searchTarget);
-        }
-        else {
-            return null;
+            throw new AnimationException("Internal error. No log is replayed successfully.");
         }
     }
     
