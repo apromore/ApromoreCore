@@ -401,6 +401,20 @@ public class APMLogUnitTest {
         ImmutableTraceTest.testStartEndTimestamps(xLog);
     }
 
+    @Test
+    public void testLogFactoryAttributeOccurMap() throws Exception {
+        printString("\n(/ 'o')/ ~ Test AttributeOccurMap of LogFactory'");
+        XLog xLog = getXLog("files/TestLogFactory.xes");
+        LogsMethodsTests.testAttributeOccurMap(xLog);
+    }
+
+    @Test
+    public void testLogsActivityNameIndexes() throws Exception {
+        printString("\n(/ 'o')/ ~ Test ActivityNameIndexes of Logs'");
+        XLog xLog = getXLog("files/TestLogFactory.xes");
+        LogsMethodsTests.testActivityNameIndexes(xLog);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
