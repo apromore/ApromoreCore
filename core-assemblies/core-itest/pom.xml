@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apromore</groupId>
+    <artifactId>core-assemblies</artifactId>
+    <version>7.20-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>core-itest</artifactId>
+
+  <properties>
+    <paxexam.version>4.13.4</paxexam.version>
+    <paxurl.version>2.6.2</paxurl.version>
+    <surefire.argLine/>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>karaf-bom</artifactId>
+        <version>${karaf.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-atinject_1.0_spec</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Define the Apache Karaf version to download and use for the test -->
+    <dependency>
+      <groupId>org.apache.karaf</groupId>
+      <artifactId>apache-karaf</artifactId>
+      <version>${karaf.version}</version>
+      <scope>test</scope>
+      <type>tar.gz</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.karaf</groupId>
+          <artifactId>org.apache.karaf.client</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Provide the KarafTestSupport -->
+    <dependency>
+      <groupId>org.apache.karaf.itests</groupId>
+      <artifactId>common</artifactId>
+      <version>${karaf.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Required to use shell commands in the tests -->
+    <dependency>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.hamcrest</artifactId>
+      <version>1.3_1</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+    </dependency>
+
+    <!-- Provide the PaxExam Karaf support -->
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-container-karaf</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Provide the PaxExam JUnit extension -->
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-junit4</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+<!--
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+-->
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core-features</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>depends-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>generate-depends-file</id>
+            <goals>
+              <goal>generate-depends-file</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
