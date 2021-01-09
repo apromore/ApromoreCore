@@ -105,7 +105,7 @@ public class AnimationLog {
     public DateTime getStartDate() {
         if (startDate == null) {
             Calendar cal = Calendar.getInstance();
-            cal.set(2020, 1, 1);
+            cal.set(2050, 1, 1);
             DateTime logStartDate = new DateTime(cal.getTime());
             
             for (ReplayTrace trace : this.getTraces()) {
