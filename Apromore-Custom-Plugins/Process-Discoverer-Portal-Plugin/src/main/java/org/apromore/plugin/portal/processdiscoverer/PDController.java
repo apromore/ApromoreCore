@@ -37,7 +37,6 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.controllers.AnimationController2;
 import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphVisController;
@@ -129,7 +128,6 @@ public class PDController extends BaseController {
     private Button casesDetails;
     //private Button fitness;
     private Button animate;
-    private Button animate_new;
     private Button fitScreen;
 
     private Button exportFilteredLog;
@@ -372,7 +370,6 @@ public class PDController extends BaseController {
             filter = (Button) mainWindow.getFellow("filter");
             filterClear = (Button) mainWindow.getFellow("filterClear");
             animate = (Button) mainWindow.getFellow("animate");
-            animate_new = (Button) mainWindow.getFellow("animate_new");
             fitScreen = (Button) mainWindow.getFellow("fitScreen");
     
             exportFilteredLog = (Button) mainWindow.getFellow("exportUnfitted");
@@ -533,7 +530,6 @@ public class PDController extends BaseController {
             });
             filter.addEventListener("onClick", this.getFilterController());
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
-            animate_new.addEventListener("onClick", new AnimationController2(this));
     
             exportFilteredLog.addEventListener("onExport", pdFactory.createLogExportController(this));
             exportBPMN.addEventListener("onClick", pdFactory.createBPMNExportController(this));
@@ -836,13 +832,17 @@ public class PDController extends BaseController {
     public ProcessService getProcessService() {
         return processService;
     }
-
-    public LogAnimationPluginInterface getLogAnimationPluginCE() {
-        return this.logAnimationPluginCE;
-    }
     
-    public LogAnimationPluginInterface getLogAnimationPluginEE() {
-        return this.logAnimationPluginEE;
+    public LogAnimationPluginInterface getLogAnimationPlugin() throws MissingLogAnimationPluginException {
+        if (logAnimationPluginEE != null) {
+            return logAnimationPluginEE;
+        }
+        else if (logAnimationPluginCE != null) {
+            return logAnimationPluginCE;
+        }
+        else {
+            throw new MissingLogAnimationPluginException("LogAnimation plugin was not available");
+        }
     }
 
     public LogFilterPlugin getLogFilterPlugin() {
