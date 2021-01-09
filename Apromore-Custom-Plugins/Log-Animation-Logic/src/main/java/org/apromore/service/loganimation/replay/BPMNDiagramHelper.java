@@ -375,39 +375,18 @@ public class BPMNDiagramHelper {
     }
     
     public static boolean isFork(FlowNode node) {
-//        if ((node instanceof ParallelGateway) && 
-//            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
         return (node instanceof ParallelGateway && 
                 node.getOutgoingSequenceFlows().size() > 1 &&
                 node.getIncomingSequenceFlows().size() == 1);
     }    
     
-    public static boolean isDecision(FlowNode node) {
-//        if ((node instanceof ExclusiveGateway) && 
-//            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }    
+    public static boolean isDecision(FlowNode node) {   
         return (node instanceof ExclusiveGateway && 
                 node.getOutgoingSequenceFlows().size() > 1 &&
                 node.getIncomingSequenceFlows().size() == 1);
     }    
     
     public static boolean isMerge(FlowNode node) {
-//        if ((node instanceof ExclusiveGateway) && 
-//            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
         return (node instanceof ExclusiveGateway && 
                 node.getOutgoingSequenceFlows().size() == 1 &&
                 node.getIncomingSequenceFlows().size() > 1);
@@ -418,26 +397,12 @@ public class BPMNDiagramHelper {
     }     
     
     public static boolean isORSplit(FlowNode node) {
-//        if ((node instanceof InclusiveGateway) && 
-//            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
         return (node instanceof InclusiveGateway && 
                 node.getOutgoingSequenceFlows().size() > 1 &&
                 node.getIncomingSequenceFlows().size() == 1);
     }
     
     public static boolean isORJoin(FlowNode node) {
-//        if ((node instanceof InclusiveGateway) && 
-//            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
         return (node instanceof InclusiveGateway && 
                 node.getOutgoingSequenceFlows().size() == 1 &&
                 node.getIncomingSequenceFlows().size() > 1);
