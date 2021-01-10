@@ -723,16 +723,6 @@ databaseChangeLog:
        - dropView:
            viewName: keywords
 
-
- - changeSet:
-     id: 20210108215600
-     author: frankm
-     preConditions:
-       - onFail: MARK_RAN
-       - not:
-           - viewExists:
-               viewName: keywords
-     changes:
        - createView:
            fullDefinition: false
            remarks: ''
