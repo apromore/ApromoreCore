@@ -1,4 +1,4 @@
-package org.apromore.core_itest;
+package org.apromore.core_features_itest;
 
 import org.apache.karaf.itests.KarafTestSupport;
 import org.junit.Assert;
