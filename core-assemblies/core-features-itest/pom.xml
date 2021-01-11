@@ -8,12 +8,11 @@
     <version>7.20-SNAPSHOT</version>
   </parent>
 
-  <artifactId>core-itest</artifactId>
+  <artifactId>core-features-itest</artifactId>
 
   <properties>
     <paxexam.version>4.13.4</paxexam.version>
     <paxurl.version>2.6.2</paxurl.version>
-    <surefire.argLine/>
   </properties>
 
   <dependencyManagement>
@@ -29,6 +28,13 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core-features</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-atinject_1.0_spec</artifactId>
@@ -51,7 +57,7 @@
       </exclusions>
     </dependency>
 
-    <!-- Provide the KarafTestSupport -->
+    <!-- Provide the KarafTestSupport base class for test suites -->
     <dependency>
       <groupId>org.apache.karaf.itests</groupId>
       <artifactId>common</artifactId>
@@ -90,23 +96,6 @@
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-junit4</artifactId>
       <scope>test</scope>
-    </dependency>
-
-<!--
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>core-bom</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
--->
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>core-features</artifactId>
-      <version>${project.version}</version>
-      <type>xml</type>
     </dependency>
   </dependencies>
 

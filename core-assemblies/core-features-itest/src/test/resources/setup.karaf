@@ -1,4 +1,4 @@
-# Integration test setup script invoked by SampleIntgTest.setup()
+# Integration test setup script invoked by CoreFeaturesIntgTest.setup()
 
 log:log "Preparing for Apromore Core features"
 

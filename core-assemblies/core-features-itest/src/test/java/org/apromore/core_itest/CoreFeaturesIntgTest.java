@@ -10,9 +10,10 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 /**
- * Test suite for the core-features repository.
+ * Integration test suite for the core-features repository.
  *
- * This starts from a stock Karaf distribution and installs Apromore Core via shell commands.
+ * This starts from a stock Karaf distribution and confirms that Apromore Core can be installed
+ * via the command shell.
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
