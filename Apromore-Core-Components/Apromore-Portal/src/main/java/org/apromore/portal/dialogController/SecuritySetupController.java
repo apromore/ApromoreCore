@@ -52,11 +52,11 @@ public class SecuritySetupController extends BaseController {
     private AccessController accessController;
     private SecurityFolderTreeController folderTreeController;
 
-    public SecuritySetupController(MainController mainController, UserType currentUser, Object selectedItem) throws DialogException {
+    public SecuritySetupController(MainController mainController, UserType currentUser, Object selectedItem, boolean canShare) throws DialogException {
         this.mainController = mainController;
 
         Map arg = new HashMap<>();
-        arg.put("selectedItem", selectedItem);
+        arg.put("selectedItem", canShare ? selectedItem : null);
         arg.put("currentUser", currentUser);
         arg.put("autoInherit", true);
         arg.put("showRelatedArtifacts", true);

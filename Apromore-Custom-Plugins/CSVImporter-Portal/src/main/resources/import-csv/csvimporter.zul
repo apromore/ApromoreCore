@@ -32,7 +32,7 @@
         <style src="/themes/ap/common/css/utils.css" />
         <script type="text/javascript" src="/themes/ap/csv-importer/js/index.js"></script>
         <caption>
-            <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/getting-started/upload-a-file/" target="_blank" />
+            <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/uploadafile.html" target="_blank" />
         </caption>
         <popup id="popUpHelp" style="padding:0px;">
             <vbox>

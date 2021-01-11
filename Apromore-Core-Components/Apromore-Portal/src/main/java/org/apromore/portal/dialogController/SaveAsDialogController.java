@@ -200,7 +200,7 @@ public class SaveAsDialogController extends BaseController {
     
     private void saveAsNewModel(String userName, Integer folderId, String processName, String versionNumber, String nativeType,
             InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean publicModel, 
-            String containingFolderName) throws Exception {
+            String containingFolderName) {
         try {
             ImportProcessResultType importResult = getService().importProcess(userName, folderId, nativeType, processName, versionNumber, nativeStream, domain, 
                     documentation, created, null, publicModel);
@@ -218,12 +218,11 @@ public class SaveAsDialogController extends BaseController {
             closePopup();
         } catch (Exception e) {
             Messagebox.show("Unable to save model! Error: " + e.getMessage(), null, Messagebox.OK, Messagebox.ERROR);
-            throw e;
         }
     }
     
     private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber, String nativeType, InputStream nativeStream,
-            String userName, String containingFolderName) throws Exception {
+            String userName, String containingFolderName) {
         try {
             ProcessModelVersion newVersion = getService().updateProcessModelVersion(processId, editSession.getOriginalBranchName(), 
                     versionNumber, userName, "" , nativeType, nativeStream);
@@ -240,13 +239,12 @@ public class SaveAsDialogController extends BaseController {
         }
         catch (Exception e) {
             Messagebox.show(e.getMessage());
-            throw e;
         }
         
     }
     
     private void createNewModelVersion(Integer processId, String processName, String versionNumber, String nativeType, InputStream nativeStream,
-            String userName, String containingFolderName) throws Exception {
+            String userName, String containingFolderName) {
         try {
             ProcessModelVersion newVersion = getService().createProcessModelVersion(editSession.hashCode(), userName, nativeType, processId, editSession.getOriginalBranchName(), 
                     versionNumber, editSession.getOriginalVersionNumber(), "", nativeStream);
@@ -264,7 +262,6 @@ public class SaveAsDialogController extends BaseController {
         }
         catch (Exception e) {
             Messagebox.show(e.getMessage());
-            throw e;
         }
         
     }
