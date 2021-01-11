@@ -13,6 +13,6 @@ config:install --override file:../../../../../Supplements/Virgo/portalContext-se
 config:install --override file:../../../../../site.properties site.cfg
 
 # This kludge is necessary, otherwise the configurations might not be available when features are started
-shell:sleep 2
+shell:sleep 5
 
 log:log "Prepared server for Apromore Core features"

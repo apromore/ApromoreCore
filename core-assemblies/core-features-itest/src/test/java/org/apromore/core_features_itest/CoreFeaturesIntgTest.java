@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 /**
  * Integration test suite for the core-features repository.
@@ -16,7 +15,6 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
  * via the command shell.
  */
 @RunWith(PaxExam.class)
-@ExamReactorStrategy(PerClass.class)
 public class CoreFeaturesIntgTest extends KarafTestSupport {
 
     /**
@@ -25,6 +23,7 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
     @Before
     public void setup() {
         String source = executeCommand("shell:source ../../test-classes/setup.karaf");
+        System.out.print(source);
         Assert.assertEquals(
             "Adding feature url mvn:org.apromore/core-features/7.20-SNAPSHOT/xml\n" +
             "Creating configuration file ehcache.xml\n" +
@@ -44,17 +43,55 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
     public void apromoreCore() throws Exception {
 
         installAndAssertFeature("apromore-core");
+        assertDeployedWebApplicationCount(2);
+    }
 
-        // Confirm that all the web applications deployed successfully
-        String web = awaitWebServicesDeployment(10000);
-        Assert.assertEquals("Unexpected number of web applications", web.split("\n").length, 2);
-        for (String line: web.split("\n")) {
-            assertContains("Deployed", line);
-        }
+    /**
+     * Test that the apromore-manager feature starts successfully.
+     *
+     * Since only the business logic starts, there should be no web applications.
+     */
+    @Test
+    public void apromoreManager() throws Exception {
+
+        installAndAssertFeature("apromore-manager");
+        assertDeployedWebApplicationCount(0);
+    }
+
+    /**
+     * Test that the apromore-portal feature starts successfully.
+     *
+     * Since only the ZK presentation layer starts and not the REST endpoint, there should only be
+     * one web application deployed.
+     */
+    @Test
+    public void apromorePortal() throws Exception {
+
+        installAndAssertFeature("jms");
+        installAndAssertFeature("apromore-portal");
+        assertDeployedWebApplicationCount(1);
     }
 
 
     // Internal methods
+
+    /**
+     * @param expectedCount  the expected number of web applications
+     * @throws AssertionError if there aren't <var>count</var> deployed web applications or they don't all deploy
+     * @throws Exception if more than 30 seconds expire before the web applications finish deploying
+     */
+    private void assertDeployedWebApplicationCount(int expectedCount) throws Exception {
+
+        String web = awaitWebServicesDeployment(30000);
+        int actualCount = web.isEmpty() ? 0 : web.split("\n").length;
+        Assert.assertEquals("Unexpected number of web applications", expectedCount, actualCount);
+
+        if (actualCount > 0) {
+            for (String line: web.split("\n")) {
+                assertContains("Deployed", line);
+            }
+        }
+    }
 
     /**
      * Wait until all web applications are deployed.
@@ -72,7 +109,7 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
         long pollingPeriod = 1000;  // poll once per second
         String web = "(Never polled)";
 
-        for (long ms = 0; ms <= timeout; ms =+ pollingPeriod) {
+        for (long ms = 0; ms <= timeout; ms += pollingPeriod) {
             web = executeCommand("web:list --no-format");
             if (web.contains("Deploying")) {
                 Thread.sleep(pollingPeriod);
