@@ -1,9 +1,18 @@
-log:log "Installing Apromore Core Edition"
+# Integration test setup script invoked by SampleIntgTest.setup()
+
+log:log "Preparing for Apromore Core features"
+
+# Add the features for Apromore Core Edition
+feature:repo-add mvn:org.apromore/core-features/7.20-SNAPSHOT/xml
+
+# Copy the various configuration files to the server (the etc/ directory)
 config:install --override file:../../../../../Apromore-Cache/src/main/resources/ehcache.xml ehcache.xml
 config:install --override file:../../../../../target/classes/META-INF/git.properties git.cfg
 config:install --override file:../../../../../target/classes/META-INF/git.properties git.core.cfg
 config:install --override file:../../../../../Supplements/Virgo/portalContext-security.xml portalContext-security.xml
 config:install --override file:../../../../../site.properties site.cfg
-feature:repo-add mvn:org.apromore/core-features/7.20-SNAPSHOT/xml
-# feature:install apromore-core
-log:log "Installed Apromore Core Edition"
+
+# This kludge is necessary, otherwise the configurations might not be available when features are started
+shell:sleep 2
+
+log:log "Prepared server for Apromore Core features"
