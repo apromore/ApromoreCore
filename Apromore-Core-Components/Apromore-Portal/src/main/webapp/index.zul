@@ -264,5 +264,5 @@
             window.__AP__ = {};
         ]]>
     </script>
-    <h:script type="text/javascript" defer="defer" src="themes/ap/common/js/jschardet.min.js"></h:script>
+    <h:script type="text/javascript" defer="defer" src="libs/jschardet/jschardet.min.js"></h:script>
 </zk>
