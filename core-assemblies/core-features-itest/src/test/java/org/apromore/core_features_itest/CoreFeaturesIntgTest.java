@@ -23,7 +23,6 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
     @Before
     public void setup() {
         String source = executeCommand("shell:source ../../test-classes/setup.karaf");
-        System.out.print(source);
         Assert.assertEquals(
             "Adding feature url mvn:org.apromore/core-features/7.20-SNAPSHOT/xml\n" +
             "Creating configuration file ehcache.xml\n" +
@@ -67,7 +66,6 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
     @Test
     public void apromorePortal() throws Exception {
 
-        installAndAssertFeature("jms");
         installAndAssertFeature("apromore-portal");
         assertDeployedWebApplicationCount(1);
     }
@@ -82,10 +80,14 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
      */
     private void assertDeployedWebApplicationCount(int expectedCount) throws Exception {
 
+        // Wait for the web applications to deploy
         String web = awaitWebServicesDeployment(30000);
+
+        // Check that the expected number of web applications are present
         int actualCount = web.isEmpty() ? 0 : web.split("\n").length;
         Assert.assertEquals("Unexpected number of web applications", expectedCount, actualCount);
 
+        // Check that all the web applications successfully deployed
         if (actualCount > 0) {
             for (String line: web.split("\n")) {
                 assertContains("Deployed", line);
