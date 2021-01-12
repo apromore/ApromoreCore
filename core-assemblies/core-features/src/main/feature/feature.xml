@@ -142,6 +142,7 @@
   <feature name="apromore-portal" version="${project.version}" description="Apromore core web browser interface">
     <feature>apromore-calendar</feature>
     <feature>apromore-manager</feature>
+    <feature>jms</feature>
     <feature>war</feature>
     <feature>zk-framework</feature>
     <bundle>mvn:com.google.guava/guava/20.0</bundle>

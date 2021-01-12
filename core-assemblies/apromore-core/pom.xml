@@ -213,7 +213,7 @@
             </goals>
             <configuration>
               <sourceFile>${core.basedir}/Apromore-Cache/src/main/resources/ehcache.xml</sourceFile>
-              <destinationFile>${project.build.directory}/assembly/configuration/ehcache.xml</destinationFile>
+              <destinationFile>${project.build.directory}/assembly/etc/ehcache.xml</destinationFile>
             </configuration>
           </execution>
           <execution>
@@ -224,7 +224,7 @@
             </goals>
             <configuration>
               <sourceFile>${core.basedir}/Supplements/Virgo/portalContext-security.xml</sourceFile>
-              <destinationFile>${project.build.directory}/assembly/configuration/portalContext-security.xml</destinationFile>
+              <destinationFile>${project.build.directory}/assembly/etc/portalContext-security.xml</destinationFile>
             </configuration>
           </execution>
           <execution>
