@@ -529,8 +529,8 @@ public abstract class BaseListboxController extends BaseController {
 				return;
 			}
 			Object selectedItem = getSelection().iterator().next();
-			validateNotFolderTypeItem(selectedItem);
 			boolean canShare = false;
+			// canShare = validateNotFolderTypeItem(selectedItem); // Allow folder
 			try {
 				canShare = Helpers.isShareable(selectedItem, currentUser);
 			} catch (ValidationException e) {
@@ -555,10 +555,12 @@ public abstract class BaseListboxController extends BaseController {
 		}
 	}
 
-	private void validateNotFolderTypeItem(Object selectedItem) {
+	private boolean validateNotFolderTypeItem(Object selectedItem) {
 		if (selectedItem instanceof FolderType) {
 			Notification.error("You can only share a log or model");
+			return false;
         }
+		return true;
 	}
 
 	protected void removeFolder() throws Exception {
@@ -784,13 +786,15 @@ public abstract class BaseListboxController extends BaseController {
 		Object selectedItem;
 		getMainController().eraseMessage();
 		try {
+			boolean canShare = false;
 			if (getSelectionCount() == 0 || getSelectionCount() > 1) {
 				selectedItem = null;
 			} else {
 				selectedItem = getSelection().iterator().next();
+				canShare = Helpers.isShareable(selectedItem, currentUser);
 			}
-			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem);
-		} catch (DialogException e) {
+			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem, canShare);
+		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
 	}

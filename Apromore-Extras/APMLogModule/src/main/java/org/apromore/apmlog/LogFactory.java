@@ -141,8 +141,13 @@ public class LogFactory {
 
         List<ATrace> traceList = log.getTraceList();
 
+        DoubleArrayList allCaseDurs = new DoubleArrayList(traceList.size());
+
         for (int i = 0; i < traceList.size(); i++) {
             ATrace trace = traceList.get(i);
+
+            allCaseDurs.add(trace.getDuration());
+
             List<AActivity> activityList = trace.getActivityList();
             for (int j = 0; j < activityList.size(); j++) {
                 AActivity activity = activityList.get(j);
@@ -156,7 +161,7 @@ public class LogFactory {
     }
 
 
-    public static UnifiedMap<String, String> getAttributes(XEvent xEvent) {
+    private static UnifiedMap<String, String> getAttributes(XEvent xEvent) {
         UnifiedMap<String, String> map = new UnifiedMap<>();
         XAttributeMap xAttributeMap = xEvent.getAttributes();
         for (String key : xAttributeMap.keySet()) {

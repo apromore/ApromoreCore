@@ -26,7 +26,7 @@
 <?component name="Groups" macroURI="/macros/groups.zul" ?>
 <window width="1200px" height="90%" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/help/user-manual/getting-started/navigating-the-apromore-portal/" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/navigatingtheapromoreportal.html#access-rights" target="_blank" />
     </caption>
     <style>
         .z-tree-icon {

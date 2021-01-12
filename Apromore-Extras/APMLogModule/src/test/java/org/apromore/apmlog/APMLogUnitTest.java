@@ -29,10 +29,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-
 
 /**
  * Test suite for {@link APMLog}.
@@ -52,6 +55,15 @@ public class APMLogUnitTest {
     public void testConstructor_BPIC13() {
 //        APMLog apmLog = new APMLog(bpi2013);
         APMLog apmLog = LogFactory.convertXLog(bpi2013);
+    }
+
+    @Test
+    public void testCaseVariantFrequency() throws Exception {
+        printString("\n(/ 'o')/ ~ Test 'Case Variant Frequency'");
+        XLog xLog = getXLog("files/sepsis-cases-young.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        Map<String, String> map = getExpectedMap("files/sepsis-cases-young-case-variant-freq.csv");
+        CaseStatsTest.testCaseVariantFrequency(apmLog, map, this);
     }
 
     @Test
@@ -352,6 +364,57 @@ public class APMLogUnitTest {
         AttributeArcDurationTest.testAvgDur1(apmLog, this);
     }
 
+    @Test
+    public void testAPMLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test APMLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        LogsDurationsTest.testAPMLogDurations(apmLog);
+    }
+
+    @Test
+    public void testPLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test PLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        LogsDurationsTest.testPLogDurations(apmLog);
+    }
+
+    @Test
+    public void testImmutableLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test ImmutableLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        LogsDurationsTest.testImmutableLogDurations(xLog);
+    }
+
+    @Test
+    public void testClonedImmutableLogDurations() throws Exception {
+        printString("\n(/ 'o')/ ~ Test Cloned ImmutableLog's durations'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        LogsDurationsTest.testClonedImmutableLogDurations(xLog);
+    }
+
+    @Test
+    public void testImmutableTraceTimestamp() throws Exception {
+        printString("\n(/ 'o')/ ~ Test ImmutableTrace timestamp'");
+        XLog xLog = getXLog("files/durationTest.xes");
+        ImmutableTraceTest.testStartEndTimestamps(xLog);
+    }
+
+    @Test
+    public void testLogFactoryAttributeOccurMap() throws Exception {
+        printString("\n(/ 'o')/ ~ Test AttributeOccurMap of LogFactory'");
+        XLog xLog = getXLog("files/TestLogFactory.xes");
+        LogsMethodsTests.testAttributeOccurMap(xLog);
+    }
+
+    @Test
+    public void testLogsActivityNameIndexes() throws Exception {
+        printString("\n(/ 'o')/ ~ Test ActivityNameIndexes of Logs'");
+        XLog xLog = getXLog("files/TestLogFactory.xes");
+        LogsMethodsTests.testActivityNameIndexes(xLog);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
@@ -366,6 +429,14 @@ public class APMLogUnitTest {
         XesXmlParser parser  = extension.equals(".gz") ? new XesXmlGZIPParser() : new XesXmlParser();
         XLog xLog = parser.parse(xLogFile).get(0);
         return xLog;
+    }
+
+    public Map<String, String> getExpectedMap(String filepath) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(filepath));
+        Map<String, String> map = br.lines()
+                .map((Object row) -> ((String) row).split(",", 2))
+                .collect(Collectors.toMap((String[] cols) -> cols[0], (String[] cols) -> cols[1]));
+        return map;
     }
 
 }
