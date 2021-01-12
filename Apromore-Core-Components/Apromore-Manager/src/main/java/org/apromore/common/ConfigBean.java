@@ -28,6 +28,7 @@ public class ConfigBean {
     private String logsDir = "../Event-Logs-Repository";
     private String numOfEvent;
     private String numOfTrace;
+//    Fallback Storage path
     private String storagePath = "FILE::../Event-Logs-Repository";
 
     public String getLogsDir() {

@@ -41,6 +41,7 @@ import org.apromore.dao.jpa.LogRepositoryCustomImpl;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Storage;
 import org.apromore.storage.StorageClient;
+import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
@@ -164,7 +165,7 @@ public class TemporaryCacheService {
     public void deleteProcessLog(Log log) {
 	if (log != null) {
 	    try {
-		String storagePath = "FILE::" + config.getLogsDir();
+		String storagePath = "FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 		String prefix = null;
 		String key = log.getFilePath() + "_" + log.getName() + ".xes.gz";
 		
@@ -210,7 +211,7 @@ public class TemporaryCacheService {
 
 	    String key = log.getFilePath() + "_" + log.getName() + ".xes.gz";
 	    String prefix = null;
-	    String storagePath = "FILE::" + config.getLogsDir();
+	    String storagePath = "FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 
 	    if (log.getStorage() != null) {
 		key = log.getStorage().getKey();

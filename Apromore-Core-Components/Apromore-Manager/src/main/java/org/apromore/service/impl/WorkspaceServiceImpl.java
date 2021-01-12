@@ -73,6 +73,7 @@ import org.apromore.service.EventLogFileService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
 import org.apromore.storage.StorageClient;
+import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
@@ -528,7 +529,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
 	if (currentLog.getStorage() == null) {
 	    
-	    StorageClient storageClientOldFile = storageFacotry.getStorageClient("FILE::" + config.getLogsDir());
+	    StorageClient storageClientOldFile = storageFacotry.getStorageClient("FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
 	    
 	    OutputStream outputStream = storageClient.getOutputStream("log", currentFileFullName);
 	    InputStream inputStream = storageClientOldFile.getInputStream(null, currentFileFullName);

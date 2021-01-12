@@ -33,7 +33,7 @@ public class StorageManagementFactoryImpl<T extends StorageClient> implements St
     @Override
     public FileStorageClient getStorageClient(String storagePath) {
 //	This will throw exception if storage path is not configured properly.
-	StorageType storageType=StorageType.valueOf(storagePath.split("::")[STORAGETYPE_INDEX]);
+	StorageType storageType=StorageType.valueOf(storagePath.split(StorageType.STORAGE_PATH_SEPARATOR)[STORAGETYPE_INDEX]);
 	
 	return new FileStorageClient(storageType.getBaseStorage(storagePath));
     }

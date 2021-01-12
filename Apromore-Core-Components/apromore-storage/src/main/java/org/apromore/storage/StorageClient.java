@@ -27,6 +27,11 @@ import java.io.OutputStream;
 import org.apromore.storage.exception.ObjectCreationException;
 import org.apromore.storage.exception.ObjectNotFoundException;
 
+/**
+ * @author nolantellis
+ * This is the main interface which is used to upload or download file from a storage management.
+ * 
+ */
 public interface StorageClient {
     
     String getStorageType();
@@ -41,7 +46,5 @@ public interface StorageClient {
    	prefix = prefix == null ? "" : prefix;
    	return prefix;
        }
-    
-   
 
 }

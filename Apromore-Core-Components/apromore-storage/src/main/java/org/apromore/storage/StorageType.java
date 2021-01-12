@@ -22,14 +22,14 @@
 package org.apromore.storage;
 
 public enum StorageType {
+   
+    FILE;
     
-    FILE;   
-
+    public static final String STORAGE_PATH_SEPARATOR = "::";
     private static final int BASE_FOLDER = 1;
 
     public String getBaseStorage(String storagePath) {
-	// TODO Auto-generated method stub
-	return storagePath.split("::")[BASE_FOLDER];
+	return storagePath.split(STORAGE_PATH_SEPARATOR)[BASE_FOLDER];
     }
 
 }

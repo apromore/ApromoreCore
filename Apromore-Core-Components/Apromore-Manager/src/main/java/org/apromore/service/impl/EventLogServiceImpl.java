@@ -47,6 +47,7 @@ import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.storage.StorageClient;
+import org.apromore.storage.StorageType;
 import org.apromore.storage.exception.ObjectCreationException;
 import org.apromore.storage.exception.ObjectNotFoundException;
 import org.apromore.storage.factory.StorageManagementFactory;
@@ -295,7 +296,7 @@ public class EventLogServiceImpl implements EventLogService {
 	
 	
 	if (log.getStorage() == null) {
-
+	    // put extensions in constants
 	    String file_name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
 	    String new_file_name = log.getFilePath() + "_" + newName + ".xes.gz";
 	    Storage storage = new Storage();
@@ -304,7 +305,7 @@ public class EventLogServiceImpl implements EventLogService {
 	    storage.setPrefix("log");
 	    log.setStorage(storageRepository.saveAndFlush(storage));
 
-	    StorageClient currentStorage = storageFactory.getStorageClient("FILE::" + config.getLogsDir());
+	    StorageClient currentStorage = storageFactory.getStorageClient("FILE"+StorageType.STORAGE_PATH_SEPARATOR+ config.getLogsDir());
 	    StorageClient newStorage = storageFactory.getStorageClient(config.getStoragePath());
 
 	    OutputStream outputStream;
@@ -390,6 +391,7 @@ public class EventLogServiceImpl implements EventLogService {
 	return xLog;
     }
 
+    // add inline comments
     @Override
     public void deleteLogs(List<Log> logs, User user) throws Exception {
 	for (Log log : logs) {
