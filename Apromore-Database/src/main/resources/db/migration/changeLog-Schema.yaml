@@ -780,5 +780,46 @@ databaseChangeLog:
            referencedTableName: storage
            validate: true
  
-           
-
+ - changeSet:       
+     id: 20210111215600
+     author: frankm
+     changes:
+       - createView:
+           fullDefinition: false
+           remarks: 'Change view KEYWORDS'
+           replaceIfExists: true
+           selectQuery: |2-
+               select cast(process.id as char(10))
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process union
+             select process.name
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process union
+             select process.domain
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process union
+             select native_type.nat_type
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process join native_type on (process.nativetypeid = native_type.id) union
+             select `user`.first_name
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process join `user` on (process.owner = `user`.username) union
+             select `user`.last_name
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process join `user` on (process.owner = `user`.username) union
+             select process_branch.branch_name
+               as value, 'process' as type, process_branch.processid as processid, null as logid, null as folderid
+               from process_branch union
+             select cast(`log`.id as char(10))
+               as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+               from `log` union
+             select `log`.name
+               as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+               from `log` union
+             select `log`.domain
+               as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+               from `log` union
+             select folder.folder_name
+               as value, 'folder' as type, null as processid, null as logid, folder.id as folderid
+               from folder;
+           viewName: keywords

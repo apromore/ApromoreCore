@@ -57,7 +57,7 @@ then
 
 	SHELL_FLAG=
 	
-	DEBUG_FLAG=true
+	DEBUG_FLAG=
 	DEBUG_PORT=8000
 	SUSPEND=n
 	if [ -z "$JMX_PORT" ]

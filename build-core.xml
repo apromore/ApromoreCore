@@ -163,11 +163,15 @@
         </copy>
         <copy todir="${core-dir-virgo}/configuration" overwrite="true">
             <fileset dir="${core-dir-sups}/Virgo">
-                <include name="ehcache.xml"/>
                 <include name="tomcat-server.xml"/>
                 <include name="java6-server.profile"/>
                 <include name="serviceability.xml"/>
                 <include name="login.conf"/>
+            </fileset>
+        </copy>
+        <copy todir="${core-dir-virgo}/etc" overwrite="true">
+            <fileset dir="${core-dir-sups}/Virgo">
+                <include name="ehcache.xml"/>
                 <include name="portalContext-security.xml"/>
             </fileset>
         </copy>
