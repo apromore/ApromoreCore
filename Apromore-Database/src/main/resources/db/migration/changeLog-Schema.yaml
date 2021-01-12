@@ -720,6 +720,7 @@ databaseChangeLog:
            fullDefinition: false
            remarks: 'Change view KEYWORDS'
            replaceIfExists: true
+           context: MYSQL,H2
            selectQuery: |2-
                select cast(process.id as char(10))
                as value, 'process' as type, process.id as processid, null as logid, null as folderid
