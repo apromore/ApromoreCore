@@ -233,7 +233,8 @@
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 		<jbpt-petri.version>0.2.433</jbpt-petri.version>
 		<v4-runtime.version>4.3</v4-runtime.version>
-		<liquibase.version>3.4.2</liquibase.version>
+		<liquibase.version>3.5.5</liquibase.version>
+		<snakeyaml.version>1.17</snakeyaml.version>  <!-- karaf-liquibase-feature determines the correct value for this -->
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
 		<antlr4-runtime.version>4.3</antlr4-runtime.version>
@@ -466,8 +467,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.liquibase</groupId>
-				<artifactId>liquibase-osgi</artifactId>
+				<artifactId>liquibase-core</artifactId>
 				<version>${liquibase.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+                                <version>${snakeyaml.version}</version>
 			</dependency>
 
 			<dependency>

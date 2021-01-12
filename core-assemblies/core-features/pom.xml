@@ -14,6 +14,16 @@
     <checkstyle.skip>false</checkstyle.skip>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>no.priv.bang.karaf</groupId>
+      <artifactId>liquibase-core-karaf</artifactId>
+      <version>${liquibase.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+  </dependencies>
+
   <build>
     <resources>
       <resource>

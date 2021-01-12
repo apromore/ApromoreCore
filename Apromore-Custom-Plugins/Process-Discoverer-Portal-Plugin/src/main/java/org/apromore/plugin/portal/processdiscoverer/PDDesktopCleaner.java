@@ -23,6 +23,8 @@ package org.apromore.plugin.portal.processdiscoverer;
 
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 
@@ -35,9 +37,11 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
  *
  */
 public class PDDesktopCleaner implements DesktopCleanup {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PDDesktopCleaner.class.getCanonicalName());
+
     @Override
     public void cleanup(Desktop desktop) throws Exception {
-        System.out.println("PD cleanup starts for desktopID = " + desktop.getId());
+        LOGGER.info("PD cleanup starts for desktopID = " + desktop.getId());
         
         // Clean up this plugin
         if (desktop.hasAttribute("processDiscoverer")) {
@@ -51,6 +55,6 @@ public class PDDesktopCleaner implements DesktopCleanup {
         // TEMPORARY: remove this step to keep PD keeps working from refreshing the page after session timeout  
         //UserSessionManager.removeEditSession(desktop.getAttribute("pluginSessionId").toString());
 
-        System.out.println("PD cleanup is done for desktopID = " + desktop.getId());
+        LOGGER.info("PD cleanup is done for desktopID = " + desktop.getId());
     }
 }
