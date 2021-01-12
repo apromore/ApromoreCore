@@ -305,39 +305,6 @@ public class APMLogFilter {
         }
     }
 
-
-    private void resetDuration() {
-
-//        this.pLog.durFreqMap = new UnifiedMap<>();
-//        this.pLog.ttlProcTimeFreqMap = new UnifiedMap<>();
-//        this.pLog.avgProcTimeFreqMap = new UnifiedMap<>();
-//        this.pLog.maxProcTimeFreqMap = new UnifiedMap<>();
-//        this.pLog.ttlWaitTimeFreqMap = new UnifiedMap<>();
-//        this.pLog.avgWaitTimeFreqMap = new UnifiedMap<>();
-//        this.pLog.maxWaitTimeFreqMap = new UnifiedMap<>();
-
-        this.pLog.setMinDuration(0);
-        this.pLog.setMaxDuration(0);
-        for(int i=0; i<this.pLog.getPTraceList().size(); i++) {
-            PTrace pTrace = this.pLog.getPTraceList().get(i);
-            if(this.pLog.getMinDuration() == 0 || pTrace.getDuration() < this.pLog.getMinDuration()) {
-                this.pLog.setMinDuration(pTrace.getDuration());
-            }
-            if(pTrace.getDuration() > this.pLog.getMaxDuration()) {
-                this.pLog.setMaxDuration(pTrace.getDuration());
-            }
-
-//            this.pLog.addToPerfMap(pTrace, "duration");
-//            this.pLog.addToPerfMap(pTrace, "totalProcessingTime");
-//            this.pLog.addToPerfMap(pTrace, "averageProcessingTime");
-//            this.pLog.addToPerfMap(pTrace, "maxProcessingTime");
-//            this.pLog.addToPerfMap(pTrace, "totalWaitingTime");
-//            this.pLog.addToPerfMap(pTrace, "averageWaitingTime");
-//            this.pLog.addToPerfMap(pTrace, "maxWaitingTime");
-        }
-    }
-
-
     private void updateCaseVariants() {
 
         UnifiedSet<Integer> existVariants = new UnifiedSet<>();
