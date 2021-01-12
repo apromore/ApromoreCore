@@ -193,8 +193,6 @@ public class APMLogFilter {
         pLog.setValidTraceIndexBS(validTraceBS);
         if (validTraceBS.cardinality() > 0 ) {
             pLog.updateStats(filteredPTraceList);
-
-            pLog.setAttributeGraph(new AAttributeGraph(pLog));
         } else {
             pLog.getPTraceList().clear();
             pLog.setEventSize(0);

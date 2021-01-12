@@ -45,6 +45,8 @@ package org.apromore.apmlog.filter;
 import org.apromore.apmlog.*;
 import org.apromore.apmlog.immutable.ImmutableLog;
 import org.apromore.apmlog.stats.AAttributeGraph;
+import org.apromore.apmlog.util.Util;
+import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -68,7 +70,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (06/01/2021)
  */
-public class PLog extends LaLog {
+public class PLog implements APMLog{
 
     private APMLog apmLog;
 
@@ -116,13 +118,30 @@ public class PLog extends LaLog {
     private long variantSize = 0;
 
     private HashBiMap<PTrace, Integer> caseIndexMap = new HashBiMap<>();
-
-    private UnifiedMap<String, Integer> activityMaxOccurMap;
-
-    private ActivityNameMapper activityNameMapper;
-
     private AAttributeGraph originalAttributeGraph;
     private AAttributeGraph previousAttributeGraph;
+
+    //*************
+    private List<ATrace> immutableTraces; // this is the immutable traces
+    private List<ATrace> traceList; // this is mutable traces;
+    private UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> eventAttributeOccurMap;
+    private HashBiMap<String, Integer> activityNameBiMap = new HashBiMap<>();
+    private UnifiedMap<Integer, Integer> variantIdFreqMap;
+    private HashBiMap<Integer, String> actIdNameMap = new HashBiMap<>();
+    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap;
+    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
+    private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
+    private UnifiedMap<String, Integer> activityMaxOccurMap = new UnifiedMap<>();
+    private String timeZone = "";
+    private long startTime = -1;
+    private long endTime = -1;
+    private long eventSize = 0;
+    private HashBiMap<IntArrayList, Integer> actNameIdxCId;
+    private ActivityNameMapper activityNameMapper;
+    private DefaultChartDataCollection defaultChartDataCollection;
+    private AAttributeGraph attributeGraph;
+    private DoubleArrayList caseDurationList;
+    //************
 
     public APMLog getApmLog() {
         return apmLog;
@@ -261,6 +280,9 @@ public class PLog extends LaLog {
         LOGGER.info("done");
     }
 
+    public void updateStats() {
+        updateStats(this.getPTraceList());
+    }
 
     public void updateStats(List<PTrace> filteredPTraceList) {
         startTime = 0;
@@ -362,6 +384,16 @@ public class PLog extends LaLog {
 
         attributeGraph = new AAttributeGraph(this);
         defaultChartDataCollection = new DefaultChartDataCollection(this);
+    }
+
+    private IntArrayList getActivityNameIndexes(ATrace aTrace) {
+        IntArrayList nameIndexes = new IntArrayList(aTrace.getActivityList().size());
+        List<AActivity> activityList = aTrace.getActivityList();
+        for (int i = 0; i < activityList.size(); i++) {
+            int actNameIndex = activityNameBiMap.get(activityList.get(i).getName());
+            nameIndexes.add(actNameIndex);
+        }
+        return nameIndexes;
     }
 
 
@@ -622,12 +654,81 @@ public class PLog extends LaLog {
         return activityMaxOccurMap;
     }
 
+    @Override
+    public ActivityNameMapper getActivityNameMapper() {
+        return activityNameMapper;
+    }
+
     public PTrace get(int index) {
         return this.pTraceList.get(index);
     }
 
+    @Override
+    public ATrace getImmutable(int index) {
+        return immutableTraces.get(index);
+    }
+
+    @Override
+    public int immutableSize() {
+        return immutableTraces.size();
+    }
+
+    @Override
+    public long getStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public long getEndTime() {
+        return endTime;
+    }
+
+    @Override
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public String getTimeZone() {
+        return this.timeZone;
+    }
+
+    @Override
+    public String getMinDurationString() {
+        return Util.durationShortStringOf(getMinDuration());
+    }
+
+    @Override
+    public String getMaxDurationString() {
+        return Util.durationShortStringOf(getMaxDuration());
+    }
+
     public PTrace get(String caseId) {
         return pTraceUnifiedMap.get(caseId);
+    }
+
+    @Override
+    public UnifiedMap<String, ATrace> getTraceUnifiedMap() {
+        UnifiedMap<String, ATrace> map = new UnifiedMap<>(traceList.size());
+        for (int i = 0; i < traceList.size(); i++) {
+            map.put(traceList.get(i).getCaseId().intern(), traceList.get(i));
+        }
+        return map;
+    }
+
+    @Override
+    public int getUniqueActivitySize() {
+        return eventAttributeOccurMap.get("concept:name").size();
+    }
+
+    @Override
+    public UnifiedMap<Integer, Integer> getCaseVariantIdFrequencyMap() {
+        return variantIdFreqMap;
     }
 
     public List<String> getActivityNameList(int caseVariantId) {
@@ -680,8 +781,18 @@ public class PLog extends LaLog {
     }
 
     @Override
+    public void setCaseVariantSize(int caseVariantSize) {
+
+    }
+
+    @Override
     public long getEventSize() {
         return eventSize;
+    }
+
+    @Override
+    public void setEventSize(int eventSize) {
+        this.eventSize = eventSize;
     }
 
 
@@ -689,14 +800,104 @@ public class PLog extends LaLog {
         return medianDuration;
     }
 
+    @Override
+    public String getAverageDurationString() {
+        return Util.durationShortStringOf(getAverageDuration());
+    }
+
+    @Override
+    public String getMedianDurationString() {
+        return Util.durationShortStringOf(getMedianDuration());
+    }
+
+    @Override
+    public String getStartTimeString() {
+        return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.startTime));
+    }
+
+    @Override
+    public String getEndTimeString() {
+        return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.endTime));
+    }
+
+    @Override
+    public APMLog clone() {
+        return null;
+    }
+
+    @Override
+    public XLog toXLog() {
+        return null;
+    }
+
+    @Override
+    public AAttributeGraph getAAttributeGraph() {
+        return attributeGraph;
+    }
+
     public double getAverageDuration() {
         return averageDuration;
+    }
+
+    @Override
+    public UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap() {
+        return this.eventAttributeOccurMap;
+    }
+
+    @Override
+    public void add(ATrace trace) {
+
+    }
+
+    @Override
+    public HashBiMap<String, Integer> getActivityNameBiMap() {
+        return activityNameBiMap;
+    }
+
+    @Override
+    public void setActivityNameBiMap(HashBiMap<String, Integer> activityNameBiMap) {
+        this.activityNameBiMap = activityNameBiMap;
     }
 
 
     @Override
     public UnifiedMap<Integer, Integer> getVariantIdFreqMap() {
         return variantIdFreqMap;
+    }
+
+    @Override
+    public double getMinDuration() {
+        return !caseDurationList.isEmpty() ? caseDurationList.min() : 0;
+    }
+
+    @Override
+    public void setMinDuration(double minDuration) {
+
+    }
+
+    @Override
+    public double getMaxDuration() {
+        return !caseDurationList.isEmpty() ? caseDurationList.max() : 0;
+    }
+
+    @Override
+    public void setMaxDuration(double maxDuration) {
+
+    }
+
+    @Override
+    public List<ATrace> getImmutableTraces() {
+        return immutableTraces;
+    }
+
+    @Override
+    public List<ATrace> getTraceList() {
+        return traceList;
+    }
+
+    @Override
+    public void setTraceList(List<ATrace> traceList) {
+        this.traceList = traceList;
     }
 
     public List<PTrace> getOriginalPTraceList() {
