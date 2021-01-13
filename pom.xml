@@ -56,8 +56,7 @@
 		<module>Apromore-OSGI-Bundles/parquet-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-models-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-widgets-osgi</module>
-		<module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>
-		<module>Apromore-OSGI-Bundles/aws-clients-osgi</module>
+		<module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>		
 
 		<!-- Core Components -->
 		<module>Apromore-Core-Components/Apromore-Portal</module>
@@ -87,7 +86,7 @@
 		<module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
 
 		<module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
-        <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
+                <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
 		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>     
 
 		<module>Apromore-Custom-Plugins/Log-Logic</module>

@@ -44,22 +44,6 @@ public class EventLogFileServiceImpl implements EventLogFileService {
 	this.directoryPath = configBean.getLogsDir();
     }
 
-//    @Override
-//    public void serializeXLog(XLog log, String name, XSerializer serializer) throws Exception {
-//        FileOutputStream outputStream;
-//        try {
-//            File directory = new File(directoryPath);
-//            if (!directory.exists()) directory.mkdirs();
-//            File file = new File(directoryPath + name);
-//            if (!file.exists()) file.createNewFile();
-//            outputStream = new FileOutputStream(file);
-//            serializer.serialize(log, outputStream);
-//            outputStream.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("Error");
-//        }
-//    }
 
     // Only work for "xes.gz" extension
     @Override

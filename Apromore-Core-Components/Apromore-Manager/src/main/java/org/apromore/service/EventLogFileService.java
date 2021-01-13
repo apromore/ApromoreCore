@@ -26,7 +26,6 @@ import java.io.OutputStream;
 
 public interface EventLogFileService {
     
-//    public void serializeXLog(XLog log, String name, XSerializer serializer) throws Exception;
     
     public void copyFile(String sourceFileName, String targetFileName) throws Exception;
     public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception;

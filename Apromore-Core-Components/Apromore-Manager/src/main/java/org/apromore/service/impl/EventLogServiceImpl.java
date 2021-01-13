@@ -102,8 +102,6 @@ public class EventLogServiceImpl implements EventLogService {
     private EventLogFileService logFileService;
     private StorageRepository storageRepository;
 
-//    @javax.annotation.Resource
-//    private Set<EventLogPlugin> eventLogPlugins;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -331,10 +329,7 @@ public class EventLogServiceImpl implements EventLogService {
 	    return Collections.emptySet();
 	}
 
-	Set<GroupLog> publicGroupLogs = new HashSet<>(); /*
-							  * groupLogs .stream() .filter(groupLog ->
-							  * publicGroup.equals(groupLog.getGroup())) .collect(Collectors.toSet());
-							  */
+	Set<GroupLog> publicGroupLogs = new HashSet<>();
 	for (GroupLog groupLog : groupLogs) {
 	    if (publicGroup.equals(groupLog.getGroup())) {
 		publicGroupLogs.add(groupLog);
