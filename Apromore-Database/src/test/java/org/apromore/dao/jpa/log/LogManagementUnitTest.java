@@ -50,7 +50,7 @@ public class LogManagementUnitTest extends BaseTestClass {
 	Storage logStorage= new Storage();
 	logStorage.setPrefix("log");
 	logStorage.setKey("20201222183534890_CallcenterExample.xes.gz");
-	logStorage.setStoragePath("S3::nolan-testdata-bucket-sydney::ap-southeast-2::https://s3.ap-southeast-2.amazonaws.com");	
+	logStorage.setStoragePath("FILE::test");	
 	logStorage=storageRepository.saveAndFlush(logStorage);
 	
 //	Then
@@ -71,7 +71,7 @@ public class LogManagementUnitTest extends BaseTestClass {
 	Storage logStorage= new Storage();
 	logStorage.setPrefix("log");
 	logStorage.setKey("20201222183534890_CallcenterExample.xes.gz");
-	logStorage.setStoragePath("S3::nolan-testdata-bucket-sydney::ap-southeast-2::https://s3.ap-southeast-2.amazonaws.com");
+	logStorage.setStoragePath("FILE::test");
 	
 	logStorage=storageRepository.saveAndFlush(logStorage);
 	
@@ -103,7 +103,7 @@ public class LogManagementUnitTest extends BaseTestClass {
 	Storage logStorage= new Storage();
 	logStorage.setPrefix("log");
 	logStorage.setKey("20201222183534890_CallcenterExample.xes.gz");
-	logStorage.setStoragePath("S3::nolan-testdata-bucket-sydney::ap-southeast-2::https://s3.ap-southeast-2.amazonaws.com");
+	logStorage.setStoragePath("FILE::test");
 	logStorage=storageRepository.saveAndFlush(logStorage);
 	log.setStorage(logStorage);
 	
