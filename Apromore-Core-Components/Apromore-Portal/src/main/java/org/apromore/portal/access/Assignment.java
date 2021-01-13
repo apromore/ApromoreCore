@@ -42,7 +42,7 @@ public class Assignment {
         this.rowGuid = rowGuid;
         this.type = type;
         this.access = access;
-        this.isGroup = type == Type.GROUP;
+        this.isGroup = type == Type.GROUP || type == Type.PUBLIC;
     }
 
     public String getName() {
