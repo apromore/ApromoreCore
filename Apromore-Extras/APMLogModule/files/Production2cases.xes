@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 2.0 -->
+<!-- OpenXES library version: 2.27 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="2.27">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+	<string key="concept:name" value="Anonymous log imported from"/>
+	<string key="lifecycle:model" value="standard"/>
+	<trace>
+		<string key="Part Desc." value="Cable Head"/>
+		<string key="Qty for MRB" value="0"/>
+		<string key="Work Order  Qty" value="10"/>
+		<string key="concept:name" value="Case 1"/>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-29T23:24:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4932"/>
+			<string key="Span" value="006:19"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T05:43:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4932"/>
+			<string key="Span" value="006:19"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T05:44:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4932"/>
+			<string key="Span" value="000:58"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T06:42:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4932"/>
+			<string key="Span" value="000:58"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T06:59:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4167"/>
+			<string key="Span" value="000:22"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T07:21:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4167"/>
+			<string key="Span" value="000:22"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T07:21:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4167"/>
+			<string key="Span" value="003:37"/>
+			<string key="Qty Completed" value="8"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 4 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-30T10:58:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 4"/>
+			<string key="Worker ID" value="ID4167"/>
+			<string key="Span" value="003:37"/>
+			<string key="Qty Completed" value="8"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="1"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-01-31T13:20:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling Q.C."/>
+			<string key="Worker ID" value="ID4163"/>
+			<string key="Span" value="001:30"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="1"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-01-31T14:50:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling Q.C."/>
+			<string key="Worker ID" value="ID4163"/>
+			<string key="Span" value="001:30"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-02-01T08:18:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="000:09"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-02-01T08:27:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="000:09"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T00:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T01:15:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T00:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T01:15:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T09:05:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T09:38:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:33"/>
+			<string key="Qty Completed" value="8"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T09:05:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:33"/>
+			<string key="Qty Completed" value="8"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 1 - Lapping"/>
+			<date key="time:timestamp" value="2012-02-14T10:20:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Lapping - Machine 1"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 3 - Round Grinding"/>
+			<date key="time:timestamp" value="2012-02-14T09:13:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Round Grinding - Machine 3"/>
+			<string key="Worker ID" value="ID4445"/>
+			<string key="Span" value="004:24"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 3 - Round Grinding"/>
+			<date key="time:timestamp" value="2012-02-14T13:37:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Round Grinding - Machine 3"/>
+			<string key="Worker ID" value="ID4445"/>
+			<string key="Span" value="004:24"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 3 - Round Grinding"/>
+			<date key="time:timestamp" value="2012-02-14T13:37:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Round Grinding - Machine 3"/>
+			<string key="Worker ID" value="ID4445"/>
+			<string key="Span" value="001:50"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 3 - Round Grinding"/>
+			<date key="time:timestamp" value="2012-02-14T15:27:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Round Grinding - Machine 3"/>
+			<string key="Worker ID" value="ID4445"/>
+			<string key="Span" value="001:50"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-16T06:59:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4493"/>
+			<string key="Span" value="001:00"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-16T07:59:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4493"/>
+			<string key="Span" value="001:00"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-16T12:11:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4493"/>
+			<string key="Span" value="004:01"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-16T13:58:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4493"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-16T12:43:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4493"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-16T16:12:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4493"/>
+			<string key="Span" value="004:01"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Packing"/>
+			<date key="time:timestamp" value="2012-02-17T00:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Packing"/>
+			<string key="Worker ID" value="ID4820"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Packing"/>
+			<date key="time:timestamp" value="2012-02-17T01:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Packing"/>
+			<string key="Worker ID" value="ID4820"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="9"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="Part Desc." value="Spur Gear"/>
+		<string key="Qty for MRB" value="0"/>
+		<string key="Work Order  Qty" value="251"/>
+		<string key="concept:name" value="Case 10"/>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T07:01:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="004:04"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T11:05:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="004:04"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-01-17T11:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning Q.C."/>
+			<string key="Worker ID" value="ID4618"/>
+			<string key="Span" value="000:15"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-01-17T11:15:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning Q.C."/>
+			<string key="Worker ID" value="ID4618"/>
+			<string key="Span" value="000:15"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T19:24:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="000:37"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T20:01:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="000:37"/>
+			<string key="Qty Completed" value="0"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T20:01:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="003:42"/>
+			<string key="Qty Completed" value="17"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T23:43:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="003:42"/>
+			<string key="Qty Completed" value="17"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-17T23:49:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="006:43"/>
+			<string key="Qty Completed" value="37"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T06:32:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="006:43"/>
+			<string key="Qty Completed" value="37"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T06:59:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="000:25"/>
+			<string key="Qty Completed" value="4"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T07:24:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="000:25"/>
+			<string key="Qty Completed" value="4"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T16:33:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="001:22"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T17:55:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="001:22"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T17:57:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="002:07"/>
+			<string key="Qty Completed" value="3"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T20:04:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="002:07"/>
+			<string key="Qty Completed" value="3"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-18T20:10:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="010:19"/>
+			<string key="Qty Completed" value="40"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-19T06:29:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="010:19"/>
+			<string key="Qty Completed" value="40"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-19T16:12:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="001:57"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-19T18:09:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="S"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="001:57"/>
+			<string key="Qty Completed" value="1"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-19T18:10:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="001:58"/>
+			<string key="Qty Completed" value="8"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-19T20:08:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4132"/>
+			<string key="Span" value="001:58"/>
+			<string key="Qty Completed" value="8"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-19T20:09:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="009:01"/>
+			<string key="Qty Completed" value="40"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-20T05:10:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="009:01"/>
+			<string key="Qty Completed" value="40"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-22T02:42:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4641"/>
+			<string key="Span" value="003:52"/>
+			<string key="Qty Completed" value="17"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-22T06:34:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID4641"/>
+			<string key="Span" value="003:52"/>
+			<string key="Qty Completed" value="17"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-22T07:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="000:13"/>
+			<string key="Qty Completed" value="3"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-22T07:13:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="000:13"/>
+			<string key="Qty Completed" value="3"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-22T09:02:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="008:45"/>
+			<string key="Qty Completed" value="79"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 9 - Turning &amp; Milling"/>
+			<date key="time:timestamp" value="2012-01-22T17:47:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning &amp; Milling - Machine 9"/>
+			<string key="Worker ID" value="ID3846"/>
+			<string key="Span" value="008:45"/>
+			<string key="Qty Completed" value="79"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-01-23T07:54:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning Q.C."/>
+			<string key="Worker ID" value="ID4618"/>
+			<string key="Span" value="002:32"/>
+			<string key="Qty Completed" value="251"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-01-23T10:26:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Turning Q.C."/>
+			<string key="Worker ID" value="ID4618"/>
+			<string key="Span" value="002:32"/>
+			<string key="Qty Completed" value="251"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-01-25T09:31:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="001:26"/>
+			<string key="Qty Completed" value="40"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-01-25T10:57:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID4794"/>
+			<string key="Span" value="001:26"/>
+			<string key="Qty Completed" value="40"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-01-25T11:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="001:54"/>
+			<string key="Qty Completed" value="160"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-01-25T12:54:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="001:54"/>
+			<string key="Qty Completed" value="160"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-01-25T13:22:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:47"/>
+			<string key="Qty Completed" value="51"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 7- Laser Marking"/>
+			<date key="time:timestamp" value="2012-01-25T14:09:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Laser Marking - Machine 7"/>
+			<string key="Worker ID" value="ID4882"/>
+			<string key="Span" value="000:47"/>
+			<string key="Qty Completed" value="51"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 11 - Grinding"/>
+			<date key="time:timestamp" value="2012-01-27T10:30:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Flat Grinding - Machine 11"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="002:30"/>
+			<string key="Qty Completed" value="100"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 11 - Grinding"/>
+			<date key="time:timestamp" value="2012-01-27T13:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Flat Grinding - Machine 11"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="002:30"/>
+			<string key="Qty Completed" value="100"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 11 - Grinding"/>
+			<date key="time:timestamp" value="2012-01-29T08:09:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Flat Grinding - Machine 11"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="006:57"/>
+			<string key="Qty Completed" value="100"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 11 - Grinding"/>
+			<date key="time:timestamp" value="2012-01-29T15:06:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Flat Grinding - Machine 11"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="006:57"/>
+			<string key="Qty Completed" value="100"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 11 - Grinding"/>
+			<date key="time:timestamp" value="2012-01-30T15:19:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Flat Grinding - Machine 11"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="001:40"/>
+			<string key="Qty Completed" value="51"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Machine 11 - Grinding"/>
+			<date key="time:timestamp" value="2012-01-30T16:59:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Flat Grinding - Machine 11"/>
+			<string key="Worker ID" value="ID0998"/>
+			<string key="Span" value="001:40"/>
+			<string key="Qty Completed" value="51"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="1"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-02T12:38:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4618"/>
+			<string key="Span" value="001:38"/>
+			<string key="Qty Completed" value="250"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="1"/>
+			<string key="org:resource" value="Quality Check 1"/>
+			<date key="time:timestamp" value="2012-02-02T14:16:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Final Inspection Q.C."/>
+			<string key="Worker ID" value="ID4618"/>
+			<string key="Span" value="001:38"/>
+			<string key="Qty Completed" value="250"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Packing"/>
+			<date key="time:timestamp" value="2012-02-03T00:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Packing"/>
+			<string key="Worker ID" value="ID4820"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="250"/>
+		</event>
+		<event>
+			<string key="Qty Rejected" value="0"/>
+			<string key="org:resource" value="Packing"/>
+			<date key="time:timestamp" value="2012-02-03T01:00:00.000+11:00"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="Report Type" value="D"/>
+			<string key="concept:name" value="Packing"/>
+			<string key="Worker ID" value="ID4820"/>
+			<string key="Span" value="000:00"/>
+			<string key="Qty Completed" value="250"/>
+		</event>
+	</trace>
+</log>

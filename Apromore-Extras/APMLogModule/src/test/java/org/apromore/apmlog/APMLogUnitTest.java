@@ -22,6 +22,7 @@
 
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.immutable.ImmutableLog;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
@@ -387,6 +388,20 @@ public class APMLogUnitTest {
         printString("\n(/ 'o')/ ~ Test ImmutableTrace timestamp'");
         XLog xLog = getXLog("files/durationTest.xes");
         ImmutableTraceTest.testStartEndTimestamps(xLog);
+    }
+
+    @Test
+    public void testEventAttrFreqAfterEventAttrFilter() throws Exception {
+        XLog xLog = getXLog("files/Production2cases.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        EventSectionAttributeFilterTest.testEventAttrFreqAfterEventAttrFilter(apmLog);
+    }
+
+    @Test
+    public void testPLogAttributeGraph() throws Exception {
+        XLog xLog = getXLog("files/5cases.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        PLogAttributeGraphTest.testArc(apmLog);
     }
 
 
