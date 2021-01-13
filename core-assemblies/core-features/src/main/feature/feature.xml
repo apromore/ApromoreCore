@@ -117,6 +117,7 @@
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-impl/2.2.11_1</bundle>
     <bundle>mvn:org.apromore/apmlog/1.0.0</bundle>
     <bundle>mvn:org.apromore/apromore-cache/1.0</bundle>
+    <bundle>mvn:org.apromore/apromore-storage/1.0</bundle>
     <bundle>mvn:org.apromore/manager-security/1.1</bundle>
     <bundle>mvn:org.apromore/portal-model/1.1</bundle>
     <bundle>mvn:org.apromore.plugin/event-log-plugin-api/1.1</bundle>
