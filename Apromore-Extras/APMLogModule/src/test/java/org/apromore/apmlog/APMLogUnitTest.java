@@ -415,6 +415,20 @@ public class APMLogUnitTest {
         LogsMethodsTests.testActivityNameIndexes(xLog);
     }
 
+    @Test
+    public void testEventAttrFreqAfterEventAttrFilter() throws Exception {
+        XLog xLog = getXLog("files/Production2cases.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        EventSectionAttributeFilterTest.testEventAttrFreqAfterEventAttrFilter(apmLog);
+    }
+
+    @Test
+    public void testPLogAttributeGraph() throws Exception {
+        XLog xLog = getXLog("files/5cases.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        PLogAttributeGraphTest.testArc(apmLog);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
