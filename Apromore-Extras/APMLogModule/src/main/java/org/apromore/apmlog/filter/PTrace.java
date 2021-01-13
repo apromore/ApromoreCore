@@ -31,6 +31,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.immutable.ImmutableTrace;
 import org.apromore.apmlog.util.Util;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -52,6 +53,7 @@ import java.util.List;
  * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (23/12/2020)
+ * Modified: Chii Chang (13/01/2021)
  */
 public class PTrace implements Comparable<PTrace>, ATrace {
 
@@ -341,32 +343,28 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousActiivtyNameIndexList = activityNameIndexList;
 
         this.eventList = new ArrayList<>();
+        this.activityList = new ArrayList<>();
 
+        List<AEvent> aEventList = aTrace.getImmutableEvents();
 
-        List<AEvent> aEventList = aTrace.getEventList();
-
-        for (int i = 0; i < aEventList.size(); i++) {
-            AEvent event = aEventList.get(i);
-            if (validEventIndexBS.get(i)) {
-                eventList.add(event);
+        for (AActivity activity : aTrace.getActivityList()) {
+            boolean allValid = true;
+            IntArrayList eventIndexes = activity.getEventIndexes();
+            for (int i = 0; i < eventIndexes.size(); i++) {
+                if (!validEventIndexBS.get(eventIndexes.get(i))) allValid = false;
+            }
+            if (allValid) {
+                this.activityList.add(activity);
             }
         }
 
-        this.activityList = new ArrayList<>();
-
-        UnifiedSet<Integer> actIndexes = new UnifiedSet<>();
-        for (int j = 0; j < eventList.size(); j++) {
-            AEvent aEvent = eventList.get(j);
-            int actIndex = aEvent.getParentActivityIndex();
-            actIndexes.put(actIndex);
-        }
-
-        List<Integer> actIndexList = new ArrayList<>(actIndexes);
-        Collections.sort(actIndexList);
-
-        for (int j = 0; j < actIndexList.size(); j++) {
-            int actIndex = actIndexList.get(j);
-            this.activityList.add(aTrace.getActivityList().get(actIndex));
+        if (this.activityList.size() > 0) {
+            for (AActivity activity : this.activityList) {
+                IntArrayList eventIndexes = activity.getEventIndexes();
+                for (int i = 0; i < eventIndexes.size(); i++) {
+                    this.eventList.add(aEventList.get(eventIndexes.get(i)));
+                }
+            }
         }
 
         updateStats(this.activityList);

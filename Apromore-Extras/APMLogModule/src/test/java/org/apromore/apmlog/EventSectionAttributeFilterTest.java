@@ -21,9 +21,6 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogUnitTest;
-import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
@@ -32,10 +29,9 @@ import org.apromore.apmlog.filter.types.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static org.junit.Assert.assertTrue;
 
 public class EventSectionAttributeFilterTest {
 
@@ -122,5 +118,29 @@ public class EventSectionAttributeFilterTest {
             }
             parent.printString("'Rework & Repetition - "+sb+"' Test PASS.");
         }
+    }
+
+    public static void testEventAttrFreqAfterEventAttrFilter(APMLog apmLog) {
+        Set<RuleValue> primaryValues = new HashSet<>();
+
+        primaryValues.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
+                "concept:name", "Turning & Milling Q.C."));
+        primaryValues.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
+                "concept:name", "Laser Marking - Machine 7"));
+
+        LogFilterRule logFilterRule = new LogFilterRuleImpl(Choice.RETAIN, Inclusion.ANY_VALUE, Section.EVENT,
+                FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", primaryValues, null);
+
+        List<LogFilterRule> rules = Arrays.asList(logFilterRule);
+
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        apmLogFilter.filter(rules);
+
+
+        int actSizeOfCFM = apmLogFilter.getPLog().getEventAttributeValueCasesFreqMap().get("concept:name").size();
+        int actSizeOfEFM =  apmLogFilter.getPLog().getEventAttributeValueFreqMap().get("concept:name").size();
+
+        assertTrue(actSizeOfCFM == 2);
+        assertTrue(actSizeOfEFM == 2);
     }
 }
