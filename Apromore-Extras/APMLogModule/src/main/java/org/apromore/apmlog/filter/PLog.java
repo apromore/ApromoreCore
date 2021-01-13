@@ -162,6 +162,7 @@ public class PLog implements APMLog{
     }
 
     private void initDefault() {
+        this.attributeGraph = apmLog.getAAttributeGraph();
         eventAttributeOccurMap = new UnifiedMap<>(apmLog.getEventAttributeOccurMap());
         variantSize = apmLog.getCaseVariantSize();
         activityNameBiMap = apmLog.getActivityNameBiMap();

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+	<string key="concept:name" value="Poking example"/>
+	<trace>
+		<string key="concept:name" value="3007"/>
+		<string key="Customer ID" value="Y3592"/>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-20T11:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-20T11:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Cancel order"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-20T12:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Cancel order"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-20T12:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-20T15:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-20T16:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-20T17:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-20T17:40:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-20T21:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-20T21:21:30.922+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="AKB308DsO"/>
+		<string key="Customer ID" value="Y3592"/>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-21T15:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-21T16:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-21T17:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-21T17:53:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Maja"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-21T20:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Maja"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-21T20:31:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Report package damaged"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-21T21:37:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Report package damaged"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-21T21:54:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Maja"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-21T22:09:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Maja"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-21T23:55:30.922+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="J9ASD9J23IUHH D887GGDG 7G72GVVSH721"/>
+		<string key="Customer ID" value="A1025"/>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Maja"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-22T12:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Maja"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-22T13:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-22T14:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Tranfer items from warehouse 2 one 'two three four five' and six"/>
+			<string key="org:resource" value="Eric Jolbom"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-22T14:40:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Tranfer items from warehouse 2 one 'two three four five' and six"/>
+			<string key="org:resource" value="Eric Jolbom"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-22T15:10:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-22T15:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-22T17:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-22T18:21:30.922+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="3010"/>
+		<string key="Customer ID" value="A1025"/>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-23T09:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-23T10:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-23T11:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-23T11:25:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Tranfer items from warehouse 2"/>
+			<string key="org:resource" value="Eric Jolbom"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-23T11:40:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Tranfer items from warehouse 2"/>
+			<string key="org:resource" value="Eric Jolbom"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-23T12:10:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-23T12:40:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Kalv"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-23T13:11:30.922+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="3011"/>
+		<string key="Customer ID" value="Y5092"/>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-24T10:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Proceed order"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-24T11:21:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-24T12:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Warehouse check for the order"/>
+			<string key="org:resource" value="Georg"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-24T12:52:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-05-24T14:20:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Prepare package"/>
+			<string key="org:resource" value="Juli Forst"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-05-24T14:49:30.922+11:00"/>
+		</event>
+	</trace>
+</log>
