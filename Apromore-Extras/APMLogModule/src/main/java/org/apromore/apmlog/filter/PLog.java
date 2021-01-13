@@ -391,8 +391,8 @@ public class PLog implements APMLog{
     public IntArrayList getActivityNameIndexes(ATrace aTrace) {
         IntArrayList nameIndexes = new IntArrayList(aTrace.getActivityList().size());
         List<AActivity> activityList = aTrace.getActivityList();
-        for (int i = 0; i < activityList.size(); i++) {
-            int actNameIndex = activityNameBiMap.get(activityList.get(i).getName());
+        for (AActivity activity : activityList) {
+            int actNameIndex = activityNameBiMap.get(activity.getName());
             nameIndexes.add(actNameIndex);
         }
         return nameIndexes;
