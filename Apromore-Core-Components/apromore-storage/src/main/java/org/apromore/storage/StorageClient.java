@@ -28,23 +28,24 @@ import org.apromore.storage.exception.ObjectCreationException;
 import org.apromore.storage.exception.ObjectNotFoundException;
 
 /**
- * @author nolantellis
- * This is the main interface which is used to upload or download file from a storage management.
+ * @author nolantellis This is the main interface which is used to upload or
+ *         download file from a storage management.
  * 
  */
-public interface StorageClient {
-    
-    String getStorageType();
-    
-    InputStream getInputStream(String prefix,String key) throws ObjectNotFoundException;
 
-    OutputStream getOutputStream(String prefix,String key) throws ObjectCreationException;
+public interface StorageClient {
+
+    String getStorageType();
+
+    InputStream getInputStream(String prefix, String key) throws ObjectNotFoundException;
+
+    OutputStream getOutputStream(String prefix, String key) throws ObjectCreationException;
 
     boolean delete(String prefix, String key);
-    
+
     default String getValidPrefix(String prefix) {
-   	prefix = prefix == null ? "" : prefix;
-   	return prefix;
-       }
+	prefix = prefix == null ? "" : prefix;
+	return prefix;
+    }
 
 }

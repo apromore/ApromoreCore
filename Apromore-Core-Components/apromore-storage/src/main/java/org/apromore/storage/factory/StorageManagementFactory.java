@@ -21,9 +21,12 @@
  */
 package org.apromore.storage.factory;
 
-public interface StorageManagementFactory<T> {
-    
+import org.apromore.storage.StorageClient;
+
+public interface StorageManagementFactory<T extends StorageClient> {
+
     public static final int STORAGETYPE_INDEX = 0;
+
     T getStorageClient(String storagePath);
 
 }

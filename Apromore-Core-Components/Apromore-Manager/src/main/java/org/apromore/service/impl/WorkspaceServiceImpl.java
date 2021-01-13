@@ -105,7 +105,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private FolderServiceImpl folderService;
     private StorageRepository storageRepository;
 
-    private StorageManagementFactory<StorageClient> storageFacotry;
+    private StorageManagementFactory<StorageClient> storageFactory;
 
     @Resource
     private ConfigBean config;
@@ -146,8 +146,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	groupLogRepo = groupLogRepository;
 	logFileService = eventLogFileService;
 	this.folderService = folderService;
-	this.storageFacotry = storageFacotry;
-	this.storageRepository=storageRepository;
+	this.storageFactory = storageFacotry;
+	this.storageRepository = storageRepository;
     }
 
     @Override
@@ -524,17 +524,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	}
 
 	// Copy file
-	StorageClient storageClient = storageFacotry.getStorageClient(config.getStoragePath());
+	StorageClient storageClient = storageFactory.getStorageClient(config.getStoragePath());
 //        For backward compatible
 	final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
 	if (currentLog.getStorage() == null) {
-	    
-	    StorageClient storageClientOldFile = storageFacotry.getStorageClient("FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
-	    
+//	     change spelling of factory
+	    StorageClient storageClientOldFile = storageFactory.getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
+
 	    OutputStream outputStream = storageClient.getOutputStream("log", currentFileFullName);
 	    InputStream inputStream = storageClientOldFile.getInputStream(null, currentFileFullName);
-	    logFileService.copyFile(inputStream, outputStream);	    
-	    Storage storage=new Storage();
+	    logFileService.copyFile(inputStream, outputStream);
+	    Storage storage = new Storage();
 	    storage.setKey(currentFileFullName);
 	    storage.setPrefix("log");
 	    storage.setStoragePath(config.getStoragePath());
