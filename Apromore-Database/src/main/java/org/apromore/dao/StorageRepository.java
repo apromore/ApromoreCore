@@ -19,16 +19,16 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+package org.apromore.dao;
 
-public interface EventLogFileService {
-    
-    
-    public void copyFile(String sourceFileName, String targetFileName) throws Exception;
-    public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception;
-    
-    public void deleteFileIfExist(String fileFullName) throws Exception;
+import org.apromore.dao.model.Storage;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface StorageRepository extends JpaRepository<Storage, Long>{
+
+
+
 }

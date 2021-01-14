@@ -19,16 +19,33 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
+package org.apromore.storage;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface EventLogFileService {
-    
-    
-    public void copyFile(String sourceFileName, String targetFileName) throws Exception;
-    public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception;
-    
-    public void deleteFileIfExist(String fileFullName) throws Exception;
+import org.apromore.storage.exception.ObjectCreationException;
+import org.apromore.storage.exception.ObjectNotFoundException;
+
+/**
+ * @author nolantellis This is the main interface which is used to upload or
+ *         download file from a storage management.
+ * 
+ */
+
+public interface StorageClient {
+
+    String getStorageType();
+
+    InputStream getInputStream(String prefix, String key) throws ObjectNotFoundException;
+
+    OutputStream getOutputStream(String prefix, String key) throws ObjectCreationException;
+
+    boolean delete(String prefix, String key);
+
+    default String getValidPrefix(String prefix) {
+	prefix = prefix == null ? "" : prefix;
+	return prefix;
+    }
+
 }

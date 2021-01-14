@@ -29,39 +29,8 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
 
-    <bean id="config" class="org.apromore.common.ConfigBean">
-        <property name="logsDir" value="${logs.dir}"/>
-        <property name="numOfEvent" value="${cache.numOfEvent}"/>
-        <property name="numOfTrace" value="${cache.numOfTrace}"/>
-        <property name="storagePath" value="${storage.path}"/>
-    </bean>
-
-
-	<bean id="tempCacheService" class="org.apromore.service.impl.TemporaryCacheService">
-        <property name="cacheRepo" ref="cacheRepo"/>
-        <property name="config" ref="config"/>
-        <property name="apmLogService" ref="apmLogService"/>
-        <property name="storageFactory" ref="storageFactory"/>
-    </bean>
     
-    
-    <context:component-scan base-package="org.apromore.security"/>
-    <context:component-scan base-package="org.apromore.service"/>
-    <context:component-scan base-package="org.apromore.toolbox"/>
-    <context:component-scan base-package="org.apromore.manager"/>
-
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="defaultEncoding" value="UTF-8"/>
-        <property name="host" value="${mail.host}"/>
-        <property name="port" value="${mail.port}"/>
-        <property name="username" value="${mail.username}"/>
-        <property name="password" value="${mail.password}"/>
-        <property name="javaMailProperties">
-            <props>
-                <prop key="mail.smtp.auth">true</prop>
-                <prop key="mail.smtp.starttls.enable">true</prop>
-            </props>
-        </property>
+    <bean name="storageFactory" class="org.apromore.storage.factory.StorageManagementFactoryImpl">       
     </bean>
 
 </beans>

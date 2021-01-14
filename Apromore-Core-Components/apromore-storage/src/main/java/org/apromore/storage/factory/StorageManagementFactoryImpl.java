@@ -19,16 +19,23 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
+package org.apromore.storage.factory;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.apromore.storage.FileStorageClient;
+import org.apromore.storage.StorageClient;
+import org.apromore.storage.StorageType;
 
-public interface EventLogFileService {
+
+public class StorageManagementFactoryImpl<T extends StorageClient> implements StorageManagementFactory {
+
     
-    
-    public void copyFile(String sourceFileName, String targetFileName) throws Exception;
-    public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception;
-    
-    public void deleteFileIfExist(String fileFullName) throws Exception;
+
+    @Override
+    public FileStorageClient getStorageClient(String storagePath) {
+//	This will throw exception if storage path is not configured properly.
+	StorageType storageType=StorageType.valueOf(storagePath.split(StorageType.STORAGE_PATH_SEPARATOR)[STORAGETYPE_INDEX]);
+	
+	return new FileStorageClient(storageType.getBaseStorage(storagePath));
+    }
+
 }

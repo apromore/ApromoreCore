@@ -19,16 +19,17 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
+package org.apromore.storage.exception;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+public class ObjectCreationException extends Exception {
+    
+    String message;
 
-public interface EventLogFileService {
+    public ObjectCreationException(String message) {
+	super(message);
+	this.message = message;
+    }
     
     
-    public void copyFile(String sourceFileName, String targetFileName) throws Exception;
-    public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception;
-    
-    public void deleteFileIfExist(String fileFullName) throws Exception;
+
 }

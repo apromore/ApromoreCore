@@ -19,16 +19,17 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
+package org.apromore.storage;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+public enum StorageType {
+   
+    FILE;
+    
+    public static final String STORAGE_PATH_SEPARATOR = "::";
+    private static final int BASE_FOLDER = 1;
 
-public interface EventLogFileService {
-    
-    
-    public void copyFile(String sourceFileName, String targetFileName) throws Exception;
-    public void copyFile(InputStream sourceFile, OutputStream targetFile) throws Exception;
-    
-    public void deleteFileIfExist(String fileFullName) throws Exception;
+    public String getBaseStorage(String storagePath) {
+	return storagePath.split(STORAGE_PATH_SEPARATOR)[BASE_FOLDER];
+    }
+
 }
