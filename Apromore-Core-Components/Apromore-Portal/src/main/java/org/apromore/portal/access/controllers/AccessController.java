@@ -316,7 +316,7 @@ public class AccessController extends SelectorComposer<Div> {
             Group group = entry.getKey();
             AccessType accessType = entry.getValue();
             String rowGuid = group.getRowGuid();
-            Assignment assignment = new Assignment(group.getName(), rowGuid, Type.USER, accessType.getLabel());
+            Assignment assignment = new Assignment(group.getName(), rowGuid, group.getType(), accessType.getLabel());
             assignments.add(assignment);
             assignmentMap.put(rowGuid, assignment);
             if (accessType == AccessType.OWNER) {
