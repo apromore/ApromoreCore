@@ -30,6 +30,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Locale;
 import javax.imageio.ImageIO;
 
@@ -38,6 +40,23 @@ import javax.imageio.ImageIO;
  * Override all methods that you want to customize. By default the plugin returns the label default and does nothing.
  */
 public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements PortalPlugin {
+
+    private Map params;
+
+    @Override
+    public String getID() {
+        return null;
+    }
+
+    @Override
+    public void setSimpleParams(Map params) {
+        this.params = params;
+    }
+
+    @Override
+    public Map getSimpleParams() {
+        return params;
+    }
 
     @Override
     public String getLabel(Locale locale) {

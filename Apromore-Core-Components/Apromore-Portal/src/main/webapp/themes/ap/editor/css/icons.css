@@ -81,6 +81,11 @@
     width: 26px !important;
 }
 
+.x-panel-editor-north .x-toolbar button[title='Share the model'] {
+    background-image: url('../../common/img/icons/share.svg') !important;
+    width: 26px !important;
+}
+
 .x-panel-editor-north .x-toolbar button[title='Simulate in BIMP'] {
     background-image: url('../../common/img/icons/simulate-model.svg') !important;
     width: 26px !important;

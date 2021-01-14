@@ -62,7 +62,7 @@
 
         <include name="Apromore-Custom-Plugins/About-Portal-Plugin/target/about-portal-plugin-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
-
+        <include name="Apromore-Custom-Plugins/Access-Control-Portal-Plugin/target/access-control-portal-plugin-1.0.jar"/>
         <!-- csvimporter-logic is the responsibility of the parent build.xml -->
         <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
         

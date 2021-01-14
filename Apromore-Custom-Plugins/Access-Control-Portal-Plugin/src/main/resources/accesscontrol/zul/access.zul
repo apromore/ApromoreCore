@@ -23,7 +23,7 @@
     sclass="ap-share-win"
     id="accessContainer"
     vflex="1" hflex="1"
-    apply="org.apromore.portal.access.controllers.AccessController">
+    apply="org.apromore.plugin.portal.accesscontrol.controllers.AccessController">
     <script type="text/javascript" src="/themes/ap/share/js/index.js"/>
     <style src="/themes/ap/share/css/index.css"/>
 

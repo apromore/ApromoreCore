@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * Looking up portal plug-ins
@@ -51,7 +52,8 @@ public class PortalPluginResolver {
         Object portalPlugins = SpringUtil.getBean("portalPlugins");
         if (portalPlugins != null) {
             for (PortalPlugin plugin :  (List<PortalPlugin>) portalPlugins) {
-                portalPluginMap.put(plugin.getLabel(Locale.getDefault()), plugin);
+                String key = Optional.ofNullable(plugin.getID()).orElse(plugin.getLabel(Locale.getDefault()));
+                portalPluginMap.put(key, plugin);
             }
             return portalPluginMap;
         } else {

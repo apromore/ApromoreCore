@@ -464,6 +464,12 @@
 
     <dependency>
       <groupId>org.apromore</groupId>
+      <artifactId>access-control-portal-plugin</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apromore</groupId>
       <artifactId>user-admin-portal-plugin</artifactId>
       <version>1.0</version>
     </dependency>

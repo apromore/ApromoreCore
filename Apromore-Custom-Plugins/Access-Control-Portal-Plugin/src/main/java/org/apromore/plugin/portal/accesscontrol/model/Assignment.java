@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.portal.access;
+package org.apromore.plugin.portal.accesscontrol.model;
 
 import org.apromore.dao.model.Group.Type;
 import org.apromore.util.AccessType;
@@ -42,7 +42,7 @@ public class Assignment {
         this.rowGuid = rowGuid;
         this.type = type;
         this.access = access;
-        this.isGroup = type == Type.GROUP || type == Type.PUBLIC;
+        this.isGroup = type == Type.GROUP;
     }
 
     public String getName() {

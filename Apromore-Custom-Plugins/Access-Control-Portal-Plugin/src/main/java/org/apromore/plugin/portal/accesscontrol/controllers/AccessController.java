@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.portal.access.controllers;
+package org.apromore.plugin.portal.accesscontrol.controllers;
 
 import com.google.common.base.Strings;
 import org.apromore.dao.model.Group;
@@ -29,9 +29,9 @@ import org.apromore.dao.model.UsermetadataType;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.access.Artifact;
-import org.apromore.portal.access.Assignee;
-import org.apromore.portal.access.Assignment;
+import org.apromore.plugin.portal.accesscontrol.model.Artifact;
+import org.apromore.plugin.portal.accesscontrol.model.Assignee;
+import org.apromore.plugin.portal.accesscontrol.model.Assignment;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.model.*;
@@ -44,7 +44,6 @@ import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.EventListener;
@@ -85,7 +84,6 @@ public class AccessController extends SelectorComposer<Div> {
     private UserType currentUser = (UserType) argMap.get("currentUser");
     Boolean autoInherit = (Boolean) argMap.get("autoInherit");
     Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
-    Boolean enablePublish = (Boolean) argMap.get("enablePublish");
     private String userName;
 
     private Integer selectedItemId;
@@ -162,7 +160,6 @@ public class AccessController extends SelectorComposer<Div> {
         currentUser = (UserType) argMap.get("currentUser");
         autoInherit = (Boolean) argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
-        enablePublish = (Boolean) argMap.get("enablePublish");
     }
 
     private void checkShowRelatedArtifacts() {
@@ -295,11 +292,7 @@ public class AccessController extends SelectorComposer<Div> {
 
         for (Group group : groups) {
             String groupName = group.getName();
-            Type type = group.getType();
-            if (type.equals(Type.PUBLIC) && !enablePublish) {
-                continue;
-            }
-            candidates.add(new Assignee(groupName, group.getRowGuid(), type));
+            candidates.add(new Assignee(groupName, group.getRowGuid(), group.getType()));
         }
         candidateAssigneeModel = new ListModelList<>(candidates, false);
         candidateAssigneeModel.setMultiple(false);
@@ -322,7 +315,7 @@ public class AccessController extends SelectorComposer<Div> {
             Group group = entry.getKey();
             AccessType accessType = entry.getValue();
             String rowGuid = group.getRowGuid();
-            Assignment assignment = new Assignment(group.getName(), rowGuid, group.getType(), accessType.getLabel());
+            Assignment assignment = new Assignment(group.getName(), rowGuid, Type.USER, accessType.getLabel());
             assignments.add(assignment);
             assignmentMap.put(rowGuid, assignment);
             if (accessType == AccessType.OWNER) {

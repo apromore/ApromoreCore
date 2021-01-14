@@ -27,12 +27,20 @@ import org.apromore.plugin.ParameterAwarePlugin;
 
 import java.awt.image.RenderedImage;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Locale;
 
 /**
  * Plug-in interface for a Portal functionality (i.e., one command) that will appear somewhere in the portal. For example, in the main menu.
  */
 public interface PortalPlugin extends ParameterAwarePlugin {
+
+    /**
+     * ID of the plug-in.
+     *
+     * @return
+     */
+    String getID();
 
     /**
      * Label of the plug-in.
@@ -68,6 +76,9 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      */
     String getGroupLabel(Locale locale);
 
+    void setSimpleParams(Map params);
+    Map getSimpleParams();
+
     /**
      * Access a resource provided by the plugin.
      *
@@ -95,9 +106,10 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      * <dt>AVAILABLE</dt>   <dd>The function can be used, and should have an enabled menu item.</dd>
      * <dt>DISABLED</dt>    <dd>The function can't currently be used, but user action might make it available.  It should have a disabled menu item.</dd>
      * <dt>UNAVAILABLE</dt> <dd>The function can't be used.  It should not have a menu item.</dd>
+     * <dt>HIDDEN</dt>      <dd>The function can be used, but hidden from the menu</dd>
      * </dl>
      */
     enum Availability {
-        AVAILABLE, DISABLED, UNAVAILABLE
+        AVAILABLE, DISABLED, UNAVAILABLE, HIDDEN
     }
 }

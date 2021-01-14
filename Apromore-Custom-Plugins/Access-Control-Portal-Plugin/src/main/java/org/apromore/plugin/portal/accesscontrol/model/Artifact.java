@@ -20,30 +20,46 @@
  * #L%
  */
 
-package org.apromore.portal.access;
+package org.apromore.plugin.portal.accesscontrol.model;
 
-import org.apromore.dao.model.Group.Type;
+import org.apromore.dao.model.UsermetadataType;
 
-public class Assignee {
+public class Artifact {
+
     private String name;
-    private String rowGuid;
-    private Type type; // Type.USER or Type.GROUP
+    private Integer id;
+    private String type;
+    private String updatedTime;
 
-    public Assignee(String name, String rowGuid, Type type) {
+    public Artifact(Integer id, String name, String updatedTime, UsermetadataType usermetadataType) {
         this.name = name;
-        this.rowGuid = rowGuid;
-        this.type = type;
+        this.id = id;
+        this.updatedTime = updatedTime;
+        this.type = usermetadataType.getType();
     }
 
     public String getName() {
         return name;
     }
 
-    public String getRowGuid() {
-        return rowGuid;
+    public Integer getId() {
+        return id;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
+    }
+
+    public String getUpdatedTime() {
+        return updatedTime;
+    }
+
+    @Override
+    public int hashCode() { return id == null ? 0 : id.hashCode(); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !Artifact.class.equals(obj.getClass())) { return false; }
+        return (obj != null) && (obj instanceof Artifact) && id.equals(((Artifact) obj).id);
     }
 }
