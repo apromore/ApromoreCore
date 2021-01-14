@@ -22,25 +22,6 @@ This document is relevant to both editions, but if you have checked out this Cor
   Note that version 8.0 is currently not supported.
 
 
-## Common problems
-
-> Out of memory while building.
-* Either invoke `mvn` as `mvn -Xmx1G -XX:MaxPermSize=256m` or set the system property `MAVEN_OPTS` to `-Xmx1G -XX:MaxPermSize=256m`
-
-> Server fails to start.
-* If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
-* If you already run another server (e.g. OS X Server) you may need to change the port number in `Supplements/Virgo/tomcat-server.xml`.
-
-> Login screen appears, but "admin" / "password" doesn't work.
-* You may need to run `ant create-h2` to populate the H2 database.
-
-> Can't view models by clicking them in the summary list.
-* Model diagrams are opened in new tabs/windows; you may need to disable popup blocking for Apromore in your browser settings.
-
-> Where is the server log?
-* `Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log`
-
-
 ## Configuration
 The following configuration options apply to all editions of Apromore.
 When there are additional configuration specific to a particular edition, they are documented in that edition's own README file.
@@ -110,6 +91,31 @@ The default in a deployed server is that the `ehcache.xml` configuration file is
 The manager.ehcache.config.url property in site.properties can be used to point to an `ehcache.xml` at a URL of your choice.
 
 
+### Backup and restore
+Apromore stores its data objects in two places:
+* Database: all data, except the event logs
+* Event logs which are by default located in the top-level `Event-Logs-Repository` directory
+
+As such, both need to be backed up and restored.
+* To backup h2 database, it is enough to copy across the `Manager-Repository.h2.db` file
+* To backup MySQL database, the following command may be used  (If prompted for password, enter the password of the ‘apromore’ user i.e ‘MAcri’):
+```bash
+mysqldump -u apromore -p apromore > backup.sql
+```
+
+To backup only one table (rather than the whole database), the following command may be used:
+```bash
+mysqldump -u root -p apromore tablename > tablename.sql
+```
+
+To restore, use
+```bash
+mysql --max_allowed_packet=1G --user=root -p -h localhost apromore < backup.sql
+```
+
+* For the event logs directory, it is recommended to zip the directory before copying it across
+
+
 ### LDAP setup
 
 As distributed, Apromore maintains its own catalogue of users and passwords.
@@ -156,3 +162,31 @@ It can be configured to instead allow login based on an external LDAP directory.
   - `virgo-tomcat-server-3.6.4.RELEASE/configuration/login.conf`
 
 When the server starts with the reconfigured portal, it will automatically create new accounts for valid LDAP logins.
+
+
+## Change Port Number (optional)
+* Change line#12 in the `site.properties` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr` directory.
+* Change line#14 in the `tomcat-server.xml` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/configuration` directory.
+
+### Share file to all users (optional)
+
+* By default Apromore does not allow you to share a file with all users (i.e. the "public" group is not supported by default). You can change this by editing the site.properties file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr/` directory. Specifically, to enable the option to share files and folders with the “public” group, you should set `security.publish.enable = true` in the site.properties file.
+
+
+## Common problems
+
+> Out of memory while building.
+* Either invoke `mvn` as `mvn -Xmx1G -XX:MaxPermSize=256m` or set the system property `MAVEN_OPTS` to `-Xmx1G -XX:MaxPermSize=256m`
+
+> Server fails to start.
+* If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
+* If you already run another server (e.g. OS X Server) you may need to change the port number in `Supplements/Virgo/tomcat-server.xml`.
+
+> Login screen appears, but "admin" / "password" doesn't work.
+* You may need to run `ant create-h2` to populate the H2 database.
+
+> Can't view models by clicking them in the summary list.
+* Model diagrams are opened in new tabs/windows; you may need to disable popup blocking for Apromore in your browser settings.
+
+> Where is the server log?
+* `Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log`
