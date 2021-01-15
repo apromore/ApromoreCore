@@ -32,6 +32,7 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -1007,6 +1008,11 @@ public class APMLogImpl implements Serializable, APMLog {
     @Override
     public void setActivityNameBiMap(HashBiMap<String, Integer> activityNameBiMap) {
 
+    }
+
+    @Override
+    public DoubleArrayList getCaseDurations() {
+        return null;
     }
 
 

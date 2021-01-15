@@ -25,6 +25,7 @@ import org.apromore.apmlog.immutable.ImmutableActivity;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -145,4 +146,6 @@ public interface APMLog {
     HashBiMap<String, Integer> getActivityNameBiMap();
 
     void setActivityNameBiMap(HashBiMap<String, Integer> activityNameBiMap);
+
+    DoubleArrayList getCaseDurations();
 }
