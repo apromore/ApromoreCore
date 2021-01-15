@@ -18,7 +18,7 @@ This document is relevant to both editions, but if you have checked out this Cor
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer
 * [Apache Ant](https://ant.apache.org/bindownload.cgi) 1.10.1 or newer
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
-* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.6 or 5.7.
+* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.7.
   Note that version 8.0 is currently not supported.
 
 
@@ -100,12 +100,12 @@ As such, both need to be backed up and restored.
 * To backup h2 database, it is enough to copy across the `Manager-Repository.h2.db` file
 * To backup MySQL database, the following command may be used  (If prompted for password, enter the password of the ‘apromore’ user i.e ‘MAcri’):
 ```bash
-mysqldump -u apromore -p apromore > backup.sql
+mysqldump -u root -p apromore > backup.sql
 ```
 
 To backup only one table (rather than the whole database), the following command may be used:
 ```bash
-mysqldump -u root -p apromore tablename > tablename.sql
+mysqldump -u -p apromore tablename > tablename.sql
 ```
 
 To restore, use
@@ -165,8 +165,15 @@ When the server starts with the reconfigured portal, it will automatically creat
 
 
 ## Change Port Number (optional)
-* Change line#12 in the `site.properties` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr` directory.
-* Change line#14 in the `tomcat-server.xml` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/configuration` directory.
+* Change the default port number by changing the value of `site.port` variable in the `site.properties` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr` directory. 
+* Change the default port number by changing the value of the port as shown below in the `tomcat-server.xml` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/configuration` directory.
+
+```
+    <Connector port="80" protocol="HTTP/1.1"
+               URIEncoding="UTF-8"
+               connectionTimeout="20000"
+               redirectPort="8443" maxHttpHeaderSize="10000" maxPostSize="67589953"/>
+```
 
 ### Share file to all users (optional)
 
