@@ -193,6 +193,11 @@ public class LaLog implements APMLog {
     }
 
     @Override
+    public DoubleArrayList getCaseDurations() {
+        return caseDurationList;
+    }
+
+    @Override
     public DefaultChartDataCollection getDefaultChartDataCollection() {
         return defaultChartDataCollection;
     }

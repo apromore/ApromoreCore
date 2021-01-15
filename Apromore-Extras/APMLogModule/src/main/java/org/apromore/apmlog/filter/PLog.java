@@ -861,6 +861,11 @@ public class PLog implements APMLog{
         this.activityNameBiMap = activityNameBiMap;
     }
 
+    @Override
+    public DoubleArrayList getCaseDurations() {
+        return caseDurationList;
+    }
+
 
     @Override
     public UnifiedMap<Integer, Integer> getVariantIdFreqMap() {
