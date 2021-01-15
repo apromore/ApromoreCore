@@ -60,6 +60,7 @@ public class SecuritySetupController extends BaseController {
         arg.put("currentUser", currentUser);
         arg.put("autoInherit", true);
         arg.put("showRelatedArtifacts", true);
+        arg.put("enablePublish", config.getEnablePublish());
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, arg);
             // FolderType currentFolder = UserSessionManager.getCurrentFolder();

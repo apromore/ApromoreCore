@@ -543,6 +543,7 @@ public abstract class BaseListboxController extends BaseController {
 				arg.put("currentUser", UserSessionManager.getCurrentUser());
 				arg.put("autoInherit", true);
 				arg.put("showRelatedArtifacts", true);
+				arg.put("enablePublish", config.getEnablePublish());
 				Window window = (Window) Executions.getCurrent().createComponents("components/access/share.zul", null, arg);
 				window.doModal();
 			} else {

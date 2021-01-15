@@ -48,6 +48,7 @@
                            currentUser="${arg.currentUser}"
                            selectedItem="${arg.selectedItem}"
                            autoInherit="${arg.autoInherit}"
+                           enablePublish="${arg.enablePublish}"
                            showRelatedArtifacts="${arg.showRelatedArtifacts}"
             />
         </center>
