@@ -85,6 +85,7 @@ public class AccessController extends SelectorComposer<Div> {
     private UserType currentUser = (UserType) argMap.get("currentUser");
     Boolean autoInherit = (Boolean) argMap.get("autoInherit");
     Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+    Boolean enablePublish = (Boolean) argMap.get("enablePublish");
     private String userName;
 
     private Integer selectedItemId;
@@ -161,6 +162,7 @@ public class AccessController extends SelectorComposer<Div> {
         currentUser = (UserType) argMap.get("currentUser");
         autoInherit = (Boolean) argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+        enablePublish = (Boolean) argMap.get("enablePublish");
     }
 
     private void checkShowRelatedArtifacts() {
@@ -293,7 +295,11 @@ public class AccessController extends SelectorComposer<Div> {
 
         for (Group group : groups) {
             String groupName = group.getName();
-            candidates.add(new Assignee(groupName, group.getRowGuid(), group.getType()));
+            Type type = group.getType();
+            if (type.equals(Type.PUBLIC) && !enablePublish) {
+                continue;
+            }
+            candidates.add(new Assignee(groupName, group.getRowGuid(), type));
         }
         candidateAssigneeModel = new ListModelList<>(candidates, false);
         candidateAssigneeModel.setMultiple(false);
