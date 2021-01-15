@@ -74,8 +74,6 @@ public class LogFactory {
 
                 if (!markedIndexes.contains(j)) {
 
-                    UnifiedMap<String, String> activityAttributes = getAttributes(xTrace.get(j));
-
                     ImmutableActivity activity = getActivity(actSize, trace, xTrace, j, markedIndexes);
 
                     trace.addActivity(activity);
@@ -233,6 +231,8 @@ public class LogFactory {
 
         boolean foundStart = baseLife.equals("start");
 
+        XEvent startEvent = baseEvent;
+
         if (proceed) {
 
             for (int i = fromIndex + 1; i < xTrace.size(); i++) {
@@ -248,6 +248,7 @@ public class LogFactory {
 
                         if (lifecycle.equals("start")) {
                             startTime = nT;
+                            startEvent = nEvent;
                         }
 
                         if (lifecycle.equals("complete") ||
@@ -276,7 +277,7 @@ public class LogFactory {
 
         markedIndexes.addAll(eventIndexList);
 
-        UnifiedMap<String, String> attributes = getAttributes(baseEvent);
+        UnifiedMap<String, String> attributes = getAttributes(startEvent);
 
         ImmutableActivity activity =
                 new ImmutableActivity(index, index, trace, eventIndexList, startTime, endTime, attributes);
