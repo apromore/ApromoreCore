@@ -3,6 +3,7 @@ package org.apromore.core_features_itest;
 import org.apache.karaf.itests.KarafTestSupport;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -21,7 +22,7 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
      * Installs core-features repository and server configuration files.
      */
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         String source = executeCommand("shell:source ../../test-classes/setup.karaf");
         Assert.assertEquals(
             "Adding feature url mvn:org.apromore/core-features/7.20-SNAPSHOT/xml\n" +
@@ -63,11 +64,25 @@ public class CoreFeaturesIntgTest extends KarafTestSupport {
      * Since only the ZK presentation layer starts and not the REST endpoint, there should only be
      * one web application deployed.
      */
+    @Ignore("Disabled until integration testing switches from Maven's surefire plugin to the failsafe plugin")
     @Test
     public void apromorePortal() throws Exception {
 
+        installAndAssertFeature("zk-frameworkaround");
+        installAndAssertFeature("zk-framework");
         installAndAssertFeature("apromore-portal");
         assertDeployedWebApplicationCount(1);
+    }
+
+    @Test
+    public void virgoCompatibility() throws Exception {
+        installAndAssertFeature("virgo-compatibility");
+    }
+
+    @Test
+    public void zkFramework() throws Exception {
+        installAndAssertFeature("zk-frameworkaround");
+        installAndAssertFeature("zk-framework");
     }
 
 

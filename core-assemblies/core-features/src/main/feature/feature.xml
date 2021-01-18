@@ -72,6 +72,7 @@
   </feature>
 
   <feature name="apromore-core" version="${project.version}" description="Apromore core edition">
+    <feature>zk-framework</feature>
     <feature>apromore-common</feature>
     <feature>apromore-csv-importer</feature>
   </feature>
@@ -145,7 +146,7 @@
     <feature>apromore-manager</feature>
     <feature>jms</feature>
     <feature>war</feature>
-    <feature>zk-framework</feature>
+    <requirement>osgi.wiring.package; filter:="(&amp;(osgi.wiring.package=org.zkoss.zul)(version>=8.6.0)(!(version>=10.0.0)))"</requirement>
     <bundle>mvn:com.google.guava/guava/20.0</bundle>
     <bundle>mvn:javax.validation/com.springsource.javax.validation/1.0.0.GA</bundle>
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/2.9.0</bundle>
@@ -247,6 +248,15 @@
     <bundle>mvn:javax.websocket/javax.websocket-api/1.1</bundle>
     <bundle>mvn:org.javassist/javassist/3.26.0-GA</bundle>
     <bundle>mvn:org.apromore/zk-osgi/8.6.0.1</bundle>
+  </feature>
+
+  <!-- The following feature needs to be installed before zk-framework can start correctly on a stock Karaf
+       server (rather than one of the custom assembies. -->
+  <feature name="zk-frameworkaround" version="${project.version}" description="ZK framework workaround">
+    <feature>virgo-compatibility</feature>
+    <bundle>mvn:javax.el/javax.el-api/3.0.0</bundle>
+    <bundle>mvn:org.eclipse.persistence/javax.persistence/2.2.0</bundle>
+    <bundle>mvn:javax.validation/com.springsource.javax.validation/1.0.0.GA</bundle>
   </feature>
 
 </features>
