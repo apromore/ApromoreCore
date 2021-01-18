@@ -2,12 +2,10 @@
 
 # Apromore Core
 
-This repository contains source code of [Apromore](https://apromore.org) Core.  This is not a standalone repository; it is a submodule containing components common to the two Apromore editions:
+This repository contains source code of the [Apromore](https://apromore.org) Core process analytics web application server.  It can be built and run on its own, or used as a submodule containing components common to the two other Apromore editions:
 
 * [Apromore Community Edition](https://github.com/apromore/ApromoreCE), which is open source.
 * [Apromore Enterprise Edition](https://github.com/apromore/ApromoreEE), which is proprietary.
-
-This document is relevant to both editions, but if you have checked out this Core repository on its own, you are in the wrong place and should instead first check out one of the two editions listed above.
 
 
 ## System requirements
@@ -15,16 +13,29 @@ This document is relevant to both editions, but if you have checked out this Cor
 * Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or
   ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. For Ubuntu, it can be installed as `sudo apt install openjdk-8-jdk`
   Note that newer versions, including Java SE 11, are currently not supported
-* [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer
+* [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer, and internet access for it to download this project's dependencies.
 * [Apache Ant](https://ant.apache.org/bindownload.cgi) 1.10.1 or newer
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
 * (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.7.
   Note that version 8.0 is currently not supported.
 
 
+## Build and Run
+The server can be built and started as follows:
+
+* Execute `mvn clean install` to compile the source code into executable bundles.
+* Execute `ant start-virgo` to assemble the executable bundles into a server and start it running.
+* Browse [(http://localhost:9000/](http://localhost:9000/)
+* Stop the server using Ctrl-C.
+
+The default configuration uses an embedded H2 flat file database.
+It has one user account: "admin", which can be logged in with password "password".
+Once logged in, a user can change their password via `Account -> Change password` menu.
+
+
 ## Configuration
 The following configuration options apply to all editions of Apromore.
-When there are additional configuration specific to a particular edition, they are documented in that edition's own README file.
+When there are additional configurations specific to a particular edition, they are documented in that edition's own README file.
 
 Almost all configuration occurs in the `site.properties` file which is located in the `ApromoreCore` directory.
 The default version of this file from a fresh git checkout contains reasonable defaults that allow the server to be started without manual configuration.
@@ -32,11 +43,11 @@ The default version of this file from a fresh git checkout contains reasonable d
 
 ### MySQL setup
 The H2 flat file database is the default only because it allows casual evaluation without requiring any configuration.
-For earnest use or development, Apromore should be configured to use MySQL instead..
+For earnest use or development, Apromore should be configured to use MySQL instead.
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
-* Create a database named 'apromore' in your MySQL server. Also create 2 user accounts which uses the apromore application.
+* Create a database named 'apromore' in your MySQL server. Also create 2 user accounts which use the apromore application.
 * You will be prompted to enter the root password of MySQL
 
 ```bash
@@ -51,12 +62,9 @@ GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
 	
 ```
 
-* On Application startup, the database will have all the relevant information. 
-* Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.
-* All passwords are 'password'by default. Once logged in, a user can change their password via `Account -> Change password` menu.
-
 * Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
 * Stop and restart the server so that it picks up the changes to `site.properties`.
+* Identically to the default H2 database, the initial MySQL database will have one user: "admin".
 
 
 ### Heap size
@@ -97,8 +105,8 @@ Apromore stores its data objects in two places:
 * Event logs which are by default located in the top-level `Event-Logs-Repository` directory
 
 As such, both need to be backed up and restored.
-* To backup h2 database, it is enough to copy across the `Manager-Repository.h2.db` file
-* To backup MySQL database, the following command may be used  (If prompted for password, enter the password of the ‘apromore’ user i.e ‘MAcri’):
+* To backup a H2 database, it is enough to copy across the `Manager-Repository.h2.db` file
+* To backup a MySQL database, the following command may be used  (If prompted for password, enter the password of the ‘apromore’ user i.e ‘MAcri’):
 ```bash
 mysqldump -u root -p apromore > backup.sql
 ```
@@ -183,17 +191,22 @@ When the server starts with the reconfigured portal, it will automatically creat
 ## Common problems
 
 > Out of memory while building.
+
 * Either invoke `mvn` as `mvn -Xmx1G -XX:MaxPermSize=256m` or set the system property `MAVEN_OPTS` to `-Xmx1G -XX:MaxPermSize=256m`
 
 > Server fails to start.
-* If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
+
+* If Apromore is configured to use MySQL, confirm that the database server is running.
 * If you already run another server (e.g. OS X Server) you may need to change the port number in `Supplements/Virgo/tomcat-server.xml`.
 
-> Login screen appears, but "admin" / "password" doesn't work.
-* You may need to run `ant create-h2` to populate the H2 database.
+> Web pages are illegible.
+
+* Double-check that `lessc` is correctly installed.  Confirm that `mvn clean install -pl :ui-theme-compact` reports no errors.
 
 > Can't view models by clicking them in the summary list.
+
 * Model diagrams are opened in new tabs/windows; you may need to disable popup blocking for Apromore in your browser settings.
 
 > Where is the server log?
+
 * `Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log`
