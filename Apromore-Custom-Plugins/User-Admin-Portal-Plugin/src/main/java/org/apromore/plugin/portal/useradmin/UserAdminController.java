@@ -259,7 +259,6 @@ public class UserAdminController extends SelectorComposer<Window> {
         mainWindow = win;
         String userName = portalContext.getCurrentUser().getUsername();
         currentUser = securityService.getUserByName(userName);
-        selectedUser = currentUser;
 
         canViewUsers = hasPermission(Permissions.VIEW_USERS);
         canEditUsers = hasPermission(Permissions.EDIT_USERS);
@@ -308,9 +307,7 @@ public class UserAdminController extends SelectorComposer<Window> {
 
         // Set default to nothing
         refreshUsers();
-        setSelectedUsers(null);
         refreshGroups();
-        setSelectedGroup(null);
 
         /**
          * Enable toggle selection in user Listbox on individual row
@@ -522,6 +519,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         groupModel = new ListModelList<>(securityService.findElectiveGroups(), false);
         groupList.setSourceListModel(groupModel);
         groupList.reset();
+        setSelectedGroup(null);
     }
 
     private void refreshAssignedRoles() {
@@ -839,7 +837,6 @@ public class UserAdminController extends SelectorComposer<Window> {
                                 onClickUserSaveButton();
                             } else {
                                 refreshUsers();
-                                setSelectedUsers(null);
                             }
                             if (select != null) {
                                 selectBulk(userList, select);
@@ -863,7 +860,6 @@ public class UserAdminController extends SelectorComposer<Window> {
             if (tab != null) {
                 tab.setSelected(true);
                 refreshGroups();
-                setSelectedGroup(null);
             }
         }
     }
@@ -1039,7 +1035,6 @@ public class UserAdminController extends SelectorComposer<Window> {
                             } else {
                                 isGroupDetailDirty = false;
                                 refreshGroups();
-                                setSelectedGroup(null);
                             }
                             if (select != null) {
                                 selectBulk(groupList, select);
@@ -1063,7 +1058,6 @@ public class UserAdminController extends SelectorComposer<Window> {
             if (tab != null) {
                 tab.setSelected(true);
                 refreshUsers();
-                setSelectedUsers(null);
             }
         }
     }
@@ -1238,7 +1232,6 @@ public class UserAdminController extends SelectorComposer<Window> {
         Notification.info("Details for group " + selectedGroup.getName() + " is updated");
         isGroupDetailDirty = false;
         refreshGroups();
-        setSelectedGroup(null);
     }
 
     @Listen("onClick = #userSelectAllBtn")
