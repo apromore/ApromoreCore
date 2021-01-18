@@ -7,9 +7,11 @@ This repository contains source code of the [Apromore](https://apromore.org) Cor
 * [Apromore Community Edition](https://github.com/apromore/ApromoreCE), which is open source.
 * [Apromore Enterprise Edition](https://github.com/apromore/ApromoreEE), which is proprietary.
 
+The instructions below are for the installation of Apromore Core from the source code. For convenience, we also make available a containerized image in [Docker](https://github.com/apromore/ApromoreDocker).
+If you are looking for the commercial edition (Apromore Enterprise Edition), check the [Apromore web site](https://apromore.org/)
 
 ## System requirements
-* Windows 7 or newer or Mac OSX 10.8 or newer (other users - check out our [Docker-based version](https://github.com/apromore/ApromoreDocker))
+* Linux Ubuntu 18.04 (We do not support newer versions as it may lead to dependency issues), Windows 10/WS2016/WS2019, Mac OSX 10.8 or newer.
 * Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or
   ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. For Ubuntu, it can be installed as `sudo apt install openjdk-8-jdk`
   Note that newer versions, including Java SE 11, are currently not supported
@@ -17,20 +19,17 @@ This repository contains source code of the [Apromore](https://apromore.org) Cor
 * [Apache Ant](https://ant.apache.org/bindownload.cgi) 1.10.1 or newer
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
 * (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.7.
-  Note that version 8.0 is currently not supported.
+* <b>Note:</b> These instructions are tested with Linux Ubuntu 18.04. In Linux Ubuntu 20.04 there may be some dependency management issues. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and Max OS 10.8 or newer. 
 
+## Installation Instructions
 
-## Build and Run
-The server can be built and started as follows:
-
+* Check out the source code using git: `git clone https://github.com/apromore/ApromoreCore.git`
+* Check out the branch: `git checkout release/v7.19`
+* Switch to the ApromoreCore directory: ` cd ApromoreCore`
 * Execute `mvn clean install` to compile the source code into executable bundles.
-* Execute `ant start-virgo` to assemble the executable bundles into a server and start it running.
-* Browse [(http://localhost:9000/](http://localhost:9000/)
-* Stop the server using Ctrl-C.
-
-The default configuration uses an embedded H2 flat file database.
-It has one user account: "admin", which can be logged in with password "password".
-Once logged in, a user can change their password via `Account -> Change password` menu.
+* Execute `ant start-virgo` to install, configure and start the server. Only do this once. Later, you can start the server by executing the `./startup.sh -clean` command in the `/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/bin` directory. <b>Note:</b> If you deploy to port 80 (or another port below 1024), you will need to run the previous command as sudo. 
+* Browse [(http://localhost:9000/)](http://localhost:9000/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
+* Keep the prompt/terminal window open. Ctrl-C on the window will shut the server down.
 
 
 ## Configuration
@@ -38,16 +37,16 @@ The following configuration options apply to all editions of Apromore.
 When there are additional configurations specific to a particular edition, they are documented in that edition's own README file.
 
 Almost all configuration occurs in the `site.properties` file which is located in the `ApromoreCore` directory.
-The default version of this file from a fresh git checkout contains reasonable defaults that allow the server to be started without manual configuration.
+The default version of this file from a fresh git checkout contains reasonable defaults that allow the server to be started without any manual configuration.
 
 
 ### MySQL setup
-The H2 flat file database is the default only because it allows casual evaluation without requiring any configuration.
+By default, Apromore Core uses H2 database because it allows casual evaluation without requiring any configuration.
 For earnest use or development, Apromore should be configured to use MySQL instead.
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
-* Create a database named 'apromore' in your MySQL server. Also create 2 user accounts which use the apromore application.
+* Create a database named 'apromore' in your MySQL server. Also create 2 user accounts which use the Apromore application.
 * You will be prompted to enter the root password of MySQL
 
 ```bash
@@ -173,8 +172,8 @@ When the server starts with the reconfigured portal, it will automatically creat
 
 
 ## Change Port Number (optional)
-* Change the default port number by changing the value of `site.port` variable in the `site.properties` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr` directory. 
-* Change the default port number by changing the value of the port as shown below in the `tomcat-server.xml` file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/configuration` directory.
+* Change the default port number by changing the value of `site.port` variable in the `site.properties` file present in the `/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr` directory. 
+* Change the default port number by changing the value of the port as shown below in the `tomcat-server.xml` file present in the `/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/configuration` directory.
 
 ```
     <Connector port="80" protocol="HTTP/1.1"
@@ -185,7 +184,7 @@ When the server starts with the reconfigured portal, it will automatically creat
 
 ### Share file to all users (optional)
 
-* By default Apromore does not allow you to share a file with all users (i.e. the "public" group is not supported by default). You can change this by editing the site.properties file present in the `/ApromoreEE/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr/` directory. Specifically, to enable the option to share files and folders with the “public” group, you should set `security.publish.enable = true` in the site.properties file.
+* By default Apromore does not allow you to share a file with all users (i.e. the "public" group is not supported by default). You can change this by editing the site.properties file present in the `/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr/` directory. Specifically, to enable the option to share files and folders with the “public” group, you should set `security.publish.enable = true` in the site.properties file.
 
 
 ## Common problems
@@ -197,7 +196,7 @@ When the server starts with the reconfigured portal, it will automatically creat
 > Server fails to start.
 
 * If Apromore is configured to use MySQL, confirm that the database server is running.
-* If you already run another server (e.g. OS X Server) you may need to change the port number in `Supplements/Virgo/tomcat-server.xml`.
+* If you already run another server (e.g. OS X Server) you may need to change the port number in `/ApromoreCore/Supplements/Virgo/tomcat-server.xml`.
 
 > Web pages are illegible.
 
@@ -209,4 +208,4 @@ When the server starts with the reconfigured portal, it will automatically creat
 
 > Where is the server log?
 
-* `Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log`
+* `/ApromoreCore/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log`
