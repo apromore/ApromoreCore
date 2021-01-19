@@ -62,7 +62,7 @@
 		<module>Apromore-Core-Components/Apromore-Portal</module>
 		<module>Apromore-Core-Components/Apromore-Manager</module>
 		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
-		<module>Apromore-Core-Components/Apromore-Storage</module>
+		<module>Apromore-Core-Components/apromore-storage</module>
 
 		<module>Apromore-Cache</module>
 		<module>Apromore-Database</module>
