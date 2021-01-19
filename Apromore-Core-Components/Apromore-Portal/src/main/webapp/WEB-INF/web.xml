@@ -105,7 +105,7 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
--->
+
   <servlet>
     <servlet-name>newUserRegistration</servlet-name>
     <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
@@ -115,7 +115,7 @@
     <servlet-name>resetPassword</servlet-name>
     <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
   </servlet>
-  
+--> 
   <servlet>
     <servlet-name>portalPluginResource</servlet-name>
     <servlet-class>org.apromore.portal.servlet.PortalPluginResourceServlet</servlet-class>
@@ -160,7 +160,7 @@
     <servlet-name>ws</servlet-name>
     <url-pattern>*.xsd</url-pattern>
   </servlet-mapping>
--->
+
   <servlet-mapping>
     <servlet-name>newUserRegistration</servlet-name>
     <url-pattern>/register/newUserRegister/*</url-pattern>
@@ -170,7 +170,7 @@
     <servlet-name>resetPassword</servlet-name>
     <url-pattern>/register/resetPassword/*</url-pattern>
   </servlet-mapping>
-  
+ --> 
   <servlet-mapping>
     <servlet-name>portalPluginResource</servlet-name>
     <url-pattern>/portalPluginResource/*</url-pattern>
