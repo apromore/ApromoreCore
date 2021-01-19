@@ -24,22 +24,18 @@
 
 package org.apromore.service;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+
 import org.apromore.apmlog.APMLog;
-import org.apromore.cache.exception.*;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.User;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
-import org.apromore.util.StatType;
-import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.model.XLog;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -107,4 +103,7 @@ public interface EventLogService {
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
     APMLog getAggregatedLog(Integer logId);
+
+    Log importLog(String username, Integer folderId, String logName, XLog log, String extension, String domain,
+	    String created, boolean publicModel) throws Exception;
 }
