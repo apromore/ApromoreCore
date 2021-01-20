@@ -34,6 +34,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -79,6 +80,7 @@ import org.zkoss.zul.Window;
 public class ImportController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportController.class);
+    private static final String UTF8_CHARSET = StandardCharsets.UTF_8.toString();
 
     private MainController mainC;
     private Window importWindow;
@@ -291,7 +293,7 @@ public class ImportController extends BaseController {
                     READ_TIMEOUT);
             InputStream targetStream = new FileInputStream(testData);
 
-	    media = new MediaImpl(testData.getName(), targetStream, Charset.forName("UTF-8"),
+	    media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
 		    ItemNameUtils.findExtension(filename));
             this.fileUrl.setValue(fileUrl);
 
@@ -441,7 +443,7 @@ public class ImportController extends BaseController {
             ZipEntry entry;
             while ((entry = in.getNextEntry()) != null) {
                 try { 
-		    importFile(new MediaImpl(entry.getName(), zippedMedia.getStreamData(), Charset.forName("UTF-8"),
+		    importFile(new MediaImpl(entry.getName(), zippedMedia.getStreamData(), StandardCharsets.UTF_8,
 			    ItemNameUtils.findExtension(zippedMedia.getName())));
 		    break;
 
