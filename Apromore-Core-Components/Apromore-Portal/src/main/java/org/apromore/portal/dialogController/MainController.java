@@ -39,12 +39,11 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -71,12 +70,10 @@ import org.apromore.portal.model.NativeTypesType;
 import org.apromore.portal.model.PluginMessage;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -129,11 +126,11 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
-    private PluginExecutionManager pluginManager = new PluginExecutionManager();
-	
-	public static MainController getController() {
-        return controller;
-    }
+//    private PluginExecutionManager pluginManager = new PluginExecutionManager();
+//	
+//	public static MainController getController() {
+//        return controller;
+//    }
 
     public MainController() {
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -151,9 +148,9 @@ public class MainController extends BaseController implements MainControllerInte
         return portalSession;
     }
     
-    public PluginExecutionManager getPluginExecutionManager() {
-        return this.pluginManager;
-    }
+//    public PluginExecutionManager getPluginExecutionManager() {
+//        return this.pluginManager;
+//    }
 
     /**
      * onCreate is executed after the main window has been created it is

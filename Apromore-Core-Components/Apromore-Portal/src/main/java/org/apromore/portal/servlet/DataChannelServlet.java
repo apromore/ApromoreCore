@@ -24,33 +24,32 @@ package org.apromore.portal.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.plugincontrol.PluginExecution;
+import org.apromore.portal.plugincontrol.PluginExecutionException;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.http.WebManager;
 
 /**
- * This servlet is used to establish a communication channel for the browsers to send data request
- * to a particular running plugin, and then the plugin can respond with data.
- * This servlet will connect with the current Portal Web App to identify what is the target plugin 
- * for the data request, and then forward the request to that plugin. 
- * @todo Call MainController as class variable will create unexpected result from different machines.
- * 
+ * This servlet is a supplement to ZK in order to establish a data communication channel: a plugin front-end (browser) 
+ * sends data request to a plugin instance and then the plugin instance sends data back to the front-end.
+ * ZK's DHtmlLayoutServlet and DHtmlUpdateServlet don't support this kind of communication or it is awkward to do that
+ * as some plugin javascript code could reside outside the ZK's front-end engine (e.g. Web Worker).
+ *   
  * @author Bruce Nguyen
  *
  */
 public class DataChannelServlet extends HttpServlet {
-    //private WebManager webManager;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        //final ServletContext ctx = getServletContext();
-        //webManager = WebManager.getWebManagerIfAny(ctx);
     }
 
     @Override
@@ -60,15 +59,25 @@ public class DataChannelServlet extends HttpServlet {
 
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        //ApromoreWebApp webApp = (ApromoreWebApp)webManager.getWebApp();
         String executionId = req.getParameter("pluginExecutionId");
-        PluginExecutionManager pluginEM = MainController.getController().getPluginExecutionManager(); 
-        PluginExecution pluginExec = pluginEM.getPluginExecution(executionId);
-        if (pluginExec == null) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "No PluginExecution found from pluginExecutionId=" + executionId);
-        }
-        else {
+        try {
+            PluginExecution pluginExec = PluginExecutionManager.getPluginExecution(executionId, getZKSession(req));
             pluginExec.processRequest(req, resp);
+        } catch (PluginExecutionException e) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
     }
+    
+    // This method connects from Web server request to ZK session
+    // It is expected that ZK's session was created before this servlet (via ZK's main servlet)
+    // Otherwise an exception must be raised.
+    private Session getZKSession(final HttpServletRequest req) throws PluginExecutionException {
+        ServletContext ctx = req.getServletContext();
+        Session sess = WebManager.getSession(ctx, req, false);
+        if (sess == null) {
+            throw new PluginExecutionException("User session doesn't exist, lost or destroyed.");
+        }
+        return sess;
+    }
+    
 }
