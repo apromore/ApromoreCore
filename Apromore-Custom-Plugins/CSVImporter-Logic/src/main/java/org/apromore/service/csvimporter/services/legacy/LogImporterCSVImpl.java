@@ -21,13 +21,35 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
-import com.opencsv.CSVReader;
+import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.inject.Inject;
+
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.dao.model.Log;
 import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.CSVFileReader;
-import org.apromore.service.csvimporter.model.*;
+import org.apromore.service.csvimporter.model.LogErrorReport;
+import org.apromore.service.csvimporter.model.LogErrorReportImpl;
+import org.apromore.service.csvimporter.model.LogEventModel;
+import org.apromore.service.csvimporter.model.LogEventModelExt;
+import org.apromore.service.csvimporter.model.LogMetaData;
+import org.apromore.service.csvimporter.model.LogModel;
+import org.apromore.service.csvimporter.model.LogModelImpl;
 import org.apromore.service.csvimporter.services.LogProcessor;
 import org.apromore.service.csvimporter.services.LogProcessorImpl;
 import org.apromore.service.csvimporter.utilities.XEventComparator;
@@ -37,18 +59,16 @@ import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.sql.Timestamp;
-import java.util.*;
-import javax.inject.Inject;
-
-import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
+import com.opencsv.CSVReader;
 
 @Service("csvLogImporter")
 public class LogImporterCSVImpl implements LogImporter, Constants {
@@ -109,7 +129,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
 
             LogEventModelExt logEventModelExt;
             Log log = null;
-
+	    List<String> headerList = Arrays.asList(header);
             while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
                 // new row, new event.
@@ -126,7 +146,8 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                 }
 
                 //Construct an event
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), logMetaData, lineIndex, logErrorReport);
+
+		logEventModelExt = logProcessor.processLog(Arrays.asList(line), headerList, logMetaData, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!logEventModelExt.isValid()) {
@@ -138,6 +159,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                 }
 
                 //Construct a Trace if it's not exists
+
                 if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModelExt.getCaseID())) {
                     XTrace xT = xFactory.createTrace();
                     concept.assignName(xT, logEventModelExt.getCaseID());
@@ -152,6 +174,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                     assignMyCaseAttributes(logEventModelExt.getCaseAttributes(), xT);
                     numOfValidEvents++;
                 }
+
             }
 
             //Sort and feed xLog

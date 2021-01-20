@@ -23,6 +23,21 @@
  */
 package org.apromore.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+
 import org.apromore.apmlog.APMLog;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -46,7 +61,12 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.in.*;
+import org.deckfour.xes.in.XMxmlGZIPParser;
+import org.deckfour.xes.in.XMxmlParser;
+import org.deckfour.xes.in.XParser;
+import org.deckfour.xes.in.XParserRegistry;
+import org.deckfour.xes.in.XesXmlGZIPParser;
+import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
@@ -56,12 +76,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import java.io.*;
-import java.util.*;
 
 //import javax.annotation.Resource;
 
@@ -196,38 +210,46 @@ public class EventLogServiceImpl implements EventLogService {
 
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
-        XLog xLog = importFromStream(factory, inputStreamLog, extension);
-        String path = tempCacheService.storeProcessLog(folderId, logName, xLog, user.getId(), domain, created);
-        Log log = new Log();
-        log.setFolder(folderRepo.findUniqueByID(folderId));
-        log.setDomain(domain);
-        log.setCreateDate(created);
-        log.setFilePath(path);
-        updateLogName(log, logName);
-        log.setRanking("");
-        log.setUser(user);
+	XLog xLog = importFromStream(factory, inputStreamLog, extension);
+	return importLog(username, folderId, logName, xLog, extension, domain, created, publicModel);
+    }
 
-        Set<GroupLog> groupLogs = log.getGroupLogs();
+    @Override
+    public Log importLog(String username, Integer folderId, String logName, XLog xLog, String extension, String domain,
+	    String created, boolean publicModel) throws Exception {
+	User user = userSrv.findUserByLogin(username);
 
-        // Add the user's personal group
-        groupLogs.add(new GroupLog(user.getGroup(), log, true, true, true));
+	String path = tempCacheService.storeProcessLog(folderId, logName, xLog, user.getId(), domain, created);
+	Log log = new Log();
+	log.setFolder(folderRepo.findUniqueByID(folderId));
+	log.setDomain(domain);
+	log.setCreateDate(created);
+	log.setFilePath(path);
+	updateLogName(log, logName);
+	log.setRanking("");
+	log.setUser(user);
 
-        // Add the public group
-        if (publicModel) {
-            Group publicGroup = groupRepo.findPublicGroup();
-            if (publicGroup == null) {
-                LOGGER.warn("No public group present in repository");
-            } else {
-                groupLogs.add(new GroupLog(publicGroup, log, true, true, false));
-            }
-        }
+	Set<GroupLog> groupLogs = log.getGroupLogs();
+
+	// Add the user's personal group
+	groupLogs.add(new GroupLog(user.getGroup(), log, true, true, true));
+
+	// Add the public group
+	if (publicModel) {
+	    Group publicGroup = groupRepo.findPublicGroup();
+	    if (publicGroup == null) {
+		LOGGER.warn("No public group present in repository");
+	    } else {
+		groupLogs.add(new GroupLog(publicGroup, log, true, true, false));
+	    }
+	}
 
 //        log.setGroupLogs(groupLogs);
 
-        // Perform the update
-        logRepo.saveAndFlush(log);
+	// Perform the update
+	logRepo.saveAndFlush(log);
 
-        return log;
+	return log;
     }
 
     @Override

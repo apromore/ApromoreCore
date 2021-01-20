@@ -21,18 +21,28 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import org.apromore.service.csvimporter.model.CaseAttributesDiscovery;
-import org.apromore.service.csvimporter.model.LogMetaData;
-import org.apromore.service.csvimporter.utilities.NameComparator;
+import static org.apromore.service.csvimporter.constants.Constants.possibleActivity;
+import static org.apromore.service.csvimporter.constants.Constants.possibleCaseId;
+import static org.apromore.service.csvimporter.constants.Constants.possibleEndTimestamp;
+import static org.apromore.service.csvimporter.constants.Constants.possibleOtherTimestamp;
+import static org.apromore.service.csvimporter.constants.Constants.possibleResource;
+import static org.apromore.service.csvimporter.constants.Constants.possibleStartTimestamp;
+import static org.apromore.service.csvimporter.constants.Constants.timestampPattern;
+import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
+import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.apromore.service.csvimporter.constants.Constants.*;
-import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
-import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
+import org.apromore.service.csvimporter.model.CaseAttributesDiscovery;
+import org.apromore.service.csvimporter.model.LogMetaData;
+import org.apromore.service.csvimporter.utilities.NameComparator;
 
 public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     private List<List<String>> lines;
@@ -61,17 +71,18 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         this.logMetaData.setResourcePos(-1);
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
-            if (this.logMetaData.getCaseIdPos() == -1 && match(possibleCaseId, logMetaData.getHeader().get(pos))) {
+            String value = logMetaData.getHeader().get(pos);
+	    if (this.logMetaData.getCaseIdPos() == -1 && match(possibleCaseId, value)) {
                 this.logMetaData.setCaseIdPos(pos);
-            } else if (this.logMetaData.getActivityPos() == -1 && match(possibleActivity, logMetaData.getHeader().get(pos))) {
+            } else if (this.logMetaData.getActivityPos() == -1 && match(possibleActivity, value)) {
                 this.logMetaData.setActivityPos(pos);
-            } else if (this.logMetaData.getEndTimestampPos() == -1 && match(possibleEndTimestamp, logMetaData.getHeader().get(pos)) && isTimestamp(pos, this.lines)) {
+            } else if (this.logMetaData.getEndTimestampPos() == -1 && match(possibleEndTimestamp, value) && isTimestamp(pos, this.lines)) {
                 this.logMetaData.setEndTimestampPos(pos);
                 this.logMetaData.setEndTimestampFormat(detectDateTimeFormat(pos));
-            } else if (this.logMetaData.getStartTimestampPos() == -1 && match(possibleStartTimestamp, logMetaData.getHeader().get(pos)) && isTimestamp(pos, this.lines)) {
+            } else if (this.logMetaData.getStartTimestampPos() == -1 && match(possibleStartTimestamp, value) && isTimestamp(pos, this.lines)) {
                 this.logMetaData.setStartTimestampPos(pos);
                 this.logMetaData.setStartTimestampFormat(detectDateTimeFormat(pos));
-            } else if (this.logMetaData.getResourcePos() == -1 && match(possibleResource, logMetaData.getHeader().get(pos))) {
+            } else if (this.logMetaData.getResourcePos() == -1 && match(possibleResource, value)) {
                 this.logMetaData.setResourcePos(pos);
             }
         }
@@ -107,7 +118,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         }
         // Get the most common date format
         if (dateTimeFormatCollections.size() > 0) {
-            return dateTimeFormatCollections.stream()
+	    return dateTimeFormatCollections.parallelStream()
                     .collect(Collectors.groupingBy(java.util.function.Function.identity(), Collectors.counting()))
                     .entrySet()
                     .stream()
