@@ -35,6 +35,10 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Window;
 
+/**
+ * @author nolantellis
+ *
+ */
 public class CsvImportListener implements EventListener<Event> {
 
     private static Logger logger = LoggerFactory.getLogger(CsvImportListener.class);
@@ -45,6 +49,16 @@ public class CsvImportListener implements EventListener<Event> {
     Component componentToDetach;
     JSONObject json;
 
+    /**
+     * @param args              A map that is passed to the zul component.
+     * @param target            Suplied from external call, as Page or Modal.
+     * @param componentToDetach Component to detached.
+     * @param json              : json mapping which is value from metadata
+     * 
+     *                          NOTE : This listener is just used a s refactored
+     *                          code to avoid lots of duplicate code from the
+     *                          calling class.
+     */
     public CsvImportListener(Map args, String target, Component componentToDetach, JSONObject json) {
 	super();
 	this.args = args;
