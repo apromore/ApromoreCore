@@ -21,30 +21,35 @@
  */
 package org.apromore.portal.plugincontrol;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
+import org.zkoss.zk.ui.Session;
+
 /**
- * This class is to manage all running plugins (PluginExecution) in the portal.
+ * PluginExecutionManager is a singleton used to manage all running plugin instances in the portal.
+ * Plugin instance is the next level of isolation in Apromore under user session.
+ * That means each user session can run different plugin instances. The plugin instances in one user
+ * session must be isolated, obviously the plugin instances in two user sessions must be also isolated.
+ * 
+ * This implementation uses ZK's Session to store these instances. As ZK will destroy a user session when
+ * it times out, the instances under the session will be also destroyed automatically.
  * 
  * @author Bruce Nguyen
  *
  */
-public class PluginExecutionManager {
-    private Map<String,PluginExecution> pluginExecutions = new HashMap<>(); // plugin instance ID => PortalPlugin
+public abstract class PluginExecutionManager {
     
-    public PluginExecutionManager() {
-        
+    public static PluginExecution getPluginExecution(String executionId, Session session) throws PluginExecutionException {
+        PluginExecution pluginExec = (PluginExecution)session.getAttribute(executionId);
+        if (pluginExec == null) {
+            throw new PluginExecutionException("Not found plugin execution with id = " + executionId);
+        }
+        return pluginExec;
     }
     
-    public PluginExecution getPluginExecution(String executionId) {
-        return pluginExecutions.get(executionId);
-    }
-    
-    public String registerPluginExecution(PluginExecution pluginExecution) {
+    public static String registerPluginExecution(PluginExecution pluginExecution, Session session) {
         String executionId = UUID.randomUUID().toString();
-        pluginExecutions.put(executionId, pluginExecution);
+        session.setAttribute(executionId, pluginExecution);
         return executionId;
     }
 }
