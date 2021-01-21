@@ -304,7 +304,6 @@
 		<findbugs.skip>true</findbugs.skip>
 		<javadocs.skip>true</javadocs.skip>
 		<pmd.skip>true</pmd.skip>
-		<license.ignoreNoFileToScan>true</license.ignoreNoFileToScan>
 		<minimizeJar>false</minimizeJar>
 
 	</properties>
@@ -1693,11 +1692,10 @@
 					<organizationName>The Apromore Initiative</organizationName>
 					<copyrightOwners>Apromore Pty Ltd.</copyrightOwners>
 					<projectName>This file is part of "Apromore Core".</projectName>
-					<dryRun>true</dryRun>
-					<failOnMissingHeader>true</failOnMissingHeader>
 					<canUpdateCopyright>true</canUpdateCopyright>
 					<!--<canUpdateDescription>true</canUpdateDescription> -->
 					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+					<ignoreNoFileToScan>true</ignoreNoFileToScan>
 
 				</configuration>
 				<executions>
