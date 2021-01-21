@@ -30,7 +30,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apromore.portal.dialogController.BaseController;
 
 /**
- * This class represents a running plugin.
+ * This class represents a running plugin (called plugin execution or plugin instance).
+ * It is a wrapper around a BaseController object which is a controller for a feature plugin. 
+ *
+ * When a plugin is executed in the portal, it will create a PluginExecution object wrapping around the 
+ * controller with a unique ID, then register this execution with {@link PluginExecutionManager}. 
+ * Meanwhile, the plugin also sends the instance ID to the client side for later communication with 
+ * the right plugin instance on the server.
+ * 
+ * When the client side of the plugin communicates with the server, PluginExecutionManager can recognize
+ * the right plugin instance based on the plugin instance ID and sends the request to the instance to process. 
  * 
  * @author Bruce Nguyen
  *
@@ -54,12 +63,6 @@ public class PluginExecution {
             byte[] data = result.getBytes();
             os.write(data);
             response.flushBuffer();
-            
-//            PrintWriter out = response.getWriter();
-//            response.setContentType("application/json");
-//            response.setCharacterEncoding("UTF-8");
-//            out.print(result);
-//            out.flush(); 
         } catch (IOException e) {
             System.err.println(e.getStackTrace());
         }

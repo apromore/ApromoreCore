@@ -39,12 +39,11 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -71,12 +70,10 @@ import org.apromore.portal.model.NativeTypesType;
 import org.apromore.portal.model.PluginMessage;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -105,7 +102,6 @@ import org.zkoss.zul.ext.Paginal;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
-    private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private EventQueue<Event> qe; // = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -129,11 +125,6 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
-    private PluginExecutionManager pluginManager = new PluginExecutionManager();
-	
-	public static MainController getController() {
-        return controller;
-    }
 
     public MainController() {
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -149,10 +140,6 @@ public class MainController extends BaseController implements MainControllerInte
 
     public PortalSession getPortalSession() {
         return portalSession;
-    }
-    
-    public PluginExecutionManager getPluginExecutionManager() {
-        return this.pluginManager;
     }
 
     /**
@@ -178,7 +165,6 @@ public class MainController extends BaseController implements MainControllerInte
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
 
-            controller = this;
             MainController self = this;
 
             Sessions.getCurrent().setAttribute("portalContext", portalContext);
@@ -338,21 +324,6 @@ public class MainController extends BaseController implements MainControllerInte
         switchToProcessSummaryView();
         this.baseListboxController.displaySummaries(new ArrayList<FolderType>(), summaries, true);
     }
-
-/*
-    // disable/enable features depending on user status
-    public void updateActions() {
-        Boolean connected = UserSessionManager.getCurrentUser() != null;
-        List<String> blacklist = Arrays.asList("designPatternCr", "designReference", "designPatternCo", /*"designConfiguration",*//* "designExtension");
-
-        // disable/enable menu items in menu bar
-        for (Component C : this.menu.getMenuB().getFellows()) {
-            if (C instanceof Menuitem) {
-                ((Menuitem) C).setDisabled(!connected && !blacklist.contains(C.getId()));
-            }
-        }
-    }
-*/
 
     public void reloadSummaries() {
         this.simplesearch.clearSearches();
