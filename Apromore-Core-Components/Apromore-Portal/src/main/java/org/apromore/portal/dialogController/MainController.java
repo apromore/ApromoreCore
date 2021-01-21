@@ -102,7 +102,6 @@ import org.zkoss.zul.ext.Paginal;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
-    private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private EventQueue<Event> qe; // = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -126,11 +125,6 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
-//    private PluginExecutionManager pluginManager = new PluginExecutionManager();
-//	
-//	public static MainController getController() {
-//        return controller;
-//    }
 
     public MainController() {
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -147,10 +141,6 @@ public class MainController extends BaseController implements MainControllerInte
     public PortalSession getPortalSession() {
         return portalSession;
     }
-    
-//    public PluginExecutionManager getPluginExecutionManager() {
-//        return this.pluginManager;
-//    }
 
     /**
      * onCreate is executed after the main window has been created it is
@@ -175,7 +165,6 @@ public class MainController extends BaseController implements MainControllerInte
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
 
-            controller = this;
             MainController self = this;
 
             Sessions.getCurrent().setAttribute("portalContext", portalContext);
@@ -335,21 +324,6 @@ public class MainController extends BaseController implements MainControllerInte
         switchToProcessSummaryView();
         this.baseListboxController.displaySummaries(new ArrayList<FolderType>(), summaries, true);
     }
-
-/*
-    // disable/enable features depending on user status
-    public void updateActions() {
-        Boolean connected = UserSessionManager.getCurrentUser() != null;
-        List<String> blacklist = Arrays.asList("designPatternCr", "designReference", "designPatternCo", /*"designConfiguration",*//* "designExtension");
-
-        // disable/enable menu items in menu bar
-        for (Component C : this.menu.getMenuB().getFellows()) {
-            if (C instanceof Menuitem) {
-                ((Menuitem) C).setDisabled(!connected && !blacklist.contains(C.getId()));
-            }
-        }
-    }
-*/
 
     public void reloadSummaries() {
         this.simplesearch.clearSearches();
