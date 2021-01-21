@@ -217,7 +217,9 @@
     <bundle>mvn:org.apromore/log-osgi/1.1</bundle>
     <bundle>mvn:org.objenesis/objenesis/2.5.1</bundle>
     <bundle>mvn:org.ow2.asm/asm/5.0.4</bundle>
+<!--
     <bundle>mvn:org.apromore/openxes/2.27</bundle>
+-->
   </feature>
 
   <feature name="poi">

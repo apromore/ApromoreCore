@@ -14,6 +14,7 @@
     <artifactId>database-mysql</artifactId>
     <name>Apromore MySQL Plugin</name>
     <description>This Plug-in is needed for MySQL support in Apromore.</description>
+    <packaging>bundle</packaging>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-mysql</url>

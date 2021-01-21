@@ -56,7 +56,6 @@
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
-                            org.xeslite.external,                            
 							org.springframework.aop,
 							org.springframework.aop.framework,
                             org.springframework.aop.aspectj.annotation,

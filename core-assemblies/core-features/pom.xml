@@ -22,6 +22,14 @@
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
+
+    <!-- The transitive dependencies of this pom ensure correct build order. -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
   </dependencies>
 
   <build>

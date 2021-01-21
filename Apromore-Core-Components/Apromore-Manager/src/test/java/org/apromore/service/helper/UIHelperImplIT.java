@@ -64,7 +64,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class UIHelperImplIntgTest {
+public class UIHelperImplIT {
 
     @Inject
     private UserInterfaceHelper uiSrv;

@@ -16,7 +16,7 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
  * via the command shell.
  */
 @RunWith(PaxExam.class)
-public class CoreFeaturesIntgTest extends KarafTestSupport {
+public class CoreFeaturesIT extends KarafTestSupport {
 
     /**
      * Installs core-features repository and server configuration files.
