@@ -27,12 +27,14 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-    <!-- Setup for the Servlets used in new user regisration and reset password. -->
+    <!-- Uncomment to support new user registration and reset password.
     <beans:bean id="resetPassword" class="org.apromore.portal.servlet.ResetPasswordHttpServletRequestHandler" />
     <beans:bean id="newUserRegistration" class="org.apromore.portal.servlet.NewUserRegistrationHttpServletRequestHandler" />
 
+    <http pattern="/register/**" security="none"/>
+    -->
+
     <!-- Http Security Setup -->
-    <http pattern="/applets/**" security="none"/>
     <http pattern="/css/**" security="none"/>
     <http pattern="/font/**" security="none"/>
     <http pattern="/img/**" security="none"/>
@@ -41,9 +43,6 @@
     <http pattern="/js/**" security="none"/>
     <http pattern="/robots.txt" security="none"/>
     <http pattern="/zkau/**" security="none"/>
-
-    <http pattern="/register/**" security="none"/>
-    <http pattern="/services/**" security="none"/>
 
     <http auto-config="false" access-denied-page="/denied.zul" use-expressions="true"
           entry-point-ref="apromoreAuthenticationEntryPoint" authentication-manager-ref="authenticationManager">
