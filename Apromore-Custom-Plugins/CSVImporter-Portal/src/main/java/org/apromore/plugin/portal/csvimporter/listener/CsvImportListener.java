@@ -48,6 +48,7 @@ public class CsvImportListener implements EventListener<Event> {
     String target;
     Component componentToDetach;
     JSONObject json;
+    Window window;
 
     /**
      * @param args              A map that is passed to the zul component.
@@ -62,17 +63,21 @@ public class CsvImportListener implements EventListener<Event> {
     public CsvImportListener(Map args, String target, Component componentToDetach, JSONObject json) {
 	super();
 	this.args = args;
-	args.put("mappingJSON", json);
+
 	this.target = target;
 	this.componentToDetach = componentToDetach;
 	this.json = json;
-    }
 
+    }
 
     @Override
     public void onEvent(Event event) throws Exception {
+	args.put("mappingJSON", json);
 	if (componentToDetach != null) {
 	    componentToDetach.detach();
+	}
+	if (window != null) {
+	    window.detach();
 	}
 	switch (target) {
 	case PAGE:
@@ -83,7 +88,7 @@ public class CsvImportListener implements EventListener<Event> {
 	default:
 
 	    try {
-		Window window = (Window) ((PortalContext) Sessions.getCurrent().getAttribute("portalContext")).getUI()
+		window = (Window) ((PortalContext) Sessions.getCurrent().getAttribute("portalContext")).getUI()
 			.createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, args);
 		window.doModal();
 
@@ -95,6 +100,22 @@ public class CsvImportListener implements EventListener<Event> {
 
 	}
 
+    }
+
+    public Component getComponentToDetach() {
+	return componentToDetach;
+    }
+
+    public void setComponentToDetach(Component componentToDetach) {
+	this.componentToDetach = componentToDetach;
+    }
+
+    public JSONObject getJson() {
+	return json;
+    }
+
+    public void setJson(JSONObject json) {
+	this.json = json;
     }
 
 }

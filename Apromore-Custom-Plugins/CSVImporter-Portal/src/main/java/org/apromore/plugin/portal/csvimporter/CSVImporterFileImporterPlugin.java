@@ -52,6 +52,7 @@ import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
@@ -104,7 +105,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-
+	CsvImportListener csvImportListener = new CsvImportListener(arg,
+		(String) Sessions.getCurrent().getAttribute("fileimportertarget"), null, null);
         // Only works for CSV
         try {
             if ("csv".equals(getMediaFormat(media))) {
@@ -175,15 +177,18 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                                     "uploadWithMatchedMapping");
                             Button uploadAsNewBtn = (Button) matchedMappingPopUp.getFellow(
                                     "uploadAsNew");
-			    uploadWithMatchedMappingBtn.addEventListener("onClick",
-				    new CsvImportListener(arg,
-					    (String) Sessions.getCurrent().getAttribute("fileimportertarget"),
-					    matchedMappingPopUp, jsonObject));
-
-			    uploadAsNewBtn.addEventListener("onClick",
-				    new CsvImportListener(arg,
-					    (String) Sessions.getCurrent().getAttribute("fileimportertarget"),
-					    matchedMappingPopUp, null));
+			    uploadWithMatchedMappingBtn.addEventListener("onClick",(Event event) -> {
+				
+				csvImportListener.setComponentToDetach(matchedMappingPopUp);
+				csvImportListener.setJson(jsonObject);
+				csvImportListener.onEvent(event);
+				
+			    });				   
+			    uploadAsNewBtn.addEventListener("onClick",(Event event) -> {
+				csvImportListener.setComponentToDetach(matchedMappingPopUp);
+				csvImportListener.setJson(null);			    
+				csvImportListener.onEvent(event);
+			    });
 
                         } catch (IOException | ParseException e) {
                             LOGGER.error("Unable to import CSV", e);
@@ -197,8 +202,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         }
         // can't find match in JSONList or no mapping record
 	try {
-	    new CsvImportListener(arg, (String) Sessions.getCurrent().getAttribute("fileimportertarget"), null, null)
-		    .onEvent(null);
+
+	    csvImportListener.onEvent(null);
 	} catch (Exception e) {
 	    LOGGER.error("Unable to import CSV", e);
 	}
