@@ -23,7 +23,6 @@
                 <configuration>
                     <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
                     <instructions>
-                        <Bundle-ClassPath>.,resources,img</Bundle-ClassPath>
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
