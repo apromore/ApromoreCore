@@ -21,9 +21,8 @@
  */
 package org.apromore.commons.datetime;
 
-import java.text.DecimalFormat;
-import java.time.LocalDateTime;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,8 +31,6 @@ import java.time.temporal.ChronoField;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apromore.commons.datetime.Constants;
 
 /**
  * Various date and time utility functions
@@ -46,68 +43,67 @@ import org.apromore.commons.datetime.Constants;
  */
 public final class DateTimeUtils {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class.getName());
 
-  private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-      .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
-      .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-      .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm:ss]"))
-      .appendOptional(Constants.DATE_TIME_FORMATTER_HUMANIZED)
-      .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-      .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-      .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-      .toFormatter();
+    private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
+	    .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+	    .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+	    .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm:ss]"))
+	    .appendOptional(DateTimeFormatter.ofPattern("MMM dd, yyyy[ HH:mm:ss]"))
+	    .appendOptional(Constants.DATE_TIME_FORMATTER_HUMANIZED).parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+	    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+	    .toFormatter();
 
-  /**
-   * Parse a date string in various predefined formats to a LocalDateTime
-   * <p>
-   * TO DO: - To be optimized when all formats are standardized
-   *
-   * @param dateTimeStr A date string
-   * @return LocalDateTime
-   */
-  public static LocalDateTime parse(String timestamp) {
-    return dateTimeFormatter.parse(timestamp, LocalDateTime::from);
-  }
-
-  /**
-   * Normalize a date string in various predefined formats to a simple format
-   *
-   * @param dateTimeStr A date string
-   * @return Normalized date for display (dd MMM yy, HH:mm)
-   */
-  public static String normalize(String dateTimeStr) {
-    LocalDateTime dateTime = parse(dateTimeStr);
-
-    if (dateTime != null) {
-      return dateTime.format(Constants.DATE_TIME_FORMATTER_HUMANIZED);
+    /**
+     * Parse a date string in various predefined formats to a LocalDateTime
+     * <p>
+     * TO DO: - To be optimized when all formats are standardized
+     *
+     * @param dateTimeStr A date string
+     * @return LocalDateTime
+     */
+    public static LocalDateTime parse(String timestamp) {
+	return dateTimeFormatter.parse(timestamp, LocalDateTime::from);
     }
-    return dateTimeStr;
-  }
 
-  public static ZonedDateTime toZonedDateTime(long milliseconds) {
-    Instant instant = Instant.ofEpochMilli(milliseconds);
-    return ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
-  }
+    /**
+     * Normalize a date string in various predefined formats to a simple format
+     *
+     * @param dateTimeStr A date string
+     * @return Normalized date for display (dd MMM yy, HH:mm)
+     */
+    public static String normalize(String dateTimeStr) {
+	LocalDateTime dateTime = parse(dateTimeStr);
 
-  public static String format(ZonedDateTime zonedDateTime, String format) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-    return zonedDateTime.format(formatter);
-  }
+	if (dateTime != null) {
+	    return dateTime.format(Constants.DATE_TIME_FORMATTER_HUMANIZED);
+	}
+	return dateTimeStr;
+    }
 
-  public static String format(long milliseconds, String format) {
-    return format(toZonedDateTime(milliseconds), format);
-  }
+    public static ZonedDateTime toZonedDateTime(long milliseconds) {
+	Instant instant = Instant.ofEpochMilli(milliseconds);
+	return ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
 
-  public static String formatDefault(ZonedDateTime zonedDateTime) {
-    return format(zonedDateTime, Constants.DATE_TIME_FORMAT_DEFAULT);
-  }
+    public static String format(ZonedDateTime zonedDateTime, String format) {
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+	return zonedDateTime.format(formatter);
+    }
 
-  public static String formatDefault(long milliseconds) {
-    return formatDefault(toZonedDateTime(milliseconds));
-  }
+    public static String format(long milliseconds, String format) {
+	return format(toZonedDateTime(milliseconds), format);
+    }
 
-  public static String humanize(long milliseconds) {
-    return format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
-  }
+    public static String formatDefault(ZonedDateTime zonedDateTime) {
+	return format(zonedDateTime, Constants.DATE_TIME_FORMAT_DEFAULT);
+    }
+
+    public static String formatDefault(long milliseconds) {
+	return formatDefault(toZonedDateTime(milliseconds));
+    }
+
+    public static String humanize(long milliseconds) {
+	return format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
+    }
 }

@@ -21,46 +21,40 @@
  */
 package org.apromore.commons.datetime;
 
-import java.util.Map;
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.ParameterizedTest;
-
-import org.apromore.commons.datetime.Constants;
-import org.apromore.commons.datetime.DateTimeUtils;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateTimeUtilsUnitTest {
 
-  private static Stream<Arguments> TEST_CASES() {
-    return Stream.of(
-        Arguments.of("25/05/2020", "25 May 20, 00:00"),
-        Arguments.of("25-05-2020 22:37:55", "25 May 20, 22:37"),
-        Arguments.of("25/05/2020 22:37:05", "25 May 20, 22:37")
-    );
-  }
+    private static Stream<Arguments> TEST_CASES() {
+	return Stream.of(Arguments.of("25/05/2020", "25 May 20, 00:00"),
+		Arguments.of("25-05-2020 22:37:55", "25 May 20, 22:37"),
+		Arguments.of("25/05/2020 22:37:05", "25 May 20, 22:37"),
+		Arguments.of("May 16, 2020", "16 May 20, 00:00"));
+    }
 
-  @ParameterizedTest
-  @MethodSource("TEST_CASES")
-  void normalize_ShouldGenerateNormalizedDate(String input, String expected) {
-    String normalizedDate = DateTimeUtils.normalize(input);
-    assertEquals(expected, normalizedDate);
-  }
+    @ParameterizedTest
+    @MethodSource("TEST_CASES")
+    void normalize_ShouldGenerateNormalizedDate(String input, String expected) {
+	String normalizedDate = DateTimeUtils.normalize(input);
+	assertEquals(expected, normalizedDate);
+    }
 
-  @ParameterizedTest
-  @MethodSource("TEST_CASES")
-  void format_ShouldGenerateSimpleFormattedDate(String input, String expected) {
-    LocalDateTime localDateTime = DateTimeUtils.parse(input);
-    ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
-    long milliseconds = zdt.toInstant().toEpochMilli();
-    String formattedDate = DateTimeUtils.format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
-    assertEquals(expected, formattedDate);
-  }
+    @ParameterizedTest
+    @MethodSource("TEST_CASES")
+    void format_ShouldGenerateSimpleFormattedDate(String input, String expected) {
+	LocalDateTime localDateTime = DateTimeUtils.parse(input);
+	ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
+	long milliseconds = zdt.toInstant().toEpochMilli();
+	String formattedDate = DateTimeUtils.format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
+	assertEquals(expected, formattedDate);
+    }
 }
