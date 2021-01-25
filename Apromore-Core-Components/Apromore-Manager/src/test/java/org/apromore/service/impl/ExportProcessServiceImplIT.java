@@ -53,9 +53,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class ExportProcessServiceImplIntgTest {
+public class ExportProcessServiceImplIT {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIntgTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIT.class);
 
     @Inject
     private ProcessService pSrv;

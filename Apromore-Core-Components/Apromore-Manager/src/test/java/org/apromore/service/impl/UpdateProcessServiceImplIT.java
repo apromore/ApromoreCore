@@ -67,7 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class UpdateProcessServiceImplIntgTest {
+public class UpdateProcessServiceImplIT {
 
     @Inject
     private ProcessService pSrv;

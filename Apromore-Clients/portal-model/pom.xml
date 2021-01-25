@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>portal-model</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>Apromore Portal Model</name>
 
     <scm>

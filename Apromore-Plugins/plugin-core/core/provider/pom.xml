@@ -13,6 +13,7 @@
 
     <artifactId>plugin-api-provider</artifactId>
     <name>Apromore Plugin API Provider</name>
+    <packaging>bundle</packaging>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/core/provider</url>

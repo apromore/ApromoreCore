@@ -14,6 +14,7 @@
     <artifactId>database-oracle</artifactId>
     <name>Apromore Oracle Plugin</name>
     <description>This Plug-in is needed for Oracle support in Apromore.</description>
+    <packaging>bundle</packaging>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-oracle</url>

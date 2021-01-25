@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>manager-client</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <url>http://apromore.org/</url>
     <name>Apromore Manager Client</name>
 
