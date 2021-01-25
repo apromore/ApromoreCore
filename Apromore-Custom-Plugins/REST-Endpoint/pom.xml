@@ -15,6 +15,7 @@
 
     <properties>
         <checkstyle.skip>false</checkstyle.skip>
+        <javadocs.skip>false</javadocs.skip>
     </properties>
 
     <artifactId>rest-endpoint</artifactId>

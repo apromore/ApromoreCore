@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -82,7 +83,10 @@ public final class ArtifactResource extends AbstractResource {
      *
      * <pre>curl http://localhost:9000/rest/Home/foo -u admin:password &gt; foo.xes.gz</pre>
      *
+     * @param path  the path identifying the folder in which the event log resides
+     * @param name  the name of the event log within the folder; shall not contain "/"
      * @return a GZIPped XES XML document
+     * @throws ResourceException if no event log with the given path and name exists
      */
     @GET
     @Path("{path:(.*/)*}{name}")
@@ -318,10 +322,23 @@ public final class ArtifactResource extends AbstractResource {
         return values == null ? null : values.stream().findFirst().orElse(null);
     }
 
+    /**
+     * @param name  an HTTP header name
+     * @return all values of the <var>name</var>d header occurring within {@link #httpHeaders}, honoring both
+     *     duplicate headers and headers with comma-delimited lists of values
+     */
     private List<String> findAttributes(final String name) {
         List<String> requestHeaders = httpHeaders.getRequestHeader(name);
 
-        return requestHeaders == null ? Collections.emptyList() : requestHeaders;
+        if (requestHeaders == null) {
+            return Collections.emptyList();
+        }
+
+        return requestHeaders == null ? Collections.emptyList()
+            : requestHeaders.stream()
+                            .flatMap(s -> (Arrays.asList(s.split(","))).stream())
+                            .map(s -> s.trim())
+                            .collect(Collectors.toList());
     }
 
     /**
