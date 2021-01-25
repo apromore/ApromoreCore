@@ -72,7 +72,8 @@ public class LogMetaData {
         count += ignoredPos.size();
 
         if (header.size() != count) {
-            throw new Exception("Failed to construct valid log sample! Contact out support.");
+            throw new Exception("Failed to construct valid log sample!  Only specified " + count + " of " +
+                header.size() + " headers: " + header);
         }
     }
 }
