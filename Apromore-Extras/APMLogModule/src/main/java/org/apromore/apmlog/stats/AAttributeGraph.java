@@ -212,28 +212,24 @@ public class AAttributeGraph {
     }
 
 
-    public DurSubGraph getNextValueDurations(String key, String baseValue, PLog pLog) {
-
-        return getArcValueDurations(key, baseValue, "next", pLog);
-
+    public DurSubGraph getNextValueDurations(String key, String baseValue, APMLog log) {
+        return getArcValueDurations(key, baseValue, "next", log);
     }
 
     public DurSubGraph getPreviousValueDurations(String key, String baseValue, PLog pLog) {
-
         return getArcValueDurations(key, baseValue, "previous", pLog);
-
     }
 
-    public DurSubGraph getArcValueDurations(String key, String baseValue, String direction, PLog pLog) {
+    public DurSubGraph getArcValueDurations(String key, String baseValue, String direction, APMLog log) {
         if (!eventAttributeOccurMap.containsKey(key)) return null;
         if (!eventAttributeOccurMap.get(key).containsKey(baseValue)) return null;
 
         DurSubGraph durSubGraph = new DurSubGraph();
 
-        for (PTrace pTrace : pLog.getPTraceList()) {
-            int pTraceIndex = pTrace.getMutableIndex();
+        for (ATrace trace : log.getTraceList()) {
+            int pTraceIndex = trace.getMutableIndex();
 
-            List<AActivity> activityList = pTrace.getActivityList();
+            List<AActivity> activityList = trace.getActivityList();
             for (AActivity iAct : activityList) {
                 UnifiedMap<String, String> iAttr = iAct.getAllAttributes();
                 if (iAttr.containsKey(key) && iAttr.get(key).equals(baseValue)) {
@@ -259,6 +255,29 @@ public class AAttributeGraph {
         }
 
         return durSubGraph;
+    }
+
+    /**
+     * Used by PD
+     * @param attributeKey
+     * @param indegree
+     * @param outdegree
+     * @param theLog
+     * @return
+     */
+    public UnifiedSet<Double> getDurations(String attributeKey, String indegree, String outdegree, APMLog theLog) {
+
+        DurSubGraph subGraph = getNextValueDurations(attributeKey, indegree, theLog);
+
+        UnifiedMap<String, UnifiedMap<Double, UnifiedSet<Integer>>> valDurCaseMap = subGraph.getValDurCaseIndexMap();
+
+        UnifiedSet<Double> set = new UnifiedSet<>();
+
+        if (valDurCaseMap.containsKey(outdegree)) {
+            UnifiedMap<Double, UnifiedSet<Integer>> durCaseMap = valDurCaseMap.get(outdegree);
+            set = new UnifiedSet<>(durCaseMap.keySet());
+        }
+        return set;
     }
 
 }
