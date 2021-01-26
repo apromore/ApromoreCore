@@ -22,7 +22,10 @@
     sclass="ap-share-win"
     width="700px" height="80%" position="center"
     closable="true"
-    title="File sharing" apply="org.apromore.portal.access.controllers.ShareController">
+    title="File/folder sharing" apply="org.apromore.portal.access.controllers.ShareController">
+    <caption>
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/sharingandaccessrights.html" target="_blank" />
+    </caption>
     <AccessControl vflex="1" hflex="1" id="accessControl"
                    currentUser="${arg.currentUser}"
                    selectedItem="${arg.selectedItem}"

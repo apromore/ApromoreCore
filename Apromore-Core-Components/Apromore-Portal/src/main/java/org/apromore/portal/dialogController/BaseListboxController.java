@@ -786,12 +786,13 @@ public abstract class BaseListboxController extends BaseController {
 		Object selectedItem;
 		getMainController().eraseMessage();
 		try {
+			boolean canShare = false;
 			if (getSelectionCount() == 0 || getSelectionCount() > 1) {
 				selectedItem = null;
 			} else {
 				selectedItem = getSelection().iterator().next();
+				canShare = Helpers.isShareable(selectedItem, currentUser);
 			}
-			boolean canShare = Helpers.isShareable(selectedItem, currentUser);
 			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem, canShare);
 		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);

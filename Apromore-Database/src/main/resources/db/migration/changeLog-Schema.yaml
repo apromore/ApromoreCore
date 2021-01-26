@@ -712,3 +712,115 @@ databaseChangeLog:
            referencedTableName: user
            validate: true
 
+ - changeSet:
+    id: 20201222022311
+    author: nolantellis
+    changes:
+      - createTable:
+           tableName: storage
+           columns: 
+             - column:
+                  name: id
+                  type: BIGINT  
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_storage_id                  
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: false
+                name: storage_path
+                type: VARCHAR(200)
+                remarks: 'Storage path'
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: false
+                name: prefix
+                type: VARCHAR(100)
+                remarks: 'prefix for storage'
+             - column:                
+                constraints:
+                   nullable: false
+                   unique: false
+                name: key
+                type: VARCHAR(200)
+                remarks: 'key for storage'
+             - column:
+                constraints:
+                   nullable: false
+                name: created
+                type: VARCHAR(100)
+                remarks: 'creation time for the storage'             
+             - column:
+                constraints:
+                   nullable: false
+                name: updated
+                type: VARCHAR(100)
+                remarks: 'update time for the storage'
+
+      - addColumn:
+            tableName: log
+            columns:
+               - column:
+                  name: storage_id
+                  type: BIGINT
+                  constraints:
+                      nullable: true
+
+      - addForeignKeyConstraint:
+           baseColumnNames: storage_id
+           baseTableName: log
+           constraintName: fk_log_storage
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: storage
+           validate: true
+ 
+ - changeSet:       
+     id: 20210111215600
+     author: frankm
+     changes:
+       - createView:
+           fullDefinition: false
+           remarks: 'Change view KEYWORDS'
+           replaceIfExists: true
+           context: MYSQL,H2
+           selectQuery: |2-
+               select cast(process.id as char(10))
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process union
+             select process.name
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process union
+             select process.domain
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process union
+             select native_type.nat_type
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process join native_type on (process.nativetypeid = native_type.id) union
+             select `user`.first_name
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process join `user` on (process.owner = `user`.username) union
+             select `user`.last_name
+               as value, 'process' as type, process.id as processid, null as logid, null as folderid
+               from process join `user` on (process.owner = `user`.username) union
+             select process_branch.branch_name
+               as value, 'process' as type, process_branch.processid as processid, null as logid, null as folderid
+               from process_branch union
+             select cast(`log`.id as char(10))
+               as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+               from `log` union
+             select `log`.name
+               as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+               from `log` union
+             select `log`.domain
+               as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
+               from `log` union
+             select folder.folder_name
+               as value, 'folder' as type, null as processid, null as logid, folder.id as folderid
+               from folder;
+           viewName: keywords

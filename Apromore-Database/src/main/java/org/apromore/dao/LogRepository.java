@@ -95,6 +95,9 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
      */
     @Query("SELECT DISTINCT l FROM Log l WHERE l.id = ?1")
     Log findUniqueByID(Integer logId);
+    
+ 
+    Long countByStorageId(Long storageId);
 
 //    /**
 //     * Returns a list of processIds

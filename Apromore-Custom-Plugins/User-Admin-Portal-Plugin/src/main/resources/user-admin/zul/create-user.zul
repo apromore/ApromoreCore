@@ -40,7 +40,7 @@
             </row>
             <row>
                 <label value="Email"/>
-                <textbox id="emailTextbox" placeholder="Enter email address"/>
+                <textbox id="emailTextbox" constraint="no empty: {Email is mandatory}" placeholder="Enter email address"/>
             </row>
             <row>
                 <label value="Password"/>

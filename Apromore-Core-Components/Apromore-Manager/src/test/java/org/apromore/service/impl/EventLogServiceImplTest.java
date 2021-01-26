@@ -25,9 +25,12 @@ package org.apromore.service.impl;
 import com.google.common.collect.Sets;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
+import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.storage.StorageClient;
+import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
@@ -73,6 +76,10 @@ public class EventLogServiceImplTest {
     private UsermetadataTypeRepository usermetadataTypeRepo;
     private UsermetadataLogRepository usermetadataLogRepo;
     private TemporaryCacheService temporaryCacheService;
+    private StorageManagementFactory<StorageClient> storageFactory;
+    private EventLogFileService logFileService;
+    private StorageRepository storageRepository;
+    
 
     private static void walkLog(XLog log) {
         walkAttributes(log);
@@ -116,11 +123,14 @@ public class EventLogServiceImplTest {
         ui = createMock(UserInterfaceHelper.class);
         userMetadataService = createMock(UserMetadataService.class);
         temporaryCacheService=createMock(TemporaryCacheService.class);
+        storageFactory=createMock(StorageManagementFactory.class);
+        logFileService=createMock(EventLogFileService.class);
+        storageRepository=createMock(StorageRepository.class);
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
                 userSrv, ui, config,
-                userMetadataService,temporaryCacheService);
+                userMetadataService,temporaryCacheService,storageFactory,logFileService,storageRepository);
     }
 
     @Test

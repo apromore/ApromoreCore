@@ -64,6 +64,8 @@ public class Log implements Serializable {
 
     private User user;
     private Folder folder;
+    
+    private Storage storage;
 
     private Set<GroupLog> groupLogs = new HashSet<>();
     private Set<UsermetadataLog> usermetadataLogs = new HashSet<>();
@@ -187,6 +189,18 @@ public class Log implements Serializable {
         this.usermetadataSet = newUsermetadataSet;
     }
     
+    
+    
+    @ManyToOne
+    @JoinColumn(name = "storage_id",nullable = true)
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
     @Override
     public Log clone() {
         Log newLog = new Log();

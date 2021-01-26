@@ -32,6 +32,8 @@ import org.deckfour.xes.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -80,7 +82,7 @@ public class LogRepositoryCustomImplTest {
 //            XFactory factory = new XFactoryLiteImpl();
             XFactory factory = XFactoryRegistry.instance().currentDefault();
 
-            XLog log = temporaryCacheService.importFromFile(factory, name);
+            XLog log = temporaryCacheService.importFromFile(factory,new FileInputStream(new File(name)), name);
 
 //            XFactory factory = new XFactoryNaiveImpl();
 //            XLog log = logRepo.importFromInputStream(fis, new XesXmlParser(factory));

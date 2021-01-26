@@ -30,6 +30,7 @@
 
     <osgi:reference id="cacheRepo" interface="org.apromore.cache.ehcache.CacheRepository"/>
 
+
  	<osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin"/>
  
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
@@ -51,6 +52,9 @@
                       
     <osgi:service ref="userMetadataServiceImpl" interface="org.apromore.service.UserMetadataService"
                   auto-export="interfaces"/>
+
+               
+    <osgi:reference id="storageFactory" interface="org.apromore.storage.factory.StorageManagementFactory"/>
     <osgi:service ref="authorizationServiceImpl" interface="org.apromore.service.AuthorizationService" auto-export="interfaces"/>
 
 
@@ -64,6 +68,7 @@
     
     
     <osgi:reference id="groupUsermetadataRepository" interface="org.apromore.dao.GroupUsermetadataRepository"/>
+    <osgi:reference id="storageRepository" interface="org.apromore.dao.StorageRepository"/>
     <osgi:reference id="historyEventRepository" interface="org.apromore.dao.HistoryEventRepository"/>
     <osgi:reference id="logRepository" interface="org.apromore.dao.LogRepository"/>
     <osgi:reference id="membershipRepository" interface="org.apromore.dao.MembershipRepository"/>

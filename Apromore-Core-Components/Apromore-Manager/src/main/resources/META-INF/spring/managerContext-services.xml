@@ -33,6 +33,7 @@
         <property name="logsDir" value="${logs.dir}"/>
         <property name="numOfEvent" value="${cache.numOfEvent}"/>
         <property name="numOfTrace" value="${cache.numOfTrace}"/>
+        <property name="storagePath" value="${storage.path}"/>
     </bean>
 
 
@@ -40,6 +41,7 @@
         <property name="cacheRepo" ref="cacheRepo"/>
         <property name="config" ref="config"/>
         <property name="apmLogService" ref="apmLogService"/>
+        <property name="storageFactory" ref="storageFactory"/>
     </bean>
     
     
