@@ -62,6 +62,7 @@
                         <comboitem sclass="type-${each.type}" label="${each.name}"/>
                     </template>
                 </combobox>
+                <textbox id="candidateAssigneeTextbox" width="240px" style="margin-right: 7px" placeholder="Type in a user or group name" />
                 <button id="candidateAssigneeAdd" label="Share"/>
             </div>
         </div>
