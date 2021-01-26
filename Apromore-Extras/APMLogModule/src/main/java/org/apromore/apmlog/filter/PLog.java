@@ -490,6 +490,7 @@ public class PLog implements APMLog {
         this.pTraceList = new ArrayList<>(originalPTraceList);
 
         for (PTrace pTrace : pTraceList) {
+            pTrace.reset();
             caseDurationList.add(pTrace.getDuration());
             caseIndexMap.put(pTrace, pTrace.getImmutableIndex());
 
@@ -960,6 +961,10 @@ public class PLog implements APMLog {
 
     public UnifiedMap<String, PTrace> getPTraceUnifiedMap() {
         return pTraceUnifiedMap;
+    }
+
+    public APMLog getOriginalAPMLog() {
+        return apmLog;
     }
 
     @Override
