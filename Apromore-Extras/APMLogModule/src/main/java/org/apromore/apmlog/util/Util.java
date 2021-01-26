@@ -21,21 +21,15 @@
  */
 package org.apromore.apmlog.util;
 
-import org.apromore.apmlog.AActivity;
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.filter.PLog;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.in.XesXmlGZIPParser;
-import org.deckfour.xes.in.XesXmlParser;
-import org.deckfour.xes.model.*;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.io.File;
 import java.text.DecimalFormat;
-import java.time.*;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 /**
  * @author Chii Chang (11/2019)
@@ -168,9 +162,26 @@ public class Util {
 
     public static boolean isNumeric(String s) {
 
+        if (s == null) return false;
         if (s.equals("")) return false;
 
         UnifiedSet<Character> validChars = getValidCharactersOfNumbers();
+
+        if (s.toLowerCase().contains("e+")) {
+            String replaced = s.toLowerCase().replaceAll("e\\+", "");
+            for (int i = 0; i < replaced.length(); i++) {
+                if (!validChars.contains(replaced.charAt(i))) return false;
+            }
+            return true;
+        }
+
+        if (s.toLowerCase().contains("e-")) {
+            String replaced = s.toLowerCase().replaceAll("e-", "");
+            for (int i = 0; i < replaced.length(); i++) {
+                if (!validChars.contains(replaced.charAt(i))) return false;
+            }
+            return true;
+        }
 
         if (!String.valueOf(s.charAt(0)).equals("-")) {
             if (!validChars.contains(s.charAt(0))) return false;
@@ -180,7 +191,7 @@ public class Util {
         boolean allNum = true;
 
         if (s.length() > 1) {
-            for (int i = 0; i < s.length(); i++) {
+            for (int i = 1; i < s.length(); i++) {
                 Character c = s.charAt(i);
                 if (!validChars.contains(c)) {
                     allNum = false;

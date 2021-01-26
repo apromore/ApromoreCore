@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -21,7 +21,8 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.immutable.ImmutableActivity;
+import org.apromore.apmlog.stats.CaseAttributeValue;
+import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -41,6 +42,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (06/03/2020) - public APMLog(List<ATrace> inputTraceList)
  * Modified: Chii Chang (12/05/2020)
  * Modified: Chii Chang (27/10/2020)
+ * Modified: Chii Chang (26/01/2021)
  */
 public interface APMLog {
 
@@ -58,12 +60,6 @@ public interface APMLog {
 
     UnifiedMap<Integer, Integer> getCaseVariantIdFrequencyMap();
 
-    UnifiedMap<String, UnifiedMap<String, Integer>> getCaseAttributeValueFreqMap();
-
-    UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap();
-
-    UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueCasesFreqMap();
-
     List<String> getCaseAttributeNameList();
 
     long getEventSize();
@@ -72,28 +68,23 @@ public interface APMLog {
 
     long getCaseVariantSize();
 
-    void setCaseVariantSize(int caseVariantSize);
-
     List<String> getActivityNameList(int caseVariantId);
 
     void setVariantIdFreqMap(UnifiedMap<Integer, Integer> variantIdFreqMap);
 
     UnifiedMap<Integer, Integer> getVariantIdFreqMap();
 
+    DoubleArrayList getCaseDurations();
+
     double getMinDuration();
 
-    void setMinDuration(double minDuration);
-
     double getMaxDuration();
-
-    void setMaxDuration(double maxDuration);
 
     List<ATrace> getImmutableTraces();
 
     List<ATrace> getTraceList();
 
     void setTraceList(List<ATrace> traceList);
-
 
     UnifiedSet<String> getEventAttributeNameSet();
 
@@ -119,8 +110,6 @@ public interface APMLog {
 
     String getMaxDurationString();
 
-//    HashBiMap<Integer, String> getActIdNameMap();
-
     double getAverageDuration();
 
     double getMedianDuration();
@@ -139,13 +128,13 @@ public interface APMLog {
 
     AAttributeGraph getAAttributeGraph();
 
-    UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap();
-
     void add(ATrace trace);
 
     HashBiMap<String, Integer> getActivityNameBiMap();
 
     void setActivityNameBiMap(HashBiMap<String, Integer> activityNameBiMap);
 
-    DoubleArrayList getCaseDurations();
+    UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap();
+    UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues();
+    UnifiedMap<String, UnifiedSet<CaseAttributeValue>> getCaseAttributeValues();
 }

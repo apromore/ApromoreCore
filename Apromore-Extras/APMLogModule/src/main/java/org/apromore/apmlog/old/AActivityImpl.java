@@ -182,6 +182,11 @@ public class AActivityImpl implements org.apromore.apmlog.AActivity {
 
     }
 
+    @Override
+    public long getEventSize() {
+        return eventList.size();
+    }
+
 
     public int getTraceIndex() {
         return 0;

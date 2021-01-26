@@ -30,6 +30,7 @@ import java.util.List;
  * @author Chii Chang (11/2019)
  * Modified: Chii Chang (07/10/2020) - "schedule" event included; added start time method.
  * Modified: Chii Chang (27/10/2020)
+ * Modified: Chii Chang (26/01/2021)
  */
 public interface AActivity  {
 
@@ -72,4 +73,8 @@ public interface AActivity  {
      int getImmutableTraceIndex();
 
      void setParentTrace(ATrace parentTrace);
+
+     long getEventSize();
+
+
 }
