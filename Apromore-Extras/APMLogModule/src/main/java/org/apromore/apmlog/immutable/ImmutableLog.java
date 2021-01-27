@@ -159,6 +159,10 @@ public class ImmutableLog extends LaLog {
                 .map(PTrace::toATrace)
                 .collect(Collectors.toList());
 
+        super.immutableTraces = pLog.getOriginalPTraceList().stream()
+                .map(PTrace::getOriginalATrace)
+                .collect(Collectors.toList());
+
         super.eventAttributeOccurMap = pLog.getEventAttributeOccurMap();
         super.activityNameBiMap = pLog.getActivityNameBiMap();
         super.variantIdFreqMap = pLog.getVariantIdFreqMap();
@@ -168,11 +172,8 @@ public class ImmutableLog extends LaLog {
         super.endTime = pLog.getEndTime();
         super.eventSize = pLog.getEventSize();
 
-
         super.variantIdFreqMap = pLog.getVariantIdFreqMap();
         super.activityNameMapper = pLog.getActivityNameMapper();
-
-
 
         super.attributeGraph = pLog.getAttributeGraph();
         super.caseDurationList = new DoubleArrayList(pLog.getCaseDurations().toArray());
