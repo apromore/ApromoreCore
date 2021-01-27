@@ -780,15 +780,7 @@ public class PLog implements APMLog {
     }
 
     public UnifiedSet<String> getEventAttributeNameSet() {
-        UnifiedSet<String> validNames = new UnifiedSet<>();
-
-        for (String key : eventAttributeOccurMap.keySet()) {
-            int qty = eventAttributeOccurMap.get(key).size();
-            if(qty < 100000 && !key.equals("concept:name") && !key.equals("org:resource")) {
-                validNames.put(key);
-            }
-        }
-        return validNames;
+        return new UnifiedSet<>(eventAttributeOccurMap.keySet());
     }
 
     public List<String> getCaseAttributeNameList() {
