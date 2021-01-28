@@ -404,6 +404,13 @@ public class APMLogUnitTest {
         PLogAttributeGraphTest.testArc(apmLog);
     }
 
+    @Test
+    public void testTripleOverlap() throws Exception {
+        XLog xLog = getXLog("files/TripleOverlap.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        TripleOverlapTest.test1(apmLog);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
