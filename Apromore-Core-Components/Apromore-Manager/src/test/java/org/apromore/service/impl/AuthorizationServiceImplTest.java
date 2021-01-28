@@ -50,7 +50,6 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     private UsermetadataRepository usermetadataRepository;
     private LogRepository logRepository;
 
-
     private Group group1;
     private Group group2;
     private Group group3;
