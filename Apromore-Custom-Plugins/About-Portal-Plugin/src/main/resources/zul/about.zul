@@ -34,7 +34,7 @@
                             <image src="/themes/${labels.theme}/common/img/brand/logo-white.svg" width="50%" style="position: relative; top: 3px"/>
                         </div>
                             <div sclass="ap-edition">${arg.edition}</div>
-                            <div sclass="ap-copyright">Copyright 2019-20, [holder]. All rights reserved.</div>
+                            <div sclass="ap-copyright">Copyright 2019-21, [holder]. All rights reserved.</div>
                             <div sclass="ap-version">Version: ${arg.version}</div>
                             <div>
                                 [detail]
