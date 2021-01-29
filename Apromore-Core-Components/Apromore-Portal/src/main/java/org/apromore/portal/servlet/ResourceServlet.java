@@ -22,24 +22,26 @@
 
 package org.apromore.portal.servlet;
 
-import com.google.common.io.ByteStreams;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apromore.plugin.portal.WebContentService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * The portal's default servlet.
@@ -68,6 +70,7 @@ public class ResourceServlet extends HttpServlet {
         contentTypeMap.put("svg", "image/svg+xml"); // for customised icon-fonts
         contentTypeMap.put("ttf", "application/font-sfnt"); // for customised icon-fonts
         contentTypeMap.put("woff", "application/font-woff"); // for customised icon-fonts
+        contentTypeMap.put("js", "text/javascript");
     }
 
     @Override
@@ -83,7 +86,7 @@ public class ResourceServlet extends HttpServlet {
 
             // Check the HttpServlet services for a handler
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
-                HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
+                HttpServlet servlet = (HttpServlet) bundleContext.getService(serviceReference);
                 if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
                     servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
                     servlet.service(req, resp);
@@ -94,7 +97,7 @@ public class ResourceServlet extends HttpServlet {
             // Check the WebContextServices for a handler
             List<WebContentService> webContentServices = new ArrayList<>();
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(WebContentService.class, null)) {
-                webContentServices.add((WebContentService) bundleContext.getService((ServiceReference) serviceReference));
+                webContentServices.add((WebContentService) bundleContext.getService(serviceReference));
             }
             for (WebContentService webContentService: webContentServices) {
                 String path = req.getServletPath();
@@ -128,7 +131,7 @@ public class ResourceServlet extends HttpServlet {
         try {
             BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
             for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
-                HttpServlet servlet = (HttpServlet) bundleContext.getService((ServiceReference) serviceReference);
+                HttpServlet servlet = (HttpServlet) bundleContext.getService(serviceReference);
                 if (req.getServletPath().equals(serviceReference.getProperty("osgi.http.whiteboard.servlet.pattern"))) {
                     servlet.init(getServletConfig());  // TODO: create a new servlet config based on service parameters
                     servlet.service(req, resp);
