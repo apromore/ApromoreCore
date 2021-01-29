@@ -37,7 +37,9 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Chii Chang
@@ -45,6 +47,15 @@ import java.util.List;
 public class LogFactory {
 
     public static APMLog convertXLog(XLog xLog) {
+
+        for (XTrace xTrace : xLog) {
+            Set<XEvent> tobeRemoved = new HashSet<>();
+            for (XEvent xEvent : xTrace) {
+                XAttributeMap xAttributeMap = xEvent.getAttributes();
+                if (!xAttributeMap.containsKey("lifecycle:transition")) tobeRemoved.add(xEvent);
+            }
+            if (!tobeRemoved.isEmpty()) xTrace.removeAll(tobeRemoved);
+        }
 
         ImmutableLog log = new ImmutableLog();
 
@@ -138,6 +149,7 @@ public class LogFactory {
         return map;
     }
 
+
     private static UnifiedMap<String, String> getAttributes(XTrace xTrace, ImmutableLog log) {
 
         UnifiedMap<String, String> map = new UnifiedMap<>();
@@ -151,6 +163,7 @@ public class LogFactory {
         return map;
     }
 
+
     private static long getTimestamp(XEvent xEvent) {
         try {
             ZonedDateTime zdt = Util.zonedDateTimeOf(xEvent);
@@ -160,6 +173,7 @@ public class LogFactory {
         }
 
     }
+
 
     private static ImmutableActivity getActivity(int index, ImmutableTrace trace, XTrace xTrace, int fromIndex,
                                                  IntArrayList markedIndexes) {
@@ -250,12 +264,14 @@ public class LogFactory {
         return name1.equals(name2);
     }
 
+
     private static boolean haveCommonMainAttributes(AEvent event1, AEvent event2) {
         String name1 = event1.getName();
         String name2 = event2.getName();
 
         return name1.equals(name2);
     }
+
 
     public static void fillAttributeOccurMap(AActivity activity,
                                              UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>>
