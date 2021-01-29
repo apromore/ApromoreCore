@@ -214,34 +214,21 @@ public class LogDataWithAPMLog extends LogData {
 
     @Override
     public List<CaseDetails> getCaseDetails() {
-        UnifiedMap<List<Integer>, Integer> actNameListCaseSizeMap = new UnifiedMap<>();
         List<ATrace> traceList = filteredAPMLog.getTraceList();
+        UnifiedMap<Integer, Integer> caseVariantIdFrequencyMap = filteredAPMLog.getCaseVariantIdFrequencyMap();
         int traceSize = traceList.size();
         
-        for (int i = 0; i < traceSize; i++) {
-            ATrace aTrace = traceList.get(i);
-            List<Integer> actNameIndxList = aTrace.getActivityNameIndexList();
-            if (actNameListCaseSizeMap.containsKey(actNameIndxList)) {
-                int caseSize = actNameListCaseSizeMap.get(actNameIndxList) + 1;
-                actNameListCaseSizeMap.put(actNameIndxList, caseSize);
-            } else {
-                actNameListCaseSizeMap.put(actNameIndxList, 1);
-            }
-        }
-
         List<CaseDetails> listResult = new ArrayList<CaseDetails>();
         for (int i = 0; i < traceSize; i++) {
             ATrace aTrace = traceList.get(i);
             String caseId = aTrace.getCaseId();
             int caseEvents = aTrace.getActivityList().size();
             int caseVariantId = aTrace.getCaseVariantId();
-            List<Integer> actNameIdxList = aTrace.getActivityNameIndexList();
-            int caseSize = actNameListCaseSizeMap.get(actNameIdxList);
+            int caseSize = caseVariantIdFrequencyMap.get(caseVariantId);
             double caseVariantFreq = (double) caseSize / traceSize;
             CaseDetails caseDetails = new CaseDetails(caseId, caseEvents, caseVariantId, caseVariantFreq);
             listResult.add(caseDetails);
-        }   
-        
+        }
         return listResult;
     }
     

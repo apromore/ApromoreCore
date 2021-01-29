@@ -85,6 +85,7 @@ public class AccessController extends SelectorComposer<Div> {
     private UserType currentUser = (UserType) argMap.get("currentUser");
     Boolean autoInherit = (Boolean) argMap.get("autoInherit");
     Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+    Boolean enablePublish = (Boolean) argMap.get("enablePublish");
     private String userName;
 
     private Integer selectedItemId;
@@ -127,8 +128,8 @@ public class AccessController extends SelectorComposer<Div> {
     @Wire("#candidateAssigneeAdd")
     Button candidateAssigneeAdd;
 
-    @Wire("#applyBtn")
-    Button applyBtn;
+    @Wire("#btnApply")
+    Button btnApply;
 
     @Wire("#assignmentListbox")
     Listbox assignmentListbox;
@@ -161,6 +162,15 @@ public class AccessController extends SelectorComposer<Div> {
         currentUser = (UserType) argMap.get("currentUser");
         autoInherit = (Boolean) argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+        enablePublish = (Boolean) argMap.get("enablePublish");
+    }
+
+    private void checkShowRelatedArtifacts() {
+        if (showRelatedArtifacts && isLogSelected()) {
+            artifactListbox.setVisible(true);
+        } else {
+            artifactListbox.setVisible(false);
+        }
     }
 
     @Override
@@ -168,15 +178,8 @@ public class AccessController extends SelectorComposer<Div> {
         super.doAfterCompose(div);
         container = div;
 
-        if (!showRelatedArtifacts || !isLogSelected()) {
-            artifactListbox.setVisible(false);
-        } else {
-            artifactListbox.setVisible(true);
-        }
         loadCandidateAssignee();
-        if (selectedItem != null) {
-            setSelectedItem(selectedItem);
-        }
+        setSelectedItem(selectedItem);
 
         assignmentListbox.addEventListener("onChange", new EventListener<Event>() {
             @Override
@@ -237,9 +240,7 @@ public class AccessController extends SelectorComposer<Div> {
                 public void onEvent(Event evt) {
                     if ("onSelect".equals(evt.getName())) {
                         Object selItem = evt.getData();
-                        if (selItem != null) {
-                            setSelectedItem(selItem);
-                        }
+                        setSelectedItem(selItem);
                     }
                 }
             });
@@ -294,7 +295,11 @@ public class AccessController extends SelectorComposer<Div> {
 
         for (Group group : groups) {
             String groupName = group.getName();
-            candidates.add(new Assignee(groupName, group.getRowGuid(), group.getType()));
+            Type type = group.getType();
+            if (type.equals(Type.PUBLIC) && !enablePublish) {
+                continue;
+            }
+            candidates.add(new Assignee(groupName, group.getRowGuid(), type));
         }
         candidateAssigneeModel = new ListModelList<>(candidates, false);
         candidateAssigneeModel.setMultiple(false);
@@ -317,7 +322,7 @@ public class AccessController extends SelectorComposer<Div> {
             Group group = entry.getKey();
             AccessType accessType = entry.getValue();
             String rowGuid = group.getRowGuid();
-            Assignment assignment = new Assignment(group.getName(), rowGuid, Type.USER, accessType.getLabel());
+            Assignment assignment = new Assignment(group.getName(), rowGuid, group.getType(), accessType.getLabel());
             assignments.add(assignment);
             assignmentMap.put(rowGuid, assignment);
             if (accessType == AccessType.OWNER) {
@@ -329,11 +334,25 @@ public class AccessController extends SelectorComposer<Div> {
         assignmentListbox.setModel(assignmentModel);
     }
 
+    private void clearAssignments() {
+        assignmentMap = new HashMap<String, Assignment>();
+        ownerMap = new HashMap<String, Assignment>();
+        assignmentModel = new ListModelList<>();
+        assignmentListbox.setMultiple(false);
+        assignmentListbox.setModel(assignmentModel);
+    }
+
     public boolean isLogSelected() {
         if (selectedItem == null) {
             return false;
         }
         return selectedItem.getClass().equals(LogSummaryType.class);
+    }
+
+    public void clearArtifacts() {
+        artifactModel = new ListModelList<Artifact>();
+        artifactMap = new HashMap<Integer, Artifact>();
+        artifactListbox.setModel(artifactModel);
     }
 
     public void updateArtifacts(String rowGuid) {
@@ -356,7 +375,7 @@ public class AccessController extends SelectorComposer<Div> {
             artifactModel.add(artifact);
             artifactMap.put(id, artifact);
         }
-        Set<Artifact> selectionSet = new HashSet<Artifact>();
+        // Set<Artifact> selectionSet = new HashSet<Artifact>();
         String selectedUserName = securityService.findGroupByRowGuid(rowGuid).getName();
         try {
             Set<Usermetadata> selectedUserMetadataSet = userMetadataService.getUserMetadataByUserAndLog(selectedUserName, selectedItemId, UserMetadataTypeEnum.FILTER);
@@ -367,14 +386,14 @@ public class AccessController extends SelectorComposer<Div> {
                 String updatedTime = userMetadata.getUpdatedTime();
                 UsermetadataType usermetadataType = userMetadata.getUsermetadataType();
                 Artifact artifact = new Artifact(id, name, updatedTime, usermetadataType);
-                selectionSet.add(artifact);
+                // selectionSet.add(artifact);
             }
         } catch (Exception e) {
             LOGGER.info("Cannot find usermeta data selection for the current user");
         }
         artifactModel.setMultiple(true);
         artifactListbox.setModel(artifactModel);
-        artifactModel.setSelection(selectionSet);
+        // artifactModel.setSelection(selectionSet);
     }
 
     /**
@@ -454,11 +473,18 @@ public class AccessController extends SelectorComposer<Div> {
         selectedIconLog.setVisible(false);
         selectedIconModel.setVisible(false);
         selectedIconMetadata.setVisible(false);
+        this.selectedItem = selectedItem;
 
+        checkShowRelatedArtifacts();
+        clearArtifacts();
         if (selectedItem == null) {
+            clearAssignments();
+            btnApply.setDisabled(true);
+            candidateAssigneeAdd.setDisabled(true);
             return;
         }
-        this.selectedItem = selectedItem;
+        btnApply.setDisabled(false);
+        candidateAssigneeAdd.setDisabled(false);
 
         if (selectedItem instanceof FolderType) {
             FolderType folder = (FolderType) selectedItem;

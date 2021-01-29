@@ -67,6 +67,7 @@ import org.slf4j.LoggerFactory;
  * Modified: Chii Chang (15/04/2020)
  * Modified: Chii Chang (17/04/2020) - bug fixed
  * Modified: Chii Chang (24/12/2020) - added CaseLength filter
+ * Modified: Chii Chang (12/01/2021) - removed unused old code
  */
 public class APMLogFilter {
 
@@ -182,8 +183,6 @@ public class APMLogFilter {
         pLog.setValidTraceIndexBS(validTraceBS);
         if (validTraceBS.cardinality() > 0 ) {
             pLog.updateStats(filteredPTraceList);
-
-            pLog.setAttributeGraph(new AAttributeGraph(pLog));
         } else {
             pLog.getPTraceList().clear();
             pLog.setEventSize(0);
@@ -295,39 +294,6 @@ public class APMLogFilter {
                 return false;
         }
     }
-
-
-    private void resetDuration() {
-
-        this.pLog.durFreqMap = new UnifiedMap<>();
-        this.pLog.ttlProcTimeFreqMap = new UnifiedMap<>();
-        this.pLog.avgProcTimeFreqMap = new UnifiedMap<>();
-        this.pLog.maxProcTimeFreqMap = new UnifiedMap<>();
-        this.pLog.ttlWaitTimeFreqMap = new UnifiedMap<>();
-        this.pLog.avgWaitTimeFreqMap = new UnifiedMap<>();
-        this.pLog.maxWaitTimeFreqMap = new UnifiedMap<>();
-
-        this.pLog.setMinDuration(0);
-        this.pLog.setMaxDuration(0);
-        for(int i=0; i<this.pLog.getPTraceList().size(); i++) {
-            PTrace pTrace = this.pLog.getPTraceList().get(i);
-            if(this.pLog.getMinDuration() == 0 || pTrace.getDuration() < this.pLog.getMinDuration()) {
-                this.pLog.setMinDuration(pTrace.getDuration());
-            }
-            if(pTrace.getDuration() > this.pLog.getMaxDuration()) {
-                this.pLog.setMaxDuration(pTrace.getDuration());
-            }
-
-            this.pLog.addToPerfMap(pTrace, "duration");
-            this.pLog.addToPerfMap(pTrace, "totalProcessingTime");
-            this.pLog.addToPerfMap(pTrace, "averageProcessingTime");
-            this.pLog.addToPerfMap(pTrace, "maxProcessingTime");
-            this.pLog.addToPerfMap(pTrace, "totalWaitingTime");
-            this.pLog.addToPerfMap(pTrace, "averageWaitingTime");
-            this.pLog.addToPerfMap(pTrace, "maxWaitingTime");
-        }
-    }
-
 
     private void updateCaseVariants() {
 

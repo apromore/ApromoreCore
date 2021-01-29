@@ -56,12 +56,13 @@
 		<module>Apromore-OSGI-Bundles/parquet-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-models-osgi</module>
 		<module>Apromore-OSGI-Bundles/prom-widgets-osgi</module>
-		<module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>
+		<module>Apromore-OSGI-Bundles/prom-bpmn-osgi</module>		
 
 		<!-- Core Components -->
 		<module>Apromore-Core-Components/Apromore-Portal</module>
 		<module>Apromore-Core-Components/Apromore-Manager</module>
 		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
+		<module>Apromore-Core-Components/apromore-storage</module>
 
 		<module>Apromore-Cache</module>
 		<module>Apromore-Database</module>
@@ -85,7 +86,7 @@
 		<module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
 
 		<module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
-        <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
+                <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
 		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>     
 
 		<module>Apromore-Custom-Plugins/Log-Logic</module>
@@ -146,6 +147,7 @@
 		<apromore-cache.version>1.0</apromore-cache.version>
 		<apromore-database.version>1.0</apromore-database.version>
 		<apromore-calendar.version>1.0</apromore-calendar.version>
+		<apromore-storage.version>1.0</apromore-storage.version>
 
 		<gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 		<httpcomponents.version>4.2.1</httpcomponents.version>
@@ -233,7 +235,8 @@
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 		<jbpt-petri.version>0.2.433</jbpt-petri.version>
 		<v4-runtime.version>4.3</v4-runtime.version>
-		<liquibase.version>3.4.2</liquibase.version>
+		<liquibase.version>3.5.5</liquibase.version>
+		<snakeyaml.version>1.17</snakeyaml.version>  <!-- karaf-liquibase-feature determines the correct value for this -->
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
 		<antlr4-runtime.version>4.3</antlr4-runtime.version>
@@ -276,7 +279,7 @@
 		<maven.resources.plugin>2.7</maven.resources.plugin>
 		<maven.site.plugin>3.3</maven.site.plugin>
 		<maven.source.plugin>2.2.1</maven.source.plugin>
-		<maven.surefire.plugin>2.14.1</maven.surefire.plugin>
+		<maven.surefire.plugin>3.0.0-M5</maven.surefire.plugin>
 		<maven.taglist.plugin>2.4</maven.taglist.plugin>
 		<maven.tomcat.plugin>2.0-beta-1</maven.tomcat.plugin>
 		<maven.versions.plugin>2.0</maven.versions.plugin>
@@ -294,14 +297,6 @@
 		<!-- Config locations -->
 		<checkstyle.ruleset.location>checkstyle.xml</checkstyle.ruleset.location>
 		<pmd.ruleset.location>http://apromore.googlecode.com/svn/trunk/Extras/Build-Tools/src/main/resources/pmd.xml</pmd.ruleset.location>
-		<surefire.jvm.args>-Xms512m -Xmx4048m -XX:MaxPermSize=1024m</surefire.jvm.args>
-
-		<!-- Testing Settings -->
-		<integration.test.package>itest</integration.test.package>
-		<integration.test.suffix>IntgTest.java</integration.test.suffix>
-		<unit.test.suffix>UnitTest.java</unit.test.suffix>
-		<endpoint.test.suffix>EndpointTest.java</endpoint.test.suffix>
-		<ignored.test.suffix>ManualTest.java</ignored.test.suffix>
 
 		<!-- Toggles to turn off checks -->
 		<checkstyle.skip>true</checkstyle.skip>
@@ -415,6 +410,12 @@
 				<artifactId>commons-collections4</artifactId>
 				<version>4.1</version>
 			</dependency>
+		
+			<dependency>
+				<groupId>org.apromore</groupId>
+				<artifactId>apromore-storage</artifactId>
+				<version>${apromore-storage.version}</version>
+			</dependency>
 
 			<!-- BPM Imports -->
 			<dependency>
@@ -466,8 +467,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.liquibase</groupId>
-				<artifactId>liquibase-osgi</artifactId>
+				<artifactId>liquibase-core</artifactId>
 				<version>${liquibase.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+                                <version>${snakeyaml.version}</version>
 			</dependency>
 
 			<dependency>
@@ -1302,12 +1308,6 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.plugin}</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
 					<version>${maven.enforcer.plugin}</version>
 				</plugin>
@@ -1339,11 +1339,41 @@
 					<artifactId>maven-bundle-plugin</artifactId>
 					<version>${maven.bundle.plugin}</version>
 					<extensions>true</extensions>
+					<inherited>true</inherited>
+					<executions>
+						<execution>
+							<id>bundle-manifest</id>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>manifest</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<archive>
+							<forced>true</forced>
+						</archive>
+						<niceManifest>true</niceManifest>
+						<supportedProjectTypes>
+							<supportedProjectType>bundle</supportedProjectType>
+							<supportedProjectType>war</supportedProjectType>
+						</supportedProjectTypes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.2.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${maven.war.plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.2.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -1396,6 +1426,20 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven.surefire.plugin}</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>${maven.jxr.plugin}</version>
 				<configuration>
@@ -1419,35 +1463,10 @@
 					<printSummary>true</printSummary>
 					<runOrder>alphabetical</runOrder>
 					<failIfNoTests>false</failIfNoTests>
-					<argLine>${argLine} ${surefire.jvm.args}</argLine>
 					<includes>
-						<include>**/*${unit.test.suffix}</include>
-						<include>**/*${endpoint.test.suffix}</include>
+						<include>**/*UnitTest.java</include>
 					</includes>
-					<excludes>
-						<exclude>**/*${integration.test.suffix}</exclude>
-						<exclude>**/*${ignored.test.suffix}</exclude>
-					</excludes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<phase>integration-test</phase>
-						<configuration>
-							<excludes>
-								<exclude>**/*${ignored.test.suffix}</exclude>
-							</excludes>
-							<includes>
-								<include>**/${integration.test.package}/**/*Test.java</include>
-								<include>**/${integration.test.package}/**/*TestCase.java</include>
-								<include>**/*${integration.test.suffix}</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -1611,43 +1630,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${maven.bundle.plugin}</version>
-				<extensions>true</extensions>
-				<inherited>true</inherited>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<archive>
-						<forced>true</forced>
-					</archive>
-					<niceManifest>true</niceManifest>
-					<supportedProjectTypes>
-						<supportedProjectType>jar</supportedProjectType>
-						<supportedProjectType>bundle</supportedProjectType>
-						<supportedProjectType>war</supportedProjectType>
-					</supportedProjectTypes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar.plugin}</version>
-				<configuration>
-					<archive>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${maven.war.plugin}</version>
@@ -1719,10 +1701,10 @@
 					<organizationName>The Apromore Initiative</organizationName>
 					<copyrightOwners>Apromore Pty Ltd.</copyrightOwners>
 					<projectName>This file is part of "Apromore Core".</projectName>
-					<failOnMissingHeader>true</failOnMissingHeader>
 					<canUpdateCopyright>true</canUpdateCopyright>
 					<!--<canUpdateDescription>true</canUpdateDescription> -->
 					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+					<ignoreNoFileToScan>true</ignoreNoFileToScan>
 
 				</configuration>
 				<executions>

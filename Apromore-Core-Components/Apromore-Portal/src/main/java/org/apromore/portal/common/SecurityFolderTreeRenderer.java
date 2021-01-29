@@ -205,12 +205,12 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                     default:
                         assert false: "Clicked tree node with type " + clickedNodeValue.getType() + " is not implemented";
                     }
-
-                    UserSessionManager.setCurrentSecurityOwnership(currentUserHasOwnership(groups));
+                    boolean hasOwnership = currentUserHasOwnership(groups);
+                    UserSessionManager.setCurrentSecurityOwnership(hasOwnership);
                     UserSessionManager.setCurrentSecurityItem(selectedId);
                     UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
                     EventQueues.lookup("accessControl", EventQueues.DESKTOP, true)
-                            .publish(new Event("onSelect", null, selectedItem));
+                            .publish(new Event("onSelect", null, hasOwnership ? selectedItem : null));
 //                    if (securitySetupController != null) {
 //                        securitySetupController.getPermissionsController().loadUsers(selectedId, clickedNodeValue.getType());
 //                        securitySetupController.getFindGroupsController().updateSelection();

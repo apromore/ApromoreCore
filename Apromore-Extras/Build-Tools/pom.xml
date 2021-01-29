@@ -13,6 +13,10 @@
     <name>Apromore Build Tools Extension</name>
     <description>The Build tools are to help track changes in the code and a place to store checkstyle configuration for all the other projects in Apromore.</description>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

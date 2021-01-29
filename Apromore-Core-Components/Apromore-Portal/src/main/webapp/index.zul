@@ -172,7 +172,7 @@
                         <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
                         <h:div class="ap-header-title">Portal</h:div>
                         <h:div class="ap-header-actions">
-                            <h:a href="https://apromore.org/help/user-manual/getting-started/navigating-the-apromore-portal/" target="_blank">
+                            <h:a href="https://documentation.apromore.org/gettingstarted/navigatingtheapromoreportal.html" target="_blank">
                                 <h:button class="ap-icon ap-icon-help"/>
                             </h:a>
                         </h:div>
@@ -218,7 +218,7 @@
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="Manage users and groups"/>
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
-                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file"/>
+                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file or folder"/>
                             <h:span class="ap-action-sep"></h:span>
                             <button id="btnCalendar" visible="false" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="Manage calendars"/>
                         </hbox>
@@ -264,5 +264,5 @@
             window.__AP__ = {};
         ]]>
     </script>
-    <h:script type="text/javascript" defer="defer" src="themes/ap/common/js/jschardet.min.js"></h:script>
+    <h:script type="text/javascript" defer="defer" src="libs/jschardet/jschardet.min.js"></h:script>
 </zk>

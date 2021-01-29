@@ -45,6 +45,7 @@ public class ShareController extends SelectorComposer<Window> {
     private Object selectedItem;
     private Boolean autoInherit;
     private Boolean showRelatedArtifacts;
+    private Boolean enablePublish;
     private Window win;
 
     public ShareController() throws Exception {
@@ -53,6 +54,7 @@ public class ShareController extends SelectorComposer<Window> {
         selectedItem = argMap.get("selectedItem");
         autoInherit = (Boolean)argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean)argMap.get("showRelatedArtifacts");
+        enablePublish = (Boolean)argMap.get("enablePublish");
     }
 
     @Override

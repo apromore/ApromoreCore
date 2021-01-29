@@ -74,7 +74,7 @@
             <artifactId>org.eclipse.persistence.core</artifactId>
         </dependency>
         
-        <!-- Database Connectiond -->
+        <!-- Database Connections -->
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp</artifactId>
@@ -85,12 +85,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-osgi</artifactId>
+			<artifactId>liquibase-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>1.26</version>
 		</dependency>
 
 		<dependency>

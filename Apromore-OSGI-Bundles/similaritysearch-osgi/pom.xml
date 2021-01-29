@@ -26,19 +26,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.similaritysearch.*,
-                            org.apromore.similaritysearch.algorithms.*,
-                            org.apromore.similaritysearch.common.*,
-                            org.apromore.similaritysearch.common.algos.*,
-                            org.apromore.similaritysearch.common.prom.*,
-                            org.apromore.similaritysearch.common.similarity.*,
-                            org.apromore.similaritysearch.common.stemmer.*,
-                            org.apromore.similaritysearch.common.stemmer.ext.*,
-                            org.apromore.similaritysearch.digest.*,
-                            org.apromore.similaritysearch.graph.*,
-                            org.apromore.similaritysearch.digest.*,
-                            org.apromore.similaritysearch.planarGraphMathing.*,
-                            org.apromore.similaritysearch.tools.*,
+                            org.apromore.similaritysearch.*
                         </Export-Package>
                     </instructions>
                 </configuration>
