@@ -24,6 +24,10 @@
     }
   };
 
+  Ap.login.encodeEmail = function(email) {
+    return [...Array(email.length).keys()].map(x => email.charCodeAt(x).toString(16)).reverse().join('');
+  };
+
   let preferredCountries = ['au', 'ee', 'it', 'de', 'gb', 'us', 'ca'];
 
   Ap.login.onSubmit = function(e) {
