@@ -31,6 +31,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
+import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
@@ -297,6 +298,23 @@ public class PDController extends BaseController {
     
             // Prepare log data
             logData = pdFactory.createLogData(contextData, eventLogService);
+            IndexableAttribute mainAttribute = logData.getAttribute(configData.getDefaultAttribute());
+            if (mainAttribute == null) {
+                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.", 
+                        "Process Discoverer", 
+                        Messagebox.OK, 
+                        Messagebox.INFORMATION);
+                return;
+            }
+            else if (mainAttribute.getValueSize() > configData.getMaxNumberOfUniqueValues()) {
+                Messagebox.show("We cannot display the process map due to a large number of activities in the log " +
+                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")", 
+                                "Process Discoverer", 
+                                Messagebox.OK, 
+                                Messagebox.INFORMATION);
+                return;
+            }
+            
             logData.setMainAttribute(configData.getDefaultAttribute());
             userOptions.setMainAttributeKey(configData.getDefaultAttribute());
             processDiscoverer = new ProcessDiscoverer(logData.getAttributeLog());

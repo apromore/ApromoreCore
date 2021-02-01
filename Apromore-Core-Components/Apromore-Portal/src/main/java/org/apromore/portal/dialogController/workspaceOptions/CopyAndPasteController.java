@@ -136,7 +136,7 @@ public class CopyAndPasteController extends BaseController {
     private void cloneFolder(FolderType folder, Integer targetFolderId, int level) throws Exception {
         Integer folderId = folder.getId();
         String folderName = folder.getFolderName();
-        List<FolderType> sourceSubFolders = folder.getFolders();
+        List<FolderType> sourceSubFolders = getSubFolders(folderId);
         Integer newTargetFolderId = createFolder(targetFolderId, folderName);
         if (newTargetFolderId < 0) {
             LOGGER.error("Fail to clone folder");

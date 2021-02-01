@@ -49,6 +49,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.portal.ConfigBean;
@@ -395,7 +396,7 @@ public class ImportController extends BaseController {
             String extension = discoverExtension(fileName);
             System.out.println(fileName);
             System.out.println(extension);
-            String logFileName = fileName.substring(0, fileName.indexOf(extension) - 1);
+            String logFileName = FilenameUtils.removeExtension(fileName);
 
             getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, logMedia.getStreamData(),
                     extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublicCheckbox.isChecked());

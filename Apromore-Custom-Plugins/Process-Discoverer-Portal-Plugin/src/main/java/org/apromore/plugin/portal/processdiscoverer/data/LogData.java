@@ -78,16 +78,13 @@ public class LogData {
     
     //////////////////////// Data /////////////////////////////
     
+    public IndexableAttribute getAttribute(String key) {
+        return (IndexableAttribute)indexableAttributes.select(att -> att.getKey().equals(key)).get(0);
+    }
+    
     public void setMainAttribute(String key) throws NotFoundAttributeException  {
-        IndexableAttribute newAttribute = null;
-        for (AbstractAttribute att : indexableAttributes) {
-            if (att.getKey().equals(key)) {
-                newAttribute = (IndexableAttribute)att;
-                break;
-            }
-        }
-        
         long timer = 0;
+        IndexableAttribute newAttribute = getAttribute(key);
         if (newAttribute != null) {
             if (mainAttribute != newAttribute) {
                 mainAttribute = newAttribute;
