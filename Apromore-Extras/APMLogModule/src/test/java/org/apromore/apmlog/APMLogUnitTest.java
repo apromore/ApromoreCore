@@ -22,7 +22,6 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.immutable.ImmutableLog;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
@@ -402,6 +401,20 @@ public class APMLogUnitTest {
         XLog xLog = getXLog("files/5cases.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PLogAttributeGraphTest.testArc(apmLog);
+    }
+
+    @Test
+    public void testTripleOverlap() throws Exception {
+        XLog xLog = getXLog("files/TripleOverlap.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        TripleOverlapTest.test1(apmLog);
+    }
+
+    @Test
+    public void testNoLifecycle() throws Exception {
+        XLog xLog = getXLog("files/DiscardNoLifecycle.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        DiscardNoLifecycleTest.test1(apmLog);
     }
 
 

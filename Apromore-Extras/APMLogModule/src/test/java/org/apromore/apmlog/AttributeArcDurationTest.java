@@ -259,7 +259,7 @@ public class AttributeArcDurationTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         PLog pLog = apmLogFilter.getPLog();
         pLog.updateStats();
-        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A");
+        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A", pLog);
         DoubleArrayList durList = subGraph.getValDurListMap().get("A");
 
         assertEquals(1000 * 60 * 60 * 2d, durList.average(), 0 /* comparison tolerance */);

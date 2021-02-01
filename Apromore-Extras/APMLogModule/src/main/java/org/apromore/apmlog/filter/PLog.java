@@ -45,6 +45,8 @@ package org.apromore.apmlog.filter;
 import org.apromore.apmlog.*;
 import org.apromore.apmlog.immutable.ImmutableLog;
 import org.apromore.apmlog.stats.AAttributeGraph;
+import org.apromore.apmlog.stats.CaseAttributeValue;
+import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -56,8 +58,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-import static java.util.Map.Entry.comparingByValue;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Chii Chang
@@ -69,9 +71,9 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (10/11/2020)
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (06/01/2021)
- * Modified: Chii Chang (13/01/2021)
+ * Modified: Chii Chang (26/01/2021)
  */
-public class PLog implements APMLog{
+public class PLog implements APMLog {
 
     private APMLog apmLog;
 
@@ -122,16 +124,15 @@ public class PLog implements APMLog{
     private AAttributeGraph originalAttributeGraph;
     private AAttributeGraph previousAttributeGraph;
 
+    private UnifiedMap<String, UnifiedSet<EventAttributeValue>> eventAttributeValues;
+    private UnifiedMap<String, UnifiedSet<CaseAttributeValue>> caseAttributeValues;
+
     //*************
     private List<ATrace> immutableTraces; // this is the immutable traces
-    private List<ATrace> traceList; // this is mutable traces;
     private UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> eventAttributeOccurMap;
     private HashBiMap<String, Integer> activityNameBiMap = new HashBiMap<>();
     private UnifiedMap<Integer, Integer> variantIdFreqMap;
     private HashBiMap<Integer, String> actIdNameMap = new HashBiMap<>();
-    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap;
-    private UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap;
-    private UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap;
     private UnifiedMap<String, Integer> activityMaxOccurMap = new UnifiedMap<>();
     private String timeZone = "";
     private long startTime = -1;
@@ -162,7 +163,6 @@ public class PLog implements APMLog{
     }
 
     private void initDefault() {
-        this.attributeGraph = apmLog.getAAttributeGraph();
         eventAttributeOccurMap = new UnifiedMap<>(apmLog.getEventAttributeOccurMap());
         variantSize = apmLog.getCaseVariantSize();
         activityNameBiMap = apmLog.getActivityNameBiMap();
@@ -174,15 +174,22 @@ public class PLog implements APMLog{
         this.activityNameMapper = apmLog.getActivityNameMapper();
 
         this.activityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
+        this.originalActivityMaxOccurMap =  new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
 
         pTraceUnifiedMap = new UnifiedMap<>();
 
         this.timeZone = apmLog.getTimeZone();
 
+        this.eventAttributeValues = new UnifiedMap<>(apmLog.getEventAttributeValues());
+        this.caseAttributeValues = new UnifiedMap<>(apmLog.getCaseAttributeValues());
+
+        this.attributeGraph = apmLog.getAAttributeGraph();
+
 
         this.validTraceIndexBS = new BitSet(apmLog.getImmutableTraces().size());
+        this.validTraceIndexBS.set(0, apmLog.getImmutableTraces().size());
         this.originalValidTraceIndexBS = new BitSet(apmLog.getImmutableTraces().size());
-
+        this.originalValidTraceIndexBS.set(0, apmLog.getImmutableTraces().size());
 
 
         for (ATrace aTrace : apmLog.getTraceList()) {
@@ -196,36 +203,28 @@ public class PLog implements APMLog{
         this.validTraceIndexBS.set(0, apmLog.getImmutableTraces().size(), true);
         this.originalValidTraceIndexBS.set(0, apmLog.getImmutableTraces().size(), true);
 
-        /**
-         * PERFORMANCE PROBLEM
-         */
-
-        this.pTraceList = new ArrayList<>();
-
-        LOGGER.info("copy apmTraceList to pTraceList");
-
 
         List<ATrace> apmTraceList = apmLog.getTraceList();
 
         this.immutableTraces = apmLog.getImmutableTraces();
-        this.traceList = new ArrayList<>(apmTraceList.size());
         this.pTraceList = new ArrayList<>(apmTraceList.size());
         this.originalPTraceList = new ArrayList<>(apmTraceList.size());
 
+
         caseDurationList = new DoubleArrayList(apmLog.getTraceList().size());
 
-        for(int i=0; i < apmTraceList.size(); i++) {
-            ATrace aTrace = apmTraceList.get(i);
+        caseIndexMap.clear();
 
+
+        int mutableIndex = 0;
+        for (ATrace aTrace : apmTraceList) {
             PTrace pTrace = new PTrace(aTrace, apmLog);
-
-            this.traceList.add(pTrace);
-
+            this.pTraceList.add(pTrace);
             caseDurationList.add(pTrace.getDuration());
 
-            caseIndexMap.put(pTrace, i);
+            caseIndexMap.put(pTrace, mutableIndex);
 
-            this.pTraceList.add(pTrace);
+
             this.pTraceUnifiedMap.put(aTrace.getCaseId(), pTrace);
             if(pTrace.caseIdDigit > 0) {
                 if(pTrace.caseIdDigit > maxCaseIdDigit) maxCaseIdDigit = pTrace.caseIdDigit;
@@ -233,8 +232,8 @@ public class PLog implements APMLog{
             }
 
             this.originalPTraceList.add(pTrace);
+            mutableIndex += 1;
         }
-
 
 
         LOGGER.info("do the rest of copies");
@@ -272,13 +271,6 @@ public class PLog implements APMLog{
 
         this.originalActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
 
-        this.caseAttributeValueFreqMap = apmLog.getCaseAttributeValueFreqMap();
-        this.eventAttributeValueFreqMap = apmLog.getEventAttributeValueFreqMap();
-        this.eventAttributeValueCasesFreqMap = apmLog.getEventAttributeValueCasesFreqMap();
-
-
-
-
         LOGGER.info("done");
     }
 
@@ -294,35 +286,52 @@ public class PLog implements APMLog{
 
         variantIdFreqMap = new UnifiedMap<>();
 
-        UnifiedMap<IntArrayList, Integer> actNameIndexesFreqMap = new UnifiedMap<>();
-
         List<IntArrayList> traceActNameIndexes = new ArrayList<>();
 
         eventSize = 0;
 
         variantIdFreqMap = new UnifiedMap<>();
 
-        pTraceList = new ArrayList<>(filteredPTraceList);
-        traceList = new ArrayList<>(filteredPTraceList);
+        pTraceList = filteredPTraceList;
 
         pTraceUnifiedMap.clear();
 
-        eventAttributeValueCasesFreqMap.clear();
-        eventAttributeValueFreqMap.clear();
-        caseAttributeValueFreqMap.clear();
-
         this.caseDurationList = new DoubleArrayList(pTraceList.size());
 
-        for (int i = 0; i < pTraceList.size(); i++) {
+        UnifiedMap<String, UnifiedMap<String, IntArrayList>> caseAttrValOccurMap = new UnifiedMap<>();
 
-            PTrace trace = pTraceList.get(i);
+        int index = 0;
+
+        for (PTrace trace : pTraceList) {
+
+            UnifiedMap<String, String> tAttrMap = trace.getAttributeMap();
+
+            for (String attrKey : tAttrMap.keySet()) {
+                String val = trace.getAttributeMap().get(attrKey);
+
+                if (caseAttrValOccurMap.keySet().contains(attrKey)) {
+                    UnifiedMap<String, IntArrayList> valOccurMap = caseAttrValOccurMap.get(attrKey);
+                    if (valOccurMap.containsKey(val)) {
+                        valOccurMap.get(val).add(index);
+                    } else {
+                        IntArrayList indexes = new IntArrayList();
+                        indexes.add(index);
+                        valOccurMap.put(val, indexes);
+                    }
+                } else {
+                    IntArrayList indexes = new IntArrayList();
+                    indexes.add(index);
+                    UnifiedMap<String, IntArrayList> valOccurMap = new UnifiedMap<>();
+                    valOccurMap.put(val, indexes);
+                    caseAttrValOccurMap.put(attrKey, valOccurMap);
+                }
+            }
 
             caseDurationList.add(trace.getDuration());
 
-            trace.update(i);
+            trace.update(index);
 
             pTraceUnifiedMap.put(trace.getCaseId(), trace);
-            updateCaseAttributes(trace);
 
             int vari = trace.getCaseVariantId();
 
@@ -333,12 +342,6 @@ public class PLog implements APMLog{
 
             IntArrayList actNameIndexes = getActivityNameIndexes(trace);
             traceActNameIndexes.add(actNameIndexes);
-            if (actNameIndexesFreqMap.containsKey(actNameIndexes)) {
-                int freq = actNameIndexesFreqMap.get(actNameIndexes) + 1;
-                actNameIndexesFreqMap.put(actNameIndexes, freq);
-            } else {
-                actNameIndexesFreqMap.put(actNameIndexes, 1);
-            }
 
             if (startTime < 1 || trace.getStartTimeMilli() < startTime) startTime = trace.getStartTimeMilli();
             if (trace.getEndTimeMilli() > endTime) endTime = trace.getEndTimeMilli();
@@ -346,46 +349,75 @@ public class PLog implements APMLog{
             BitSet vEvents = trace.getValidEventIndexBitSet();
             eventSize += vEvents.cardinality();
 
+            index += 1;
+        }
+
+        caseAttributeValues = new UnifiedMap<>();
+
+        for (String attrKey : caseAttrValOccurMap.keySet()) {
+            UnifiedMap<String, IntArrayList> valOccurMap = caseAttrValOccurMap.get(attrKey);
+            UnifiedSet<CaseAttributeValue> cavSet = new UnifiedSet<>();
+
+            int[] arr = valOccurMap.entrySet().stream().mapToInt(x -> x.getValue().size()).toArray();
+            IntArrayList ial = new IntArrayList(arr);
+
+            int maxOccurSize = ial.max();
+
+            for (String val : valOccurMap.keySet()) {
+                CaseAttributeValue cav = new CaseAttributeValue(val, valOccurMap.get(val), pTraceList.size());
+                cav.setRatio(100 * ( (double) cav.getCases() / maxOccurSize));
+                cavSet.add(cav);
+            }
+            caseAttributeValues.put(attrKey, cavSet);
         }
 
         variantSize = variantIdFreqMap.size();
 
-        List<Map.Entry<IntArrayList, Integer>> list = new ArrayList<>(actNameIndexesFreqMap.entrySet());
-        list.sort(comparingByValue());
-
         updateEventAttributeOccurMap();
 
-        int size = eventAttributeOccurMap.size();
-        eventAttributeValueFreqMap = new UnifiedMap<>(size);
+        eventAttributeValues = new UnifiedMap<>();
 
-
-        for (String key : eventAttributeOccurMap.keySet()) {
+        for (String key : eventAttributeOccurMap.keySet()) {  // !!!!! performance issue
             UnifiedMap<String, UnifiedSet<AActivity>> valOccurMap = eventAttributeOccurMap.get(key);
-            UnifiedMap<String, Integer> valFreqMap = new UnifiedMap<>(valOccurMap.size());
 
             UnifiedMap<String, Integer> valCaseFreqMap = new UnifiedMap<>(valOccurMap.size());
 
+            UnifiedSet<EventAttributeValue> attrVals = new UnifiedSet<>();
+            int maxCasesOfCSEventAttrVal = 0;
+
+
             for (String val : valOccurMap.keySet()) {
-                int freq = valOccurMap.get(val).size();
-                valFreqMap.put(val, freq);
 
                 UnifiedSet<AActivity> occurSet = valOccurMap.get(val);
-                UnifiedSet<Integer> traceIndexes = new UnifiedSet<>();
-                for (AActivity act : occurSet) {
-                    int traceIndex = act.getMutableTraceIndex();
-                    if (!traceIndexes.contains(traceIndex)) traceIndexes.add(traceIndex);
-                }
-                valCaseFreqMap.put(val, traceIndexes.size());
-            }
-            eventAttributeValueFreqMap.put(key, valFreqMap);
-            eventAttributeValueCasesFreqMap.put(key, valCaseFreqMap);
 
+                int[] array = occurSet.stream().mapToInt(s -> s.getMutableTraceIndex()).toArray();
+                List<Integer> traceIndexList = IntStream.of(array).boxed().collect(Collectors.toList());
+                UnifiedSet<Integer> uniqueTraceIndexes = new UnifiedSet<>(traceIndexList);
+                List<Integer> uniqueTraceIndexList = new ArrayList<>(uniqueTraceIndexes);
+
+                int[] array2 = uniqueTraceIndexList.stream().mapToInt(s -> s).toArray();
+
+                IntArrayList traceIndexes = new IntArrayList(array2);
+
+                valCaseFreqMap.put(val, traceIndexes.size());
+
+                try {
+                    attrVals.add(new EventAttributeValue(val, traceIndexes, pTraceList.size(), occurSet));
+                } catch (Exception e) {
+                    System.out.println("");
+                }
+                if (traceIndexes.size() > maxCasesOfCSEventAttrVal) maxCasesOfCSEventAttrVal = traceIndexes.size();
+            }
+
+            for (EventAttributeValue v : attrVals) {
+                v.setRatio(100 * ( (double) v.getCases() / maxCasesOfCSEventAttrVal));
+            }
+            eventAttributeValues.put(key, attrVals);
         }
 
         updateActivityOccurMaxMap();
 
         attributeGraph = new AAttributeGraph(this);
-        defaultChartDataCollection = new DefaultChartDataCollection(this);
     }
 
     private IntArrayList getActivityNameIndexes(ATrace aTrace) {
@@ -398,28 +430,6 @@ public class PLog implements APMLog{
         return nameIndexes;
     }
 
-
-    private void updateCaseAttributes(PTrace pTrace) {
-
-        UnifiedMap<String, String> map = pTrace.getAttributeMap();
-        for (String key : map.keySet()) {
-            String val = map.get(key);
-
-            if (!key.equals("concept:name") && !key.equals("case:variant")) {
-                if (caseAttributeValueFreqMap.containsKey(key)) {
-                    UnifiedMap<String, Integer> valFreqMap = caseAttributeValueFreqMap.get(key);
-                    if (valFreqMap.containsKey(val)) {
-                        int freq = valFreqMap.get(val) + 1;
-                        valFreqMap.put(val, freq);
-                    } else valFreqMap.put(val, 1);
-                } else {
-                    UnifiedMap<String, Integer> valFreqMap = new UnifiedMap<>();
-                    valFreqMap.put(val, 1);
-                    caseAttributeValueFreqMap.put(key, valFreqMap);
-                }
-            }
-        }
-    }
 
     private void updateEventAttributeOccurMap() {
         eventAttributeOccurMap = new UnifiedMap<>();
@@ -434,36 +444,81 @@ public class PLog implements APMLog{
 
     public void reset() {
 
-        attributeGraph = originalAttributeGraph;
+        resetPrevious();
 
-        this.traceList.clear();
-        this.pTraceList.clear();
+        eventAttributeOccurMap = new UnifiedMap<>(apmLog.getEventAttributeOccurMap());
+        variantSize = apmLog.getCaseVariantSize();
+        activityNameBiMap = apmLog.getActivityNameBiMap();
 
-        for(int i=0; i<this.originalPTraceList.size(); i++) {
-            this.originalPTraceList.get(i).reset();
+        this.defaultChartDataCollection = apmLog.getDefaultChartDataCollection();
 
-            PTrace pTrace = this.originalPTraceList.get(i);
+        this.activityNameMapper = apmLog.getActivityNameMapper();
 
+        this.activityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
+
+        pTraceUnifiedMap = new UnifiedMap<>();
+
+        this.timeZone = apmLog.getTimeZone();
+
+        this.eventAttributeValues = new UnifiedMap<>(apmLog.getEventAttributeValues());
+        this.caseAttributeValues = new UnifiedMap<>(apmLog.getCaseAttributeValues());
+
+        this.attributeGraph = apmLog.getAAttributeGraph();
+
+        this.validTraceIndexBS = new BitSet(apmLog.getImmutableTraces().size());
+        this.validTraceIndexBS.set(0, apmLog.getImmutableTraces().size());
+
+        for (ATrace aTrace : apmLog.getTraceList()) {
+            int index = aTrace.getImmutableIndex();
+            this.validTraceIndexBS.set(index);
+        }
+
+
+        LOGGER.info("init values for validTraceIndexBS, originalValidTraceIndexBS, previousValidTraceIndexBS");
+        this.validTraceIndexBS.set(0, apmLog.getImmutableTraces().size(), true);
+
+
+        List<ATrace> apmTraceList = apmLog.getTraceList();
+
+        this.immutableTraces = apmLog.getImmutableTraces();
+        this.pTraceList = new ArrayList<>(apmTraceList.size());
+
+        caseDurationList = new DoubleArrayList(apmLog.getTraceList().size());
+
+        caseIndexMap.clear();
+
+        this.pTraceList = new ArrayList<>(originalPTraceList);
+
+        for (PTrace pTrace : pTraceList) {
             pTrace.reset();
+            caseDurationList.add(pTrace.getDuration());
+            caseIndexMap.put(pTrace, pTrace.getImmutableIndex());
 
-            this.traceList.add(pTrace);
-            this.pTraceList.add(pTrace);
-        }
-        pTraceList = originalPTraceList;
-        caseVariantSize = originalCaseVariantSize;
-        eventSize = originalEventSize;
-        startTime = originalStartTime;
-        endTime = originalEndTime;
-        variantIdFreqMap = originalVariantIdFreqMap;
-        activityMaxOccurMap = originalActivityMaxOccurMap;
-
-        for(int i=0; i<validTraceIndexBS.length(); i++) {
-            validTraceIndexBS.set(i, true);
+            this.pTraceUnifiedMap.put(pTrace.getCaseId(), pTrace);
+            if(pTrace.caseIdDigit > 0) {
+                if(pTrace.caseIdDigit > maxCaseIdDigit) maxCaseIdDigit = pTrace.caseIdDigit;
+                if(minCaseIdDigit == 0 || pTrace.caseIdDigit < minCaseIdDigit) minCaseIdDigit = pTrace.caseIdDigit;
+            }
         }
 
-        updateEventAttributeOccurMap();
+        LOGGER.info("do the rest of copies");
+        this.caseVariantSize = apmLog.getCaseVariantSize();
+        this.eventSize = apmLog.getEventSize();
+        this.medianDuration = apmLog.getMedianDuration();
+        this.averageDuration = apmLog.getAverageDuration();
+        this.startTime = apmLog.getStartTime();
+        this.endTime = apmLog.getEndTime();
 
-        this.updateStats(pTraceList);
+        LOGGER.info("copy case variant id freq map");
+        UnifiedMap<Integer, Integer> apmVariantIdFreqMap = apmLog.getCaseVariantIdFrequencyMap();
+
+        LOGGER.info("done");
+
+        this.variantIdFreqMap = new UnifiedMap<>(apmVariantIdFreqMap);
+        caseVariantSize = variantIdFreqMap.size();
+
+        LOGGER.info("reset complete");
+
     }
 
     public void resetPrevious() {
@@ -472,15 +527,9 @@ public class PLog implements APMLog{
             attributeGraph = previousAttributeGraph;
             this.pTraceList = previousPTraceList;
 
-            this.traceList.clear();
+            double[] durArr = pTraceList.stream().mapToDouble(s -> s.getDuration()).toArray();
 
-            caseDurationList = new DoubleArrayList(pTraceList.size());
-
-            for (PTrace pTrace: pTraceList) {
-                pTrace.resetPrevious();
-                this.traceList.add(pTrace);
-                caseDurationList.add(pTrace.getDuration());
-            }
+            caseDurationList = new DoubleArrayList(durArr);
 
             caseVariantSize = previousCaseVariantSize;
             eventSize = previousEventSize;
@@ -636,18 +685,6 @@ public class PLog implements APMLog{
 
     /* ----------------- GET methods ------------------ */
 
-    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueCasesFreqMap() {
-        return eventAttributeValueCasesFreqMap;
-    }
-
-    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
-        return eventAttributeValueFreqMap;
-    }
-
-    public UnifiedMap<String, UnifiedMap<String, Integer>> getCaseAttributeValueFreqMap() {
-        return caseAttributeValueFreqMap;
-    }
-
     public void setActivityMaxOccurMap(UnifiedMap<String, Integer> activityMaxOccurMap) {
         this.activityMaxOccurMap = activityMaxOccurMap;
     }
@@ -716,9 +753,9 @@ public class PLog implements APMLog{
 
     @Override
     public UnifiedMap<String, ATrace> getTraceUnifiedMap() {
-        UnifiedMap<String, ATrace> map = new UnifiedMap<>(traceList.size());
-        for (int i = 0; i < traceList.size(); i++) {
-            map.put(traceList.get(i).getCaseId().intern(), traceList.get(i));
+        UnifiedMap<String, ATrace> map = new UnifiedMap<>(pTraceList.size());
+        for (PTrace pTrace : pTraceList) {
+            map.put(pTrace.getCaseId().intern(), pTrace);
         }
         return map;
     }
@@ -743,21 +780,13 @@ public class PLog implements APMLog{
     }
 
     public UnifiedSet<String> getEventAttributeNameSet() {
-        UnifiedSet<String> validNames = new UnifiedSet<>();
-
-        for (String key : eventAttributeOccurMap.keySet()) {
-            int qty = eventAttributeOccurMap.get(key).size();
-            if(qty < 100000 && !key.equals("concept:name") && !key.equals("org:resource")) {
-                validNames.put(key);
-            }
-        }
-        return validNames;
+        return new UnifiedSet<>(eventAttributeOccurMap.keySet());
     }
 
     public List<String> getCaseAttributeNameList() {
-        List<String> nameList = new ArrayList<>(caseAttributeValueFreqMap.keySet());
-        Collections.sort(nameList);
-        return nameList;
+        Set<String> names = caseAttributeValues.keySet();
+        if (names.contains("case:variant")) names.remove("case:variant");
+        return new ArrayList<>(names);
     }
 
     public int size() {
@@ -780,11 +809,6 @@ public class PLog implements APMLog{
     @Override
     public long getCaseVariantSize() {
         return variantSize;
-    }
-
-    @Override
-    public void setCaseVariantSize(int caseVariantSize) {
-
     }
 
     @Override
@@ -862,14 +886,13 @@ public class PLog implements APMLog{
     }
 
     @Override
-    public DoubleArrayList getCaseDurations() {
-        return caseDurationList;
-    }
-
-
-    @Override
     public UnifiedMap<Integer, Integer> getVariantIdFreqMap() {
         return variantIdFreqMap;
+    }
+
+    @Override
+    public DoubleArrayList getCaseDurations() {
+        return caseDurationList;
     }
 
     @Override
@@ -877,20 +900,12 @@ public class PLog implements APMLog{
         return !caseDurationList.isEmpty() ? caseDurationList.min() : 0;
     }
 
-    @Override
-    public void setMinDuration(double minDuration) {
-
-    }
 
     @Override
     public double getMaxDuration() {
         return !caseDurationList.isEmpty() ? caseDurationList.max() : 0;
     }
 
-    @Override
-    public void setMaxDuration(double maxDuration) {
-
-    }
 
     @Override
     public List<ATrace> getImmutableTraces() {
@@ -899,34 +914,21 @@ public class PLog implements APMLog{
 
     @Override
     public List<ATrace> getTraceList() {
-        return traceList;
+        return pTraceList.stream()
+                .collect(Collectors.toList());
     }
 
     @Override
     public void setTraceList(List<ATrace> traceList) {
-        this.traceList = traceList;
+        pTraceList.clear();
+        for (ATrace aTrace : traceList) {
+            pTraceList.add( new PTrace(aTrace, apmLog) );
+        }
+        updateStats();
     }
 
     public List<PTrace> getOriginalPTraceList() {
-        List<HashBiMap.Entry<PTrace, Integer> > list =
-                new ArrayList<HashBiMap.Entry<PTrace, Integer> >(caseIndexMap.entrySet());
-
-
-        Collections.sort(list, new Comparator<HashBiMap.Entry<PTrace, Integer>>() {
-            @Override
-            public int compare(HashBiMap.Entry<PTrace, Integer> o1, HashBiMap.Entry<PTrace, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        });
-
-        List<PTrace> theOPTraceList = new ArrayList<>();
-
-        for (HashBiMap.Entry<PTrace, Integer> entry: list) {
-            PTrace pTrace = entry.getKey();
-            theOPTraceList.add(pTrace);
-        }
-
-        return theOPTraceList;
+        return originalPTraceList;
     }
 
     public UnifiedMap<Integer, Integer> getOriginalVariantIdFreqMap() {
@@ -951,6 +953,20 @@ public class PLog implements APMLog{
 
     public UnifiedMap<String, PTrace> getPTraceUnifiedMap() {
         return pTraceUnifiedMap;
+    }
+
+    public APMLog getOriginalAPMLog() {
+        return apmLog;
+    }
+
+    @Override
+    public UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues() {
+        return eventAttributeValues;
+    }
+
+    @Override
+    public UnifiedMap<String, UnifiedSet<CaseAttributeValue>> getCaseAttributeValues() {
+        return caseAttributeValues;
     }
 
     /**
@@ -981,34 +997,7 @@ public class PLog implements APMLog{
      */
     public APMLog toAPMLog() {
 
-        UnifiedMap<String, ATrace> traceUM = new UnifiedMap<>();
-
-        List<ATrace> traceList = new ArrayList<>();
-        for(PTrace pTrace: pTraceList) {
-            ATrace aTrace = pTrace.toATrace();
-            traceList.add(aTrace);
-            traceUM.put(aTrace.getCaseId(), aTrace);
-        }
-
-        ImmutableLog apmLog = new ImmutableLog(traceList,
-                variantIdFreqMap,
-                eventAttributeValueCasesFreqMap,
-                eventAttributeValueFreqMap,
-                caseAttributeValueFreqMap,
-                caseDurationList,
-                timeZone,
-                startTime,
-                endTime,
-                eventSize,
-                activityNameMapper,
-                activityMaxOccurMap);
-
-        apmLog.setEventAttributeOccurMap(new UnifiedMap<>(eventAttributeOccurMap));
-        apmLog.setActivityNameBiMap(activityNameBiMap);
-
-        apmLog.updateStats();
-
-        return apmLog;
+        return new ImmutableLog(this);
 
     }
 }

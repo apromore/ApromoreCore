@@ -47,6 +47,7 @@ import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -605,40 +606,6 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
         return caseUtilization;
     }
 
-    @Override
-    public void setTotalProcessingTime(double time) {
-
-    }
-
-    @Override
-    public void setAverageProcessingTime(double time) {
-
-    }
-
-    @Override
-    public void setMaxProcessingTime(double time) {
-
-    }
-
-    @Override
-    public void setTotalWaitingTime(double time) {
-
-    }
-
-    @Override
-    public void setAverageWaitingTime(double time) {
-
-    }
-
-    @Override
-    public void setMaxWaitingTime(double time) {
-
-    }
-
-    @Override
-    public void setCaseUtilization(double caseUtilization) {
-
-    }
 
     @Override
     public BitSet getValidEventIndexBitSet() {
@@ -753,6 +720,16 @@ public class ATraceImpl implements Comparable<ATraceImpl>, Serializable, org.apr
     @Override
     public void setImmutableEvents(List<AEvent> events) {
 
+    }
+
+    @Override
+    public DoubleArrayList getWaitingTimes() {
+        return null;
+    }
+
+    @Override
+    public DoubleArrayList getProcessingTimes() {
+        return null;
     }
 
 

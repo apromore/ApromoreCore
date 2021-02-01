@@ -49,7 +49,7 @@ public class PLogAttributeGraphTest {
         String val1 = "Warehouse check for the order";
         String val2 = "Prepare package";
 
-        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations(attrKey, val1);
+        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations(attrKey, val1, pLog);
         DoubleArrayList durList = subGraph.getValDurListMap().get(val2);
 
         assertTrue( Util.durationStringOf(durList.min()).equals("1.47 hrs") );
