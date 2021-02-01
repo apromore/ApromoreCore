@@ -23,8 +23,9 @@ package org.apromore.apmlog.old;
 
 
 import org.apromore.apmlog.*;
-import org.apromore.apmlog.immutable.ImmutableActivity;
 import org.apromore.apmlog.stats.AAttributeGraph;
+import org.apromore.apmlog.stats.CaseAttributeValue;
+import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
@@ -32,20 +33,18 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.*;
-import java.io.*;
-import java.net.UnknownHostException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Map.Entry.comparingByValue;
 
@@ -692,6 +691,11 @@ public class APMLogImpl implements Serializable, APMLog {
         return variantIdFreqMap;
     }
 
+    @Override
+    public DoubleArrayList getCaseDurations() {
+        return null;
+    }
+
 //    public BitSet getValidTraceIndexBS() {
 //        return validTraceIndexBS;
 //    }
@@ -991,6 +995,16 @@ public class APMLogImpl implements Serializable, APMLog {
 
     @Override
     public UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap() {
+        return null;
+    }
+
+    @Override
+    public UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues() {
+        return null;
+    }
+
+    @Override
+    public UnifiedMap<String, UnifiedSet<CaseAttributeValue>> getCaseAttributeValues() {
         return null;
     }
 

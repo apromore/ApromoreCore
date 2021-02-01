@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Process Discoverer Logic
- * 
+ *
  * This file is part of "Apromore".
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,14 +31,13 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.immutable.ImmutableTrace;
 import org.apromore.apmlog.util.Util;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class provides pointers of ATrace (of APMLog) used in filterlogic.
@@ -53,7 +52,7 @@ import java.util.List;
  * Modified: Chii Chang (07/10/2020) - include "schedule" event to activity
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (23/12/2020)
- * Modified: Chii Chang (13/01/2021)
+ * Modified: Chii Chang (26/01/2021)
  */
 public class PTrace implements Comparable<PTrace>, ATrace {
 
@@ -68,13 +67,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     private long endTimeMilli = -1;
     private double duration = 0;
     private boolean hasActivity = false;
-    private double totalProcessingTime = 0;
-    private double averageProcessingTime = 0;
-    private double maxProcessingTime = 0;
-    private double totalWaitingTime = 0;
-    private double averageWaitingTime = 0;
-    private double maxWaitingTime = 0;
-    private double caseUtilization = 0.0;
     private int eventSize;
 
     public String startTimeString, endTimeString, durationString;
@@ -84,45 +76,27 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     private UnifiedMap<String, String> attributeMap;
     private List<String> activityNameList;
     private UnifiedSet<String> eventNameSet;
+    private DoubleArrayList processingTimes;
+    private DoubleArrayList waitingTimes;
+    private double caseUtilization;
 
     private BitSet validEventIndexBS;
 
-    private long originalStartTimeMilli;
-    private long originalEndTimeMilli;
-    private double originalDuration = 0;
-    private boolean originalHasActivity = false;
-    private double originalTotalProcessingTime = 0;
-    private double originalAverageProcessingTime = 0;
-    private double originalMaxProcessingTime = 0;
-    private double originalTotalWaitingTime = 0;
-    private double originalAverageWaitingTime = 0;
-    private double originalMaxWaitingTime = 0;
-    private double originalCaseUtilization = 0;
-    private List<AActivity> originalActivityList;
-    private List<AEvent> originalEventList;
-    private UnifiedMap<String, String> originalAttributeMap;
-    private List<String> originalActivityNameList;
-    private UnifiedSet<String> originalEventNameSet;
-
     private List<Integer> activityNameIndexList;
-    private List<Integer> originalActivityNameIndexList;
     private List<Integer> previousActiivtyNameIndexList;
 
     private BitSet originalValidEventIndexBS;
 
     private BitSet previousValidEventIndexBS;
 
+    private DoubleArrayList previousProcessingTimes;
+    private DoubleArrayList previousWaitingTimes;
     private long previousStartTimeMilli;
     private long previousEndTimeMilli;
     private double previousDuration = 0;
     private boolean previousHasActivity = false;
-    private double previousTotalProcessingTime = 0;
-    private double previousAverageProcessingTime = 0;
-    private double previousMaxProcessingTime = 0;
-    private double previousTotalWaitingTime = 0;
-    private double previousAverageWaitingTime = 0;
-    private double previousMaxWaitingTime = 0;
-    private double previousCaseUtilization = 0;
+    private double previousCaseUtilization;
+
     private List<AActivity> previousActivityList;
     private List<AEvent> previousEventList;
     private UnifiedMap<String, String> previousAttributeMap;
@@ -148,6 +122,9 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         this.caseVariantId = aTrace.getCaseVariantId();
         this.caseIdDigit = aTrace.getCaseIdDigit();
 
+        this.processingTimes = aTrace.getProcessingTimes();
+        this.waitingTimes = aTrace.getWaitingTimes();
+
         this.startTimeString = aTrace.getStartTimeString();
         this.endTimeString = aTrace.getEndTimeString();
         this.durationString = aTrace.getDurationString();
@@ -156,94 +133,63 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         this.endTimeMilli = aTrace.getEndTimeMilli();
         this.duration = aTrace.getDuration();
         this.hasActivity = aTrace.isHasActivity();
-        this.totalProcessingTime = aTrace.getTotalProcessingTime();
-        this.averageProcessingTime = aTrace.getAverageProcessingTime();
-        this.maxProcessingTime = aTrace.getMaxProcessingTime();
-        this.totalWaitingTime = aTrace.getTotalWaitingTime();
-        this.averageWaitingTime = aTrace.getAverageWaitingTime();
-        this.maxWaitingTime = aTrace.getMaxWaitingTime();
-        this.caseUtilization = aTrace.getCaseUtilization();
 
-        this.originalStartTimeMilli = aTrace.getStartTimeMilli();
-        this.originalEndTimeMilli = aTrace.getEndTimeMilli();
-        this.originalDuration = aTrace.getDuration();
-        this.originalHasActivity = aTrace.isHasActivity();
-        this.originalTotalProcessingTime = aTrace.getTotalProcessingTime();
-        this.originalAverageProcessingTime = aTrace.getAverageProcessingTime();
-        this.originalMaxProcessingTime = aTrace.getMaxProcessingTime();
-        this.originalTotalWaitingTime = aTrace.getTotalWaitingTime();
-        this.originalAverageWaitingTime = aTrace.getAverageWaitingTime();
-        this.originalMaxWaitingTime = aTrace.getMaxWaitingTime();
-        this.originalCaseUtilization = aTrace.getCaseUtilization();
-
+        this.previousProcessingTimes = new DoubleArrayList(aTrace.getProcessingTimes().toArray());
+        this.previousWaitingTimes = new DoubleArrayList(aTrace.getWaitingTimes().toArray());
         this.previousStartTimeMilli = aTrace.getStartTimeMilli();
         this.previousEndTimeMilli = aTrace.getEndTimeMilli();
         this.previousDuration = aTrace.getDuration();
         this.previousHasActivity = aTrace.isHasActivity();
-        this.previousTotalProcessingTime = aTrace.getTotalProcessingTime();
-        this.previousAverageProcessingTime = aTrace.getAverageProcessingTime();
-        this.previousMaxProcessingTime = aTrace.getMaxProcessingTime();
-        this.previousTotalWaitingTime = aTrace.getTotalWaitingTime();
-        this.previousAverageWaitingTime = aTrace.getAverageWaitingTime();
-        this.previousMaxWaitingTime = aTrace.getMaxWaitingTime();
-        this.previousCaseUtilization = aTrace.getCaseUtilization();
 
-        List<AEvent> aTraceEventList = aTrace.getEventList();
-
-        this.validEventIndexBS = new BitSet(aTraceEventList.size());
-        this.originalValidEventIndexBS = new BitSet(aTraceEventList.size());
-        this.previousValidEventIndexBS = new BitSet(aTraceEventList.size());
-
-        this.eventList = new ArrayList<>(aTraceEventList);
-        this.originalEventList = new ArrayList<>(aTraceEventList);
-        this.previousEventList = new ArrayList<>(aTraceEventList);
-
-        this.validEventIndexBS.set(0, eventList.size(), true);
-        this.originalValidEventIndexBS.set(0,  originalEventList.size(), true);
-        this.previousValidEventIndexBS.set(0,  previousEventList.size(), true);
+        this.eventList = new ArrayList<>(aTrace.getEventList());
+        this.previousEventList = new ArrayList<>(aTrace.getEventList());
 
         this.activityList = new ArrayList<>(aTrace.getActivityList());
-        this.originalActivityList = new ArrayList<>(aTrace.getActivityList());
         this.previousActivityList = new ArrayList<>(aTrace.getActivityList());
 
         this.eventList = new ArrayList<>(aTrace.getEventList());
-        this.originalEventList = new ArrayList<>(aTrace.getEventList());
         this.previousEventList = new ArrayList<>(aTrace.getEventList());
 
         this.attributeMap = aTrace.getAttributeMap();
         this.previousAttributeMap = aTrace.getAttributeMap();
-        this.originalAttributeMap = aTrace.getAttributeMap();
 
 
         List<String> aTraceActNameList = aTrace.getActivityNameList();
 
 
         this.activityNameList = new ArrayList<>(aTraceActNameList);
-        this.originalActivityNameList = new ArrayList<>(aTraceActNameList);
         this.previousActivityNameList = new ArrayList<>(aTraceActNameList);
 
         if (aTrace.getActivityNameIndexList() != null) {
             this.activityNameIndexList = new ArrayList<>(aTrace.getActivityNameIndexList());
-            this.originalActivityNameIndexList = new ArrayList<>(aTrace.getActivityNameIndexList());
             this.previousActiivtyNameIndexList = new ArrayList<>(aTrace.getActivityNameIndexList());
         }
 
         UnifiedSet<String> aTraceEventNameSet = aTrace.getEventNameSet();
 
-
-
         this.eventNameSet = new UnifiedSet<>(aTraceEventNameSet);
-        this.originalEventNameSet = new UnifiedSet<>(aTraceEventNameSet);
         this.previousEventNameSet = new UnifiedSet<>(aTraceEventNameSet);
 
-
-
-
-        for (int i = 0; i < activityList.size(); i++) {
-            activityList.get(i).setParentTrace(this);
+        for (AActivity activity : activityList) {
+            activity.setParentTrace(this);
         }
 
+        double aTraceUtilization = aTrace.getCaseUtilization();
+        this.caseUtilization = aTraceUtilization;
+        this.previousCaseUtilization = aTraceUtilization;
+
         this.eventSize = eventList.size();
+
+        int originalEventSize = aTrace.getEventSize();
+
+        this.validEventIndexBS = new BitSet(originalEventSize);
+        this.validEventIndexBS.set(0, originalEventSize);
+
+        originalValidEventIndexBS = new BitSet(originalEventSize);
+        originalValidEventIndexBS.set(0, originalEventSize);
+
+        previousValidEventIndexBS = new BitSet(originalEventSize);
+        previousValidEventIndexBS.set(0, originalEventSize);
     }
 
     public void reset() {
@@ -268,13 +214,9 @@ public class PTrace implements Comparable<PTrace>, ATrace {
             endTimeMilli = previousEndTimeMilli;
             duration = previousDuration;
             hasActivity = previousHasActivity;
-            totalProcessingTime = previousTotalProcessingTime;
-            averageProcessingTime = previousAverageProcessingTime;
-            maxProcessingTime = previousMaxProcessingTime;
-            totalWaitingTime = previousTotalWaitingTime;
-            averageWaitingTime = previousAverageWaitingTime;
-            maxWaitingTime = previousMaxWaitingTime;
-            caseUtilization = previousCaseUtilization;
+
+            processingTimes = previousProcessingTimes;
+            waitingTimes = previousWaitingTimes;
 
             this.activityList = previousActivityList;
             this.eventList = previousEventList;
@@ -301,13 +243,6 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousEndTimeMilli = endTimeMilli;
         previousDuration = duration;
         previousHasActivity = hasActivity;
-        previousTotalProcessingTime = totalProcessingTime;
-        previousAverageProcessingTime = averageProcessingTime;
-        previousMaxProcessingTime = maxProcessingTime;
-        previousTotalWaitingTime = totalWaitingTime;
-        previousAverageWaitingTime = averageWaitingTime;
-        previousMaxWaitingTime = maxWaitingTime;
-        previousCaseUtilization = caseUtilization;
 
         previousActivityList = activityList;
         previousEventList = eventList;
@@ -315,7 +250,11 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousActivityNameList = activityNameList;
         previousEventNameSet = eventNameSet;
 
+        previousWaitingTimes = waitingTimes;
+        previousProcessingTimes = processingTimes;
+
         previousActiivtyNameIndexList = activityNameIndexList;
+        previousCaseUtilization = caseUtilization;
     }
 
     public void update(int mutableIndex) {
@@ -328,13 +267,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousEndTimeMilli = endTimeMilli;
         previousDuration = duration;
         previousHasActivity = hasActivity;
-        previousTotalProcessingTime = totalProcessingTime;
-        previousAverageProcessingTime = averageProcessingTime;
-        previousMaxProcessingTime = maxProcessingTime;
-        previousTotalWaitingTime = totalWaitingTime;
-        previousAverageWaitingTime = averageWaitingTime;
-        previousMaxWaitingTime = maxWaitingTime;
-        previousCaseUtilization = caseUtilization;
+        previousProcessingTimes = processingTimes;
+        previousWaitingTimes = waitingTimes;
         previousActivityList = activityList;
         previousEventList = eventList;
         previousAttributeMap = attributeMap;
@@ -342,70 +276,94 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousEventNameSet = eventNameSet;
         previousActiivtyNameIndexList = activityNameIndexList;
 
+        List<AActivity> originalActList = aTrace.getActivityList();
+
         this.eventList = new ArrayList<>();
         this.activityList = new ArrayList<>();
 
+        processingTimes = new DoubleArrayList();
+        waitingTimes = new DoubleArrayList();
+
         List<AEvent> aEventList = aTrace.getImmutableEvents();
 
-        for (AActivity activity : aTrace.getActivityList()) {
-            boolean allValid = true;
+        int actMutIndex = 0;
+
+        for (AActivity activity : originalActList) {
+            boolean valid = false;
             IntArrayList eventIndexes = activity.getEventIndexes();
             for (int i = 0; i < eventIndexes.size(); i++) {
-                if (!validEventIndexBS.get(eventIndexes.get(i))) allValid = false;
+                if (validEventIndexBS.get(eventIndexes.get(i))) {
+                    valid = true;
+                    break;
+                }
             }
-            if (allValid) {
+
+            if (valid) {
+                activity.setMutableIndex(actMutIndex);
                 this.activityList.add(activity);
+                actMutIndex += 1;
             }
         }
 
         if (this.activityList.size() > 0) {
-            for (AActivity activity : this.activityList) {
+
+            for (AActivity activity : activityList) {
                 IntArrayList eventIndexes = activity.getEventIndexes();
-                for (int i = 0; i < eventIndexes.size(); i++) {
-                    this.eventList.add(aEventList.get(eventIndexes.get(i)));
+                for (int j = 0; j < eventIndexes.size(); j++) {
+                    this.eventList.add(aEventList.get(eventIndexes.get(j)));
+                }
+            }
+
+            for (int i = 0; i < activityList.size(); i++) {
+                AActivity iAct = activityList.get(i);
+                processingTimes.add(iAct.getDuration());
+
+                if (i+1 < activityList.size()) {
+                    AActivity nAct = activityList.get(i + 1);
+                    long iET = iAct.getEndTimeMilli();
+                    long nST = nAct.getStartTimeMilli();
+                    long wt = nST > iET ? nST - iET : 0;
+                    waitingTimes.add(wt);
                 }
             }
         }
 
-        updateStats(this.activityList);
+        if (waitingTimes.isEmpty() || processingTimes.isEmpty()) caseUtilization = 1.0;
+        else {
+            double ttlWaitTime = waitingTimes.sum();
+            double ttlProcTime = processingTimes.sum();
+            double dur = getDuration();
+
+            if (ttlWaitTime > 0 && ttlProcTime > 0) {
+                caseUtilization = ttlProcTime / (ttlProcTime + ttlWaitTime);
+            } else {
+                caseUtilization = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 1.0;
+            }
+
+            if (caseUtilization > 1.0) caseUtilization = 1.0;
+        }
 
     }
 
 
 
     private void updateStats(List<AActivity> activities) {
-        this.totalProcessingTime = 0;
-        this.averageProcessingTime = 0;
-        this.maxProcessingTime = 0;
-        this.totalWaitingTime = 0;
-        this.averageWaitingTime = 0;
-        this.maxWaitingTime = 0;
-        this.caseUtilization = 0;
+
+        processingTimes = new DoubleArrayList();
+        waitingTimes = new DoubleArrayList();
+
         for (int i = 0; i < activities.size(); i++) {
             AActivity iAct = activities.get(i);
-            totalProcessingTime += iAct.getDuration();
-            if (iAct.getDuration() > maxProcessingTime) maxProcessingTime = iAct.getDuration();
+            processingTimes.add(iAct.getDuration());
 
             if (i+1 < activities.size()) {
                 AActivity nAct = activities.get(i + 1);
                 long iET = iAct.getEndTimeMilli();
                 long nST = nAct.getStartTimeMilli();
                 long wt = nST > iET ? nST - iET : 0;
-                totalWaitingTime += wt;
-
-                if (wt > maxWaitingTime) maxWaitingTime = wt;
+                waitingTimes.add(wt);
             }
         }
-        averageProcessingTime = totalProcessingTime > 0 ? totalProcessingTime / activities.size() : 0;
-        averageWaitingTime = totalWaitingTime > 0 ? totalWaitingTime / (activities.size()-1) : 0;
-        double dur = getDuration();
-
-        if (totalWaitingTime > 0 && totalProcessingTime > 0) {
-            caseUtilization = totalProcessingTime / (totalProcessingTime + totalWaitingTime);
-        } else {
-            caseUtilization = totalProcessingTime > 0 && totalProcessingTime < dur ? totalProcessingTime / dur : 1.0;
-        }
-        if (caseUtilization > 1.0) caseUtilization = 1.0;
     }
 
 
@@ -466,6 +424,16 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     @Override
     public void setImmutableEvents(List<AEvent> events) {
 
+    }
+
+    @Override
+    public DoubleArrayList getWaitingTimes() {
+        return waitingTimes;
+    }
+
+    @Override
+    public DoubleArrayList getProcessingTimes() {
+        return processingTimes;
     }
 
     @Override
@@ -536,11 +504,11 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     public double getOriginalDuration() {
-        return originalDuration;
+        return aTrace.getDuration();
     }
 
     public List<AEvent> getOriginalEventList() {
-        return originalEventList;
+        return aTrace.getEventList();
     }
 
     public boolean isHasActivity() {
@@ -571,18 +539,20 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     public UnifiedMap<String, String> getAttributeMap() {
-        UnifiedMap<String, String> attr = new UnifiedMap<>();
-        for (String key : attributeMap.keySet()) {
-            if (!key.toLowerCase().equals("concept:name")) {
-                attr.put(key.intern(), attributeMap.get(key).intern());
-            }
-        }
-        return attr;
+        Map<String, String> collect = attributeMap.entrySet().stream()
+                .filter(x -> !x.getKey().equals("concept:name") && !x.equals("case:variant") )
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return new UnifiedMap<>(collect);
     }
 
     public List<AEvent> getEventList() {
 
         return eventList;
+    }
+
+    public Set<String> getAttributeKeys() {
+        return attributeMap.keySet();
     }
 
     @Override
@@ -597,66 +567,31 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
 
     public double getTotalProcessingTime() {
-        return totalProcessingTime;
+        return !processingTimes.isEmpty() ? processingTimes.sum() : 0;
     }
 
     public double getAverageProcessingTime() {
-        return averageProcessingTime;
+        return !processingTimes.isEmpty() ? processingTimes.average() : 0;
     }
 
     public double getMaxProcessingTime() {
-        return maxProcessingTime;
+        return !processingTimes.isEmpty() ? processingTimes.max() : 0;
     }
 
     public double getTotalWaitingTime() {
-        return totalWaitingTime;
+        return !waitingTimes.isEmpty() ? waitingTimes.sum() : 0;
     }
 
     public double getAverageWaitingTime() {
-        return averageWaitingTime;
+        return !waitingTimes.isEmpty() ? waitingTimes.average() : 0;
     }
 
     public double getMaxWaitingTime() {
-        return maxWaitingTime;
+        return !waitingTimes.isEmpty() ? waitingTimes.max() : 0;
     }
 
     public double getCaseUtilization() {
         return caseUtilization;
-    }
-
-    @Override
-    public void setTotalProcessingTime(double time) {
-
-    }
-
-    @Override
-    public void setAverageProcessingTime(double time) {
-
-    }
-
-    @Override
-    public void setMaxProcessingTime(double time) {
-
-    }
-
-    @Override
-    public void setTotalWaitingTime(double time) {
-
-    }
-
-    @Override
-    public void setAverageWaitingTime(double time) {
-
-    }
-
-    @Override
-    public void setMaxWaitingTime(double time) {
-
-    }
-
-    @Override
-    public void setCaseUtilization(double caseUtilization) {
-
     }
 
     public BitSet getValidEventIndexBitSet() {
@@ -693,7 +628,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     public ATrace toATrace() {
 
 
-        ImmutableTrace trace = new ImmutableTrace(immutableIndex, mutableIndex, attributeMap);
+        ImmutableTrace trace = new ImmutableTrace(immutableIndex, mutableIndex, caseId, attributeMap);
 
 
         for (int i = 0; i < activityList.size(); i++) {
@@ -711,13 +646,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         trace.setImmutableEvents(aTrace.getImmutableEvents());
         trace.setCaseVariantId(caseVariantId);
         trace.setHasActivity(hasActivity);
-        trace.setTotalProcessingTime(totalProcessingTime);
-        trace.setAverageProcessingTime(averageProcessingTime);
-        trace.setMaxProcessingTime(maxProcessingTime);
-        trace.setTotalWaitingTime(totalWaitingTime);
-        trace.setAverageWaitingTime(averageWaitingTime);
-        trace.setMaxWaitingTime(maxWaitingTime);
-        trace.setCaseUtilization(caseUtilization);
+        trace.setWaitingTimes(waitingTimes);
+        trace.setProcessingTimes(processingTimes);
 
         return trace;
     }

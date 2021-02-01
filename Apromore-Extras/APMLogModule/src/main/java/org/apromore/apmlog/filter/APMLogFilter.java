@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -41,21 +41,22 @@
 
 package org.apromore.apmlog.filter;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.stats.AAttributeGraph;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class handles log filtering mechanisms for APMLog.
@@ -66,18 +67,15 @@ import org.slf4j.LoggerFactory;
  * Modified: Chii Chang (10/04/2020)
  * Modified: Chii Chang (15/04/2020)
  * Modified: Chii Chang (17/04/2020) - bug fixed
- * Modified: Chii Chang (24/12/2020) - added CaseLength filter
- * Modified: Chii Chang (12/01/2021) - removed unused old code
+ * Modified: Chii Chang (26/01/2020)
  */
 public class APMLogFilter {
 
-    private APMLog apmLogNotForChange;
     private PLog pLog;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMLogFilter.class);
 
     public APMLogFilter(APMLog apmLog) {
-        this.apmLogNotForChange = apmLog;
         LOGGER.info("Create new PLog");
         this.pLog = new PLog(apmLog);
         LOGGER.info("Create new PLog complete");
@@ -135,52 +133,60 @@ public class APMLogFilter {
 
 
     public void filter(List<LogFilterRule> logFilterRuleList) {
+        LOGGER.info("*** reset PLog");
 
-        // reset all
-        for (String caseId : pLog.getPTraceUnifiedMap().keySet()) {
-            PTrace pTrace = pLog.getPTraceUnifiedMap().get(caseId);
-            pTrace.reset();
-        }
+        pLog.reset();
+
+        LOGGER.info("*** reset PLog complete");
 
         List<PTrace> filteredPTraceList = new ArrayList<>();
 
         BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
-        validTraceBS.set(0, pLog.getOriginalPTraceList().size());
+        List<PTrace> pTraceList = pLog.getPTraceList();
 
+        if (logFilterRuleList.size() == 1 && logFilterRuleList.get(0).getFilterType() == FilterType.CASE_ID) {
+            Set<String> selection = logFilterRuleList.get(0).getPrimaryValuesInString();
+            filteredPTraceList = pTraceList.stream()
+                    .filter(p -> selection.contains(p.getCaseId()))
+                    .collect(Collectors.toList());
+            for (int i = 0; i < filteredPTraceList.size(); i++) {
+                PTrace pTrace = filteredPTraceList.get(i);
+                validTraceBS.set(pTrace.getImmutableIndex());
+                pTrace.setMutableIndex(i);
+            }
 
-        List<PTrace> originalPTraceList = pLog.getOriginalPTraceList();
+            pLog.setValidTraceIndexBS(validTraceBS);
 
+        } else {
+            validTraceBS.set(0, pLog.getOriginalPTraceList().size());
 
-        for (int i = 0; i < originalPTraceList.size(); i++) {
+            for (int i = 0; i < pTraceList.size(); i++) {
 
-            if (validTraceBS.get(i)) {
+                if (validTraceBS.get(i)) {
 
-                PTrace pTrace = originalPTraceList.get(i);
+                    PTrace pTrace = pTraceList.get(i);
 
-                PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
+                    PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
 
-                if (filteredPTrace != null) {
-                    if (filteredPTrace.getValidEventIndexBitSet().cardinality() > 0) {
-
-                        int muIndex = filteredPTraceList.size();
-                        filteredPTrace.update(muIndex);
-
-                        filteredPTraceList.add(filteredPTrace);
-
-                        pLog.getPTraceList().add(pTrace);
-                        pLog.getTraceList().add(pTrace);
+                    if (filteredPTrace != null) {
+                        if (filteredPTrace.getValidEventIndexBitSet().cardinality() > 0) {
+                            filteredPTraceList.add(filteredPTrace);
+                            pLog.getPTraceList().add(pTrace);
+                        } else {
+                            pTrace.getValidEventIndexBitSet().clear();
+                            validTraceBS.set(i, false);
+                        }
                     } else {
                         pTrace.getValidEventIndexBitSet().clear();
                         validTraceBS.set(i, false);
                     }
-                } else {
-                    pTrace.getValidEventIndexBitSet().clear();
-                    validTraceBS.set(i, false);
                 }
             }
+
+            pLog.setValidTraceIndexBS(validTraceBS);
         }
 
-        pLog.setValidTraceIndexBS(validTraceBS);
+
         if (validTraceBS.cardinality() > 0 ) {
             pLog.updateStats(filteredPTraceList);
         } else {
@@ -197,7 +203,7 @@ public class APMLogFilter {
         // Set all events as selected first
         BitSet validEventBS = (BitSet)pTrace.getOriginalValidEventIndexBS().clone();
         filteredTrace.setValidEventIndexBS(validEventBS);
-        
+
         // Filter events and set bits accordingly
         for (int i = 0; i < logFilterRules.size(); i++) {
             LogFilterRule logFilterRule = logFilterRules.get(i);
@@ -209,6 +215,7 @@ public class APMLogFilter {
                 if (!keepTrace) {
                     return null;
                 }
+
             } else { //Event section
 
                 List<AEvent> eventList = pTrace.getOriginalEventList();
