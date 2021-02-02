@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import com.google.common.collect.Sets;
 import org.apromore.common.ConfigBean;
@@ -29,6 +29,8 @@ import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.impl.EventLogServiceImpl;
+import org.apromore.service.impl.TemporaryCacheService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.factory.XFactory;
@@ -79,7 +81,7 @@ public class EventLogServiceImplTest {
     private StorageManagementFactory<StorageClient> storageFactory;
     private EventLogFileService logFileService;
     private StorageRepository storageRepository;
-    
+
 
     private static void walkLog(XLog log) {
         walkAttributes(log);

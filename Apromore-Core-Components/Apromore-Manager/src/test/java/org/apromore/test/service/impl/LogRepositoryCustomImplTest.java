@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 
 import org.apromore.service.impl.TemporaryCacheService;
