@@ -280,7 +280,7 @@
             <html id="ppLink">
               <h:a href="${labels.brand.urlPrivacy}">Privacy Policy</h:a>
             </html>
-            <html>${labels.e.common.contact.text}</html>
+            <html>${labels.brand.contact}</html>
           </h:div>
         </h:div>
         <h:div class="slant-separator">

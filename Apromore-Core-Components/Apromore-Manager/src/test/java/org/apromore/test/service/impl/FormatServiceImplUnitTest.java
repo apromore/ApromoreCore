@@ -23,7 +23,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,6 +38,7 @@ import java.util.List;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
 import org.apromore.dao.model.NativeType;
+import org.apromore.service.impl.FormatServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 

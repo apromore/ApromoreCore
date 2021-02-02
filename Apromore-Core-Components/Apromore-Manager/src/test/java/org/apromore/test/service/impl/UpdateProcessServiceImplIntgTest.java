@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -67,7 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class UpdateProcessServiceImplIT {
+public class UpdateProcessServiceImplIntgTest {
 
     @Inject
     private ProcessService pSrv;
