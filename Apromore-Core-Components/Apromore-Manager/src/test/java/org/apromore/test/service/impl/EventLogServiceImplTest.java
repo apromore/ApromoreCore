@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import com.google.common.collect.Sets;
 import org.apromore.common.ConfigBean;
@@ -28,6 +28,8 @@ import org.apromore.dao.*;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.impl.EventLogServiceImpl;
+import org.apromore.service.impl.TemporaryCacheService;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;

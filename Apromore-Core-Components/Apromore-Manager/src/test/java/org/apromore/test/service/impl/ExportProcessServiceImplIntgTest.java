@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
