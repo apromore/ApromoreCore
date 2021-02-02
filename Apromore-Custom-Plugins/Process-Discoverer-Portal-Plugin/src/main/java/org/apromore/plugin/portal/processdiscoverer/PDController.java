@@ -497,6 +497,7 @@ public class PDController extends BaseController {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     Clients.showBusy("Launch Filter Dialog ...");
+                    Sessions.getCurrent().setAttribute("sourceLogId", sourceLogId);
                     String payload = event.getData().toString();
                     LogFilterController logFilterController = me.getFilterController();
                     logFilterController.onEvent(event);
@@ -872,5 +873,9 @@ public class PDController extends BaseController {
 
     public DecimalFormat getDecimalFormatter() {
         return this.decimalFormat;
+    }
+
+    public int getSourceLogId() {
+        return sourceLogId;
     }
 }
