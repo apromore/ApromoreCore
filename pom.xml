@@ -1463,6 +1463,9 @@
 					<printSummary>true</printSummary>
 					<runOrder>alphabetical</runOrder>
 					<failIfNoTests>false</failIfNoTests>
+					<forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <argLine>-Xmx1024m</argLine>
 					<includes>
 						<include>**/*UnitTest.java</include>
 					</includes>
