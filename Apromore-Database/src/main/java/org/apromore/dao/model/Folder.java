@@ -24,6 +24,11 @@
 
 package org.apromore.dao.model;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,18 +36,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -75,6 +74,8 @@ public class Folder implements Serializable {
     private User modifiedBy;
     private Workspace workspace;
     private Folder parentFolder;
+
+    private String parentFolderChain = "-1";
 
     private Set<Process> processes = new HashSet<>();
     private Set<Folder> subFolders = new HashSet<>();
@@ -281,6 +282,15 @@ public class Folder implements Serializable {
 
     public void setSubFolders(Set<Folder> newSubFolders) {
         this.subFolders = newSubFolders;
+    }
+
+    @Column(name = "parent_folder_chain")
+    public String getParentFolderChain() {
+	return parentFolderChain;
+    }
+
+    public void setParentFolderChain(String parentFolderChain) {
+	this.parentFolderChain = parentFolderChain;
     }
 
 }

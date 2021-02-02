@@ -22,8 +22,8 @@
 package org.apromore.config;
 
 import java.sql.Driver;
-import javax.sql.DataSource;
 
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -42,71 +41,71 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-@ImportResource({ "classpath:META-INF/spring/database-jpa.xml","classpath:database/test-jpa.xml" })
+@ImportResource({ "classpath:META-INF/spring/database-jpa.xml", "classpath:database/test-jpa.xml" })
 //@EnableJpaRepositories(repositoryImplementationPostfix = "CustomImpl", basePackages = "org.apromore.dao", entityManagerFactoryRef = "entityManagerFactory", transactionManagerRef = "transactionManager")
 public class TestConfig {
 
-	@Value("${jdbc.username}")
-	private String dbUser;
+    @Value("${jdbc.username}")
+    private String dbUser;
 
-	@Value("${jdbc.password}")
-	private String password;
-	
-	@Value("${liquibase.jdbc.username}")
+    @Value("${jdbc.password}")
+    private String password;
+
+    @Value("${liquibase.jdbc.username}")
     private String liquibaseDbUser;
 
     @Value("${liquibase.jdbc.password}")
     private String liquibasePassword;
 
-	@Value("${jdbc.url}")
-	private String url;
+    @Value("${jdbc.url}")
+    private String url;
 
-	@Value("${jdbc.driver}")
-	private String driver;
+    @Value("${jdbc.driver}")
+    private String driver;
 
-	@Value("${jdbc.context}")
-	private String context;
+    @Value("${jdbc.context}")
+    private String context;
 
-	@Bean
-	public DataSource dataSource() {
-		BoneCPDataSource ds = new BoneCPDataSource();
-		ds.setJdbcUrl(url);
-		ds.setDriverClass(driver);
-		ds.setUsername(dbUser);
-		ds.setPassword(password);
-		return ds;
-	}
-	
-	public DataSource unPooledDataSource() throws ClassNotFoundException {
-      SimpleDriverDataSource ds = new SimpleDriverDataSource();
-      ds.setUrl(url);
-      ds.setDriverClass((Class<? extends Driver>) Class.forName(driver));
-      ds.setUsername(liquibaseDbUser);
-      ds.setPassword(liquibasePassword);
-      return ds;
-  }
+    @Bean
+    public DataSource dataSource() {
+	BoneCPDataSource ds = new BoneCPDataSource();
+	ds.setJdbcUrl(url);
+	ds.setDriverClass(driver);
+	ds.setUsername(dbUser);
+	ds.setPassword(password);
+	return ds;
+    }
 
-	@Bean
-	public SpringLiquibase liquibase() throws ClassNotFoundException {
-		SpringLiquibase liquibase = new SpringLiquibase();
-		liquibase.setDataSource(unPooledDataSource());
-		liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
-		liquibase.setContexts(context);
-		liquibase.setDropFirst(true);
-		return liquibase;
-	}
+    public DataSource unPooledDataSource() throws ClassNotFoundException {
+	SimpleDriverDataSource ds = new SimpleDriverDataSource();
+	ds.setUrl(url);
+	ds.setDriverClass((Class<? extends Driver>) Class.forName(driver));
+	ds.setUsername(liquibaseDbUser);
+	ds.setPassword(liquibasePassword);
+	return ds;
+    }
 
-	@Bean
-	public PlatformTransactionManager transactionManager() {
-		return new DataSourceTransactionManager(dataSource());
-	}
+    @Bean
+    public SpringLiquibase liquibase() throws ClassNotFoundException {
+	SpringLiquibase liquibase = new SpringLiquibase();
+	liquibase.setDataSource(unPooledDataSource());
+	liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
+	liquibase.setContexts(context);
+	liquibase.setDropFirst(true);
+	return liquibase;
+    }
 
-	@Bean
-	public static PropertyPlaceholderConfigurer properties() {
-		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		Resource[] resources = new ClassPathResource[] { new ClassPathResource("database/test-config.properties") };
-		ppc.setLocations(resources);
-		ppc.setIgnoreUnresolvablePlaceholders(true);
-		return ppc;
-	}
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+	return new DataSourceTransactionManager(dataSource());
+    }
+
+    @Bean
+    public static PropertyPlaceholderConfigurer properties() {
+	PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+	Resource[] resources = new ClassPathResource[] { new ClassPathResource("database/test-config.properties") };
+	ppc.setLocations(resources);
+	ppc.setIgnoreUnresolvablePlaceholders(true);
+	return ppc;
+    }
 }

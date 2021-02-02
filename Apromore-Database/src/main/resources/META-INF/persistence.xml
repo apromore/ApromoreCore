@@ -30,6 +30,7 @@
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
         <class>org.apromore.dao.model.Folder</class>
+        <class>org.apromore.dao.model.FolderInfo</class>
         <class>org.apromore.dao.model.Group</class>
         <class>org.apromore.dao.model.GroupFolder</class>
         <class>org.apromore.dao.model.GroupLog</class>

@@ -31,6 +31,8 @@
    <osgi:service ref="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository" auto-export="interfaces"/>
      
     <osgi:service ref="folderRepository" interface="org.apromore.dao.FolderRepository" auto-export="interfaces"/>
+    <osgi:service ref="folderInfoRepository" interface="org.apromore.dao.FolderInfoRepository" auto-export="interfaces"/>
+    
     <osgi:service ref="groupFolderRepository" interface="org.apromore.dao.GroupFolderRepository" auto-export="interfaces"/>
     <osgi:service ref="groupLogRepository" interface="org.apromore.dao.GroupLogRepository" auto-export="interfaces"/>
     <osgi:service ref="groupProcessRepository" interface="org.apromore.dao.GroupProcessRepository" auto-export="interfaces"/>
