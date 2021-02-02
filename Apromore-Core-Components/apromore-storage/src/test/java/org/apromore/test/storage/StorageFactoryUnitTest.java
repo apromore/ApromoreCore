@@ -21,14 +21,14 @@
  */
 package org.apromore.test.storage;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Paths;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.net.URISyntaxException;
 
 import org.apromore.storage.FileStorageClient;
 import org.apromore.storage.StorageClient;
-import org.apromore.storage.StorageType;
 import org.apromore.storage.exception.ObjectNotFoundException;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.storage.factory.StorageManagementFactoryImpl;
@@ -46,11 +46,12 @@ public class StorageFactoryUnitTest {
     
     
     @Test
-    public void testFileStorageFactory() throws ObjectNotFoundException
+    public void testFileStorageFactory() throws ObjectNotFoundException, URISyntaxException
     {
 //	Given
 	ClassLoader classLoader = StorageFactoryUnitTest.class.getClassLoader();	
-	File file = new File(classLoader.getResource("baseFolder"+File.separator+"test.csv").getFile());
+	//File file = new File(classLoader.getResource("baseFolder"+File.separator+"test.csv").getFile());
+	File file = new File(classLoader.getResource("baseFolder"+File.separator+"test.csv").toURI());
 	
 //	When
 	StorageClient client=storageManagementFactory.getStorageClient("FILE::"+file.getParent());
