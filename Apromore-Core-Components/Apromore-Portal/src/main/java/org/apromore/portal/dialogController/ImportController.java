@@ -398,6 +398,9 @@ public class ImportController extends BaseController {
             System.out.println(extension);
             String logFileName = FilenameUtils.removeExtension(fileName);
 
+            // extension name should be removed, both upper case and lower case or a combination
+            logFileName = logFileName.replaceAll("(?i)\\.xes|\\.csv|\\.mxml|\\.bpmn|\\.xslx|\\.parquet", "");
+
             getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, logMedia.getStreamData(),
                     extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublicCheckbox.isChecked());
 
