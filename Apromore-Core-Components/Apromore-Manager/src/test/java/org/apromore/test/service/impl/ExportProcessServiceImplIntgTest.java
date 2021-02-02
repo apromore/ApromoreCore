@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -53,9 +53,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class ExportProcessServiceImplIT {
+public class ExportProcessServiceImplIntgTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIT.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIntgTest.class);
 
     @Inject
     private ProcessService pSrv;
