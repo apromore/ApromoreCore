@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import static org.easymock.EasyMock.expect;
 
@@ -46,6 +46,8 @@ import org.apromore.dao.model.Process;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.impl.FolderServiceImpl;
+import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
@@ -99,7 +101,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         folderServiceImpl = createMock(FolderServiceImpl.class);
         storageFacotry = createMock(StorageManagementFactory.class);
         storageRepository = createMock(StorageRepository.class);
-        
+
         config = new ConfigBean();
 
         workspaceService = new WorkspaceServiceImpl(workspaceRepo,

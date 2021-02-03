@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.service.impl;
+package org.apromore.test.service.impl;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
@@ -42,6 +42,7 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
