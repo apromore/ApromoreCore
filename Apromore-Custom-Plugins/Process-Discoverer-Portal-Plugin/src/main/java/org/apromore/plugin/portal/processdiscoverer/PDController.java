@@ -182,6 +182,8 @@ public class PDController extends BaseController {
     private String primaryTypeLabel;
     private String primaryAggregateCode;
 
+    private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid conflic from multiple plugins
+
     /////////////////////////////////////////////////////////////////////////
 
     public PDController() throws Exception {
@@ -205,7 +207,7 @@ public class PDController extends BaseController {
         PortalContext portalContext = (PortalContext) portalSession.get("context");
         LogSummaryType logSummary = (LogSummaryType) portalSession.get("selection");
 
-        Sessions.getCurrent().setAttribute("sourceLogId", logSummary.getId());
+        sourceLogId = logSummary.getId();
 
         if (portalContext == null || logSummary == null) return false;
         try {
@@ -480,6 +482,7 @@ public class PDController extends BaseController {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     Clients.showBusy("Launch Filter Dialog ...");
+                    Sessions.getCurrent().setAttribute("sourceLogId", sourceLogId);
                     String payload = event.getData().toString();
                     LogFilterController logFilterController = me.getFilterController();
                     logFilterController.onEvent(event);
@@ -521,6 +524,7 @@ public class PDController extends BaseController {
                             return;
                         }
                         Clients.showBusy("Launch Filter Dialog ...");
+                        Sessions.getCurrent().setAttribute("sourceLogId", sourceLogId);
                         LogFilterController logFilterController = me.getFilterController();
                         logFilterController.onEvent(event);
                         EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
@@ -851,5 +855,9 @@ public class PDController extends BaseController {
 
     public DecimalFormat getDecimalFormatter() {
         return this.decimalFormat;
+    }
+
+    public int getSourceLogId() {
+        return sourceLogId;
     }
 }
