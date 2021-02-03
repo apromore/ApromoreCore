@@ -276,7 +276,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key) && key !== 'remove') {
+    if (has(collection, key)) {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -10635,6 +10635,7 @@ TimetableHelper.createTimetable = function(bpmnFactory, elementRegistry) {
 
   var timetable = elementHelper.createElement('qbp:Timetable', {
     name: 'Timetable',
+    default: 'false',
     id: 'qbp_' + createUUID(),
   }, timetables, bpmnFactory);
 
@@ -18980,7 +18981,8 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
-  var tasks = getFlowElementsByType(element, 'bpmn:Task');
+  var taskEl = is(element, 'bpmn:Task') ? element.type : 'bpmn:Task';
+  var tasks = getFlowElementsByType(element, taskEl);
 
   tasks = tasks.filter(function(el) {
     return !el.toBeRemoved;
@@ -20572,7 +20574,7 @@ function applyToTag(style, options, obj) {
     style.removeAttribute('media');
   }
 
-  if (sourceMap && btoa) {
+  if (sourceMap && typeof btoa !== 'undefined') {
     css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
   } // For old IE
 
@@ -29268,7 +29270,7 @@ function Writer(options) {
 
 
 
-// CONCATENATED MODULE: ./node_modules/bpmn-js/node_modules/bpmn-moddle/dist/index.esm.js
+// CONCATENATED MODULE: ./node_modules/bpmn-moddle/dist/index.esm.js
 
 
 
@@ -40294,7 +40296,9 @@ KeyboardBindings.prototype.registerBindings = function(keyboard, editorActions) 
 
     var event = context.keyEvent;
 
-    if (isKey([ '+', 'Add' ], event) && isCmd(event)) {
+    // quirk: it has to be triggered by `=` as well to work on international keyboard layout
+    // cf: https://github.com/bpmn-io/bpmn-js/issues/1362#issuecomment-722989754
+    if (isKey([ '+', 'Add', '=' ], event) && isCmd(event)) {
       editorActions.trigger('stepZoom', { value: 1 });
 
       return true;
@@ -42834,6 +42838,172 @@ BpmnAutoResizeProvider.prototype.canResize = function(elements, target) {
   bpmnAutoResizeProvider: [ 'type', BpmnAutoResizeProvider ]
 });
 
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/hover-fix/HoverFix.js
+
+
+
+
+var HIGH_PRIORITY = 1500;
+
+
+/**
+ * Browsers may swallow certain events (hover, out ...) if users are to
+ * fast with the mouse.
+ *
+ * @see http://stackoverflow.com/questions/7448468/why-cant-i-reliably-capture-a-mouseout-event
+ *
+ * The fix implemented in this component ensure that we
+ *
+ * 1) have a hover state after a successful drag.move event
+ * 2) have an out event when dragging leaves an element
+ *
+ * @param {ElementRegistry} elementRegistry
+ * @param {EventBus} eventBus
+ * @param {Injector} injector
+ */
+function HoverFix(elementRegistry, eventBus, injector) {
+
+  var self = this;
+
+  var dragging = injector.get('dragging', false);
+
+  /**
+   * Make sure we are god damn hovering!
+   *
+   * @param {Event} dragging event
+   */
+  function ensureHover(event) {
+
+    if (event.hover) {
+      return;
+    }
+
+    var originalEvent = event.originalEvent;
+
+    var gfx = self._findTargetGfx(originalEvent);
+
+    var element = gfx && elementRegistry.get(gfx);
+
+    if (gfx && element) {
+
+      // 1) cancel current mousemove
+      event.stopPropagation();
+
+      // 2) emit fake hover for new target
+      dragging.hover({ element: element, gfx: gfx });
+
+      // 3) re-trigger move event
+      dragging.move(originalEvent);
+    }
+  }
+
+
+  if (dragging) {
+
+    /**
+     * We wait for a specific sequence of events before
+     * emitting a fake drag.hover event.
+     *
+     * Event Sequence:
+     *
+     * drag.start
+     * drag.move >> ensure we are hovering
+     */
+    eventBus.on('drag.start', function(event) {
+
+      eventBus.once('drag.move', HIGH_PRIORITY, function(event) {
+
+        ensureHover(event);
+
+      });
+
+    });
+  }
+
+
+  /**
+   * We make sure that element.out is always fired, even if the
+   * browser swallows an element.out event.
+   *
+   * Event sequence:
+   *
+   * element.hover
+   * (element.out >> sometimes swallowed)
+   * element.hover >> ensure we fired element.out
+   */
+  (function() {
+    var hoverGfx;
+    var hover;
+
+    eventBus.on('element.hover', function(event) {
+
+      // (1) remember current hover element
+      hoverGfx = event.gfx;
+      hover = event.element;
+    });
+
+    eventBus.on('element.hover', HIGH_PRIORITY, function(event) {
+
+      // (3) am I on an element still?
+      if (hover) {
+
+        // (4) that is a problem, gotta "simulate the out"
+        eventBus.fire('element.out', {
+          element: hover,
+          gfx: hoverGfx
+        });
+      }
+
+    });
+
+    eventBus.on('element.out', function() {
+
+      // (2) unset hover state if we correctly outed us *GG*
+      hoverGfx = null;
+      hover = null;
+    });
+
+  })();
+
+  this._findTargetGfx = function(event) {
+    var position,
+        target;
+
+    if (!(event instanceof MouseEvent)) {
+      return;
+    }
+
+    position = toPoint(event);
+
+    // damn expensive operation, ouch!
+    target = document.elementFromPoint(position.x, position.y);
+
+    return HoverFix_getGfx(target);
+  };
+
+}
+
+HoverFix.$inject = [
+  'elementRegistry',
+  'eventBus',
+  'injector'
+];
+
+
+// helpers /////////////////////
+
+function HoverFix_getGfx(target) {
+  return Object(min_dom_dist_index_esm["closest"])(target, 'svg, .djs-element', true);
+}
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/hover-fix/index.js
+
+
+/* harmony default export */ var hover_fix = ({
+  __init__: [
+    'hoverFix'
+  ],
+  hoverFix: [ 'type', HoverFix ],
+});
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/Dragging.js
 /* global TouchEvent */
 
@@ -43384,183 +43554,19 @@ Dragging.$inject = [
   'elementRegistry'
 ];
 
-// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/HoverFix.js
-
-
-
-
-var HIGH_PRIORITY = 1500;
-
-
-/**
- * Browsers may swallow certain events (hover, out ...) if users are to
- * fast with the mouse.
- *
- * @see http://stackoverflow.com/questions/7448468/why-cant-i-reliably-capture-a-mouseout-event
- *
- * The fix implemented in this component ensure that we
- *
- * 1) have a hover state after a successful drag.move event
- * 2) have an out event when dragging leaves an element
- *
- * @param {EventBus} eventBus
- * @param {Dragging} dragging
- * @param {ElementRegistry} elementRegistry
- */
-function HoverFix(eventBus, dragging, elementRegistry) {
-
-  var self = this;
-
-  /**
-   * Make sure we are god damn hovering!
-   *
-   * @param {Event} dragging event
-   */
-  function ensureHover(event) {
-
-    if (event.hover) {
-      return;
-    }
-
-    var originalEvent = event.originalEvent;
-
-    var gfx = self._findTargetGfx(originalEvent);
-
-    var element = gfx && elementRegistry.get(gfx);
-
-    if (gfx && element) {
-
-      // 1) cancel current mousemove
-      event.stopPropagation();
-
-      // 2) emit fake hover for new target
-      dragging.hover({ element: element, gfx: gfx });
-
-      // 3) re-trigger move event
-      dragging.move(originalEvent);
-    }
-  }
-
-  /**
-   * We wait for a specific sequence of events before
-   * emitting a fake drag.hover event.
-   *
-   * Event Sequence:
-   *
-   * drag.start
-   * drag.move >> ensure we are hovering
-   */
-  eventBus.on('drag.start', function(event) {
-
-    eventBus.once('drag.move', HIGH_PRIORITY, function(event) {
-
-      ensureHover(event);
-
-    });
-
-  });
-
-
-  /**
-   * We make sure that drag.out is always fired, even if the
-   * browser swallows an element.out event.
-   *
-   * Event sequence:
-   *
-   * drag.hover
-   * (element.out >> sometimes swallowed)
-   * element.hover >> ensure we fired drag.out
-   */
-  eventBus.on('drag.init', function() {
-
-    var hover, hoverGfx;
-
-    function setDragHover(event) {
-      hover = event.hover;
-      hoverGfx = event.hoverGfx;
-    }
-
-    function unsetHover() {
-      hover = null;
-      hoverGfx = null;
-    }
-
-    function ensureOut() {
-
-      if (!hover) {
-        return;
-      }
-
-      var element = hover,
-          gfx = hoverGfx;
-
-      hover = null;
-      hoverGfx = null;
-
-      // emit synthetic out event
-      dragging.out({
-        element: element,
-        gfx: gfx
-      });
-    }
-
-    eventBus.on('drag.hover', setDragHover);
-    eventBus.on('element.out', unsetHover);
-    eventBus.on('element.hover', HIGH_PRIORITY, ensureOut);
-
-    eventBus.once('drag.cleanup', function() {
-      eventBus.off('drag.hover', setDragHover);
-      eventBus.off('element.out', unsetHover);
-      eventBus.off('element.hover', ensureOut);
-    });
-
-  });
-
-  this._findTargetGfx = function(event) {
-    var position,
-        target;
-
-    if (!(event instanceof MouseEvent)) {
-      return;
-    }
-
-    position = toPoint(event);
-
-    // damn expensive operation, ouch!
-    target = document.elementFromPoint(position.x, position.y);
-
-    return HoverFix_getGfx(target);
-  };
-
-}
-
-HoverFix.$inject = [
-  'eventBus',
-  'dragging',
-  'elementRegistry'
-];
-
-
-// helpers /////////////////////
-
-function HoverFix_getGfx(target) {
-  return Object(min_dom_dist_index_esm["closest"])(target, 'svg, .djs-element', true);
-}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/index.js
 
 
 
 
 
+
 /* harmony default export */ var features_dragging = ({
-  __init__: [
-    'hoverFix'
-  ],
   __depends__: [
-    features_selection
+    hover_fix,
+    features_selection,
   ],
   dragging: [ 'type', Dragging ],
-  hoverFix: [ 'type', HoverFix ]
 });
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/auto-scroll/AutoScroll.js
 
