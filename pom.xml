@@ -1462,7 +1462,7 @@
 					<useFile>true</useFile>
 					<printSummary>true</printSummary>
 					<runOrder>alphabetical</runOrder>
-					<failIfNoTests>false</failIfNoTests>
+				    <failIfNoTests>false</failIfNoTests>
 					<forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
                     <argLine>-Xmx1024m</argLine>
