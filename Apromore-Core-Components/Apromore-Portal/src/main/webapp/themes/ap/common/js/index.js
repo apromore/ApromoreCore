@@ -90,7 +90,7 @@ Ap.common.pullClientTimeZone = function () {
 
   let tz = '';
   let offset = new Date().getTimezoneOffset();
-  let sign = offset < 0 ? '-' : '+';
+  let sign = offset > 0 ? '-' : '+';
   offset = Math.abs(offset);
   const hours = pad(Math.floor(offset / 60));
   const minutes = pad(offset % 60);
