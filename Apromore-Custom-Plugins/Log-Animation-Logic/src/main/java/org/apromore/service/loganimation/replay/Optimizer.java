@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -50,33 +51,50 @@ import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.Process;
 
 /**
-* Created by Raffaele Conforti on 21/10/14.
-* Modified by Bruce 10/11/2014: added optimizeProcessModel
-* Modified by Bruce Nguyen 26/11/2020: simplified optimizeLog for concept:name attribute only.
+ * Optimizer is used to set all attributes keys/values of the same values to point to the same
+ * object reference. This is to improve the performance of equals comparison. For example, if the 
+ * log has activity "This is an activity" and the model has an activity "This is an activity", the 
+ * comparison would be instant if they are the same object reference. String comparison between log 
+ * and model is common in log-model alignment.
+ * 
+ * Created by Raffaele Conforti on 21/10/14.
+ * Modified by Bruce 10/11/2014: added optimizeProcessModel
+ * Modified by Bruce Nguyen 26/11/2020: simplified optimizeLog for concept:name and timestamp attributes only
+ * Modified by Bruce Nguyen 17/12/2020: fix bug, clean up
 */
 public class Optimizer {
 
-    private ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<Object, Object>();
+    private ConcurrentHashMap<Object, Object> cache = new ConcurrentHashMap<Object, Object>();
+    
     private XFactory factory = new XFactoryNaiveImpl();
 
     /**
-     * Replace all concept:name values with reference to the same String instance value.
-     * @param log
+     * Create a new log from an existing log. In the new log, all attributes of log/traces/events
+     * if having the same key or value will point to the same reference object
+     * Log and trace: only have concept:name attribute
+     * Events: have concept:name, timestamp and transition attributes
+     * @param log: original XLog
      * @return new XLog object
      */
     public XLog optimizeLog(XLog log) {
+        final String CONCEPTNAME = XConceptExtension.KEY_NAME;
+        final String TIMESTAMP = XTimeExtension.KEY_TIMESTAMP;
+        final String TRANSITION = XLifecycleExtension.KEY_TRANSITION;
+        
         XLog newLog = factory.createLog();
-        copyCachedAttribute(log.getAttributes().get(XConceptExtension.KEY_NAME), newLog);
+        copyCachedAttribute(CONCEPTNAME, log.getAttributes().get(CONCEPTNAME), newLog);
         for(XTrace trace : log) {
             XTrace newTrace = factory.createTrace();
-            copyCachedAttribute(trace.getAttributes().get(XConceptExtension.KEY_NAME), newTrace);
+            copyCachedAttribute(CONCEPTNAME, trace.getAttributes().get(CONCEPTNAME), newTrace);
             for(XEvent event : trace) {
-                XAttribute activityAtt = event.getAttributes().get(XConceptExtension.KEY_NAME);
-                XAttribute timestampAtt = event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
-                if (activityAtt != null && timestampAtt != null) {
+                XAttribute activityAtt = event.getAttributes().get(CONCEPTNAME);
+                XAttribute timestampAtt = event.getAttributes().get(TIMESTAMP);
+                XAttribute transitionAtt = event.getAttributes().get(TRANSITION);
+                if (activityAtt != null && timestampAtt != null && transitionAtt != null) {
                     XEvent newEvent = factory.createEvent();
-                    copyCachedAttribute(activityAtt, newEvent);
-                    copyCachedAttribute(timestampAtt, newEvent);
+                    copyCachedAttribute(CONCEPTNAME, activityAtt, newEvent);
+                    copyCachedAttribute(TIMESTAMP, timestampAtt, newEvent);
+                    copyCachedAttribute(TRANSITION, transitionAtt, newEvent);
                     newTrace.insertOrdered(newEvent);
                 }
             }
@@ -85,53 +103,53 @@ public class Optimizer {
         return newLog;
     }
     
-    private boolean copyCachedAttribute(XAttribute attribute, XAttributable newElement) {
-        Object currentAttValue = getAttributeValue(attribute);
-        String cachedKey = (String) cacheObject(attribute.getKey()); // cache key
-        if (currentAttValue != null) {
-            Object cachedValue = cacheObject(currentAttValue); // cache value
-            XAttribute newAtt = createXAttribute(cachedKey, cachedValue, attribute);
-            newElement.getAttributes().put(cachedKey, newAtt);
-            return true;
-        }
-        return false;
-    }
-    
     /**
      * Update a process definition to make every node containing a name ref
      * with reference to the name value (stored in map field of LogOptimizer)
      * @param definitions: original process definition
      * @return process definition after being modified
      */
-    public Definitions optimizeProcessModel(Definitions definitions) {
-        /*
-        Map<FlowNode, FlowNode2> nodeMap = new HashMap();
-        FlowNode source;
-        FlowNode2 source2;
-        FlowNode target;
-        FlowNode2 target2;
-        */
-        
+    public Definitions optimizeProcessModel(Definitions definitions) {        
         List<BaseElement> rootElements = definitions.getRootElement();
         Process process = (Process)rootElements.get(0);        
         for (FlowElement element : process.getFlowElement()) {
             if (element instanceof FlowNode) {
+                if (element.getName() == null) element.setName(""); //BPMN.io saves new gateway without name attribute (it is null)
                 ((FlowNode)element).setNameRef(cacheObject(element.getName()));
             }
         }
-        
         return definitions;
     }
-
-    public ConcurrentHashMap<Object, Object> getReductionMap() {
-        return map;
+    
+    /**
+     * Copy an attribute to an element. Cache the attribute in memory if it is not yet cached.
+     * @param key: the key of the attribute
+     * @param attribute: the attribute to be copied
+     * @param newElement: the element which will contain a copy of the attribute
+     * @return true: the attribute has been copied, false otherwise.
+     */
+    private void copyCachedAttribute(String key, XAttribute attribute, XAttributable newElement) {
+        if (attribute == null || newElement == null || key == null || key.isEmpty()) return ;
+        Object currentAttValue = getAttributeValue(attribute);
+        if (currentAttValue != null) {
+            String cachedKey = (String) cacheObject(key); // cache key
+            Object cachedValue = cacheObject(currentAttValue); // cache value
+            XAttribute newAtt = createXAttribute(cachedKey, cachedValue, attribute);
+            newElement.getAttributes().put(cachedKey, newAtt);
+        }
     }
 
+    /**
+     * Cache an object
+     * @param o: an object
+     * @return a reference to an already cached object with the same value as o, 
+     *          or a reference to o if no cache exists.
+     */
     private Object cacheObject(Object o) {
         Object result = null;
         if(o instanceof Date) return o;
-        if((result = map.get(o)) == null) {
-            map.put(o, o);
+        if((result = cache.get(o)) == null) {
+            cache.put(o, o);
             result = o;
         }
         return result;

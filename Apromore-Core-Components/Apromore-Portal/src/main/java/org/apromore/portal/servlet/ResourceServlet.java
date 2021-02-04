@@ -69,6 +69,7 @@ public class ResourceServlet extends HttpServlet {
         contentTypeMap.put("svg", "image/svg+xml"); // for customised icon-fonts
         contentTypeMap.put("ttf", "application/font-sfnt"); // for customised icon-fonts
         contentTypeMap.put("woff", "application/font-woff"); // for customised icon-fonts
+        contentTypeMap.put("js", "text/javascript");
     }
 
     @Override
