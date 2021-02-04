@@ -23,6 +23,7 @@ package org.apromore.apmlog.stats;
 
 import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.util.Util;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -118,6 +119,12 @@ public class EventAttributeValue implements AttributeValue {
 
     public int getActivitySize() {
         return occurActivities.size();
+    }
+
+    public double getTotalDuration() {
+        double[] array = occurActivities.stream().mapToDouble(s -> s.getDuration()).toArray();
+        DoubleArrayList dal = new DoubleArrayList(array);
+        return dal.sum();
     }
 
     @Override
