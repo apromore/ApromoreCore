@@ -63,5 +63,9 @@
             </props>
         </property>
     </bean>
+    
+    <bean id="folderParentChainPopulator" class="org.apromore.service.helper.FolderParentChainPopulator" init-method="init">
+    	<property name="folderInfoRepository" ref="folderInfoRepository"/>
+    </bean>
 
 </beans>

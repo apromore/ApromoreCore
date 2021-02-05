@@ -19,23 +19,39 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
+package org.apromore.builder;
 
-import java.util.List;
+import org.apromore.dao.model.Folder;
 
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.service.model.FolderTreeNode;
+public class FolderBuilder {
 
-public interface FolderService {
-  
-  public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId);
-  
-  public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(
-      Integer parentFolderId, String userId);
-  
-  public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId);
+    Folder folder;
+    Folder parentFolder;
 
-  public void updateFolderChainForSubFolders(Integer folderId, String newFolderChainPrefix);
+    public FolderBuilder withFolder(String name, String desc) {
+	folder = new Folder();
+	folder.setName(name);
+	folder.setDescription(desc);
+	return this;
+    }
+
+    public FolderBuilder withFolder(Folder folder) {
+	folder = folder;
+	return this;
+    }
+
+    public FolderBuilder withParent(Folder parentFolder) {
+	this.parentFolder = parentFolder;
+	return this;
+    }
+
+    public Folder build() {
+
+	if (parentFolder != null) {
+	    folder.setParentFolder(parentFolder);
+	    folder.setParentFolderChain(parentFolder.getParentFolderChain() + "_" + parentFolder.getId());
+	}
+	return folder;
+    }
 
 }

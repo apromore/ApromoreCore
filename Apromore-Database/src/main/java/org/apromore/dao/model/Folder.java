@@ -75,7 +75,7 @@ public class Folder implements Serializable {
     private Workspace workspace;
     private Folder parentFolder;
 
-    private String parentFolderChain = "-1";
+    private String parentFolderChain = "0";
 
     private Set<Process> processes = new HashSet<>();
     private Set<Folder> subFolders = new HashSet<>();
@@ -291,6 +291,11 @@ public class Folder implements Serializable {
 
     public void setParentFolderChain(String parentFolderChain) {
 	this.parentFolderChain = parentFolderChain;
+    }
+
+    @Override
+    public String toString() {
+	return "Folder [id=" + id + ", name=" + name + ", parentFolderChain=" + parentFolderChain + "]";
     }
 
 }

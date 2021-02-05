@@ -37,6 +37,10 @@ public class FolderParentChainPopulator {
 
     private static final Logger logger = LoggerFactory.getLogger(FolderParentChainPopulator.class);
 
+    public FolderParentChainPopulator() {
+	super();
+    }
+
     public FolderInfoRepository getFolderInfoRepository() {
 	return folderInfoRepository;
     }
@@ -65,9 +69,10 @@ public class FolderParentChainPopulator {
 		folderInfo.setParentFolderChain("0");
 	    } else {
 		folderInfo.setParentFolderChain(
-			folderInfo.getParentFolderInfo().getParentFolderChain() + "+" + folderInfo.getId());
+			folderInfo.getParentFolderInfo().getParentFolderChain() + "_"
+				+ folderInfo.getParentFolderInfo().getId());
 	    }
-	    folderInfoRepository.save(folders);
+	    folderInfo = folderInfoRepository.saveAndFlush(folderInfo);
 	    folderInfos.addAll(folderInfo.getSubFolders());
 	}
 

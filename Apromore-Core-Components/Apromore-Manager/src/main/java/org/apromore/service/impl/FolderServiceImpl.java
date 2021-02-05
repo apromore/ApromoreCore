@@ -25,11 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+
+import org.apromore.dao.FolderRepository;
 import org.apromore.dao.FolderRepositoryCustom;
 import org.apromore.dao.GroupFolderRepository;
 import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
@@ -38,6 +41,8 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.service.FolderService;
 import org.apromore.service.model.FolderTreeNode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,113 +51,132 @@ import lombok.Setter;
 @Setter
 public class FolderServiceImpl implements FolderService {
 
+    @Inject
+    private GroupFolderRepository groupFolderRepository;
 
-  @Inject
-  private GroupFolderRepository groupFolderRepository;
-  @Inject
-  private GroupProcessRepository groupProcessRepository;
+    @Inject
+    private GroupProcessRepository groupProcessRepository;
 
+    @Inject
+    private FolderRepository folderRepository;
 
-  @Override
-  public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
-    List<GroupFolder> folders =
-        groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
-    Map<Integer, FolderTreeNode> map = new HashMap<>();
+    @Override
+    public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
+	List<GroupFolder> folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
+	Map<Integer, FolderTreeNode> map = new HashMap<>();
 
-    List<FolderTreeNode> treeNodes = new ArrayList<>();
-    for (GroupFolder folder : folders) {
-      if (map.containsKey(folder.getFolder().getId())) {
-        // This is not the first group granting folder access to the user, so just merge in
-        // additional permissions
-        FolderTreeNode treeNode = map.get(folder.getFolder().getId());
-        treeNode.setHasRead(treeNode.getHasRead() || folder.isHasRead());
-        treeNode.setHasWrite(treeNode.getHasWrite() || folder.isHasWrite());
-        treeNode.setHasOwnership(treeNode.getHasOwnership() || folder.isHasOwnership());
-      } else {
-        // This is the first group granting folder access to the user, so add the folder to the tree
-        FolderTreeNode treeNode = new FolderTreeNode();
-        map.put(folder.getFolder().getId(), treeNode);
-        treeNode.setId(folder.getFolder().getId());
-        treeNode.setName(folder.getFolder().getName());
-        treeNode.setHasRead(folder.isHasRead());
-        treeNode.setHasWrite(folder.isHasWrite());
-        treeNode.setHasOwnership(folder.isHasOwnership());
-        treeNode.setSubFolders(this.getFolderTreeByUser(folder.getFolder().getId(), userId));
+	List<FolderTreeNode> treeNodes = new ArrayList<>();
+	for (GroupFolder folder : folders) {
+	    if (map.containsKey(folder.getFolder().getId())) {
+		// This is not the first group granting folder access to the user, so just merge
+		// in
+		// additional permissions
+		FolderTreeNode treeNode = map.get(folder.getFolder().getId());
+		treeNode.setHasRead(treeNode.getHasRead() || folder.isHasRead());
+		treeNode.setHasWrite(treeNode.getHasWrite() || folder.isHasWrite());
+		treeNode.setHasOwnership(treeNode.getHasOwnership() || folder.isHasOwnership());
+	    } else {
+		// This is the first group granting folder access to the user, so add the folder
+		// to the tree
+		FolderTreeNode treeNode = new FolderTreeNode();
+		map.put(folder.getFolder().getId(), treeNode);
+		treeNode.setId(folder.getFolder().getId());
+		treeNode.setName(folder.getFolder().getName());
+		treeNode.setHasRead(folder.isHasRead());
+		treeNode.setHasWrite(folder.isHasWrite());
+		treeNode.setHasOwnership(folder.isHasOwnership());
+		treeNode.setSubFolders(this.getFolderTreeByUser(folder.getFolder().getId(), userId));
 
-        for (FolderTreeNode subFolders : treeNode.getSubFolders()) {
-          subFolders.setParent(treeNode);
-        }
+		for (FolderTreeNode subFolders : treeNode.getSubFolders()) {
+		    subFolders.setParent(treeNode);
+		}
 
-        treeNodes.add(treeNode);
-      }
+		treeNodes.add(treeNode);
+	    }
+	}
+
+	return treeNodes;
     }
 
-    return treeNodes;
-  }
+    /**
+     * @see FolderRepositoryCustom#getProcessModelVersionByFolderUserRecursive(Integer,
+     *      String) {@inheritDoc}
+     */
+    @Override
+    public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(Integer parentFolderId,
+	    String userId) {
+	List<ProcessModelVersion> processes = new ArrayList<>();
+	processes.addAll(getProcessModelVersions(
+		groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
 
-  /**
-   * @see FolderRepositoryCustom#getProcessModelVersionByFolderUserRecursive(Integer, String)
-   *      {@inheritDoc}
-   */
-  @Override
-  public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(
-      Integer parentFolderId, String userId) {
-    List<ProcessModelVersion> processes = new ArrayList<>();
-    processes.addAll(getProcessModelVersions(
-        groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
+	for (GroupFolder folder : groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId)) {
+	    processes.addAll(getProcessModelVersionByFolderUserRecursive(folder.getFolder().getId(), userId));
+	}
 
-    for (GroupFolder folder : groupFolderRepository.findByParentFolderAndUser(parentFolderId,
-        userId)) {
-      processes
-          .addAll(getProcessModelVersionByFolderUserRecursive(folder.getFolder().getId(), userId));
+	return processes;
     }
 
-    return processes;
-  }
+    /**
+     * @see FolderRepositoryCustom#getProcessByFolderUserRecursive(Integer, String)
+     *      {@inheritDoc}
+     */
+    @Override
+    public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId) {
+	List<Process> processes = new ArrayList<>();
+	if (parentFolderId == 0) {
+	    parentFolderId = null;
+	}
+	processes.addAll(getProcesses(groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
 
-  /**
-   * @see FolderRepositoryCustom#getProcessByFolderUserRecursive(Integer, String) {@inheritDoc}
-   */
-  @Override
-  public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId) {
-    List<Process> processes = new ArrayList<>();
-    if (parentFolderId == 0) {
-      parentFolderId = null;
-    }
-    processes.addAll(getProcesses(
-        groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
+	for (GroupFolder folder : groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId)) {
+	    processes.addAll(getProcessByFolderUserRecursive(folder.getFolder().getId(), userId));
+	}
 
-    for (GroupFolder folder : groupFolderRepository.findByParentFolderAndUser(parentFolderId,
-        userId)) {
-      processes.addAll(getProcessByFolderUserRecursive(folder.getFolder().getId(), userId));
-    }
-
-    return processes;
-  }
-
-
-
-  private List<Process> getProcesses(List<GroupProcess> processUsers) {
-    List<Process> processes = new ArrayList<>();
-
-    for (GroupProcess ps : processUsers) {
-      processes.add(ps.getProcess());
+	return processes;
     }
 
-    return processes;
-  }
+    private List<Process> getProcesses(List<GroupProcess> processUsers) {
+	List<Process> processes = new ArrayList<>();
 
-  private List<ProcessModelVersion> getProcessModelVersions(List<GroupProcess> processUsers) {
-    List<ProcessModelVersion> pmvs = new ArrayList<>();
+	for (GroupProcess ps : processUsers) {
+	    processes.add(ps.getProcess());
+	}
 
-    for (GroupProcess ps : processUsers) {
-      for (ProcessBranch branch : ps.getProcess().getProcessBranches()) {
-        pmvs.addAll(branch.getProcessModelVersions());
-      }
+	return processes;
     }
 
-    return pmvs;
-  }
+    private List<ProcessModelVersion> getProcessModelVersions(List<GroupProcess> processUsers) {
+	List<ProcessModelVersion> pmvs = new ArrayList<>();
 
+	for (GroupProcess ps : processUsers) {
+	    for (ProcessBranch branch : ps.getProcess().getProcessBranches()) {
+		pmvs.addAll(branch.getProcessModelVersions());
+	    }
+	}
+
+	return pmvs;
+    }
+
+    @Transactional
+    public void updateFolderChainForSubFolders(Integer oldfolderId, String newFolderChainPrefix) {
+	Folder oldFolder = folderRepository.findUniqueByID(oldfolderId);
+	String oldChain = oldFolder.getParentFolderChain() + "_" + oldfolderId;
+	String prefix = oldChain + "_";
+
+	prefix = getEscapedString(prefix) + "%";
+	List<Folder> folders = folderRepository.findByParentFolderIdOrParentFolderChainLike(oldfolderId, prefix);
+
+	for (Folder folder : folders) {
+	    String folderChain = folder.getParentFolderChain();
+	    folder.setParentFolderChain(folderChain.replaceAll(getEscapedString(oldChain), newFolderChainPrefix));
+	}
+
+	folderRepository.save(folders);
+
+    }
+
+    private String getEscapedString(String prefix) {
+	return prefix.replaceAll("\\_", "\\\\_");
+    }
 
 }

@@ -70,6 +70,7 @@ import org.apromore.dao.model.Workspace;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
+import org.apromore.service.FolderService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
 import org.apromore.storage.StorageClient;
@@ -102,7 +103,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
     private EventLogFileService logFileService;
-    private FolderServiceImpl folderService;
+    private FolderService folderService;
     private StorageRepository storageRepository;
 
     private StorageManagementFactory<StorageClient> storageFactory;
@@ -130,7 +131,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	    final GroupProcessRepository groupProcessRepository,
 	    final GroupLogRepository groupLogRepository,
 	    final EventLogFileService eventLogFileService,
-	    final FolderServiceImpl folderService,
+	    final FolderService folderService,
 	    final StorageManagementFactory storageFacotry,
 	    final StorageRepository storageRepository) {
 
@@ -209,6 +210,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	    Folder parent = folderRepo.findOne(parentFolderId);
 	    if (parent != null) {
 		folder.setParentFolder(parent);
+		folder.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
 	    }
 	}
 
@@ -663,6 +665,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	Folder folder = folderRepo.findUniqueByID(folderId);
 	Folder newParentFolder = folderRepo.findUniqueByID(newParentFolderId);
 	folder.setParentFolder(newParentFolder);
+	folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
+	folderService.updateFolderChainForSubFolders(folderId,
+		newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
+
 	folderRepo.save(folder);
 	return folder;
     }

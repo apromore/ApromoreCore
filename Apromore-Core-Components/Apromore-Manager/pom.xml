@@ -53,6 +53,8 @@
                             org.springframework.ws.transport.http,
                             org.springframework.ws,
                             com.sun.xml.bind.v2,
+                            net.sf.cglib.proxy,
+                            net.sf.cglib.core,
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,

@@ -41,9 +41,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-@ImportResource(value = { "classpath:META-INF/spring/managerContext-services.xml",
+@ImportResource(value = {
 	"classpath:META-INF/spring/database-jpa.xml",
-	"classpath:META-INF/spring/cache-config.xml" })
+	"classpath:META-INF/spring/cache-config.xml", "classpath:META-INF/spring/storage-context.xml",
+	"classpath:META-INF/spring/managerContext-services.xml" })
 public class TestConfig {
 
     @Bean
@@ -86,6 +87,7 @@ public class TestConfig {
 	};
     }
     
+
   
    
 

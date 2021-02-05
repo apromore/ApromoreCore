@@ -31,11 +31,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "folder", uniqueConstraints = { @UniqueConstraint(columnNames = { "id" }),
-	@UniqueConstraint(columnNames = { "folder_name" }) })
+@Table(name = "folder")
 public class FolderInfo {
 
     private Integer id;
