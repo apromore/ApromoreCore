@@ -76,5 +76,5 @@ public interface AActivity  {
 
      long getEventSize();
 
-
+     ATrace getParentTrace();
 }

@@ -55,7 +55,7 @@ public class AAttributeGraph {
             UnifiedSet<AActivity> activities = valOccurMap.get(value);
             for (AActivity act : activities) {
                 int actIndex = act.getMutableIndex();
-                ATrace parentTrace = apmLog.getTraceList().get(act.getMutableTraceIndex());
+                ATrace parentTrace = act.getParentTrace();
 
                 List<AActivity> activityList = parentTrace.getActivityList();
 
