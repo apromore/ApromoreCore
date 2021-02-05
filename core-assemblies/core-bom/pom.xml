@@ -102,6 +102,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+
+    <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
       <version>1.9.3</version>
@@ -550,18 +556,6 @@
     <dependency>
       <groupId>org.apromore.plugin</groupId>
       <artifactId>apromore-bpmneditor</artifactId>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apromore.plugin</groupId>
-      <artifactId>database-h2</artifactId>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apromore.plugin</groupId>
-      <artifactId>database-mysql</artifactId>
       <version>1.1</version>
     </dependency>
 

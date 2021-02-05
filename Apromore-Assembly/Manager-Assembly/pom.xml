@@ -44,18 +44,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- MYSQL,Postgres and Oracle Bundles -->
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>database-h2</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>database-mysql</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.apromore</groupId>
 			<artifactId>apromore-database</artifactId>
