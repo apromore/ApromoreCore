@@ -88,11 +88,6 @@
       <version>1.3.171</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.jolbox</groupId>
-      <artifactId>bonecp</artifactId>
-      <version>0.7.1.RELEASE</version>
-    </dependency>
 
     <dependency>
       <groupId>com.opencsv</groupId>

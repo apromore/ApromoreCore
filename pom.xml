@@ -242,6 +242,7 @@
         <antlr4-runtime.version>4.3</antlr4-runtime.version>
         <themis.version>1.0</themis.version>
         <postgresql.version>9.3-1101-jdbc41</postgresql.version>
+        <hikari.version>4.0.1</hikari.version>
         <pql.version>1.2</pql.version>
 
         <!-- **** Settings for the building of the projects **** -->
@@ -533,6 +534,12 @@
                 <artifactId>apromore-database</artifactId>
                 <version>${apromore-database.version}</version>
             </dependency>
+	
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+		</dependency>
 
             <!-- Apromore Calendar  -->
 
@@ -1036,11 +1043,7 @@
                 <artifactId>org.eclipse.persistence.core</artifactId>
                 <version>${eclipselink.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.jolbox</groupId>
-                <artifactId>bonecp</artifactId>
-                <version>${bonecp.version}</version>
-            </dependency>
+           
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>

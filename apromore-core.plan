@@ -26,8 +26,6 @@
     
 
     <!-- Database -->
-    <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
-    <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.database" version="[1.0, 2)"/>
 
      <!-- Cache -->
