@@ -129,6 +129,11 @@ liquibase.jdbc.password = 7fHJV41fpJ
 cache.numOfEvent = 0
 cache.numOfTrace = 0
 
+impala.jdbc.driver   = com.cloudera.impala.jdbc41.Driver
+impala.jdbc.url      = jdbc:impala://localhost:21050
+impala.jdbc.username = apromore
+impala.jdbc.password = MAcri
+
 #
 # GED Matrix support
 #
