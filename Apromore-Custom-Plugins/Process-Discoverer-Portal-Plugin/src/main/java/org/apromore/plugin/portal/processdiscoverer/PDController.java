@@ -594,7 +594,7 @@ public class PDController extends BaseController {
     }
 
     private void showSingleDurationFilterError() {
-        Messagebox.show("The selected arc leads to insufficient duration variant",
+        Messagebox.show("Unable to filter on duration as there's only one value.",
                 "Filter error", Messagebox.OK, Messagebox.ERROR);
     }
 
