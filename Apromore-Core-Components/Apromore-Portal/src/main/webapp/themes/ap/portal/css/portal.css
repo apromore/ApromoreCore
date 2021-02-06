@@ -347,7 +347,7 @@
 .ap-user-menu .z-menu-text {
   text-align: right;
   color: black !important;
-  filter: var(--ap-filter-ico-white) !important;
+  filter: var(--ap-filter-ico-normal-light) !important;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
