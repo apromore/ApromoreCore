@@ -200,16 +200,25 @@ public class LogDataWithAPMLog extends LogData {
 
     @Override
     public boolean hasSufficientDurationVariant(String attribute, String value) {
-        DurSubGraph dsg = this.originalAPMLog.getAAttributeGraph().getValueDurations(attribute);
+        APMLog apmLog = filteredAPMLog != null ? filteredAPMLog : originalAPMLog;
+        DurSubGraph dsg = apmLog.getAAttributeGraph().getValueDurations(attribute);
         if (!dsg.getValDurCaseIndexMap().containsKey(value)) return false;
         return dsg.getValDurCaseIndexMap().get(value).size() > 1;
     }
 
     @Override
     public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
-        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
-        UnifiedSet<Double> durations = aAttributeGraph.getDurations(attribute, inDegree, outDegree, this.originalAPMLog);
-        return (durations.size() > 1);
+        APMLog apmLog = filteredAPMLog != null ? filteredAPMLog : originalAPMLog;
+        AAttributeGraph aAttributeGraph = apmLog.getAAttributeGraph();
+        DurSubGraph subGraph = aAttributeGraph.getNextValueDurations(attribute, inDegree, apmLog);
+        if (subGraph == null) return false;
+        else {
+            UnifiedMap<String, UnifiedMap<Double, UnifiedSet<Integer>>> valDurCaseIndexMap =
+                    subGraph.getValDurCaseIndexMap();
+            if (!valDurCaseIndexMap.containsKey(outDegree)) return false;
+
+            return valDurCaseIndexMap.get(outDegree).size() > 1;
+        }
     }
 
     @Override

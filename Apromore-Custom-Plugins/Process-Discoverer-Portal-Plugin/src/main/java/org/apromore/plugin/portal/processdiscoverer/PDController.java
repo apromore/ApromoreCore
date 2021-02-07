@@ -518,7 +518,8 @@ public class PDController extends BaseController {
                         if (CASE_SECTION_ATTRIBUTE_COMBINATION.equals(type) || EVENT_ATTRIBUTE_DURATION.equals(type)) {
                             data = (String) param.get("data");
                             if (EVENT_ATTRIBUTE_DURATION.equals(type) && !me.logData.hasSufficientDurationVariant(mainAttribute, data)) {
-                                showSingleDurationFilterError();
+                                Messagebox.show("Unable to filter on node duration as there's only one value.",
+                                        "Filter error", Messagebox.OK, Messagebox.ERROR);
                                 return;
                             }
                             parameters.put("filterType", type);
@@ -528,7 +529,8 @@ public class PDController extends BaseController {
                             source = (String) param.get("source");
                             target = (String) param.get("target");
                             if (!me.logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
-                                showSingleDurationFilterError();
+                                Messagebox.show("Unable to filter on arc duration as there's only one value.",
+                                        "Filter error", Messagebox.OK, Messagebox.ERROR);
                                 return;
                             }
                             parameters.put("filterType", type);
@@ -594,7 +596,7 @@ public class PDController extends BaseController {
     }
 
     private void showSingleDurationFilterError() {
-        Messagebox.show("The selected arc leads to insufficient duration variant",
+        Messagebox.show("Unable to filter on duration as there's only one value.",
                 "Filter error", Messagebox.OK, Messagebox.ERROR);
     }
 
