@@ -156,16 +156,12 @@
 
         <spring.version>3.1.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.4.1.RELEASE</spring.data.jpa.version>
-        <spring-ws.version>2.1.0.RELEASE</spring-ws.version>
         <spring-security.version>3.1.4.RELEASE</spring-security.version>
 
         <spring-social.version>1.0.2.RELEASE</spring-social.version>
         <spring-social-facebook.version>1.0.3.RELEASE</spring-social-facebook.version>
         <spring-social-twitter.version>1.0.5.RELEASE</spring-social-twitter.version>
         <spring-social-twitter.version>1.0.5.RELEASE</spring-social-twitter.version>
-
-        <xwss.version>2.0.0.FCS</xwss.version>
-        <saaj.version>1.3.2</saaj.version>
 
         <h2.version>1.3.171</h2.version>
         <mysql.connector.version>5.1.31</mysql.connector.version>
@@ -206,23 +202,19 @@
         <zk.spring.version>3.1</zk.spring.version>
         <zk.security.version>3.1</zk.security.version>
 
-        <xmlSchema.version>2.0.2</xmlSchema.version>
-        <dom4j.version>1.6.1</dom4j.version>
-        <wsdl4j.version>1.6.1</wsdl4j.version>
         <jaxb-xjc.version>2.2.0</jaxb-xjc.version>
         <jaxb-impl.version>2.2.0</jaxb-impl.version>
         <jaxb-api.version>2.2.0</jaxb-api.version>
         <jaxb2-basics.version>0.5.3.MR1</jaxb2-basics.version>
         <jaxb2-basics-runtime.version>0.5.3</jaxb2-basics-runtime.version>
 
-        <junit.version>4.10</junit.version>
+        <junit.version>4.13.1</junit.version>
         <clover.version>3.1.10</clover.version>
         <easymock.version>3.1</easymock.version>
         <powermock.version>1.4.12</powermock.version>
         <mock-javamail.version>1.9</mock-javamail.version>
         <hamcrest.version>1.3</hamcrest.version>
         <ipsedixit.version>1.0.0</ipsedixit.version>
-        <spring-ws-tests.version>2.0.0.RELEASE</spring-ws-tests.version>
 
         <build-tools.version>1.1</build-tools.version>
         <test-tools.version>1.1</test-tools.version>
@@ -269,7 +261,6 @@
         <maven.javadoc.plugin>2.9</maven.javadoc.plugin>
         <maven.jaxb2.plugin>0.9.0</maven.jaxb2.plugin>
         <maven.jaxb2.codehaus.plugin>1.5</maven.jaxb2.codehaus.plugin>
-        <maven.jaxws.plugin.version>1.10</maven.jaxws.plugin.version>
         <maven.jetty.plugin>8.1.5.v20120716</maven.jetty.plugin>
         <maven.jxr.plugin>2.3</maven.jxr.plugin>
         <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
@@ -873,46 +864,6 @@
                 </exclusions>
             </dependency>
 
-            <!-- Spring Web Services -->
-            <dependency>
-                <groupId>org.springframework.ws</groupId>
-                <artifactId>org.springframework.ws</artifactId>
-                <version>${spring-ws.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.ws</groupId>
-                <artifactId>org.springframework.ws.support</artifactId>
-                <version>${spring-ws.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-                        <groupId>org.apache.commons</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.ws</groupId>
-                <artifactId>org.springframework.xml</artifactId>
-                <version>${spring-ws.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.ws</groupId>
-                        <artifactId>com.springsource.org.apache.ws.commons.schema</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-
             <!-- Spring Social -->
             <dependency>
                 <groupId>org.springframework.social</groupId>
@@ -1048,23 +999,6 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
-            </dependency>
-
-            <!-- WSDL / WS dependencies -->
-            <dependency>
-                <groupId>javax.wsdl</groupId>
-                <artifactId>com.springsource.javax.wsdl</artifactId>
-                <version>${wsdl4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.xmlschema</groupId>
-                <artifactId>xmlschema-core</artifactId>
-                <version>${xmlSchema.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>${dom4j.version}</version>
             </dependency>
 
             <!-- JEE dependencies -->
@@ -1259,19 +1193,6 @@
                 <artifactId>spring-instrument</artifactId>
                 <version>${spring.version}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.ws</groupId>
-                <artifactId>spring-ws-core</artifactId>
-                <version>${spring-ws-tests.version}</version>
-                <scope>test</scope>
-                <classifier>tests</classifier>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
