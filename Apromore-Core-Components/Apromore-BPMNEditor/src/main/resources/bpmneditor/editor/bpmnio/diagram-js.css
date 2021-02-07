@@ -362,6 +362,7 @@ svg.new-parent {
   position: absolute;
   display: none;
   pointer-events: none;
+  color: #101010;
 }
 
 .djs-context-pad .entry {
@@ -375,7 +376,7 @@ svg.new-parent {
   border-radius: 3px;
 
   cursor: default;
-
+  color: #101010;
   background-color: #FEFEFE;
   box-shadow: 0 0 2px 1px #FEFEFE;
   pointer-events: all;
@@ -400,6 +401,7 @@ svg.new-parent {
   line-height: 20px;
   white-space: nowrap;
   cursor: default;
+  color: #101010;
 }
 
 /* larger font for prefixed icons */

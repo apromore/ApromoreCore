@@ -41,14 +41,8 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.json.JSONArray;
-import org.json.JSONException;
 
-import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowElement;
-import de.hpi.bpmn2_0.model.Process;
-import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 
 public class AnimationLog {
@@ -65,9 +59,7 @@ public class AnimationLog {
     private double approxTraceFitnessFormulaTime = 0; //in milliseconds
     private double minBoundMoveOnModel = 0;
     private static final Logger LOGGER = Logger.getLogger(AnimationLog.class.getCanonicalName());
-    
-    private CaseMapping caseMapping;
-    private ElementMapping elementMapping;
+    private CaseMapping caseMapping; // mapping caseID to case index for space efficiency
     
     public AnimationLog(XLog xlog) {
         this.xlog = xlog;
@@ -100,37 +92,20 @@ public class AnimationLog {
     
     public void setDiagram(Definitions diagram) {
     	this.diagram = diagram;
-    	this.createElementMapping(diagram);
     }
     
     public int getCaseIndexFromId(String caseId) {
     	return this.caseMapping.getIndex(caseId);
     }
     
-    public int getElementIndexFromId(String elementId) {
-    	return this.elementMapping.getIndex(elementId);
-    }
-    
-    public int getElementSkipIndexFromId(String elementId) {
-        return this.elementMapping.getSkipIndex(elementId);
-    }
-    
     public int getNumberOfCases() {
     	return caseMapping != null ? caseMapping.size() : 0;
-    }
-    
-    public int getNumberOfElements() {
-    	return elementMapping != null ? elementMapping.size() : 0;
-    }
-    
-    public JSONArray getElementJSON() throws JSONException {
-    	return this.elementMapping.getElementJSON();
     }
     
     public DateTime getStartDate() {
         if (startDate == null) {
             Calendar cal = Calendar.getInstance();
-            cal.set(2020, 1, 1);
+            cal.set(2050, 1, 1);
             DateTime logStartDate = new DateTime(cal.getTime());
             
             for (ReplayTrace trace : this.getTraces()) {
@@ -401,23 +376,6 @@ public class AnimationLog {
             xTrace.clear();
         }
         unplayTraces.clear();
-    }
-    
-    private void createElementMapping(Definitions diagram) {
-    	List<FlowElement> elements = new ArrayList<>();
-        List<BaseElement> rootElements = diagram.getRootElement();
-        if (rootElements.size() == 1) {
-            BaseElement rootElement = rootElements.get(0);
-            if (rootElement instanceof Process) {
-                Process process = (Process)rootElement;
-                for (FlowElement element : process.getFlowElement()) {
-                    if (element instanceof Activity || element instanceof SequenceFlow) {
-                        elements.add(element);
-                    }                  
-                }
-            }
-        }
-        this.elementMapping = new ElementMapping(elements);
-    }    
+    }  
 
 }

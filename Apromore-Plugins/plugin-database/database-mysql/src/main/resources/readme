@@ -1,4 +1,0 @@
-DO NOT DELETE THIS FILE!
-
-This bundle attaches to BoneCP and thus provides MySQL support!
-This file is needed so Maven generates the correct MANIFEST.MF.

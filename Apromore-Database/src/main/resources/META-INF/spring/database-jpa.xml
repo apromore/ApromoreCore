@@ -39,10 +39,25 @@
     <!-- Setting up the Data Access details -->
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" /> 
 
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"
-          p:driverClass="${jdbc.driver}" p:jdbcUrl="${jdbc.url}" p:username="${jdbc.username}" p:password="${jdbc.password}"
-          p:maxConnectionsPerPartition="30" p:minConnectionsPerPartition="10" p:partitionCount="5" p:acquireIncrement="5"
-          p:statementsCacheSize="100" p:releaseHelperThreads="3" />
+
+	<!-- Hikari CP -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	    <constructor-arg ref="hikariConfig" />
+	</bean>
+
+<!-- HikariConfig config that is fed to above dataSource -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	        <property name="poolName" value="ApromoreHikariPool" />
+	        <property name="driverClassName" value="${jdbc.driver}" />
+	        <property name="jdbcUrl" value="${jdbc.url}" />
+	        <property name="username" value="${jdbc.username}" />
+	        <property name="password" value="${jdbc.password}" />
+	        <property name="maximumPoolSize" value="10" />
+	        <property name="idleTimeout" value="30000" />
+	        <property name="leakDetectionThreshold" value="30000" />        
+	</bean>
+
+	
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>

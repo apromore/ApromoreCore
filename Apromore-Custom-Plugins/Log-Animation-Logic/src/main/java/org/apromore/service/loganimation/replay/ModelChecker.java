@@ -24,21 +24,18 @@
 
 package org.apromore.service.loganimation.replay;
 
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.FlowElement;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.activity.Activity;
-import de.hpi.bpmn2_0.model.activity.Task;
 import de.hpi.bpmn2_0.model.connector.Edge;
 import de.hpi.bpmn2_0.model.event.EndEvent;
 import de.hpi.bpmn2_0.model.event.StartEvent;
-import de.hpi.bpmn2_0.model.gateway.Gateway;
-import de.hpi.bpmn2_0.model.gateway.GatewayDirection;
 import de.hpi.bpmn2_0.transformation.AbstractVisitor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class ModelChecker extends AbstractVisitor {
     int numberOfStartEvent = 0;
@@ -98,6 +95,12 @@ public class ModelChecker extends AbstractVisitor {
             }
             
             //LOGGER.info("Checking gateways: merge only one target, split only one source");
+            //Bruce 08 Jan 2021: remove this check because BPMN.io saves .bpmn file without the gatewayDirection attribute.
+            //This is redundant attribute because the split or join can be known from the gateway incoming and outgoing arcs
+            //This check could be incorrect if the model is saved by BPMN.io because the gatewayDirection is kept but 
+            //the incoming and outgoing arcs could change differently from the gatewayDirection attribute value.
+            //Make sure that gatewayDirection attribute is NOT used in this module in all places.
+            /*
             if (that instanceof Gateway) {
                 Gateway gw = (Gateway)that;
                 GatewayDirection direction = gw.getGatewayDirection();
@@ -114,6 +117,7 @@ public class ModelChecker extends AbstractVisitor {
                     }
                 }
             }
+            */
         }
 
     }
