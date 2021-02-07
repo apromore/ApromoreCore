@@ -193,8 +193,6 @@ public class PLog implements APMLog {
         this.originalValidTraceIndexBS.set(0, apmLog.getImmutableTraces().size());
 
 
-
-
         for (ATrace aTrace : apmLog.getTraceList()) {
             int index = aTrace.getImmutableIndex();
             this.validTraceIndexBS.set(index);

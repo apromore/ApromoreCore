@@ -31,13 +31,13 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
+import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.controllers.AnimationController2;
 import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphVisController;
@@ -129,7 +129,6 @@ public class PDController extends BaseController {
     private Button casesDetails;
     //private Button fitness;
     private Button animate;
-    private Button animate_new;
     private Button fitScreen;
 
     private Button exportFilteredLog;
@@ -301,6 +300,23 @@ public class PDController extends BaseController {
     
             // Prepare log data
             logData = pdFactory.createLogData(contextData, eventLogService);
+            IndexableAttribute mainAttribute = logData.getAttribute(configData.getDefaultAttribute());
+            if (mainAttribute == null) {
+                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.", 
+                        "Process Discoverer", 
+                        Messagebox.OK, 
+                        Messagebox.INFORMATION);
+                return;
+            }
+            else if (mainAttribute.getValueSize() > configData.getMaxNumberOfUniqueValues()) {
+                Messagebox.show("We cannot display the process map due to a large number of activities in the log " +
+                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")", 
+                                "Process Discoverer", 
+                                Messagebox.OK, 
+                                Messagebox.INFORMATION);
+                return;
+            }
+            
             logData.setMainAttribute(configData.getDefaultAttribute());
             userOptions.setMainAttributeKey(configData.getDefaultAttribute());
             processDiscoverer = new ProcessDiscoverer(logData.getAttributeLog());
@@ -374,7 +390,6 @@ public class PDController extends BaseController {
             filter = (Button) mainWindow.getFellow("filter");
             filterClear = (Button) mainWindow.getFellow("filterClear");
             animate = (Button) mainWindow.getFellow("animate");
-            animate_new = (Button) mainWindow.getFellow("animate_new");
             fitScreen = (Button) mainWindow.getFellow("fitScreen");
     
             exportFilteredLog = (Button) mainWindow.getFellow("exportUnfitted");
@@ -503,7 +518,8 @@ public class PDController extends BaseController {
                         if (CASE_SECTION_ATTRIBUTE_COMBINATION.equals(type) || EVENT_ATTRIBUTE_DURATION.equals(type)) {
                             data = (String) param.get("data");
                             if (EVENT_ATTRIBUTE_DURATION.equals(type) && !me.logData.hasSufficientDurationVariant(mainAttribute, data)) {
-                                Messagebox.show("The selected node leads to insufficient duration variant", "Filter error", Messagebox.OK, Messagebox.ERROR);
+                                Messagebox.show("Unable to filter on node duration as there's only one value.",
+                                        "Filter error", Messagebox.OK, Messagebox.ERROR);
                                 return;
                             }
                             parameters.put("filterType", type);
@@ -513,7 +529,8 @@ public class PDController extends BaseController {
                             source = (String) param.get("source");
                             target = (String) param.get("target");
                             if (!me.logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
-                                Messagebox.show("The selected arc leads to insufficient duration variant", "Filter error", Messagebox.OK, Messagebox.ERROR);
+                                Messagebox.show("Unable to filter on arc duration as there's only one value.",
+                                        "Filter error", Messagebox.OK, Messagebox.ERROR);
                                 return;
                             }
                             parameters.put("filterType", type);
@@ -537,7 +554,6 @@ public class PDController extends BaseController {
             });
             filter.addEventListener("onClick", this.getFilterController());
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
-            animate_new.addEventListener("onClick", new AnimationController2(this));
     
             exportFilteredLog.addEventListener("onExport", pdFactory.createLogExportController(this));
             exportBPMN.addEventListener("onClick", pdFactory.createBPMNExportController(this));
@@ -577,6 +593,11 @@ public class PDController extends BaseController {
             Messagebox.show("Errors occured while initializing event handlers.");
         }
 
+    }
+
+    private void showSingleDurationFilterError() {
+        Messagebox.show("Unable to filter on duration as there's only one value.",
+                "Filter error", Messagebox.OK, Messagebox.ERROR);
     }
 
     public void clearFilter() throws Exception {
@@ -840,13 +861,17 @@ public class PDController extends BaseController {
     public ProcessService getProcessService() {
         return processService;
     }
-
-    public LogAnimationPluginInterface getLogAnimationPluginCE() {
-        return this.logAnimationPluginCE;
-    }
     
-    public LogAnimationPluginInterface getLogAnimationPluginEE() {
-        return this.logAnimationPluginEE;
+    public LogAnimationPluginInterface getLogAnimationPlugin() throws MissingLogAnimationPluginException {
+        if (logAnimationPluginEE != null) {
+            return logAnimationPluginEE;
+        }
+        else if (logAnimationPluginCE != null) {
+            return logAnimationPluginCE;
+        }
+        else {
+            throw new MissingLogAnimationPluginException("LogAnimation plugin was not available");
+        }
     }
 
     public LogFilterPlugin getLogFilterPlugin() {

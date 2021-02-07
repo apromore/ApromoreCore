@@ -45,6 +45,7 @@ import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
+import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Section;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -146,8 +147,9 @@ public class APMLogFilter {
 
         if (logFilterRuleList.size() == 1 && logFilterRuleList.get(0).getFilterType() == FilterType.CASE_ID) {
             Set<String> selection = logFilterRuleList.get(0).getPrimaryValuesInString();
+            boolean retain = logFilterRuleList.get(0).getChoice() == Choice.RETAIN;
             filteredPTraceList = pTraceList.stream()
-                    .filter(p -> selection.contains(p.getCaseId()))
+                    .filter(p -> retain ? selection.contains(p.getCaseId()) : !selection.contains(p.getCaseId()) )
                     .collect(Collectors.toList());
             for (int i = 0; i < filteredPTraceList.size(); i++) {
                 PTrace pTrace = filteredPTraceList.get(i);

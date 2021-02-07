@@ -443,6 +443,13 @@ public class APMLogUnitTest {
         DiscardNoLifecycleTest.test1(apmLog);
     }
 
+    @Test
+    public void testCaseIdRemove() throws Exception {
+        XLog xLog = getXLog("files/5cases.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        CaseIdFilterTest.test1(apmLog);
+    }
+
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
