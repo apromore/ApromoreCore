@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,20 +22,7 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.opencsv.CSVReader;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
@@ -51,13 +38,17 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
-import com.opencsv.CSVReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
@@ -66,6 +57,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     private ParquetFactoryProvider parquetFactoryProvider;
     private LogImporterProvider logImporterProvider;
     private UserMetadataService userMetadataService;
+
+    private static String getMediaFormat(Media media) throws Exception {
+        if (media.getName().lastIndexOf('.') < 0)
+            throw new Exception("Can't read file format");
+        return media.getName().substring(media.getName().lastIndexOf('.') + 1);
+    }
 
     public ParquetFactoryProvider getParquetFactoryProvider() {
         return parquetFactoryProvider;
@@ -83,12 +80,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.logImporterProvider = logImporterProvider;
     }
 
+    // Implementation of FileImporterPlugin
+
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
         LOGGER.info("Injected CSV importer logic {}", newUserMetadataService);
         this.userMetadataService = newUserMetadataService;
     }
-
-    // Implementation of FileImporterPlugin
 
     @Override
     public Set<String> getFileExtensions() {
@@ -105,8 +102,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-	CsvImportListener csvImportListener = new CsvImportListener(arg,
-		(String) Sessions.getCurrent().getAttribute("fileimportertarget"), null, null);
+        CsvImportListener csvImportListener = new CsvImportListener(arg,
+                (String) Sessions.getCurrent().getAttribute("fileimportertarget"), null, null);
         // Only works for CSV
         try {
             if ("csv".equals(getMediaFormat(media))) {
@@ -116,7 +113,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                 String fileEncoding = "UTF-8";
                 CSVFileReader csvFileReader = new CSVFileReader();
 
-		try (CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);) {
+                try (CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding)) {
                     header = Arrays.asList(csvReader.readNext());
                 } catch (IOException e) {
                     LOGGER.error("Unable to read CSV", e);
@@ -161,7 +158,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                                             "/matchedMapping.zul", null, null);
                             matchedMappingPopUp.doModal();
 
-                            Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(usermetadata.getCreatedTime());
+                            Date date =
+                                    new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(usermetadata.getCreatedTime());
                             String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
                             String formattedTime = new SimpleDateFormat("HH:mm:ss").format(date);
 
@@ -177,18 +175,54 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                                     "uploadWithMatchedMapping");
                             Button uploadAsNewBtn = (Button) matchedMappingPopUp.getFellow(
                                     "uploadAsNew");
-			    uploadWithMatchedMappingBtn.addEventListener("onClick",(Event event) -> {
-				
-				csvImportListener.setComponentToDetach(matchedMappingPopUp);
-				csvImportListener.setJson(jsonObject);
-				csvImportListener.onEvent(event);
-				
-			    });				   
-			    uploadAsNewBtn.addEventListener("onClick",(Event event) -> {
-				csvImportListener.setComponentToDetach(matchedMappingPopUp);
-				csvImportListener.setJson(null);			    
-				csvImportListener.onEvent(event);
-			    });
+                            uploadWithMatchedMappingBtn.addEventListener("onClick", event -> {
+                                        arg.put("mappingJSON", jsonObject);
+                                        matchedMappingPopUp.detach();
+
+                                        // Create a CSV importer view
+                                        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+                                            case "page":  // create the view in its own page
+                                                Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
+                                                break;
+
+                                            case "modal":
+                                            default:  // create the view in a modal popup within the current page
+                                                try {
+                                                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
+                                                    window.doModal();
+
+                                                } catch (IOException e) {
+                                                    LOGGER.error("Unable to create window", e);
+                                                }
+                                                break;
+                                        }
+                                    }
+                            );
+                            uploadAsNewBtn.addEventListener("onClick", event -> {
+                                        arg.put("mappingJSON", null);
+                                        matchedMappingPopUp.detach();
+
+                                        // Create a CSV importer view
+                                        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+                                            case "page":  // create the view in its own page
+                                                Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
+                                                break;
+
+                                            case "modal":
+                                            default:  // create the view in a modal popup within the current page
+                                                try {
+                                                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
+                                                    window.doModal();
+
+                                                } catch (IOException e) {
+                                                    LOGGER.error("Unable to create window", e);
+                                                }
+                                                break;
+                                        }
+                                    }
+                            );
+                            // only match the last schema mapping if there are multiple
+                            return;
 
                         } catch (IOException | ParseException e) {
                             LOGGER.error("Unable to import CSV", e);
@@ -201,17 +235,25 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
             LOGGER.error("Can't read file format ", e);
         }
         // can't find match in JSONList or no mapping record
-	try {
+        arg.put("mappingJSON", null);
 
-	    csvImportListener.onEvent(null);
-	} catch (Exception e) {
-	    LOGGER.error("Unable to import CSV", e);
-	}
-    }
+        // Create a CSV importer view
+        switch ((String) Sessions.getCurrent().getAttribute("fileimportertarget")) {
+            case "page":  // create the view in its own page
+                Executions.getCurrent().sendRedirect("import-csv/csvimporter.zul", "_blank");
+                break;
 
-    private static String getMediaFormat(Media media) throws Exception {
-        if (media.getName().lastIndexOf('.') < 0)
-            throw new Exception("Can't read file format");
-        return media.getName().substring(media.getName().lastIndexOf('.') + 1);
+            case "modal":
+            default:  // create the view in a modal popup within the current page
+
+                try {
+                    Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, arg);
+                    window.doModal();
+
+                } catch (IOException e) {
+                    LOGGER.error("Unable to create window", e);
+                }
+                break;
+        }
     }
 }
