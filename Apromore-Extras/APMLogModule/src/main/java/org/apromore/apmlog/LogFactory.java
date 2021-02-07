@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -37,7 +37,9 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Chii Chang
@@ -46,24 +48,27 @@ public class LogFactory {
 
     public static APMLog convertXLog(XLog xLog) {
 
-        ImmutableLog log = new ImmutableLog();
+        for (XTrace xTrace : xLog) {
+            Set<XEvent> tobeRemoved = new HashSet<>();
+            for (XEvent xEvent : xTrace) {
+                XAttributeMap xAttributeMap = xEvent.getAttributes();
+                if (!xAttributeMap.containsKey("lifecycle:transition")) tobeRemoved.add(xEvent);
+            }
+            if (!tobeRemoved.isEmpty()) xTrace.removeAll(tobeRemoved);
+        }
 
-        DoubleArrayList ttlPTList = new DoubleArrayList(xLog.size());
+        ImmutableLog log = new ImmutableLog();
 
         for (int i = 0; i < xLog.size(); i++) {
             XTrace xTrace = xLog.get(i);
 
-            ImmutableTrace trace = new ImmutableTrace(i, i, getAttributes(xTrace, log));
+            UnifiedMap<String, String> attributes = getAttributes(xTrace, log);
+
+            ImmutableTrace trace = new ImmutableTrace(i, i,
+                    attributes.containsKey("concept:name") ? attributes.get("concept:name") : i +"",
+                    attributes);
 
             IntArrayList markedIndexes = new IntArrayList();
-
-            double ttlProcTime = 0;
-            double avgProcTime = 0;
-            double maxProcTime = 0;
-            double ttlWaitTime = 0;
-            double avgWaitTime = 0;
-            double maxWaitTime = 0;
-
 
             for (int j = 0; j < xTrace.size(); j++) {
 
@@ -74,15 +79,9 @@ public class LogFactory {
 
                 if (!markedIndexes.contains(j)) {
 
-                    UnifiedMap<String, String> activityAttributes = getAttributes(xTrace.get(j));
-
                     ImmutableActivity activity = getActivity(actSize, trace, xTrace, j, markedIndexes);
 
                     trace.addActivity(activity);
-
-                    ttlProcTime += activity.getDuration();
-
-                    if (activity.getDuration() > maxProcTime) maxProcTime = activity.getDuration();
 
                     if (!log.getActivityNameBiMap().containsKey(activity.getName())) {
                         int index = log.getActivityNameBiMap().size();
@@ -96,42 +95,25 @@ public class LogFactory {
             }
 
             List<AActivity> actList = trace.getActivityList();
+
+            DoubleArrayList processingTimes = new DoubleArrayList();
+            DoubleArrayList waitingTimes = new DoubleArrayList();
+
             for (int k = 0; k < actList.size(); k++) {
+                processingTimes.add(actList.get(k).getDuration());
+
                 if (k+1 < actList.size()) {
                     AActivity kAct = actList.get(k);
                     AActivity nAct = actList.get(k+1);
                     double kET = kAct.getEndTimeMilli();
                     double nST = nAct.getStartTimeMilli();
                     double wt = nST > kET ? nST - kET : 0;
-                    ttlWaitTime += wt;
-
-                    if (wt > maxWaitTime) maxWaitTime = wt;
+                    waitingTimes.add(wt);
                 }
             }
 
-            avgProcTime = ttlProcTime > 0 ? ttlProcTime / trace.getActivityList().size() : 0;
-            avgWaitTime = ttlWaitTime > 0 ? ttlWaitTime / (trace.getActivityList().size()-1) : 0;
-
-            trace.setTotalProcessingTime(ttlProcTime);
-            trace.setAverageProcessingTime(avgProcTime);
-            trace.setMaxProcessingTime(maxProcTime);
-            trace.setTotalWaitingTime(ttlWaitTime);
-            trace.setAverageWaitingTime(avgWaitTime);
-            trace.setMaxWaitingTime(maxWaitTime);
-
-            ttlPTList.add(ttlProcTime);
-
-            double dur = trace.getDuration();
-            double caseUtil;
-            if (ttlWaitTime > 0 && ttlProcTime > 0) {
-                caseUtil = ttlProcTime / (ttlProcTime + ttlWaitTime);
-            } else {
-                caseUtil = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 1.0;
-            }
-
-            if (caseUtil > 1.0) caseUtil = 1.0;
-
-            trace.setCaseUtilization(caseUtil);
+            trace.setProcessingTimes(processingTimes);
+            trace.setWaitingTimes(waitingTimes);
 
             log.add(trace);
         }
@@ -141,16 +123,9 @@ public class LogFactory {
 
         List<ATrace> traceList = log.getTraceList();
 
-        DoubleArrayList allCaseDurs = new DoubleArrayList(traceList.size());
-
-        for (int i = 0; i < traceList.size(); i++) {
-            ATrace trace = traceList.get(i);
-
-            allCaseDurs.add(trace.getDuration());
-
+        for (ATrace trace : traceList) {
             List<AActivity> activityList = trace.getActivityList();
-            for (int j = 0; j < activityList.size(); j++) {
-                AActivity activity = activityList.get(j);
+            for (AActivity activity : activityList) {
                 fillAttributeOccurMap(activity, log.getEventAttributeOccurMap());
             }
         }
@@ -174,31 +149,20 @@ public class LogFactory {
         return map;
     }
 
+
     private static UnifiedMap<String, String> getAttributes(XTrace xTrace, ImmutableLog log) {
-        UnifiedMap<String, UnifiedMap<String, Integer>> caseAttrValFreqMap = log.getCaseAttributeValueFreqMap();
 
         UnifiedMap<String, String> map = new UnifiedMap<>();
         XAttributeMap xAttributeMap = xTrace.getAttributes();
         for (String key : xAttributeMap.keySet()) {
-            String val = xAttributeMap.get(key).toString();
-            map.put(key.intern(), val.intern());
-
-            if (!key.equals("concept:name") && !key.equals("case:variant")) {
-                if (caseAttrValFreqMap.containsKey(key)) {
-                    UnifiedMap<String, Integer> valFreqMap = caseAttrValFreqMap.get(key);
-                    if (valFreqMap.containsKey(val)) {
-                        int freq = valFreqMap.get(val) + 1;
-                        valFreqMap.put(val, freq);
-                    } else valFreqMap.put(val, 1);
-                } else {
-                    UnifiedMap<String, Integer> valFreqMap = new UnifiedMap<>();
-                    valFreqMap.put(val, 1);
-                    caseAttrValFreqMap.put(key, valFreqMap);
-                }
+            if (!key.equals("case:variant")) {
+                String val = xAttributeMap.get(key).toString();
+                map.put(key.intern(), val.intern());
             }
         }
         return map;
     }
+
 
     private static long getTimestamp(XEvent xEvent) {
         try {
@@ -209,6 +173,7 @@ public class LogFactory {
         }
 
     }
+
 
     private static ImmutableActivity getActivity(int index, ImmutableTrace trace, XTrace xTrace, int fromIndex,
                                                  IntArrayList markedIndexes) {
@@ -233,6 +198,8 @@ public class LogFactory {
 
         boolean foundStart = baseLife.equals("start");
 
+        XEvent startEvent = baseEvent;
+
         if (proceed) {
 
             for (int i = fromIndex + 1; i < xTrace.size(); i++) {
@@ -244,29 +211,35 @@ public class LogFactory {
                                 nEvent.getAttributes().get("lifecycle:transition").toString().toLowerCase() :
                                 "complete";
 
-                        long nT = getTimestamp(nEvent);
+                        if (foundStart && lifecycle.equals("start")) {
+                            // SKIP this event; it is the start of another activity with the same concept:name
+                        } else {
 
-                        if (lifecycle.equals("start")) {
-                            startTime = nT;
-                        }
+                            long nT = getTimestamp(nEvent);
 
-                        if (lifecycle.equals("complete") ||
-                                lifecycle.equals("manualskip") ||
-                                lifecycle.equals("autoskip")) {
+                            if (lifecycle.equals("start") && !foundStart) {
+                                startTime = nT;
+                                startEvent = nEvent;
+                            }
 
-                            eventIndexList.add(i);
                             if (nT > endTime) endTime = nT;
 
-                            break;
+                            if (lifecycle.equals("complete") ||
+                                    lifecycle.equals("manualskip") ||
+                                    lifecycle.equals("autoskip")) {
 
-                        } else {
-                            if (lifecycle.equals("start")){
-                                if (!foundStart) {
-                                    eventIndexList.add(i);
-                                    foundStart = true;
-                                }
-                            } else {
                                 eventIndexList.add(i);
+                                break;
+
+                            } else {
+                                if (lifecycle.equals("start")) {
+                                    if (!foundStart) {
+                                        eventIndexList.add(i);
+                                        foundStart = true;
+                                    }
+                                } else {
+                                    eventIndexList.add(i);
+                                }
                             }
                         }
                     }
@@ -276,7 +249,7 @@ public class LogFactory {
 
         markedIndexes.addAll(eventIndexList);
 
-        UnifiedMap<String, String> attributes = getAttributes(baseEvent);
+        UnifiedMap<String, String> attributes = getAttributes(startEvent);
 
         ImmutableActivity activity =
                 new ImmutableActivity(index, index, trace, eventIndexList, startTime, endTime, attributes);
@@ -291,12 +264,14 @@ public class LogFactory {
         return name1.equals(name2);
     }
 
+
     private static boolean haveCommonMainAttributes(AEvent event1, AEvent event2) {
         String name1 = event1.getName();
         String name2 = event2.getName();
 
         return name1.equals(name2);
     }
+
 
     public static void fillAttributeOccurMap(AActivity activity,
                                              UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>>

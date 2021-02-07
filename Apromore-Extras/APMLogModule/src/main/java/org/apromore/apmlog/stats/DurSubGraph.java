@@ -21,22 +21,18 @@
  */
 package org.apromore.apmlog.stats;
 
-import org.eclipse.collections.api.tuple.primitive.IntIntPair;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 public class DurSubGraph {
     private UnifiedMap<String, UnifiedMap<Double, UnifiedSet<Integer>>> valDurCaseIndexMap;
     private UnifiedMap<String, UnifiedSet<Integer>> valCaseOccurMap;
     private UnifiedMap<String, Integer> valTtlFreqMap;
-    private UnifiedMap<String, IntIntPair> valFrequenciesMap;
     private UnifiedMap<String, DoubleArrayList> valDurListMap;
 
     public DurSubGraph() {
         valDurCaseIndexMap = new UnifiedMap<>();
-        valFrequenciesMap = new UnifiedMap<>();
         valCaseOccurMap = new UnifiedMap<>();
         valTtlFreqMap = new UnifiedMap<>();
         valDurListMap = new UnifiedMap<>();
@@ -81,16 +77,6 @@ public class DurSubGraph {
             traceIdxSet.add(traceIndex);
             valCaseOccurMap.put(value, traceIdxSet);
         }
-        int caseSize = valCaseOccurMap.get(value).size();
-        int ttlSize = valTtlFreqMap.get(value);
-
-        IntIntPair iip = PrimitiveTuples.pair(caseSize,ttlSize);
-
-        valFrequenciesMap.put(value, iip);
-    }
-
-    public UnifiedMap<String, IntIntPair> getValFrequenciesMap() {
-        return valFrequenciesMap;
     }
 
     public UnifiedMap<String, UnifiedMap<Double, UnifiedSet<Integer>>> getValDurCaseIndexMap() {
