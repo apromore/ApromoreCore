@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,7 +25,6 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.util.Util;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -33,35 +32,29 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ImmutableTrace implements ATrace {
 
     private int immutableIndex;
     private int mutableIndex;
-    private String caseId;
     private List<AActivity> activities;
     private List<AEvent> events;
     private List<AEvent> immutableEvents;
     private UnifiedMap<String, String> attributes;
     private int caseVariantId;
     private boolean hasActivity;
-
+    private double ttlProcessTime, avgProcessTime, maxProcessTime, ttlWaitTime, avgWaitTime, maxWaitTime,
+                    caseUtilization;
     private IntArrayList activityNameIndexes;
     private long startTime = 0, endTime = 0;
-    private DoubleArrayList waitingTimes;
-    private DoubleArrayList processingTimes;
 
-    public ImmutableTrace(int immutableIndex, int mutableIndex, String caseId, UnifiedMap<String, String> attributes) {
+    public ImmutableTrace(int immutableIndex, int mutableIndex, UnifiedMap<String, String> attributes) {
         this.immutableIndex = immutableIndex;
         this.mutableIndex = mutableIndex;
         activities = new ArrayList<>();
         events = new ArrayList<>();
         immutableEvents = new ArrayList<>();
         this.attributes = attributes;
-
-        this.caseId = caseId;
     }
 
     public void addEvent(AEvent event) {
@@ -111,7 +104,7 @@ public class ImmutableTrace implements ATrace {
 
     @Override
     public String getCaseId() {
-        return caseId;
+        return attributes.get("concept:name");
     }
 
     @Override
@@ -182,11 +175,7 @@ public class ImmutableTrace implements ATrace {
     @Override
     public UnifiedMap<String, String> getAttributeMap() {
 
-        Map<String, String> collect = attributes.entrySet().stream()
-                .filter(x -> !x.getKey().equals("concept:name") && !x.equals("case:variant") )
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        return new UnifiedMap<>(collect);
+        return attributes;
     }
 
     @Override
@@ -203,24 +192,6 @@ public class ImmutableTrace implements ATrace {
         this.immutableEvents = events;
     }
 
-    public void setWaitingTimes(DoubleArrayList waitingTimes) {
-        this.waitingTimes = waitingTimes;
-    }
-
-    public void setProcessingTimes(DoubleArrayList processingTimes) {
-        this.processingTimes = processingTimes;
-    }
-
-    @Override
-    public DoubleArrayList getWaitingTimes() {
-        return waitingTimes;
-    }
-
-    @Override
-    public DoubleArrayList getProcessingTimes() {
-        return processingTimes;
-    }
-
     @Override
     public int size() {
         return events.size();
@@ -233,50 +204,72 @@ public class ImmutableTrace implements ATrace {
 
     @Override
     public double getTotalProcessingTime() {
-        return !processingTimes.isEmpty() ? processingTimes.sum() : 0;
+        return ttlProcessTime;
     }
 
     @Override
     public double getAverageProcessingTime() {
-        return !processingTimes.isEmpty() ?  processingTimes.average() : 0;
+        return avgProcessTime;
     }
 
     @Override
     public double getMaxProcessingTime() {
-        return !processingTimes.isEmpty() ?  processingTimes.max() : 0;
+        return maxProcessTime;
     }
 
     @Override
     public double getTotalWaitingTime() {
-        return !waitingTimes.isEmpty() ?  waitingTimes.sum() : 0;
+        return ttlWaitTime;
     }
 
     @Override
     public double getAverageWaitingTime() {
-        return !waitingTimes.isEmpty() ? waitingTimes.average() : 0;
+        return avgWaitTime;
     }
 
     @Override
     public double getMaxWaitingTime() {
-        return !waitingTimes.isEmpty() ? waitingTimes.max() : 0;
+        return maxWaitTime;
     }
 
     @Override
     public double getCaseUtilization() {
-        if (waitingTimes.isEmpty() || processingTimes.isEmpty()) return 1.0;
+        return caseUtilization;
+    }
 
-        double ttlWaitTime = waitingTimes.sum();
-        double ttlProcTime = processingTimes.sum();
-        double dur = getDuration();
-        double caseUtil;
-        if (ttlWaitTime > 0 && ttlProcTime > 0) {
-            caseUtil = ttlProcTime / (ttlProcTime + ttlWaitTime);
-        } else {
-            caseUtil = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 1.0;
-        }
+    @Override
+    public void setTotalProcessingTime(double time) {
+        this.ttlProcessTime = time;
+    }
 
-        if (caseUtil > 1.0) caseUtil = 1.0;
-        return caseUtil;
+    @Override
+    public void setAverageProcessingTime(double time) {
+        this.avgProcessTime = time;
+    }
+
+    @Override
+    public void setMaxProcessingTime(double time) {
+        this.maxProcessTime = time;
+    }
+
+    @Override
+    public void setTotalWaitingTime(double time) {
+        this.ttlWaitTime = time;
+    }
+
+    @Override
+    public void setAverageWaitingTime(double time) {
+        this.avgWaitTime = time;
+    }
+
+    @Override
+    public void setMaxWaitingTime(double time) {
+        this.maxWaitTime = time;
+    }
+
+    @Override
+    public void setCaseUtilization(double caseUtilization) {
+        this.caseUtilization = caseUtilization;
     }
 
     @Override
@@ -314,10 +307,6 @@ public class ImmutableTrace implements ATrace {
 
     }
 
-    public void setCaseId(String caseId) {
-        this.caseId = caseId;
-    }
-
     @Override
     public int getCaseVariantIdForDisplay() {
         return 0;
@@ -336,7 +325,7 @@ public class ImmutableTrace implements ATrace {
             attrClone.put(key.intern(), attributes.get(key).intern());
         }
 
-        ImmutableTrace traceClone = new ImmutableTrace(immutableIndex, mutableIndex, caseId, attrClone);
+        ImmutableTrace traceClone = new ImmutableTrace(immutableIndex, mutableIndex, attrClone);
 
 
         for (int i = 0; i < activities.size(); i++) {
@@ -353,9 +342,13 @@ public class ImmutableTrace implements ATrace {
 
         traceClone.setCaseVariantId(caseVariantId);
         traceClone.setHasActivity(hasActivity);
-        traceClone.setWaitingTimes(new DoubleArrayList(waitingTimes.toArray()));
-        traceClone.setProcessingTimes(new DoubleArrayList(processingTimes.toArray()));
-        traceClone.setCaseId(caseId);
+        traceClone.setTotalProcessingTime(ttlProcessTime);
+        traceClone.setAverageProcessingTime(avgProcessTime);
+        traceClone.setMaxProcessingTime(maxProcessTime);
+        traceClone.setTotalWaitingTime(ttlWaitTime);
+        traceClone.setAverageWaitingTime(avgWaitTime);
+        traceClone.setMaxWaitingTime(maxWaitTime);
+        traceClone.setCaseUtilization(caseUtilization);
 
         return traceClone;
     }

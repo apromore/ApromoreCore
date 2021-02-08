@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,28 +23,25 @@ package org.apromore.apmlog.immutable;
 
 
 import org.apromore.apmlog.*;
-import org.apromore.apmlog.filter.PLog;
-import org.apromore.apmlog.filter.PTrace;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ImmutableLog extends LaLog {
+
+
 
     public ImmutableLog() {
         traceList = new ArrayList<>();
         immutableTraces = new ArrayList<>();
         eventAttributeOccurMap = new UnifiedMap<>();
         activityNameBiMap = new HashBiMap<>();
-        caseAttributeValues = new UnifiedMap<>();
-        eventAttributeValues = new UnifiedMap<>();
+        caseAttributeValueFreqMap = new UnifiedMap<>();
+        eventAttributeValueCasesFreqMap = new UnifiedMap<>();
+        eventAttributeValueFreqMap = new UnifiedMap<>();
         variantIdFreqMap = new UnifiedMap<>();
     }
 
@@ -53,8 +50,9 @@ public class ImmutableLog extends LaLog {
         this.immutableTraces = traceList;
         eventAttributeOccurMap = new UnifiedMap<>();
         activityNameBiMap = new HashBiMap<>();
-        caseAttributeValues = new UnifiedMap<>();
-        eventAttributeValues = new UnifiedMap<>();
+        caseAttributeValueFreqMap = new UnifiedMap<>();
+        eventAttributeValueCasesFreqMap = new UnifiedMap<>();
+        eventAttributeValueFreqMap = new UnifiedMap<>();
         variantIdFreqMap = new UnifiedMap<>();
     }
 
@@ -75,26 +73,44 @@ public class ImmutableLog extends LaLog {
             variIdFreqMapForClone.put(key, this.variantIdFreqMap.get(key));
         }
 
-        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eventAttrValsClone = new UnifiedMap<>();
 
-        for (String key : eventAttributeValues.keySet()) {
-            UnifiedSet<EventAttributeValue> valSet = eventAttributeValues.get(key);
-            UnifiedSet<EventAttributeValue> valSetClone = new UnifiedSet<>(valSet.size());
-            for (EventAttributeValue eav : valSet) {
-                valSetClone.add(eav.clone());
+        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValCasesFreqMapForClone = new UnifiedMap<>();
+
+        for (String key : this.eventAttributeValueCasesFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMapForClone = new UnifiedMap<>();
+            UnifiedMap<String, Integer> valFreqMap = this.eventAttributeValueCasesFreqMap.get(key);
+
+            for (String val : valFreqMap.keySet()) {
+                valFreqMapForClone.put(val, valFreqMap.get(val));
             }
-            eventAttrValsClone.put(key, valSetClone);
+
+            eventAttrValCasesFreqMapForClone.put(key, valFreqMapForClone);
         }
 
-        UnifiedMap<String, UnifiedSet<CaseAttributeValue>> caseAttrValsClone = new UnifiedMap<>();
+        UnifiedMap<String, UnifiedMap<String, Integer>> eventAttrValFreqMapForClone = new UnifiedMap<>();
 
-        for (String key : caseAttributeValues.keySet()) {
-            UnifiedSet<CaseAttributeValue> valSet = caseAttributeValues.get(key);
-            UnifiedSet<CaseAttributeValue> valSetClone = new UnifiedSet<>(valSet.size());
-            for (CaseAttributeValue cav : valSet) {
-                valSetClone.add(cav.clone());
+        for (String key : this.eventAttributeValueFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMapForClone = new UnifiedMap<>();
+            UnifiedMap<String, Integer> valFreqMap = this.eventAttributeValueFreqMap.get(key);
+
+            for (String val : valFreqMap.keySet()) {
+                valFreqMapForClone.put(val, valFreqMap.get(val));
             }
-            caseAttrValsClone.put(key, valSetClone);
+
+            eventAttrValFreqMapForClone.put(key, valFreqMapForClone);
+        }
+
+        UnifiedMap<String, UnifiedMap<String, Integer>> caseAttrValFreqMapForClone = new UnifiedMap<>();
+
+        for (String key : this.caseAttributeValueFreqMap.keySet()) {
+            UnifiedMap<String, Integer> valFreqMapForClone = new UnifiedMap<>();
+            UnifiedMap<String, Integer> valFreqMap = this.caseAttributeValueFreqMap.get(key);
+
+            for (String val : valFreqMap.keySet()) {
+                valFreqMapForClone.put(val, valFreqMap.get(val));
+            }
+
+            caseAttrValFreqMapForClone.put(key, valFreqMapForClone);
         }
 
         UnifiedMap<String, Integer> activityMaxOccurMapForClone = new UnifiedMap<>();
@@ -108,8 +124,9 @@ public class ImmutableLog extends LaLog {
 
         ImmutableLog logClone = new ImmutableLog(traceListForClone,
                 variIdFreqMapForClone,
-                eventAttrValsClone,
-                caseAttrValsClone,
+                eventAttrValCasesFreqMapForClone,
+                eventAttrValFreqMapForClone,
+                caseAttrValFreqMapForClone,
                 caseDurationListClone,
                 this.timeZone,
                 this.startTime,
@@ -125,8 +142,9 @@ public class ImmutableLog extends LaLog {
 
     public ImmutableLog(List<ATrace> traceList,
                       UnifiedMap<Integer, Integer> variantIdFreqMap,
-                        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eventAttributeValues,
-                        UnifiedMap<String, UnifiedSet<CaseAttributeValue>> caseAttributeValues,
+                      UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueCasesFreqMap,
+                      UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
+                      UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
                         DoubleArrayList caseDurationList,
                       String timeZone,
                       long startTime,
@@ -138,8 +156,9 @@ public class ImmutableLog extends LaLog {
         this.traceList = traceList;
         this.variantIdFreqMap = variantIdFreqMap;
         this.actIdNameMap = actIdNameMap;
-        this.eventAttributeValues = eventAttributeValues;
-        this.caseAttributeValues = caseAttributeValues;
+        this.eventAttributeValueCasesFreqMap = eventAttributeValueCasesFreqMap;
+        this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
+        this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
         this.caseDurationList = caseDurationList;
         this.timeZone = timeZone;
         this.startTime = startTime;
@@ -152,35 +171,5 @@ public class ImmutableLog extends LaLog {
                 defaultChartDataCollection = new DefaultChartDataCollection(this);
             }
         }
-    }
-
-    public ImmutableLog(PLog pLog) {
-        super.traceList = pLog.getPTraceList().stream()
-                .map(PTrace::toATrace)
-                .collect(Collectors.toList());
-
-        super.immutableTraces = pLog.getOriginalPTraceList().stream()
-                .map(PTrace::getOriginalATrace)
-                .collect(Collectors.toList());
-
-        super.eventAttributeOccurMap = pLog.getEventAttributeOccurMap();
-        super.activityNameBiMap = pLog.getActivityNameBiMap();
-        super.variantIdFreqMap = pLog.getVariantIdFreqMap();
-        super.activityMaxOccurMap = pLog.getActivityMaxOccurMap();
-        super.timeZone = pLog.getTimeZone();
-        super.startTime = pLog.getStartTime();
-        super.endTime = pLog.getEndTime();
-        super.eventSize = pLog.getEventSize();
-
-        super.variantIdFreqMap = pLog.getVariantIdFreqMap();
-        super.activityNameMapper = pLog.getActivityNameMapper();
-
-        super.attributeGraph = pLog.getAttributeGraph();
-        super.caseDurationList = new DoubleArrayList(pLog.getCaseDurations().toArray());
-
-        super.eventAttributeValues = pLog.getEventAttributeValues();
-        super.caseAttributeValues = pLog.getCaseAttributeValues();
-
-        super.defaultChartDataCollection = new DefaultChartDataCollection(this);
     }
 }

@@ -197,10 +197,6 @@ public class ImmutableActivity implements AActivity {
         return Util.timestampStringOf(Util.millisecondToZonedDateTime(Double.valueOf(endTime).longValue()));
     }
 
-    public long getEventSize() {
-        return eventIndexes.size();
-    }
-
     @Override
     public AActivity clone(ATrace parentTrace) {
         UnifiedMap<String, String> attributesClone = new UnifiedMap<>(attributes.size());

@@ -63,8 +63,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         Session session = Sessions.getCurrent();
         session.setAttribute("apmlog_tobe_filtered", logData.getOriginalAPMLog());
         session.setAttribute("filtered_log_name", parent.getTitle()); // required for showing log name on the title of FilterEE
-        Sessions.getCurrent().setAttribute("sourceLogId", parent.getSourceLogId());
-
+        
         parent.getLogFilterPlugin().execute(new LogFilterContext(parent.getContextData().getPortalContext()), 
                 new LogFilterInputParams(
                         parent.getLogData().getLog(), 
