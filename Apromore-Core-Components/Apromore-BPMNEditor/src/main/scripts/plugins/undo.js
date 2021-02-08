@@ -103,7 +103,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 	 *
 	 */
 	doUndo: function(){
-        this.facade.getCanvas().undo();
+        this.facade.getEditor().undo();
 	},
 
 	/**
@@ -111,7 +111,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 	 *
 	 */
 	doRedo: function(){
-        this.facade.getCanvas().redo();
+        this.facade.getEditor().redo();
 	}
 
 });

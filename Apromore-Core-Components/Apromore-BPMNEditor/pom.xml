@@ -44,8 +44,8 @@
 								<include>scripts/logger.js</include>
                                 <include>scripts/server.js</include>
                                 <include>scripts/config.js</include>
+                                <include>scripts/editorapp.js</include>
                                 <include>scripts/editor.js</include>
-                                <include>scripts/canvas.js</include>
                                 <include>scripts/plugins/**/*.js</include>
                             </includes>
                         </aggregation>

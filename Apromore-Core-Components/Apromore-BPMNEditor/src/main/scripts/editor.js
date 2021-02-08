@@ -22,792 +22,452 @@
  **/
 
 /**
- @namespace Global Oryx name space
- @name ORYX
+ * Init namespaces
  */
 if (!ORYX) {
     var ORYX = {};
 }
 
 /**
- * The Editor class.
+ * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
+ * It provides BPMN editing features while hiding the actual editor implementation provider.
+ * The aim is to minimize the impact of the implementation changes with changes minimized to this
+ * class only while the editor used in Apromore codebase is unchanged as they only access this Editor class.
  */
 ORYX.Editor = {
-    construct: function (config) {
+    construct: function(options) {
+        this.actualEditor = undefined;
+
+        if (!(options && options.width && options.height)) {
+            ORYX.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
+            return;
+        }
+
+        this.className = "ORYX_Editor";
+        this.rootNode = ORYX.Utils.graft("http://www.w3.org/1999/xhtml", options.parentNode,
+            ['div', {id: options.id, width: options.width, height: options.height}
+            ]);
+        //this.rootNode.addClassName(this.className);
+        this.rootNode.classList.add(this.className);
+    },
+
+    getScrollNode: function () {
         "use strict";
-
-        this._canvas = undefined;
-        this.zoomLevel = 1.0;
-        this.availablePlugins = [];
-        this.activatedPlugins = [];
-        this.pluginsData = [];
-        this.modelMetaData = config;
-        this.layout_regions = undefined;
-        this.layout = undefined;
-
-        var model = config;
-        if (config.model) {
-            model = config.model;
-        }
-
-        this.id = model.resourceId;
-        if (!this.id) {
-            this.id = model.id;
-            if (!this.id) {
-                this.id = ORYX.Utils.provideId();
-            }
-        }
-
-        var langs = (config.languages || []).sort(function (k, h) {
-            return config.position - config.position;
-        });
-
-        // Defines if the editor should be fullscreen or not
-        this.fullscreen = config.fullscreen !== false;
-
-        this.useSimulationPanel = config.useSimulationPanel || false;
-
-        // CREATES the canvas
-        this._createCanvas(model.stencil ? model.stencil.id : null, model.properties, langs);
-
-        // GENERATES the whole EXT.VIEWPORT
-        this._generateGUI();
-
-        // LOAD the plugins
-        window.setTimeout(function () {
-            this.loadPlugins();
-            this.activatePlugins();
-        }.bind(this), 100);
-
-        // LOAD the content of the current editor instance
-        window.setTimeout(function () {
-            // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
-            this.getCanvas().attachEditor(new BpmnJS({
-                container: '#' + this.getCanvas().rootNode.id,
-                keyboard: {
-                    bindTo: window
-                },
-                propertiesPanel: this.useSimulationPanel ? {
-                    parent: '#js-properties-panel'
-                } : undefined
-            }));
-
-            if (config && config.xml) {
-                this.importXML(config.xml);
-            }
-
-            // Fixed the problem that the viewport can not
-            // start with collapsed panels correctly
-            if (ORYX.CONFIG.PANEL_RIGHT_COLLAPSED === true) {
-                this.layout_regions.east.collapse();
-            }
-            if (ORYX.CONFIG.PANEL_LEFT_COLLAPSED === true) {
-                this.layout_regions.west.collapse();
-            }
-        }.bind(this), 200);
-
-
+        return Ext.get(this.rootNode).parent("div{overflow=auto}", true);
     },
 
-    zoomFitToModel: function () {
-        this.getCanvas().zoomFitToModel();
+    attachEditor: function (editor) {
+        this.actualEditor = editor;
     },
 
-    /**
-     * Generate the whole viewport of the
-     * Editor and initialized the Ext-Framework
-     */
-    _generateGUI: function () {
-        "use strict";
-
-        // Defines the layout height if it's NOT fullscreen
-        var layoutHeight = ORYX.CONFIG.WINDOW_HEIGHT;
-
-        /**
-         * Extend the Region implementation so that,
-         * the clicking area can be extend to the whole collapse area and
-         * an title can now be shown.
-         */
-        var oldGetCollapsedEl = Ext.layout.BorderLayout.Region.prototype.getCollapsedEl;
-        Ext.layout.BorderLayout.Region.prototype.getCollapsedEl = function () {
-            oldGetCollapsedEl.apply(this, arguments);
-
-            if (this.collapseMode !== 'mini' && this.floatable === false && this.expandTriggerAll === true) {
-                this.collapsedEl.addClassOnOver("x-layout-collapsed-over");
-                this.collapsedEl.on("mouseover", this.collapsedEl.addClass.bind(this.collapsedEl, "x-layout-collapsed-over"));
-                this.collapsedEl.on("click", this.onExpandClick, this);
-            }
-
-            if (this.collapseTitle) {
-                // Use SVG to rotate text
-                var svg = ORYX.Utils.graft("http://www.w3.org/2000/svg", this.collapsedEl.dom,
-                    ['svg', {style: "position:relative;left:" + (this.position === "west" ? 4 : 6) + "px;top:" + (this.position === "west" ? 2 : 5) + "px;"},
-                        ['text', {transform: "rotate(90)", x: 0, y: 0, "stroke-width": "0px", fill: "#EEEEEE", style: "font-weight:bold;", "font-size": "11"}, this.collapseTitle]
-                    ]),
-                    text = svg.childNodes[0];
-                svg.setAttribute("xmlns:svg", "http://www.w3.org/2000/svg");
-
-                // Rotate the west into the other side
-                if (this.position === "west" && text.getComputedTextLength instanceof Function) {
-                    // Wait till rendered
-                    window.setTimeout(function () {
-                        var length = text.getComputedTextLength();
-                        text.setAttributeNS(null, "transform", "rotate(-90, " + ((length / 2) + 7) + ", " + ((length / 2) - 3) + ")");
-                    }, 1)
-                }
-                delete this.collapseTitle;
-            }
-            return this.collapsedEl;
-        };
-
-        // DEFINITION OF THE VIEWPORT AREAS
-        this.layout_regions = {
-
-            // DEFINES TOP-AREA
-            north: new Ext.Panel({ //TOOO make a composite of the oryx header and addable elements (for toolbar), second one should contain margins
-                region: 'north',
-                cls: 'x-panel-editor-north',
-                autoEl: 'div',
-                border: false
-            }),
-
-            // DEFINES RIGHT-AREA
-            east: new Ext.Panel({
-                region: 'east',
-                layout: 'fit',
-                cls: 'x-panel-editor-east',
-                collapseTitle: ORYX.I18N.View.East,
-                titleCollapse: true,
-                border: false,
-                cmargins: {left: 0, right: 0},
-                floatable: false,
-                expandTriggerAll: true,
-                collapsible: true,
-                width: 450,
-                split: true,
-                title: "Simulation Parameters",
-                items: {
-                    layout: "fit",
-                    autoHeight: true,
-                    el: document.getElementById("js-properties-panel")
-                }
-            }),
-
-            // DEFINES BOTTOM-AREA
-            south: new Ext.Panel({
-                region: 'south',
-                cls: 'x-panel-editor-south',
-                autoEl: 'div',
-                border: false
-            }),
-
-            //DEFINES LEFT-AREA
-            west: new Ext.Panel({
-                region: 'west',
-                layout: 'anchor',
-                autoEl: 'div',
-                cls: 'x-panel-editor-west',
-                collapsible: true,
-                titleCollapse: true,
-                collapseTitle: ORYX.I18N.View.West,
-                width: ORYX.CONFIG.PANEL_LEFT_WIDTH || 10,
-                autoScroll: Ext.isIPad ? false : true,
-                cmargins: {left: 0, right: 0},
-                floatable: false,
-                expandTriggerAll: true,
-                split: true,
-                title: "West"
-            }),
-
-            // DEFINES CENTER-AREA (FOR THE EDITOR)
-            center: new Ext.Panel({
-                region: 'center',
-                cls: 'x-panel-editor-center',
-                autoScroll: false,
-                items: {
-                    layout: "fit",
-                    autoHeight: true,
-                    el: this.getCanvas().rootNode
-                }
-            }),
-
-            info: new Ext.Panel({
-                region: "south",
-                cls: "x-panel-editor-info",
-                autoEl: "div",
-                border: false,
-                layout: "fit",
-                cmargins: {
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0
-                },
-                collapseTitle: "Information",
-                floatable: false,
-                titleCollapse: false,
-                expandTriggerAll: true,
-                collapsible: true,
-                split: true,
-                title: "Information",
-                height: 100,
-                tools: [
-                    {
-                        id: "close",
-                        handler: function (g, f, e) {
-                            e.hide();
-                            e.ownerCt.layout.layout()
-                        }
-                    }
-                ]
-            })
-        };
-
-        // Config for the Ext.Viewport
-        var layout_config = {
-            layout: "border",
-            items: [this.layout_regions.north, this.layout_regions.east, this.layout_regions.south, this.layout_regions.west, new Ext.Panel({
-                layout: "border",
-                region: "center",
-                border: false,
-                items: [this.layout_regions.center, this.layout_regions.info]
-            })]
-        };
-
-        // IF Fullscreen, use a viewport
-        if (this.fullscreen) {
-            this.layout = new Ext.Viewport(layout_config);
-
-            // IF NOT, use a panel and render it to the given id
-        } else {
-            layout_config.renderTo = this.id;
-            //layout_config.height = layoutHeight;
-            layout_config.height = this.getEditorNode().clientHeight; // the panel and the containing div should be of the same height
-            this.layout = new Ext.Panel(layout_config)
-        }
-
-        if (!this.useSimulationPanel) {
-            this.layout_regions.east.hide();
-        }
-
-        this.layout_regions.west.hide();
-        this.layout_regions.info.hide();
-        if (Ext.isIPad && "undefined" != typeof iScroll) {
-            this.getCanvas().iscroll = new iScroll(this.layout_regions.center.body.dom.firstChild, {
-                touchCount: 2
-            })
-        }
-
-        // Set the editor to the center, and refresh the size
-        this.getEditorNode().setAttributeNS(null, 'align', 'left');
-        this.getCanvas().rootNode.setAttributeNS(null, 'align', 'left');
-        // this.getCanvas().setSize({
-        //     width: ORYX.CONFIG.CANVAS_WIDTH,
-        //     height: ORYX.CONFIG.CANVAS_HEIGHT
-        // });
-
+    getSVGContainer: function() {
+        return $("div.ORYX_Editor div.bjs-container div.djs-container svg")[0];
     },
 
-    /**
-     * adds a component to the specified region
-     *
-     * @param {String} region
-     * @param {Ext.Component} component
-     * @param {String} title, optional
-     * @return {Ext.Component} dom reference to the current region or null if specified region is unknown
-     */
-    addToRegion: function (region, component, title) {
-        if (region.toLowerCase && this.layout_regions[region.toLowerCase()]) {
-            var current_region = this.layout_regions[region.toLowerCase()];
-
-            current_region.add(component);
-
-            ORYX.Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
-
-            // update dimensions of region if required.
-            if (!current_region.width && component.initialConfig && component.initialConfig.width) {
-                ORYX.Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
-                current_region.setWidth(component.initialConfig.width)
-            }
-            if (component.initialConfig && component.initialConfig.height) {
-                ORYX.Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
-                var current_height = current_region.height || 0;
-                current_region.height = component.initialConfig.height + current_height;
-                current_region.setHeight(component.initialConfig.height + current_height)
-            }
-
-            // set title if provided as parameter.
-            if (typeof title == "string") {
-                current_region.setTitle(title);
-            }
-
-            // trigger doLayout() and show the pane
-            current_region.ownerCt.doLayout();
-            current_region.show();
-
-            if (Ext.isMac) {
-                this.resizeFix();
-            }
-
-            return current_region;
-        }
-
-        return null;
+    getSVGViewport: function() {
+        return $("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0];
     },
 
-    getAvailablePlugins: function () {
-        var curAvailablePlugins = this.availablePlugins.clone();
-        curAvailablePlugins.each(function (plugin) {
-            if (this.activatedPlugins.find(function (loadedPlugin) {
-                return loadedPlugin.type == this.name;
-            }.bind(plugin))) {
-                plugin.engaged = true;
-            } else {
-                plugin.engaged = false;
-            }
-        }.bind(this));
-        return curAvailablePlugins;
-    },
-
-    loadScript: function (url, callback) {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        if (script.readyState) {  //IE
-            script.onreadystatechange = function () {
-                if (script.readyState == "loaded" || script.readyState == "complete") {
-                    script.onreadystatechange = null;
-                    callback();
-                }
-            };
-        } else {  //Others
-            script.onload = function () {
-                callback();
-            };
-        }
-        script.src = url;
-        document.getElementsByTagName("head")[0].appendChild(script);
-    },
-    /**
-     * activate Plugin
-     *
-     * @param {String} name
-     * @param {Function} callback
-     *        callback(sucess, [errorCode])
-     *            errorCodes: NOTUSEINSTENCILSET, REQUIRESTENCILSET, NOTFOUND, YETACTIVATED
-     */
-    activatePluginByName: function (name, callback, loadTry) {
-
-        var match = this.getAvailablePlugins().find(function (value) {
-            return value.name == name
-        });
-        if (match && (!match.engaged || (match.engaged === 'false'))) {
-            var facade = this._getPluginFacade();
-            var me = this;
-            ORYX.Log.debug("Initializing plugin '%0'", match.name);
-
-            try {
-
-                var className = eval(match.name);
-                var newPlugin = new className(facade, match);
-                newPlugin.type = match.name;
-
-                // If there is an GUI-Plugin, they get all Plugins-Offer-Meta-Data
-                if (newPlugin.registryChanged)
-                    newPlugin.registryChanged(me.pluginsData);
-
-                // If there have an onSelection-Method it will pushed to the Editor Event-Handler
-                // if (newPlugin.onSelectionChanged)
-                //     me.registerOnEvent(ORYX.CONFIG.EVENT_SELECTION_CHANGED, newPlugin.onSelectionChanged.bind(newPlugin));
-                this.activatedPlugins.push(newPlugin);
-                this.activatedPlugins.each(function (loaded) {
-                    if (loaded.registryChanged)
-                        loaded.registryChanged(this.pluginsData);
-                }.bind(me));
-                callback(true);
-
-            } catch (e) {
-                ORYX.Log.warn("Plugin %0 is not available", match.name);
-                if (!!loadTry) {
-                    callback(false, "INITFAILED");
-                    return;
-                }
-                this.loadScript("plugins/scripts/" + match.source, this.activatePluginByName.bind(this, match.name, callback, true));
-            }
-        } else {
-            callback(false, match ? "NOTFOUND" : "YETACTIVATED");
-            //TODO error handling
-        }
-    },
-
-    /**
-     *  Laden der Plugins
-     */
-    activatePlugins: function () {
-
-        // if there should be plugins but still are none, try again.
-        // TODO this should wait for every plugin respectively.
-        /*if (!ORYX.Plugins && ORYX.availablePlugins.length > 0) {
-         window.setTimeout(this.loadPlugins.bind(this), 100);
-         return;
-         }*/
-
-        var me = this;
-        var newPlugins = [];
-        var facade = this._getPluginFacade();
-
-        this.availablePlugins.each(function (value) {
-            ORYX.Log.debug("Initializing plugin '%0'", value.name);
-            try {
-                var className = eval(value.name);
-                if (className) {
-                    var plugin = new className(facade, value);
-                    plugin.type = value.name;
-                    newPlugins.push(plugin);
-                    plugin.engaged = true;
-                }
-            } catch (e) {
-                ORYX.Log.warn("Plugin %0 is not available", value.name);
-                ORYX.Log.error("Error: " + e.message);
+    getSourceNodeId: function (sequenceFlowId) {
+        var foundId;
+        var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
+        elements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.id == sequenceFlowId) {
+                foundId = element.sourceRef.id;
             }
         });
-
-        newPlugins.each(function (value) {
-            // If there is an GUI-Plugin, they get all Plugins-Offer-Meta-Data
-            if (value.registryChanged)
-                value.registryChanged(me.pluginsData);
-
-            // If there have an onSelection-Method it will pushed to the Editor Event-Handler
-            // if (value.onSelectionChanged)
-            //     me.registerOnEvent(ORYX.CONFIG.EVENT_SELECTION_CHANGED, value.onSelectionChanged.bind(value));
-        });
-
-        this.activatedPlugins = newPlugins;
-
-        // Hack for the Scrollbars
-        if (Ext.isMac) {
-            ORYX.Editor.resizeFix();
-        }
+        return foundId;
     },
 
-    getEditorNode: function () {
-        return document.getElementById(this.id);
+    getTargetNodeId: function (sequenceFlowId) {
+        var foundId;
+        var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
+        flowElements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.id == sequenceFlowId) {
+                foundId = element.targetRef.id;
+            }
+        });
+        return foundId;
+    },
+
+    getIncomingFlowId: function (nodeId) {
+        var foundId;
+        var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
+        flowElements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.targetRef.id == nodeId) {
+                foundId = element.id;
+            }
+        });
+        return foundId;
+    },
+
+    getOutgoingFlowId: function (nodeId) {
+        var foundId;
+        var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
+        elements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.sourceRef.id == nodeId) {
+                foundId = element.id;
+            }
+        });
+        return foundId;
+    },
+
+    toString: function () {
+        return "EditorWrapper " + this.id;
     },
 
     /**
-     * Creates the Canvas
-     * @param {String} [stencilType] The stencil type used for creating the canvas. If not given, a stencil with myBeRoot = true from current stencil set is taken.
-     * @param {Object} [canvasConfig] Any canvas properties (like language).
+     * Import XML into the editor.
+     * This method takes time depending on the complexity of the model
+     * @param {String} xml: the BPMN XML
+     * @param {Function} callback: callback function to call after the import finishes
      */
-    _createCanvas: function (stencilType, canvasConfig, lang) {
-        this._canvas = new ORYX.Canvas({
-            width: ORYX.CONFIG.CANVAS_WIDTH,
-            height: ORYX.CONFIG.CANVAS_HEIGHT,
-            id: ORYX.Utils.provideId(),
-            parentNode: this.getEditorNode(),
-            language: lang
-        });
-    },
+    importXML: function(xml, callback) {
+      // this.editor.importXML(xml, function(err) {
+      //   if (err) {
+      //     return console.error('could not import BPMN 2.0 diagram', err);
+      //   }
+      //   this.zoomFitToModel();
+      // }.bind(this));
 
-    getCanvas: function() {
-        return this._canvas;
-    },
-
-    getSimulationDrawer: function() {
-        return this.layout_regions.east;
-    },
-
-    /**
-     * Returns a per-editor singleton plugin facade.
-     * To be used in plugin initialization.
-     */
-    _getPluginFacade: function () {
-        if (!(this._pluginFacade)) {
-            this._pluginFacade = (function () {
-                return {
-                    activatePluginByName: this.activatePluginByName.bind(this),
-                    getAvailablePlugins: this.getAvailablePlugins.bind(this),
-                    offer: this.offer.bind(this),
-                    getStencilSets: function() {return {}},
-                    getStencilSetExtensionDefinition: function () {return {}},
-                    getRules: function() {return {}},
-                    loadStencilSet: function() {},
-                    createShape: function() {},
-                    deleteShape: function() {},
-                    getSelection: function() {},
-                    setSelection: function() {},
-                    updateSelection: function() {},
-                    getCanvas: this.getCanvas.bind(this),
-                    getSimulationDrawer: this.getSimulationDrawer.bind(this),
-                    useSimulationPanel: this.useSimulationPanel,
-                    importJSON: function() {},
-                    importERDF: function() {},
-                    getERDF: function() {},
-                    getJSON: function() {},
-                    getXML: this.getXML.bind(this),
-                    getSVG: this.getSVG.bind(this),
-                    getSerializedJSON: function() {},
-                    executeCommands: function() {},
-                    isExecutingCommands: function() {},
-                    registerOnEvent: function() {},
-                    unregisterOnEvent: function() {},
-                    raiseEvent: function() {},
-                    enableEvent: function() {},
-                    disableEvent: function() {},
-                    eventCoordinates: function() {},
-                    addToRegion: this.addToRegion.bind(this),
-                    getAllLanguages: function() {return {}}
-                }
-            }.bind(this)())
+      //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
+      //Some BPMN files are not compatible with bpmn.io
+      var editor = this.actualEditor;
+      this.actualEditor.importXML(xml, function(err) {
+        if (err) {
+          return console.error('could not import BPMN 2.0 diagram', err);
         }
-        return this._pluginFacade;
+
+        var eventBus = editor.get('eventBus');
+        var connectionDocking = editor.get('connectionDocking');
+        var elementRegistry = editor.get('elementRegistry');
+        var connections = elementRegistry.filter(function(e) {
+          return e.waypoints;
+        });
+        connections.forEach(function(connection) {
+          connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+        });
+        eventBus.fire('elements.changed', { elements: connections });
+        this.zoomFitToModel();
+        callback();
+      }.bind(this));
     },
 
     getXML: function() {
-        return this.getCanvas().getXML();
+        var bpmnXML;
+        this.actualEditor.saveXML({ format: true }, function(err, xml) {
+            bpmnXML = xml;
+        });
+        return bpmnXML;
     },
 
     getSVG: function() {
-        return this.getCanvas().getSVG();
+        var bpmnSVG;
+        this.actualEditor.saveSVG(function(err, svg) {
+            bpmnSVG = svg;
+        });
+        return bpmnSVG;
     },
 
-    importXML: function(xml) {
-        this.getCanvas().importXML(xml);
-    },
-
-    offer: function (pluginData) {
-        if (!this.pluginsData.member(pluginData)) {
-            this.pluginsData.push(pluginData);
+    zoomFitToModel: function() {
+        if (this.actualEditor) {
+            var canvas = this.actualEditor.get('canvas');
+            // zoom to fit full viewport
+            canvas.zoom('fit-viewport');
+            var viewbox = canvas.viewbox();
+            canvas.viewbox({
+                x: viewbox.x - 200,
+                y: viewbox.y,
+                width: viewbox.outer.width * 1.5,
+                height: viewbox.outer.height * 1.5
+            });
         }
     },
 
-    /**
-     * When working with Ext, conditionally the window needs to be resized. To do
-     * so, use this class method. Resize is deferred until 100ms, and all subsequent
-     * resizeBugFix calls are ignored until the initially requested resize is
-     * performed.
-     */
-    resizeFix: function () {
-        if (!this._resizeFixTimeout) {
-            this._resizeFixTimeout = window.setTimeout(function () {
-                window.resizeBy(1, 1);
-                window.resizeBy(-1, -1);
-                this._resizefixTimeout = null;
-            }, 100);
+    zoomIn: function() {
+        this.actualEditor.get('editorActions').trigger('stepZoom', { value: 1 });
+    },
+
+
+    zoomOut: function() {
+        this.actualEditor.get('editorActions').trigger('stepZoom', { value: -1 });
+    },
+
+    zoomDefault: function() {
+        editorActions.trigger('zoom', { value: 1 });
+    },
+
+    createShape: function(type, x, y, w, h) {
+        var modelling = this.actualEditor.get('modeling');
+        var parent = this.actualEditor.get('canvas').getRootElement();
+        //console.log('parent', parent);
+        var shape = modelling.createShape({type:type, width:w, height:h}, {x:x, y:y}, parent);
+        return shape.id;
+    },
+
+    updateProperties: function(elementId, properties) {
+        var modelling = this.actualEditor.get('modeling');
+        var registry = this.actualEditor.get('elementRegistry');
+        modelling.updateProperties(registry.get(elementId), properties);
+    },
+
+
+    createSequenceFlow: function (source, target, attrs) {
+        var attrs2 = {};
+        Object.assign(attrs2,{type:'bpmn:SequenceFlow'});
+        if (attrs.waypoints) {
+            Object.assign(attrs2,{waypoints: attrs.waypoints});
         }
+        var modelling = this.actualEditor.get('modeling');
+        var registry = this.actualEditor.get('elementRegistry');
+        var flow = modelling.connect(registry.get(source), registry.get(target), attrs2);
+        //console.log(flow);
+        return flow.id;
     },
 
-    /**
-     * First bootstrapping layer. The Oryx loading procedure begins. In this
-     * step, all preliminaries that are not in the responsibility of Oryx to be
-     * met have to be checked here, such as the existance of the prototpe
-     * library in the current execution environment. After that, the second
-     * bootstrapping layer is being invoked. Failing to ensure that any
-     * preliminary condition is not met has to fail with an error.
-     */
-    load: function() {
-
-        if (ORYX.CONFIG.PREVENT_LOADINGMASK_AT_READY !== true) {
-            var waitingpanel = new Ext.Window({renderTo:Ext.getBody(),id:'oryx-loading-panel',bodyStyle:'padding: 8px;background:white',title:ORYX.I18N.Oryx.title,width:'auto',height:'auto',modal:true,resizable:false,closable:false,html:'<span style="font-size:11px;">' + ORYX.I18N.Oryx.pleaseWait + '</span>'})
-            waitingpanel.show()
+    createAssociation: function (source, target, attrs) {
+        var attrs2 = {};
+        Object.assign(attrs2,{type:'bpmn:Association'});
+        if (attrs.waypoints) {
+            Object.assign(attrs2,{waypoints: attrs.waypoints});
         }
-
-        ORYX.Log.debug("Oryx begins loading procedure.");
-
-        // check for prototype
-        if( (typeof Prototype=='undefined') ||
-            (typeof Element == 'undefined') ||
-            (typeof Element.Methods=='undefined') ||
-            parseFloat(Prototype.Version.split(".")[0] + "." +
-                Prototype.Version.split(".")[1]) < 1.5)
-
-            throw("Application requires the Prototype JavaScript framework >= 1.5.3");
-
-        ORYX.Log.debug("Prototype > 1.5 found.");
-
-        // continue loading.
-        this.loadPlugins();
+        var modelling = this.actualEditor.get('modeling');
+        var registry = this.actualEditor.get('elementRegistry');
+        var assoc = Object.assign(assoc, modelling.connect(registry.get(source), registry.get(target), attrs2));
+        return assoc.id;
     },
 
-    /**
-     * Load a list of predefined plugins from the server
-     */
-    loadPlugins: function() {
-
-        // load plugins if enabled.
-        if(ORYX.CONFIG.PLUGINS_ENABLED)
-            this._loadPlugins()
-        else
-            ORYX.Log.warn("Ignoring plugins, loading Core only.");
+    highlight: function (elementId) {
+        //console.log("Highlighting elementId: " + elementId);
+        var self = this;
+        var element = self.actualEditor.get('elementRegistry').get(elementId);
+        var modelling = self.actualEditor.get('modeling');
+        //console.log(element);
+        modelling.setColor([element],{stroke:'red'});
     },
 
-    _loadPlugins: function() {
-        var me = this;
-        var source = ORYX.CONFIG.PLUGINS_CONFIG;
+    colorElements: function (elementIds, color) {
+        var elements = [];
+        var registry = this.actualEditor.get('elementRegistry');
+        elementIds.forEach(function(elementId) {
+            elements.push(registry.get(elementId));
+        });
+        var modelling = this.actualEditor.get('modeling');
+        modelling.setColor(elements, {stroke:color});
+    },
 
-        ORYX.Log.debug("Loading plugin configuration from '%0'.", source);
-        new Ajax.Request(source, {
-            asynchronous: false,
-            method: 'get',
-            onSuccess: function(result) {
+    colorElement: function (elementId, color) {
+        var modelling = this.actualEditor.get('modeling');
+        var element = this.actualEditor.get('elementRegistry').get(elementId);
+        modelling.setColor([element],{stroke:color});
+    },
 
-                /*
-                 * This is the method that is being called when the plugin
-                 * configuration was successfully loaded from the server. The
-                 * file has to be processed and the contents need to be
-                 * considered for further plugin requireation.
-                 */
+    fillColor: function (elementId, color) {
+        var modelling = this.actualEditor.get('modeling');
+        var element = this.actualEditor.get('elementRegistry').get(elementId);
+        modelling.setColor([element],{fill:color});
+    },
 
-                ORYX.Log.info("Plugin configuration file loaded.");
-
-                // get plugins.xml content
-                var resultXml = result.responseXML;
-                console.log('Plugin list:', resultXml);
-
-                // TODO: Describe how properties are handled.
-                // Get the globale Properties
-                var globalProperties = [];
-                var preferences = $A(resultXml.getElementsByTagName("properties"));
-                preferences.each( function(p) {
-
-                    var props = $A(p.childNodes);
-                    props.each( function(prop) {
-                        var property = new Hash();
-
-                        // get all attributes from the node and set to global properties
-                        var attributes = $A(prop.attributes)
-                        attributes.each(function(attr){property[attr.nodeName] = attr.nodeValue});
-                        if(attributes.length > 0) { globalProperties.push(property) };
-                    });
-                });
-
-
-                // TODO Why are we using XML if we don't respect structure anyway?
-                // for each plugin element in the configuration..
-                var plugin = resultXml.getElementsByTagName("plugin");
-                $A(plugin).each( function(node) {
-
-                    // get all element's attributes.
-                    // TODO: What about: var pluginData = $H(node.attributes) !?
-                    var pluginData = new Hash();
-
-                    //pluginData: for one plugin
-                    //.properties: contain all properties in the plugins.xml
-                    //.requires: contains the requires property for the plugin
-                    //.source: source javascript
-                    //.name: name
-                    //.notUseIn:
-
-                    $A(node.attributes).each( function(attr){
-                        pluginData[attr.nodeName] = attr.nodeValue});
-
-                    // ensure there's a name attribute.
-                    if(!pluginData['name']) {
-                        ORYX.Log.error("A plugin is not providing a name. Ingnoring this plugin.");
-                        return;
-                    }
-
-                    // ensure there's a source attribute.
-                    if(!pluginData['source']) {
-                        ORYX.Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
-                        return;
-                    }
-
-                    // Get all private Properties
-                    var propertyNodes = node.getElementsByTagName("property");
-                    var properties = [];
-                    $A(propertyNodes).each(function(prop) {
-                        var property = new Hash();
-
-                        // Get all Attributes from the Node
-                        var attributes = $A(prop.attributes)
-                        attributes.each(function(attr){property[attr.nodeName] = attr.nodeValue});
-                        if(attributes.length > 0) { properties.push(property) };
-
-                    });
-
-                    // Set all Global-Properties to the Properties
-                    properties = properties.concat(globalProperties);
-
-                    // Set Properties to Plugin-Data
-                    pluginData['properties'] = properties;
-
-                    // Get the RequieredNodes
-                    var requireNodes = node.getElementsByTagName("requires");
-                    var requires;
-                    $A(requireNodes).each(function(req) {
-                        var namespace = $A(req.attributes).find(function(attr){ return attr.name == "namespace"})
-                        if( namespace && namespace.nodeValue ){
-                            if( !requires ){
-                                requires = {namespaces:[]}
-                            }
-
-                            requires.namespaces.push(namespace.nodeValue)
-                        }
-                    });
-
-                    // Set Requires to the Plugin-Data, if there is one
-                    if( requires ){
-                        pluginData['requires'] = requires;
-                    }
-
-
-                    // Get the RequieredNodes
-                    var notUsesInNodes = node.getElementsByTagName("notUsesIn");
-                    var notUsesIn;
-                    $A(notUsesInNodes).each(function(not) {
-                        var namespace = $A(not.attributes).find(function(attr){ return attr.name == "namespace"})
-                        if( namespace && namespace.nodeValue ){
-                            if( !notUsesIn ){
-                                notUsesIn = {namespaces:[]}
-                            }
-
-                            notUsesIn.namespaces.push(namespace.nodeValue)
-                        }
-                    });
-
-                    // Set Requires to the Plugin-Data, if there is one
-                    if( notUsesIn ){
-                        pluginData['notUsesIn'] = notUsesIn;
-                    }
-
-
-                    var url = ORYX.PATH + ORYX.CONFIG.PLUGINS_FOLDER + pluginData['source'];
-
-                    ORYX.Log.debug("Requireing '%0'", url);
-
-                    // Add the Script-Tag to the Site
-                    //Kickstart.require(url);
-
-                    ORYX.Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
-
-                    // Add the Plugin-Data to all available Plugins
-                    me.availablePlugins.push(pluginData);
-
-                });
-
-            },
-            onFailure: me._loadPluginsOnFails
+    greyOut: function(elementIds) {
+        var elementRegistry = this.actualEditor.get('elementRegistry');
+        var self = this;
+        elementIds.forEach(function(id) {
+            console.log('_elements', elementRegistry._elements);
+            var gfx = elementRegistry.getGraphics(id);
+            var visual = gfx.children[0];
+            visual.setAttributeNS(null, "style", "opacity: 0.25");
         });
 
     },
 
-    _loadPluginsOnFails: function(result) {
-        ORYX.Log.error("Plugin configuration file not available.");
+    normalizeAll: function() {
+        var registry = this.actualEditor.get('elementRegistry');
+        var modelling = this.actualEditor.get('modeling');
+        modelling.setColor(registry.getAll(), {stroke:'black'});
     },
 
-    toggleFullScreen: function () {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
+    removeShapes: function(shapeIds) {
+        var registry = this.actualEditor.get('elementRegistry');
+        var modelling = this.actualEditor.get('modeling');
+        console.log(shapeIds);
+        var shapes = [];
+        shapeIds.forEach(function(shapeId) {
+            shapes.push(registry.get(shapeId));
+        });
+        modelling.removeElements(shapes);
+    },
+
+    getAllElementIds: function() {
+        var ids = [];
+        var elementRegistry = this.actualEditor.get('elementRegistry');
+        elementRegistry.getAll().forEach(function(element) {
+            ids.push(element.id);
+        });
+        return ids;
+    },
+
+    shapeCenter: function (shapeId) {
+        var position = {};
+        var registry = this.actualEditor.get('elementRegistry');
+        var shape = registry.get(shapeId);
+        //console.log('Shape of ' + shapeId);
+        //console.log(shape);
+        //console.log(shape.x);
+        position.x = (shape.x + shape.width/2);
+        position.y = (shape.y + shape.height/2);
+        return position;
+    },
+
+    clear: function() {
+        this.actualEditor.clear();
+    },
+
+    registerActionHandler: function(handlerName, handler) {
+        var commandStack = this.actualEditor.get('commandStack');
+        commandStack.registerHandler(handlerName, handler);
+    },
+
+    executeActionHandler: function(handlerName, context) {
+        var commandStack = this.actualEditor.get('commandStack');
+        commandStack.execute(handlerName, context);
+    },
+
+    getCenter: function (shapeId) {
+        var shape = this.actualEditor.get('elementRegistry').get(shapeId);
+        return {
+            x: shape.x + (shape.width || 0) / 2,
+            y: shape.y + (shape.height || 0) / 2
         }
+    },
+
+    // Center viewbox to an element
+    // From https://forum.bpmn.io/t/centering-zooming-view-to-a-specific-element/1536/6
+    centerElement: function(elementId) {
+        // assuming we center on a shape.
+        // for connections we must compute the bounding box
+        // based on the connection's waypoints
+        var bbox = elementRegistry.get(elementId);
+
+        var currentViewbox = canvas.viewbox();
+
+        var elementMid = {
+          x: bbox.x + bbox.width / 2,
+          y: bbox.y + bbox.height / 2
+        };
+
+        canvas.viewbox({
+          x: elementMid.x - currentViewbox.width / 2,
+          y: elementMid.y - currentViewbox.height / 2,
+          width: currentViewbox.width,
+          height: currentViewbox.height
+        });
+    },
+
+  _getActionStack: function() {
+    return this.actualEditor.get('commandStack')._stack;
+  },
+
+  _getCurrentStackIndex: function() {
+    return this.actualEditor.get('commandStack')._stackIdx;
+  },
+
+  // Get all base action indexes backward from the current command stack index
+  // The first element in the result is the earliest base action and so on
+  _getBaseActions: function() {
+    var actions = this._getActionStack();
+    var stackIndex = this._getCurrentStackIndex();
+    var baseActionIndexes = [];
+    for (var i=0; i<=stackIndex; i++) {
+      if (i==0 || (actions[i].id != actions[i-1].id)) {
+        baseActionIndexes.push(i);
+      }
     }
+    return baseActionIndexes;
+  },
+
+  undo: function() {
+    this.actualEditor.get('commandStack').undo();
+  },
+
+  // Undo to the point before an action (actionName is the input)
+  // Nothing happens if the action is not found
+  // The number of undo times is the number of base actions from the current stack index
+  undoSeriesUntil: function(actionName) {
+    var actions = this._getActionStack();
+    var baseActions = this._getBaseActions();
+    var baseActionNum = 0;
+    for (var i=baseActions.length-1; i>=0; i--) {
+      if (actions[baseActions[i]].command == actionName) {
+        baseActionNum = baseActions.length - i;
+        break;
+      }
+    }
+
+    console.log('baseActionNum', baseActionNum);
+
+    while (baseActionNum > 0) {
+      this.undo();
+      baseActionNum--;
+    }
+  },
+
+  canUndo: function() {
+    if (!this.actualEditor) {
+      return false;
+    }
+    else {
+      return this.actualEditor.get('commandStack').canUndo();
+    }
+  },
+
+  redo: function() {
+    this.actualEditor.get('commandStack').redo();
+  },
+
+  canRedo: function() {
+    if (!this.actualEditor) {
+      return false;
+    }
+    else {
+      return this.actualEditor.get('commandStack').canRedo();
+    }
+  },
+
+  getLastBaseAction: function() {
+    var actions = this._getActionStack();
+    var baseActions = this._getBaseActions();
+    if (baseActions.length > 0) {
+      return actions[baseActions[baseActions.length-1]].command;
+    }
+    else {
+      return '';
+    }
+  },
+
+  // Get the next latest base action in the command stack
+  // that is not in the excluding list
+  getNextBaseActionExcluding: function(excludingActions) {
+    var actions = this._getActionStack();
+    var baseActionIndexes = this._getBaseActions();
+    if (baseActionIndexes.length >= 2) {
+      for (var i = baseActionIndexes.length-2; i>=0; i--) {
+        if (excludingActions.indexOf(actions[baseActionIndexes[i]].command) < 0) {
+          return actions[baseActionIndexes[i]].command;
+        }
+      }
+    }
+    return '';
+  },
+
+  addCommandStackChangeListener: function(callback) {
+    this.actualEditor.on('commandStack.changed', callback);
+  },
+
+  addEventBusListener: function(eventCode, callback) {
+    this.actualEditor.get('eventBus').on(eventCode, callback);
+  }
+
 };
 
 ORYX.Editor = Clazz.extend(ORYX.Editor);
-
-
-
 

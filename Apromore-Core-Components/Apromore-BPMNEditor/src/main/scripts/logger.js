@@ -62,7 +62,7 @@ ORYX.Log = {
             + prefix + " " + messageParts[0];
         var message = this.printf.apply(null, messageParts);
 
-        ORYX.Log.__appenders.each(function(appender) {
+        ORYX.Log.__appenders.forEach(function(appender) {
             appender.append(message);
         });
     },

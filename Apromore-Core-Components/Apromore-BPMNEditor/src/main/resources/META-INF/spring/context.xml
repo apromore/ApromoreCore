@@ -64,7 +64,7 @@
     <beans:bean id="pluginsHandlerServlet" class="org.apromore.plugin.portal.bpmneditor.PluginsHandlerServlet"/>
     <service ref="pluginsHandlerServlet" interface="javax.servlet.http.HttpServlet">
         <service-properties>
-            <beans:entry key="org.apromore.portal.servlet.pattern" value="/bpmneditor/bpmneditor_plugins" />
+            <beans:entry key="osgi.http.whiteboard.servlet.pattern" value="/bpmneditor/bpmneditor_plugins" />
         </service-properties>
     </service>
 
@@ -72,15 +72,7 @@
     <beans:bean id="pdfServlet" class="org.apromore.editor.server.AlternativesRenderer"/>
     <service ref="pdfServlet" interface="javax.servlet.http.HttpServlet">
         <service-properties>
-            <beans:entry key="org.apromore.portal.servlet.pattern" value="/bpmneditor/editor/pdf" />
-        </service-properties>
-    </service>
-
-    <!-- Display the temporary files the PDF export servlet produces -->
-    <beans:bean id="tmpFileServlet" class="org.apromore.editor.server.TemporaryFileServlet"/>
-    <service ref="tmpFileServlet" interface="javax.servlet.http.HttpServlet">
-        <service-properties>
-            <beans:entry key="org.apromore.portal.servlet.pattern" value="/tmp/*" />
+            <beans:entry key="osgi.http.whiteboard.servlet.pattern" value="/bpmneditor/editor/pdf" />
         </service-properties>
     </service>
 

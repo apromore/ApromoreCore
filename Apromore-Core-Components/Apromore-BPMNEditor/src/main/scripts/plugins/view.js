@@ -78,11 +78,11 @@ ORYX.Plugins.View = Clazz.extend({
     },
 
     zoomIn: function (factor) {
-        this.facade.getCanvas().zoomIn();
+        this.facade.getEditor().zoomIn();
     },
 
     zoomOut: function (factor) {
-        this.facade.getCanvas().zoomOut();
+        this.facade.getEditor().zoomOut();
     },
 
 
@@ -94,7 +94,7 @@ ORYX.Plugins.View = Clazz.extend({
      *
      */
     zoomFitToModel: function () {
-        this.facade.getCanvas().zoomFitToModel();
+        this.facade.getEditor().zoomFitToModel();
     }
 });
 

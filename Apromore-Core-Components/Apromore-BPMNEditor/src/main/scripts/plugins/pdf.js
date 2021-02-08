@@ -49,7 +49,7 @@ ORYX.Plugins.File = Clazz.extend({
         var resource = location.href;
 
         // Get the serialized svg image source
-        var svgClone = this.facade.getCanvas().getSVG();
+        var svgClone = this.facade.getEditor().getSVG();
         //var svgDOM = DataManager.serialize(svgClone);
 
         // Send the svg to the server.
