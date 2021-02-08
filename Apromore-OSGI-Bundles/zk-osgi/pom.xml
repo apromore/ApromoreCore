@@ -50,10 +50,12 @@
                             !org.zkoss.zkex.theme,
                             !org.zkoss.zkmax.theme,
                             !org.zkoss.zsoup.*,
-
                             *
                         </Import-Package>
                         <DynamicImport-Package>
+                            org.apromore.etlplugin.portal,
+                            org.apromore.etlplugin.portal.viewModels,
+                            org.apromore.etlplugin.portal.utils,
                             org.apromore.plugin.portal.*,
                             dashboard,
                             org.apache.poi.ooxml,
