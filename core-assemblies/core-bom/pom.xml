@@ -168,12 +168,6 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.wsdl</groupId>
-      <artifactId>com.springsource.javax.wsdl</artifactId>
-      <version>1.6.1</version>
-    </dependency>
-
-    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.31</version>
@@ -713,24 +707,6 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>org.springframework.security.remoting</artifactId>
       <version>${virgo.spring.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.ws</groupId>
-      <artifactId>org.springframework.ws.support</artifactId>
-      <version>2.1.0.RELEASE</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.ws</groupId>
-      <artifactId>org.springframework.ws</artifactId>
-      <version>2.1.0.RELEASE</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.ws</groupId>
-      <artifactId>org.springframework.xml</artifactId>
-      <version>2.1.0.RELEASE</version>
     </dependency>
 
     <dependency>

@@ -33,7 +33,6 @@
                         <Embed-Dependency>
                             artifactId=
                             jaxb2-basics-runtime
-                            |junit <!-- TODO Why is Junit needed at runtime? -->
                             ;inline=true
                         </Embed-Dependency>
                         <Import-Package>
