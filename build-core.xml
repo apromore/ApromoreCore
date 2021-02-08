@@ -73,7 +73,7 @@
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API/target/log-animation-portal-plugin-api-1.0.0.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.jar"/>
+        <!--<include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.jar"/>-->
         
         <include name="Apromore-Custom-Plugins/Log-Logic/target/log-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Merge-Logic/target/merge-logic-1.1.0.jar"/>

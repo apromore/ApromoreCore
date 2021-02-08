@@ -24,31 +24,14 @@
 
 package org.apromore.service.loganimation.replay;
 
-import de.hpi.bpmn2_0.model.BaseElement;
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowElement;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.event.StartEvent;
 import java.util.ArrayList;
-import java.util.List;
-import de.hpi.bpmn2_0.model.Process;
-import de.hpi.bpmn2_0.model.activity.Activity;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.model.event.EndEvent;
-import de.hpi.bpmn2_0.model.gateway.ExclusiveGateway;
-import de.hpi.bpmn2_0.model.gateway.Gateway;
-import de.hpi.bpmn2_0.model.gateway.GatewayDirection;
-import de.hpi.bpmn2_0.model.gateway.InclusiveGateway;
-import de.hpi.bpmn2_0.model.gateway.ParallelGateway;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
-import org.apache.commons.collections4.BidiMap;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+
 import org.apromore.service.loganimation.dijkstra.engine.DijkstraAlgorithm;
 import org.apromore.service.loganimation.dijkstra.model.Edge;
 import org.apromore.service.loganimation.dijkstra.model.Graph;
@@ -59,6 +42,19 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.cycle.JohnsonSimpleCycles;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+
+import de.hpi.bpmn2_0.model.BaseElement;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowElement;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.Process;
+import de.hpi.bpmn2_0.model.activity.Activity;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import de.hpi.bpmn2_0.model.event.EndEvent;
+import de.hpi.bpmn2_0.model.event.StartEvent;
+import de.hpi.bpmn2_0.model.gateway.ExclusiveGateway;
+import de.hpi.bpmn2_0.model.gateway.InclusiveGateway;
+import de.hpi.bpmn2_0.model.gateway.ParallelGateway;
 
 public class BPMNDiagramHelper {
     private static BPMNDiagramHelper instance = null;
@@ -366,43 +362,34 @@ public class BPMNDiagramHelper {
     }    
     
     public static boolean isJoin(FlowNode node) {
-        if ((node instanceof ParallelGateway) && 
-            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
-            return true;
-        }
-        else {
-            return false;
-        }        
+//        if ((node instanceof ParallelGateway) && 
+//            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }  
+        return (node instanceof ParallelGateway && 
+                node.getOutgoingSequenceFlows().size() == 1 &&
+                node.getIncomingSequenceFlows().size() > 1);
     }
     
     public static boolean isFork(FlowNode node) {
-        if ((node instanceof ParallelGateway) && 
-            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (node instanceof ParallelGateway && 
+                node.getOutgoingSequenceFlows().size() > 1 &&
+                node.getIncomingSequenceFlows().size() == 1);
     }    
     
-    public static boolean isDecision(FlowNode node) {
-        if ((node instanceof ExclusiveGateway) && 
-            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-            return true;
-        }
-        else {
-            return false;
-        }        
+    public static boolean isDecision(FlowNode node) {   
+        return (node instanceof ExclusiveGateway && 
+                node.getOutgoingSequenceFlows().size() > 1 &&
+                node.getIncomingSequenceFlows().size() == 1);
     }    
     
     public static boolean isMerge(FlowNode node) {
-        if ((node instanceof ExclusiveGateway) && 
-            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
-            return true;
-        }
-        else {
-            return false;
-        }         
+        return (node instanceof ExclusiveGateway && 
+                node.getOutgoingSequenceFlows().size() == 1 &&
+                node.getIncomingSequenceFlows().size() > 1);
     }    
     
     public static boolean isActivity(FlowNode node) {
@@ -410,76 +397,16 @@ public class BPMNDiagramHelper {
     }     
     
     public static boolean isORSplit(FlowNode node) {
-        if ((node instanceof InclusiveGateway) && 
-            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (node instanceof InclusiveGateway && 
+                node.getOutgoingSequenceFlows().size() > 1 &&
+                node.getIncomingSequenceFlows().size() == 1);
     }
     
     public static boolean isORJoin(FlowNode node) {
-        if ((node instanceof InclusiveGateway) && 
-            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (node instanceof InclusiveGateway && 
+                node.getOutgoingSequenceFlows().size() == 1 &&
+                node.getIncomingSequenceFlows().size() > 1);
     }    
-    
-    /*
-    public Set<FlowNode> getNextActivities(FlowNode node) {
-        Set<FlowNode> nextActivities;
-        if (nextActivitiesMap.isEmpty()) {
-            nextActivitiesMap = (new NextActivitiesMap()).getNextActivitiesMap();
-        }
-        nextActivities = nextActivitiesMap.get(node);
-        
-        return nextActivities;
-    } 
-    */
-    
-    /*
-    * Check if an event name is part of all activities of a node
-    */
-    /*
-    public boolean isNextActivityName(FlowNode node, String eventName) {
-        for (FlowNode next : this.getNextActivities(node)) {
-            if (next.getName().equals(eventName)) {
-                return true;
-            }
-        }
-        return false;
-    } 
-    */
-    
-    /*
-    * Require a strict block-structure of gateways: a split must be accompanied with a join gate
-    * AND-AND, XOR-XOR, OR-OR.
-    */
-    /*
-    public Map<Gateway, Gateway> getJoin2ForkMap() {
-        if (j2fMap.isEmpty()) {
-            j2fMap = (new Join2ForkMap(startEvent, false)).getJoin2ForkMap();
-        }
-        return j2fMap;
-    }
-    */
-    
-    /*
-    * Require a strict block-structure of gateways: a split must be accompanied with a join gate
-    * AND-AND, XOR-XOR, OR-OR.
-    */
-    /*
-    public Map<Gateway, Gateway> getForkJoinMapORGate() {
-        if (j2fMapORGate.isEmpty()) {
-            j2fMapORGate = (new Join2ForkMap(startEvent, true)).getJoin2ForkMap();
-        }
-        return j2fMapORGate;
-    } 
-    */
     
     public DijkstraAlgorithm getDijkstraAlgo() {
         if (dijkstraAlgo == null) {
@@ -643,84 +570,6 @@ public class BPMNDiagramHelper {
         }
     }    
 
-    
-//    public ProcessModel getJBPTProcessModel() {
-//        if (jbptProcessModel == null) {           
-//            org.jbpt.pm.FlowNode jbptNode = null;
-//            jbptProcessModel = new ProcessModel();
-//            for (FlowNode node : this.getAllNodes()) {
-//                if (node == this.getStartEvent() || node == this.getEndEvent()) {
-//                    jbptNode = new org.jbpt.pm.Event(node.getName());
-//                }
-//                else if (this.getActivities().contains(node)) {
-//                    jbptNode = new org.jbpt.pm.Activity(node.getName());
-//                }
-//                else if (this.getAllDecisions().contains(node) || this.getAllMerges().contains(node)) {
-//                    jbptNode = new org.jbpt.pm.XorGateway(node.getName());
-//                }
-//                else if (this.getAllForks().contains(node) || this.getAllJoins().contains(node)) {
-//                    jbptNode = new org.jbpt.pm.AndGateway(node.getName());
-//                }
-//                else if (this.getAllORSplits().contains(node) || this.getAllORJoins().contains(node)) {
-//                    jbptNode = new org.jbpt.pm.OrGateway(node.getName());
-//                }
-//                jbptNodeMap.put(node, jbptNode);
-//                jbptProcessModel.addFlowNode(jbptNode);
-//            }
-//            
-//            org.jbpt.pm.FlowNode from = null;
-//            org.jbpt.pm.FlowNode to = null;
-//            for (SequenceFlow flow : this.getAllSequenceFlows()) {
-//                from = jbptNodeMap.get((FlowNode)flow.getSourceRef());
-//                to = jbptNodeMap.get((FlowNode)flow.getTargetRef());
-//                jbptProcessModel.addControlFlow(from, to);
-//            }
-//        }
-//        
-//        return jbptProcessModel;    
-//    }
-     
-    
-    /**
-     * Compute to get strongly connected components in the model.
-     * These are sets of nodes which form a cycle with only activity nodes,
-     * AND split/join gateways and OR/XOR split gateways.
-     * Assume that jbptProcessModel has been created
-     * @return set of subset, each represents strongly connected components
-     */
-//    public Set<Set<FlowNode>> getStronglyConnectedComponents() {
-//        if (bpmnSCCSet == null) {
-//            bpmnSCCSet = new HashSet();
-//            Set<FlowNode> bpmnSCC;
-//
-//            StronglyConnectedComponents scc = new StronglyConnectedComponents();
-//            Set<Set<org.jbpt.pm.FlowNode>> jbptSCCSet = scc.compute(jbptProcessModel);
-//            FlowNode node;
-//            for (Set<org.jbpt.pm.FlowNode> jbptSCC : jbptSCCSet) {
-//                if (jbptSCC.size() > 1) {
-//                    bpmnSCC = new HashSet();
-//                    boolean trueSCC = true;
-//                    for (org.jbpt.pm.FlowNode jbptNode : jbptSCC) {
-//                        node = jbptNodeMap.getKey(jbptNode);
-//                        bpmnSCC.add(node);
-//                        if (!getAllForks().contains(node) && !getAllJoins().contains(node) &&
-//                                node.getIncomingSequenceFlows().size() >= 2) {
-//                            trueSCC = false;
-//                            break;
-//                        }
-//                    }
-//                    if (trueSCC) {
-//                        bpmnSCCSet.add(bpmnSCC);
-//                    } else {
-//                        bpmnSCC.clear();
-//                    }
-//                }
-//            }
-//        }
-//        return bpmnSCCSet;
-//    }
-    
-    
     public DirectedGraph getDirectedGraph() {
         if (directedGraph == null) {           
             directedGraph = new DefaultDirectedGraph<FlowNode, DefaultEdge>(DefaultEdge.class);
@@ -728,7 +577,7 @@ public class BPMNDiagramHelper {
                 directedGraph.addVertex(node);
             }
             for (SequenceFlow flow : this.getAllSequenceFlows()) {
-                directedGraph.addEdge((FlowNode)flow.getSourceRef(), (FlowNode)flow.getTargetRef());
+                directedGraph.addEdge(flow.getSourceRef(), flow.getTargetRef());
             }
         }
         

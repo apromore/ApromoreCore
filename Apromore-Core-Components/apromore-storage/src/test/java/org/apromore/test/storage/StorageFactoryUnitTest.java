@@ -50,7 +50,8 @@ public class StorageFactoryUnitTest {
     {
 //	Given
 	ClassLoader classLoader = StorageFactoryUnitTest.class.getClassLoader();	
-	File file = new File(classLoader.getResource("baseFolder" + File.separator + "test.csv").toURI());
+
+	File file = new File(classLoader.getResource("baseFolder/test.csv").getFile());
 	
 //	When
 	StorageClient client=storageManagementFactory.getStorageClient("FILE::"+file.getParent());

@@ -36,6 +36,6 @@ public interface LogAnimationService2 {
        public String color;
    }
 
-   public Object[] createAnimation(String bpmn, List<Log> logs) throws Exception;
-   public Object[] createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) throws Exception;
+   public AnimationResult createAnimation(String bpmn, List<Log> logs) throws Exception;
+   public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) throws Exception;
 }

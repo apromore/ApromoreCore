@@ -36,7 +36,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jolbox.bonecp.BoneCPDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import liquibase.integration.spring.SpringLiquibase;
 
@@ -68,9 +68,9 @@ public class TestConfig {
 
     @Bean
     public DataSource dataSource() {
-	BoneCPDataSource ds = new BoneCPDataSource();
+	HikariDataSource ds = new HikariDataSource();
 	ds.setJdbcUrl(url);
-	ds.setDriverClass(driver);
+	ds.setDriverClassName(driver);
 	ds.setUsername(dbUser);
 	ds.setPassword(password);
 	return ds;
