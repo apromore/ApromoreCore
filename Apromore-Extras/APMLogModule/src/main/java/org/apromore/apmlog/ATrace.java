@@ -41,6 +41,7 @@
 
 package org.apromore.apmlog;
 
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -65,6 +66,8 @@ import java.util.List;
  * Modified: Chii Chang (13/10/2020)
  * Modified: Chii Chang (27/10/2020)
  * Modified: Chii Chang (11/11/2020)
+ * Modified: Chii Chang (22/01/2021)
+ * Modified: Chii Chang (26/01/2021)
  */
 public interface ATrace {
 
@@ -126,15 +129,6 @@ public interface ATrace {
 
      double getCaseUtilization();
 
-     void setTotalProcessingTime(double time);
-     void setAverageProcessingTime(double time);
-     void setMaxProcessingTime(double time);
-     void setTotalWaitingTime(double time);
-     void setAverageWaitingTime(double time);
-     void setMaxWaitingTime(double time);
-     void setCaseUtilization(double caseUtilization);
-
-
      BitSet getValidEventIndexBitSet();
 
      String getStartTimeString();
@@ -158,6 +152,9 @@ public interface ATrace {
      List<AEvent> getImmutableEvents();
 
      void setImmutableEvents(List<AEvent> events);
+
+     DoubleArrayList getWaitingTimes();
+     DoubleArrayList getProcessingTimes();
 
      ATrace clone();
 
