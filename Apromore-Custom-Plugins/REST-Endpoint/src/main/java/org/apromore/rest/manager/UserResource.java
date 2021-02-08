@@ -87,6 +87,7 @@ public final class UserResource extends AbstractResource {
     /**
      * Users may only be created, not modified.
      *
+     * @param name  the username property of the created user
      * @param userType  a template for a desired user account to create
      * @return the actual user created, including the generated id
      * @throws ResourceException if <var>userType</var> isn't suitable

@@ -28,11 +28,6 @@
     </scm>
 
     <modules>
-        <!-- Database Support Plugins -->
-        <module>plugin-database/database-h2</module>
-        <module>plugin-database/database-mysql</module>
-        <module>plugin-database/database-oracle</module>
-        <module>plugin-database/database-postgresql</module>
 
         <!-- Plugin Interfaces -->
         <module>plugin-core/core/api</module>

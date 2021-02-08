@@ -43,7 +43,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 /**
- * Common methods shared by {@link ArtifactResource} and {@link UserResource}.
+ * Common methods shared by {@link org.apromore.rest.manager.ArtifactResource} and
+ * {@link org.apromore.rest.manager.UserResource}.
  */
 public abstract class AbstractResource {
 
@@ -144,8 +145,9 @@ public abstract class AbstractResource {
      *
      * This obtains the bundle context from the servlet context of the web application.
      *
-     * @param clazz  the type of the service; there must be exactly one registered service of this type
-     * @return the service instance
+     * @param <T>  the type of the service; there must be exactly one registered service of this type
+     * @param clazz  the class of the service; there must be exactly one registered service of this type
+     * @return the service instance, or <code>null</code> if there's not exactly one registered service of this type
      */
     protected <T> T osgiService(final Class<T> clazz) {
         BundleContext bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");

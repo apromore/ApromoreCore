@@ -35,8 +35,7 @@
                         <Export-Package>
                             org.apromore.xlog.singletonlog,
                             org.deckfour.spex.*;version="1.0",
-                            org.deckfour.xes.*;version="2.27",
-                            org.xeslite.*;version="0.0.1"
+                            org.deckfour.xes.*;version="2.27"
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -67,11 +66,6 @@
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.andreas-solti.xeslite</groupId>
-            <artifactId>xeslite</artifactId>
-            <version>0.0.1</version>
         </dependency>
 
         <dependency>

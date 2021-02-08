@@ -33,6 +33,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -44,7 +45,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AboutPlugin.class);
 
-    private String label = "About Apromore";
+    private String label = "About Apromore"; // default label
     private String groupLabel = "About";
     private BundleContext bundleContext;
     private String commitId;
@@ -68,7 +69,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(final Locale locale) {
-        return label;
+        return Labels.getLabel("brand.about", label);
     }
 
     @Override

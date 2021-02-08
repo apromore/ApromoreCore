@@ -30,7 +30,7 @@ public class ConfigData {
     public final String DEFAULT_SELECTOR = "concept:name";
     private final int NUMBER_OF_UNIQUE_VALUES_ADJUST = 100;
     private final int NUMBER_OF_UNIQUE_VALUES_FORCE_ADJUST = 200;
-    private final int NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = 300;
+    private final int NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = 500;
     private final int MAX_NUMBER_OF_NODES = 80;
     private final int MAX_NUMBER_OF_ARCS = 150;
     

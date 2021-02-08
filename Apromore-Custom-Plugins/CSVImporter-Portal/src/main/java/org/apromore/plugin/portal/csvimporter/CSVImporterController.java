@@ -197,7 +197,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 String tz = (String) param.get("tz");
                 String value = String.format("(%s) %s", gmtOffset, tz);
                 setTimeZone.setValue(value);
-                this.logMetaData.setTimeZone(value);
+                this.logMetaData.setTimeZone(tz);
             });
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());

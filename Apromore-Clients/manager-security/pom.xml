@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>manager-security</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <url>http://apromore.org/</url>
     <name>Apromore Manager Security Handler</name>
 

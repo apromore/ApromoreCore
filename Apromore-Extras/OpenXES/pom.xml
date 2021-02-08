@@ -14,7 +14,7 @@
     <groupId>org.apromore</groupId>
     <artifactId>openxes</artifactId>
     <version>2.27</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>OpenXES</name>
 
     <build>

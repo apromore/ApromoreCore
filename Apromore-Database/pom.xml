@@ -76,17 +76,20 @@
         
         <!-- Database Connections -->
 		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp</artifactId>
+   		 	<groupId>com.zaxxer</groupId>
+   		 	<artifactId>HikariCP</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
@@ -97,6 +100,7 @@
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -158,8 +162,7 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
-                        <Import-Package>
-                        	com.jolbox.bonecp,
+                        <Import-Package> 
                         	com.mysql.cj.jdbc;resolution:=optional,
                         	com.mysql.jdbc,
                             javax.sql,

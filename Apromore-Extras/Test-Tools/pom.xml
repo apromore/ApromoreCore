@@ -3,18 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apromore</groupId>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <relativePath>../..</relativePath>
+        <version>1.1</version>
+    </parent>
+
     <artifactId>test-tools</artifactId>
     <version>1.1</version>
     <packaging>jar</packaging>
     <name>Apromore Testing Tools</name>
-
-    <properties>
-        <slf4j.version>1.7.2</slf4j.version>
-        <logback.version>1.0.7</logback.version>
-        <ipsedixit.version>1.0.0</ipsedixit.version>
-        <google.guava.version>14.0.1</google.guava.version>
-    </properties>
 
     <dependencies>
         <!-- Logging -->
@@ -26,12 +25,10 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
@@ -48,7 +45,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${google.guava.version}</version>
         </dependency>
     </dependencies>
 
