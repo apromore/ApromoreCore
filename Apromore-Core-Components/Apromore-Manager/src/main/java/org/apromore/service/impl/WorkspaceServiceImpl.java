@@ -201,9 +201,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public void createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady) {
+    public Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady) {
 	Folder folder = new Folder();
 	folder.setName(folderName);
+	folder.setParentFolderChain("0");
 	User user = userRepo.findByRowGuid(userId);
 
 	if (parentFolderId != 0) {
@@ -223,7 +224,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	folder.setDescription("");
 	if (isGEDMatrixReady != null)
 	    folder.setGEDMatrixReady(isGEDMatrixReady);
-	folder = folderRepo.save(folder);
+	folder = folderRepo.saveAndFlush(folder);
 
 	GroupFolder gf = new GroupFolder();
 	gf.setFolder(folder);
@@ -235,6 +236,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	gf.setAccessRights(accessRights);
 
 	groupFolderRepo.save(gf);
+
+	return folder.getId();
     }
 
     @Override
@@ -755,5 +758,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	if (groupLog != null) {
 	    groupLogRepo.delete(groupLog);
 	}
+    }
+
+
+
+
+    private String getEscapedString(String prefix) {
+	return prefix.replaceAll("\\_", "\\\\_");
     }
 }

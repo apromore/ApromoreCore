@@ -75,7 +75,7 @@ public class Folder implements Serializable {
     private Workspace workspace;
     private Folder parentFolder;
 
-    private String parentFolderChain = "0";
+    private String parentFolderChain = "-1";
 
     private Set<Process> processes = new HashSet<>();
     private Set<Folder> subFolders = new HashSet<>();
