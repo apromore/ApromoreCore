@@ -70,6 +70,26 @@ public class StringFormatterTest {
                     .equals("123456789012345...")) {
                 fail("Shorten name is not correct");
             }
+            if (!stringFormatter.shortenName(null, 0)
+                    .equals("*")) {
+                fail("Shorten name fails to detect null");
+            }
+            if (!stringFormatter.shortenName("", 0)
+                    .equals("*")) {
+                fail("Shorten name fails to detect empty string");
+            }
+            if (!stringFormatter.shortenName("_", 0)
+                    .equals("_")) {
+                fail("Shorten name fails to handle single-letter name");
+            }
+            if (!stringFormatter.shortenName("-", 0)
+                    .equals("-")) {
+                fail("Shorten name fails to handle single-letter name");
+            }
+            if (!stringFormatter.shortenName("RA", 0)
+                    .equals("RA")) {
+                fail("Shorten name fails to handle two-letter name");
+            }
             System.out.println("Testing StringFormatter - shortenName()");
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
