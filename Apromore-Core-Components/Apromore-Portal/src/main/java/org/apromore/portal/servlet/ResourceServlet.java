@@ -61,7 +61,7 @@ import com.google.common.io.ByteStreams;
 public class ResourceServlet extends HttpServlet {
 
     private Map<String, String> contentTypeMap = new HashMap<>();
-    private final String PORTAL_SERVLET_BUNLDE_KEY = "org.apromore.portal.servlet.pattern";
+    private static final String PORTAL_SERVLET_BUNDLE_KEY = "org.apromore.portal.servlet.pattern";
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceServlet.class);
 
     @Override
@@ -120,9 +120,9 @@ public class ResourceServlet extends HttpServlet {
         for (ServiceReference serviceReference: (Collection<ServiceReference>) bundleContext.getServiceReferences(HttpServlet.class, null)) {
             HttpServlet servlet = (HttpServlet) bundleContext.getService(serviceReference);
             
-            String servletKey = (String)serviceReference.getProperty(PORTAL_SERVLET_BUNLDE_KEY);
+            String servletKey = (String)serviceReference.getProperty(PORTAL_SERVLET_BUNDLE_KEY);
             if (servletKey == null) {
-                LOGGER.error("Wrong or missing property key '" + PORTAL_SERVLET_BUNLDE_KEY + 
+                LOGGER.error("Wrong or missing property key '" + PORTAL_SERVLET_BUNDLE_KEY +
                         "' in servlet bundle: " + servlet.getClass());
             }
             
@@ -133,7 +133,7 @@ public class ResourceServlet extends HttpServlet {
                 }
                 catch (Exception ex) {
                     LOGGER.error("Errors occurred in " + servlet.getClass() + 
-                                    " servlet bundle when servicing the request for " + req.getServletPath());
+                                    " servlet bundle when servicing the request for " + req.getServletPath(), ex);
                     resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
                                    " Error in " + servlet.getClass() + 
                                    " while servicing request. Please contact your administrator.");
@@ -175,7 +175,7 @@ public class ResourceServlet extends HttpServlet {
                     }
                     catch (Exception ex) {
                         LOGGER.error("Errors occurred in web content service " + webContentService.getClass() + 
-                                        " when servicing the request for " + path);
+                                        " when servicing the request for " + path, ex);
                         resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
                                 " Error in " + webContentService.getClass() + 
                                 " while servicing request. Please contact your administrator.");
@@ -186,7 +186,7 @@ public class ResourceServlet extends HttpServlet {
             // Log exception and keep going without being stopped by misbehaved bundles
             catch (Exception ex) {
                 LOGGER.error("Errors occurred in web content service " + webContentService.getClass() + 
-                                " when servicing the request for " + path);
+                                " when servicing the request for " + path, ex);
             }
         }
         
