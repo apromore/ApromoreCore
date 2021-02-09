@@ -21,7 +21,7 @@
   #L%
   -->
 
-<?page title="Apromore - Portal" contentType="text/html;charset=UTF-8" ?>
+<?page title="${labels.brand.shortName} - Portal" contentType="text/html;charset=UTF-8" ?>
 
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>

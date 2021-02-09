@@ -114,7 +114,6 @@ Ap.la.session = (function() {
     controller.reset(animationData);
     // Enable play controls back
     setPlayControls(false);
-    document.title = "Apromore - Log Animator";
   }
 
   function initSpeedControl() {
