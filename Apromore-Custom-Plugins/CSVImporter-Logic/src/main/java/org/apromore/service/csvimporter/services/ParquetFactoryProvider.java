@@ -36,7 +36,8 @@ public class ParquetFactoryProvider {
         LOGGER.info("File Format: " + fileExtension);
         if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
             return new ParquetImporterFactoryCSVImpl();
-        } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
+        } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION) ||
+                fileExtension.equalsIgnoreCase(PARQ_FILE_EXTENSION)) {
             return new ParquetImporterFactoryParquetImpl();
         } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
             return new ParquetImporterFactoryXLSXImpl();

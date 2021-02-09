@@ -71,7 +71,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     /**
      * Attribute of the ZK session containing this controller's arguments.
      */
-    static final String SESSION_ATTRIBUTE_KEY = "csvimport";
+    public static final String SESSION_ATTRIBUTE_KEY = "csvimport";
 
     private static final int ROW_INDEX_START_FROM = 1;
 
@@ -368,6 +368,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             parquetFile,
                             false);
                 } else {
+                    System.out.println("");
                     logModel = logImporter
                             .importLog(getInputSream(media),
                                     logMetaData,
