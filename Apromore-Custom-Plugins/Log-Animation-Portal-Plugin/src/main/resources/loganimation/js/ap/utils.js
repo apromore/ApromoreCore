@@ -228,7 +228,7 @@ function getStraighLineFunctionValue(p1, p2, pi) {
  * DEALINGS IN THE SOFTWARE.
  **/
 /**
- * The super class for all classes in ORYX. Adds some OOP feeling to javascript.
+ * The super class for all classes in Apromore. Adds some OOP feeling to javascript.
  * See article "Object Oriented Super Class Method Calling with JavaScript" on
  * http://truecode.blogspot.com/2006/08/object-oriented-super-class-method.html
  * for a documentation on this. Fairly good article that points out errors in

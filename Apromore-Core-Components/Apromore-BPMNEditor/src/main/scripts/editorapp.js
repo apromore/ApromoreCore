@@ -21,8 +21,8 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-if (!ORYX) {
-    var ORYX = {};
+if (!Apromore) {
+    var Apromore = {};
 }
 
 /**
@@ -31,9 +31,9 @@ if (!ORYX) {
  * and access to pluggable functions via buttons (called plugins). These editor features will call
  * to the wrapped BPMN.io editor.
  * Its behavior is divided into public and private methods (starting with underscore).
- * @todo: the namespace ORYX should be changed to Apromore throughout in one pass
+ * @todo: the namespace Apromore should be changed to Apromore throughout in one pass
  */
-ORYX.EditorApp = {
+Apromore.EditorApp = {
     construct: function (config) {
         "use strict";
         this.editor = undefined;
@@ -45,7 +45,7 @@ ORYX.EditorApp = {
 
         this.id = config.id;
         if (!this.id) {
-            ORYX.Log.fatal('Missing the container HTML element for the editor');
+            Apromore.Log.fatal('Missing the container HTML element for the editor');
             return;
         }
         this.fullscreen = config.fullscreen !== false;
@@ -74,24 +74,23 @@ ORYX.EditorApp = {
 
         // Wait until the editor is fully loaded to start XML import and then UI init
         var me = this;
-        //this.getEditor().addEventBusListener('attach', function() {
-        //window.setTimeout(function() {
+        window.setTimeout(function() {
             if (config && config.xml) {
                 me.importXML(config.xml, me._initUI.bind(me));
             }
             else {
                 me._initUI();
             }
-        //}, 100);
+        }, 100);
     },
 
     _initUI: function () {
         // Fixed the problem that the viewport can not
         // start with collapsed panels correctly
-        if (ORYX.CONFIG.PANEL_RIGHT_COLLAPSED === true) {
+        if (Apromore.CONFIG.PANEL_RIGHT_COLLAPSED === true) {
             this.layout_regions.east.collapse();
         }
-        if (ORYX.CONFIG.PANEL_LEFT_COLLAPSED === true) {
+        if (Apromore.CONFIG.PANEL_LEFT_COLLAPSED === true) {
             this.layout_regions.west.collapse();
         }
     },
@@ -108,13 +107,13 @@ ORYX.EditorApp = {
         "use strict";
 
         // Defines the layout height if it's NOT fullscreen
-        var layoutHeight = ORYX.CONFIG.WINDOW_HEIGHT;
+        var layoutHeight = Apromore.CONFIG.WINDOW_HEIGHT;
 
         // DEFINITION OF THE VIEWPORT AREAS
         this.layout_regions = {
 
             // DEFINES TOP-AREA
-            north: new Ext.Panel({ //TOOO make a composite of the oryx header and addable elements (for toolbar), second one should contain margins
+            north: new Ext.Panel({ //TOOO make a composite of the Apromore header and addable elements (for toolbar), second one should contain margins
                 region: 'north',
                 cls: 'x-panel-editor-north',
                 autoEl: 'div',
@@ -126,7 +125,7 @@ ORYX.EditorApp = {
                 region: 'east',
                 layout: 'anchor',
                 cls: 'x-panel-editor-east',
-                collapseTitle: ORYX.I18N.View.East,
+                collapseTitle: window.Apromore.I18N.View.East,
                 titleCollapse: true,
                 border: false,
                 cmargins: {left: 0, right: 0},
@@ -159,8 +158,8 @@ ORYX.EditorApp = {
                 cls: 'x-panel-editor-west',
                 collapsible: true,
                 titleCollapse: true,
-                collapseTitle: ORYX.I18N.View.West,
-                width: ORYX.CONFIG.PANEL_LEFT_WIDTH || 10,
+                collapseTitle: window.Apromore.I18N.View.West,
+                width: Apromore.CONFIG.PANEL_LEFT_WIDTH || 10,
                 autoScroll: Ext.isIPad ? false : true,
                 cmargins: {left: 0, right: 0},
                 floatable: false,
@@ -273,15 +272,15 @@ ORYX.EditorApp = {
 
             current_region.add(component);
 
-            ORYX.Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
+            Apromore.Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
 
             // update dimensions of region if required.
             if (!current_region.width && component.initialConfig && component.initialConfig.width) {
-                ORYX.Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
+                Apromore.Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
                 current_region.setWidth(component.initialConfig.width)
             }
             if (component.initialConfig && component.initialConfig.height) {
-                ORYX.Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
+                Apromore.Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
                 var current_height = current_region.height || 0;
                 current_region.height = component.initialConfig.height + current_height;
                 current_region.setHeight(component.initialConfig.height + current_height)
@@ -340,7 +339,7 @@ ORYX.EditorApp = {
         // Instantiate plugin class
         // this.pluginData is filled in
         this.availablePlugins.each(function (value) {
-            ORYX.Log.debug("Initializing plugin '%0'", value.name);
+            Apromore.Log.debug("Initializing plugin '%0'", value.name);
             try {
                 var className = eval(value.name);
                 if (className) {
@@ -350,8 +349,8 @@ ORYX.EditorApp = {
                     newPlugins.push(plugin);
                 }
             } catch (e) {
-                ORYX.Log.warn("Plugin %0 is not available", value.name);
-                ORYX.Log.error("Error: " + e.message);
+                Apromore.Log.warn("Plugin %0 is not available", value.name);
+                Apromore.Log.error("Error: " + e.message);
             }
         });
 
@@ -374,10 +373,10 @@ ORYX.EditorApp = {
     },
 
     _createEditor: function () {
-        this.editor = new ORYX.Editor({
-            width: ORYX.CONFIG.CANVAS_WIDTH,
-            height: ORYX.CONFIG.CANVAS_HEIGHT,
-            id: ORYX.Utils.provideId(),
+        this.editor = new Apromore.Editor({
+            width: Apromore.CONFIG.CANVAS_WIDTH,
+            height: Apromore.CONFIG.CANVAS_HEIGHT,
+            id: Apromore.Utils.provideId(),
             parentNode: this._getContainer()
         });
     },
@@ -453,12 +452,12 @@ ORYX.EditorApp = {
      * Load a list of predefined plugins from the server
      */
     _loadPlugins: function() {
-        if(ORYX.CONFIG.PLUGINS_ENABLED) {
+        if(Apromore.CONFIG.PLUGINS_ENABLED) {
             this._loadPluginData();
             this._activatePlugins();
         }
         else {
-            ORYX.Log.warn("Ignoring plugins, loading Core only.");
+            Apromore.Log.warn("Ignoring plugins, loading Core only.");
         }
     },
 
@@ -480,14 +479,14 @@ ORYX.EditorApp = {
     // ]
     _loadPluginData: function() {
         var me = this;
-        var source = ORYX.CONFIG.PLUGINS_CONFIG;
+        var source = Apromore.CONFIG.PLUGINS_CONFIG;
 
-        ORYX.Log.debug("Loading plugin configuration from '%0'.", source);
+        Apromore.Log.debug("Loading plugin configuration from '%0'.", source);
         new Ajax.Request(source, {
             asynchronous: false,
             method: 'get',
             onSuccess: function(result) {
-                ORYX.Log.info("Plugin configuration file loaded.");
+                Apromore.Log.info("Plugin configuration file loaded.");
 
                 // get plugins.xml content
                 var resultXml = result.responseXML;
@@ -529,13 +528,13 @@ ORYX.EditorApp = {
 
                     // ensure there's a name attribute.
                     if(!pluginData['name']) {
-                        ORYX.Log.error("A plugin is not providing a name. Ignoring this plugin.");
+                        Apromore.Log.error("A plugin is not providing a name. Ignoring this plugin.");
                         return;
                     }
 
                     // ensure there's a source attribute.
                     if(!pluginData['source']) {
-                        ORYX.Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
+                        Apromore.Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
                         return;
                     }
 
@@ -595,15 +594,15 @@ ORYX.EditorApp = {
                         pluginData['notUsesIn'] = notUsesIn;
                     }
 
-                    var url = ORYX.PATH + ORYX.CONFIG.PLUGINS_FOLDER + pluginData['source'];
-                    ORYX.Log.debug("Requiring '%0'", url);
-                    ORYX.Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
+                    var url = Apromore.PATH + Apromore.CONFIG.PLUGINS_FOLDER + pluginData['source'];
+                    Apromore.Log.debug("Requiring '%0'", url);
+                    Apromore.Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
                     me.availablePlugins.push(pluginData);
                 });
 
             },
             onFailure: function () {
-                ORYX.Log.error("Plugin configuration file not available.");
+                Apromore.Log.error("Plugin configuration file not available.");
             }
         });
 
@@ -620,7 +619,7 @@ ORYX.EditorApp = {
     }
 };
 
-ORYX.EditorApp = Clazz.extend(ORYX.EditorApp);
+Apromore.EditorApp = Clazz.extend(Apromore.EditorApp);
 
 
 

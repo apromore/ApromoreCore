@@ -24,8 +24,8 @@
 /**
  * Init namespaces
  */
-if (!ORYX) {
-    var ORYX = {};
+if (!Apromore) {
+    var Apromore = {};
 }
 
 /**
@@ -34,17 +34,17 @@ if (!ORYX) {
  * The aim is to minimize the impact of the implementation changes with changes minimized to this
  * class only while the editor used in Apromore codebase is unchanged as they only access this Editor class.
  */
-ORYX.Editor = {
+Apromore.Editor = {
     construct: function(options) {
         this.actualEditor = undefined;
 
         if (!(options && options.width && options.height)) {
-            ORYX.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
+            Apromore.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
             return;
         }
 
-        this.className = "ORYX_Editor";
-        this.rootNode = ORYX.Utils.graft("http://www.w3.org/1999/xhtml", options.parentNode,
+        this.className = "Apromore_Editor";
+        this.rootNode = Apromore.Utils.graft("http://www.w3.org/1999/xhtml", options.parentNode,
             ['div', {id: options.id, width: options.width, height: options.height}
             ]);
         //this.rootNode.addClassName(this.className);
@@ -61,11 +61,11 @@ ORYX.Editor = {
     },
 
     getSVGContainer: function() {
-        return $("div.ORYX_Editor div.bjs-container div.djs-container svg")[0];
+        return $("div.Apromore_Editor div.bjs-container div.djs-container svg")[0];
     },
 
     getSVGViewport: function() {
-        return $("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0];
+        return $("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0];
     },
 
     getSourceNodeId: function (sequenceFlowId) {
@@ -469,5 +469,5 @@ ORYX.Editor = {
 
 };
 
-ORYX.Editor = Clazz.extend(ORYX.Editor);
+Apromore.Editor = Clazz.extend(Apromore.Editor);
 

@@ -1,6 +1,6 @@
-window.ORYX = window.ORYX || {};
-if (!ORYX.CONFIG) {
-    ORYX.CONFIG = {};
+window.Apromore = window.Apromore || {};
+if (!Apromore.CONFIG) {
+    Apromore.CONFIG = {};
 }
-// ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
-ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+// Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';

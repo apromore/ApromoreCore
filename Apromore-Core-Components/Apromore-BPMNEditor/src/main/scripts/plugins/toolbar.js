@@ -22,11 +22,11 @@
  **/
 
 
-if(!ORYX.Plugins) {
-	ORYX.Plugins = new Object();
+if(!Apromore.Plugins) {
+	Apromore.Plugins = new Object();
 }
 
-ORYX.Plugins.Toolbar = Clazz.extend({
+Apromore.Plugins.Toolbar = Clazz.extend({
 
 	facade: undefined,
 	plugs:	[],
@@ -50,7 +50,7 @@ ORYX.Plugins.Toolbar = Clazz.extend({
      * Can be used to manipulate the state of a button.
      * @example
      * this.facade.raiseEvent({
-     *   type: ORYX.CONFIG.EVENT_BUTTON_UPDATE,
+     *   type: Apromore.CONFIG.EVENT_BUTTON_UPDATE,
      *   id: this.buttonId, // have to be generated before and set in the offer method
      *   pressed: true
      * });
@@ -74,13 +74,13 @@ ORYX.Plugins.Toolbar = Clazz.extend({
 
 		// Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
 		var plugs = $A(newPlugs).findAll(function(plugin){
-										return !this.plugs.include(plugin) && (!plugin.target || plugin.target === ORYX.Plugins.Toolbar)
+										return !this.plugs.include(plugin) && (!plugin.target || plugin.target === Apromore.Plugins.Toolbar)
 									}.bind(this));
 		if(plugs.length<1) return;
 
 		this.buttons = [];
 
-		ORYX.Log.trace("Creating a toolbar.")
+		Apromore.Log.trace("Creating a toolbar.")
 
         if(!this.toolbar){
 			this.toolbar = new Ext.ux.SlicedToolbar({height: 24});
@@ -308,7 +308,7 @@ Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
 
         var button = new Ext.Toolbar.Button({
             cls: "x-btn-icon",
-            icon: ORYX.CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
+            icon: Apromore.CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
             handler: (type === "next") ? nextHandler : prevHandler
         });
 
