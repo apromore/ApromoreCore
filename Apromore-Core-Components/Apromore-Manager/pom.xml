@@ -46,12 +46,9 @@
                             org.apromore.plugin.provider,
                             org.springframework.beans.factory.aspectj,
                             org.aopalliance.aop,                                                        
-                            javax.wsdl.extensions,
                             org.springframework.scheduling.concurrent,
                             org.springframework.scheduling.config,
                             org.springframework.security.core.userdetails,
-                            org.springframework.ws.transport.http,
-                            org.springframework.ws,
                             com.sun.xml.bind.v2,
                             net.sf.cglib.proxy,
                             net.sf.cglib.core,
@@ -109,7 +106,6 @@
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
-            <version>4.0.2</version>
         </dependency>
 
         <dependency>
@@ -122,7 +118,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
-            <version>2.27</version>
         </dependency>
 
         <!-- Clients -->
@@ -185,10 +180,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.xmlschema</groupId>
-            <artifactId>xmlschema-core</artifactId>
         </dependency>
 
         <!-- AOP -->
@@ -272,26 +263,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>org.springframework.security.remoting</artifactId>
-        </dependency>
-
-        <!-- Spring-WS dependencies -->
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.ws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.ws.support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.xml</artifactId>
-        </dependency>
-
-        <!-- WebServices WSDL -->
-        <dependency>
-            <groupId>javax.wsdl</groupId>
-            <artifactId>com.springsource.javax.wsdl</artifactId>
         </dependency>
 
         <!-- JEE dependencies -->
