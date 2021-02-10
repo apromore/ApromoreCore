@@ -34,6 +34,7 @@ import java.util.List;
  * such as Highcharts, Chart.js etc.
  *
  * @author Chii Chang (created: 14/02/2020)
+ * Modified: Chii Chang (26/01/2021)
  */
 public class DefaultChartDataCollection {
 
@@ -72,19 +73,16 @@ public class DefaultChartDataCollection {
         minDuration = apmLog.getMinDuration();
         maxDuration = apmLog.getMaxDuration();
 
-        for(int i = 0; i< apmLog.getTraceList().size() ; i++) {
-
-            ATrace aTrace = apmLog.getTraceList().get(i);
-            List<AEvent> aEventList = aTrace.getEventList();
-
-            caseDurations.add( aEventList.size() == 0 ? 0 : aTrace.getDuration() );
-            ttlProcessTimes.add( aEventList.size() == 0 ? 0 : aTrace.getTotalProcessingTime() );
-            avgProcessTimes.add( aEventList.size() == 0 ? 0 : aTrace.getAverageProcessingTime() );
-            maxProcessTimes.add( aEventList.size() == 0 ? 0 : aTrace.getMaxProcessingTime() );
-            ttlWaitTimes.add( aEventList.size() == 0 ? 0 : aTrace.getTotalWaitingTime() );
-            avgWaitTimes.add( aEventList.size() == 0 ? 0 : aTrace.getAverageWaitingTime() );
-            maxWaitTimes.add( aEventList.size() == 0 ? 0 : aTrace.getMaxWaitingTime() );
-            caseUtils.add( aEventList.size() == 0 ? 0 : aTrace.getCaseUtilization() );
+        for (ATrace aTrace : traceList) {
+            int eventSize = aTrace.getEventSize();
+            caseDurations.add( eventSize == 0 ? 0 : aTrace.getDuration() );
+            ttlProcessTimes.add( eventSize == 0 ? 0 : aTrace.getTotalProcessingTime() );
+            avgProcessTimes.add( eventSize == 0 ? 0 : aTrace.getAverageProcessingTime() );
+            maxProcessTimes.add( eventSize == 0 ? 0 : aTrace.getMaxProcessingTime() );
+            ttlWaitTimes.add( eventSize == 0 ? 0 : aTrace.getTotalWaitingTime() );
+            avgWaitTimes.add( eventSize == 0 ? 0 : aTrace.getAverageWaitingTime() );
+            maxWaitTimes.add( eventSize == 0 ? 0 : aTrace.getMaxWaitingTime() );
+            caseUtils.add( eventSize == 0 ? 0 : aTrace.getCaseUtilization() );
         }
 
         caseDurations.sortThis();
@@ -118,17 +116,10 @@ public class DefaultChartDataCollection {
         }
 
         TreeSortedMap<Long, Integer> cotMap = new TreeSortedMap<>();
-        for(int i=0; i<cotList.size(); i++) {
-            cotMap.put(cotList.get(i), 0);
-        }
-
-
-        /**
-         * Create eotMap (events over time) based on the cotList values
-         */
         TreeSortedMap<Long, Integer> eotMap = new TreeSortedMap<>();
-        for(int i=0; i<cotList.size(); i++) {
-            eotMap.put(cotList.get(i), 0);
+        for (long l : cotList) {
+            cotMap.put(l, 0);
+            eotMap.put(l, 0);
         }
 
         long interval = latestTime - earliestTime;
@@ -199,8 +190,7 @@ public class DefaultChartDataCollection {
         List<TreeSortedMap<Double, Integer>> seriesMapsList =
                 Arrays.asList(caseDurMap, ttlPTMap, avgPTMap, maxPTMap, ttlWTMap, avgWTMap, maxWTMap, caseUtilMap);
 
-        for(int i = 0; i< apmLog.size(); i++) {
-            ATrace aTrace = apmLog.get(i);
+        for(ATrace aTrace : traceList) {
 
             List<AEvent> aEventList = aTrace.getEventList();
 
