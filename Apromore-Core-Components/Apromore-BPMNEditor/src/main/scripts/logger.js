@@ -21,40 +21,40 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-if(!ORYX) var ORYX = {};
+if(!Apromore) var Apromore = {};
 
 /**
- * The ORYX.Log logger.
+ * The Apromore.Log logger.
  */
-ORYX.Log = {
-    // oryx constants.
-    ORYX_LOGLEVEL: 5,
-    ORYX_LOGLEVEL_TRACE: 5,
-	ORYX_LOGLEVEL_DEBUG: 4,
-	ORYX_LOGLEVEL_INFO: 3,
-	ORYX_LOGLEVEL_WARN: 2,
-	ORYX_LOGLEVEL_ERROR: 1,
-	ORYX_LOGLEVEL_FATAL: 0,
-	ORYX_CONFIGURATION_DELAY: 100,
-	ORYX_CONFIGURATION_WAIT_ATTEMPTS: 10,
+Apromore.Log = {
+    // Apromore constants.
+    Apromore_LOGLEVEL: 5,
+    Apromore_LOGLEVEL_TRACE: 5,
+	Apromore_LOGLEVEL_DEBUG: 4,
+	Apromore_LOGLEVEL_INFO: 3,
+	Apromore_LOGLEVEL_WARN: 2,
+	Apromore_LOGLEVEL_ERROR: 1,
+	Apromore_LOGLEVEL_FATAL: 0,
+	Apromore_CONFIGURATION_DELAY: 100,
+	Apromore_CONFIGURATION_WAIT_ATTEMPTS: 10,
 
     __appenders: [
         { append: function(message) {
                 console.log(message); }}
     ],
 
-	trace: function() {	if(ORYX.Log.ORYX_LOGLEVEL >= ORYX.Log.ORYX_LOGLEVEL_TRACE)
-        ORYX.Log.__log('TRACE', arguments); },
-    debug: function() { if(ORYX.Log.ORYX_LOGLEVEL >= ORYX.Log.ORYX_LOGLEVEL_DEBUG)
-        ORYX.Log.__log('DEBUG', arguments); },
-    info: function() { if(ORYX.Log.ORYX_LOGLEVEL >= ORYX.Log.ORYX_LOGLEVEL_INFO)
-        ORYX.Log.__log('INFO', arguments); },
-    warn: function() { if(ORYX.Log.ORYX_LOGLEVEL >= ORYX.Log.ORYX_LOGLEVEL_WARN)
-        ORYX.Log.__log('WARN', arguments); },
-    error: function() { if(ORYX.Log.ORYX_LOGLEVEL >= ORYX.Log.ORYX_LOGLEVEL_ERROR)
-        ORYX.Log.__log('ERROR', arguments); },
-    fatal: function() { if(ORYX.Log.ORYX_LOGLEVEL >= ORYX.Log.ORYX_LOGLEVEL_FATAL)
-        ORYX.Log.__log('FATAL', arguments); },
+	trace: function() {	if(Apromore.Log.Apromore_LOGLEVEL >= Apromore.Log.Apromore_LOGLEVEL_TRACE)
+        Apromore.Log.__log('TRACE', arguments); },
+    debug: function() { if(Apromore.Log.Apromore_LOGLEVEL >= Apromore.Log.Apromore_LOGLEVEL_DEBUG)
+        Apromore.Log.__log('DEBUG', arguments); },
+    info: function() { if(Apromore.Log.Apromore_LOGLEVEL >= Apromore.Log.Apromore_LOGLEVEL_INFO)
+        Apromore.Log.__log('INFO', arguments); },
+    warn: function() { if(Apromore.Log.Apromore_LOGLEVEL >= Apromore.Log.Apromore_LOGLEVEL_WARN)
+        Apromore.Log.__log('WARN', arguments); },
+    error: function() { if(Apromore.Log.Apromore_LOGLEVEL >= Apromore.Log.Apromore_LOGLEVEL_ERROR)
+        Apromore.Log.__log('ERROR', arguments); },
+    fatal: function() { if(Apromore.Log.Apromore_LOGLEVEL >= Apromore.Log.Apromore_LOGLEVEL_FATAL)
+        Apromore.Log.__log('FATAL', arguments); },
 
     __log: function(prefix, messageParts) {
 
@@ -62,13 +62,13 @@ ORYX.Log = {
             + prefix + " " + messageParts[0];
         var message = this.printf.apply(null, messageParts);
 
-        ORYX.Log.__appenders.each(function(appender) {
+        Apromore.Log.__appenders.forEach(function(appender) {
             appender.append(message);
         });
     },
 
     addAppender: function(appender) {
-        ORYX.Log.__appenders.push(appender);
+        Apromore.Log.__appenders.push(appender);
     },
 
     printf: function() {

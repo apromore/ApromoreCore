@@ -1,20 +1,20 @@
 /**
- * @namespace Oryx name space for plugins
- * @name ORYX.Plugins
+ * @namespace Apromore name space for plugins
+ * @name Apromore.Plugins
  */
-if (!ORYX.Plugins)
-    ORYX.Plugins = new Object();
+if (!Apromore.Plugins)
+    Apromore.Plugins = new Object();
 
 /**
  * The simulation panel plugin offers functionality to change model simulation parameters over the
  * simulation parameters panel.
  *
- * @class ORYX.Plugins.SimulationPanel
+ * @class Apromore.Plugins.SimulationPanel
  * @extends Clazz
  * @param {Object} facade The editor facade for plugins.
  */
-ORYX.Plugins.SimulationPanel = Clazz.extend({
-    /** @lends ORYX.Plugins.SimulationPanel.prototype */
+Apromore.Plugins.SimulationPanel = Clazz.extend({
+    /** @lends Apromore.Plugins.SimulationPanel.prototype */
     facade: undefined,
 
     construct: function (facade) {
@@ -22,10 +22,10 @@ ORYX.Plugins.SimulationPanel = Clazz.extend({
 
         /* Register toggle simulation panel */
         this.facade.offer({
-            'name': ORYX.I18N.SimulationPanel.toggleSimulationDrawer,
+            'name': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawer,
             'functionality': this.toggleSimulationDrawer.bind(this),
-            'group': ORYX.I18N.SimulationPanel.group,
-            'description': ORYX.I18N.SimulationPanel.toggleSimulationDrawerDesc,
+            'group': window.Apromore.I18N.SimulationPanel.group,
+            'description': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc,
             'index': 1,
             'minShape': 0,
             'maxShape': 0,

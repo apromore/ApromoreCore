@@ -91,7 +91,7 @@ body, html {
 	top:3px;
 }
 
-.ext-opera .Oryx_button .x-menu {
+.ext-opera .Apromore_button .x-menu {
 	width: 246px;
 }
 
@@ -117,14 +117,14 @@ text * {
  * HEADER SECTION
  *
  */
-#oryx_editor_header {
+#Apromore_editor_header {
 	background:transparent url(../../editor/src/img/signavio/header_background2.png) repeat-x scroll center 0;
 	height:35px;
 	position:absolute;
 	width:100%;
 }
 
-#oryx_editor_header a {
+#Apromore_editor_header a {
 	background-attachment:scroll;
 	background-color:transparent;
 	background-image:url(../../editor/src/img/signavio/logo2.png);
@@ -137,12 +137,12 @@ text * {
 	position:relative;
 }
 
-#oryx_editor_header a img {
+#Apromore_editor_header a img {
 	margin-top:-3px;
 	margin-left:10px;
 	visibility:hidden;
 }
-#oryx_editor_header .openid{
+#Apromore_editor_header .openid{
 	font-family:tahoma;
 	color:white;
 	font-size:12px;
@@ -152,7 +152,7 @@ text * {
 	top:10px;
 }
 
-#oryx_editor_header div {
+#Apromore_editor_header div {
 	background-image:url(../../editor/src/img/signavio/header_background2.png) repeat-x center bottom;
 	height:10px;
 	position:absolute;
@@ -165,7 +165,7 @@ text * {
 	overflow:visible;
 }
 
-#oryx_editor_header .openid.not{
+#Apromore_editor_header .openid.not{
 	color:#ffffff;
 	font-style:italic;
 }
@@ -201,7 +201,7 @@ text * {
 	overflow:visible;
 }
 
-.x-panel-editor-north #oryx_editor_header div {
+.x-panel-editor-north #Apromore_editor_header div {
 	background:transparent url(../../editor/src/img/signavio/header_background2.png) repeat-x center bottom;
 	height:10px;
 	left:0;
@@ -264,7 +264,7 @@ text * {
 	background-image: url('../../libs/ext-2.0.2/resources/images/default/grid/loading.gif');
 }
 
-#oryx_canvas_htmlContainer {
+#Apromore_canvas_htmlContainer {
 
 }
 
@@ -274,7 +274,7 @@ text * {
 }
 
 
-.ORYX_Editor {
+.Apromore_Editor {
 	/*background:url(../images/controls/background.bmp);*/
 	/*background: #EEF1FE;
 	border:5px double #99BBE8;*/
@@ -496,7 +496,7 @@ text * {
 }
 
 
-.Oryx_ShapeMenu .Oryx_MorphItem_disabled {
+.Apromore_ShapeMenu .Apromore_MorphItem_disabled {
 	border:none;
 	cursor:default;
 	font-style:italic;
@@ -504,7 +504,7 @@ text * {
 	opacity:0.3;
 }
 
-.Oryx_ShapeMenu .Oryx_MorphItem_disabled a {
+.Apromore_ShapeMenu .Apromore_MorphItem_disabled a {
 	cursor:default;
 }
 

@@ -77,7 +77,7 @@ table-layout:fixed;
 	width:10px;
 }
 
-#oryx_editor_header {
+#Apromore_editor_header {
        background-image: url('../images/header_bg.small.gif');
        background-position: top center;
        background-repeat: repeat-x;
@@ -91,7 +91,7 @@ table-layout:fixed;
 	overflow:visible;
 }
 
-#oryx_editor_header .openid{
+#Apromore_editor_header .openid{
 	font-family:tahoma;
 	font-size:11px;
 	position:absolute;
@@ -99,19 +99,19 @@ table-layout:fixed;
 	top:8px;
 }
 
-#oryx_editor_header .openid.not{
+#Apromore_editor_header .openid.not{
 	color:#666666;
 	font-style:italic;
 }
 
-#oryx_editor_header .mashupinfo{
+#Apromore_editor_header .mashupinfo{
 	margin-left:8px;
 	position:relative;
 	top:3px;
 	vertical-align:top;
 }
 
-#oryx_editor_header .mashupinfo img{
+#Apromore_editor_header .mashupinfo img{
 	margin-left:5px;
 	width:14px;
 }
@@ -141,7 +141,7 @@ table-layout:fixed;
 	padding-left:10px;
 }
 
-#oryxcanvas {
+#Apromorecanvas {
 	width:1200px;
 	height:600px;
 }
@@ -332,7 +332,7 @@ table-layout:fixed;
 /** End Resizer **/
 
 
-.Oryx_ShapeMenu .Oryx_MorphItem_disabled {
+.Apromore_ShapeMenu .Apromore_MorphItem_disabled {
 	font-weight: bold;
 	cursor:default;
 	opacity:.3;
@@ -341,16 +341,16 @@ table-layout:fixed;
 	border: 1px solid #000;
 }
 
-.Oryx_hover, .Oryx_button:hover {
+.Apromore_hover, .Apromore_button:hover {
 	background: url(../images/shapemenu_highlight.png) no-repeat 1px 1px;
 	opacity: 1 !important;
 }
 
-.Oryx_down {
+.Apromore_down {
 
 }
 
-.Oryx_button img {
+.Apromore_button img {
 	position:relative;
 	width:16px;
 	height:16px;
@@ -358,14 +358,14 @@ table-layout:fixed;
 	left:1px;
 }
 
-.Oryx_ShapeMenu > .Oryx_Right {
+.Apromore_ShapeMenu > .Apromore_Right {
 	margin-top:2px;
 	margin-left:2px;
 	padding-left:0px;
 	padding-right:0px;
 }
 
-.Oryx_ShapeMenu > .Oryx_Left {
+.Apromore_ShapeMenu > .Apromore_Left {
 	border-right-width:2px;
 	margin-top:2px;
 	margin-left:13px;
@@ -373,7 +373,7 @@ table-layout:fixed;
 	padding-right:0px;
 }
 
-.Oryx_ShapeMenu > .Oryx_Top {
+.Apromore_ShapeMenu > .Apromore_Top {
 	border-bottom-width:2px;
 	margin-top:13px;
 	margin-left:2px;
@@ -381,7 +381,7 @@ table-layout:fixed;
 	padding-bottom:0px;
 }
 
-.Oryx_ShapeMenu > .Oryx_Bottom {
+.Apromore_ShapeMenu > .Apromore_Bottom {
 	border-top-width:2px;
 	margin-top:2px;
 	margin-left:2px;
@@ -389,55 +389,55 @@ table-layout:fixed;
 	padding-bottom:0px;
 }
 
-.Oryx_Right .Oryx_button,
-.Oryx_Left .Oryx_button,
-.Oryx_Top .Oryx_button,
-.Oryx_Bottom .Oryx_button {
+.Apromore_Right .Apromore_button,
+.Apromore_Left .Apromore_button,
+.Apromore_Top .Apromore_button,
+.Apromore_Bottom .Apromore_button {
 	opacity: 0.5;
 }
 
-.Oryx_button.x-opacity-0 {
+.Apromore_button.x-opacity-0 {
 	opacity: 0;
 	display:none;
 }
 
-.Oryx_button.x-opacity-10 {
+.Apromore_button.x-opacity-10 {
 	opacity: 0.1;
 }
 
-.Oryx_button.x-opacity-20 {
+.Apromore_button.x-opacity-20 {
 	opacity: 0.2;
 }
 
-.Oryx_button.x-opacity-50 {
+.Apromore_button.x-opacity-50 {
 	opacity: 0.5;
 }
 
-.Oryx_Right:hover .Oryx_button,
-.Oryx_Left:hover .Oryx_button,
-.Oryx_Top:hover .Oryx_button,
-.Oryx_Bottom:hover .Oryx_button {
+.Apromore_Right:hover .Apromore_button,
+.Apromore_Left:hover .Apromore_button,
+.Apromore_Top:hover .Apromore_button,
+.Apromore_Bottom:hover .Apromore_button {
 	opacity: 0.7;
 	display:block;
 }
 
 
-.Oryx_button img {
+.Apromore_button img {
 	top:1px;
 }
 
-.Oryx_Left img {
+.Apromore_Left img {
 	top:0px;
 }
 
-.Oryx_button {
+.Apromore_button {
 	width:16px;
 	height:16px;
 	padding:4px;
 	position:absolute;
 }
 
-.Oryx_button_with_caption {
+.Apromore_button_with_caption {
 	width:inherit;
 	height:16px;
 	padding:4px;
@@ -471,7 +471,7 @@ table-layout:fixed;
 
 /*** Selection Frame ***/
 
-.Oryx_SelectionFrame{
+.Apromore_SelectionFrame{
 	position:absolute;
 	border:1px dotted gray;
 	background:none;

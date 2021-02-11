@@ -149,12 +149,12 @@ Ext.reg('fileuploadfield', Ext.form.FileUploadField);
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if(!ORYX){ var ORYX = {} }
-if(!ORYX.Plugins){ ORYX.Plugins = {} }
+if(!Apromore){ var Apromore = {} }
+if(!Apromore.Plugins){ Apromore.Plugins = {} }
 
 
 
-ORYX.Plugins.LogAnimation = ORYX.Plugins.AbstractPlugin.extend({
+Apromore.Plugins.LogAnimation = Apromore.Plugins.AbstractPlugin.extend({
 
     construct: function () {
 
@@ -293,7 +293,7 @@ ORYX.Plugins.LogAnimation = ORYX.Plugins.AbstractPlugin.extend({
                     fp.getForm().reset();
                 }
             }, {
-                text: ORYX.I18N.JSONSupport.imp.btnClose,
+                text: Apromore.I18N.JSONSupport.imp.btnClose,
                 handler: function(){
                     dialog.close();
                 }.bind(this)
