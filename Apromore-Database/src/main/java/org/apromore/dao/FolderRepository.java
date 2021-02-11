@@ -24,6 +24,7 @@
 
 package org.apromore.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apromore.dao.model.Folder;
@@ -51,5 +52,10 @@ public interface FolderRepository extends JpaRepository<Folder, Integer>, Folder
 
 
     List<Folder> findByParentFolderIdOrParentFolderChainLike(Integer id, String folderChainPrefix);
+
+    Folder findById(Integer id);
+
+    @Query("SELECT DISTINCT f FROM Folder f WHERE f.id in ?1")
+    List<Folder> findByIdIn(Collection<Integer> ids);
 
 }

@@ -24,14 +24,15 @@
 
 package org.apromore.dao;
 
-import org.apromore.dao.model.*;
+import java.util.List;
+
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Data access for {@link Group}/{@link Process}  instance pairs.
@@ -87,4 +88,7 @@ public interface GroupLogRepository extends JpaRepository<GroupLog, Integer> {
            "               User u JOIN u.groups g2 " +
            "WHERE (gp.log.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupLog> findByLogAndUser(final Integer logId, final String userRowGuid);
+
+    @Query("delete from GroupLog gl where gl.group=?1 and gl.log=?2 ")
+    void deleteByGroupAndLog(Group group, Log log);
 }

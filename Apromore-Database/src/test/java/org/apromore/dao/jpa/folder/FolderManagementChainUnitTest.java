@@ -23,19 +23,24 @@ package org.apromore.dao.jpa.folder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.FolderInfoRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.FolderInfo;
 import org.apromore.script.FolderParentChainPopulator;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional
 public class FolderManagementChainUnitTest extends BaseTestClass {
 
     @Autowired
@@ -48,6 +53,9 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 
     @Autowired
     FolderParentChainPopulator folderParentChainPopulator;
+    
+    @PersistenceContext
+    EntityManager em;
 
     @Before
     public void setUp() {
@@ -55,7 +63,6 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
     }
 
     @Test
-    @Transactional
     public void testGetFolderChain() {
 //	Given
 	Folder folder1 = new Folder();
@@ -77,6 +84,7 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 
 	List<Folder> folders01 = folderRepo.findByParentFolderIdOrParentFolderChainLike(1, "0\\_1\\_%");
 	List<Folder> folders = folderRepo.findAll();
+	
 
 //	Then
 	assertThat(folders.size()).isEqualTo(3);
@@ -87,7 +95,6 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 
 //    Check if jpa query works for parentId
     @Test
-    @Transactional
     public void testGetFolderChain1() {
 //	Given
 	Folder folder1 = new Folder();
@@ -138,12 +145,12 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 //	When
 	int count = folderInfoRepository.countByparentFolderChain("-1");
 	folderParentChainPopulator.init();
-	List<Folder> folders = folderRepo.findAll();
+	List<FolderInfo> folders = folderInfoRepository.findAll();
 
 //	Then
 	assertThat(count).isEqualTo(6);
 
-	for (Folder folder : folders) {
+	for (FolderInfo folder : folders) {
 	    if (folder.getName().startsWith("Parent")) {
 		assertThat(folder.getParentFolderChain()).isEqualTo("0");
 	    } else if (folder.getName().startsWith("child1")) {
@@ -173,15 +180,43 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 //	When
 	int count = folderInfoRepository.countByparentFolderChain("-1");
 	folderParentChainPopulator.init();
-	Folder foldersExpected1 = folderRepo.findUniqueByID(folder1.getId());
-	Folder foldersExpected2 = folderRepo.findUniqueByID(folder2.getId());
-	Folder foldersExpected3 = folderRepo.findUniqueByID(folder3.getId());
+	FolderInfo foldersExpected1 = folderInfoRepository.findOne(folder1.getId());
+	FolderInfo foldersExpected2 = folderInfoRepository.findOne(folder2.getId());
+	FolderInfo foldersExpected3 = folderInfoRepository.findOne(folder3.getId());
 
 //	Then
 	assertThat(count).isEqualTo(3);
 	assertThat(foldersExpected1.getParentFolderChain()).isEqualTo("0");
 	assertThat(foldersExpected2.getParentFolderChain()).isEqualTo("0_" + folder1.getId());
 	assertThat(foldersExpected3.getParentFolderChain()).isEqualTo("0_" + folder1.getId() + "_" + folder2.getId());
+
+    }
+
+    @Test
+    public void testInQuery() {
+//	Given
+	Folder folder1 = new Folder();
+	folder1.setName("folder1");
+	folder1.setParentFolderChain("0_1");
+
+	Folder folder2 = new Folder();
+	folder2.setName("folder2");
+	folder2.setParentFolderChain("0_1_2");
+
+	Folder folder3 = new Folder();
+	folder2.setName("folder3");
+	folder3.setParentFolderChain("0_12_5");
+
+	folder1 = folderRepo.saveAndFlush(folder1);
+	folder2 = folderRepo.saveAndFlush(folder2);
+	folder3 = folderRepo.saveAndFlush(folder3);
+//	When
+
+	List<Folder> folders = folderRepo.findByIdIn(Arrays.asList(folder1.getId(), folder2.getId()));
+
+//	Then
+	assertThat(folders.size()).isEqualTo(2);
+	assertThat(folders).extracting("id").doesNotContain(folder3.getId());
 
     }
 

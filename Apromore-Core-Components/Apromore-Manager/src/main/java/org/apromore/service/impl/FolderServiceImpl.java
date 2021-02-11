@@ -161,10 +161,7 @@ public class FolderServiceImpl implements FolderService {
     public void updateFolderChainForSubFolders(Integer oldfolderId, String newFolderChainPrefix) {
 	Folder oldFolder = folderRepository.findUniqueByID(oldfolderId);
 	String oldChain = oldFolder.getParentFolderChain() + "_" + oldfolderId;
-	String prefix = oldChain + "_";
-
-	prefix = getEscapedString(prefix) + "%";
-	List<Folder> folders = folderRepository.findByParentFolderIdOrParentFolderChainLike(oldfolderId, prefix);
+	List<Folder> folders = getSubFolders(oldfolderId, false);
 
 	for (Folder folder : folders) {
 	    String folderChain = folder.getParentFolderChain();
@@ -177,6 +174,37 @@ public class FolderServiceImpl implements FolderService {
 
     private String getEscapedString(String prefix) {
 	return prefix.replaceAll("\\_", "\\\\_");
+    }
+
+
+    @Override
+    public List<Folder> getSubFolders(Integer id, boolean includeCurrentFolder) {
+	Folder oldFolder = folderRepository.findUniqueByID(id);
+	String chain = oldFolder.getParentFolderChain() + "_" + id;
+	String prefix = chain + "_";
+	prefix = getEscapedString(prefix) + "%";
+	List<Folder> folders = new ArrayList(folderRepository.findByParentFolderIdOrParentFolderChainLike(id, prefix));
+	if (includeCurrentFolder) {
+	    folders.add(oldFolder);
+	}
+	return folders;
+    }
+
+    @Override
+    public List<Folder> getParentFolders(Integer id) {
+	Folder folder = folderRepository.findUniqueByID(id);
+	String[] parentChain = folder.getParentFolderChain().split("\\_");
+	List<Integer> parentChainIn = getIntListFromStringArray(parentChain);
+	folderRepository.findByIdIn(parentChainIn);
+	return folderRepository.findByIdIn(parentChainIn);
+    }
+
+    private List<Integer> getIntListFromStringArray(String[] parentChain) {
+	List<Integer> parentChainList = new ArrayList<Integer>();
+	for (String parentId : parentChain) {
+	    parentChainList.add(Integer.parseInt(parentId));
+	}
+	return parentChainList;
     }
 
 }

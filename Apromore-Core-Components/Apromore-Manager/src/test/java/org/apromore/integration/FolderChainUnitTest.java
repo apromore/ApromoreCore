@@ -21,6 +21,9 @@
  */
 package org.apromore.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
 import java.util.List;
 
 import org.apromore.builder.FolderBuilder;
@@ -30,7 +33,9 @@ import org.apromore.service.FolderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class FolderChainUnitTest extends BaseTest {
 
     @Autowired
@@ -49,7 +54,8 @@ public class FolderChainUnitTest extends BaseTest {
     @Test
     public void testUpdateFolderChain() {
 //	Given
-	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();	
+	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
+	folder1.setParentFolderChain("0");
 
 	folder1 = folderRepository.saveAndFlush(folder1);
 
@@ -66,13 +72,81 @@ public class FolderChainUnitTest extends BaseTest {
 	newFolder = folderRepository.saveAndFlush(newFolder);
 
 //	When
+	String chain1 = newFolder.getParentFolderChain() + "_" + newFolder.getId() + "_" + folder1.getId();
+	String chain2 = chain1 + "_" + folder2.getId();
 	folderService.updateFolderChainForSubFolders(folder1.getId(),
-		newFolder.getParentFolderChain() + "_" + newFolder.getId() + "_" + folder1.getId());
+		chain1);
 	
-	List<Folder> folders = folderRepository.findAll();
+	List<Folder> folders = folderRepository.findByIdIn(Arrays.asList(folder2.getId(), folder3.getId()));
 
 //	Then
-	System.out.println("f");
+	assertThat(folders).extracting("parentFolderChain").containsAll(
+		Arrays.asList(chain1, chain2));
+
+    }
+
+    @Test
+    public void testGetParentFolders() {
+
+//	Given
+	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
+	folder1.setParentFolderChain("0");
+
+	folder1 = folderRepository.saveAndFlush(folder1);
+
+	Folder folder2 = folderBuilder.withFolder("child1", "child1").withParent(folder1).build();
+	folder2 = folderRepository.saveAndFlush(folder2);
+
+	Folder folder3 = folderBuilder.withFolder("child2", "child2").withParent(folder2).build();
+	folder3 = folderRepository.saveAndFlush(folder3);
+
+//	When
+	List<Folder> folders = folderService.getParentFolders(folder3.getId());
+	assertThat(folders).containsExactly(folder1, folder2);
+
+    }
+
+    @Test
+    public void testGetSubFolder() {
+
+//	Given
+	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
+	folder1.setParentFolderChain("0");
+
+	folder1 = folderRepository.saveAndFlush(folder1);
+
+	Folder folder2 = folderBuilder.withFolder("child1", "child1").withParent(folder1).build();
+	folder2 = folderRepository.saveAndFlush(folder2);
+
+	Folder folder3 = folderBuilder.withFolder("child2", "child2").withParent(folder2).build();
+	folder3 = folderRepository.saveAndFlush(folder3);
+
+//	When
+	List<Folder> folders = folderService.getSubFolders(folder2.getId(), false);
+	assertThat(folders).containsExactly(folder3);
+	assertThat(folders).doesNotContain(folder1, folder2);
+
+    }
+
+    @Test
+    public void testGetSubFolder1() {
+
+//	Given
+	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
+	folder1.setParentFolderChain("0");
+
+	folder1 = folderRepository.saveAndFlush(folder1);
+
+	Folder folder2 = folderBuilder.withFolder("child1", "child1").withParent(folder1).build();
+	folder2 = folderRepository.saveAndFlush(folder2);
+
+	Folder folder3 = folderBuilder.withFolder("child2", "child2").withParent(folder2).build();
+	folder3 = folderRepository.saveAndFlush(folder3);
+
+//	When
+	List<Folder> folders = folderService.getSubFolders(folder2.getId(), true);
+	assertThat(folders).containsAll(Arrays.asList(folder2, folder3));
+	assertThat(folders).doesNotContain(folder1);
 
     }
 

@@ -120,20 +120,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      * @param folderRepository    Folder Repository.
      */
     @Inject
-    public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository,
-	    final UserRepository userRepository,
-	    final ProcessRepository processRepository,
-	    final ProcessModelVersionRepository pmvRepository,
-	    final LogRepository logRepository,
-	    final FolderRepository folderRepository,
-	    final GroupRepository groupRepository,
-	    final GroupFolderRepository groupFolderRepository,
-	    final GroupProcessRepository groupProcessRepository,
-	    final GroupLogRepository groupLogRepository,
-	    final EventLogFileService eventLogFileService,
-	    final FolderService folderService,
-	    final StorageManagementFactory storageFacotry,
-	    final StorageRepository storageRepository) {
+    public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository, final UserRepository userRepository,
+	    final ProcessRepository processRepository, final ProcessModelVersionRepository pmvRepository,
+	    final LogRepository logRepository, final FolderRepository folderRepository,
+	    final GroupRepository groupRepository, final GroupFolderRepository groupFolderRepository,
+	    final GroupProcessRepository groupProcessRepository, final GroupLogRepository groupLogRepository,
+	    final EventLogFileService eventLogFileService, final FolderService folderService,
+	    final StorageManagementFactory storageFacotry, final StorageRepository storageRepository) {
 
 	workspaceRepo = workspaceRepository;
 	userRepo = userRepository;
@@ -247,9 +240,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady, User user) throws NotAuthorizedException {
+    public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady, User user)
+	    throws NotAuthorizedException {
 	if (!canUserWriteFolder(user, folderId)) {
-	    throw new NotAuthorizedException("User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
+	    throw new NotAuthorizedException(
+		    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
 	}
 	Folder folder = folderRepo.findOne(folderId);
 	if (folderName != null && !folderName.isEmpty())
@@ -282,7 +277,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional(readOnly = false)
     public void deleteFolder(Integer folderId, User user) throws NotAuthorizedException {
 	if (!canUserWriteFolder(user, folderId)) {
-	    throw new NotAuthorizedException("User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
+	    throw new NotAuthorizedException(
+		    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
 	}
 	Folder folder = folderRepo.findOne(folderId);
 	if (folder != null) {
@@ -332,19 +328,30 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-	Folder folder = folderRepo.findOne(folderId);
+    public String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+	    boolean hasOwnership) {
+
+	List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
+	List<Integer> folderIds = new ArrayList<Integer>();
 
-	createGroupFolder(group, folder, hasRead, hasWrite, hasOwnership);
-
-	Folder parentFolder = folder.getParentFolder();
-	while (parentFolder != null && parentFolder.getId() > 0) {
-	    parentFolder = folderRepo.findOne(parentFolder.getId());
-	    createGroupFolder(group, parentFolder, true, false, false);
-	    parentFolder = parentFolder.getParentFolder();
+	for (Folder folder : subFoldersWithCurrentFolders) {
+	    createGroupFolder(group, folder, hasRead, hasWrite, hasOwnership);
+	    folderIds.add(folder.getId());
 	}
-	saveSubFolderPermissions(folder, group, hasRead, hasWrite, hasOwnership);
+
+	List<Folder> parentFolders = folderService.getParentFolders(folderId);
+	for (Folder folder : parentFolders) {
+	    createGroupFolder(group, folder, true, false, false);
+	}
+
+	for (Process process : processRepo.findByFolderIdIn(folderIds)) {
+	    createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
+	}
+
+	for (Log log : logRepo.findByFolderIdIn(folderIds)) {
+	    createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+	}
 
 	return "";
     }
@@ -352,11 +359,26 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public String removeFolderPermissions(Integer folderId, String groupRowGuid) {
-	Folder folder = folderRepo.findOne(folderId);
+
+//	
+	List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	removeGroupFolder(group, folder);
-	removeSubFolderPermissions(folder, group);
+	List<Integer> folderIds = new ArrayList<Integer>();
+
+	for (Folder folder : subFoldersWithCurrentFolders) {
+	    folderIds.add(folder.getId());
+	    removeGroupFolder(group, folder);
+	}
+
+	for (Process process : processRepo.findByFolderIdIn(folderIds)) {
+	    removeGroupProcess(group, process);
+	}
+
+	for (Log log : logRepo.findByFolderIdIn(folderIds)) {
+	    removeGroupLog(group, log);
+	}
 	return "";
+
     }
 
     @Override
@@ -370,7 +392,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public String removeLogPermissions(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+    public String removeLogPermissions(Integer logId, String groupRowGuid, String username)
+	    throws UserNotFoundException {
 	Log log = logRepo.findOne(logId);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
 	removeGroupLog(group, log);
@@ -383,54 +406,55 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+    public String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+	    boolean hasOwnership) {
 	Process process = processRepo.findOne(processId);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
-
 	createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
 
 	Folder parentFolder = process.getFolder();
-	while (parentFolder != null && parentFolder.getId() > 0) {
-	    parentFolder = folderRepo.findOne(parentFolder.getId());
-	    createGroupFolder(group, parentFolder, true, false, false);
-	    parentFolder = parentFolder.getParentFolder();
-	}
+	setReadOnlyParentFolders(group, parentFolder);
 
 	return "";
     }
 
     @Override
     @Transactional(readOnly = false)
-    public String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+    public String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+	    boolean hasOwnership) {
 	Log log = logRepo.findOne(logId);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
 
 	createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
 
 	Folder parentFolder = log.getFolder();
-	while (parentFolder != null && parentFolder.getId() > 0) {
-	    parentFolder = folderRepo.findOne(parentFolder.getId());
-	    createGroupFolder(group, parentFolder, true, false, false);
-	    parentFolder = parentFolder.getParentFolder();
-	}
+	setReadOnlyParentFolders(group, parentFolder);
 
 	return "";
     }
 
+    private void setReadOnlyParentFolders(Group group, Folder parentFolder) {
+	if (parentFolder != null) {
+	    List<Folder> parentFolders = folderService.getParentFolders(parentFolder.getId());
+	    parentFolders.add(parentFolder);
+
+	    for (Folder folder : parentFolders) {
+		createGroupFolder(group, folder, true, false, false);
+	    }
+	}
+    }
+
     @Override
     @Transactional
-    public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
+    public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType,
+	    boolean shareUserMetadata) {
 	Log log = logRepo.findOne(logId);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
 
 	createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
 
 	Folder parentFolder = log.getFolder();
-	while (parentFolder != null && parentFolder.getId() > 0) {
-	    parentFolder = folderRepo.findOne(parentFolder.getId());
-	    createGroupFolder(group, parentFolder, true, false, false);
-	    parentFolder = parentFolder.getParentFolder();
-	}
+	setReadOnlyParentFolders(group, parentFolder);
 
 	if (shareUserMetadata) {
 	    // Sync permission with user metadata that linked to specified log
@@ -534,7 +558,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
 	if (currentLog.getStorage() == null) {
 //	     change spelling of factory
-	    StorageClient storageClientOldFile = storageFactory.getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
+	    StorageClient storageClientOldFile = storageFactory
+		    .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
 
 	    OutputStream outputStream = storageClient.getOutputStream("log", currentFileFullName);
 	    InputStream inputStream = storageClientOldFile.getInputStream(null, currentFileFullName);
@@ -569,7 +594,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId, String userName, boolean isPublic) throws Exception {
+    public Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId,
+	    String userName, boolean isPublic) throws Exception {
 	Folder newFolder = folderRepo.findUniqueByID(newFolderId);
 	User newUser = userRepo.findByUsername(userName);
 
@@ -581,8 +607,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
 	List<ProcessModelVersion> newPMVList = this.createNewPMVs(process.getId(), pmvVersions, branch, newBranch);
 	if (newPMVList.isEmpty()) {
-	    throw new Exception("No process model versions were found for processId=" + process.getId() +
-		    "and versions=" + pmvVersions.toString());
+	    throw new Exception("No process model versions were found for processId=" + process.getId()
+		    + "and versions=" + pmvVersions.toString());
 	}
 
 	newBranch.setProcess(newProcess);
@@ -618,7 +644,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic) throws Exception {
+    public Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic)
+	    throws Exception {
 	Process process = processRepo.findUniqueByID(processId);
 	ProcessBranch branch = process.getProcessBranches().get(0);
 	List<String> pmvVersions = new ArrayList<>();
@@ -677,7 +704,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /* Save the Sub Folder Permissions. */
-    private void saveSubFolderPermissions(Folder folder, Group group, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+    private void saveSubFolderPermissions(Folder folder, Group group, boolean hasRead, boolean hasWrite,
+	    boolean hasOwnership) {
 	for (Folder subFolder : folder.getSubFolders()) {
 	    createGroupFolder(group, subFolder, hasRead, hasWrite, hasOwnership);
 	    saveSubFolderPermissions(subFolder, group, hasRead, hasWrite, hasOwnership);
@@ -698,7 +726,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	}
     }
 
-    private void createGroupFolder(Group group, Folder folder, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+    private void createGroupFolder(Group group, Folder folder, boolean hasRead, boolean hasWrite,
+	    boolean hasOwnership) {
 	GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
 	if (groupFolder == null) {
 	    groupFolder = new GroupFolder();
@@ -712,7 +741,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	groupFolderRepo.save(groupFolder);
     }
 
-    private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+    private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite,
+	    boolean hasOwnership) {
 	GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
 	AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
 	if (groupProcess == null) {
@@ -760,10 +790,4 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	}
     }
 
-
-
-
-    private String getEscapedString(String prefix) {
-	return prefix.replaceAll("\\_", "\\\\_");
-    }
 }
