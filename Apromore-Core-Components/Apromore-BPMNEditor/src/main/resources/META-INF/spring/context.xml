@@ -43,18 +43,6 @@
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
 
-    <!-- Exposes the components as OSGi services -->
-    
-    <!-- 
-    <beans:bean id="plugin" class="org.apromore.plugin.portal.bpmneditor.BPMNEditorPortalPlugin">
-        <beans:property name="groupLabel" value="Redesign" />
-        <beans:property name="label" value="Edit BPMN Model" />
-    </beans:bean>
-    -->
-
-    <!-- <context:component-scan base-package="org.apromore.plugin.portal.bpmneditor" /> -->
-    <!-- <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" /> -->
-
     <!-- Exposes the component's resources as web content -->
     <service interface="org.apromore.plugin.portal.WebContentService">
         <beans:bean class="org.apromore.plugin.portal.bpmneditor.BPMNEditorWebContentService"/>

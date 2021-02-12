@@ -21,7 +21,7 @@
   -->
 
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
-<?page id="ap-pd2" title="Apromore - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
+<?page id="ap-pd2" title="${labels.brand.shortName} - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
 <?component name="viewSettings" macroURI="components/viewSettings.zul" ?>
 <?component name="graphSettings" macroURI="components/graphSettings.zul" ?>
 <?component name="logStats" macroURI="components/logStats.zul" ?>

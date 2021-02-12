@@ -42,14 +42,14 @@
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
             <![CDATA[
-                if (!ORYX) {
-                    var ORYX = {};
+                if (!Apromore) {
+                    var Apromore = {};
                 }
-                if (!ORYX.CONFIG) {
-                    ORYX.CONFIG = {};
+                if (!Apromore.CONFIG) {
+                    Apromore.CONFIG = {};
                 }
-                //ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
-				ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+                //Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
             ]]>
         </n:script>
 		
@@ -70,11 +70,11 @@
         </z:zk>
 
 
-        <n:span id="oryxstartupcode">
+        <n:span id="Apromorestartupcode">
             <n:script>
                 <![CDATA[
 					//$.noConflict();
-                    var editorWrapper = new ORYX.Editor ({
+                    var editorWrapper = new Apromore.Editor ({
 							xml: '${arg.bpmnXML}',
                             model : {
                                 id : 'editorcanvas',
@@ -86,19 +86,19 @@
                             fullscreen : true
                         });
 
-                     ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                     Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
                     	 console.log(xml);
                     	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
                      };
                      
-                     ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                     Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
                     	 console.log(xml);
 						 console.log(svg);
                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
                      };
 
 					//window.setTimeout(function() {
-					  //console.log($$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
+					  //console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
 					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
 					//}, 1000);
                 ]]>

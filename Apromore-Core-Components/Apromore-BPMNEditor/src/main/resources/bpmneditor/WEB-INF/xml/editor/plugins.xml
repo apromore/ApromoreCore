@@ -27,13 +27,13 @@
 
 	<plugins>
 		<!-- following plugins require Ext -->		
-		<plugin source="toolbar.js" name="ORYX.Plugins.Toolbar" />
-		<plugin source="undo.js" name="ORYX.Plugins.Undo" />
-		<plugin source="apromoreSave.js" name="ORYX.Plugins.ApromoreSave"/>
-        <plugin source="export.js" name="ORYX.Plugins.Export"/>
-		<plugin source="pdf.js" name="ORYX.Plugins.File"/>
-		<plugin source="view.js" name="ORYX.Plugins.View"/>
-		<plugin source="simulationPanel.js" name="ORYX.Plugins.SimulationPanel"/>
+		<plugin source="toolbar.js" name="Apromore.Plugins.Toolbar" />
+		<plugin source="undo.js" name="Apromore.Plugins.Undo" />
+		<plugin source="apromoreSave.js" name="Apromore.Plugins.ApromoreSave"/>
+        <plugin source="export.js" name="Apromore.Plugins.Export"/>
+		<plugin source="pdf.js" name="Apromore.Plugins.File"/>
+		<plugin source="view.js" name="Apromore.Plugins.View"/>
+		<plugin source="simulationPanel.js" name="Apromore.Plugins.SimulationPanel"/>
 
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>

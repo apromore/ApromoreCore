@@ -39,13 +39,13 @@
     <n:div id="oryxwrapper" style="display: none">
         <n:script>
             <![CDATA[
-                if (!ORYX) {
-                    var ORYX = {};
+                if (!Apromore) {
+                    var Apromore = {};
                 }
-                if (!ORYX.CONFIG) {
-                    ORYX.CONFIG = {};
+                if (!Apromore.CONFIG) {
+                    Apromore.CONFIG = {};
                 }
-                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+                Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
             ]]>
         </n:script>
 
@@ -73,7 +73,7 @@
 
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
-                        var oryxEditor = new ORYX.Editor ({
+                        var oryxEditor = new Apromore.Editor ({
                             model : {
                                 id : 'oryx-canvas123',
                                 stencilset : {
@@ -86,7 +86,7 @@
                         Ext.select('svg').setVisible(false);
 
 
-                        ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
+                        Apromore.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
                                 parameters: {'data': json},
                                 method: 'POST',
@@ -106,7 +106,7 @@
                             });
                         };
 
-                        ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
+                        Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
                                 parameters: {'data': json},
                                 method: 'POST',

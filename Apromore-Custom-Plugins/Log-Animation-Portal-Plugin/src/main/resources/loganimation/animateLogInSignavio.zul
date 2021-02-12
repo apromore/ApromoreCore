@@ -53,14 +53,14 @@
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
             <![CDATA[
-                if (!ORYX) {
-                    var ORYX = {};
+                if (!Apromore) {
+                    var Apromore = {};
                 }
-                if (!ORYX.CONFIG) {
-                    ORYX.CONFIG = {};
+                if (!Apromore.CONFIG) {
+                    Apromore.CONFIG = {};
                 }
-                //ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
-				ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+                //Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
             ]]>
         </n:script>
 
@@ -86,11 +86,11 @@
       <script src="/loganimation/js/ap/animation.js" type="text/javascript"/>
 
 
-        <n:span id="oryxstartupcode">
+        <n:span id="Apromorestartupcode">
 	        <n:script>
 	            <![CDATA[
 					//$.noConflict();
-                    var editorWrapper = new ORYX.Editor ({
+                    var editorWrapper = new Apromore.Editor ({
 							xml: '${arg.bpmnXML}',
                             model : {
                                 id : 'editorcanvas',
@@ -102,12 +102,12 @@
                             fullscreen : false
                         });
 
-	                ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+	                Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
 	                	 //console.log(xml);
 	                	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
 	                 };
 
-	                ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+	                Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
 	                	    //console.log(xml);
                        console.log('test');
 	                     zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));

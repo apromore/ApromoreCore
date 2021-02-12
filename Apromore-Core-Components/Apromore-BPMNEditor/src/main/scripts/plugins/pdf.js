@@ -20,10 +20,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if (!ORYX.Plugins)
-    ORYX.Plugins = new Object();
+if (!Apromore.Plugins)
+    Apromore.Plugins = new Object();
 
-ORYX.Plugins.File = Clazz.extend({
+Apromore.Plugins.File = Clazz.extend({
 
     facade: undefined,
 
@@ -31,11 +31,11 @@ ORYX.Plugins.File = Clazz.extend({
         this.facade = facade;
 
         this.facade.offer({
-            'name': ORYX.I18N.File.pdf,
+            'name': window.Apromore.I18N.File.pdf,
             'functionality': this.exportPDF.bind(this),
-            'group': ORYX.I18N.File.group,
-            'icon': ORYX.PATH + "images/page_white_acrobat.png",
-            'description': ORYX.I18N.File.pdfDesc,
+            'group': window.Apromore.I18N.File.group,
+            'icon': Apromore.PATH + "images/page_white_acrobat.png",
+            'description': window.Apromore.I18N.File.pdfDesc,
             'index': 5,
             'minShape': 0,
             'maxShape': 0
@@ -49,11 +49,11 @@ ORYX.Plugins.File = Clazz.extend({
         var resource = location.href;
 
         // Get the serialized svg image source
-        var svgClone = this.facade.getCanvas().getSVG();
+        var svgClone = this.facade.getEditor().getSVG();
         //var svgDOM = DataManager.serialize(svgClone);
 
         // Send the svg to the server.
-        new Ajax.Request(ORYX.CONFIG.PDF_EXPORT_URL, {
+        new Ajax.Request(Apromore.CONFIG.PDF_EXPORT_URL, {
             method: 'POST',
             parameters: {
                 resource: resource,
@@ -70,7 +70,7 @@ ORYX.Plugins.File = Clazz.extend({
             }).bind(this),
             onFailure: (function(){
                 myMask.hide();
-                Ext.Msg.alert(ORYX.I18N.Oryx.title, ORYX.I18N.File.genPDFFailed);
+                Ext.Msg.alert(window.Apromore.I18N.Apromore.title, window.Apromore.I18N.File.genPDFFailed);
             }).bind(this)
         });
     }

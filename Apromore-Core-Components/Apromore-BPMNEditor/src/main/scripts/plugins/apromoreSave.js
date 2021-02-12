@@ -20,10 +20,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if(!ORYX){ var ORYX = {} }
-if(!ORYX.Plugins){ ORYX.Plugins = {} }
+if(!Apromore){ var Apromore = {} }
+if(!Apromore.Plugins){ Apromore.Plugins = {} }
 
-ORYX.Plugins.ApromoreSave = Clazz.extend({
+Apromore.Plugins.ApromoreSave = Clazz.extend({
 
     facade:undefined,
 
@@ -33,58 +33,33 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         this.facade = facade;
 
         this.facade.offer({
-            'name':ORYX.I18N.Save.save,
+            'name':window.Apromore.I18N.Save.save,
             'functionality':this.save.bind(this, false),
-            'group':ORYX.I18N.Save.group,
-            'icon':ORYX.PATH + "images/disk.png",
-            'description':ORYX.I18N.Save.saveDesc,
+            'group':window.Apromore.I18N.Save.group,
+            'icon':Apromore.PATH + "images/disk.png",
+            'description':window.Apromore.I18N.Save.saveDesc,
             'index':1,
             'minShape':0,
             'maxShape':0,
             keyCodes:[
                 {
-                    metaKeys:[ORYX.CONFIG.META_KEY_META_CTRL],
+                    metaKeys:[Apromore.CONFIG.META_KEY_META_CTRL],
                     keyCode:83, // s-Keycode
-                    keyAction:ORYX.CONFIG.KEY_ACTION_UP
+                    keyAction:Apromore.CONFIG.KEY_ACTION_UP
                 }
             ]
         });
 
-        // document.addEventListener("keydown", function (e) {
-        //     if (e.ctrlKey && e.keyCode === 83) {
-        //         Event.stop(e);
-        //     }
-        // }, false);
-
-
         this.facade.offer({
-            'name':ORYX.I18N.Save.saveAs,
+            'name':window.Apromore.I18N.Save.saveAs,
             'functionality':this.save.bind(this, true),
-            'group':ORYX.I18N.Save.group,
-            'icon':ORYX.PATH + "images/disk_multi.png",
-            'description':ORYX.I18N.Save.saveAsDesc,
+            'group':window.Apromore.I18N.Save.group,
+            'icon':Apromore.PATH + "images/disk_multi.png",
+            'description':window.Apromore.I18N.Save.saveAsDesc,
             'index':2,
             'minShape':0,
             'maxShape':0
         });
-
-        // window.onbeforeunload = this.onUnLoad.bind(this);
-        // this.changeDifference = 0;
-        //
-        // // Register on event for executing commands --> store all commands in a stack
-        // this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function () {
-        //     this.changeDifference++;
-        //     this.updateTitle();
-        // }.bind(this));
-        // this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function () {
-        //     this.changeDifference++;
-        //     this.updateTitle();
-        // }.bind(this));
-        // this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function () {
-        //     this.changeDifference--;
-        //     this.updateTitle();
-        // }.bind(this));
-
     },
 
     updateTitle:function () {
@@ -109,14 +84,14 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         var svg = this.facade.getSVG();
 
         if (forceNew) {
-            if (ORYX.Plugins.ApromoreSave.apromoreSaveAs) {
-                ORYX.Plugins.ApromoreSave.apromoreSaveAs(xml, svg);
+            if (Apromore.Plugins.ApromoreSave.apromoreSaveAs) {
+                Apromore.Plugins.ApromoreSave.apromoreSaveAs(xml, svg);
             } else {
                 alert("Apromore Save As method is missing!");
             }
         } else {
-            if (ORYX.Plugins.ApromoreSave.apromoreSave) {
-                ORYX.Plugins.ApromoreSave.apromoreSave(xml, svg);
+            if (Apromore.Plugins.ApromoreSave.apromoreSave) {
+                Apromore.Plugins.ApromoreSave.apromoreSave(xml, svg);
             } else {
                 alert("Apromore Save method is missing!");
             }
