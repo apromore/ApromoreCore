@@ -33,10 +33,10 @@
  *
  **/
 
-if (!ORYX.Plugins)
-    ORYX.Plugins = new Object();
+if (!Apromore.Plugins)
+    Apromore.Plugins = new Object();
 
-ORYX.Plugins.Undo = Clazz.extend({
+Apromore.Plugins.Undo = Clazz.extend({
 
 	// Defines the facade
     facade		: undefined,
@@ -52,40 +52,40 @@ ORYX.Plugins.Undo = Clazz.extend({
 
 		// Offers the functionality of undo
         this.facade.offer({
-			name			: ORYX.I18N.Undo.undo,
-			description		: ORYX.I18N.Undo.undoDesc,
-			icon			: ORYX.PATH + "images/arrow_undo.png",
+			name			: window.Apromore.I18N.Undo.undo,
+			description		: window.Apromore.I18N.Undo.undoDesc,
+			icon			: Apromore.PATH + "images/arrow_undo.png",
 			keyCodes: [{
-					metaKeys: [ORYX.CONFIG.META_KEY_META_CTRL],
+					metaKeys: [Apromore.CONFIG.META_KEY_META_CTRL],
 					keyCode: 90,
-					keyAction: ORYX.CONFIG.KEY_ACTION_DOWN
+					keyAction: Apromore.CONFIG.KEY_ACTION_DOWN
 				}
 		 	],
 			functionality	: this.doUndo.bind(this),
-			group			: ORYX.I18N.Undo.group,
+			group			: window.Apromore.I18N.Undo.group,
 			isEnabled		: function(){ return true }.bind(this),
 			index			: 0
 		});
 
 		// Offers the functionality of redo
         this.facade.offer({
-			name			: ORYX.I18N.Undo.redo,
-			description		: ORYX.I18N.Undo.redoDesc,
-			icon			: ORYX.PATH + "images/arrow_redo.png",
+			name			: window.Apromore.I18N.Undo.redo,
+			description		: window.Apromore.I18N.Undo.redoDesc,
+			icon			: Apromore.PATH + "images/arrow_redo.png",
 			keyCodes: [{
-					metaKeys: [ORYX.CONFIG.META_KEY_META_CTRL],
+					metaKeys: [Apromore.CONFIG.META_KEY_META_CTRL],
 					keyCode: 89,
-					keyAction: ORYX.CONFIG.KEY_ACTION_DOWN
+					keyAction: Apromore.CONFIG.KEY_ACTION_DOWN
 				}
 		 	],
 			functionality	: this.doRedo.bind(this),
-			group			: ORYX.I18N.Undo.group,
+			group			: window.Apromore.I18N.Undo.group,
 			isEnabled		: function(){ return true}.bind(this),
 			index			: 1
 		});
 
 		// Register on event for executing commands --> store all commands in a stack
-		//this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, this.handleExecuteCommands.bind(this) );
+		//this.facade.registerOnEvent(Apromore.CONFIG.EVENT_EXECUTE_COMMANDS, this.handleExecuteCommands.bind(this) );
 
 	},
 
@@ -103,7 +103,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 	 *
 	 */
 	doUndo: function(){
-        this.facade.getCanvas().undo();
+        this.facade.getEditor().undo();
 	},
 
 	/**
@@ -111,7 +111,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 	 *
 	 */
 	doRedo: function(){
-        this.facade.getCanvas().redo();
+        this.facade.getEditor().redo();
 	}
 
 });

@@ -33,11 +33,11 @@ $j.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 $j.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $j.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 
-ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), "onSaveAs", xml));
 };
 
-ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), "onSave", xml));
 };
 
@@ -80,16 +80,11 @@ Ap.la.session = (function() {
   }
 
   function initEditor(xml, url, namespace) {
-    return new ORYX.Editor({
-      xml,
-      model: {
-        id: "editorcanvas",
-        stencilset: {
-          url,
-          namespace
-        }
-      },
-      fullscreen: true // false
+    return new Apromore.EditorApp ({
+      xml: bpmnXML,
+      id : 'editorcanvas',
+      fullscreen : true,
+      useSimulationPanel: true
     });
   }
 
@@ -114,7 +109,6 @@ Ap.la.session = (function() {
     controller.reset(animationData);
     // Enable play controls back
     setPlayControls(false);
-    document.title = "Apromore - Log Animator";
   }
 
   function initSpeedControl() {

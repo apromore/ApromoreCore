@@ -20,10 +20,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if (!ORYX.Plugins)
-    ORYX.Plugins = new Object();
+if (!Apromore.Plugins)
+    Apromore.Plugins = new Object();
 
-ORYX.Plugins.Export = Clazz.extend({
+Apromore.Plugins.Export = Clazz.extend({
 
     facade: undefined,
 
@@ -31,22 +31,22 @@ ORYX.Plugins.Export = Clazz.extend({
         this.facade = facade;
 
         this.facade.offer({
-            'name': ORYX.I18N.File.svg,
+            'name': window.Apromore.I18N.File.svg,
             'functionality': this.exportSVG.bind(this),
-            'group': ORYX.I18N.File.group,
-            'icon': ORYX.PATH + "images/exportsvg.png",
-            'description': ORYX.I18N.File.svgDesc,
+            'group': window.Apromore.I18N.File.group,
+            'icon': Apromore.PATH + "images/exportsvg.png",
+            'description': window.Apromore.I18N.File.svgDesc,
             'index': 3,
             'minShape': 0,
             'maxShape': 0
         });
 
         this.facade.offer({
-            'name': ORYX.I18N.File.bpmn,
+            'name': window.Apromore.I18N.File.bpmn,
             'functionality': this.exportBPMN.bind(this),
-            'group': ORYX.I18N.File.group,
-            'icon': ORYX.PATH + "images/exportbpmn.png",
-            'description': ORYX.I18N.File.bpmnDesc,
+            'group': window.Apromore.I18N.File.group,
+            'icon': Apromore.PATH + "images/exportbpmn.png",
+            'description': window.Apromore.I18N.File.bpmnDesc,
             'index': 4,
             'minShape': 0,
             'maxShape': 0

@@ -66,7 +66,7 @@ public interface GroupLogRepository extends JpaRepository<GroupLog, Integer> {
      */
     @Query("SELECT gp FROM GroupLog gp JOIN gp.log p JOIN gp.group g1, " +
            "               User u JOIN u.groups g2 " +
-           "WHERE (p.folder IS NULL) AND (u.rowGuid = ?1) AND (g1 = g2)")
+           "WHERE (u.rowGuid = ?1) AND (g1 = g2)")
     List<GroupLog> findLogsByUser(String userRowGuid);
 
     /**

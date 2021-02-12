@@ -21,15 +21,15 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-if (!ORYX) {
-  var ORYX = {};
+if (!Apromore) {
+  var Apromore = {};
 }
 
 /**
- * @namespace Oryx name space for different utility methods
- * @name ORYX.Utils
+ * @namespace Apromore name space for different utility methods
+ * @name Apromore.Utils
 */
-ORYX.Utils = {
+Apromore.Utils = {
     // TODO Implement namespace awareness on attribute level.
     /**
      * graft() function
@@ -113,7 +113,7 @@ ORYX.Utils = {
 
         res[8] = res[13] = res[18] = res[23] = '-';
 
-        return "oryx_" + res.join('');
+        return "Apromore_" + res.join('');
     }
 };
 

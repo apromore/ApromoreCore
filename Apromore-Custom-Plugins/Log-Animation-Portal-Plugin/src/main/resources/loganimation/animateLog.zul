@@ -74,14 +74,14 @@
     <n:div id="editorwrapper" style="display: none">
         <n:script>
             <![CDATA[
-                if (!ORYX) {
-                    var ORYX = {};
+                if (!Apromore) {
+                    var Apromore = {};
                 }
-                if (!ORYX.CONFIG) {
-                    ORYX.CONFIG = {};
+                if (!Apromore.CONFIG) {
+                    Apromore.CONFIG = {};
                 }
-                //ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
-				ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+                //Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
             ]]>
         </n:script>
 
@@ -110,7 +110,7 @@
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
 
-        <n:span id="oryxstartupcode">
+        <n:span id="Apromorestartupcode">
             <n:script src="/loganimation/js/ap/startup.js" type="text/javascript"/>
             <n:script defer="true">
                 <![CDATA[
@@ -120,6 +120,7 @@
                   // Wait for SVG element ready, so jQuery can refer to it
                   window.setTimeout(function() {
                     Ap.la.session.initController();
+                    document.title = '${labels.brand.shortName} - Log Animator';
                   }, 1000);
                 })
 	            ]]>

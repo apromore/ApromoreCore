@@ -35,13 +35,13 @@
     <n:div id="oryxwrapper" style="display: none">
         <n:script>
             <![CDATA[
-                if (!ORYX) {
-                    var ORYX = {};
+                if (!Apromore) {
+                    var Apromore = {};
                 }
-                if (!ORYX.CONFIG) {
-                    ORYX.CONFIG = {};
+                if (!Apromore.CONFIG) {
+                    Apromore.CONFIG = {};
                 }
-                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../../editor";
+                Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../../editor";
             ]]>
         </n:script>
 
@@ -59,13 +59,13 @@
         <n:span id="oryxstartupcode">
             <n:script>    
                 <![CDATA[
-                    ORYX.CONFIG.PANEL_RIGHT_COLLAPSED = true;
-                    ORYX.CONFIG.PANEL_LEFT_COLLAPSED = true;
+                    Apromore.CONFIG.PANEL_RIGHT_COLLAPSED = true;
+                    Apromore.CONFIG.PANEL_LEFT_COLLAPSED = true;
                                                                 
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
                         var urlData = '${arg.url}'
-                        var oryxEditor = new ORYX.Editor({
+                        var oryxEditor = new Apromore.Editor({
                             model : {
                                 id : 'oryx-canvas123',
                                 stencilset : {

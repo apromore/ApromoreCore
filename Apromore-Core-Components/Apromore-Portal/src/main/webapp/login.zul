@@ -20,7 +20,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?page title="Apromore" contentType="text/html;charset=UTF-8"?>
+<?page title="${labels.brand.shortName}" contentType="text/html;charset=UTF-8"?>
 <?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <!--<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>-->
 <!--<?link rel="stylesheet" type="text/css" href="css/login.css" ?>-->

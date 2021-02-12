@@ -22,22 +22,22 @@
  **/
 
 /**
- * @namespace Oryx name space for plugins
- * @name ORYX.Plugins
+ * @namespace Apromore name space for plugins
+ * @name Apromore.Plugins
  */
-if (!ORYX.Plugins)
-    ORYX.Plugins = new Object();
+if (!Apromore.Plugins)
+    Apromore.Plugins = new Object();
 
 /**
  * The view plugin offers all of zooming functionality accessible over the
  * tool bar. This are zoom in, zoom out, zoom to standard, zoom fit to model.
  *
- * @class ORYX.Plugins.View
+ * @class Apromore.Plugins.View
  * @extends Clazz
  * @param {Object} facade The editor facade for plugins.
  */
-ORYX.Plugins.View = Clazz.extend({
-    /** @lends ORYX.Plugins.View.prototype */
+Apromore.Plugins.View = Clazz.extend({
+    /** @lends Apromore.Plugins.View.prototype */
     facade: undefined,
 
     construct: function (facade) {
@@ -45,44 +45,44 @@ ORYX.Plugins.View = Clazz.extend({
 
         /* Register zoom in */
         this.facade.offer({
-            'name': ORYX.I18N.View.zoomIn,
+            'name': window.Apromore.I18N.View.zoomIn,
             'functionality': this.zoomIn.bind(this),
-            'group': ORYX.I18N.View.group,
-            'icon': ORYX.PATH + "images/magnifier_zoom_in.png",
-            'description': ORYX.I18N.View.zoomInDesc,
+            'group': window.Apromore.I18N.View.group,
+            'icon': Apromore.PATH + "images/magnifier_zoom_in.png",
+            'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
             'minShape': 0,
             'maxShape': 0});
 
         /* Register zoom out */
         this.facade.offer({
-            'name': ORYX.I18N.View.zoomOut,
+            'name': window.Apromore.I18N.View.zoomOut,
             'functionality': this.zoomOut.bind(this),
-            'group': ORYX.I18N.View.group,
-            'icon': ORYX.PATH + "images/magnifier_zoom_out.png",
-            'description': ORYX.I18N.View.zoomOutDesc,
+            'group': window.Apromore.I18N.View.group,
+            'icon': Apromore.PATH + "images/magnifier_zoom_out.png",
+            'description': window.Apromore.I18N.View.zoomOutDesc,
             'index': 2,
             'minShape': 0,
             'maxShape': 0});
 
         /* Register zoom fit to model */
         this.facade.offer({
-            'name': ORYX.I18N.View.zoomFitToModel,
+            'name': window.Apromore.I18N.View.zoomFitToModel,
             'functionality': this.zoomFitToModel.bind(this),
-            'group': ORYX.I18N.View.group,
-            'icon': ORYX.PATH + "images/image.png",
-            'description': ORYX.I18N.View.zoomFitToModelDesc,
+            'group': window.Apromore.I18N.View.group,
+            'icon': Apromore.PATH + "images/image.png",
+            'description': window.Apromore.I18N.View.zoomFitToModelDesc,
             'index': 4,
             'minShape': 0,
             'maxShape': 0 });
     },
 
     zoomIn: function (factor) {
-        this.facade.getCanvas().zoomIn();
+        this.facade.getEditor().zoomIn();
     },
 
     zoomOut: function (factor) {
-        this.facade.getCanvas().zoomOut();
+        this.facade.getEditor().zoomOut();
     },
 
 
@@ -94,7 +94,7 @@ ORYX.Plugins.View = Clazz.extend({
      *
      */
     zoomFitToModel: function () {
-        this.facade.getCanvas().zoomFitToModel();
+        this.facade.getEditor().zoomFitToModel();
     }
 });
 

@@ -140,3 +140,12 @@ databaseChangeLog:
         - delete:
             tableName: native_type
             where: id IN (1, 2, 3, 4, 6)
+
+  - changeSet:
+      id:  20210209114000
+      author:  frankma
+      context: MYSQL
+      changes:
+        - delete:
+            tableName: usermetadata
+            where: STR_TO_DATE(created_time,'%d-%m-%Y %H:%i:%s') < '2021-02-10' AND type_id = 3

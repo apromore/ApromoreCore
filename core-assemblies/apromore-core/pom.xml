@@ -12,7 +12,6 @@
 
   <properties>
     <core.basedir>${project.basedir}/../..</core.basedir>
-    <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
     <version.edition>Apromore Core</version.edition>
   </properties>
 
@@ -124,6 +123,21 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <includeArtifactIds>karaf-shell-branding</includeArtifactIds>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <propertiesEncoding>UTF-8</propertiesEncoding>
@@ -171,7 +185,7 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <sourceFile>${maven.repo.local}/org/apromore/karaf-shell-branding/1.0/karaf-shell-branding-1.0.properties</sourceFile>
+              <sourceFile>${project.build.directory}/dependency/karaf-shell-branding-1.0.properties</sourceFile>
               <destinationFile>${project.build.directory}/templates/etc/branding.properties</destinationFile>
             </configuration>
           </execution>

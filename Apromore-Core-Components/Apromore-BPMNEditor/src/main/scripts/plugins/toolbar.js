@@ -22,11 +22,11 @@
  **/
 
 
-if(!ORYX.Plugins) {
-	ORYX.Plugins = new Object();
+if(!Apromore.Plugins) {
+	Apromore.Plugins = new Object();
 }
 
-ORYX.Plugins.Toolbar = Clazz.extend({
+Apromore.Plugins.Toolbar = Clazz.extend({
 
 	facade: undefined,
 	plugs:	[],
@@ -44,14 +44,13 @@ ORYX.Plugins.Toolbar = Clazz.extend({
 		Ext.QuickTips.init();
 
 		this.buttons = [];
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_BUTTON_UPDATE, this.onButtonUpdate.bind(this));
 	},
 
     /**
      * Can be used to manipulate the state of a button.
      * @example
      * this.facade.raiseEvent({
-     *   type: ORYX.CONFIG.EVENT_BUTTON_UPDATE,
+     *   type: Apromore.CONFIG.EVENT_BUTTON_UPDATE,
      *   id: this.buttonId, // have to be generated before and set in the offer method
      *   pressed: true
      * });
@@ -72,49 +71,48 @@ ORYX.Plugins.Toolbar = Clazz.extend({
 		var newPlugs =  pluginsData.sortBy((function(value) {
 			return ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
 		}).bind(this));
-		var plugs = $A(newPlugs).findAll(function(value){
-										return !this.plugs.include(value) && (!value.target || value.target === ORYX.Plugins.Toolbar)
+
+		// Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
+		var plugs = $A(newPlugs).findAll(function(plugin){
+										return !this.plugs.include(plugin) && (!plugin.target || plugin.target === Apromore.Plugins.Toolbar)
 									}.bind(this));
-		if(plugs.length<1)
-			return;
+		if(plugs.length<1) return;
 
 		this.buttons = [];
 
-		ORYX.Log.trace("Creating a toolbar.")
+		Apromore.Log.trace("Creating a toolbar.")
 
         if(!this.toolbar){
-			this.toolbar = new Ext.ux.SlicedToolbar({
-			height: 24
-		});
-				var region = this.facade.addToRegion("north", this.toolbar, "Toolbar");
+			this.toolbar = new Ext.ux.SlicedToolbar({height: 24});
+			var region = this.facade.addToRegion("north", this.toolbar, "Toolbar");
 		}
 
-
-		var currentGroupsName = this.plugs.last()?this.plugs.last().group:plugs[0].group;
+		var currentGroupsName = this.plugs.last() ? this.plugs.last().group: plugs[0].group;
 
         // Map used to store all drop down buttons of current group
         var currentGroupsDropDownButton = {};
 
+		plugs.each((function(plugin) {
+			if(!plugin.name) {return}
+			this.plugs.push(plugin);
 
-		plugs.each((function(value) {
-			if(!value.name) {return}
-			this.plugs.push(value);
             // Add seperator if new group begins
-			if(currentGroupsName != value.group) {
+			if(currentGroupsName != plugin.group) {
 			    this.toolbar.add('-');
-				currentGroupsName = value.group;
+				currentGroupsName = plugin.group;
                 currentGroupsDropDownButton = {};
 			}
 
             // If an drop down group icon is provided, a split button should be used
-            if(value.dropDownGroupIcon){
-                var splitButton = currentGroupsDropDownButton[value.dropDownGroupIcon];
+            // This is unused at this stage as all toolbar buttons are simple
+            if(plugin.dropDownGroupIcon){
+                var splitButton = currentGroupsDropDownButton[plugin.dropDownGroupIcon];
 
                 // Create a new split button if this is the first plugin using it
                 if(splitButton === undefined){
-                    splitButton = currentGroupsDropDownButton[value.dropDownGroupIcon] = new Ext.Toolbar.SplitButton({
+                    splitButton = currentGroupsDropDownButton[plugin.dropDownGroupIcon] = new Ext.Toolbar.SplitButton({
                         cls: "x-btn-icon", //show icon only
-                        icon: value.dropDownGroupIcon,
+                        icon: plugin.dropDownGroupIcon,
                         menu: new Ext.menu.Menu({
                             items: [] // items are added later on
                         }),
@@ -136,18 +134,18 @@ ORYX.Plugins.Toolbar = Clazz.extend({
                 // General config button which will be used either to create a normal button
                 // or a check button (if toggling is enabled)
                 var buttonCfg = {
-                    icon: value.icon,
-                    text: value.name,
-                    itemId: value.id,
-                    handler: value.toggle ? undefined : value.functionality,
-                    checkHandler: value.toggle ? value.functionality : undefined,
+                    icon: plugin.icon,
+                    text: plugin.name,
+                    itemId: plugin.id,
+                    handler: plugin.toggle ? undefined : plugin.functionality,
+                    checkHandler: plugin.toggle ? plugin.functionality : undefined,
                     listeners: {
                         render: function(item){
                             // After rendering, a tool tip should be added to component
-                            if (value.description) {
+                            if (plugin.description) {
                                 new Ext.ToolTip({
                                     target: item.getEl(),
-                                    title: value.description
+                                    title: plugin.description
                                 })
                             }
                         }
@@ -155,7 +153,7 @@ ORYX.Plugins.Toolbar = Clazz.extend({
                 }
 
                 // Create buttons depending on toggle
-                if(value.toggle) {
+                if(plugin.toggle) {
                     var button = new Ext.menu.CheckItem(buttonCfg);
                 } else {
                     var button = new Ext.menu.Item(buttonCfg);
@@ -163,18 +161,16 @@ ORYX.Plugins.Toolbar = Clazz.extend({
 
                 splitButton.menu.add(button);
 
-            } else if(value.addFill) {
-				this.toolbar.addFill();
 			} else { // create normal, simple button
                 var button = new Ext.Toolbar.Button({
-                    icon:           value.icon,         // icons can also be specified inline
+                    icon:           plugin.icon,         // icons can also be specified inline
                     cls:            'x-btn-icon',       // Class who shows only the icon
-                    itemId:         value.id,
-					tooltip:        value.description,  // Set the tooltip
+                    itemId:         plugin.id,
+					tooltip:        plugin.description,  // Set the tooltip
                     tooltipType:    'title',            // Tooltip will be shown as in the html-title attribute
-                    handler:        value.toggle ? null : value.functionality,  // Handler for mouse click
-                    enableToggle:   value.toggle, // Option for enabling toggling
-                    toggleHandler:  value.toggle ? value.functionality : null // Handler for toggle (Parameters: button, active)
+                    handler:        plugin.toggle ? null : plugin.functionality,  // Handler for mouse click
+                    enableToggle:   plugin.toggle, // Option for enabling toggling
+                    toggleHandler:  plugin.toggle ? plugin.functionality : null // Handler for toggle (Parameters: button, active)
                 });
 
                 this.toolbar.add(button);
@@ -182,14 +178,14 @@ ORYX.Plugins.Toolbar = Clazz.extend({
                 button.getEl().onclick = function() {this.blur()}
             }
 
-			value['buttonInstance'] = button;
-			this.buttons.push(value);
+			plugin['buttonInstance'] = button;
+			this.buttons.push(plugin);
 
 		}).bind(this));
 
 		this.enableButtons([]);
 
-        //TODO this should be done when resizing and adding elements!!!!
+        // This is unused at this stage as all toolbar buttons are simple
         this.toolbar.calcSlices();
 		window.addEventListener("resize", function(event){this.toolbar.calcSlices()}.bind(this), false);
 		window.addEventListener("onresize", function(event){this.toolbar.calcSlices()}.bind(this), false);
@@ -202,18 +198,18 @@ ORYX.Plugins.Toolbar = Clazz.extend({
 
 	enableButtons: function(elements) {
 		// Show the Buttons
-		this.buttons.each((function(value){
-			value.buttonInstance.enable();
+		this.buttons.each((function(pluginButton){
+			pluginButton.buttonInstance.enable();
 
 			// If there is less elements than minShapes
-			if(value.minShape && value.minShape > elements.length)
-				value.buttonInstance.disable();
+			if(pluginButton.minShape && pluginButton.minShape > elements.length)
+				pluginButton.buttonInstance.disable();
 			// If there is more elements than minShapes
-			if(value.maxShape && value.maxShape < elements.length)
-				value.buttonInstance.disable();
-			// If the plugin is not enabled
-			if(value.isEnabled && !value.isEnabled(value.buttonInstance))
-				value.buttonInstance.disable();
+			if(pluginButton.maxShape && pluginButton.maxShape < elements.length)
+				pluginButton.buttonInstance.disable();
+			// If the plugin button is not enabled
+			if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance))
+				pluginButton.buttonInstance.disable();
 
 		}).bind(this));
 	}
@@ -240,6 +236,7 @@ Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
         Ext.ux.SlicedToolbar.superclass.onResize.apply(this, arguments);
     },
 
+    // This is unused at this stage as all toolbar buttons are simple
     calcSlices: function(){
         var slice = 0;
         this.sliceMap = {};
@@ -311,7 +308,7 @@ Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
 
         var button = new Ext.Toolbar.Button({
             cls: "x-btn-icon",
-            icon: ORYX.CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
+            icon: Apromore.CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
             handler: (type === "next") ? nextHandler : prevHandler
         });
 
