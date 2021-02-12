@@ -214,10 +214,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 Object otherTimestamps = mappingJSON.get("otherTimestamps");
                 Map<Integer, String> otherTimestampsMap = (Map<Integer, String>) otherTimestamps;
                 Map<Integer, String> otherTimestampsMap2 = new HashMap<>();
-                Iterator it = otherTimestampsMap.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry) it.next();
+                for (Map.Entry entry: otherTimestampsMap.entrySet()) {
                     Object key = entry.getKey();
                     if (key != null) {
                         otherTimestampsMap2.put(Integer.parseInt(key.toString()), otherTimestampsMap.get(key));
@@ -242,6 +239,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
 
         } catch (Exception e) {
+            LOGGER.error("Failure while creating controller", e);
             Messagebox.show(getLabels().getString(
                 "failed_to_read_log") + " " + e.getMessage(),
                 "Error",
@@ -340,7 +338,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             } catch (Exception e) {
                 Messagebox.show(getLabels().getString("error") +
                         e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-                LOGGER.error("", e);
+                LOGGER.error("Conversion to XES button handler failed", e);
             }
         }
     }
@@ -351,11 +349,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         String jsonStr = "";
 
         // Creating Object of ObjectMapper define in Jakson Api
-        ObjectMapper Obj = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            jsonStr = Obj.writeValueAsString(logMetaData);
+            jsonStr = objectMapper.writeValueAsString(logMetaData);
         } catch (IOException e) {
-            LOGGER.error("", e);
+            LOGGER.error("Unable to convert log metadata into JSON; will store an empty string instead", e);
         }
 
         userMetadataService.saveUserMetadata("Default CSV schema mapping name", jsonStr,
@@ -1028,6 +1026,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             InputStream csvLogStream = new FileInputStream(tempFile);
             Filedownload.save(csvLogStream, "text/csv; charset-UTF-8", "ErrorReport.csv");
         } catch (Exception e) {
+            LOGGER.error("Failed to download error report", e);
             Messagebox.show(getLabels().getString("failed_to_download_error_log") +
                     e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         } finally {
@@ -1065,6 +1064,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 portalContext.refreshContent();
             }
         } catch (Exception e) {
+            LOGGER.error("Failed to save log", e);
             Messagebox.show(getLabels().getString("failed_to_write_log") +
                     e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
