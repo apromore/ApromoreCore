@@ -123,7 +123,7 @@
 					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
 					//}, 1000);
 
-					document.title = 'Apromore - BPMN Editor';
+					document.title = '${labels.brand.shortName} - BPMN Editor';
                 ]]>
             </n:script>
         </n:span>
