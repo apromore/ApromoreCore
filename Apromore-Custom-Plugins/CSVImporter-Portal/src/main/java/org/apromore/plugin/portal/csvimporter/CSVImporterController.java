@@ -254,7 +254,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     //Create a dialog to ask for user option regarding matched schema mapping
     private void handleMatchedMapping() throws IOException {
         Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(
-                getClass().getClassLoader(), "zul" + "/matchedMapping.zul", null, null);
+                getClass().getClassLoader(), "zul/matchedMapping.zul", null, null);
         matchedMappingPopUp.doModal();
     }
 
