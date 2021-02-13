@@ -122,6 +122,7 @@
 				</executions>
 			</plugin>
 			<!-- Compile java -->
+<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -135,6 +136,7 @@
 					</includes>
 				</configuration>
 			</plugin>
+-->
 			<!-- Build jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
