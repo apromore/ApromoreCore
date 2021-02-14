@@ -269,7 +269,7 @@
         <maven.pmd.plugin>3.0</maven.pmd.plugin>
         <maven.project.info.reports.plugin>2.7</maven.project.info.reports.plugin>
         <maven.release.plugin>2.4</maven.release.plugin>
-        <maven.resources.plugin>2.7</maven.resources.plugin>
+        <maven.resources.plugin>3.2.0</maven.resources.plugin>
         <maven.site.plugin>3.3</maven.site.plugin>
         <maven.source.plugin>2.2.1</maven.source.plugin>
         <maven.surefire.plugin>3.0.0-M5</maven.surefire.plugin>
@@ -1233,40 +1233,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>${maven.assembly.plugin}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>${maven.enforcer.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.plugin}</version>
-                    <configuration>
-                        <source>${java.source.version}</source>
-                        <target>${java.target.version}</target>
-                    </configuration>
-                </plugin>
-
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>${maven.dependency.plugin}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>${maven.ant.plugin}</version>
-                </plugin>
-
-                <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>${maven.bundle.plugin}</version>
@@ -1293,24 +1259,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>${maven.war.plugin}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>3.2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <version>${maven.license.plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
