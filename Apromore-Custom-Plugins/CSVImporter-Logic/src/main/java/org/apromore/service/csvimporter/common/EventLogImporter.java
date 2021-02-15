@@ -21,19 +21,18 @@
  */
 package org.apromore.service.csvimporter.common;
 
-import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
-
-import java.util.GregorianCalendar;
-
-import javax.inject.Inject;
-import javax.xml.datatype.DatatypeFactory;
-
 import org.apromore.dao.model.Log;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.xml.datatype.DatatypeFactory;
+import java.util.GregorianCalendar;
+
+import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
 
 @Service("eventLogImporter")
 public class EventLogImporter {
@@ -52,7 +51,7 @@ public class EventLogImporter {
                 username,
                 folderId,
                 logName,
-		xLog,
+                xLog,
                 XES_EXTENSION,
                 "",  // domain
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
