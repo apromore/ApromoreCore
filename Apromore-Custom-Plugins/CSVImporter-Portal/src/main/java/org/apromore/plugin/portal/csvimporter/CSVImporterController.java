@@ -102,7 +102,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private boolean useParquet;
     private File parquetFile;
 
-
     private LogMetaData logMetaData;
     private List<List<String>> sampleLog;
 
@@ -111,12 +110,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private Span[] parsedIcons;
     private List<Listbox> dropDownLists;
 
-    ParquetImporterFactory parquetImporterFactory;
-    MetaDataService metaDataService;
-    ParquetImporter parquetImporter;
-    MetaDataUtilities metaDataUtilities;
+    private ParquetImporterFactory parquetImporterFactory;
+    private MetaDataService metaDataService;
+    private ParquetImporter parquetImporter;
+    private MetaDataUtilities metaDataUtilities;
 
-    LogImporter logImporter;
+    private LogImporter logImporter;
 
     @Override
     public void doFinally() throws Exception {
@@ -205,7 +204,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 tempLogMetaData.setStartTimestampPos((Integer) mappingJSON.get("startTimestampPos"));
                 tempLogMetaData.setResourcePos((Integer) mappingJSON.get("resourcePos"));
                 tempLogMetaData.getEventAttributesPos().clear();
-                tempLogMetaData.getEventAttributesPos().addAll((List<Integer>) mappingJSON.get("eventAttributesPos"));
+                tempLogMetaData.getEventAttributesPos().addAll((List<Integer>) mappingJSON.get(
+                        "eventAttributesPos"));
                 tempLogMetaData.getCaseAttributesPos().clear();
                 tempLogMetaData.getCaseAttributesPos().addAll((List<Integer>) mappingJSON.get("caseAttributesPos"));
                 tempLogMetaData.getIgnoredPos().clear();
@@ -214,12 +214,14 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 Object otherTimestamps = mappingJSON.get("otherTimestamps");
                 Map<Integer, String> otherTimestampsMap = (Map<Integer, String>) otherTimestamps;
                 Map<Integer, String> otherTimestampsMap2 = new HashMap<>();
-                for (Map.Entry entry: otherTimestampsMap.entrySet()) {
-                    Object key = entry.getKey();
+
+                for (Map.Entry<Integer, String> integerStringEntry : otherTimestampsMap.entrySet()) {
+                    Object key = ((Map.Entry) integerStringEntry).getKey();
                     if (key != null) {
                         otherTimestampsMap2.put(Integer.parseInt(key.toString()), otherTimestampsMap.get(key));
                     }
                 }
+
                 tempLogMetaData.getOtherTimestamps().clear();
                 tempLogMetaData.getOtherTimestamps().putAll(otherTimestampsMap2);
             }
@@ -231,12 +233,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
             this.logMetaData = tempLogMetaData;
 
-            if (this.logMetaData != null) {
-                setUpUI();
-                toXESButton.setDisabled(false);
-                toPublicXESButton.setDisabled(false);
-                matchedMapping.setDisabled(false);
-            }
+            setUpUI();
+            toXESButton.setDisabled(false);
+            toPublicXESButton.setDisabled(false);
+            matchedMapping.setDisabled(false);
 
         } catch (Exception e) {
             LOGGER.error("Failure while creating controller", e);
@@ -317,7 +317,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             getInputSream(media),
                             logMetaData,
                             getFileEncoding(),
-                            true,
+                            false,
                             portalContext.getCurrentUser().getUsername(),
                             portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                             media.getName().replaceFirst("[.][^.]+$", "")
@@ -754,14 +754,18 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     private void updateTimestampPos(int pos, String timestampLabel, String format) {
-        if (timestampLabel.equals(endTimestampLabel)) {
-            logMetaData.setEndTimestampPos(pos);
-            logMetaData.setEndTimestampFormat(format);
-        } else if (timestampLabel.equals(startTimestampLabel)) {
-            logMetaData.setStartTimestampPos(pos);
-            logMetaData.setStartTimestampFormat(format);
-        } else if (timestampLabel.equals(otherTimestampLabel)) {
-            logMetaData.getOtherTimestamps().put(pos, format);
+        switch (timestampLabel) {
+            case endTimestampLabel:
+                logMetaData.setEndTimestampPos(pos);
+                logMetaData.setEndTimestampFormat(format);
+                break;
+            case startTimestampLabel:
+                logMetaData.setStartTimestampPos(pos);
+                logMetaData.setStartTimestampFormat(format);
+                break;
+            case otherTimestampLabel:
+                logMetaData.getOtherTimestamps().put(pos, format);
+                break;
         }
     }
 
@@ -1063,6 +1067,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
                 portalContext.refreshContent();
             }
+
         } catch (Exception e) {
             LOGGER.error("Failed to save log", e);
             Messagebox.show(getLabels().getString("failed_to_write_log") +
