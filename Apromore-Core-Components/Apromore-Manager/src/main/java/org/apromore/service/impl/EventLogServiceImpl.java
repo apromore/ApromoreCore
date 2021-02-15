@@ -257,7 +257,7 @@ public class EventLogServiceImpl implements EventLogService {
 		try {
 			updateLogName(log, logName);
 		} catch (Exception e) {
-			throw new RuntimeException("Error while renaming log file");
+			throw new RuntimeException("Error while renaming log file " + logName, e);
 		}
 
 	log.setRanking("");

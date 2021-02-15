@@ -42,11 +42,11 @@ import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
+import javax.inject.Inject;
 
 import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
@@ -116,7 +116,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                 lineIndex++;
 
                 //empty row
-                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
+                if (line.length == 0 || (line.length == 1 && ("".equals(line[0].trim()) || "\n".equals(line[0].trim()))))
                     continue;
 
                 //Validate num of column

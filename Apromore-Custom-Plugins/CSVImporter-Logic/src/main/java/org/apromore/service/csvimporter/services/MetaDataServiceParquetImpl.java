@@ -56,7 +56,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
 
 	    tempFile.delete();
         } catch (Exception e) {
-            throw new Exception("Unable to import file");
+            throw new Exception("Unable to import file", e);
         } finally {
             in.close();
         }
