@@ -1,0 +1,1 @@
+This resource must exist in order to prevent an exception being logged during Liquibase's startup, but its content is ignored.
