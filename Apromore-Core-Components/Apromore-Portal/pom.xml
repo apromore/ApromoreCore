@@ -69,6 +69,7 @@
                         <Import-Package>
                             org.eclipse.virgo.web.dm;resolution:=optional,
                             org.aopalliance.aop,                            
+                            org.apromore.security.exception,
                             org.apromore.security.filter,
                             org.apromore.security.provider,
                             org.apromore.service,
