@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -53,14 +53,14 @@ import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccu
 @Service("csvLogImporter")
 public class LogImporterCSVImpl implements LogImporter, Constants {
 
+    @Inject
+    private EventLogImporter eventLogImporter;
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private Reader readerin;
     private BufferedReader brReader;
     private InputStream in2;
     private CSVReader reader;
-
-    @Inject EventLogImporter eventLogImporter;
 
     @Override
     public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
@@ -109,35 +109,34 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
 
             LogEventModelExt logEventModelExt;
             Log log = null;
-
+            List<String> headerList = Arrays.asList(header);
             while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
                 // new row, new event.
                 lineIndex++;
 
                 //empty row
-                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
+                if (line.length == 0 || (line.length == 1 && ("".equals(line[0].trim()) || "\n".equals(line[0].trim()))))
                     continue;
 
                 //Validate num of column
                 if (header.length != line.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match " +
+                            "the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
                     continue;
                 }
 
                 //Construct an event
-                logEventModelExt = logProcessor.processLog(Arrays.asList(line), Arrays.asList(header), logMetaData, lineIndex, logErrorReport);
+                logEventModelExt = logProcessor.processLog(Arrays.asList(line), headerList, logMetaData, lineIndex,
+                        logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!logEventModelExt.isValid()) {
-                    if (skipInvalidRow) {
-                        continue;
-                    } else {
-                        return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
-                    }
+                    continue;
                 }
 
                 //Construct a Trace if it's not exists
+
                 if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModelExt.getCaseID())) {
                     XTrace xT = xFactory.createTrace();
                     concept.assignName(xT, logEventModelExt.getCaseID());
@@ -152,6 +151,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                     assignMyCaseAttributes(logEventModelExt.getCaseAttributes(), xT);
                     numOfValidEvents++;
                 }
+
             }
 
             //Sort and feed xLog
@@ -162,22 +162,28 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                     xLog.add(v);
                 }
                 */
-                new java.util.function.BiConsumer<String, XTrace>() {
-                    public void accept(String k, XTrace v) {
-                        v.sort(new XEventComparator());
-                        xLog.add(v);
+                    new java.util.function.BiConsumer<String, XTrace>() {
+                        public void accept(String k, XTrace v) {
+                            v.sort(new XEventComparator());
+                            xLog.add(v);
+                        }
                     }
-                }
             );
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;
 
             //Import XES
-            if (xLog != null &&
-                    (username != null && !username.isEmpty()) &&
+            if (username != null &&
+                    !username.isEmpty() &&
                     folderId != null &&
-                    (logName != null && !logName.isEmpty()))
+                    logName != null && !logName.isEmpty() &&
+                    // 1. If there is invalid row and skipInvalidRow equals false, then don't import XES and keep log
+                    // null.
+                    // 2. If there is invalid row and skipInvalidRow equals true (when user click 'Skip invalid
+                    // row/s'), then import this Log with invalid roll skipped.
+                    (logErrorReport.size() == 0 || skipInvalidRow)
+            )
                 log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
 
             return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);

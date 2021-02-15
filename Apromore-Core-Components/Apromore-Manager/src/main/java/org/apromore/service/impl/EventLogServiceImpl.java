@@ -23,6 +23,21 @@
  */
 package org.apromore.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+
 import org.apromore.apmlog.APMLog;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -54,7 +69,12 @@ import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.in.*;
+import org.deckfour.xes.in.XMxmlGZIPParser;
+import org.deckfour.xes.in.XMxmlParser;
+import org.deckfour.xes.in.XParser;
+import org.deckfour.xes.in.XParserRegistry;
+import org.deckfour.xes.in.XesXmlGZIPParser;
+import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
@@ -215,29 +235,31 @@ public class EventLogServiceImpl implements EventLogService {
 	    String extension, String domain, String created, boolean publicModel) throws Exception {
 	User user = userSrv.findUserByLogin(username);
 
-	XFactory factory = XFactoryRegistry.instance().currentDefault();
-	LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
+        XFactory factory = XFactoryRegistry.instance().currentDefault();
+        LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
 	XLog xLog = importFromStream(factory, inputStreamLog, extension);
 	return importLog(folderId, logName, domain, created, publicModel, user, xLog);
     }
 
     @Override
-    public Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel, User user, XLog xLog) {
+	public Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel, User user, XLog xLog) {
 
-	Storage storage = tempCacheService.storeProcessLog(folderId,
-		logName, xLog, user.getId(), domain, created);
+		Storage storage = tempCacheService.storeProcessLog(folderId,
+				logName, xLog, user.getId(), domain, created);
 
-	Log log = new Log();
-	log.setFolder(folderRepo.findUniqueByID(folderId));
-	log.setDomain(domain);
-	log.setCreateDate(created);
-	log.setFilePath("PROXY_PATH");
-	log.setStorage(storageRepository.saveAndFlush(storage));
-	try {
-	    updateLogName(log, logName);
-	} catch (Exception e) {
-	    throw new RuntimeException("Error while renaming log file");
-	}
+		Log log = new Log();
+		log.setFolder(folderRepo.findUniqueByID(folderId));
+		log.setDomain(domain);
+		log.setCreateDate(created);
+		log.setFilePath("PROXY_PATH");
+		log.setStorage(storageRepository.saveAndFlush(storage));
+
+		try {
+			updateLogName(log, logName);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while renaming log file " + logName, e);
+		}
+
 	log.setRanking("");
 	log.setUser(user);
 
@@ -267,7 +289,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public void updateLogMetaData(Integer logId, String logName, boolean isPublic) {
 	Log log = logRepo.findUniqueByID(logId);
-	
+
 	try {
 	    updateLogName(log, logName);
 	} catch (Exception e) {
@@ -291,8 +313,8 @@ public class EventLogServiceImpl implements EventLogService {
 
     private void updateLogName(Log log, String newName) throws Exception {
 
-	
-	
+
+
 	if (log.getStorage() == null) {
 	    // put extensions in constants
 	    String file_name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
@@ -311,7 +333,7 @@ public class EventLogServiceImpl implements EventLogService {
 	    outputStream = newStorage.getOutputStream("log", new_file_name);
 	    InputStream inputStream = currentStorage.getInputStream(null, file_name);
 	    logFileService.copyFile(inputStream, outputStream);
-	    
+
 	}
 	log.setName(newName);
 
@@ -401,15 +423,15 @@ public class EventLogServiceImpl implements EventLogService {
 	    LOGGER.info("Deleting file: "+realLog.getName());
 	    storageRepository.delete(realLog.getStorage()==null ? 0l :realLog.getStorage().getId());
 	    tempCacheService.deleteProcessLog(realLog);
-	    
+
 	    }
 	    LOGGER.info("Delete XES log " + log.getId() + " from repository.");
 	}
     }
 
-    private boolean shouldDeleteLogFile(Storage storage) {	
+    private boolean shouldDeleteLogFile(Storage storage) {
 	return storage==null || logRepo.countByStorageId(storage.getId())==0;
-		
+
     }
 
     @Override
