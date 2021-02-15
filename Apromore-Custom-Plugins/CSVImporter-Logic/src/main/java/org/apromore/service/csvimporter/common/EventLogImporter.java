@@ -21,20 +21,19 @@
  */
 package org.apromore.service.csvimporter.common;
 
+import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
+
+import java.util.GregorianCalendar;
+
+import javax.inject.Inject;
+import javax.xml.datatype.DatatypeFactory;
+
 import org.apromore.dao.model.Log;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.xml.datatype.DatatypeFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.GregorianCalendar;
-
-import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
 
 @Service("eventLogImporter")
 public class EventLogImporter {
@@ -49,14 +48,11 @@ public class EventLogImporter {
     public Log importXesLog(XLog xLog, String username, Integer folderId, String logName) throws Exception {
         LOGGER.info("Importing log " + logName + " by " + username + " at folder ID " + folderId);
 
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        eventLogService.exportToStream(outputStream, xLog);
-
         return eventLogService.importLog(
                 username,
                 folderId,
                 logName,
-                new ByteArrayInputStream(outputStream.toByteArray()),
+		xLog,
                 XES_EXTENSION,
                 "",  // domain
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
