@@ -68,10 +68,19 @@ public class TestUtilities {
         return stringBuilder;
     }
 
+    /**
+     * To make XES documents generated in different time zones comparable by simple text comparison,
+     * we use regex filtering to remove trailing zeros in the millisecond field of ISO 8601 timestamps,
+     * and the time zone field.
+     *
+     * @param logString  an XES log
+     * @return the <var>logString</var> with all patterns that resemble ISO 8601 timezones and
+     *     zero-entended millisecond fields filtered out
+     */
     public String removeTimezone(String logString) {
         // regex for the timezone used in the test data  e.g. +03:00
 //        Pattern p = Pattern.compile("([\\+-]\\d{2}:\\d{2})|Z");
-        Pattern p = Pattern.compile("(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])");
+        Pattern p = Pattern.compile("(.000)?(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])");
         return logString.replaceAll(p.pattern(), "");
     }
 
