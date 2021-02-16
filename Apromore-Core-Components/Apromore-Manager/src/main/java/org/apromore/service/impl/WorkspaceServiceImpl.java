@@ -333,7 +333,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
 	List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
 	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	List<Integer> folderIds = new ArrayList<Integer>();
+	List<Integer> folderIds = new ArrayList<>();
 
 	for (Folder folder : subFoldersWithCurrentFolders) {
 	    createGroupFolder(group, folder, hasRead, hasWrite, hasOwnership);
@@ -437,7 +437,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	if (parentFolder != null) {
 	    List<Folder> parentFolders = folderService.getParentFolders(parentFolder.getId());
 	    parentFolders.add(parentFolder);
-
 	    for (Folder folder : parentFolders) {
 		createGroupFolder(group, folder, true, false, false);
 	    }

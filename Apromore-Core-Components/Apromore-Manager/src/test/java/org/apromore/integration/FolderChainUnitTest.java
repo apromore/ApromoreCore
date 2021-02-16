@@ -51,6 +51,10 @@ public class FolderChainUnitTest extends BaseTest {
 	folderBuilder = new FolderBuilder();
     }
 
+/*
+ * This method test changing folder by performing cut and paste.
+ * Parentfolder 1 is moved to a new folder named parentt2, and all the chain should be updated.
+ */
     @Test
     public void testUpdateFolderChain() {
 //	Given
@@ -77,9 +81,8 @@ public class FolderChainUnitTest extends BaseTest {
 	folderService.updateFolderChainForSubFolders(folder1.getId(),
 		chain1);
 	
-	List<Folder> folders = folderRepository.findByIdIn(Arrays.asList(folder2.getId(), folder3.getId()));
-
 //	Then
+	List<Folder> folders = folderRepository.findByIdIn(Arrays.asList(folder2.getId(), folder3.getId()));
 	assertThat(folders).extracting("parentFolderChain").containsAll(
 		Arrays.asList(chain1, chain2));
 

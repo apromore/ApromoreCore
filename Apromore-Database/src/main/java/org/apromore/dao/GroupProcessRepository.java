@@ -87,5 +87,4 @@ public interface GroupProcessRepository extends JpaRepository<GroupProcess, Inte
            "               User u JOIN u.groups g2 " +
            "WHERE (gp.process.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupProcess> findByProcessAndUser(final Integer processId, final String userRowGuid);
-
 }

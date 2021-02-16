@@ -69,6 +69,9 @@ public class WorkSpaceServiceTest extends BaseTest {
 	userbuilder = new UserManagementBuilder();
     }
 
+    /*
+     * This is a test to check if we get relevant subfolders based on db query.
+     */
     @Test
     public void testUpdateFolderChain() {
 //	Given

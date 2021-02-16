@@ -50,7 +50,6 @@ public class StorageFactoryUnitTest {
     {
 //	Given
 	ClassLoader classLoader = StorageFactoryUnitTest.class.getClassLoader();	
-
 	File file = new File(classLoader.getResource("baseFolder/test.csv").getFile());
 	
 //	When

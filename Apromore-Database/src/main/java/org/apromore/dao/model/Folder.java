@@ -298,4 +298,10 @@ public class Folder implements Serializable {
 	return "Folder [id=" + id + ", name=" + name + ", parentFolderChain=" + parentFolderChain + "]";
     }
 
+    public void updateParentFolder(Folder parent) {
+	this.setParentFolder(parent);
+	this.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
+
+    }
+
 }

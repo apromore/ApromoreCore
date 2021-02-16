@@ -66,7 +66,7 @@ public interface GroupLogRepository extends JpaRepository<GroupLog, Integer> {
      */
     @Query("SELECT gp FROM GroupLog gp JOIN gp.log p JOIN gp.group g1, " +
            "               User u JOIN u.groups g2 " +
-           "WHERE (u.rowGuid = ?1) AND (g1 = g2)")
+	    "WHERE (p.folder IS NULL) AND (u.rowGuid = ?1) AND (g1 = g2)")
     List<GroupLog> findLogsByUser(String userRowGuid);
 
     /**
@@ -89,6 +89,4 @@ public interface GroupLogRepository extends JpaRepository<GroupLog, Integer> {
            "WHERE (gp.log.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupLog> findByLogAndUser(final Integer logId, final String userRowGuid);
 
-    @Query("delete from GroupLog gl where gl.group=?1 and gl.log=?2 ")
-    void deleteByGroupAndLog(Group group, Log log);
 }

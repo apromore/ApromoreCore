@@ -57,6 +57,7 @@ public class FolderParentChainPopulator {
 	    List<FolderInfo> folders = folderInfoRepository.findByParentIdNullOr0();
 	    updateParentChain(folders);
 	}
+//	add assertt to check count
 
     }
 

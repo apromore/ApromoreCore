@@ -177,6 +177,10 @@ public class FolderServiceImpl implements FolderService {
     }
 
 
+    /*
+     * This method gets a list of Subfolders using parent chain query
+     * Example : folders with parent chain 0_1_2_%
+     */
     @Override
     public List<Folder> getSubFolders(Integer id, boolean includeCurrentFolder) {
 	Folder oldFolder = folderRepository.findUniqueByID(id);
@@ -194,8 +198,7 @@ public class FolderServiceImpl implements FolderService {
     public List<Folder> getParentFolders(Integer id) {
 	Folder folder = folderRepository.findUniqueByID(id);
 	String[] parentChain = folder.getParentFolderChain().split("\\_");
-	List<Integer> parentChainIn = getIntListFromStringArray(parentChain);
-	folderRepository.findByIdIn(parentChainIn);
+	List<Integer> parentChainIn = getIntListFromStringArray(parentChain);	
 	return folderRepository.findByIdIn(parentChainIn);
     }
 
