@@ -21,6 +21,8 @@
  */
 package org.apromore.dao.jpa.grouplog;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
@@ -34,9 +36,6 @@ import org.apromore.dao.model.Process;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroupProcessUnitTest extends BaseTestClass {
 
@@ -58,7 +57,6 @@ public class GroupProcessUnitTest extends BaseTestClass {
     }
 
     @Test
-    @Rollback
     public void testCreateGroupLog() {
 
         // Given

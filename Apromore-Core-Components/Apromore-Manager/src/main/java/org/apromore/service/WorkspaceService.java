@@ -25,10 +25,14 @@
 package org.apromore.service;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.model.FolderTreeNode;
@@ -67,7 +71,7 @@ public interface WorkspaceService {
 
     Page<Log> getLogs(String userId, Integer folderId, Pageable pageable);
 
-    void createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
+    Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
 
     void addProcessToFolder(Integer processId, Integer folderId);
 
@@ -179,6 +183,7 @@ public interface WorkspaceService {
      * @throws Exception
      */
     Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
+
 
 
 

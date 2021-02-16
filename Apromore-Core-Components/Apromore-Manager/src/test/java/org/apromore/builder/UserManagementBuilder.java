@@ -21,12 +21,26 @@
  */
 package org.apromore.builder;
 
-import org.apromore.dao.model.*;
-import org.apromore.dao.model.Group.Type;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Group.Type;
+import org.apromore.dao.model.GroupUsermetadata;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.Membership;
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataLog;
+import org.apromore.dao.model.UsermetadataType;
 
 public class UserManagementBuilder {
 
@@ -147,6 +161,7 @@ public class UserManagementBuilder {
         user.setUsername(username);
         user.setOrganization(org);
         user.setDateCreated(new Date());
+	user.setRowGuid(UUID.randomUUID().toString());
         return this;
 
     }

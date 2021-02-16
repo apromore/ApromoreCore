@@ -19,28 +19,41 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service;
-
-import java.util.List;
+package org.apromore.dao.jpa.folder;
 
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.service.model.FolderTreeNode;
 
-public interface FolderService {
-  
-  public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId);
-  
-  public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(
-      Integer parentFolderId, String userId);
-  
-  public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId);
+public class FolderBuilder {
 
-  public void updateFolderChainForSubFolders(Integer folderId, String newFolderChainPrefix);
+    Folder folder;
+    Folder parentFolder;
 
-  List<Folder> getParentFolders(Integer id);
+    public FolderBuilder withFolder(String name, String desc) {
+	folder = new Folder();
+	folder.setName(name);
+	folder.setDescription(desc);
+	return this;
+    }
 
-  List<Folder> getSubFolders(Integer id, boolean includeCurrentFolder);
+    public FolderBuilder withFolder(Folder folder) {
+	folder = folder;
+	return this;
+    }
+
+    public FolderBuilder withParent(Folder parentFolder) {
+	this.parentFolder = parentFolder;
+	return this;
+    }
+
+    public Folder build() {
+
+	if (parentFolder != null) {
+	    folder.setParentFolder(parentFolder);
+	    if (!parentFolder.getParentFolderChain().equals("-1")) {
+	    folder.setParentFolderChain(parentFolder.getParentFolderChain() + "_" + parentFolder.getId());
+	    }
+	}
+	return folder;
+    }
 
 }

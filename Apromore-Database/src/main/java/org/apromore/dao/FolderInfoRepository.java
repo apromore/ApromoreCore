@@ -1,6 +1,8 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
+ * 
+ * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
@@ -19,16 +21,23 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.config;
 
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+package org.apromore.dao;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
-public class BaseTestClass {
+import java.util.List;
 
-	
-	
+import org.apromore.dao.model.FolderInfo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+
+@Repository
+public interface FolderInfoRepository extends JpaRepository<FolderInfo, Integer> {
+
+    Integer countByparentFolderChain(String parentChain);
+
+    @Query("select f from FolderInfo f where f.parentFolderInfo is null or f.parentFolderInfo.id=0")
+    List<FolderInfo> findByParentIdNullOr0();
+
 }

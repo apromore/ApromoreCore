@@ -24,24 +24,14 @@
 
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.FolderRepositoryCustom;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.apromore.dao.FolderRepositoryCustom;
+import org.apromore.dao.model.Folder;
 
 
 /**
@@ -67,14 +57,11 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
             strQry.append(" AND ").append(conditions);
         }
         strQry.append(" ORDER by f.id");
-
         Query query = em.createQuery(strQry.toString());
         query.setParameter("userRowGuid", userId);
 
         return query.getResultList();
     }
-
-   
 
    
 }

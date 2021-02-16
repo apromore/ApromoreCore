@@ -121,6 +121,10 @@
         </property>
         <property name="contexts" value="${jpa.database}"/>
     </bean>
+    
+     <bean id="folderParentChainPopulator" class="org.apromore.script.FolderParentChainPopulator" init-method="init">
+    	<property name="folderInfoRepository" ref="folderInfoRepository"/>
+    </bean>
 
 
 </beans>

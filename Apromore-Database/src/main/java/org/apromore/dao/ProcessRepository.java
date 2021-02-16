@@ -24,14 +24,15 @@
 
 package org.apromore.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.apromore.dao.model.Process;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Interface domain model Data access object Process.
@@ -98,4 +99,7 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
      */
     @Query("SELECT DISTINCT p FROM Process p WHERE p.id = ?1")
     Process findUniqueByID(Integer processId);
+
+    @Query("SELECT DISTINCT p FROM Process p WHERE p.folder.id in ?1")
+    List<Process> findByFolderIdIn(Collection<Integer> folderIds);
 }

@@ -50,6 +50,8 @@
                             org.springframework.scheduling.config,
                             org.springframework.security.core.userdetails,
                             com.sun.xml.bind.v2,
+                            net.sf.cglib.proxy,
+                            net.sf.cglib.core,
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,

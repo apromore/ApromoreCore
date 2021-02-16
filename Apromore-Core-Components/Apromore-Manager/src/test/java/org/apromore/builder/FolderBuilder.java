@@ -19,16 +19,41 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.config;
+package org.apromore.builder;
 
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.apromore.dao.model.Folder;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
-public class BaseTestClass {
+public class FolderBuilder {
 
-	
-	
+    Folder folder;
+    Folder parentFolder;
+
+    public FolderBuilder withFolder(String name, String desc) {
+	folder = new Folder();
+	folder.setName(name);
+	folder.setDescription(desc);
+	return this;
+    }
+
+    public FolderBuilder withFolder(Folder folder) {
+	folder = folder;
+	return this;
+    }
+
+    public FolderBuilder withParent(Folder parentFolder) {
+	this.parentFolder = parentFolder;
+	return this;
+    }
+
+    public Folder build() {
+
+	if (parentFolder != null) {
+	    folder.setParentFolder(parentFolder);
+	    if (!parentFolder.getParentFolderChain().equals("-1")) {
+	    folder.setParentFolderChain(parentFolder.getParentFolderChain() + "_" + parentFolder.getId());
+	    }
+	}
+	return folder;
+    }
+
 }

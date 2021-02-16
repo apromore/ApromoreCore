@@ -24,15 +24,14 @@
 
 package org.apromore.dao;
 
+import java.util.List;
+
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Interface domain model Data access object GroupFolder.
@@ -77,4 +76,5 @@ public interface GroupFolderRepository extends JpaRepository<GroupFolder, Intege
            "               User u JOIN u.groups g2 " +
            "WHERE (gf.folder.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupFolder> findByFolderAndUser(final Integer folderId, final String userRowGuid);
+
 }

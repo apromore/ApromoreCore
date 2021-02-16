@@ -25,10 +25,8 @@
 package org.apromore.dao;
 
 import java.util.List;
+
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessModelVersion;
-import java.util.List;
 
 /**
  * Interface domain model Data access object Workspace.
