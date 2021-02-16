@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2020 University of Tartu
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,21 +31,22 @@ import org.apromore.service.csvimporter.utilities.InvalidCSVException;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.Messagebox;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class CSVFileReader {
 
     CSVReader newCSVReader(Media media, String charset) {
-        try{
-
+        try {
             // Guess at ethe separator character
-            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
-
-//            InputStream in = media.isBinary() ? media.getStreamData() : new ByteArrayInputStream(media.getByteData()) ;
-
+            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) :
+                    media.getReaderData();
 
             BufferedReader brReader = new BufferedReader(reader);
             String firstLine = brReader.readLine();
+            brReader.close();
             if (firstLine == null || firstLine.isEmpty()) {
                 throw new InvalidCSVException("Failed to read the log! header must have non-empty value!");
             }
@@ -63,7 +64,7 @@ public class CSVFileReader {
                     .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
                     .build();
 
-        }catch (InvalidCSVException e){
+        } catch (InvalidCSVException e) {
             Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
             return null;
         } catch (IOException e) {

@@ -21,19 +21,24 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import com.opencsv.CSVReader;
-import org.apache.commons.io.input.ReaderInputStream;
-import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.io.CSVFileReader;
-import org.apromore.service.csvimporter.model.LogMetaData;
+import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
+import org.apache.commons.io.input.ReaderInputStream;
+import org.apromore.service.csvimporter.constants.Constants;
+import org.apromore.service.csvimporter.io.CSVFileReader;
+import org.apromore.service.csvimporter.model.LogMetaData;
+
+import com.opencsv.CSVReader;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
 
@@ -41,98 +46,108 @@ class MetaDataServiceCSVImpl implements MetaDataService {
     private BufferedReader brReader;
     private InputStream in2;
     private CSVReader csvReader;
+    private List<String> headers = new ArrayList<String>();
+    private char seperator;
 
     @Override
     public void validateLog(InputStream in, String charset) throws Exception {
 
-        try {
-            reader = new InputStreamReader(in, Charset.forName(charset));
-            brReader = new BufferedReader(reader);
-            String firstLine = brReader.readLine();
-            if (firstLine == null || firstLine.isEmpty()) {
-                throw new Exception("header must have non-empty value!");
-            }
+	try {
+	    reader = new InputStreamReader(in, Charset.forName(charset));
+	    brReader = new BufferedReader(reader);
+	    String firstLine = brReader.readLine();
+	    if (firstLine == null || firstLine.isEmpty()) {
+		throw new Exception("header must have non-empty value!");
+	    }
 
-            char separator = getMaxOccurringChar(firstLine);
-            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
-                throw new Exception("Try different encoding");
+	    char separator = getMaxOccurringChar(firstLine);
+//            setting this for performance
+	    this.seperator = separator;
+	    this.headers = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
-        } catch (IOException e) {
-            throw new Exception("Unable to import file");
-        } finally {
-            closeQuietly(in);
-        }
+	    if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
+		throw new Exception("Try different encoding");
+
+	} catch (IOException e) {
+	    throw new Exception("Unable to import file");
+	} finally {
+	    closeQuietly(in);
+	}
     }
 
     @Override
     public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
-        try {
-            reader = new InputStreamReader(in, Charset.forName(charset));
-            brReader = new BufferedReader(reader);
-            String firstLine = brReader.readLine();
-            firstLine = firstLine.replaceAll("\"", "");
-            char separator = getMaxOccurringChar(firstLine);
 
-            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
-                throw new Exception("Try different encoding");
+	if (!headers.isEmpty()) {
+	    return new LogMetaData(this.headers);
+	}
+	try {
+	    reader = new InputStreamReader(in, Charset.forName(charset));
+	    brReader = new BufferedReader(reader);
+	    String firstLine = brReader.readLine();
+	    firstLine = firstLine.replaceAll("\"", "");
+	    char separator = getMaxOccurringChar(firstLine);
 
-            List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+	    if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
+		throw new Exception("Try different encoding");
 
-            return new LogMetaData(header);
+	    List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
-        } finally {
-            closeQuietly(in);
-        }
+	    return new LogMetaData(header);
+
+	} finally {
+	    closeQuietly(in);
+	}
     }
-
 
     @Override
     public List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception {
 
-        try {
-            reader = new InputStreamReader(in, Charset.forName(charset));
-            brReader = new BufferedReader(reader);
-            String firstLine = brReader.readLine();
-            firstLine = firstLine.replaceAll("\"", "");
-            char separator = getMaxOccurringChar(firstLine);
+	try {
+	    reader = new InputStreamReader(in, Charset.forName(charset));
+	    brReader = new BufferedReader(reader);
+	    String firstLine = brReader.readLine();
+	    firstLine = firstLine.replaceAll("\"", "");
+	    char separator = this.seperator != '\u0000' ? this.seperator : getMaxOccurringChar(firstLine);
 
-            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
-                throw new Exception("Try different encoding");
+	    if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
+		throw new Exception("Try different encoding");
 
-            List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+	    List<String> header = !headers.isEmpty() ? headers
+		    : Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
-            in2 = new ReaderInputStream(brReader, charset);
-            csvReader = new CSVFileReader().newCSVReader(in2, charset, separator);
+	    in2 = new ReaderInputStream(brReader, charset);
+	    csvReader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
-            if (csvReader == null)
-                return null;
+	    if (csvReader == null)
+		return null;
 
-            List<List<String>> lines = new ArrayList<>();
-            String[] myLine;
+	    List<List<String>> lines = new ArrayList<>();
+	    String[] myLine;
 
+	    while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
+		if (myLine.length != header.size())
+		    continue;
+		lines.add(Arrays.asList(myLine));
+	    }
 
-            while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
-                if (myLine.length != header.size()) continue;
-                lines.add(Arrays.asList(myLine));
-            }
+	    return lines;
 
-            return lines;
-
-        } finally {
-            closeQuietly(in);
-        }
+	} finally {
+	    closeQuietly(in);
+	}
     }
 
     private void closeQuietly(InputStream in) throws IOException {
-        if (in != null)
-            in.close();
-        if (this.csvReader != null)
-            this.csvReader.close();
-        if (this.brReader != null)
-            this.brReader.close();
-        if (this.reader != null)
-            this.reader.close();
-        if (this.in2 != null)
-            this.in2.close();
+	if (in != null)
+	    in.close();
+	if (this.csvReader != null)
+	    this.csvReader.close();
+	if (this.brReader != null)
+	    this.brReader.close();
+	if (this.reader != null)
+	    this.reader.close();
+	if (this.in2 != null)
+	    this.in2.close();
     }
 }

@@ -31,16 +31,29 @@ import static org.apromore.service.csvimporter.constants.Constants.*;
 public class ParquetFactoryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetFactoryProvider.class);
 
+    /**
+     * @param fileExtension  the file extension, which will be treated case-insensitively
+     * @return <code>null</code> if the <var>fileExtension</var> is not recognized
+     */
     public ParquetImporterFactory getParquetFactory(String fileExtension) {
 
         LOGGER.info("File Format: " + fileExtension);
-        if (fileExtension.equalsIgnoreCase(CSV_FILE_EXTENSION)) {
+        if (fileExtension == null) {
+            return null;
+        }
+
+        switch (fileExtension.toLowerCase()) {
+        case CSV_FILE_EXTENSION:
             return new ParquetImporterFactoryCSVImpl();
-        } else if (fileExtension.equalsIgnoreCase(PARQUET_FILE_EXTENSION)) {
+
+        case PARQUET_FILE_EXTENSION:
+        case PARQ_FILE_EXTENSION:
             return new ParquetImporterFactoryParquetImpl();
-        } else if (fileExtension.equalsIgnoreCase(XLSX_FILE_EXTENSION)) {
+
+        case XLSX_FILE_EXTENSION:
             return new ParquetImporterFactoryXLSXImpl();
-        } else {
+
+        default:
             return null;
         }
     }

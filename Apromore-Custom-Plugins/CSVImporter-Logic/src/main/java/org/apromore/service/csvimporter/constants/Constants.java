@@ -36,9 +36,10 @@ public interface Constants {
     String possibleOtherTimestamp = "^(.*(date|time).*)$";
     String timestampPattern = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2}.*)$";
 
-
+    // File extension will be converted to lowercase before comparisons, so only use lowercase characters
     String CSV_FILE_EXTENSION = "csv";
     String PARQUET_FILE_EXTENSION = "parquet";
+    String PARQ_FILE_EXTENSION = "parq";
     String XLS_FILE_EXTENSION = "xls" ;
     String XLSX_FILE_EXTENSION = "xlsx" ;
     String XES_EXTENSION= "xes.gz";

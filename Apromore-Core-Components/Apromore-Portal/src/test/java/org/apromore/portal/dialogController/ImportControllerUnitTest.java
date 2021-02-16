@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -81,6 +82,6 @@ public class ImportControllerUnitTest {
         InputStream in = ImportControllerUnitTest.class.getResourceAsStream("/" + path);
         assert in != null;
 
-        controller.importFile(new MediaImpl(path, in, Charset.forName("UTF-8")));
+	controller.importFile(new MediaImpl(path, in, Charset.forName("UTF-8"), ItemNameUtils.findExtension(path)));
     }
 }
