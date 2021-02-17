@@ -57,13 +57,13 @@
                             org.apromore.etlplugin.portal.utils,
                             org.apromore.jobScheduler.portal.viewModels,
                             org.apromore.plugin.portal.*,
+                            org.apromore.zk,
                             dashboard,
                             org.apache.poi.ooxml,
                             zul.*
                         </DynamicImport-Package>                        
                         <Export-Package>
-                            org.zkoss.*,
-                            org.apromore.zk
+                            org.zkoss.*
                         </Export-Package>
                     </instructions>
                 </configuration>

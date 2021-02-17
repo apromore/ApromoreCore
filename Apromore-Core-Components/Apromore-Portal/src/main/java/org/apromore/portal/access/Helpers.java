@@ -94,7 +94,7 @@ public final class Helpers {
         return accessType;
     }
 
-    public static final boolean isShareable(Object item, User user) throws Exception {
+    public static final boolean isOwner(Object item, User user) throws Exception {
         AccessType accessType = Helpers.getEffectiveAccessType(item, user);
         return AccessType.OWNER.equals(accessType);
     }

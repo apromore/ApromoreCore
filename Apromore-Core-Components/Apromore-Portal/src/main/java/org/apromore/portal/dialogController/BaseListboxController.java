@@ -24,45 +24,36 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ValidationException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 
-import org.apromore.dao.model.Group;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.access.Helpers;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
+import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.util.AccessType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -532,7 +523,7 @@ public abstract class BaseListboxController extends BaseController {
 			boolean canShare = false;
 			// canShare = validateNotFolderTypeItem(selectedItem); // Allow folder
 			try {
-				canShare = Helpers.isShareable(selectedItem, currentUser);
+				canShare = Helpers.isOwner(selectedItem, currentUser);
 			} catch (ValidationException e) {
 				Notification.error(e.getMessage());
 				return;
@@ -594,7 +585,7 @@ public abstract class BaseListboxController extends BaseController {
 
 		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-			canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
+		    canChange = canChange || Helpers.isOwner(currentFolder, currentUser);
 		} catch (Exception e) {
 			Notification.error(e.getMessage());
 			return;
@@ -617,7 +608,7 @@ public abstract class BaseListboxController extends BaseController {
 
 		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-			canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);
+		    canChange = canChange || Helpers.isOwner(currentFolder, currentUser);
 		} catch (Exception e) {
 			Notification.error(e.getMessage());
 			return;
@@ -632,7 +623,7 @@ public abstract class BaseListboxController extends BaseController {
 						Messagebox.ERROR);
 			}
 		} else {
-			Notification.error("Only Owner or Editor can paste here.");
+		    Notification.error("Only Owner of Folder can paste here.");
 		}
 		refreshContent();
 	}
@@ -792,7 +783,7 @@ public abstract class BaseListboxController extends BaseController {
 				selectedItem = null;
 			} else {
 				selectedItem = getSelection().iterator().next();
-				canShare = Helpers.isShareable(selectedItem, currentUser);
+				canShare = Helpers.isOwner(selectedItem, currentUser);
 			}
 			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem, canShare);
 		} catch (Exception e) {

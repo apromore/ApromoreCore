@@ -21,6 +21,14 @@
  */
 package org.apromore.service.csvimporter.services;
 
+import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -29,14 +37,6 @@ import org.apromore.service.csvimporter.io.FileWriter;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
 import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.ParquetLogMetaData;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 class MetaDataServiceParquetImpl implements MetaDataService {
     private ParquetReader<Group> reader;
@@ -54,8 +54,9 @@ class MetaDataServiceParquetImpl implements MetaDataService {
             if (schema == null || schema.getColumns().size() <= 0)
                 throw new Exception("Unable to import file. Schema is missing.");
 
+	    tempFile.delete();
         } catch (Exception e) {
-            throw new Exception("Unable to import file");
+            throw new Exception("Unable to import file", e);
         } finally {
             in.close();
         }
@@ -98,7 +99,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
                 lines.add(Arrays.asList(myLine));
                 lineIndex++;
             }
-
+	    tempFile.delete();
             return lines;
 
         } finally {

@@ -22,12 +22,9 @@
 
 package org.apromore.commons.item;
 
-import org.apromore.commons.item.Constants;
-
-import java.lang.Math;
-import java.util.regex.Pattern;
-import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * Various filename utility functions
  */
@@ -36,6 +33,7 @@ public final class ItemNameUtils {
     private static final String DELIMITERS = "\\._\\+\\- ";
     private static final String MERGED = "_merged";
     private static final int MAX_LENGTH = Constants.VALID_NAME_MAX_LENGTH - MERGED.length();
+    private final static Pattern FILE_EXTENSION_PATTERN = Pattern.compile("(?<basename>.*)\\.(?<extension>[^/\\.]*)");
 
     /**
      * Check if the name an item (filename, folder) is valid based on default regex
@@ -124,5 +122,16 @@ public final class ItemNameUtils {
         int nth = existingNames.size() + 1;
         return commonName + suffix + " " + Integer.toString(nth);
     }
+
+    public static String findBasename(String name) {
+	Matcher matcher = FILE_EXTENSION_PATTERN.matcher(name);
+	return matcher.matches() ? matcher.group("basename") : null;
+    }
+
+    public static String findExtension(String name) {
+	Matcher matcher = FILE_EXTENSION_PATTERN.matcher(name);
+	return matcher.matches() ? matcher.group("extension") : null;
+    }
+
 }
 

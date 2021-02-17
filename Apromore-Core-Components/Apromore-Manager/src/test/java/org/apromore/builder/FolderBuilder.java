@@ -19,31 +19,41 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.rest;
+package org.apromore.builder;
 
-import javax.ws.rs.core.Response.Status;
+import org.apromore.dao.model.Folder;
 
-/**
- * Exceptions occurring within {@link org.apromore.rest.manager.ArtifactResource} and
- * {@link org.apromore.rest.manager.UserResource} methods.
- */
-public class ResourceException extends Exception {
+public class FolderBuilder {
 
-    private Status status;
+    Folder folder;
+    Folder parentFolder;
 
-    /**
-     * @param newStatus  machine-legible HTTP response status code
-     * @param message  human-legible error explanation
-     */
-    public ResourceException(final Status newStatus, final String message) {
-        super(message);
-        status = newStatus;
+    public FolderBuilder withFolder(String name, String desc) {
+	folder = new Folder();
+	folder.setName(name);
+	folder.setDescription(desc);
+	return this;
     }
 
-    /**
-     * @return the HTTP response status code
-     */
-    public Status getStatus() {
-        return status;
+    public FolderBuilder withFolder(Folder folder) {
+	folder = folder;
+	return this;
     }
+
+    public FolderBuilder withParent(Folder parentFolder) {
+	this.parentFolder = parentFolder;
+	return this;
+    }
+
+    public Folder build() {
+
+	if (parentFolder != null) {
+	    folder.setParentFolder(parentFolder);
+	    if (!parentFolder.getParentFolderChain().equals("-1")) {
+	    folder.setParentFolderChain(parentFolder.getParentFolderChain() + "_" + parentFolder.getId());
+	    }
+	}
+	return folder;
+    }
+
 }

@@ -24,13 +24,13 @@
 
 package org.apromore.dao;
 
+import java.util.List;
+
 import org.apromore.dao.model.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 /**
  * Interface domain model Data access object Branch.
@@ -98,6 +98,9 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
     
  
     Long countByStorageId(Long storageId);
+
+    @Query("SELECT DISTINCT l FROM Log l WHERE l.folder.id in ?1")
+    List<Log> findByFolderIdIn(List<Integer> folderIds);
 
 //    /**
 //     * Returns a list of processIds

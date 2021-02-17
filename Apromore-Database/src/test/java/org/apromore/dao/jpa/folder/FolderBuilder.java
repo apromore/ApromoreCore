@@ -19,26 +19,41 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.rest.manager;
+package org.apromore.dao.jpa.folder;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.ws.rs.core.Application;
-import org.apromore.rest.ResourceExceptionMapper;
+import org.apromore.dao.model.Folder;
 
-/**
- * Explicitly register all JAX-RS providers.
- *
- * Annotation-based configuration via <code>@Provider</code> does not work with Virgo.
- */
-public class ManagerApplication extends Application {
+public class FolderBuilder {
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        return Stream.of(ArtifactResource.class,
-                         ResourceExceptionMapper.class,
-                         UserResource.class)
-                     .collect(Collectors.toSet());
+    Folder folder;
+    Folder parentFolder;
+
+    public FolderBuilder withFolder(String name, String desc) {
+	folder = new Folder();
+	folder.setName(name);
+	folder.setDescription(desc);
+	return this;
     }
+
+    public FolderBuilder withFolder(Folder folder) {
+	folder = folder;
+	return this;
+    }
+
+    public FolderBuilder withParent(Folder parentFolder) {
+	this.parentFolder = parentFolder;
+	return this;
+    }
+
+    public Folder build() {
+
+	if (parentFolder != null) {
+	    folder.setParentFolder(parentFolder);
+	    if (!parentFolder.getParentFolderChain().equals("-1")) {
+	    folder.setParentFolderChain(parentFolder.getParentFolderChain() + "_" + parentFolder.getId());
+	    }
+	}
+	return folder;
+    }
+
 }

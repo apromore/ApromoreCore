@@ -23,8 +23,10 @@ package org.apromore.config;
 
 import java.sql.Driver;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -32,8 +34,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -41,8 +43,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-@ImportResource({ "classpath:META-INF/spring/database-jpa.xml", "classpath:database/test-jpa.xml" })
-//@EnableJpaRepositories(repositoryImplementationPostfix = "CustomImpl", basePackages = "org.apromore.dao", entityManagerFactoryRef = "entityManagerFactory", transactionManagerRef = "transactionManager")
+@ImportResource({ "classpath:META-INF/spring/database-jpa.xml" })
 public class TestConfig {
 
     @Value("${jdbc.username}")
@@ -65,6 +66,9 @@ public class TestConfig {
 
     @Value("${jdbc.context}")
     private String context;
+
+    @Autowired
+    EntityManagerFactory entityManagerFactory;
 
     @Bean
     public DataSource dataSource() {
@@ -97,7 +101,7 @@ public class TestConfig {
 
     @Bean
     public PlatformTransactionManager transactionManager() {
-	return new DataSourceTransactionManager(dataSource());
+	return new JpaTransactionManager(entityManagerFactory);
     }
 
     @Bean

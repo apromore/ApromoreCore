@@ -61,6 +61,7 @@
 	<osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
      
     <osgi:reference id="folderRepository" interface="org.apromore.dao.FolderRepository"/>
+    <osgi:reference id="folderInfoRepository" interface="org.apromore.dao.FolderInfoRepository"/>
     <osgi:reference id="groupFolderRepository.java" interface="org.apromore.dao.GroupFolderRepository"/>
     <osgi:reference id="groupLogRepository" interface="org.apromore.dao.GroupLogRepository"/>
     <osgi:reference id="groupProcessRepository" interface="org.apromore.dao.GroupProcessRepository"/>

@@ -25,10 +25,10 @@ package org.apromore.plugin.portal.csvimporter;
 import com.opencsv.CSVReader;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Usermetadata;
-import org.apromore.dao.model.UsermetadataLog;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.csvimporter.listener.CsvImportListener;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
@@ -57,6 +57,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     private LogImporterProvider logImporterProvider;
     private UserMetadataService userMetadataService;
 
+    private static String getMediaFormat(Media media) throws Exception {
+        if (media.getName().lastIndexOf('.') < 0)
+            throw new Exception("Can't read file format");
+        return media.getName().substring(media.getName().lastIndexOf('.') + 1);
+    }
+
     public ParquetFactoryProvider getParquetFactoryProvider() {
         return parquetFactoryProvider;
     }
@@ -73,12 +79,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         this.logImporterProvider = logImporterProvider;
     }
 
+    // Implementation of FileImporterPlugin
+
     public void setUserMetadataService(UserMetadataService newUserMetadataService) {
         LOGGER.info("Injected CSV importer logic {}", newUserMetadataService);
         this.userMetadataService = newUserMetadataService;
     }
-
-    // Implementation of FileImporterPlugin
 
     @Override
     public Set<String> getFileExtensions() {
@@ -95,7 +101,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
         arg.put("media", media);
         Sessions.getCurrent().setAttribute(CSVImporterController.SESSION_ATTRIBUTE_KEY, arg);
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-
+        CsvImportListener csvImportListener = new CsvImportListener(arg,
+                (String) Sessions.getCurrent().getAttribute("fileimportertarget"), null, null);
         // Only works for CSV
         try {
             if ("csv".equals(getMediaFormat(media))) {
@@ -104,8 +111,8 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                 List<String> header = new ArrayList<>();
                 String fileEncoding = "UTF-8";
                 CSVFileReader csvFileReader = new CSVFileReader();
-                CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
-                try {
+
+                try (CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding)) {
                     header = Arrays.asList(csvReader.readNext());
                 } catch (IOException e) {
                     LOGGER.error("Unable to read CSV", e);
@@ -246,11 +253,5 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                 }
                 break;
         }
-    }
-
-    private static String getMediaFormat(Media media) throws Exception {
-        if (media.getName().lastIndexOf('.') < 0)
-            throw new Exception("Can't read file format");
-        return media.getName().substring(media.getName().lastIndexOf('.') + 1);
     }
 }

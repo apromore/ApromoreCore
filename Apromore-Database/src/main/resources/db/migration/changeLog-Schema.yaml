@@ -824,3 +824,24 @@ databaseChangeLog:
                as value, 'folder' as type, null as processid, null as logid, folder.id as folderid
                from folder;
            viewName: keywords
+
+ - changeSet:
+     id: 20210201031400
+     author: nolantellis
+     changes:
+        - addColumn:
+            tableName: folder
+            columns:
+               - column:
+                  name: parent_folder_chain
+                  type: VARCHAR(200)
+                  defaultValue: '-1'
+                  constraints:
+                      nullable: false
+
+        - createIndex:
+           columns:
+             - column:
+                 name: parent_folder_chain
+           indexName: IDX_FOLDER_PARENT_FOLDER_CHAIN
+           tableName: folder
