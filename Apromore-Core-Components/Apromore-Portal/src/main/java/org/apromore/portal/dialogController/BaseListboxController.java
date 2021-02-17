@@ -59,6 +59,8 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
@@ -149,7 +151,6 @@ public abstract class BaseListboxController extends BaseController {
 		btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
 		btnShare = (Button) mainController.getFellow("btnShare");
 		btnCalendar = (Button) mainController.getFellow("btnCalendar");
-		btnCalendar.setVisible(config.getEnableCalendar());
 
 		attachEvents();
 
@@ -333,7 +334,17 @@ public abstract class BaseListboxController extends BaseController {
 		this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				launchCalendar();
+
+			Set<Object> selections = getSelection();
+
+			if (selections.size() != 1
+				|| !selections.iterator().next().getClass().equals(LogSummaryType.class)) {
+			    Notification.error("Please select a log file");
+			    return;
+			}
+
+			LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
+			launchCalendar(selectedItem.getName(), selectedItem.getId(), selectedItem.getCalendarId());
 			}
 		});
 	}
@@ -804,13 +815,29 @@ public abstract class BaseListboxController extends BaseController {
 		}
 	}
 
-	protected void launchCalendar() {
-		PortalPlugin calendarPlugin;
-
+	protected void launchCalendar(String artifactName, Integer logId, Long calenderId) {
 		getMainController().eraseMessage();
+
+		EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR",
+			Executions.getCurrent().getSession(), true);
+
+		queue.subscribe(new EventListener<Event>() {
+		    @Override
+		    public void onEvent(Event event) {
+			Long data = (Long) event.getData();
+			LOGGER.info("CalendarId :" + data);
+			
+			getMainController().getEventLogService().updateCalenderForLog(logId, data);
+			
+		    }
+		});
+
 		try {
-			calendarPlugin = portalPluginMap.get("Manage calendars");
-			calendarPlugin.execute(portalContext);
+		    Map<String, Object> attrMap = new HashMap<String, Object>();
+		    attrMap.put("portalContext", portalContext);
+		    attrMap.put("artifactName", artifactName);
+		    attrMap.put("calenderId", calenderId);
+		    new CustomCalendarController(attrMap);
 		} catch (Exception e) {
 			LOGGER.error("Unable to create custom calendar dialog", e);
 			Messagebox.show("Unable to create custom calendar dialog");

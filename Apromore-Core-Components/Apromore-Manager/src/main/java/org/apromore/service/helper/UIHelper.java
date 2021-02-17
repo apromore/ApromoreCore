@@ -24,14 +24,40 @@
 
 package org.apromore.service.helper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.inject.Inject;
+
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.*;
-import org.apromore.exception.UserNotFoundException;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.portal.helper.Version;
-import org.apromore.portal.model.*;
-import org.apromore.service.UserMetadataService;
+import org.apromore.portal.model.FolderSummaryType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.ProcessVersionType;
+import org.apromore.portal.model.ProcessVersionsType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.UserMetadataSummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
@@ -40,9 +66,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.*;
 
 /**
 * Used By the Services to generate the data objects used by the UI.
@@ -321,6 +344,7 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaryType.setName(log.getName());
         logSummaryType.setDomain(log.getDomain());
         logSummaryType.setRanking(log.getRanking());
+	logSummaryType.setCalendarId(log.getCalendar() != null ? log.getCalendar().getId() : 0);
 
         if (log.getUser() != null) {
         	logSummaryType.setOwner(log.getUser().getUsername());

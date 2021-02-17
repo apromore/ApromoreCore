@@ -21,41 +21,31 @@
  */
 package org.apromore.plugin.portal.calendar.controllers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
 /**
- * Controller for handling calendar interface
- * Corresponds to calendars.zul
+ * Controller for handling calendar interface Corresponds to calendars.zul
  */
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class Calendars extends SelectorComposer<Window> {
@@ -80,57 +70,48 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Override
     public void doAfterCompose(Window win) throws Exception {
-        super.doAfterCompose(win);
-        initialize();
+	super.doAfterCompose(win);
+	initialize();
     }
 
     public void initialize() {
-        calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true);
-        // Internal loop testing
-        calendarEventQueue.subscribe(new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                Object data = event.getData();
-            }
-        });
+	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, Executions.getCurrent().getSession(),
+		false);
 
-        
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
-        calendarListbox.setItemRenderer(itemRenderer);
-        calendarListModel = new ListModelList<CalendarModel>();
-        calendarListModel.addAll(calendarService.getCalendars());
-        calendarListModel.setMultiple(false);
-        calendarListbox.setModel(calendarListModel);
+	CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
+	calendarListbox.setItemRenderer(itemRenderer);
+	calendarListModel = new ListModelList<CalendarModel>();
+	calendarListModel.addAll(calendarService.getCalendars());
+	calendarListModel.setMultiple(false);
+	calendarListbox.setModel(calendarListModel);
     }
 
-    
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
-        getSelf().detach();
+	calendarEventQueue.close();
+	getSelf().detach();
     }
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
-        calendarEventQueue.publish(
-                new Event("onCalendarPublish", null, calendarListModel.getSelection())
-        );
+	calendarEventQueue.publish(
+		new Event("onCalendarPublish", null, ((CalendarModel) calendarListModel.getSelection()).getId()));
     }
 
     @Listen("onClick = #addNewCalendarBtn")
     public void onClickAddNewCalendar() {
-    	
-    	CalendarModel model;
-		try {
-			String calendarName="Generic Calender 9 to 5 created on"+LocalDateTime.now();
-			model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
-			calendarListModel.add(model);
-			
-		} catch (CalendarAlreadyExistsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        
+
+	CalendarModel model;
+	try {
+	    String calendarName = "Generic Calender 9 to 5 created on" + LocalDateTime.now();
+	    model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+	    calendarListModel.add(model);
+
+	} catch (CalendarAlreadyExistsException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
     }
 
 }
