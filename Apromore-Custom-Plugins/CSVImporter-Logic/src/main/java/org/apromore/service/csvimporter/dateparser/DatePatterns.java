@@ -621,33 +621,6 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + YEAR_TWO_DIGIT + "{1}" + "\\s+" + MONTH_NAME_SHORT + "{1}" + "\\s+" + DAY_DIGIT + "{1}" + "\\s+" + TIME_SPACE_SECOND + "\\s+" + "\\d{3}" + "$", "yy MMM dd HH mm ss SSS");
         DATE_FORMAT_REGEXPS.put("^" + YEAR_TWO_DIGIT + "{1}" + "\\s+" + MONTH_NAME_LONG + "{1}" + "\\s+" + DAY_DIGIT + "{1}" + "\\s+" + TIME_SPACE_SECOND + "\\s+" + "\\d{3}" + "$", "yy MMMM dd HH mm ss SSS");
 
-        DATE_FORMAT_REGEXPS.put("^" + YEAR_TWO_DIGIT + "$", "yy");
-        DATE_FORMAT_REGEXPS.put("^" + YEAR_DIGIT + "$", "yyyy");
-        DATE_FORMAT_REGEXPS.put("^" + YEAR_DIGIT + "{1}" + MONTH_DIGIT + "{1}" + "$", "yyyyMM");
-
-        DATE_FORMAT_REGEXPS.put("^" + WEEK_DAY_NAME_SHORT + "{1}" + "$", "EEE");
-        DATE_FORMAT_REGEXPS.put("^" + WEEK_DAY_NAME_LONG + "{1}" + "$", "EEEE");
-        DATE_FORMAT_REGEXPS.put("^" + WEEK_DAY_NAME_FIRST_LETTER + "{1}" + "$", "EEEEE");
-
-        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE + "$", "HHmm");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE_SECOND + "$", "HHmmss");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_NO_SPACE_SECOND + "\\." + "\\d{3}" + "$", "HHmmss.SSS");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON + "$", "HH:mm");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "$", "HH:mm:ss");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{1}" + "$", "HH:mm:ss.S");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "HH:mm:ss.SSS");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_AM_PM + "$", "HH:mm a");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_AM_PM_NO_SPACE + "$", "HH:mma");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND_AM_PM + "$", "HH:mm:ss a");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND_AM_PM_NO_SPACE + "$", "HH:mm:ssa");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{1}" + "\\s+" + AM_PM + "{1}" + "$", "HH:mm:ss.S a");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "\\s+" + AM_PM + "{1}" + "$", "HH:mm:ss.SSS a");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{1}" + AM_PM + "{1}" + "$", "HH:mm:ss.Sa");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_SECOND + "\\." + "\\d{3}" + AM_PM + "{1}" + "$", "HH:mm:ss.SSSa");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "$", "mm:ss");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{1}" + "$", "mm:ss.S");
-        DATE_FORMAT_REGEXPS.put("^" + TIME_COLON_MIN_SEC + "\\." + "\\d{3}" + "$", "mm:ss.SSS");
-
         DATE_FORMAT_PATTERN_STORE = DATE_FORMAT_REGEXPS;
     }
 }
