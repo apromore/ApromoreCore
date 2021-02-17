@@ -31,8 +31,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.EditSessionType;
@@ -48,6 +51,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zul.Messagebox;
 
 /**
  * ApromoreSession and ApromoreSession.EditSessionType represent data objects of the model being opened in the editor 
@@ -187,6 +191,34 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 new SaveAsDialogController(process, vst, session, false, eventToString(event));
+            }
+        });
+
+        this.addEventListener("onShare", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws InterruptedException {
+                PortalPlugin accessControlPlugin;
+
+                if (isNewProcess || process == null) {
+                    Notification.error("You need to save your new model first.");
+                } else {
+                    PortalContext portalContext = mainC.getPortalContext();
+                    try {
+                        Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
+                        Object selectedItem = process;
+                        accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+                        Map arg = new HashMap<>();
+                        arg.put("withFolderTree", false);
+                        arg.put("selectedItem", selectedItem);
+                        arg.put("currentUser", UserSessionManager.getCurrentUser());
+                        arg.put("autoInherit", true);
+                        arg.put("showRelatedArtifacts", true);
+                        accessControlPlugin.setSimpleParams(arg);
+                        accessControlPlugin.execute(portalContext);
+                    } catch (Exception e) {
+                        Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
+                }
             }
         });
         

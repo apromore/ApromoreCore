@@ -50,6 +50,7 @@ import org.apromore.mapper.UserMapper;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.ConfigBean;
@@ -139,8 +140,8 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
-    private PluginExecutionManager pluginManager; // = new PluginExecutionManager();
-	
+    private Map<String, PortalPlugin> portalPluginMap;
+
     public static MainController getController() {
         return controller;
     }
@@ -153,6 +154,10 @@ public class MainController extends BaseController implements MainControllerInte
 
         // final String username = Executions.getCurrent().getParameter("username");
         // LOGGER.info("\n\nIn PORTAL MainController, username parameter {}\n", username);
+
+        portalSession = new PortalSession(this);
+        // UserSessionManager.initializeUser(getService(), config);
+        // portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 
         String urlDecoded = Executions.getCurrent().getParameter("encodedToken");
         LOGGER.info("\n\nIn PORTAL MainController, urlDecoded {}", urlDecoded);
@@ -204,6 +209,8 @@ public class MainController extends BaseController implements MainControllerInte
 
             initializeUser(getService(), config, null, null);
         }
+
+        portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     }
 
     private void setupUserDynamically(final UserType userType) {
@@ -211,7 +218,7 @@ public class MainController extends BaseController implements MainControllerInte
         UserSessionManager.setCurrentUser(userType);
 
         LOGGER.info("\n\n*** AFTER DYNAMICALLY setting*** userType {} as currentUser", userType);
-	}
+    }
 
 	/** Unit test constructor. */
     public MainController(ConfigBean configBean) {
@@ -222,9 +229,9 @@ public class MainController extends BaseController implements MainControllerInte
     public PortalSession getPortalSession() {
         return portalSession;
     }
-    
-    public PluginExecutionManager getPluginExecutionManager() {
-        return this.pluginManager;
+
+    public  Map<String, PortalPlugin>  getPortalPluginMap() {
+        return portalPluginMap;
     }
 
     /**

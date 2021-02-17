@@ -22,23 +22,21 @@
  * #L%
  */
 
-package org.apromore.portal.dialogController;
+package org.apromore.plugin.portal.accesscontrol.controllers;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import org.apromore.portal.model.FolderType;
-import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.BaseController;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.UserType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Div;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Window;
-import org.apromore.portal.model.UserType;
 
-import org.apromore.portal.access.controllers.AccessController;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller used to setup security for folders and processes.
@@ -48,8 +46,6 @@ import org.apromore.portal.access.controllers.AccessController;
 public class SecuritySetupController extends BaseController {
 
     private MainController mainController;
-    private SecurityFindGroupsController findGroupsController;
-    private AccessController accessController;
     private SecurityFolderTreeController folderTreeController;
 
     public SecuritySetupController(MainController mainController, UserType currentUser, Object selectedItem, boolean canShare) throws DialogException {
@@ -63,11 +59,8 @@ public class SecuritySetupController extends BaseController {
         arg.put("enablePublish", config.getEnablePublish());
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, arg);
-            // FolderType currentFolder = UserSessionManager.getCurrentFolder();
             FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-            // this.accessController = new SecurityAccessController(this, win);
-            // this.findGroupsController = new SecurityFindGroupsController(this, win);
             this.folderTreeController = new SecurityFolderTreeController(this, win, currentFolder.getId());
 
             win.doModal();
@@ -88,14 +81,6 @@ public class SecuritySetupController extends BaseController {
         } catch (Exception e) {
             throw new DialogException("Error in controller: " + e.getMessage());
         }
-    }
-
-    public AccessController getAccessController(){
-        return this.accessController;
-    }
-
-    public SecurityFindGroupsController getFindGroupsController(){
-        return this.findGroupsController;
     }
 
     public SecurityFolderTreeController getFolderTreeController(){

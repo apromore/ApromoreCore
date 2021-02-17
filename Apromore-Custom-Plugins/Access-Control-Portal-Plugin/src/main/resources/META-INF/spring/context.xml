@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
+        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/osgi                  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+    <reference id="securityService" interface="org.apromore.service.SecurityService"/>
+
+    <!-- Create beans for each class annotated with @Component within the package -->
+    <context:component-scan base-package="org.apromore.plugin.portal.accesscontrol" />
+
+    <!-- Exposes the component as OSGi service -->
+    <service ref="accessControlPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+
+    <!-- Web content -->
+    <service interface="org.apromore.plugin.portal.WebContentService">
+        <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
+            <beans:constructor-arg type="Object" ref="accessControlPlugin"/>
+        </beans:bean>
+    </service>
+
+</beans:beans>

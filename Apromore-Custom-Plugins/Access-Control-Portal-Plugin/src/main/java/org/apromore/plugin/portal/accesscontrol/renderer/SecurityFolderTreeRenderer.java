@@ -22,36 +22,29 @@
  * #L%
  */
 
-package org.apromore.portal.common;
+package org.apromore.plugin.portal.accesscontrol.renderer;
 
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.portal.dialogController.SecuritySetupController;
-import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.GroupAccessType;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.common.FolderTreeNode;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.*;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.TreeitemRenderer;
-import org.zkoss.zul.Treerow;
+import org.zkoss.zul.*;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupController;
 
 /**
  * Handles the item render for the Folder Tree list.

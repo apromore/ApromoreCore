@@ -93,4 +93,5 @@ public abstract class Constants {
     public static final String SECURITY_SERVICE = "securityService";
     public static final String AUTH_SERVICE = "authorizationService";
     public static final String WORKSPACE_SERVICE = "workspaceService";
+
 }

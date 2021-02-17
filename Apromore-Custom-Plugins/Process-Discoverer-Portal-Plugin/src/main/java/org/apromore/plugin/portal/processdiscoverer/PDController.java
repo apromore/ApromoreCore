@@ -28,6 +28,8 @@ import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -36,6 +38,7 @@ import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
@@ -53,7 +56,9 @@ import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.FolderType;
@@ -130,6 +135,7 @@ public class PDController extends BaseController {
     //private Button fitness;
     private Button animate;
     private Button fitScreen;
+    private Button share;
 
     private Button exportFilteredLog;
     private Button downloadPDF;
@@ -177,6 +183,8 @@ public class PDController extends BaseController {
     private LogData logData;
     private UserOptionsData userOptions;
     private OutputData outputData;
+    private LogSummaryType logSummary;
+    private PortalContext portalContext;
 
     private String primaryTypeLabel;
     private String primaryAggregateCode;
@@ -203,8 +211,8 @@ public class PDController extends BaseController {
     private boolean preparePortalSession(String pluginSessionId) {
         portalSession = UserSessionManager.getEditSession(pluginSessionId);
         if (portalSession == null) return false;
-        PortalContext portalContext = (PortalContext) portalSession.get("context");
-        LogSummaryType logSummary = (LogSummaryType) portalSession.get("selection");
+        portalContext = (PortalContext) portalSession.get("context");
+        logSummary = (LogSummaryType) portalSession.get("selection");
 
         sourceLogId = logSummary.getId();
 
@@ -391,6 +399,7 @@ public class PDController extends BaseController {
             filterClear = (Button) mainWindow.getFellow("filterClear");
             animate = (Button) mainWindow.getFellow("animate");
             fitScreen = (Button) mainWindow.getFellow("fitScreen");
+            share = (Button) mainWindow.getFellow("share");
     
             exportFilteredLog = (Button) mainWindow.getFellow("exportUnfitted");
             // export = (Combobutton) mainWindow.getFellow(StringValues.b[70]);
@@ -567,6 +576,26 @@ public class PDController extends BaseController {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     graphVisController.exportPNG(getOutputName());
+                }
+            });
+
+            share.addEventListener("onClick", event -> {
+                PortalPlugin accessControlPlugin;
+
+                try {
+                    Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
+                    Object selectedItem = logSummary;
+                    accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+                    Map arg = new HashMap<>();
+                    arg.put("withFolderTree", false);
+                    arg.put("selectedItem", selectedItem);
+                    arg.put("currentUser", UserSessionManager.getCurrentUser());
+                    arg.put("autoInherit", true);
+                    arg.put("showRelatedArtifacts", true);
+                    accessControlPlugin.setSimpleParams(arg);
+                    accessControlPlugin.execute(portalContext);
+                } catch (Exception e) {
+                    Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
                 }
             });
     
