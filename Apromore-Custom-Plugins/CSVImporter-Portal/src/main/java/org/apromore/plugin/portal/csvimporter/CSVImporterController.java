@@ -1066,9 +1066,6 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
             } else {
 
-                if (logModel.getImportLog() == null) {
-                }
-
                 storeMappingAsJSON(media, logMetaData, logModel.getImportLog());
                 String successMessage;
                 if (logModel.isRowLimitExceeded()) {
