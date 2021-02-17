@@ -23,7 +23,6 @@
 package org.apromore.manager.client;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.apromore.common.Constants;
-//import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.NativeType;
@@ -49,7 +47,6 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.GroupMapper;
 import org.apromore.mapper.NativeTypeMapper;
-import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
 import org.apromore.plugin.ParameterAwarePlugin;
@@ -70,7 +67,6 @@ import org.apromore.portal.model.PluginInfo;
 import org.apromore.portal.model.PluginInfoResult;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
@@ -86,10 +82,10 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
-import org.apromore.service.search.SearchExpressionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Implements {@link ManagerService} by delegating to OSGi services.
@@ -109,10 +105,26 @@ public class ManagerServiceImpl implements ManagerService {
 
     private boolean isGEDMatrixReady = true;
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+// Implementation of ManagerService
 
-    // Implementation of ManagerService
+    /**
+     * Logout, in Keycloak, user sessions associated with said user.
+     *
+     * @param username The username of the user to logout.
+     *
+     * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
+     */
+    @Override
+    public boolean logoutUserAllSessions(final String username) {
+        final RestTemplate restTemplate = new RestTemplate();
+        final Boolean restRespResult =
+                restTemplate.getForObject("http://localhost:8080/logout/" + username, Boolean.class);
+        logger.debug("\n\nrestRespResult: {}", restRespResult);
+
+        return restRespResult;
+    }
 
     /**
      * the User record.

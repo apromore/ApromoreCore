@@ -89,6 +89,7 @@ public abstract class Constants {
 
     public static final String MANAGER_SERVICE = "managerClient";
     public static final String EVENT_LOG_SERVICE = "eventLogService";
+    public static final String USER_SERVICE = "userService";
     public static final String SECURITY_SERVICE = "securityService";
     public static final String AUTH_SERVICE = "authorizationService";
     public static final String WORKSPACE_SERVICE = "workspaceService";

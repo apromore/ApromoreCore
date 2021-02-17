@@ -22,12 +22,21 @@
 
 
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-             xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-    <!-- Uncomment to support new user registration and reset password.
+    <!-- Enable auto-wiring -->
+    <context:annotation-config/>
+    <context:component-scan base-package="org.springframework.security.saml"/>
+
+    <beans:bean id="loginPageFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter" />
+
+    <!-- Setup for the Servlets used in new user regisration and reset password.
     <beans:bean id="resetPassword" class="org.apromore.portal.servlet.ResetPasswordHttpServletRequestHandler" />
     <beans:bean id="newUserRegistration" class="org.apromore.portal.servlet.NewUserRegistrationHttpServletRequestHandler" />
 
@@ -35,6 +44,7 @@
     -->
 
     <!-- Http Security Setup -->
+    <http pattern="/applets/**" security="none"/>
     <http pattern="/css/**" security="none"/>
     <http pattern="/font/**" security="none"/>
     <http pattern="/img/**" security="none"/>
@@ -47,13 +57,27 @@
     <http auto-config="false" access-denied-page="/denied.zul" use-expressions="true"
           entry-point-ref="apromoreAuthenticationEntryPoint" authentication-manager-ref="authenticationManager">
         <intercept-url pattern="/login.zul*" access="permitAll" requires-channel="any"/>
+        <intercept-url pattern="/index.zul*" access="permitAll" requires-channel="any"/>
+
         <intercept-url pattern="/**" access="hasRole('ROLE_USER')" requires-channel="any"/>
 
-        <logout logout-url="/j_spring_security_logout" logout-success-url="/login.zul" delete-cookies="JSESSIONID,Apromore"/>
+        <logout logout-url="/j_spring_security_logout"
+                logout-success-url="/login.zul"
+                invalidate-session="true"
+                delete-cookies="JSESSIONID,Apromore"/>
 
         <custom-filter position="FORM_LOGIN_FILTER" ref="apromoreUsernamePasswordAuthenticationFilter"/>
 
-        <session-management session-fixation-protection="none"/>
+        <custom-filter before="FIRST" ref="loginKeycloakFilter" />
+
+        <!--
+        <custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+        <custom-filter after="BASIC_AUTH_FILTER" ref="samlFilter"/>
+        -->
+
+        <!-- <custom-filter before="BASIC_AUTH_FILTER" ref="ssoApprovedFilter"/> -->
+
+        <session-management session-fixation-protection="newSession"/>
         <remember-me services-ref="rememberMeServices"/>
     </http>
 
@@ -91,6 +115,10 @@
         </beans:property>
     </beans:bean>
     -->
+    <beans:bean id="loginKeycloakFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter">
+        <beans:property name="keycloakLoginFormUrl"
+                        value="http://localhost:8180/auth/realms/&lt;keycloakRealm&gt;/protocol/openid-connect/auth?response_type=code&amp;client_id=product-app&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fsso%2Flogin&amp;state=c8a5aa26-04ee-4e7e-a4af-a7c885764071&amp;login=true&amp;scope=openid" />
+    </beans:bean>
 
     <beans:bean id="remoteAuthenticationProvider" class="org.apromore.security.provider.ApromoreRemoteAuthenticationProvider">
         <beans:property name="remoteAuthenticationManager" ref="remoteAuthenticationManager"/>
@@ -112,8 +140,11 @@
 
 
     <!-- Custom Filters for Apromore -->
-    <beans:bean id="apromoreAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <beans:property name="loginFormUrl" value="/login.zul"/>
+    <beans:bean id="apromoreAuthenticationEntryPoint" class="org.apromore.security.KeycloakLoginUrlAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl"
+                        value="/login.zul" />
+        <beans:property name="keycloakLoginFormUrl"
+                        value="http://localhost:8180/auth/realms/&lt;keycloakRealm&gt;/protocol/openid-connect/auth?response_type=code&amp;client_id=product-app&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fsso%2Flogin&amp;state=c8a5aa26-04ee-4e7e-a4af-a7c885764071&amp;login=true&amp;scope=openid" />
     </beans:bean>
 
     <beans:bean id="apromoreUsernamePasswordAuthenticationFilter" class="org.apromore.security.filter.ApromoreUsernamePasswordAuthenticationFilter">

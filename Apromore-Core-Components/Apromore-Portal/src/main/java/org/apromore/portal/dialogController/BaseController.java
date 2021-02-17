@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 // Third party packages
+import org.apromore.service.UserService;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
@@ -60,6 +61,7 @@ public class BaseController extends Window {
 
     private ManagerService managerService;
     private EventLogService eventLogService;
+    private UserService userService;
     private SecurityService securityService;
     private AuthorizationService authorizationService;
     private WorkspaceService workspaceService;
@@ -91,6 +93,14 @@ public class BaseController extends Window {
             setEventLogService(eventLogService);
         }
         return eventLogService;
+    }
+
+    public UserService getUserService() {
+        if (userService == null) {
+            userService = (UserService) SpringUtil.getBean(Constants.USER_SERVICE);
+            setUserService(userService);
+        }
+        return userService;
     }
 
     public SecurityService getSecurityService() {
@@ -228,6 +238,11 @@ public class BaseController extends Window {
     public String processRequest(Map<String,String[]> parameterMap) {
         return "";
     }
+
+    private void setUserService(final UserService userService) {
+        this.userService = userService;
+    }
+
     private void setSecurityService(final SecurityService securityService) {
         this.securityService = securityService;
     }

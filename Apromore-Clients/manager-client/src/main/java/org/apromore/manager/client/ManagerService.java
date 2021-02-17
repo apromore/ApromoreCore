@@ -63,6 +63,15 @@ import org.apromore.portal.model.VersionSummaryType;
 public interface ManagerService {
 
     /**
+     * Logout, in Keycloak, user sessions associated with said user.
+     *
+     * @param username The username of the user to logout.
+     *
+     * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
+     */
+    boolean logoutUserAllSessions(final String username);
+
+    /**
      * the User record.
      * @param username the users login name
      * @return the UserType from the webservice

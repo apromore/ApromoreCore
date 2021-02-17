@@ -40,10 +40,13 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apromore.commons.item.ItemNameUtils;
-import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Log;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.mapper.UserMapper;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -72,8 +75,11 @@ import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.plugincontrol.PluginExecutionManager;
+import org.apromore.portal.util.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -95,6 +101,8 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
 
+import static org.apromore.portal.common.UserSessionManager.initializeUser;
+
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
@@ -102,11 +110,17 @@ import org.zkoss.zul.ext.Paginal;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
+    private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
-    private EventQueue<Event> qe; // = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+    private static final String SYMMETRIC_KEY_SECRET = "changeThisTopSecret";
+
+    private EventQueue<Event> qe;
 
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
+
+    // @2do: grab this securely from the environment
+    private static final String KEY_ALIAS = "CAPS";
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -125,14 +139,81 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
-
-    public MainController() {
-        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-        portalSession = new PortalSession(this);
-        UserSessionManager.initializeUser(getService(), config);
+    private PluginExecutionManager pluginManager; // = new PluginExecutionManager();
+	
+    public static MainController getController() {
+        return controller;
     }
 
-    /** Unit test constructor. */
+    public MainController() {
+        LOGGER.info("\n\n>>>In MainController() default constructor");
+
+        // qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+        // portalSession = new PortalSession(this);
+
+        // final String username = Executions.getCurrent().getParameter("username");
+        // LOGGER.info("\n\nIn PORTAL MainController, username parameter {}\n", username);
+
+        String urlDecoded = Executions.getCurrent().getParameter("encodedToken");
+        LOGGER.info("\n\nIn PORTAL MainController, urlDecoded {}", urlDecoded);
+
+        String usernameParsed = null;
+
+        try {
+            if (StringUtils.isNotBlank(urlDecoded)) {
+                final String decryptedUrlParam = SecurityUtils.symmetricDecrypt(urlDecoded, "changeThisTopSecret");
+                LOGGER.info("\n\n>>>>> >>>>> >>>>> decryptedUrlParam: {}", decryptedUrlParam);
+
+                final StringTokenizer stringTokenizer = new StringTokenizer(decryptedUrlParam, ";");
+
+                final String usernameKeyValuePair = stringTokenizer.nextToken();
+                usernameParsed = usernameKeyValuePair.substring(usernameKeyValuePair.indexOf("=") + 1);
+
+                LOGGER.info("\n\n>>>>> >>>>> >>>>> usernameParsed: {}", usernameParsed);
+            }
+        } catch (final Exception e) {
+            LOGGER.error("\n\n##### Error in decrypting url param: {}", e.getMessage());
+
+            LOGGER.error("\n\nBefore stacktrace\n");
+            e.printStackTrace();
+            LOGGER.error("\n\nAfter stacktrace\n");
+        }
+
+        if (StringUtils.isNotBlank(usernameParsed)) {
+            try {
+                Sessions.getCurrent().setMaxInactiveInterval(-10);
+                LOGGER.info("\n\n>>> Set max inactive interval to negative number <<<");
+
+                final User samlSsoUser = getUserService().findUserByLogin(usernameParsed);
+                final UserType userType = UserMapper.convertUserTypes(samlSsoUser, getSecurityService());
+
+                qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, false);
+                portalSession = new PortalSession(this);
+
+                initializeUser(getService(), config, userType, samlSsoUser);
+            } catch (UserNotFoundException e) {
+                LOGGER.error("\n\nUserNotFoundException: {}", e.getMessage());
+
+                e.printStackTrace();
+            }
+        } else {
+            LOGGER.info("\n\n>>> About to call initializeUser");
+
+            qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+            portalSession = new PortalSession(this);
+
+            initializeUser(getService(), config, null, null);
+        }
+    }
+
+    private void setupUserDynamically(final UserType userType) {
+	    LOGGER.info("\n\n*** DYNAMICALLY Setting*** userType {} as currentUser", userType);
+        UserSessionManager.setCurrentUser(userType);
+
+        LOGGER.info("\n\n*** AFTER DYNAMICALLY setting*** userType {} as currentUser", userType);
+	}
+
+	/** Unit test constructor. */
     public MainController(ConfigBean configBean) {
         super(configBean);
         portalSession = new PortalSession(this);
@@ -140,6 +221,10 @@ public class MainController extends BaseController implements MainControllerInte
 
     public PortalSession getPortalSession() {
         return portalSession;
+    }
+    
+    public PluginExecutionManager getPluginExecutionManager() {
+        return this.pluginManager;
     }
 
     /**
@@ -165,6 +250,7 @@ public class MainController extends BaseController implements MainControllerInte
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
 
+            controller = this;
             MainController self = this;
 
             Sessions.getCurrent().setAttribute("portalContext", portalContext);
@@ -184,6 +270,10 @@ public class MainController extends BaseController implements MainControllerInte
                     self.reloadBreadcrumbs();
                 }
             });
+
+            if (qe == null) {
+               qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+            }
 
             qe.subscribe(new EventListener<Event>() {
                 @Override
@@ -208,6 +298,10 @@ public class MainController extends BaseController implements MainControllerInte
             pagingandbuttons.setVisible(true);
 
         } catch (Exception e) {
+            LOGGER.error("\n\n##### Repository NOT available: {}", e.getMessage());
+
+            e.printStackTrace();
+
             String message;
             if (e.getMessage() == null) {
                 message = "Please contact your Apromore Administrator";
@@ -301,6 +395,7 @@ public class MainController extends BaseController implements MainControllerInte
      * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
     public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
+        LOGGER.debug("\n\n----- In displayProcessSummaries(..) -----");
         int folderId;
 
         if (isQueryResult) {
@@ -461,8 +556,6 @@ public class MainController extends BaseController implements MainControllerInte
      * @param process the process summary
      * @param version the version of the process
      * @param nativeType the native type of the process
-     * @param annotation the annotation of that process
-     * @param readOnly is this model readonly or not
      * @param requestParameterTypes request parameters types.
      * @throws InterruptedException
      */
@@ -744,6 +837,8 @@ public class MainController extends BaseController implements MainControllerInte
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
+        LOGGER.trace("Loading properties of webapp");
+
         setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
         String date = config.getVersionBuildDate();
         date = date.substring(0, date.indexOf("@") - 1);
