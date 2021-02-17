@@ -48,11 +48,6 @@
         <property name="header:Web-ContextPath" value="/" />
     </artifact>
 
-    <!-- REST endpoints -->
-    <artifact type="bundle" name="org.apromore.jersey-osgi" version="[1, 2)"/>
-    <artifact type="bundle" name="jackson-xc" version="[1.9, 2)"/>
-    <artifact type="bundle" name="org.apromore.rest-endpoint" version="[1.0, 2)"/>
-
     <!-- CORE CUSTOM PLUGINS -->
     <artifact type="bundle" name="org.apromore.apmlog" version="[1.0.0, 2)"/>
     
@@ -68,7 +63,8 @@
     <artifact type="bundle" name="org.apromore.plugin.file-portal-plugin" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="@about-portal.bundle@" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.account-portal-plugin" version="[1.0.0, 2)"/>
-    
+
+    <artifact type="bundle" name="org.apromore.access-control-portal-plugin" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.user-admin-portal-plugin" version="[1.0.0, 2)"/>
     <artifact type="bundle" name="org.apromore.calendar-portal-plugin" version="[1.0.0, 2)"/>
     

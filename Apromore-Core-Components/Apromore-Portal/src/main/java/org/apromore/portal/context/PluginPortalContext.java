@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.PortalSelection;
 import org.apromore.plugin.portal.PortalUI;
 import org.apromore.portal.common.UserSessionManager;
@@ -98,6 +99,10 @@ public class PluginPortalContext implements PortalContext {
         return new PortalUIImpl();
     }
 
+    @Override
+    public Map<String, PortalPlugin> getPortalPluginMap() {
+        return mainController.getPortalPluginMap();
+    }
 
     // Scratch area for methods required during porting
 

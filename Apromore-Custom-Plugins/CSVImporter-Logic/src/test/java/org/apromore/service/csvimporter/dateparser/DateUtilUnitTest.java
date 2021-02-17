@@ -34,6 +34,7 @@ import java.util.List;
 
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 public class DateUtilUnitTest {
@@ -80,6 +81,13 @@ public class DateUtilUnitTest {
         assertEquals("yyyy dd MM", determineDateFormat("2019 19 12"));
         assertEquals("dd MMM yyyy", determineDateFormat("19 Dec 2019"));
         assertEquals("dd MMMM yyyy", determineDateFormat("19 DECEMBER 2019"));
+        assertNull("10 dd or MM is not valid timestamp", determineDateFormat("10"));
+        assertNull("10/12 dd/MM is not valid timestamp", determineDateFormat("10/12"));
+        assertNull("2019 yyyy is not valid timestamp", determineDateFormat("2019"));
+        assertNull("Friday WWW is not valid timestamp", determineDateFormat("Friday"));
+        assertNull("12:20 HH:mm is not valid timestamp", determineDateFormat("12:20"));
+        assertNull("1220 HHmm is not valid timestamp", determineDateFormat("1220"));
+        assertNull("13:20:30 HH:mm:ss is not valid timestamp", determineDateFormat("13:20:30"));
     }
 
     @Test
@@ -453,40 +461,40 @@ public class DateUtilUnitTest {
     public void test_timestamp_date_yy_only() {
 
         System.out.println("\n************************************\ntest - Test timestamp format - year only (00, 2000 and 200012)");
-        assertEquals("yy", determineDateFormat("19"));
-        assertEquals("yyyy", determineDateFormat("2019"));
-        assertEquals("yyyyMM", determineDateFormat("200012"));
+        assertNull("yy", determineDateFormat("19"));
+        assertNull("yyyy", determineDateFormat("2019"));
+        assertNull("yyyyMM", determineDateFormat("200012"));
     }
 
     @Test
     public void test_timestamp_date_week_day_only() {
 
         System.out.println("\n************************************\ntest - Test timestamp format - week day only (Sat, Saturday and Sa)");
-        assertEquals("EEE", determineDateFormat("Sat"));
-        assertEquals("EEEE", determineDateFormat("Saturday"));
-        assertEquals("EEEEE", determineDateFormat("SA"));
+        assertNull("EEE", determineDateFormat("Sat"));
+        assertNull("EEEE", determineDateFormat("Saturday"));
+        assertNull("EEEEE", determineDateFormat("SA"));
     }
 
     @Test
     public void test_timestamp_date_time_only() {
 
         System.out.println("\n************************************\ntest - Test timestamp format - time only (0208, 125959, 125959.879 or 12:08, 12:59:59, 12:59:59.879)");
-        assertEquals("HHmm", determineDateFormat("0208"));
-        assertEquals("HHmmss", determineDateFormat("125959"));
-        assertEquals("HHmmss.SSS", determineDateFormat("125959.879"));
-        assertEquals("HH:mm", determineDateFormat("12:08"));
-        assertEquals("HH:mm:ss", determineDateFormat("12:59:59"));
-        assertEquals("HH:mm:ss.SSS", determineDateFormat("12:59:59.879"));
-        assertEquals("HH:mm a", determineDateFormat("12:08 am"));
-        assertEquals("HH:mm:ss a", determineDateFormat("12:59:59 pm"));
-        assertEquals("HH:mm:ss.SSS a", determineDateFormat("12:59:59.879 am"));
-        assertEquals("HH:mma", determineDateFormat("12:08am"));
-        assertEquals("HH:mm:ssa", determineDateFormat("12:59:59pm"));
-        assertEquals("HH:mm:ss.Sa", determineDateFormat("12:59:59.8am"));
-        assertEquals("HH:mm:ss.SSSa", determineDateFormat("12:59:59.879am"));
-        assertEquals("mm:ss", determineDateFormat("59:59"));
-        assertEquals("mm:ss.S", determineDateFormat("59:59.8"));
-        assertEquals("mm:ss.SSS", determineDateFormat("59:59.879"));
+        assertNull("HHmm", determineDateFormat("0208"));
+        assertNull("HHmmss", determineDateFormat("125959"));
+        assertNull("HHmmss.SSS", determineDateFormat("125959.879"));
+        assertNull("HH:mm", determineDateFormat("12:08"));
+        assertNull("HH:mm:ss", determineDateFormat("12:59:59"));
+        assertNull("HH:mm:ss.SSS", determineDateFormat("12:59:59.879"));
+        assertNull("HH:mm a", determineDateFormat("12:08 am"));
+        assertNull("HH:mm:ss a", determineDateFormat("12:59:59 pm"));
+        assertNull("HH:mm:ss.SSS a", determineDateFormat("12:59:59.879 am"));
+        assertNull("HH:mma", determineDateFormat("12:08am"));
+        assertNull("HH:mm:ssa", determineDateFormat("12:59:59pm"));
+        assertNull("HH:mm:ss.Sa", determineDateFormat("12:59:59.8am"));
+        assertNull("HH:mm:ss.SSSa", determineDateFormat("12:59:59.879am"));
+        assertNull("mm:ss", determineDateFormat("59:59"));
+        assertNull("mm:ss.S", determineDateFormat("59:59.8"));
+        assertNull("mm:ss.SSS", determineDateFormat("59:59.879"));
     }
 
     @Test

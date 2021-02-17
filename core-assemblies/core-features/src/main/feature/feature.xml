@@ -57,6 +57,7 @@
     <bundle>mvn:org.apromore/similaritysearch-osgi/1.1</bundle>
     <bundle>mvn:org.apromore/similaritysearch-portal/1.1.0</bundle>
     <bundle>mvn:org.apromore/splitminer-logic/1.0</bundle>
+    <bundle>mvn:org.apromore/access-control-portal-plugin/1.0</bundle>
     <bundle>mvn:org.apromore/user-admin-portal-plugin/1.0</bundle>
     <bundle>mvn:org.apromore.plugin/about-portal-plugin/1.0</bundle>
     <bundle>mvn:org.apromore.plugin/account-portal-plugin/1.0</bundle>
@@ -67,8 +68,6 @@
     <bundle>mvn:org.apromore.plugin/merge-portal/1.1</bundle>
     <bundle>mvn:org.apromore.plugin/portal-custom-gui/1.1.0</bundle>
     <bundle>mvn:org.json/json-osgi/1.0</bundle>
-
-    <feature>apromore-rest-endpoint</feature>
   </feature>
 
   <feature name="apromore-core" version="${project.version}" description="Apromore core edition">
@@ -122,18 +121,6 @@
     <bundle>mvn:org.apromore.plugin/plugin-api/1.1</bundle>
     <bundle>mvn:org.apromore.plugin/plugin-api-provider/1.1</bundle>
     <bundle>mvn:org.apromore/apromore-manager/1.1</bundle>
-  </feature>
-
-  <feature name="apromore-rest-endpoint" version="${project.version}" description="Apromore REST endpoint">
-    <feature>apromore-portal</feature>
-    <bundle>mvn:javax.ws.rs/jsr311-api/1.1.1</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-core-lgpl/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-mapper-lgpl/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jackson/jackson-xc/${jackson.version}</bundle>
-    <bundle>mvn:org.codehaus.jettison/jettison/1.4.1</bundle>
-    <bundle>mvn:org.apromore/jersey-osgi/1.0</bundle>
-    <bundle>mvn:org.apromore/rest-endpoint/1.0/war</bundle>
   </feature>
 
   <feature name="apromore-portal" version="${project.version}" description="Apromore core web browser interface">

@@ -38,7 +38,9 @@ import javax.validation.ValidationException;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.access.Helpers;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.notification.Notification;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.PluginPortalContext;
@@ -406,7 +408,7 @@ public abstract class BaseListboxController extends BaseController {
 
 	    boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
 	    try {
-		canChange = canChange || Helpers.isChangeable(currentFolder, currentUser);;
+		canChange = canChange || ItemHelpers.isChangeable(currentFolder, currentUser);;
 	    } catch (Exception e) {
 		Notification.error(e.getMessage());
 		return;
@@ -496,7 +498,7 @@ public abstract class BaseListboxController extends BaseController {
 
 			boolean canChange = false;
 			try {
-				canChange = Helpers.isChangeable(selectedItem, currentUser);
+				canChange = ItemHelpers.isChangeable(selectedItem, currentUser);
 			} catch (Exception e) {
 				Notification.error(e.getMessage());
 				return;
@@ -514,46 +516,6 @@ public abstract class BaseListboxController extends BaseController {
             }
 
 		} catch (DialogException e) {
-			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-
-	/**
-	 * Share folder/log/process model
-	 */
-	protected void share() {
-		try {
-			if (getSelectionCount() == 0) {
-				Notification.error("Please select a log or model to share");
-				return;
-			} else if (getSelectionCount() > 1) {
-				Notification.error("You cannot share multiple items");
-				return;
-			}
-			Object selectedItem = getSelection().iterator().next();
-			boolean canShare = false;
-			// canShare = validateNotFolderTypeItem(selectedItem); // Allow folder
-			try {
-				canShare = Helpers.isOwner(selectedItem, currentUser);
-			} catch (ValidationException e) {
-				Notification.error(e.getMessage());
-				return;
-			}
-			if (canShare) {
-				Map arg = new HashMap<>();
-				arg.put("selectedItem", selectedItem);
-				arg.put("currentUser", UserSessionManager.getCurrentUser());
-				arg.put("autoInherit", true);
-				arg.put("showRelatedArtifacts", true);
-				arg.put("enablePublish", config.getEnablePublish());
-				Window window = (Window) Executions.getCurrent().createComponents("components/access/share.zul", null, arg);
-				window.doModal();
-			} else {
-				Notification.error("Only Owner can share an item");
-				return;
-			}
-			;
-		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
@@ -596,7 +558,7 @@ public abstract class BaseListboxController extends BaseController {
 
 		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-		    canChange = canChange || Helpers.isOwner(currentFolder, currentUser);
+			canChange = canChange || ItemHelpers.isChangeable(currentFolder, currentUser);
 		} catch (Exception e) {
 			Notification.error(e.getMessage());
 			return;
@@ -619,7 +581,7 @@ public abstract class BaseListboxController extends BaseController {
 
 		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
 		try {
-		    canChange = canChange || Helpers.isOwner(currentFolder, currentUser);
+			canChange = canChange || ItemHelpers.isChangeable(currentFolder, currentUser);
 		} catch (Exception e) {
 			Notification.error(e.getMessage());
 			return;
@@ -784,24 +746,6 @@ public abstract class BaseListboxController extends BaseController {
 				});
 	}
 
-	/* Setup the Security controller. */
-	protected void security() throws InterruptedException {
-		Object selectedItem;
-		getMainController().eraseMessage();
-		try {
-			boolean canShare = false;
-			if (getSelectionCount() == 0 || getSelectionCount() > 1) {
-				selectedItem = null;
-			} else {
-				selectedItem = getSelection().iterator().next();
-				canShare = Helpers.isOwner(selectedItem, currentUser);
-			}
-			new SecuritySetupController(getMainController(), UserSessionManager.getCurrentUser(), selectedItem, canShare);
-		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-
 	protected void userMgmt() throws InterruptedException {
 		PortalPlugin userMgmtPlugin;
 
@@ -812,6 +756,62 @@ public abstract class BaseListboxController extends BaseController {
 		} catch (Exception e) {
 			LOGGER.error("Unable to create user administration dialog", e);
 			Messagebox.show("Unable to create user administration dialog");
+		}
+	}
+
+	/* Setup the Security controller. */
+	protected void security() throws InterruptedException {
+		PortalPlugin accessControlPlugin;
+		Object selectedItem;
+
+		getMainController().eraseMessage();
+		try {
+			if (getSelectionCount() == 0 || getSelectionCount() > 1) {
+				selectedItem = null;
+			} else {
+				selectedItem = getSelection().iterator().next();
+			}
+			accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+			Map arg = new HashMap<>();
+			arg.put("withFolderTree", true);
+			arg.put("selectedItem", selectedItem);
+			arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
+			arg.put("autoInherit", true);
+			arg.put("showRelatedArtifacts", true);
+			accessControlPlugin.setSimpleParams(arg);
+			accessControlPlugin.execute(portalContext);
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	/**
+	 * Share folder/log/process model
+	 */
+	protected void share() {
+		PortalPlugin accessControlPlugin;
+
+		getMainController().eraseMessage();
+		try {
+			if (getSelectionCount() == 0) {
+				Notification.error("Please select a log or model to share");
+				return;
+			} else if (getSelectionCount() > 1) {
+				Notification.error("You cannot share multiple items");
+				return;
+			}
+			Object selectedItem = getSelection().iterator().next();
+			accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+			Map arg = new HashMap<>();
+			arg.put("withFolderTree", false);
+			arg.put("selectedItem", selectedItem);
+			arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
+			arg.put("autoInherit", true);
+			arg.put("showRelatedArtifacts", true);
+			accessControlPlugin.setSimpleParams(arg);
+			accessControlPlugin.execute(portalContext);
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
