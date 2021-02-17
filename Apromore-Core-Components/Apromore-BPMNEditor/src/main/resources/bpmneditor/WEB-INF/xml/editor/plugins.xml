@@ -33,6 +33,7 @@
         <plugin source="export.js" name="Apromore.Plugins.Export"/>
 		<plugin source="pdf.js" name="Apromore.Plugins.File"/>
 		<plugin source="view.js" name="Apromore.Plugins.View"/>
+		<plugin source="share.js" name="Apromore.Plugins.Share"/>
 		<plugin source="simulationPanel.js" name="Apromore.Plugins.SimulationPanel"/>
 
 		<!-- Added to dynamically include Apromore plug-ins -->

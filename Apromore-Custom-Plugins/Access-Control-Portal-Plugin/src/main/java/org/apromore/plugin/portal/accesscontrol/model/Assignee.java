@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.portal.access;
+package org.apromore.plugin.portal.accesscontrol.model;
 
 import org.apromore.dao.model.Group.Type;
 

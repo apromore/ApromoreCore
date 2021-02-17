@@ -77,6 +77,7 @@
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
 
         <module>Apromore-Custom-Plugins/About-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Access-Control-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Apromore-Editor</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
@@ -85,7 +86,7 @@
         <module>Apromore-Custom-Plugins/CSVExporter-Portal</module>
 
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
-                <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
+        <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin-API</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>     
 
         <module>Apromore-Custom-Plugins/Log-Logic</module>

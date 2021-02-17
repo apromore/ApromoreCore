@@ -20,41 +20,30 @@
  * #L%
  */
 
-package org.apromore.portal.access.controllers;
+package org.apromore.plugin.portal.accesscontrol.controllers;
 
 import java.util.Map;
-import java.util.HashMap;
 
 import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.FolderType;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Window;
-import org.apromore.portal.model.UserType;
-
-import org.apromore.portal.access.controllers.AccessController;
 
 public class ShareController extends SelectorComposer<Window> {
 
     private Object selectedItem;
     private Boolean autoInherit;
     private Boolean showRelatedArtifacts;
-    private Boolean enablePublish;
     private Window win;
-
-    public ShareController() throws Exception {
+    public ShareController() {
         Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
 
         selectedItem = argMap.get("selectedItem");
         autoInherit = (Boolean)argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean)argMap.get("showRelatedArtifacts");
-        enablePublish = (Boolean)argMap.get("enablePublish");
     }
 
     @Override
@@ -68,6 +57,7 @@ public class ShareController extends SelectorComposer<Window> {
         }
         EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).subscribe(
                 new EventListener() {
+                    @Override
                     public void onEvent(Event evt) {
                         if ("onClose".equals(evt.getName())) {
                             win.detach();
