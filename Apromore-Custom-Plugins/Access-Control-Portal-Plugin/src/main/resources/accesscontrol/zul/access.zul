@@ -43,7 +43,7 @@
                 <span id="selectedIconMetadata" visible="false" >
                     <image src="/themes/ap/common/img/icons/metadata.svg" />
                 </span>
-                <label id="selectedName"></label>
+                <label id="selectedName"/>
             </div>
             <div id="relatedDepsWrapper" vflex="1" sclass="ap-share-related-deps" visible="false">
                 <div sclass="note">

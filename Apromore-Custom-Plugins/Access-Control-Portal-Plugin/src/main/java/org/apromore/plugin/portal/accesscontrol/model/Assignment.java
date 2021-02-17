@@ -23,7 +23,6 @@
 package org.apromore.plugin.portal.accesscontrol.model;
 
 import org.apromore.dao.model.Group.Type;
-import org.apromore.util.AccessType;
 
 /**
  * Assignment model for listmodel-based UI
@@ -91,6 +90,6 @@ public class Assignment {
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !Assignment.class.equals(obj.getClass())) { return false; }
-        return (obj != null) && (obj instanceof Assignment) && rowGuid.equals(((Assignment) obj).rowGuid);
+        return (obj instanceof Assignment) && rowGuid.equals(((Assignment) obj).rowGuid);
     }
 }

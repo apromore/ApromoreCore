@@ -60,6 +60,6 @@ public class Artifact {
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !Artifact.class.equals(obj.getClass())) { return false; }
-        return (obj != null) && (obj instanceof Artifact) && id.equals(((Artifact) obj).id);
+        return (obj instanceof Artifact) && id.equals(((Artifact) obj).id);
     }
 }

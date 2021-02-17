@@ -99,7 +99,6 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
                     window.doModal();
                 } else {
                     Notification.error("Only Owner can share an item");
-                    return;
                 }
             }
         } catch (Exception e) {

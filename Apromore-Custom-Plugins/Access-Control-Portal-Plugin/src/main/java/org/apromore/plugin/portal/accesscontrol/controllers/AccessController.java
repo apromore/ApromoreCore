@@ -79,11 +79,11 @@ public class AccessController extends SelectorComposer<Div> {
     @WireVariable("userMetadataService")
     private UserMetadataService userMetadataService;
 
-    Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
+    private Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
     private Object selectedItem = argMap.get("selectedItem");
     private UserType currentUser = (UserType) argMap.get("currentUser");
-    Boolean autoInherit = (Boolean) argMap.get("autoInherit");
-    Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+    private Boolean autoInherit = (Boolean) argMap.get("autoInherit");
+    private Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
     private String userName;
 
     private Integer selectedItemId;
@@ -93,11 +93,11 @@ public class AccessController extends SelectorComposer<Div> {
     private ListModelList<Assignee> candidateAssigneeModel;
     private ListModelList<Assignment> assignmentModel;
     private ListModelList<Artifact> artifactModel;
-    Map<Group, AccessType> groupAccessTypeMap;
-    Map<String, Assignment> assignmentMap;
-    Map<String, Assignment> ownerMap;
-    Map<Integer, Artifact> artifactMap;
-    Map<String, ListModelList<Artifact>> groupArtifactsMap;
+    private Map<Group, AccessType> groupAccessTypeMap;
+    private Map<String, Assignment> assignmentMap;
+    private Map<String, Assignment> ownerMap;
+    private Map<Integer, Artifact> artifactMap;
+    private Map<String, ListModelList<Artifact>> groupArtifactsMap;
 
     @Wire("#selectedIconLog")
     Span selectedIconLog;
@@ -185,8 +185,8 @@ public class AccessController extends SelectorComposer<Div> {
                     ForwardEvent event = (ForwardEvent) ev;
                     InputEvent inputEvent = (InputEvent) event.getOrigin();
                     Combobox combobox = (Combobox) inputEvent.getTarget();
-                    String access = (String) combobox.getValue();
-                    String rowGuid = (String) combobox.getClientDataAttribute("id");
+                    String access = combobox.getValue();
+                    String rowGuid = combobox.getClientDataAttribute("id");
                     updateAssignment(rowGuid, access);
                 } catch(Exception e) {
                     LOGGER.error("Something is wrong in updating access");
@@ -198,7 +198,7 @@ public class AccessController extends SelectorComposer<Div> {
 
         editBtn.addEventListener("onRemove", new EventListener<Event>() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 JSONObject param = (JSONObject) event.getData();
                 String rowGuid = (String) param.get("rowGuid");
                 String name = (String) param.get("name");
@@ -219,7 +219,7 @@ public class AccessController extends SelectorComposer<Div> {
 
         editBtn.addEventListener("onIncludeMetadata", new EventListener<Event>() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 JSONObject param = (JSONObject) event.getData();
                 String rowGuid = (String) param.get("rowGuid");
                 String name = (String) param.get("name");
@@ -234,6 +234,7 @@ public class AccessController extends SelectorComposer<Div> {
 
         EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).subscribe(
             new EventListener() {
+                @Override
                 public void onEvent(Event evt) {
                     if ("onSelect".equals(evt.getName())) {
                         Object selItem = evt.getData();
@@ -243,7 +244,7 @@ public class AccessController extends SelectorComposer<Div> {
             });
     }
 
-    public void destroy() {
+    private void destroy() {
         getSelf().detach();
         EventQueues.lookup("accessControl", EventQueues.DESKTOP, true).publish(new Event("onClose", null, null));
     }
@@ -267,7 +268,7 @@ public class AccessController extends SelectorComposer<Div> {
         }
         String ownerLabel = AccessType.OWNER.getLabel();
         // If an attempt tries change the last owner access type
-        if (ownerLabel.equals(oldAccess) && !ownerLabel.equals(access) && ownerMap.size() == 1 && ownerMap.containsKey(rowGuid)) {
+        if (ownerLabel.equals(oldAccess) && ownerMap.size() == 1 && ownerMap.containsKey(rowGuid)) {
             Clients.evalJavaScript("Ap.share.revertCombobox('" + rowGuid + "', '" + oldAccess + "')");
             ensureOneOwnerWarning();
             return false;
@@ -275,9 +276,7 @@ public class AccessController extends SelectorComposer<Div> {
         assignment.setAccess(access);
         if (ownerLabel.equals(access)) {
             ownerMap.put(rowGuid, assignment);
-        } else if (ownerMap.containsKey(rowGuid)){
-            ownerMap.remove(rowGuid);
-        }
+        } else ownerMap.remove(rowGuid);
         return true;
     }
 
@@ -335,20 +334,20 @@ public class AccessController extends SelectorComposer<Div> {
         assignmentListbox.setModel(assignmentModel);
     }
 
-    public boolean isLogSelected() {
+    private boolean isLogSelected() {
         if (selectedItem == null) {
             return false;
         }
         return selectedItem.getClass().equals(LogSummaryType.class);
     }
 
-    public void clearArtifacts() {
+    private void clearArtifacts() {
         artifactModel = new ListModelList<Artifact>();
         artifactMap = new HashMap<Integer, Artifact>();
         artifactListbox.setModel(artifactModel);
     }
 
-    public void updateArtifacts(String rowGuid) {
+    private void updateArtifacts(String rowGuid) {
         if (!isLogSelected()) {
             return;
         }
@@ -398,7 +397,7 @@ public class AccessController extends SelectorComposer<Div> {
         for (Assignment assignment : assignmentModel) {
             String name = assignment.getName();
             String rowGuid = assignment.getRowGuid();
-            boolean shareUserMetadata = assignment.isShareUserMetadata();
+            boolean shareUserMetadata;
             shareUserMetadata = false;
             AccessType accessType = AccessType.getAccessType(assignment.getAccess());
             Group group = securityService.findGroupByRowGuid(rowGuid);
@@ -460,7 +459,7 @@ public class AccessController extends SelectorComposer<Div> {
         relatedDependencies.appendChild(new Label("Process Model: Dependent model"));
     }
 
-    public void setSelectedItem(Object selectedItem) {
+    private void setSelectedItem(Object selectedItem) {
         Span selectedIcon;
         selectedIconFolder.setVisible(false);
         selectedIconLog.setVisible(false);
