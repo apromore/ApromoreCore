@@ -209,8 +209,11 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                         final ManagerService managerService = getManagerService();
                         LOGGER.info("\n\nmanagerService: {}", managerService);
 
+                        final UserType currentUser = UserSessionManager.getCurrentUser();
+                        LOGGER.info("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
+
                         final boolean logoutSuccess =
-                                managerService.logoutUserAllSessions("admin");
+                                managerService.logoutUserAllSessions(currentUser.getUsername());
                         LOGGER.info("\n\nlogoutSuccess: {}", logoutSuccess);
 
                         Session session = Sessions.getCurrent();
