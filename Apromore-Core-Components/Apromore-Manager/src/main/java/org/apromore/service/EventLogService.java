@@ -109,4 +109,6 @@ public interface EventLogService {
 
 
     void updateCalenderForLog(Integer logId, Long calenderId);
+
+    Long getCalendarIdFromLog(Integer logId);
 }

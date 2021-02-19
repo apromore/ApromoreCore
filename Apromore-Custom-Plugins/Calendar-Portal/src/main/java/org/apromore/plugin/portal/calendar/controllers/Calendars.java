@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -75,27 +76,40 @@ public class Calendars extends SelectorComposer<Window> {
     }
 
     public void initialize() {
-	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, Executions.getCurrent().getSession(),
+
+	Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
+	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC,
 		false);
 
 	CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
 	calendarListbox.setItemRenderer(itemRenderer);
 	calendarListModel = new ListModelList<CalendarModel>();
-	calendarListModel.addAll(calendarService.getCalendars());
+	List<CalendarModel> models = calendarService.getCalendars();
+
+	Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
 	calendarListModel.setMultiple(false);
+	for (CalendarModel model : models) {
+	    calendarListModel.add(model);
+	    if (model.getId().equals(selectedCalendarId)) {
+		calendarListModel.addToSelection(model);
+	    }
+
+	}
 	calendarListbox.setModel(calendarListModel);
+
     }
 
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
-	calendarEventQueue.close();
 	getSelf().detach();
     }
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
 	calendarEventQueue.publish(
-		new Event("onCalendarPublish", null, ((CalendarModel) calendarListModel.getSelection()).getId()));
+		new Event("onCalendarPublish", null,
+			((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
+	getSelf().detach();
     }
 
     @Listen("onClick = #addNewCalendarBtn")

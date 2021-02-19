@@ -22,9 +22,34 @@
 
 package org.apromore.test.service.impl;
 
-import com.google.common.collect.Sets;
+import static org.powermock.api.easymock.PowerMock.createMock;
+
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.*;
+import org.apromore.dao.CustomCalendarRepository;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.GroupUsermetadataRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.StorageRepository;
+import org.apromore.dao.UsermetadataLogRepository;
+import org.apromore.dao.UsermetadataRepository;
+import org.apromore.dao.UsermetadataTypeRepository;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
@@ -36,7 +61,12 @@ import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XAttributable;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.util.XRuntimeUtils;
 import org.deckfour.xes.util.XTimer;
 import org.junit.Before;
@@ -47,16 +77,7 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static org.powermock.api.easymock.PowerMock.createMock;
+import com.google.common.collect.Sets;
 
 public class EventLogServiceImplTest {
 
@@ -81,6 +102,7 @@ public class EventLogServiceImplTest {
     private StorageManagementFactory<StorageClient> storageFactory;
     private EventLogFileService logFileService;
     private StorageRepository storageRepository;
+    private CustomCalendarRepository calendarRepository;
 
 
     private static void walkLog(XLog log) {
@@ -128,11 +150,13 @@ public class EventLogServiceImplTest {
         storageFactory=createMock(StorageManagementFactory.class);
         logFileService=createMock(EventLogFileService.class);
         storageRepository=createMock(StorageRepository.class);
+	calendarRepository = createMock(CustomCalendarRepository.class);
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
                 userSrv, ui, config,
-                userMetadataService,temporaryCacheService,storageFactory,logFileService,storageRepository);
+		userMetadataService, temporaryCacheService, storageFactory, logFileService, storageRepository,
+		calendarRepository);
     }
 
     @Test

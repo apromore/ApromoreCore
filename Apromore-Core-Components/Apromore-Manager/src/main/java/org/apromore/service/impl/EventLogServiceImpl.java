@@ -443,4 +443,10 @@ public class EventLogServiceImpl implements EventLogService {
 	
     }
 
+    @Override
+    public Long getCalendarIdFromLog(Integer logId) {
+	CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
+	return calendar == null ? 0 : calendar.getId();
+    }
+
 }
