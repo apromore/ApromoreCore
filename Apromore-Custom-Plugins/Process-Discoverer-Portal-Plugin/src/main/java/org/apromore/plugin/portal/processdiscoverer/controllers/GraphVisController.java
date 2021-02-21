@@ -151,6 +151,13 @@ public class GraphVisController extends VisualController {
                 }
             }
         });
+        vizBridge.addEventListener("onCaseFilter", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                String json = event.getData().toString();
+                displayTraceDiagram(json);
+            }
+        });
         vizBridge.addEventListener("onClearFilter", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
