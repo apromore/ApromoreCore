@@ -435,7 +435,7 @@ public class EventLogServiceImpl implements EventLogService {
 
 
     @Override
-    public void updateCalenderForLog(Integer logId, Long calenderId) {
+    public void updateCalendarForLog(Integer logId, Long calenderId) {
 	Log log = logRepo.findUniqueByID(logId);
 	CustomCalendar calendar = customCalendarRepository.findById(calenderId);
 	log.setCalendar(calendar);

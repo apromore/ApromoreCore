@@ -108,7 +108,7 @@ public interface EventLogService {
     APMLog getAggregatedLog(Integer logId);
 
 
-    void updateCalenderForLog(Integer logId, Long calenderId);
+    void updateCalendarForLog(Integer logId, Long calenderId);
 
     Long getCalendarIdFromLog(Integer logId);
 }

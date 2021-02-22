@@ -824,7 +824,7 @@ public abstract class BaseListboxController extends BaseController {
 		@Override
 		public void onEvent(Event event) {
 		    Long data = (Long) event.getData();
-		    getMainController().getEventLogService().updateCalenderForLog(logId, data);
+		    getMainController().getEventLogService().updateCalendarForLog(logId, data);
 
 		}
 	    });
