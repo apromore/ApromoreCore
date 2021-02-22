@@ -201,22 +201,22 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true).subscribe(
                 new EventListener() {
                     public void onEvent(Event event) {
-                        LOGGER.info("\n\nIn sign out queue/event handler for logout");
+                        LOGGER.debug("\n\nIn sign out queue/event handler for logout");
 
-                        LOGGER.info("\n\n>>>>> About to utilise managerService to logout of all user " +
+                        LOGGER.debug("\n\n>>>>> About to utilise managerService to logout of all user " +
                                 "sessions [transparently calls Keycloak, via the Security Microservice]");
 
                         final ManagerService managerService = getManagerService();
-                        LOGGER.info("\n\nmanagerService: {}", managerService);
+                        LOGGER.debug("\n\nmanagerService: {}", managerService);
 
                         final UserType currentUser = UserSessionManager.getCurrentUser();
-                        LOGGER.info("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
+                        LOGGER.debug("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
 
                         final boolean logoutSuccess =
                                 managerService.logoutUserAllSessions(currentUser.getUsername());
-                        LOGGER.info("\n\nlogoutSuccess: {}", logoutSuccess);
+                        LOGGER.debug("\n\nlogoutSuccess: {}", logoutSuccess);
 
-                        Session session = Sessions.getCurrent();
+                        final Session session = Sessions.getCurrent();
                         if (session == null || event.getData().equals(session)) {
                             Clients.evalJavaScript("window.close()");
                             Executions.sendRedirect("/j_spring_security_logout");

@@ -21,10 +21,12 @@
  */
 package org.apromore.portal.util;
 
+import static org.apromore.portal.util.AssertUtils.notNullAssert;
+
 import org.apache.commons.io.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -45,12 +47,11 @@ public final class SecurityUtils {
     private static SecretKeySpec secretKey;
     private static byte[] key;
 
-    private SecurityUtils() {
-    }
+    private static char[] ksPassword;
 
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
-    // @2do: change to get from environment securely
-    public static final String KS_AND_KEY_PASSWORD = "topSecret";
+
+    public static final String KS_AND_KEY_PASSWORD_ENV_KEY = "KS_PASSWD";
 
     private static final String SYMMETRIC_CIPHER_FULL_ALG_SPEC = "AES/ECB/PKCS5Padding";
     private static final String SYMMETRIC_CIPHER_BASE_ALG = "AES";
@@ -58,13 +59,34 @@ public final class SecurityUtils {
     private static final String DIGEST_ALGORITHM = "SHA1";
     private static final String CHARSET8_ENCODING = Charsets.UTF_8.toString();
 
+    private SecurityUtils() {
+        // Intentionally private constructor
+    }
+
+    static {
+        String pwdKSStr = System.getenv(KS_AND_KEY_PASSWORD_ENV_KEY);
+
+        if (! StringUtils.hasText(pwdKSStr)) {
+            final String errMsg = "keystore password could not be attained from environment";
+
+            logger.info("\n\n{}\n", errMsg);
+            throw new IllegalStateException(errMsg);
+        }
+
+        SecurityUtils.ksPassword = pwdKSStr.toCharArray();
+        // For safety/clear
+        pwdKSStr = null;
+    }
+
     public static final PublicKey getPublicKey(final String keyAlias) throws Exception {
+        notNullAssert(keyAlias, "keyAlias");
+
         final InputStream inputStream = SecurityUtils.class.getClassLoader().getResourceAsStream(KEYSTORE_FILE);
 
         final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(inputStream, KS_AND_KEY_PASSWORD.toCharArray());
+        keystore.load(inputStream, SecurityUtils.ksPassword);
 
-        final Key key = keystore.getKey(keyAlias, KS_AND_KEY_PASSWORD.toCharArray());
+        final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
 
         if (key instanceof PrivateKey) {
             // Get certificate of public key
@@ -78,13 +100,14 @@ public final class SecurityUtils {
     }
 
     public static PrivateKey getPrivateKey(final String keyAlias) throws Exception {
-        final InputStream inputStream =
-                SecurityUtils.class.getClassLoader().getResourceAsStream("securityServ.jks");
+        notNullAssert(keyAlias, "keyAlias");
+
+        final InputStream inputStream = SecurityUtils.class.getClassLoader().getResourceAsStream(KEYSTORE_FILE);
 
         final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(inputStream, KS_AND_KEY_PASSWORD.toCharArray());
+        keystore.load(inputStream, SecurityUtils.ksPassword);
 
-        final Key key = keystore.getKey(keyAlias, KS_AND_KEY_PASSWORD.toCharArray());
+        final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
 
         if (key instanceof PrivateKey) {
             return (PrivateKey) key;
@@ -96,9 +119,9 @@ public final class SecurityUtils {
     public static byte[] signData(final PrivateKey privateKey,
                                   final String rawDataStr,
                                   final Logger logger) {
-        Assert.notNull(privateKey, "'privateKey' must not be null");
-        Assert.notNull(rawDataStr, "'rawDataStr' must not be null");
-        Assert.notNull(logger, "'logger' must not be null");
+        notNullAssert(privateKey, "privateKey");
+        notNullAssert(rawDataStr, "rawDataStr");
+        notNullAssert(logger, "logger");
 
         byte[] signedMsg = null;
 
@@ -121,10 +144,10 @@ public final class SecurityUtils {
                                      final String dataStr,
                                      final byte[] signedMsg,
                                      final Logger logger) {
-        Assert.notNull(publicKey, "'publicKey' must not be null");
-        Assert.notNull(dataStr, "'dataStr' must not be null");
-        Assert.notNull(signedMsg, "'signedMsg' must not be null");
-        Assert.notNull(logger, "'logger' must not be null");
+        notNullAssert(publicKey, "publicKey");
+        notNullAssert(dataStr, "dataStr");
+        notNullAssert(signedMsg, "signedMsg");
+        notNullAssert(logger, "logger");
 
         boolean verified = false;
 
@@ -146,8 +169,8 @@ public final class SecurityUtils {
     }
 
     public static String symmetricEncrypt(final String strToEncrypt, final String encryptionSecret) {
-        Assert.notNull(strToEncrypt, "'strToEncrypt' must not be null");
-        Assert.notNull(encryptionSecret, "'encryptionSecret' must not be null");
+        notNullAssert(strToEncrypt, "strToEncrypt");
+        notNullAssert(encryptionSecret, "encryptionSecret");
 
         try {
             setKey(encryptionSecret);
@@ -155,7 +178,7 @@ public final class SecurityUtils {
             final Cipher cipher = Cipher.getInstance(SYMMETRIC_CIPHER_FULL_ALG_SPEC);
             cipher.init(Cipher.ENCRYPT_MODE, SecurityUtils.secretKey);
 
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(CHARSET8_ENCODING)));
         } catch (final Exception e) {
             logger.error("Error while encrypting: " + e.toString());
 
@@ -166,8 +189,8 @@ public final class SecurityUtils {
     }
 
     public static String symmetricDecrypt(final String strToDecrypt, final String encryptionSecret) throws Exception {
-        Assert.notNull(strToDecrypt, "'strToDecrypt' must not be null");
-        Assert.notNull(encryptionSecret, "'encryptionSecret' must not be null");
+        notNullAssert(strToDecrypt, "strToDecrypt");
+        notNullAssert(encryptionSecret, "encryptionSecret");
 
         try {
             setKey(encryptionSecret);
@@ -184,9 +207,13 @@ public final class SecurityUtils {
     }
 	
     private static void setKey(final String myKey) {
+        notNullAssert(myKey, "myKey");
+
         try {
             key = myKey.getBytes(CHARSET8_ENCODING);
+
             final MessageDigest sha = MessageDigest.getInstance(DIGEST_ALGORITHM);
+
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, SYMMETRIC_CIPHER_BASE_ALG);

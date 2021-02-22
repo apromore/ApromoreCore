@@ -70,7 +70,8 @@ public class BaseController extends Window {
     protected ConfigBean config;
 
     protected BaseController() {
-        beanFactory = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext()).getAutowireCapableBeanFactory();
+        beanFactory = WebApplicationContextUtils.getWebApplicationContext(
+                Sessions.getCurrent().getWebApp().getServletContext()).getAutowireCapableBeanFactory();
         config = (ConfigBean) beanFactory.getBean("portalConfig");
     }
 
