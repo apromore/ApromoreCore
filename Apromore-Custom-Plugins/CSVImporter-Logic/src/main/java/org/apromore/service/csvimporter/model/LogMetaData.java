@@ -34,12 +34,17 @@ import java.util.List;
 @Data
 public class LogMetaData {
 
+    /**
+     * Magic value for header index to indicate the header is absent.
+     */
+    public static final int HEADER_ABSENT = -1;
+
     private List<String> header;
-    private int caseIdPos;
-    private int activityPos;
-    private int endTimestampPos;
-    private int startTimestampPos;
-    private int resourcePos;
+    private int caseIdPos = HEADER_ABSENT;
+    private int activityPos = HEADER_ABSENT;
+    private int endTimestampPos = HEADER_ABSENT;
+    private int startTimestampPos = HEADER_ABSENT;
+    private int resourcePos = HEADER_ABSENT;
     private List<Integer> caseAttributesPos;
     private List<Integer> eventAttributesPos;
     private HashMap<Integer, String> otherTimestamps; // store position as key and format as value
@@ -60,11 +65,11 @@ public class LogMetaData {
 
     public void validateSample() throws Exception {
         int count = 0;
-        if (caseIdPos != -1) count++;
-        if (activityPos != -1) count++;
-        if (endTimestampPos != -1) count++;
-        if (startTimestampPos != -1) count++;
-        if (resourcePos != -1) count++;
+        if (caseIdPos != HEADER_ABSENT) count++;
+        if (activityPos != HEADER_ABSENT) count++;
+        if (endTimestampPos != HEADER_ABSENT) count++;
+        if (startTimestampPos != HEADER_ABSENT) count++;
+        if (resourcePos != HEADER_ABSENT) count++;
 
         count += otherTimestamps.size();
         count += eventAttributesPos.size();
