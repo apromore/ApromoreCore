@@ -403,6 +403,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         return null;
     }
 
+    protected LogMetaData getLogMetaData() {
+        return logMetaData;
+    }
+
     public ResourceBundle getLabels() {
         return ResourceBundle.getBundle("WEB-INF.zk-label",
                 Locales.getCurrent(),
