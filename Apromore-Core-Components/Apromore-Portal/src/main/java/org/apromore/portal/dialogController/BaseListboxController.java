@@ -33,13 +33,10 @@ import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ValidationException;
 
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
@@ -61,6 +58,8 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
@@ -70,7 +69,6 @@ import org.zkoss.zul.Listhead;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
-import org.zkoss.zul.Window;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -151,7 +149,6 @@ public abstract class BaseListboxController extends BaseController {
 		btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
 		btnShare = (Button) mainController.getFellow("btnShare");
 		btnCalendar = (Button) mainController.getFellow("btnCalendar");
-		btnCalendar.setVisible(config.getEnableCalendar());
 
 		attachEvents();
 
@@ -335,7 +332,18 @@ public abstract class BaseListboxController extends BaseController {
 		this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				launchCalendar();
+
+			Set<Object> selections = getSelection();
+
+			if (selections.size() != 1
+				|| !selections.iterator().next().getClass().equals(LogSummaryType.class)) {
+			    Notification.error("Please select a log file");
+			    return;
+			}
+
+			LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
+			launchCalendar(selectedItem.getName(), selectedItem.getId());
+
 			}
 		});
 	}
@@ -804,17 +812,36 @@ public abstract class BaseListboxController extends BaseController {
 		}
 	}
 
-	protected void launchCalendar() {
-		PortalPlugin calendarPlugin;
+	protected void launchCalendar(String artifactName, Integer logId) {
+	    PortalPlugin calendarPlugin;
+	    getMainController().eraseMessage();
 
-		getMainController().eraseMessage();
-		try {
-			calendarPlugin = portalPluginMap.get("Manage calendars");
-			calendarPlugin.execute(portalContext);
-		} catch (Exception e) {
-			LOGGER.error("Unable to create custom calendar dialog", e);
-			Messagebox.show("Unable to create custom calendar dialog");
+	    EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
+	    
+	    Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
+
+	    queue.subscribe(new EventListener<Event>() {
+		@Override
+		public void onEvent(Event event) {
+		    Long data = (Long) event.getData();
+		    getMainController().getEventLogService().updateCalendarForLog(logId, data);
+
 		}
+	    });
+
+	    try {
+		Map<String, Object> attrMap = new HashMap<String, Object>();
+		attrMap.put("portalContext", portalContext);
+		attrMap.put("artifactName", artifactName);
+		attrMap.put("calendarId", calendarId);
+		calendarPlugin = portalPluginMap.get("Manage calendars");
+		calendarPlugin.setSimpleParams(attrMap);
+		calendarPlugin.execute(portalContext);
+
+	    } catch (Exception e) {
+		LOGGER.error("Unable to create custom calendar dialog", e);
+		Messagebox.show("Unable to create custom calendar dialog");
+	    }
 	}
 
 	/*

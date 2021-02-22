@@ -845,3 +845,26 @@ databaseChangeLog:
                  name: parent_folder_chain
            indexName: IDX_FOLDER_PARENT_FOLDER_CHAIN
            tableName: folder
+
+ - changeSet:
+    id: 20210217055000
+    author: nolantellis
+    changes:
+      - addColumn:
+            tableName: log
+            columns:
+               - column:
+                  name: calendar_id
+                  type: BIGINT
+                  constraints:
+                      nullable: true
+
+      - addForeignKeyConstraint:
+           baseColumnNames: calendar_id
+           baseTableName: log
+           constraintName: fk_log_calendar
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: custom_calendar
+           validate: true
