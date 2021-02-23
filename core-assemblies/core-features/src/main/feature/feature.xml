@@ -216,7 +216,6 @@
     <feature version="${virgo.spring.version}">spring-orm</feature>
     <feature version="${virgo.spring.version}">spring-web</feature>  <!-- install before spring-dm-web, otherwise Spring 3.2 will be installed -->
     <feature>spring-dm-web</feature>
-    <bundle>mvn:org.apromore/virgo-compatibility/1.0</bundle>
   </feature>
 
   <feature name="zk-framework" version="${project.version}" description="ZK framework">
