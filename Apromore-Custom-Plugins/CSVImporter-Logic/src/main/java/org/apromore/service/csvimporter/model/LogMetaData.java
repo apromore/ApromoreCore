@@ -25,6 +25,7 @@
 package org.apromore.service.csvimporter.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import java.util.List;
 
 
 @Data
+@NoArgsConstructor
 public class LogMetaData {
 
     private List<String> header;
