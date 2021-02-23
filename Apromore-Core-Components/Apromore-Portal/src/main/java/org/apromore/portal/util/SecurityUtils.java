@@ -59,10 +59,6 @@ public final class SecurityUtils {
     private static final String DIGEST_ALGORITHM = "SHA1";
     private static final String CHARSET8_ENCODING = Charsets.UTF_8.toString();
 
-    private SecurityUtils() {
-        // Intentionally private constructor
-    }
-
     static {
         String pwdKSStr = System.getenv(KS_AND_KEY_PASSWORD_ENV_KEY);
 
@@ -76,6 +72,10 @@ public final class SecurityUtils {
         SecurityUtils.ksPassword = pwdKSStr.toCharArray();
         // For safety/clear
         pwdKSStr = null;
+    }
+
+    private SecurityUtils() {
+        // Intentionally private constructor
     }
 
     public static final PublicKey getPublicKey(final String keyAlias) throws Exception {
