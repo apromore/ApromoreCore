@@ -80,6 +80,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.ApromoreEnvUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -143,15 +144,8 @@ public class MainController extends BaseController implements MainControllerInte
     private Map<String, PortalPlugin> portalPluginMap;
 
     static {
-        String encPassphStr = System.getenv(SYMMETRIC_KEY_SECRET_ENV_KEY);
-        LOGGER.info("\n\n===>> Obtained encKey from environment\n");
-
-        if (! org.springframework.util.StringUtils.hasText(encPassphStr)) {
-            final String errMsg = "encryption passphrase could *not* be attained from environment";
-
-            LOGGER.error("\n\n{}\n", errMsg);
-            throw new IllegalStateException(errMsg);
-        }
+        String encPassphStr = ApromoreEnvUtils.getEnvPropValue(
+                SYMMETRIC_KEY_SECRET_ENV_KEY, "encryption passphrase could *not* be attained from environment");
 
         MainController.encKey = encPassphStr;
         LOGGER.info("\n\nInitialised main controller and obtained encKey from environment\n");
