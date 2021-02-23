@@ -589,7 +589,7 @@ public abstract class BaseListboxController extends BaseController {
 			try {
 				copyAndPasteController.paste(targetFolderId);
 			} catch (Exception e) {
-				Messagebox.show("An error is occured during paste process", "Apromore", Messagebox.OK,
+				Messagebox.show("An error is occurred during paste process", "Apromore", Messagebox.OK,
 						Messagebox.ERROR);
 			}
 		} else {
@@ -873,7 +873,7 @@ public abstract class BaseListboxController extends BaseController {
 				failures += 1;
 			}
 		}
-		if (failures > 0) {
+		if (failures > 0) { // TODO admin couldn't delete when another user has access to one folder
 			Messagebox.show(
 					"Could not perform all delete operations. You may not be authorized to delete some of the resources.",
 					"Attention", Messagebox.OK, Messagebox.ERROR);

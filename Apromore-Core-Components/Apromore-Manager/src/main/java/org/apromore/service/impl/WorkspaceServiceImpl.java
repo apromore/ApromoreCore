@@ -24,49 +24,10 @@
 
 package org.apromore.service.impl;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.StorageRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.WorkspaceRepository;
-import org.apromore.dao.model.AccessRights;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.Storage;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
+import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
@@ -86,11 +47,20 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceServiceImpl.class);
+	private static final Integer ROOT_FOLDER_ID = 0;
 
     private WorkspaceRepository workspaceRepo;
     private ProcessRepository processRepo;
@@ -690,13 +660,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception {
+    public Folder moveFolder(Integer folderId, Integer newParentFolderId) {
 	Folder folder = folderRepo.findUniqueByID(folderId);
 	Folder newParentFolder = folderRepo.findUniqueByID(newParentFolderId);
 	folder.setParentFolder(newParentFolder);
-	folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
-	folderService.updateFolderChainForSubFolders(folderId,
-		newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
+
+		// If newParentFolder is root folder, then set ParentFolderChain to 0 directly to avoid NPE
+		if (newParentFolderId.equals(ROOT_FOLDER_ID)) {
+			folder.setParentFolderChain(newParentFolderId.toString());
+			folderService.updateFolderChainForSubFolders(folderId,
+					ROOT_FOLDER_ID + "_" + newParentFolderId + "_" + folderId);
+		} else {
+			folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
+			folderService.updateFolderChainForSubFolders(folderId,
+					newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
+		}
 
 	folderRepo.save(folder);
 	return folder;
