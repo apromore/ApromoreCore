@@ -21,7 +21,7 @@
  */
 package org.apromore.service.csvimporter.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import lombok.Data;
 
 import java.io.File;
