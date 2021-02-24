@@ -31,12 +31,10 @@ import org.apromore.apmlog.stats.DurSubGraph;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AttributeArcDurationTest {
     public static void testRetain1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
@@ -263,5 +261,75 @@ public class AttributeArcDurationTest {
         DoubleArrayList durList = subGraph.getValDurListMap().get("A");
 
         assertEquals(1000 * 60 * 60 * 2d, durList.average(), 0 /* comparison tolerance */);
+    }
+
+    /**
+     * When the prior filter rule leads the Filter to remove the medium event/activity from the trace
+     * (i.e. the 'b' of {'a', 'b', 'c'}),
+     * if the next filter rule is the Arc duration filter, it should compute the arc duration between the rest
+     * activities (i.e. 'a' and 'c') without considering the medium activity - 'b' which is no longer exist.
+     * @param apmLog
+     */
+    public static void testSequencialFiltering01(APMLog apmLog) {
+
+        /** First rule **/
+        Set<RuleValue> pvSet1 = new HashSet<>();
+        pvSet1.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
+                "concept:name", "b"));
+        LogFilterRule rule1 = new LogFilterRuleImpl(Choice.REMOVE, Inclusion.ANY_VALUE, Section.EVENT,
+                FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", pvSet1, null);
+
+        /** Second rule **/
+        FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
+        Choice choice =  Choice.RETAIN;
+        Inclusion inclusion = Inclusion.ANY_VALUE;
+
+        double lowBoundVal = 0;
+        double upBoundVal = 1000 * 60 * 12;
+
+        String lowBoundUnit = "minutes";
+        String upBoundUnit = "minutes";
+
+        Set<RuleValue> pvSet2 = new HashSet<>();
+
+        String attrKey = "concept:name";
+        String attrVal1 = "a";
+        String attrVal2 = "c";
+
+        RuleValue priRuleValue1 = new RuleValue(filterType, OperationType.FROM, attrKey, attrVal1);
+        RuleValue priRuleValue2 = new RuleValue(filterType, OperationType.TO, attrKey, attrVal2);
+
+        priRuleValue1.getCustomAttributes().put("base", "true");
+
+        pvSet2.add(priRuleValue1);
+        pvSet2.add(priRuleValue2);
+
+        String secRuleKey = attrVal2;
+
+        RuleValue secRuleVal1 = new RuleValue(filterType, OperationType.GREATER_EQUAL,
+                secRuleKey, lowBoundVal);
+        secRuleVal1.getCustomAttributes().put("unit", lowBoundUnit);
+
+        RuleValue secRuleVal2 = new RuleValue(filterType, OperationType.LESS_EQUAL,
+                secRuleKey, upBoundVal);
+        secRuleVal2.getCustomAttributes().put("unit", upBoundUnit);
+
+        Set<RuleValue> secValues = new HashSet<>();
+
+        secValues.add(secRuleVal1);
+        secValues.add(secRuleVal2);
+
+        LogFilterRule rule2 = new LogFilterRuleImpl(choice, Inclusion.ANY_VALUE, Section.CASE,
+                filterType, attrKey,
+                pvSet2, secValues);
+
+        List<LogFilterRule> rules = Arrays.asList(rule1, rule2);
+
+        /** Filter by first rule **/
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        apmLogFilter.filter(rules);
+        APMLog filteredLog = apmLogFilter.getApmLog();
+
+        assertTrue(filteredLog.getTraceList().get(0).getCaseId().equals("c1"));
     }
 }
