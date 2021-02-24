@@ -23,24 +23,11 @@
  */
 package org.apromore.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-
 import org.apromore.apmlog.APMLog;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
+import org.apromore.dao.*;
+import org.apromore.dao.model.*;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -60,21 +47,14 @@ import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.EventLogService;
-import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
-import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.in.XMxmlGZIPParser;
-import org.deckfour.xes.in.XMxmlParser;
-import org.deckfour.xes.in.XParser;
-import org.deckfour.xes.in.XParserRegistry;
-import org.deckfour.xes.in.XesXmlGZIPParser;
-import org.deckfour.xes.in.XesXmlParser;
+import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
@@ -85,7 +65,14 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-//import javax.annotation.Resource;
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.*;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -94,7 +81,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
-//@EnableCaching
 public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
@@ -103,9 +89,7 @@ public class EventLogServiceImpl implements EventLogService {
     private GroupLogRepository groupLogRepo;
     private FolderRepository folderRepo;
     private UserService userSrv;
-    private UserInterfaceHelper ui;
-    private File logsDir;
-    private UserMetadataService userMetadataService;
+    private UsermetadataRepository usermetadataRepo;
     private TemporaryCacheService tempCacheService;
     private StorageManagementFactory<StorageClient> storageFactory;
     private ConfigBean config;
@@ -113,27 +97,38 @@ public class EventLogServiceImpl implements EventLogService {
     private StorageRepository storageRepository;
     private CustomCalendarRepository customCalendarRepository;
 
-    /**
-     * Default Constructor allowing Spring to Autowire for testing and normal use.
-     *
-     * @param logRepository Log repository.
-     * @param ui            User Interface Helper.
-     */
+	/**
+	 * Default Constructor allowing Spring to Autowire for testing and normal use.
+	 *
+	 * @param logRepository          LogRepository
+	 * @param groupRepository        GroupRepository
+	 * @param groupLogRepository     GroupLogRepository
+	 * @param folderRepo             FolderRepository
+	 * @param userSrv                UserService
+	 * @param configBean             ConfigBean
+	 * @param usermetadataRepository UsermetadataRepository
+	 * @param temporaryCacheService  TemporaryCacheService
+	 * @param storageFactory         StorageManagementFactory
+	 * @param logFileService         EventLogFileService
+	 * @param storageRepository      StorageRepository
+	 */
     @Inject
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
-	    final GroupLogRepository groupLogRepository, final FolderRepository folderRepo, final UserService userSrv,
-	    final UserInterfaceHelper ui, final ConfigBean configBean, final UserMetadataService userMetadataService,
-	    final TemporaryCacheService temporaryCacheService, final StorageManagementFactory storageFactory,
-	    final EventLogFileService logFileService, final StorageRepository storageRepository,
-	    final CustomCalendarRepository customCalendarRepository) {
+	    final GroupLogRepository groupLogRepository, final FolderRepository folderRepo,
+	    final UserService userSrv,
+	    final ConfigBean configBean,
+	    final UsermetadataRepository usermetadataRepository,
+	    final TemporaryCacheService temporaryCacheService,
+	    final StorageManagementFactory storageFactory,
+	    final EventLogFileService logFileService,
+	    final StorageRepository storageRepository,
+		final CustomCalendarRepository customCalendarRepository) {
 	this.logRepo = logRepository;
 	this.groupRepo = groupRepository;
 	this.groupLogRepo = groupLogRepository;
 	this.folderRepo = folderRepo;
 	this.userSrv = userSrv;
-	this.ui = ui;
-	this.logsDir = new File(configBean.getLogsDir());
-	this.userMetadataService = userMetadataService;
+	this.usermetadataRepo = usermetadataRepository;
 	this.tempCacheService = temporaryCacheService;
 	this.storageFactory = storageFactory;
 	this.config = configBean;
@@ -142,7 +137,7 @@ public class EventLogServiceImpl implements EventLogService {
 	this.customCalendarRepository = customCalendarRepository;
     }
 
-    public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
+    private static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
 	XParser parser;
 	parser = null;
 	if (extension.endsWith("mxml")) {
@@ -157,7 +152,8 @@ public class EventLogServiceImpl implements EventLogService {
 
 	Collection<XLog> logs;
 	try {
-	    logs = parser.parse(is);
+		assert parser != null;
+		logs = parser.parse(is);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    logs = null;
@@ -204,49 +200,49 @@ public class EventLogServiceImpl implements EventLogService {
 	return null;
     }
 
-    /**
-     * Import serialisations into Apromore application.
-     *
-     * @param username       The user doing the importing.
-     * @param folderId       The folder we are saving the process in.
-     * @param logName        the name of the process being imported.
-     * @param inputStreamLog
-     * @param extension
-     * @param domain         the domain of the model
-     * @param created        the time created
-     * @param publicModel    is this a public model?
-     * @return
-     * @throws Exception
-     */
+	/**
+	 * Import serialisations into Apromore application.
+	 *
+	 * @param username       The user doing the importing.
+	 * @param folderId       The folder we are saving the process in.
+	 * @param logName        the name of the process being imported.
+	 * @param inputStreamLog the inputStream of Log
+	 * @param extension      File extension
+	 * @param domain         the domain of the model
+	 * @param created        the time created
+	 * @param publicModel    is this a public model?
+	 * @return Log
+	 * @throws Exception UserNotFoundException
+	 */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
 	    String extension, String domain, String created, boolean publicModel) throws Exception {
 	User user = userSrv.findUserByLogin(username);
 
-	XFactory factory = XFactoryRegistry.instance().currentDefault();
-	LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
+        XFactory factory = XFactoryRegistry.instance().currentDefault();
+        LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
 	XLog xLog = importFromStream(factory, inputStreamLog, extension);
 	return importLog(folderId, logName, domain, created, publicModel, user, xLog);
     }
 
     @Override
-    public Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel,
-	    User user, XLog xLog) {
+	public Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel, User user, XLog xLog) {
 
-	Storage storage = tempCacheService.storeProcessLog(folderId, logName, xLog, user.getId(), domain, created);
+		Storage storage = tempCacheService.storeProcessLog(folderId,
+				logName, xLog, user.getId(), domain, created);
 
-	Log log = new Log();
-	log.setFolder(folderRepo.findUniqueByID(folderId));
-	log.setDomain(domain);
-	log.setCreateDate(created);
-	log.setFilePath("PROXY_PATH");
-	log.setStorage(storageRepository.saveAndFlush(storage));
+		Log log = new Log();
+		log.setFolder(folderRepo.findUniqueByID(folderId));
+		log.setDomain(domain);
+		log.setCreateDate(created);
+		log.setFilePath("PROXY_PATH");
+		log.setStorage(storageRepository.saveAndFlush(storage));
 
-	try {
-	    updateLogName(log, logName);
-	} catch (Exception e) {
-	    throw new RuntimeException("Error while renaming log file " + logName, e);
-	}
+		try {
+			updateLogName(log, logName);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while renaming log file " + logName, e);
+		}
 
 	log.setRanking("");
 	log.setUser(user);
@@ -397,19 +393,27 @@ public class EventLogServiceImpl implements EventLogService {
 
     // add inline comments
     @Override
-    public void deleteLogs(List<Log> logs, User user) throws Exception {
+    public void deleteLogs(List<Log> logs, User user) throws NotAuthorizedException, UserNotFoundException {
 	for (Log log : logs) {
 	    if (!canUserWriteLog(user.getUsername(), log.getId())) {
 		throw new NotAuthorizedException(
 			"Log with id " + log.getId() + " may not be deleted by " + user.getUsername());
 	    }
 	    Log realLog = logRepo.findUniqueByID(log.getId());
-	    userMetadataService.deleteUserMetadataByLog(realLog, user);
+
+	    // delete associated user metadata
+		Set<Usermetadata> usermetadataSet = realLog.getUsermetadataSet();
+		for(Usermetadata u : usermetadataSet) {
+			usermetadataRepo.delete(u.getId());
+			LOGGER.info("User: {} Delete user metadata ID: {}.", user.getUsername(), u.getId());
+		}
+
 	    logRepo.delete(realLog);
-	    if (shouldDeleteLogFile(realLog.getStorage())) {
-		LOGGER.info("Deleting file: " + realLog.getName());
-		storageRepository.delete(realLog.getStorage() == null ? 0l : realLog.getStorage().getId());
-		tempCacheService.deleteProcessLog(realLog);
+	    if(shouldDeleteLogFile(realLog.getStorage()))
+	    {
+	    LOGGER.info("Deleting file: "+realLog.getName());
+	    storageRepository.delete(realLog.getStorage()==null ? 0L :realLog.getStorage().getId());
+	    tempCacheService.deleteProcessLog(realLog);
 
 	    }
 	    LOGGER.info("Delete XES log " + log.getId() + " from repository.");
@@ -440,7 +444,7 @@ public class EventLogServiceImpl implements EventLogService {
 	CustomCalendar calendar = customCalendarRepository.findById(calenderId);
 	log.setCalendar(calendar);
 	logRepo.saveAndFlush(log);
-	
+
     }
 
     @Override

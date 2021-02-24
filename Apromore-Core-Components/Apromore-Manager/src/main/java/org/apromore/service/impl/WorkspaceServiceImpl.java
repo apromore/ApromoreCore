@@ -31,6 +31,7 @@ import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
+import org.apromore.service.EventLogService;
 import org.apromore.service.FolderService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
@@ -75,6 +76,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private EventLogFileService logFileService;
     private FolderService folderService;
     private StorageRepository storageRepository;
+    private EventLogService eventLogService;
 
     private StorageManagementFactory<StorageClient> storageFactory;
 
@@ -96,7 +98,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	    final GroupRepository groupRepository, final GroupFolderRepository groupFolderRepository,
 	    final GroupProcessRepository groupProcessRepository, final GroupLogRepository groupLogRepository,
 	    final EventLogFileService eventLogFileService, final FolderService folderService,
-	    final StorageManagementFactory storageFacotry, final StorageRepository storageRepository) {
+	    final StorageManagementFactory storageFacotry, final EventLogService eventLogService,
+								final StorageRepository storageRepository
+								) {
 
 	workspaceRepo = workspaceRepository;
 	userRepo = userRepository;
@@ -111,6 +115,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	logFileService = eventLogFileService;
 	this.folderService = folderService;
 	this.storageFactory = storageFacotry;
+	this.eventLogService = eventLogService;
 	this.storageRepository = storageRepository;
     }
 
@@ -245,7 +250,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteFolder(Integer folderId, User user) throws NotAuthorizedException {
+    public void deleteFolder(Integer folderId, User user) throws Exception {
 	if (!canUserWriteFolder(user, folderId)) {
 	    throw new NotAuthorizedException(
 		    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
@@ -253,6 +258,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	Folder folder = folderRepo.findOne(folderId);
 	if (folder != null) {
 	    folderRepo.delete(folder);
+
+	    // Remove logs that are contained in specified folder and its sub-folders
+		List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
+		List<Integer> folderIds = new ArrayList<>();
+
+		for (Folder f : subFoldersWithCurrentFolders) {
+			folderIds.add(f.getId());
+		}
+
+		List<Log> logs = new ArrayList<>(logRepo.findByFolderIdIn(folderIds));
+		eventLogService.deleteLogs(logs, user);
 	}
     }
 

@@ -38,6 +38,7 @@ import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.service.EventLogService;
 import org.apromore.service.FolderService;
 import org.apromore.service.model.FolderTreeNode;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,14 @@ public class FolderServiceImpl implements FolderService {
 
     @Inject
     private FolderRepository folderRepository;
+
+	@Inject
+	private EventLogService eventLogService;
+
+
+	public void setEventLogService(EventLogService eventLogService) {
+		this.eventLogService = eventLogService;
+	}
 
     @Override
     public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
@@ -98,10 +107,6 @@ public class FolderServiceImpl implements FolderService {
 	return treeNodes;
     }
 
-    /**
-     * @see FolderRepositoryCustom#getProcessModelVersionByFolderUserRecursive(Integer,
-     *      String) {@inheritDoc}
-     */
     @Override
     public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(Integer parentFolderId,
 	    String userId) {
@@ -116,10 +121,6 @@ public class FolderServiceImpl implements FolderService {
 	return processes;
     }
 
-    /**
-     * @see FolderRepositoryCustom#getProcessByFolderUserRecursive(Integer, String)
-     *      {@inheritDoc}
-     */
     @Override
     public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId) {
 	List<Process> processes = new ArrayList<>();
