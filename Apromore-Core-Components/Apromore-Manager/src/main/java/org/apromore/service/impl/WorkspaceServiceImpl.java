@@ -408,7 +408,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	    List<Folder> parentFolders = folderService.getParentFolders(parentFolder.getId());
 	    parentFolders.add(parentFolder);
 	    for (Folder folder : parentFolders) {
-		createGroupFolder(group, folder, true, false, false);
+			GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
+			if (groupFolder == null) { // Set read access only when specified group doesn't have access to parent folder
+				createGroupFolder(group, folder, true, false, false);
+			}
 	    }
 	}
     }
@@ -711,8 +714,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	    groupFolder.setGroup(group);
 	    groupFolder.setFolder(folder);
 	}
-	assert groupFolder != null;
-	AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+		AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
 	groupFolder.setAccessRights(accessRights);
 
 	groupFolderRepo.save(groupFolder);

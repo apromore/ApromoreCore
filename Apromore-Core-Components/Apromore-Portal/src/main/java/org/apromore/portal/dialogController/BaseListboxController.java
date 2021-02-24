@@ -873,7 +873,7 @@ public abstract class BaseListboxController extends BaseController {
 				failures += 1;
 			}
 		}
-		if (failures > 0) { // TODO admin couldn't delete when another user has access to one folder
+		if (failures > 0) {
 			Messagebox.show(
 					"Could not perform all delete operations. You may not be authorized to delete some of the resources.",
 					"Attention", Messagebox.OK, Messagebox.ERROR);
