@@ -203,8 +203,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	if (parentFolderId != 0) {
 	    Folder parent = folderRepo.findOne(parentFolderId);
 	    if (parent != null) {
-		folder.setParentFolder(parent);
-		folder.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
+		folder.updateParentFolder(parent);
+
 	    }
 	}
 

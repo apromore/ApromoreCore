@@ -33,6 +33,7 @@ public class SummaryType {
     protected FolderType folder;
     protected String name;
     protected Integer id;
+    protected Long calendarId;
     protected String domain;
     protected String ranking;
     protected Boolean makePublic;
@@ -283,6 +284,14 @@ public class SummaryType {
      */
     public void setHasOwnership(Boolean value) {
         this.hasOwnership = value;
+    }
+
+    public Long getCalendarId() {
+	return calendarId;
+    }
+
+    public void setCalendarId(Long calendarId) {
+	this.calendarId = calendarId;
     }
 
 }

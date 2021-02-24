@@ -35,6 +35,7 @@
     </n:style>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:script src="/js/jquery.js" type="text/javascript"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
     <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
@@ -91,6 +92,7 @@
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
+        <n:script src="/themes/ap/common/js/index.js" type="text/javascript"/>
 
         <n:span id="Apromorestartupcode">
             <n:script>
@@ -106,6 +108,10 @@
                     }
 					//console.log('${arg.bpmnXML}');
                     createEditor('${arg.bpmnXML}');
+                    window.Ap = window.Ap || {};
+                    Apromore.Plugins.Share.shareExt = function() {
+                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
+                    };
 
                     Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
                       //console.log(xml);

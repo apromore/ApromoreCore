@@ -106,4 +106,9 @@ public interface EventLogService {
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
     APMLog getAggregatedLog(Integer logId);
+
+
+    void updateCalendarForLog(Integer logId, Long calenderId);
+
+    Long getCalendarIdFromLog(Integer logId);
 }

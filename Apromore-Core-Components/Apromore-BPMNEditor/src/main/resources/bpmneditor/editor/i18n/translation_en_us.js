@@ -182,6 +182,12 @@ Apromore.I18N.View.zoomStandardDesc = "Zoom to the standard level";
 Apromore.I18N.View.zoomFitToModel = "Zoom fit to model";
 Apromore.I18N.View.zoomFitToModelDesc = "Zoom to fit the model size";
 
+if(!Apromore.I18N.Share) Apromore.I18N.Share = {};
+
+Apromore.I18N.Share.group = "Share";
+Apromore.I18N.Share.share = "Share";
+Apromore.I18N.Share.shareDesc = "Share the model";
+
 if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 
 Apromore.I18N.SimulationPanel.group = "Simulation";

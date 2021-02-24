@@ -2,7 +2,8 @@ Ap.calendar = Ap.calendar || {};
 
 zk.afterMount(function() {
 
-  let YEAR = 2015;
+  let BEGIN_YEAR = 2000;
+  let YEAR = parseInt(new Date().getFullYear());
   let params = {};
   let selects = {};
 
@@ -22,7 +23,7 @@ zk.afterMount(function() {
 
     function setupYear () {
       let options = [];
-      for (let i = YEAR; i < YEAR + 10; i++) {
+      for (let i = BEGIN_YEAR; i < YEAR + 10; i++) {
         options.push({
           id: i + "",
           title: i + ""

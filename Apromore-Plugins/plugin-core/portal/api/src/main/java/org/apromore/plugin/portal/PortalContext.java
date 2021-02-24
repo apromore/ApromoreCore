@@ -28,6 +28,8 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.UserType;
 
+import java.util.Map;
+
 /**
  * Communication interface that provides access to the Apromore portal
  */
@@ -45,6 +47,12 @@ public interface PortalContext {
      * @return a PortalUI object that MUST be used to generate new UI elements using the ZK library.
      */
     PortalUI getUI();
+
+    /**
+     *
+     * @return Map of plugins
+     */
+    Map<String, PortalPlugin> getPortalPluginMap();
 
     /**
      * Request to add a <var>process</var> to the table.

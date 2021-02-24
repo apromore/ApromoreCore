@@ -51,8 +51,8 @@ Ap.common.notify = (message, type) => {
   const FADE_IN_MS = 400;
   const FADE_OUT_MS = 3000;
   type = type || 'error';
-  let notification = $(`<div class="ap-notification ap-notification-${type}">${message}</div>`);
-  let close = $('<span class="ap-notification-close"></span>');
+  let notification = jQuery(`<div class="ap-notification ap-notification-${type}">${message}</div>`);
+  let close = jQuery('<span class="ap-notification-close"></span>');
   close.appendTo(notification);
   close.click(() => {
     try {

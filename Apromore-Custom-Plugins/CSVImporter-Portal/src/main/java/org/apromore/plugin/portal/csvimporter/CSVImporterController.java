@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -436,7 +437,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             int size = indexColumnWidth + logMetaData.getHeader().size() * columnWidth + 35;
             window.setWidth(size + "px");
         }
-        window.setTitle("CSV Importer - " + media.getName());
+        String title = Labels.getLabel("e.csvImporter.title.text", "Log Importer") + " - " + media.getName();
+        window.setTitle(title);
 
         setDropDownLists();
         setCSVGrid();

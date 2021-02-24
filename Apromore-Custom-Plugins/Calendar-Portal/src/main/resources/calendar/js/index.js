@@ -1,4 +1,5 @@
 Ap.calendar = Ap.calendar || {};
+Ap.calendar.ONE_RANGE_ONLY = true;
 
 zk.afterMount(function() {
 
@@ -221,6 +222,9 @@ zk.afterMount(function() {
     return cell && cell.hasClass('selected');
   }
 
+  /*
+  Select cells based on precise hour and min
+  */
   function selectCells(dow, startHour, startMin, toHour, toMin, selected) {
     for (let hour = startHour; hour <= toHour; hour++) {
       MINS.forEach(function (min) {
@@ -330,8 +334,17 @@ zk.afterMount(function() {
         }
       });
     }
+    if (startHour !== null) {
+        endHour = 24;
+        endMin = 0;
+        addToRanges(ranges, {
+          startHour,
+          startMin,
+          endHour,
+          endMin
+        });
+    }
     dayOfWeek[dow].ranges = ranges;
-    console.log(JSON.stringify(ranges, null, 2));
     updateRow(dow);
     return ranges;
   }
@@ -433,9 +446,13 @@ zk.afterMount(function() {
               let cell = $(event.target);
               let endHour = get(cell, 'hour');
               let endMin = get(cell, 'min');
+              if (Ap.calendar.ONE_RANGE_ONLY) {
+                selectCells(currentDOW, 0, 0, 23, 30, false);
+              }
               selectCells(currentDOW, startHour, startMin, endHour, endMin, !startSelected);
-              collectRanges(currentDOW);
+              let ranges = collectRanges(currentDOW);
               // send changes to the backend
+              sendCalendarEvent('onUpdateRanges', { dow: currentDOW, ranges: ranges });
               currentDOW = null;
               startHour = null;
               currentHour = null;
@@ -479,50 +496,4 @@ zk.afterMount(function() {
   }
 
   zAu.send(new zk.Event(zk.Widget.$('$actionBridge'), 'onLoaded'));
-
-  // FIXME:
-  // Only one range is allowed per day of week
-  function ensureOneRange() {
-    let selectedIndex = 0;
-    let prevSelectedIndex = null;
-    let startHour = null;
-    let startMin = null;
-    let endHour = null;
-    let endMin = null;
-
-    for (let hour = 0; hour < 24; hour++) {
-      MINS.forEach(function(min) {
-        let cell = find(BACKGROUND, currentDOW, hour, min);
-        if (cell.hasClass('selected')) {
-          if (startHour === null) {
-            startHour = hour;
-            startMin = min;
-          } else {
-            if (endHour !== null || selectedIndex - prevSelectedIndex !== 1) {
-              cell.removeClass('selected');
-            }
-          }
-          prevSelectedIndex = selectedIndex;
-        } else {
-          if (startHour !== null && endHour === null) {
-            endHour = hour;
-            endMin = min;
-          }
-        }
-        selectedIndex++;
-      });
-    }
-    if (startHour === null || endHour === null) {
-      startHour = 0;
-      startMin = 0;
-      endHour = 0;
-      endMin = 0;
-    }
-    return {
-      startHour,
-      startMin,
-      endHour,
-      endMin,
-    }
-  }
 });

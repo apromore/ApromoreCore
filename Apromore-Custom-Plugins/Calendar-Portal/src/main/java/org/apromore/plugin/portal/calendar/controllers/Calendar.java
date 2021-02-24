@@ -213,10 +213,10 @@ public class Calendar extends SelectorComposer<Window> {
           int endHour = (Integer) item.get("endHour");
           int endMin = (Integer) item.get("endMin");                    
           WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
+          // TO DO: WorkDayModel currently only support a single range
           dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)));
           dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));          
           refresh(dowItem);
-          
         }        
         Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
       }
@@ -243,16 +243,13 @@ public class Calendar extends SelectorComposer<Window> {
     zoneModel.setMultiple(false);
     ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
     zoneCombobox.setModel(listSubModel);
-
-
   }
 
   public WorkDayModel getDayOfWeekItem(int dowIndex) {    
     return (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex-1);
   }
 
-  public void refresh(WorkDayModel dowItem) {
-	  
+  public void refresh(WorkDayModel dowItem) {	    
     int index = dayOfWeekListModel.indexOf(dowItem);
     dayOfWeekListModel.set(index, dowItem); // trigger change
   }
@@ -386,7 +383,6 @@ public class Calendar extends SelectorComposer<Window> {
   public void initialize() {
     dayOfWeekListModel = new ListModelList<WorkDayModel>();    
     holidayListModel = new ListModelList<HolidayModel>();
-   
 
     rebuild();
     if (calendarModel != null) {
@@ -407,8 +403,6 @@ public class Calendar extends SelectorComposer<Window> {
     dayOfWeekEndTimes  = new ArrayList<OffsetTime>();
     holidayListModel.addAll(holidays);
     dayOfWeekListModel.addAll(workDays);
-       
-    
   }
 
   private String toJSON(int dowIndex) {

@@ -17,12 +17,12 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?component name="AccessControl" macroURI="/components/access/access.zul" ?>
+<?component name="AccessControl" macroURI="/accesscontrol/zul/access.zul" ?>
 <window
     sclass="ap-share-win"
     width="700px" height="80%" position="center"
     closable="true"
-    title="File/folder sharing" apply="org.apromore.portal.access.controllers.ShareController">
+    title="File/folder sharing" apply="org.apromore.plugin.portal.accesscontrol.controllers.ShareController">
     <caption>
         <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/sharingandaccessrights.html" target="_blank" />
     </caption>
@@ -30,7 +30,6 @@
                    currentUser="${arg.currentUser}"
                    selectedItem="${arg.selectedItem}"
                    autoInherit="${arg.autoInherit}"
-                   enablePublish="${arg.enablePublish}"
                    showRelatedArtifacts="${arg.showRelatedArtifacts}"
     />
 </window>

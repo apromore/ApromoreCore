@@ -2,6 +2,7 @@
 <!--
   #%L
   This file is part of "Apromore Core".
+  Copyright (C) 2019 The University of Tartu.
   %%
   Copyright (C) 2018 - 2021 Apromore Pty Ltd.
   %%
@@ -21,30 +22,23 @@
   #L%
   -->
 
-
-<beans:beans xmlns="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:beans="http://www.springframework.org/schema/beans"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:osgi="http://www.springframework.org/schema/osgi"
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:beans="http://www.springframework.org/schema/beans"
+   xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
         http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd
-        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+        http://www.springframework.org/schema/osgi                  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-    <!-- Create beans for each class annotated with @Component within the package -->
-    <context:component-scan base-package="org.apromore.plugin.portal.calendar" />
+<beans:bean id="calendarPlugin" class="org.apromore.plugin.portal.calendar.CalendarPlugin"/>
 
     <!-- Exposes the component as OSGi service -->
     <service ref="calendarPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-    
-    
-    
     <!-- Web content -->
     <service interface="org.apromore.plugin.portal.WebContentService">
       <beans:bean class="org.apromore.plugin.portal.SimpleWebContentService">
         <beans:constructor-arg type="Object" ref="calendarPlugin"/>
       </beans:bean>
-    </service>
-	
+    </service>	
 </beans:beans>

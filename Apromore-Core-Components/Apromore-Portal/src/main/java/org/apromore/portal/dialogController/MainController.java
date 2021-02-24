@@ -47,6 +47,7 @@ import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.ConfigBean;
@@ -125,11 +126,13 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
+    private Map<String, PortalPlugin> portalPluginMap;
 
     public MainController() {
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
         portalSession = new PortalSession(this);
         UserSessionManager.initializeUser(getService(), config);
+        portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     }
 
     /** Unit test constructor. */
@@ -140,6 +143,10 @@ public class MainController extends BaseController implements MainControllerInte
 
     public PortalSession getPortalSession() {
         return portalSession;
+    }
+
+    public  Map<String, PortalPlugin>  getPortalPluginMap() {
+        return portalPluginMap;
     }
 
     /**
