@@ -58,7 +58,7 @@ import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
-		Exception.class)
+        Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceServiceImpl.class);
@@ -93,18 +93,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      * @param folderRepository    Folder Repository.
      */
     @Inject
-    public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository, final UserRepository userRepository,
+    public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository,
+                                final UserRepository userRepository,
                                 final ProcessRepository processRepository,
-								final ProcessModelVersionRepository pmvRepository,
-                                final LogRepository logRepository, final FolderRepository folderRepository,
+                                final ProcessModelVersionRepository pmvRepository,
+                                final LogRepository logRepository,
+                                final FolderRepository folderRepository,
                                 final GroupRepository groupRepository,
-								final GroupFolderRepository groupFolderRepository,
+                                final GroupFolderRepository groupFolderRepository,
                                 final GroupProcessRepository groupProcessRepository,
-								final GroupLogRepository groupLogRepository,
-                                final EventLogFileService eventLogFileService, final FolderService folderService,
-                                final StorageManagementFactory storageFacotry, final EventLogService eventLogService,
-                                final StorageRepository storageRepository
-    ) {
+                                final GroupLogRepository groupLogRepository,
+                                final EventLogFileService eventLogFileService,
+                                final FolderService folderService,
+                                final StorageManagementFactory storageFacotry,
+                                final EventLogService eventLogService,
+                                final StorageRepository storageRepository) {
 
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
@@ -432,7 +435,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             for (Folder folder : parentFolders) {
                 GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
                 if (groupFolder == null) { // Set read access only when specified group doesn't have access to parent
-                	// folder
+                    // folder
                     createGroupFolder(group, folder, true, false, false);
                 }
             }
@@ -464,9 +467,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             Folder folder = folderRepo.findOne(folderId);
 
             process.setFolder(folder);
-//            if (folder != null) {
-//                folder.addFolderProcess(process);
-//            }
 
             processRepo.save(process);
         } else {
@@ -546,7 +546,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // For backward compatible
         final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
         if (currentLog.getStorage() == null) {
-        // change spelling of factory
+            // change spelling of factory
             StorageClient storageClientOldFile = storageFactory
                     .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
 
@@ -564,7 +564,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         try {
             logRepo.save(newLog);
         } catch (Exception e) {
-        // log something
+            // log something
             storageClient.delete("log", currentFileFullName);
         }
 
