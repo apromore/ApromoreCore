@@ -31,7 +31,9 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AttributeArcDurationFilter {
     public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
@@ -74,7 +76,9 @@ public class AttributeArcDurationFilter {
                                                                     double lowBoundVal, double upBoundVal) {
         List<Double> durList= new ArrayList<>();
 
-        List<AActivity> activityList = trace.getActivityList();
+        List<AActivity> activityList = trace.getActivityList().stream()
+                .filter(x -> trace.getValidEventIndexBitSet().get(x.getEventIndexes().get(0)))
+                .collect(Collectors.toList());
 
         for (int i = 0; i < activityList.size(); i++) {
             if (i < activityList.size()-1) {
@@ -101,5 +105,4 @@ public class AttributeArcDurationFilter {
 
         return durList;
     }
-
 }
