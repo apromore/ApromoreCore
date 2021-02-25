@@ -450,6 +450,12 @@ public class APMLogUnitTest {
         CaseIdFilterTest.test1(apmLog);
     }
 
+    @Test
+    public void testSequencialEventThenArc01() throws Exception {
+        XLog xLog = getXLog("files/ArcFilterTest02.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        AttributeArcDurationTest.testSequencialFiltering01(apmLog);
+    }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
         PrintStream out = new PrintStream(System.out, true, "UTF-8");
