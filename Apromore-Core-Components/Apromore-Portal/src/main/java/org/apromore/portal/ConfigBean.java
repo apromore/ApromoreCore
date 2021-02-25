@@ -65,6 +65,9 @@ public class ConfigBean implements Serializable {
     // Switch for custom calendar
     private boolean  enableCalendar;
 
+    // Maximum upload size
+    private long     maxUploadSize;
+
     public ConfigBean() {}
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore,
@@ -74,7 +77,8 @@ public class ConfigBean implements Serializable {
                       String ldapEmailAttribute, String ldapFirstNameAttribute, String ldapLastNameAttribute,
                       boolean enablePublish, boolean enableTC, boolean enablePP,
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
-                      boolean enableCalendar) {
+                      boolean enableCalendar,
+                      long maxUploadSize) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -114,6 +118,8 @@ public class ConfigBean implements Serializable {
         this.enableSubscription = enableSubscription;
 
         this.enableCalendar     = enableCalendar;
+
+        this.maxUploadSize = maxUploadSize;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -142,6 +148,8 @@ public class ConfigBean implements Serializable {
     public boolean getEnableSubscription()  { return enableSubscription; }
 
     public boolean getEnableCalendar()  { return enableCalendar; }
+
+    public long getMaxUploadSize()  { return maxUploadSize; }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
