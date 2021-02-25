@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -57,11 +57,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
+		Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceServiceImpl.class);
-	private static final Integer ROOT_FOLDER_ID = 0;
+    private static final Integer ROOT_FOLDER_ID = 0;
 
     private WorkspaceRepository workspaceRepo;
     private ProcessRepository processRepo;
@@ -85,7 +86,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * 
+     *
      * @param workspaceRepository Workspace Repository.
      * @param userRepository      User Repository.
      * @param processRepository   Process Repository.
@@ -93,255 +94,258 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      */
     @Inject
     public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository, final UserRepository userRepository,
-	    final ProcessRepository processRepository, final ProcessModelVersionRepository pmvRepository,
-	    final LogRepository logRepository, final FolderRepository folderRepository,
-	    final GroupRepository groupRepository, final GroupFolderRepository groupFolderRepository,
-	    final GroupProcessRepository groupProcessRepository, final GroupLogRepository groupLogRepository,
-	    final EventLogFileService eventLogFileService, final FolderService folderService,
-	    final StorageManagementFactory storageFacotry, final EventLogService eventLogService,
-								final StorageRepository storageRepository
-								) {
+                                final ProcessRepository processRepository,
+								final ProcessModelVersionRepository pmvRepository,
+                                final LogRepository logRepository, final FolderRepository folderRepository,
+                                final GroupRepository groupRepository,
+								final GroupFolderRepository groupFolderRepository,
+                                final GroupProcessRepository groupProcessRepository,
+								final GroupLogRepository groupLogRepository,
+                                final EventLogFileService eventLogFileService, final FolderService folderService,
+                                final StorageManagementFactory storageFacotry, final EventLogService eventLogService,
+                                final StorageRepository storageRepository
+    ) {
 
-	workspaceRepo = workspaceRepository;
-	userRepo = userRepository;
-	processRepo = processRepository;
-	pmvRepo = pmvRepository;
-	logRepo = logRepository;
-	folderRepo = folderRepository;
-	groupRepo = groupRepository;
-	groupFolderRepo = groupFolderRepository;
-	groupProcessRepo = groupProcessRepository;
-	groupLogRepo = groupLogRepository;
-	logFileService = eventLogFileService;
-	this.folderService = folderService;
-	this.storageFactory = storageFacotry;
-	this.eventLogService = eventLogService;
-	this.storageRepository = storageRepository;
+        workspaceRepo = workspaceRepository;
+        userRepo = userRepository;
+        processRepo = processRepository;
+        pmvRepo = pmvRepository;
+        logRepo = logRepository;
+        folderRepo = folderRepository;
+        groupRepo = groupRepository;
+        groupFolderRepo = groupFolderRepository;
+        groupProcessRepo = groupProcessRepository;
+        groupLogRepo = groupLogRepository;
+        logFileService = eventLogFileService;
+        this.folderService = folderService;
+        this.storageFactory = storageFacotry;
+        this.eventLogService = eventLogService;
+        this.storageRepository = storageRepository;
     }
 
     @Override
     public Folder getFolder(Integer folderId) {
-	return folderRepo.findOne(folderId);
+        return folderRepo.findOne(folderId);
     }
 
     @Override
     public List<GroupFolder> getGroupFolders(Integer folderId) {
-	return groupFolderRepo.findByFolderId(folderId);
+        return groupFolderRepo.findByFolderId(folderId);
     }
 
     @Override
     public List<GroupProcess> getGroupProcesses(Integer processId) {
-	return groupProcessRepo.findByProcessId(processId);
+        return groupProcessRepo.findByProcessId(processId);
     }
 
     @Override
     public List<GroupLog> getGroupLogs(Integer logId) {
-	return groupLogRepo.findByLogId(logId);
+        return groupLogRepo.findByLogId(logId);
     }
 
     @Override
     public List<GroupProcess> getGroupProcesses(String userId, Integer folderId) {
-	return (folderId == 0) ? groupProcessRepo.findRootProcessesByUser(userId)
-		: groupProcessRepo.findAllProcessesInFolderForUser(folderId, userId);
+        return (folderId == 0) ? groupProcessRepo.findRootProcessesByUser(userId)
+                : groupProcessRepo.findAllProcessesInFolderForUser(folderId, userId);
     }
 
     @Override
     public List<Process> getProcessesByPrefix(String prefix) {
-	return processRepo.findWithPrefix(prefix);
+        return processRepo.findWithPrefix(prefix);
     }
 
     @Override
     public List<Log> getLogsByPrefix(String prefix) {
-	return logRepo.findWithPrefix(prefix);
+        return logRepo.findWithPrefix(prefix);
     }
 
     @Override
     public Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable) {
-	return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
-		: processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
+        return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
+                : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
     }
 
     @Override
     public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
-	return (folderId == 0) ? logRepo.findRootLogsByUser(userId, pageable)
-		: logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
+        return (folderId == 0) ? logRepo.findRootLogsByUser(userId, pageable)
+                : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 
     @Override
     @Transactional(readOnly = false)
     public Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady) {
-	Folder folder = new Folder();
-	folder.setName(folderName);
-	folder.setParentFolderChain("0");
-	User user = userRepo.findByRowGuid(userId);
+        Folder folder = new Folder();
+        folder.setName(folderName);
+        folder.setParentFolderChain("0");
+        User user = userRepo.findByRowGuid(userId);
 
-	if (parentFolderId != 0) {
-	    Folder parent = folderRepo.findOne(parentFolderId);
-	    if (parent != null) {
-		folder.updateParentFolder(parent);
+        if (parentFolderId != 0) {
+            Folder parent = folderRepo.findOne(parentFolderId);
+            if (parent != null) {
+                folder.setParentFolder(parent);
+                folder.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
+            }
+        }
 
-	    }
-	}
+        Workspace workspace = workspaceRepo.findOne(1);
+        folder.setWorkspace(workspace);
+        folder.setCreatedBy(user);
+        folder.setModifiedBy(user);
+        folder.setDateCreated(Calendar.getInstance().getTime());
+        folder.setDateModified(Calendar.getInstance().getTime());
+        folder.setDescription("");
+        if (isGEDMatrixReady != null)
+            folder.setGEDMatrixReady(isGEDMatrixReady);
+        folder = folderRepo.saveAndFlush(folder);
 
-	Workspace workspace = workspaceRepo.findOne(1);
-	folder.setWorkspace(workspace);
-	folder.setCreatedBy(user);
-	folder.setModifiedBy(user);
-	folder.setDateCreated(Calendar.getInstance().getTime());
-	folder.setDateModified(Calendar.getInstance().getTime());
-	folder.setDescription("");
-	if (isGEDMatrixReady != null)
-	    folder.setGEDMatrixReady(isGEDMatrixReady);
-	folder = folderRepo.saveAndFlush(folder);
+        GroupFolder gf = new GroupFolder();
+        gf.setFolder(folder);
+        gf.setGroup(user.getGroup());
+        AccessRights accessRights = new AccessRights();
+        accessRights.setOwnerShip(true);
+        accessRights.setWriteOnly(true);
+        accessRights.setReadOnly(true);
+        gf.setAccessRights(accessRights);
 
-	GroupFolder gf = new GroupFolder();
-	gf.setFolder(folder);
-	gf.setGroup(user.getGroup());
-	AccessRights accessRights = new AccessRights();
-	accessRights.setOwnerShip(true);
-	accessRights.setWriteOnly(true);
-	accessRights.setReadOnly(true);
-	gf.setAccessRights(accessRights);
+        groupFolderRepo.save(gf);
 
-	groupFolderRepo.save(gf);
-
-	return folder.getId();
+        return folder.getId();
     }
 
     @Override
     public boolean isGEDReadyFolder(Integer folderId) {
-	Folder folder = folderRepo.findOne(folderId);
-	return folder.isGEDMatrixReady();
+        Folder folder = folderRepo.findOne(folderId);
+        return folder.isGEDMatrixReady();
     }
 
     @Override
     public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady, User user)
-	    throws NotAuthorizedException {
-	if (!canUserWriteFolder(user, folderId)) {
-	    throw new NotAuthorizedException(
-		    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
-	}
-	Folder folder = folderRepo.findOne(folderId);
-	if (folderName != null && !folderName.isEmpty())
-	    folder.setName(folderName);
-	if (isGEDMatrixReady != null) {
-	    folder.setGEDMatrixReady(isGEDMatrixReady);
-	    for (Folder subfolder : folder.getSubFolders()) {
-		updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
-	    }
-	}
-	folderRepo.save(folder);
+            throws NotAuthorizedException {
+        if (!canUserWriteFolder(user, folderId)) {
+            throw new NotAuthorizedException(
+                    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
+        }
+        Folder folder = folderRepo.findOne(folderId);
+        if (folderName != null && !folderName.isEmpty())
+            folder.setName(folderName);
+        if (isGEDMatrixReady != null) {
+            folder.setGEDMatrixReady(isGEDMatrixReady);
+            for (Folder subfolder : folder.getSubFolders()) {
+                updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
+            }
+        }
+        folderRepo.save(folder);
     }
 
     /**
      * @param user     a user
      * @param folderId identifier for a folder
      * @return whether the <var>user</var> should be allowed to update the folder
-     *         identified by <var>folderId</var>
+     * identified by <var>folderId</var>
      */
     private boolean canUserWriteFolder(User user, Integer folderId) {
-	for (GroupFolder gf : groupFolderRepo.findByFolderAndUser(folderId, user.getRowGuid())) {
-	    if (gf.getAccessRights().isWriteOnly()) {
-		return true;
-	    }
-	}
-	return false;
+        for (GroupFolder gf : groupFolderRepo.findByFolderAndUser(folderId, user.getRowGuid())) {
+            if (gf.getAccessRights().isWriteOnly()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteFolder(Integer folderId, User user) throws Exception {
-	if (!canUserWriteFolder(user, folderId)) {
-	    throw new NotAuthorizedException(
-		    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
-	}
-	Folder folder = folderRepo.findOne(folderId);
-	if (folder != null) {
+        if (!canUserWriteFolder(user, folderId)) {
+            throw new NotAuthorizedException(
+                    "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
+        }
+        Folder folder = folderRepo.findOne(folderId);
+        if (folder != null) {
 
-	    // Remove logs that are contained in specified folder and its sub-folders
-		List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
-		List<Integer> folderIds = new ArrayList<>();
+            // Remove logs that are contained in specified folder and its sub-folders
+            List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
+            List<Integer> folderIds = new ArrayList<>();
 
-		for (Folder f : subFoldersWithCurrentFolders) {
-			folderIds.add(f.getId());
-		}
+            for (Folder f : subFoldersWithCurrentFolders) {
+                folderIds.add(f.getId());
+            }
 
-		List<Log> logs = new ArrayList<>(logRepo.findByFolderIdIn(folderIds));
-		eventLogService.deleteLogs(logs, user);
+            List<Log> logs = new ArrayList<>(logRepo.findByFolderIdIn(folderIds));
+            eventLogService.deleteLogs(logs, user);
 
-		// Remove specified folder and sub-folders
-		folderRepo.delete(folder);
-	}
+            // Remove specified folder and sub-folders
+            folderRepo.delete(folder);
+        }
     }
 
     @Override
     public List<FolderTreeNode> getWorkspaceFolderTree(String userId) {
-	return folderService.getFolderTreeByUser(0, userId);
+        return folderService.getFolderTreeByUser(0, userId);
     }
 
     @Override
     public List<Folder> getBreadcrumbs(Integer folderId) {
-	List<Folder> folders = new ArrayList<>();
+        List<Folder> folders = new ArrayList<>();
 
-	Folder folder = folderRepo.findOne(folderId);
-	if (folder != null) {
-	    folders.add(folder);
-	    while (folder.getParentFolder() != null && folder.getParentFolder().getId() != 0) {
-		folder = folderRepo.findOne(folder.getParentFolder().getId());
-		folders.add(folder);
-	    }
-	}
+        Folder folder = folderRepo.findOne(folderId);
+        if (folder != null) {
+            folders.add(folder);
+            while (folder.getParentFolder() != null && folder.getParentFolder().getId() != 0) {
+                folder = folderRepo.findOne(folder.getParentFolder().getId());
+                folders.add(folder);
+            }
+        }
 
-	return folders;
+        return folders;
     }
 
     @Override
     public List<GroupFolder> getSubFolders(String userRowGuid, Integer folderId) {
-	User user = userRepo.findByRowGuid(userRowGuid);
-	List<GroupFolder> folderUsers = new ArrayList<>();
-	Map<Integer, GroupFolder> map = new HashMap<>();
-	for (GroupFolder gf : groupFolderRepo.findByParentFolderAndUser(folderId, userRowGuid)) {
-	    GroupFolder fu = map.get(gf.getFolder().getId());
-	    if (fu == null) {
-		fu = new GroupFolder();
-		fu.setGroup(gf.getGroup());
-		fu.setFolder(gf.getFolder());
-		fu.setAccessRights(gf.getAccessRights());
-		folderUsers.add(fu);
-		map.put(gf.getFolder().getId(), fu);
-	    }
-	}
-	return folderUsers;
+        User user = userRepo.findByRowGuid(userRowGuid);
+        List<GroupFolder> folderUsers = new ArrayList<>();
+        Map<Integer, GroupFolder> map = new HashMap<>();
+        for (GroupFolder gf : groupFolderRepo.findByParentFolderAndUser(folderId, userRowGuid)) {
+            GroupFolder fu = map.get(gf.getFolder().getId());
+            if (fu == null) {
+                fu = new GroupFolder();
+                fu.setGroup(gf.getGroup());
+                fu.setFolder(gf.getFolder());
+                fu.setAccessRights(gf.getAccessRights());
+                folderUsers.add(fu);
+                map.put(gf.getFolder().getId(), fu);
+            }
+        }
+        return folderUsers;
     }
 
     @Override
     @Transactional(readOnly = false)
     public String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-	    boolean hasOwnership) {
+                                        boolean hasOwnership) {
 
-	List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	List<Integer> folderIds = new ArrayList<>();
+        List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        List<Integer> folderIds = new ArrayList<>();
 
-	for (Folder folder : subFoldersWithCurrentFolders) {
-	    createGroupFolder(group, folder, hasRead, hasWrite, hasOwnership);
-	    folderIds.add(folder.getId());
-	}
+        for (Folder folder : subFoldersWithCurrentFolders) {
+            createGroupFolder(group, folder, hasRead, hasWrite, hasOwnership);
+            folderIds.add(folder.getId());
+        }
 
-	List<Folder> parentFolders = folderService.getParentFolders(folderId);
-	for (Folder folder : parentFolders) {
-	    createGroupFolder(group, folder, true, false, false);
-	}
+        List<Folder> parentFolders = folderService.getParentFolders(folderId);
+        for (Folder folder : parentFolders) {
+            createGroupFolder(group, folder, true, false, false);
+        }
 
-	for (Process process : processRepo.findByFolderIdIn(folderIds)) {
-	    createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
-	}
+        for (Process process : processRepo.findByFolderIdIn(folderIds)) {
+            createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
+        }
 
-	for (Log log : logRepo.findByFolderIdIn(folderIds)) {
-	    createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
-	}
+        for (Log log : logRepo.findByFolderIdIn(folderIds)) {
+            createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+        }
 
-	return "";
+        return "";
     }
 
     @Override
@@ -349,442 +353,437 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public String removeFolderPermissions(Integer folderId, String groupRowGuid) {
 
 //	
-	List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	List<Integer> folderIds = new ArrayList<Integer>();
+        List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        List<Integer> folderIds = new ArrayList<Integer>();
 
-	for (Folder folder : subFoldersWithCurrentFolders) {
-	    folderIds.add(folder.getId());
-	    removeGroupFolder(group, folder);
-	}
+        for (Folder folder : subFoldersWithCurrentFolders) {
+            folderIds.add(folder.getId());
+            removeGroupFolder(group, folder);
+        }
 
-	for (Process process : processRepo.findByFolderIdIn(folderIds)) {
-	    removeGroupProcess(group, process);
-	}
+        for (Process process : processRepo.findByFolderIdIn(folderIds)) {
+            removeGroupProcess(group, process);
+        }
 
-	for (Log log : logRepo.findByFolderIdIn(folderIds)) {
-	    removeGroupLog(group, log);
-	}
-	return "";
+        for (Log log : logRepo.findByFolderIdIn(folderIds)) {
+            removeGroupLog(group, log);
+        }
+        return "";
 
     }
 
     @Override
     @Transactional(readOnly = false)
     public String removeProcessPermissions(Integer processId, String groupRowGuid) {
-	Process process = processRepo.findOne(processId);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	removeGroupProcess(group, process);
-	return "";
+        Process process = processRepo.findOne(processId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        removeGroupProcess(group, process);
+        return "";
     }
 
     @Override
     @Transactional(readOnly = false)
     public String removeLogPermissions(Integer logId, String groupRowGuid, String username)
-	    throws UserNotFoundException {
-	Log log = logRepo.findOne(logId);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	removeGroupLog(group, log);
+            throws UserNotFoundException {
+        Log log = logRepo.findOne(logId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        removeGroupLog(group, log);
 
-	// Sync permission with user metadata that linked to specified log
+        // Sync permission with user metadata that linked to specified log
 //        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
 
-	return "";
+        return "";
     }
 
     @Override
     @Transactional(readOnly = false)
     public String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-	    boolean hasOwnership) {
-	Process process = processRepo.findOne(processId);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
-	createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
+                                         boolean hasOwnership) {
+        Process process = processRepo.findOne(processId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
 
-	Folder parentFolder = process.getFolder();
-	setReadOnlyParentFolders(group, parentFolder);
+        Folder parentFolder = process.getFolder();
+        setReadOnlyParentFolders(group, parentFolder);
 
-	return "";
+        return "";
     }
 
     @Override
     @Transactional(readOnly = false)
     public String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-	    boolean hasOwnership) {
-	Log log = logRepo.findOne(logId);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
+                                     boolean hasOwnership) {
+        Log log = logRepo.findOne(logId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
 
-	createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+        createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
 
-	Folder parentFolder = log.getFolder();
-	setReadOnlyParentFolders(group, parentFolder);
+        Folder parentFolder = log.getFolder();
+        setReadOnlyParentFolders(group, parentFolder);
 
-	return "";
+        return "";
     }
 
     private void setReadOnlyParentFolders(Group group, Folder parentFolder) {
-	if (parentFolder != null) {
-	    List<Folder> parentFolders = folderService.getParentFolders(parentFolder.getId());
-	    parentFolders.add(parentFolder);
-	    for (Folder folder : parentFolders) {
-			GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
-			if (groupFolder == null) { // Set read access only when specified group doesn't have access to parent folder
-				createGroupFolder(group, folder, true, false, false);
-			}
-	    }
-	}
+        if (parentFolder != null) {
+            List<Folder> parentFolders = folderService.getParentFolders(parentFolder.getId());
+            parentFolders.add(parentFolder);
+            for (Folder folder : parentFolders) {
+                GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
+                if (groupFolder == null) { // Set read access only when specified group doesn't have access to parent
+                	// folder
+                    createGroupFolder(group, folder, true, false, false);
+                }
+            }
+        }
     }
 
     @Override
     @Transactional
     public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType,
-	    boolean shareUserMetadata) {
-	Log log = logRepo.findOne(logId);
-	Group group = groupRepo.findByRowGuid(groupRowGuid);
+                                      boolean shareUserMetadata) {
+        Log log = logRepo.findOne(logId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
 
-	createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
+        createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
 
-	Folder parentFolder = log.getFolder();
-	setReadOnlyParentFolders(group, parentFolder);
+        Folder parentFolder = log.getFolder();
+        setReadOnlyParentFolders(group, parentFolder);
 
-	if (shareUserMetadata) {
-	    // Sync permission with user metadata that linked to specified log
-//            userMetadataServ.saveUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, accessType);
-	} else {
-	    // Automatically share simulation user metadata when the log is shared
-//            userMetadataServ.shareSimulationMetadata(logId, groupRowGuid, accessType);
-	}
+        // shareUserMetadata flag is disabled for now
 
-	return "";
+        return "";
     }
 
     @Override
     @Transactional(readOnly = false)
     public void addProcessToFolder(Integer processId, Integer folderId) {
-	if (folderId != null && processId != null) {
-	    Process process = processRepo.findOne(processId);
-	    Folder folder = folderRepo.findOne(folderId);
+        if (folderId != null && processId != null) {
+            Process process = processRepo.findOne(processId);
+            Folder folder = folderRepo.findOne(folderId);
 
-	    process.setFolder(folder);
+            process.setFolder(folder);
 //            if (folder != null) {
 //                folder.addFolderProcess(process);
 //            }
 
-	    processRepo.save(process);
-	} else {
-	    LOGGER.warn("Missing folderID " + folderId + " Missing processID " + processId);
-	}
+            processRepo.save(process);
+        } else {
+            LOGGER.warn("Missing folderID " + folderId + " Missing processID " + processId);
+        }
     }
 
     /**
      * @see org.apromore.service.WorkspaceService#createPublicStatusForUsers(org.apromore.dao.model.Process)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void createPublicStatusForUsers(final Process process) {
-	createGroupProcess(groupRepo.findPublicGroup(), process, true, false, false);
+        createGroupProcess(groupRepo.findPublicGroup(), process, true, false, false);
     }
 
     /**
      * @see org.apromore.service.WorkspaceService#removePublicStatusForUsers(org.apromore.dao.model.Process)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void removePublicStatusForUsers(final Process process) {
-	Group publicGroup = groupRepo.findPublicGroup();
-	if (publicGroup == null) {
-	    LOGGER.warn("No public group in repository");
-	} else {
-	    Set<GroupProcess> freshGroupProcesses = new HashSet<>();
-	    for (GroupProcess groupProcess : process.getGroupProcesses()) {
-		if (!publicGroup.equals(groupProcess.getGroup())) {
-		    freshGroupProcesses.add(groupProcess);
-		}
-	    }
-	    process.setGroupProcesses(freshGroupProcesses);
-	}
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup == null) {
+            LOGGER.warn("No public group in repository");
+        } else {
+            Set<GroupProcess> freshGroupProcesses = new HashSet<>();
+            for (GroupProcess groupProcess : process.getGroupProcesses()) {
+                if (!publicGroup.equals(groupProcess.getGroup())) {
+                    freshGroupProcesses.add(groupProcess);
+                }
+            }
+            process.setGroupProcesses(freshGroupProcesses);
+        }
     }
 
     @Override
     @Transactional(readOnly = false)
     public Log copyLog(Integer logId, Integer newFolderId, String userName, boolean isPublic) throws Exception {
-	DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	String now = dateFormat.format(new Date());
-	Log currentLog = logRepo.findUniqueByID(logId);
-	Folder newFolder = folderRepo.findUniqueByID(newFolderId);
-	User newUser = userRepo.findByUsername(userName);
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        Log currentLog = logRepo.findUniqueByID(logId);
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        User newUser = userRepo.findByUsername(userName);
 
-	Log newLog = new Log();
-	newLog.setName(currentLog.getName());
-	newLog.setDomain(currentLog.getDomain());
-	newLog.setRanking(currentLog.getRanking());
-	newLog.setFilePath(currentLog.getFilePath());
-	newLog.setUser(currentLog.getUser());
-	newLog.setFolder(newFolder);
-	newLog.setCreateDate(now);
+        Log newLog = new Log();
+        newLog.setName(currentLog.getName());
+        newLog.setDomain(currentLog.getDomain());
+        newLog.setRanking(currentLog.getRanking());
+        newLog.setFilePath(currentLog.getFilePath());
+        newLog.setUser(currentLog.getUser());
+        newLog.setFolder(newFolder);
+        newLog.setCreateDate(now);
 
-	// Set access group
-	Set<GroupLog> groupLogs = newLog.getGroupLogs();
-	groupLogs.clear();
-	groupLogs.add(new GroupLog(newUser.getGroup(), newLog, new AccessRights(true, true, true)));
-	if (isPublic) {
-	    Group publicGroup = groupRepo.findPublicGroup();
-	    if (publicGroup == null) {
-		LOGGER.warn("No public group present in repository");
-	    } else {
-		groupLogs.add(new GroupLog(publicGroup, newLog, new AccessRights(true, true, false)));
-	    }
-	}
-	newLog.setGroupLogs(groupLogs);
+        // Set access group
+        Set<GroupLog> groupLogs = newLog.getGroupLogs();
+        groupLogs.clear();
+        groupLogs.add(new GroupLog(newUser.getGroup(), newLog, new AccessRights(true, true, true)));
+        if (isPublic) {
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+            } else {
+                groupLogs.add(new GroupLog(publicGroup, newLog, new AccessRights(true, true, false)));
+            }
+        }
+        newLog.setGroupLogs(groupLogs);
 
-	if (currentLog.getStorage() != null) {
-	    newLog.setStorage(currentLog.getStorage());
-	}
+        if (currentLog.getStorage() != null) {
+            newLog.setStorage(currentLog.getStorage());
+        }
 
-	// Copy file
-	StorageClient storageClient = storageFactory.getStorageClient(config.getStoragePath());
-//        For backward compatible
-	final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
-	if (currentLog.getStorage() == null) {
-//	     change spelling of factory
-	    StorageClient storageClientOldFile = storageFactory
-		    .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
+        // Copy file
+        StorageClient storageClient = storageFactory.getStorageClient(config.getStoragePath());
+        // For backward compatible
+        final String currentFileFullName = currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
+        if (currentLog.getStorage() == null) {
+        // change spelling of factory
+            StorageClient storageClientOldFile = storageFactory
+                    .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
 
-	    OutputStream outputStream = storageClient.getOutputStream("log", currentFileFullName);
-	    InputStream inputStream = storageClientOldFile.getInputStream(null, currentFileFullName);
-	    logFileService.copyFile(inputStream, outputStream);
-	    Storage storage = new Storage();
-	    storage.setKey(currentFileFullName);
-	    storage.setPrefix("log");
-	    storage.setStoragePath(config.getStoragePath());
-	    newLog.setStorage(storageRepository.saveAndFlush(storage));
-	}
+            OutputStream outputStream = storageClient.getOutputStream("log", currentFileFullName);
+            InputStream inputStream = storageClientOldFile.getInputStream(null, currentFileFullName);
+            logFileService.copyFile(inputStream, outputStream);
+            Storage storage = new Storage();
+            storage.setKey(currentFileFullName);
+            storage.setPrefix("log");
+            storage.setStoragePath(config.getStoragePath());
+            newLog.setStorage(storageRepository.saveAndFlush(storage));
+        }
 
-	// Persist
-	try {
-	    logRepo.save(newLog);
-	} catch (Exception e) {
-//	    log something
-	    storageClient.delete("log", currentFileFullName);
-	}
+        // Persist
+        try {
+            logRepo.save(newLog);
+        } catch (Exception e) {
+        // log something
+            storageClient.delete("log", currentFileFullName);
+        }
 
-	return newLog;
+        return newLog;
     }
 
     @Override
     @Transactional(readOnly = false)
     public Log moveLog(Integer logId, Integer newFolderId) throws Exception {
-	Log log = logRepo.findUniqueByID(logId);
-	Folder newFolder = folderRepo.findUniqueByID(newFolderId);
-	log.setFolder(newFolder);
-	logRepo.save(log);
-	return log;
+        Log log = logRepo.findUniqueByID(logId);
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        log.setFolder(newFolder);
+        logRepo.save(log);
+        return log;
     }
 
     @Override
     @Transactional(readOnly = false)
     public Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId,
-	    String userName, boolean isPublic) throws Exception {
-	Folder newFolder = folderRepo.findUniqueByID(newFolderId);
-	User newUser = userRepo.findByUsername(userName);
+                                       String userName, boolean isPublic) throws Exception {
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        User newUser = userRepo.findByUsername(userName);
 
-	Process process = processRepo.findUniqueByID(processId);
-	Process newProcess = process.clone();
+        Process process = processRepo.findUniqueByID(processId);
+        Process newProcess = process.clone();
 
-	ProcessBranch branch = process.getProcessBranches().get(0);
-	ProcessBranch newBranch = branch.clone();
+        ProcessBranch branch = process.getProcessBranches().get(0);
+        ProcessBranch newBranch = branch.clone();
 
-	List<ProcessModelVersion> newPMVList = this.createNewPMVs(process.getId(), pmvVersions, branch, newBranch);
-	if (newPMVList.isEmpty()) {
-	    throw new Exception("No process model versions were found for processId=" + process.getId()
-		    + "and versions=" + pmvVersions.toString());
-	}
+        List<ProcessModelVersion> newPMVList = this.createNewPMVs(process.getId(), pmvVersions, branch, newBranch);
+        if (newPMVList.isEmpty()) {
+            throw new Exception("No process model versions were found for processId=" + process.getId()
+                    + "and versions=" + pmvVersions.toString());
+        }
 
-	newBranch.setProcess(newProcess);
-	newBranch.setProcessModelVersions(newPMVList);
-	newBranch.setCurrentProcessModelVersion(newPMVList.get(newPMVList.size() - 1));
+        newBranch.setProcess(newProcess);
+        newBranch.setProcessModelVersions(newPMVList);
+        newBranch.setCurrentProcessModelVersion(newPMVList.get(newPMVList.size() - 1));
 
-	newProcess.getProcessBranches().clear();
-	newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[] { newBranch }));
-	newProcess.setUser(newUser);
-	newProcess.setFolder(newFolder);
+        newProcess.getProcessBranches().clear();
+        newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[]{newBranch}));
+        newProcess.setUser(newUser);
+        newProcess.setFolder(newFolder);
 
-	// Set access group
-	Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
-	groupProcesses.clear();
-	groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), new AccessRights(true, true, true)));
-	if (isPublic) {
-	    Group publicGroup = groupRepo.findPublicGroup();
-	    if (publicGroup == null) {
-		LOGGER.warn("No public group present in repository");
-	    } else {
-		groupProcesses.add(new GroupProcess(newProcess, publicGroup, new AccessRights(true, true, false)));
-	    }
-	}
-	newProcess.setGroupProcesses(groupProcesses);
+        // Set access group
+        Set<GroupProcess> groupProcesses = newProcess.getGroupProcesses();
+        groupProcesses.clear();
+        groupProcesses.add(new GroupProcess(newProcess, newUser.getGroup(), new AccessRights(true, true, true)));
+        if (isPublic) {
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+            } else {
+                groupProcesses.add(new GroupProcess(newProcess, publicGroup, new AccessRights(true, true, false)));
+            }
+        }
+        newProcess.setGroupProcesses(groupProcesses);
 
-	processRepo.save(newProcess);
-	for (ProcessModelVersion pmv : newPMVList) {
-	    pmvRepo.save(pmv);
-	}
+        processRepo.save(newProcess);
+        for (ProcessModelVersion pmv : newPMVList) {
+            pmvRepo.save(pmv);
+        }
 
-	return newProcess;
+        return newProcess;
     }
 
     @Override
     @Transactional(readOnly = false)
     public Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic)
-	    throws Exception {
-	Process process = processRepo.findUniqueByID(processId);
-	ProcessBranch branch = process.getProcessBranches().get(0);
-	List<String> pmvVersions = new ArrayList<>();
-	for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
-	    pmvVersions.add(pmv.getVersionNumber());
-	}
+            throws Exception {
+        Process process = processRepo.findUniqueByID(processId);
+        ProcessBranch branch = process.getProcessBranches().get(0);
+        List<String> pmvVersions = new ArrayList<>();
+        for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+            pmvVersions.add(pmv.getVersionNumber());
+        }
 
-	return copyProcessVersions(processId, pmvVersions, newFolderId, userName, isPublic);
+        return copyProcessVersions(processId, pmvVersions, newFolderId, userName, isPublic);
     }
 
     @Override
     @Transactional(readOnly = false)
     public Process moveProcess(Integer processId, Integer newFolderId) throws Exception {
-	Folder newFolder = folderRepo.findUniqueByID(newFolderId);
-	Process process = processRepo.findUniqueByID(processId);
-	process.setFolder(newFolder);
-	processRepo.save(process);
+        Folder newFolder = folderRepo.findUniqueByID(newFolderId);
+        Process process = processRepo.findUniqueByID(processId);
+        process.setFolder(newFolder);
+        processRepo.save(process);
 
-	return process;
+        return process;
     }
 
     private List<ProcessModelVersion> createNewPMVs(Integer processId, List<String> pmvVersions,
-	    ProcessBranch oldBranch, ProcessBranch newBranch) throws Exception {
-	List<ProcessModelVersion> pmvs = new ArrayList<>();
-	for (ProcessModelVersion pmv : oldBranch.getProcessModelVersions()) {
-	    if (pmvVersions.contains(pmv.getVersionNumber())) {
-		ProcessModelVersion newPMV = pmv.clone();
-		newPMV.setProcessBranch(newBranch);
-		newPMV.setNativeDocument(pmv.getNativeDocument().clone());
-		newPMV.getProcessModelAttributes().clear();
-		for (ProcessModelAttribute pma : pmv.getProcessModelAttributes()) {
-		    newPMV.getProcessModelAttributes().add(pma.clone());
-		}
-		pmvs.add(newPMV);
-	    }
-	}
-	return pmvs;
+                                                    ProcessBranch oldBranch, ProcessBranch newBranch) throws Exception {
+        List<ProcessModelVersion> pmvs = new ArrayList<>();
+        for (ProcessModelVersion pmv : oldBranch.getProcessModelVersions()) {
+            if (pmvVersions.contains(pmv.getVersionNumber())) {
+                ProcessModelVersion newPMV = pmv.clone();
+                newPMV.setProcessBranch(newBranch);
+                newPMV.setNativeDocument(pmv.getNativeDocument().clone());
+                newPMV.getProcessModelAttributes().clear();
+                for (ProcessModelAttribute pma : pmv.getProcessModelAttributes()) {
+                    newPMV.getProcessModelAttributes().add(pma.clone());
+                }
+                pmvs.add(newPMV);
+            }
+        }
+        return pmvs;
     }
 
     @Override
     public Folder copyFolder(Integer folderId, Integer sourceFolderId, Integer targetFolderId) throws Exception {
-	return null;
+        return null;
     }
 
     @Override
     public Folder moveFolder(Integer folderId, Integer newParentFolderId) {
-	Folder folder = folderRepo.findUniqueByID(folderId);
-	Folder newParentFolder = folderRepo.findUniqueByID(newParentFolderId);
-	folder.setParentFolder(newParentFolder);
+        Folder folder = folderRepo.findUniqueByID(folderId);
+        Folder newParentFolder = folderRepo.findUniqueByID(newParentFolderId);
+        folder.setParentFolder(newParentFolder);
 
-		// If newParentFolder is root folder, then set ParentFolderChain to 0 directly to avoid NPE
-		if (newParentFolderId.equals(ROOT_FOLDER_ID)) {
-			folder.setParentFolderChain(newParentFolderId.toString());
-			folderService.updateFolderChainForSubFolders(folderId,
-					ROOT_FOLDER_ID + "_" + newParentFolderId + "_" + folderId);
-		} else {
-			folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
-			folderService.updateFolderChainForSubFolders(folderId,
-					newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
-		}
+        // If newParentFolder is root folder, then set ParentFolderChain to 0 directly to avoid NPE
+        if (newParentFolderId.equals(ROOT_FOLDER_ID)) {
+            folder.setParentFolderChain(newParentFolderId.toString());
+            folderService.updateFolderChainForSubFolders(folderId,
+                    ROOT_FOLDER_ID + "_" + newParentFolderId + "_" + folderId);
+        } else {
+            folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
+            folderService.updateFolderChainForSubFolders(folderId,
+                    newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
+        }
 
-	folderRepo.save(folder);
-	return folder;
+        folderRepo.save(folder);
+        return folder;
     }
 
     /* Save the Sub Folder Permissions. */
     private void saveSubFolderPermissions(Folder folder, Group group, boolean hasRead, boolean hasWrite,
-	    boolean hasOwnership) {
-	for (Folder subFolder : folder.getSubFolders()) {
-	    createGroupFolder(group, subFolder, hasRead, hasWrite, hasOwnership);
-	    saveSubFolderPermissions(subFolder, group, hasRead, hasWrite, hasOwnership);
-	}
-	for (Process process : folder.getProcesses()) {
-	    createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
-	}
+                                          boolean hasOwnership) {
+        for (Folder subFolder : folder.getSubFolders()) {
+            createGroupFolder(group, subFolder, hasRead, hasWrite, hasOwnership);
+            saveSubFolderPermissions(subFolder, group, hasRead, hasWrite, hasOwnership);
+        }
+        for (Process process : folder.getProcesses()) {
+            createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
+        }
     }
 
     /* Delete the sub Folder permissions. */
     private void removeSubFolderPermissions(Folder folder, Group group) {
-	for (Folder subFolder : folder.getSubFolders()) {
-	    removeGroupFolder(group, subFolder);
-	    removeSubFolderPermissions(subFolder, group);
-	}
-	for (Process process : folder.getProcesses()) {
-	    removeGroupProcess(group, process);
-	}
+        for (Folder subFolder : folder.getSubFolders()) {
+            removeGroupFolder(group, subFolder);
+            removeSubFolderPermissions(subFolder, group);
+        }
+        for (Process process : folder.getProcesses()) {
+            removeGroupProcess(group, process);
+        }
     }
 
     private void createGroupFolder(Group group, Folder folder, boolean hasRead, boolean hasWrite,
-	    boolean hasOwnership) {
-	GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
-	if (groupFolder == null) {
-	    groupFolder = new GroupFolder();
-	    groupFolder.setGroup(group);
-	    groupFolder.setFolder(folder);
-	}
-		AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
-	groupFolder.setAccessRights(accessRights);
+                                   boolean hasOwnership) {
+        GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
+        if (groupFolder == null) {
+            groupFolder = new GroupFolder();
+            groupFolder.setGroup(group);
+            groupFolder.setFolder(folder);
+        }
+        AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        groupFolder.setAccessRights(accessRights);
 
-	groupFolderRepo.save(groupFolder);
+        groupFolderRepo.save(groupFolder);
     }
 
     private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite,
-	    boolean hasOwnership) {
-	GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
-	AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
-	if (groupProcess == null) {
+                                    boolean hasOwnership) {
+        GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
+        AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        if (groupProcess == null) {
 
-	    groupProcess = new GroupProcess(process, group, accessRights);
-	    process.getGroupProcesses().add(groupProcess);
-	    // group.getGroupProcesses().add(groupProcess);
-	} else {
-	    groupProcess.setAccessRights(accessRights);
-	}
-	groupProcessRepo.save(groupProcess);
+            groupProcess = new GroupProcess(process, group, accessRights);
+            process.getGroupProcesses().add(groupProcess);
+            // group.getGroupProcesses().add(groupProcess);
+        } else {
+            groupProcess.setAccessRights(accessRights);
+        }
+        groupProcessRepo.save(groupProcess);
     }
 
     private void createGroupLog(Group group, Log log, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-	GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
-	AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
-	if (groupLog == null) {
-	    groupLog = new GroupLog(group, log, accessRights);
-	    log.getGroupLogs().add(groupLog);
-	    // group.getGroupLogs().add(groupLog);
-	} else {
-	    groupLog.setAccessRights(accessRights);
-	}
-	groupLogRepo.save(groupLog);
+        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+        AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        if (groupLog == null) {
+            groupLog = new GroupLog(group, log, accessRights);
+            log.getGroupLogs().add(groupLog);
+            // group.getGroupLogs().add(groupLog);
+        } else {
+            groupLog.setAccessRights(accessRights);
+        }
+        groupLogRepo.save(groupLog);
     }
 
     private void removeGroupFolder(Group group, Folder folder) {
-	GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
-	if (groupFolder != null) {
-	    groupFolderRepo.delete(groupFolder);
-	}
+        GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
+        if (groupFolder != null) {
+            groupFolderRepo.delete(groupFolder);
+        }
     }
 
     private void removeGroupProcess(Group group, Process process) {
-	GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
-	if (groupProcess != null) {
-	    groupProcessRepo.delete(groupProcess);
-	}
+        GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
+        if (groupProcess != null) {
+            groupProcessRepo.delete(groupProcess);
+        }
     }
 
     private void removeGroupLog(Group group, Log log) {
-	GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
-	if (groupLog != null) {
-	    groupLogRepo.delete(groupLog);
-	}
+        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+        if (groupLog != null) {
+            groupLogRepo.delete(groupLog);
+        }
     }
 
 }

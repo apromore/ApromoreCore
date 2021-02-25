@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,31 +24,19 @@
 
 package org.apromore.dao.model;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
-
 /**
  * Stores the process in apromore.
+ *
  * @author Cameron James
  */
 @Entity
@@ -90,6 +78,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the Primary Key for the Object.
+     *
      * @return Returns the Id.
      */
     @Id
@@ -101,6 +90,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the id for the Object.
+     *
      * @param newId The role name to set.
      */
     public void setId(final Integer newId) {
@@ -109,6 +99,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the role name for the Object.
+     *
      * @return Returns the role name.
      */
     @Column(name = "folder_name", unique = true, nullable = false, length = 45)
@@ -118,6 +109,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the role name for the Object.
+     *
      * @param newName The role name to set.
      */
     public void setName(final String newName) {
@@ -126,6 +118,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the description for the Object.
+     *
      * @return Returns the description description.
      */
     @Column(name = "folder_description")
@@ -135,6 +128,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the description for the Object.
+     *
      * @param newDescription The folder description to set.
      */
     public void setDescription(final String newDescription) {
@@ -143,6 +137,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the gedMatrixReady for the Object.
+     *
      * @return Returns the gedMatrixReady description.
      */
     @Column(name = "ged_matrix_computation")
@@ -152,6 +147,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the gedMatrixReady for the Object.
+     *
      * @param gedMatrixReady The folder gedMatrixComputation to set.
      */
     public void setGEDMatrixReady(final boolean gedMatrixReady) {
@@ -160,6 +156,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the workspace for the Object.
+     *
      * @return Returns the workspace.
      */
     @ManyToOne
@@ -170,6 +167,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the workspace for the Object.
+     *
      * @param newWorkspace The workspace to set.
      */
     public void setWorkspace(final Workspace newWorkspace) {
@@ -178,6 +176,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the created by for the Object.
+     *
      * @return Returns the createdBy.
      */
     @ManyToOne
@@ -188,6 +187,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the created by for the Object.
+     *
      * @param newCreatedBy The created by to set.
      */
     public void setCreatedBy(final User newCreatedBy) {
@@ -196,6 +196,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the modified by for the Object.
+     *
      * @return Returns the modified by.
      */
     @ManyToOne
@@ -206,6 +207,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the modified by for the Object.
+     *
      * @param newModifiedBy The modified by to set.
      */
     public void setModifiedBy(final User newModifiedBy) {
@@ -214,6 +216,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the date created for the Object.
+     *
      * @return Returns the date created.
      */
     @Temporal(TemporalType.DATE)
@@ -224,6 +227,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the date created for the Object.
+     *
      * @param newDateCreated The date created to set.
      */
     public void setDateCreated(final Date newDateCreated) {
@@ -232,6 +236,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the date modified for the Object.
+     *
      * @return Returns the date modified.
      */
     @Temporal(TemporalType.DATE)
@@ -242,6 +247,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the date modified for the Object.
+     *
      * @param newDateModified The date modified to set.
      */
     public void setDateModified(final Date newDateModified) {
@@ -250,6 +256,7 @@ public class Folder implements Serializable {
 
     /**
      * Get the parent folder for the Object.
+     *
      * @return Returns the parent folder.
      */
     @ManyToOne
@@ -260,6 +267,7 @@ public class Folder implements Serializable {
 
     /**
      * Set the parent folder for the Object.
+     *
      * @param newParentFolder The parent folder to set.
      */
     public void setParentFolder(final Folder newParentFolder) {
@@ -286,21 +294,21 @@ public class Folder implements Serializable {
 
     @Column(name = "parent_folder_chain")
     public String getParentFolderChain() {
-	return parentFolderChain;
+        return parentFolderChain;
     }
 
     public void setParentFolderChain(String parentFolderChain) {
-	this.parentFolderChain = parentFolderChain;
+        this.parentFolderChain = parentFolderChain;
     }
 
     @Override
     public String toString() {
-	return "Folder [id=" + id + ", name=" + name + ", parentFolderChain=" + parentFolderChain + "]";
+        return "Folder [id=" + id + ", name=" + name + ", parentFolderChain=" + parentFolderChain + "]";
     }
 
     public void updateParentFolder(Folder parent) {
-	this.setParentFolder(parent);
-	this.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
+        this.setParentFolder(parent);
+        this.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
 
     }
 
