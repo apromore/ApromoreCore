@@ -257,7 +257,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	}
 	Folder folder = folderRepo.findOne(folderId);
 	if (folder != null) {
-	    folderRepo.delete(folder);
 
 	    // Remove logs that are contained in specified folder and its sub-folders
 		List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
@@ -269,6 +268,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
 		List<Log> logs = new ArrayList<>(logRepo.findByFolderIdIn(folderIds));
 		eventLogService.deleteLogs(logs, user);
+
+		// Remove specified folder and sub-folders
+		folderRepo.delete(folder);
 	}
     }
 

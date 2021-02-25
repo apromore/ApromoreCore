@@ -61,14 +61,6 @@ public class FolderServiceImpl implements FolderService {
     @Inject
     private FolderRepository folderRepository;
 
-	@Inject
-	private EventLogService eventLogService;
-
-
-	public void setEventLogService(EventLogService eventLogService) {
-		this.eventLogService = eventLogService;
-	}
-
     @Override
     public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
 	List<GroupFolder> folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
