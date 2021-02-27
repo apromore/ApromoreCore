@@ -45,7 +45,6 @@
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.util,
                             org.deckfour.xes.model,
-                            org.eclipse.virgo.web.dm;resolution:=optional,
                             org.springframework.beans.factory.aspectj,
                             org.springframework.security.web.session,
                             org.springframework.web.context,

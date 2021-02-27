@@ -116,12 +116,8 @@
         <module>Apromore-Extras/Test-Tools</module>
 
         <!-- Assembly -->
-        <module>Apromore-Assembly/Manager-Assembly</module>
-        <module>Apromore-Assembly/Portal-Assembly</module>
-        <module>Apromore-Assembly/Custom-Plugins-Assembly</module>
         <module>core-assemblies</module>
         <module>karaf-shell-branding</module>
-        <module>virgo-compatibility</module>
   </modules>
 
     <properties>
@@ -150,6 +146,7 @@
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <httpcomponents.version>4.2.1</httpcomponents.version>
+        <osgi.version>7.0.0</osgi.version>
         <prodrift.version>1.1.0</prodrift.version>
         <pax.runner.version>1.7.6</pax.runner.version>
 
@@ -333,14 +330,14 @@
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.core</artifactId>
-                <version>4.2.0</version>
+                <artifactId>osgi.cmpn</artifactId>
+                <version>${osgi.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.compendium</artifactId>
-                <version>4.2.0</version>
+                <artifactId>osgi.core</artifactId>
+                <version>${osgi.version}</version>
                 <scope>provided</scope>
             </dependency>
 

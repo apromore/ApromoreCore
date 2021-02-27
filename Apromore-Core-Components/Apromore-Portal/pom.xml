@@ -67,7 +67,6 @@
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Package>
-                            org.eclipse.virgo.web.dm;resolution:=optional,
                             org.aopalliance.aop,                            
                             org.apromore.security.exception,
                             org.apromore.security.filter,
@@ -94,9 +93,9 @@
                             org.springframework.aop,
                             org.springframework.aop.framework,
                             org.springframework.context.config,
-                            org.springframework.osgi.compendium.config;resolution:=optional,
-                            org.springframework.osgi.config;resolution:=optional,
-                            org.springframework.osgi.web.context.support;resolution:=optional,
+                            org.springframework.osgi.compendium.config,
+                            org.springframework.osgi.config,
+                            org.springframework.osgi.web.context.support,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.security.authentication,
                             org.springframework.security.config,
