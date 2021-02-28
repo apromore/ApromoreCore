@@ -81,7 +81,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private UserRepository userRepo;
     private StorageRepository storageRepository;
     private EventLogService eventLogService;
-    private StorageManagementFactory<StorageClient> storageFacotry;
+    private StorageManagementFactory<StorageClient> storageFactory;
 
     private ConfigBean config;
     
@@ -101,7 +101,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         pmvRepo = createMock(ProcessModelVersionRepository.class);
         userRepo = createMock(UserRepository.class);
         folderServiceImpl = createMock(FolderServiceImpl.class);
-        storageFacotry = createMock(StorageManagementFactory.class);
+        storageFactory = createMock(StorageManagementFactory.class);
         eventLogService = createMock(EventLogService.class);
         storageRepository = createMock(StorageRepository.class);
 
@@ -119,7 +119,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupLogRepo,
                                                 logFileService,
                                                 folderServiceImpl,
-                                                storageFacotry,
+                                                storageFactory,
                                                 eventLogService,
                                                 storageRepository);
     }

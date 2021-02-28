@@ -105,7 +105,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final GroupLogRepository groupLogRepository,
                                 final EventLogFileService eventLogFileService,
                                 final FolderService folderService,
-                                final StorageManagementFactory storageFacotry,
+                                final StorageManagementFactory storageFactory,
                                 final EventLogService eventLogService,
                                 final StorageRepository storageRepository) {
 
@@ -121,7 +121,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupLogRepo = groupLogRepository;
         logFileService = eventLogFileService;
         this.folderService = folderService;
-        this.storageFactory = storageFacotry;
+        this.storageFactory = storageFactory;
         this.eventLogService = eventLogService;
         this.storageRepository = storageRepository;
     }

@@ -589,7 +589,7 @@ public abstract class BaseListboxController extends BaseController {
 			try {
 				copyAndPasteController.paste(targetFolderId);
 			} catch (Exception e) {
-				Messagebox.show("An error is occurred during paste process", "Apromore", Messagebox.OK,
+				Messagebox.show("An error occurred during paste process", "Apromore", Messagebox.OK,
 						Messagebox.ERROR);
 			}
 		} else {
