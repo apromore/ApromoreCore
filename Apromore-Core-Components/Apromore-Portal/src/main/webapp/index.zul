@@ -211,7 +211,7 @@
                             <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="Paste"/>
                             <h:span class="ap-action-sep"></h:span>
                             <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.e.portal.addFolder.hint}"/>
-                            <button id="btnAddProcess" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
+                            <button id="btnAddProcess" visible="false" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
