@@ -47,7 +47,6 @@
         <module>Apromore-OSGI-Bundles/hpi-bpt-osgi</module>
         <module>Apromore-OSGI-Bundles/docx4j-osgi</module>
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
-        <module>Apromore-OSGI-Bundles/json-osgi</module>
         <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
         <module>Apromore-OSGI-Bundles/xlsx-streamer-osgi</module>
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
@@ -154,11 +153,6 @@
         <spring.data.jpa.version>1.4.1.RELEASE</spring.data.jpa.version>
         <spring-security.version>3.1.4.RELEASE</spring-security.version>
 
-        <spring-social.version>1.0.2.RELEASE</spring-social.version>
-        <spring-social-facebook.version>1.0.3.RELEASE</spring-social-facebook.version>
-        <spring-social-twitter.version>1.0.5.RELEASE</spring-social-twitter.version>
-        <spring-social-twitter.version>1.0.5.RELEASE</spring-social-twitter.version>
-
         <h2.version>1.3.171</h2.version>
         <mysql.connector.version>5.1.31</mysql.connector.version>
         <!-- <mysql.connector.version>8.0.22</mysql.connector.version> -->
@@ -189,7 +183,7 @@
         <cglib.version>2.2.0</cglib.version>
         <validation.version>1.0.0.GA</validation.version>
         <google.guava.version>27.1-jre</google.guava.version>
-        <json.version>20090211</json.version>
+        <json.version>20201115</json.version>
         <inject.version>1.0.0</inject.version>
         <sardine.version>5.0.1</sardine.version>
         <jackson.version>1.9.13</jackson.version>
@@ -198,12 +192,6 @@
         <zk.version>8.6.0.1</zk.version>
         <zk.spring.version>3.1</zk.spring.version>
         <zk.security.version>3.1</zk.security.version>
-
-        <jaxb-xjc.version>2.2.0</jaxb-xjc.version>
-        <jaxb-impl.version>2.2.0</jaxb-impl.version>
-        <jaxb-api.version>2.2.0</jaxb-api.version>
-        <jaxb2-basics.version>0.5.3.MR1</jaxb2-basics.version>
-        <jaxb2-basics-runtime.version>0.5.3</jaxb2-basics-runtime.version>
 
         <junit.version>4.13.1</junit.version>
         <clover.version>3.1.10</clover.version>
@@ -256,8 +244,6 @@
         <maven.jacoco.version>0.8.4</maven.jacoco.version>
         <maven.javacc.plugin>2.6</maven.javacc.plugin>
         <maven.javadoc.plugin>2.9</maven.javadoc.plugin>
-        <maven.jaxb2.plugin>0.9.0</maven.jaxb2.plugin>
-        <maven.jaxb2.codehaus.plugin>1.5</maven.jaxb2.codehaus.plugin>
         <maven.jetty.plugin>8.1.5.v20120716</maven.jetty.plugin>
         <maven.jxr.plugin>2.3</maven.jxr.plugin>
         <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
@@ -338,6 +324,13 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>osgi.core</artifactId>
                 <version>${osgi.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.12</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -604,59 +597,13 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-jdk14</artifactId>
-                <version>${slf4j.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j.api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.objectweb.asm</groupId>
-                <artifactId>com.springsource.org.objectweb.asm</artifactId>
-                <version>${asm.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.javassist</groupId>
-                <artifactId>com.springsource.javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-
-            <!-- AspectJ Runtime and Weaver -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>com.springsource.org.aspectj.runtime</artifactId>
-                <version>${aspectj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>com.springsource.org.aspectj.weaver</artifactId>
-                <version>${aspectj.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- Eclipse Gemini Blueprint (former Spring DM) -->
@@ -864,67 +811,6 @@
                     <exclusion>
                         <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                         <groupId>org.apache.commons</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- Spring Social -->
-            <dependency>
-                <groupId>org.springframework.social</groupId>
-                <artifactId>spring-social-core</artifactId>
-                <version>${spring-social.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring-web</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>spring-context</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.social</groupId>
-                <artifactId>spring-social-facebook</artifactId>
-                <version>${spring-social.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.social</groupId>
-                <artifactId>spring-social-twitter</artifactId>
-                <version>${spring-social.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring-security-crypto</artifactId>
-                        <groupId>org.springframework.security</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- JAXB -->
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>com.springsource.javax.xml.bind</artifactId>
-                <version>${jaxb-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml</groupId>
-                <artifactId>com.springsource.com.sun.xml.bind</artifactId>
-                <version>${jaxb-impl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.jaxb2_commons</groupId>
-                <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>${jaxb2-basics-runtime.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml</groupId>
-                <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
-                <version>${jaxb-xjc.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.sun.xml</groupId>
-                        <artifactId>com.springsource.com.sun.xml.bind.jaxb1</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1806,10 +1692,10 @@
                     <artifactId>javax.annotation-api</artifactId>
                     <version>1.3.2</version>
                 </dependency>
-
                 <dependency>
                     <groupId>javax.xml.bind</groupId>
                     <artifactId>com.springsource.javax.xml.bind</artifactId>
+                    <version>2.2.0</version>
                 </dependency>
             </dependencies>
         </profile>

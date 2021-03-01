@@ -176,8 +176,7 @@
         
         <dependency>
             <groupId>org.json</groupId>
-            <artifactId>json-osgi</artifactId>
-            <version>1.0</version>
+            <artifactId>json</artifactId>
         </dependency>          
 
         <dependency>
