@@ -213,7 +213,8 @@ public class EventLogServiceImpl implements EventLogService {
      * @param created        the time created
      * @param publicModel    is this a public model?
      * @return Log
-     * @throws Exception Throw UserNotFoundException when a particular user is not found using specified username
+     * @throws UserNotFoundException when a particular user is not found using specified username
+     * @throws Exception             if importing fails for some other reason
      */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
