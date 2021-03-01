@@ -56,7 +56,7 @@
     
     <bundle>mvn:org.apromore/log-animation-logic/1.0</bundle>
     <bundle>mvn:org.apromore/merge-logic/1.1.0</bundle>
-    <bundle>mv:org.apromore/process-discoverer-logic/2.0.0</bundle>
+    <bundle>mvn:org.apromore/process-discoverer-logic/2.0.0</bundle>
     <bundle>mvn:org.apromore/process-discoverer-portal-plugin/2.0.0</bundle>
     <bundle>mvn:org.apromore/similaritysearch-logic/1.1.0</bundle>
     <bundle>mvn:org.apromore/similaritysearch-osgi/1.1</bundle>
