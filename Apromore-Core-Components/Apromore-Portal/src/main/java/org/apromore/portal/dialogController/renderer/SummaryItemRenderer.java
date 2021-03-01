@@ -298,7 +298,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderName(final SummaryType summaryType) {
-        return wrapIntoListCell(new Label(summaryType.getName()));
+        String name = summaryType.getName();
+        Label label = new Label(name);
+        label.setTooltiptext(name);
+        return wrapIntoListCell(label);
     }
 
     private Component renderVersionRanking(final ProcessSummaryType process) {
@@ -346,6 +349,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         if (cp instanceof Label) {
             Label lbl = (Label)cp;
             lc.setLabel(lbl.getValue());
+            lc.setTooltiptext(lbl.getTooltiptext());
         } else {
             lc.appendChild(cp);
         }
