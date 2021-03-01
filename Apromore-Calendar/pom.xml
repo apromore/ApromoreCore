@@ -100,11 +100,10 @@
 					<instructions>
 						<Import-Package>
 							org.apromore.dao.*,
-							org.springframework.beans.factory.annotation,
-							org.apromore.commons.mapper.converter;version="[1.0,2)",
+							org.springframework.beans.factory.annotation,							
 							org.apromore.commons.mapper;version="[1.0,2)",
-							org.apromore.commons.datetime;version="[1.0,2)",
-							org.modelmapper						
+							com.github.dozermapper.core,
+							org.apromore.commons.datetime;version="[1.0,2)"
 						</Import-Package>
 						<Export-Package>
 							org.apromore.calendar.service,

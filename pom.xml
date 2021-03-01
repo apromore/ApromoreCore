@@ -177,7 +177,7 @@
         <aspectj.version>1.6.12.RELEASE</aspectj.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <commons.lang.version>2.6</commons.lang.version>
-        <commons.lang3.version>3.6</commons.lang3.version>
+        <commons.lang3.version>3.7</commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
         <commons.codec.version>1.14</commons.codec.version>
         <commons.httpclient.version>4.2.1</commons.httpclient.version>

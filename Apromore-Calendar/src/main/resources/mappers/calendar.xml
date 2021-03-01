@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<mappings xmlns="http://dozermapper.github.io/schema/bean-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping http://dozermapper.github.io/schema/bean-mapping.xsd">
+   <mapping>
+      <class-a>org.apromore.calendar.model.CalendarModel</class-a>
+      <class-b>org.apromore.dao.model.CustomCalendar</class-b>
+      <field custom-converter-id="stringToOffsetDateTime">
+         <a>updated</a>
+         <b>updated</b>
+      </field>
+      <field custom-converter-id="stringToOffsetDateTime">
+         <a>created</a>
+         <b>created</b>
+      </field>
+   </mapping>
+   <mapping>
+      <class-a>org.apromore.calendar.model.CalendarModel</class-a>
+      <class-b>org.apromore.dao.model.CustomCalendarInfo</class-b>
+      <field custom-converter-id="stringToOffsetDateTime">
+         <a>updated</a>
+         <b>updated</b>
+      </field>
+      <field custom-converter-id="stringToOffsetDateTime">
+         <a>created</a>
+         <b>created</b>
+      </field>
+   </mapping>
+   <mapping>
+      <class-a>org.apromore.calendar.model.HolidayModel</class-a>
+      <class-b>org.apromore.dao.model.Holiday</class-b>
+      <field custom-converter-id="stringToLocalDate">
+         <a>holidayDate</a>
+         <b>holidayDate</b>
+      </field>
+   </mapping>
+   <mapping>
+      <class-a>org.apromore.calendar.model.WorkDayModel</class-a>
+      <class-b>org.apromore.dao.model.WorkDay</class-b>
+      <field custom-converter-id="stringToOffsetTime">
+         <a>startTime</a>
+         <b>startTime</b>
+      </field>
+      <field custom-converter-id="stringToOffsetTime">
+         <a>endTime</a>
+         <b>endTime</b>
+      </field>
+      <field custom-converter-id="durationToduration">
+         <a>duration</a>
+         <b>duration</b>
+      </field>
+   </mapping>
+</mappings>

@@ -21,25 +21,27 @@
  */
 package org.apromore.commons.mapper.converter;
 
-import java.time.OffsetTime;
+import java.time.Duration;
 
 import com.github.dozermapper.core.DozerConverter;
 
-public class StringToOffsetTime extends DozerConverter<String, OffsetTime> {
 
-    public StringToOffsetTime() {
-        super(String.class, OffsetTime.class);
+public class DurationConvertor extends DozerConverter<Duration, Duration> {
+  
+    public DurationConvertor() {
+        super(Duration.class, Duration.class);
     }
 
     @Override
-    public OffsetTime convertTo(String source, OffsetTime destination) {
-        OffsetTime localDate = OffsetTime.parse(source);
-        return localDate;
-    }
+    public Duration convertTo(Duration source, Duration destination) {
 
-    @Override
-    public String convertFrom(OffsetTime source, String destination) {
-        return source.toString();
-    }
+        return source;
+}
+
+@Override
+public Duration convertFrom(Duration source, Duration destination) {
+
+    return source;
+}
 
 }

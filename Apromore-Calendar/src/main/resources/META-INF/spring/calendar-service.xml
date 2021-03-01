@@ -39,16 +39,11 @@
     <bean id="customMapper" class="org.apromore.commons.mapper.CustomMapper" init-method="init">
         <constructor-arg>
         	<list>
-	        	<ref bean="stringToLocalDate"/>
-	  			<ref bean="stringToOffsetDateTime"/>
-	  			<ref bean="stringToOffsetTime"/>
+	        	<value>mappers/calendar.xml</value>
         	</list>
         </constructor-arg>
     </bean>
-    
-    <bean id="stringToLocalDate" class="org.apromore.commons.mapper.converter.StringToLocalDate"/>
-    <bean id="stringToOffsetDateTime" class="org.apromore.commons.mapper.converter.StringToOffsetDateTime"/>
-    <bean id="stringToOffsetTime" class="org.apromore.commons.mapper.converter.StringToOffsetTime"/>
+        
     
  </beans>
     

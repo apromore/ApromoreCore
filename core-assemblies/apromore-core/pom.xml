@@ -79,6 +79,13 @@
               <goal>archive</goal>
             </goals>
           </execution>
+          
+          <execution>
+             <id>dockerfile</id>
+              <goals>
+                 <goal>dockerfile</goal>
+              </goals>
+           </execution>
         </executions>
         <configuration>
           <installedFeatures>

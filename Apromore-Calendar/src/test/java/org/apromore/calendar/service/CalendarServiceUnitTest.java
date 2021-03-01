@@ -31,16 +31,12 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.mapper.CustomMapper;
-import org.apromore.commons.mapper.converter.StringToLocalDate;
-import org.apromore.commons.mapper.converter.StringToOffsetDateTime;
-import org.apromore.commons.mapper.converter.StringToOffsetTime;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Holiday;
@@ -51,7 +47,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.AbstractConverter;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,18 +65,16 @@ public class CalendarServiceUnitTest {
   @Before
   public void Before()
   {
-    List<AbstractConverter> converters=new ArrayList<AbstractConverter>();
-    converters.add(new StringToLocalDate());
-    converters.add(new StringToOffsetDateTime());
-    converters.add(new StringToOffsetTime());
-    mapper=new CustomMapper(converters);
-    mapper.init();
-    calendarService.setModelMapper(mapper);
+      List<String> mapperList = Arrays.asList("mappers/calendar.xml");
+      mapper = new CustomMapper(mapperList);
+      mapper.init();
+      calendarService.setModelMapper(mapper);
   }
  
   @Test
   public void testCreateCalendar() throws CalendarAlreadyExistsException {
     // Given
+
     CustomCalendar calendar = new CustomCalendar("Test Desc",ZoneId.of("UTC"));
     calendar.setId(1l);
     when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
