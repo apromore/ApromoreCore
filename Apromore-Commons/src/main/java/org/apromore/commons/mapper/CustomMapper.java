@@ -22,47 +22,40 @@
 package org.apromore.commons.mapper;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
-import org.modelmapper.AbstractConverter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration.AccessLevel;
-import org.modelmapper.convention.NamingConventions;
+
+import org.apromore.commons.mapper.converter.DurationConvertor;
+import org.apromore.commons.mapper.converter.StringToLocalDate;
+import org.apromore.commons.mapper.converter.StringToOffsetDateTime;
+import org.apromore.commons.mapper.converter.StringToOffsetTime;
+
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 
 public class CustomMapper {
 
-  List<AbstractConverter> converters;
+    Mapper mapper;
+    List<String> mappingFiles;
 
-  ModelMapper mapper;
-
-  public CustomMapper(@SuppressWarnings("rawtypes") List<AbstractConverter> converters) {
-    super();
-    this.converters = converters;
-  }
-
-  
-  public CustomMapper() {
-    super();
-  }
-
-
-  public void init() {
-    mapper = new ModelMapper();
-
-
-    mapper.getConfiguration()
-        .setFieldMatchingEnabled(true)
-        .setFieldAccessLevel(AccessLevel.PRIVATE)
-        .setSourceNamingConvention(NamingConventions.JAVABEANS_MUTATOR);
-
-    for (AbstractConverter<?, ?> converter : converters) {
-      mapper.addConverter(converter);
+    public CustomMapper() {
+        super();
     }
-  }
 
-  public ModelMapper getMapper() {
-    return mapper;
-  }
+    public CustomMapper(List<String> mappingBuilder) {
+        this.mappingFiles = mappingBuilder;
+    }
 
+    public void init() {
+        mapper = DozerBeanMapperBuilder.create()
+                .withMappingFiles(mappingFiles)
+                .withCustomConverterWithId("stringToOffsetDateTime", new StringToOffsetDateTime())
+                .withCustomConverterWithId("stringToLocalDate", new StringToLocalDate())
+                .withCustomConverterWithId("stringToOffsetTime", new StringToOffsetTime())
+                .withCustomConverterWithId("durationToduration", new DurationConvertor())
+                .build();
+    }
 
+    public Mapper getMapper() {
+        return mapper;
+    }
 
 }

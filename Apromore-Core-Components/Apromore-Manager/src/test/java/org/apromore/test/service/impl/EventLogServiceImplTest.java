@@ -91,13 +91,8 @@ public class EventLogServiceImplTest {
     private GroupLogRepository groupLogRepository;
     private FolderRepository folderRepo;
     private UserService userSrv;
-    private UserInterfaceHelper ui;
     private EventLogServiceImpl eventLogService;
-    private UserMetadataService userMetadataService;
     private UsermetadataRepository userMetadataRepo;
-    private GroupUsermetadataRepository groupUsermetadataRepo;
-    private UsermetadataTypeRepository usermetadataTypeRepo;
-    private UsermetadataLogRepository usermetadataLogRepo;
     private TemporaryCacheService temporaryCacheService;
     private StorageManagementFactory<StorageClient> storageFactory;
     private EventLogFileService logFileService;
@@ -138,14 +133,13 @@ public class EventLogServiceImplTest {
     }
 
     @Before
-    public final void setUp() throws Exception {
+    public final void setUp() {
         logRepository = createMock(LogRepository.class);
         groupRepository = createMock(GroupRepository.class);
         groupLogRepository = createMock(GroupLogRepository.class);
         folderRepo = createMock(FolderRepository.class);
         userSrv = createMock(UserService.class);
-        ui = createMock(UserInterfaceHelper.class);
-        userMetadataService = createMock(UserMetadataService.class);
+        userMetadataRepo = createMock(UsermetadataRepository.class);
         temporaryCacheService=createMock(TemporaryCacheService.class);
         storageFactory=createMock(StorageManagementFactory.class);
         logFileService=createMock(EventLogFileService.class);
@@ -154,9 +148,8 @@ public class EventLogServiceImplTest {
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
-                userSrv, ui, config,
-		userMetadataService, temporaryCacheService, storageFactory, logFileService, storageRepository,
-		calendarRepository);
+                userSrv, config,
+                userMetadataRepo,temporaryCacheService,storageFactory,logFileService,storageRepository, calendarRepository);
     }
 
     @Test

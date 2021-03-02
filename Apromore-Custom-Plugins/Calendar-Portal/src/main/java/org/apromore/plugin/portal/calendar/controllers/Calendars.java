@@ -84,19 +84,23 @@ public class Calendars extends SelectorComposer<Window> {
 	CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
 	calendarListbox.setItemRenderer(itemRenderer);
 	calendarListModel = new ListModelList<CalendarModel>();
-	List<CalendarModel> models = calendarService.getCalendars();
+        calendarListModel.setMultiple(false);
+        populateCalendarList();
 
-	Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-	calendarListModel.setMultiple(false);
-	for (CalendarModel model : models) {
-	    calendarListModel.add(model);
-	    if (model.getId().equals(selectedCalendarId)) {
-		calendarListModel.addToSelection(model);
-	    }
+    }
 
-	}
-	calendarListbox.setModel(calendarListModel);
+    public void populateCalendarList() {
+        List<CalendarModel> models = calendarService.getCalendars();
+        calendarListModel.clear();
+        Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        for (CalendarModel model : models) {
+            calendarListModel.add(model);
+            if (model.getId().equals(selectedCalendarId)) {
+                calendarListModel.addToSelection(model);
+            }
 
+        }
+        calendarListbox.setModel(calendarListModel);
     }
 
     @Listen("onClick = #okBtn")
@@ -119,7 +123,7 @@ public class Calendars extends SelectorComposer<Window> {
 	try {
 	    String calendarName = "Generic Calender 9 to 5 created on" + LocalDateTime.now();
 	    model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
-	    calendarListModel.add(model);
+            populateCalendarList();
 
 	} catch (CalendarAlreadyExistsException e) {
 	    // TODO Auto-generated catch block

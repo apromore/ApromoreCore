@@ -19,15 +19,29 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.eclipse.virgo.web.dm;
+package org.apromore.commons.mapper.converter;
 
-import org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext;
+import java.time.Duration;
 
-/**
- * Pretend to be the Virgo class so that preexisting web.xml doesn't need to change on Karaf.
- */
-public class ServerOsgiBundleXmlWebApplicationContext extends OsgiBundleXmlWebApplicationContext {
+import com.github.dozermapper.core.DozerConverter;
 
-  // No implementation
+
+public class DurationConvertor extends DozerConverter<Duration, Duration> {
+  
+    public DurationConvertor() {
+        super(Duration.class, Duration.class);
+    }
+
+    @Override
+    public Duration convertTo(Duration source, Duration destination) {
+
+        return source;
 }
 
+@Override
+public Duration convertFrom(Duration source, Duration destination) {
+
+    return source;
+}
+
+}
