@@ -603,7 +603,7 @@
     <dependency>
       <groupId>org.objenesis</groupId>
       <artifactId>objenesis</artifactId>
-      <version>2.5.1</version>
+      <version>2.6</version>
     </dependency>
 
     <dependency>
@@ -636,9 +636,27 @@
       <version>${virgo.spring.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-    </dependency>
+	<dependency>
+		<groupId>org.yaml</groupId>
+		<artifactId>snakeyaml</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>com.github.dozermapper</groupId>
+		<artifactId>dozer-core</artifactId>
+		<version>6.5.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.11</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.objenesis</groupId>
+		<artifactId>objenesis</artifactId>
+		<version>2.6</version>
+	</dependency>
   </dependencies>
 </project>
