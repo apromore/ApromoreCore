@@ -120,7 +120,7 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean logoutUserAllSessions(final String username) {
         final RestTemplate restTemplate = new RestTemplate();
         final Boolean restRespResult =
-                restTemplate.getForObject("http://localhost:8080/logout/" + username, Boolean.class);
+                restTemplate.getForObject("https://localhost:8143/logout/" + username, Boolean.class);
         logger.debug("\n\nrestRespResult: {}", restRespResult);
 
         return restRespResult;

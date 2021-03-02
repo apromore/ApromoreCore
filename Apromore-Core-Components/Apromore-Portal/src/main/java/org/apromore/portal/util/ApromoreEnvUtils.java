@@ -34,7 +34,7 @@ public final class ApromoreEnvUtils {
             reportEnvKeyErrorState(errMsgIfNotFound);
         }
         
-        String envPropValue = System.getenv(envPropKey);
+        final String envPropValue = System.getenv(envPropKey);
 
         if (! StringUtils.hasText(envPropValue)) {
             reportEnvKeyErrorState(errMsgIfNotFound);
