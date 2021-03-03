@@ -53,6 +53,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.portal.ConfigBean;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -82,6 +83,9 @@ public class ImportController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportController.class);
     private static final String UTF8_CHARSET = StandardCharsets.UTF_8.toString();
+    private static final String MAX_UPLOAD_SIZE = "max-upload-size";
+    private long maxUploadSize = 100000000L; // default 100MB
+    private boolean uploadSizeExceeded = false;
 
     private MainController mainC;
     private Window importWindow;
@@ -121,6 +125,7 @@ public class ImportController extends BaseController {
     public ImportController(MainController mainC) throws DialogException {
         this.ignoredFiles = "";
         this.mainC = mainC;
+        this.maxUploadSize = this.mainC.config.getMaxUploadSize();
         this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
         //this.note = (message) -> { Messagebox.show(message); };
         this.note = new NotificationHandler() { public void show(String message) { Messagebox.show(message); } };
@@ -129,6 +134,7 @@ public class ImportController extends BaseController {
             final Window win = (Window) Executions.createComponents("macros/import.zul", null, null);
             this.importWindow = (Window) win.getFellow("importWindow");
             Button uploadButton = (Button) this.importWindow.getFellow("uploadButton");
+            uploadButton.setClientDataAttribute(MAX_UPLOAD_SIZE, Long.toString(this.maxUploadSize));
             this.fileUrl = (Textbox) this.importWindow.getFellow("fileUrl");
             Button uploadURLButton = (Button) this.importWindow.getFellow("uploadURLButton");
             Button cancelButton = (Button) this.importWindow.getFellow("cancelButtonImport");
@@ -140,6 +146,7 @@ public class ImportController extends BaseController {
             Label supportedExtL = (Label) this.importWindow.getFellow("supportedExt");
             Label supportedExtURL = (Label) this.importWindow.getFellow("supportedExtURL");
             isPublicCheckbox = ((Checkbox) this.importWindow.getFellow("public"));
+
 
             // build the list of supported extensions to display
             SortedSet<String> supportedExt = new TreeSet<>();
@@ -164,6 +171,11 @@ public class ImportController extends BaseController {
             uploadButton.addEventListener("onUpload", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFile((UploadEvent) event);
+                }
+            });
+            uploadButton.addEventListener("onSizeCheck", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadSizeExceeded = ((int) event.getData() == 0) ? false : true;
                 }
             });
             uploadURLButton.addEventListener("onClick", new EventListener<Event>() {
@@ -208,12 +220,13 @@ public class ImportController extends BaseController {
         media = event.getMedia();
         fileNameLabel.setStyle("color: blue");
         fileNameLabel.setValue(media.getName());
-	String extension = ItemNameUtils.findExtension(media.getName());
+	    String extension = ItemNameUtils.findExtension(media.getName());
 
+        okButton.setDisabled(true);
         List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
-                okButton.setDisabled(false);
+                okButton.setDisabled(uploadSizeExceeded);
                 return;
             }
         }
@@ -225,7 +238,7 @@ public class ImportController extends BaseController {
             }
             nativeType = fileType;
         }
-        okButton.setDisabled(false);
+        okButton.setDisabled(uploadSizeExceeded);
     }
 
     /**
@@ -292,6 +305,11 @@ public class ImportController extends BaseController {
                     testData,
                     CONNECT_TIMEOUT,
                     READ_TIMEOUT);
+            long fileSize = testData.length();
+            if (fileSize > this.maxUploadSize) {
+                Notification.error("File size exceeds the allowable limit");
+                return;
+            }
             InputStream targetStream = new FileInputStream(testData);
 
 	    media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,

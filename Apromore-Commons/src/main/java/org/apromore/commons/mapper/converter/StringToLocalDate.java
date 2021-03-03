@@ -22,17 +22,26 @@
 package org.apromore.commons.mapper.converter;
 
 import java.time.LocalDate;
-import java.time.OffsetTime;
-import org.modelmapper.AbstractConverter;
+
+import com.github.dozermapper.core.DozerConverter;
 
 
-
-public class StringToLocalDate extends AbstractConverter<String,LocalDate> {
+public class StringToLocalDate extends DozerConverter<String, LocalDate> {
   
-  @Override
-  protected LocalDate convert(String source) {
+    public StringToLocalDate() {
+        super(String.class, LocalDate.class);
+    }
+
+    @Override
+    public LocalDate convertTo(String source, LocalDate destination) {
     LocalDate localDate = LocalDate.parse(source);
     return localDate;
-  }
+}
+
+@Override
+public String convertFrom(LocalDate source, String destination) {
+
+    return source.toString();
+}
 
 }

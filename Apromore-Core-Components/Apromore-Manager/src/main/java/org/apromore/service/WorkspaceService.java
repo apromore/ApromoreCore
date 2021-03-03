@@ -79,7 +79,7 @@ public interface WorkspaceService {
 
     void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady, User user) throws NotAuthorizedException;
 
-    void deleteFolder(Integer folderId, User user) throws NotAuthorizedException;
+    void deleteFolder(Integer folderId, User user) throws Exception;
 
     List<FolderTreeNode> getWorkspaceFolderTree(String userId);
 

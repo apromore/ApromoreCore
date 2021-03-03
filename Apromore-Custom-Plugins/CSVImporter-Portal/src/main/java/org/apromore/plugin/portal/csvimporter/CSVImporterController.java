@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -131,7 +132,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             logImporter = logImporterProvider.getLogReader(getMediaFormat(media));
 
             Properties props = new Properties();
-            props.load(getClass().getClassLoader().getResourceAsStream(propertyFile));
+            props.load(CSVImporterController.class.getClassLoader().getResourceAsStream(propertyFile));
 
             useParquet = Boolean.parseBoolean(props.getProperty("use.parquet"));
 
@@ -258,7 +259,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     //Create a dialog to ask for user option regarding matched schema mapping
     private void handleMatchedMapping() throws IOException {
         Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(
-                getClass().getClassLoader(), "zul/matchedMapping.zul", null, null);
+                CSVImporterController.class.getClassLoader(), "zul/matchedMapping.zul", null, null);
         matchedMappingPopUp.doModal();
     }
 
@@ -302,50 +303,76 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     @Listen("onClick = #toXESButton; onClick = #toPublicXESButton")
     public void convertToXes(MouseEvent event) {
+        try {
+            LogModel logModel = getLogModel();
+            if (logModel != null) {
+                List<LogErrorReport> errorReport = logModel.getLogErrorReport();
+                boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
+
+                if (errorReport.isEmpty()) {
+                    saveXLog(logModel, isLogPublic);
+                } else {
+                    handleInvalidData(logModel, isLogPublic);
+                }
+            }
+
+        } catch (MissingHeaderFieldsException e) {
+            Messagebox.show(e.getMessage(), getLabels().getString("missing_fields"),
+                Messagebox.OK, Messagebox.ERROR);
+
+        } catch (Exception e) {
+            Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error",
+                Messagebox.OK, Messagebox.ERROR);
+            LOGGER.error("Conversion to XES button handler failed", e);
+        }
+    }
+
+    /**
+     * A log model cannot currently be generated because some headers have not been defined.
+     */
+    public class MissingHeaderFieldsException extends Exception {
+
+        /**
+         * @param message  expected to come from {@link #validateUniqueAttributes}
+         */
+        public MissingHeaderFieldsException(String message) {
+            super(message);
+        }
+    }
+
+    /**
+     * @return the log as currently configured by this UI
+     * @throws MissingHeaderFieldsException if {@link #validateUniqueAttributes} doesn't pass
+     * @throws Exception if the log can't be obtained otherwise
+     */
+    protected LogModel getLogModel() throws Exception {
         StringBuilder headNOTDefined = validateUniqueAttributes();
         if (headNOTDefined.length() != 0) {
-            Messagebox.show(headNOTDefined.toString(), getLabels().getString("missing_fields"), Messagebox.OK,
-                    Messagebox.ERROR);
-        } else {
-            try {
-                LogModel logModel;
-                if (useParquet) {
-                    logModel = parquetImporter.importParqeuetFile(
-                            getInputSream(media),
-                            logMetaData,
-                            getFileEncoding(),
-                            parquetFile,
-                            false
-                    );
-                } else {
-                    logModel = logImporter.importLog(
-                            getInputSream(media),
-                            logMetaData,
-                            getFileEncoding(),
-                            false,
-                            portalContext.getCurrentUser().getUsername(),
-                            portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                            media.getName().replaceFirst("[.][^.]+$", "")
-                    );
-                }
-
-                if (logModel != null) {
-                    List<LogErrorReport> errorReport = logModel.getLogErrorReport();
-                    boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
-
-                    if (errorReport.isEmpty()) {
-                        saveXLog(logModel, isLogPublic);
-                    } else {
-                        handleInvalidData(logModel, isLogPublic);
-                    }
-                }
-
-            } catch (Exception e) {
-                Messagebox.show(getLabels().getString("error") +
-                        e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-                LOGGER.error("Conversion to XES button handler failed", e);
-            }
+            throw new MissingHeaderFieldsException(headNOTDefined.toString());
         }
+
+        LogModel logModel;
+        if (useParquet) {
+            logModel = parquetImporter.importParqeuetFile(
+                getInputSream(media),
+                logMetaData,
+                getFileEncoding(),
+                parquetFile,
+                false
+            );
+        } else {
+            logModel = logImporter.importLog(
+                getInputSream(media),
+                logMetaData,
+                getFileEncoding(),
+                false,
+                portalContext.getCurrentUser().getUsername(),
+                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                media.getName().replaceFirst("[.][^.]+$", "")
+            );
+        }
+
+        return logModel;
     }
 
     private void storeMappingAsJSON(Media media, LogMetaData logMetaData, Log log) throws UserNotFoundException {
@@ -367,7 +394,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     public ResourceBundle getLabels() {
-        return ResourceBundle.getBundle("WEB-INF.zk-label", Locales.getCurrent(), getClass().getClassLoader());
+        return ResourceBundle.getBundle("WEB-INF.zk-label",
+            Locales.getCurrent(),
+            CSVImporterController.class.getClassLoader());
     }
 
     // Internal methods handling page setup (doFinally)
@@ -393,7 +422,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             int size = indexColumnWidth + logMetaData.getHeader().size() * columnWidth + 35;
             window.setWidth(size + "px");
         }
-        window.setTitle("CSV Importer - " + media.getName());
+        String title = Labels.getLabel("e.csvImporter.title.text", "Log Importer") + " - " + media.getName();
+        window.setTitle(title);
 
         setDropDownLists();
         setCSVGrid();
@@ -884,7 +914,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private void handleInvalidData(LogModel logModel, boolean isPublic) throws IOException {
 
-        Window errorPopUp = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
+        Window errorPopUp = (Window) portalContext.getUI().createComponent(CSVImporterController.class.getClassLoader(),
                 "zul/invalidData.zul", null, null);
         errorPopUp.doModal();
 

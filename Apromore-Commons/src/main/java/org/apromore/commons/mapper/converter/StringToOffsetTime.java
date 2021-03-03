@@ -22,16 +22,24 @@
 package org.apromore.commons.mapper.converter;
 
 import java.time.OffsetTime;
-import org.modelmapper.AbstractConverter;
 
+import com.github.dozermapper.core.DozerConverter;
 
+public class StringToOffsetTime extends DozerConverter<String, OffsetTime> {
 
-public class StringToOffsetTime extends AbstractConverter<String,OffsetTime> {
-  
-  @Override
-  protected OffsetTime convert(String source) {
-    OffsetTime localDate = OffsetTime.parse(source);
-    return localDate;
-  }
+    public StringToOffsetTime() {
+        super(String.class, OffsetTime.class);
+    }
+
+    @Override
+    public OffsetTime convertTo(String source, OffsetTime destination) {
+        OffsetTime localDate = OffsetTime.parse(source);
+        return localDate;
+    }
+
+    @Override
+    public String convertFrom(OffsetTime source, String destination) {
+        return source.toString();
+    }
 
 }

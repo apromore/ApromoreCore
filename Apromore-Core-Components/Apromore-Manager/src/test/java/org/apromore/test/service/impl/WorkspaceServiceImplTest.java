@@ -44,6 +44,7 @@ import org.apromore.dao.WorkspaceRepository;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
 import org.apromore.service.EventLogFileService;
+import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.impl.FolderServiceImpl;
@@ -79,7 +80,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private ProcessModelVersionRepository pmvRepo;
     private UserRepository userRepo;
     private StorageRepository storageRepository;
-    private StorageManagementFactory<StorageClient> storageFacotry;
+    private EventLogService eventLogService;
+    private StorageManagementFactory<StorageClient> storageFactory;
 
     private ConfigBean config;
     
@@ -99,7 +101,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         pmvRepo = createMock(ProcessModelVersionRepository.class);
         userRepo = createMock(UserRepository.class);
         folderServiceImpl = createMock(FolderServiceImpl.class);
-        storageFacotry = createMock(StorageManagementFactory.class);
+        storageFactory = createMock(StorageManagementFactory.class);
+        eventLogService = createMock(EventLogService.class);
         storageRepository = createMock(StorageRepository.class);
 
         config = new ConfigBean();
@@ -116,7 +119,9 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupLogRepo,
                                                 logFileService,
                                                 folderServiceImpl,
-                                                storageFacotry,storageRepository);
+                                                storageFactory,
+                                                eventLogService,
+                                                storageRepository);
     }
 
     @Test
@@ -205,7 +210,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         ProcessModelVersion pmv1 = createPMV(branch, nativeDoc, createVersion("1.0"));
         ProcessModelVersion pmv2 = createPMV(branch, nativeDoc, createVersion("1.1"));
         ProcessModelVersion pmv3 = createPMV(branch, nativeDoc, createVersion("1.2"));
-        branch.getProcessModelVersions().addAll(Arrays.asList(new ProcessModelVersion[] {pmv1, pmv2, pmv3}));
+        branch.getProcessModelVersions().addAll(Arrays.asList(pmv1, pmv2, pmv3));
         branch.setCurrentProcessModelVersion(pmv2);
         process.getProcessBranches().add(branch);
         
@@ -213,7 +218,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Integer processId = process.getId();
         Integer targetFolderId = targetFolder.getId();
         String userName = user.getUsername();
-        List<String> pmvVersions = Arrays.asList(new String[] {pmv1.getVersionNumber(), pmv2.getVersionNumber()});
+        List<String> pmvVersions = Arrays.asList(pmv1.getVersionNumber(), pmv2.getVersionNumber());
         boolean madePublic = false;
         
         // Mock recording

@@ -36,7 +36,6 @@
                             org.apromore.jgraph.*;version="[1.0.0,2)",
                             org.apromore.processmining.models.*;version="[1.0,2.0)",
                             org.apromore.processmining.plugins.*;version="[1.0,2.0)",
-                            org.eclipse.virgo.web.dm;resolution:=optional,
                             org.springframework.beans.factory.aspectj,
                             org.springframework.security.web.session,
                             org.springframework.web.context,
@@ -177,8 +176,7 @@
         
         <dependency>
             <groupId>org.json</groupId>
-            <artifactId>json-osgi</artifactId>
-            <version>1.0</version>
+            <artifactId>json</artifactId>
         </dependency>          
 
         <dependency>
