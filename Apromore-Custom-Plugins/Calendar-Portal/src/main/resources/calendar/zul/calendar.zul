@@ -29,7 +29,7 @@
           client:onBind="Ap.calendar.syncRows()"
           title="Custom Calendar" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
     <div id="actionBridge" visible="false" />
-    <vbox height="100%" hflex="1" spacing="0">
+    <vbox height="100%" hflex="1" spacing="0">    
       <hbox hflex="1" vflex="1">
         <vbox id="daysOfWeekWrapper" hflex="1" vflex="1" spacing="0">
           <hbox sclass="ap-window-header-actions" hflex="1" align="center" pack="start" spacing="0"

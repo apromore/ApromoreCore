@@ -32,9 +32,7 @@
 
   <context-param>
     <param-name>contextClass</param-name>
-    <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
-    <!-- The Spring-based context below is temporarily commented out, must be kept for use in the future -->
-    <!-- <param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value> -->
+    <param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
   </context-param>
 
   <context-param>

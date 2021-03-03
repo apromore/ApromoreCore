@@ -52,51 +52,22 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <unpackBundle>false</unpackBundle>
                     <instructions>
-                        <Embed-Dependency>
-                            <!-- Embedded non-OSGI libraries.
-                                 Remember to always keep the maven-war-plugin in sync.
-                                 These dependencies should be in scope provided!
-                            -->
-                            artifactId=
-                            hibernate-core|jbpt|jdom|json|jaxb2-basics-runtime
-                            |spring-social-core|spring-social-facebook|spring-social-twitter
-                        </Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Package>
-                            org.eclipse.virgo.web.dm;resolution:=optional,
                             org.aopalliance.aop,                            
                             org.apromore.security.exception,
                             org.apromore.security.filter,
                             org.apromore.security.provider,
                             org.apromore.service,
                             com.google.common.base,
-                            org.deckfour.xes.classification,
-                            org.deckfour.xes.extension,
-                            org.deckfour.xes.extension.std,
-                            org.deckfour.xes.extension.std.cost,
-                            org.deckfour.xes.factory,
-                            org.deckfour.xes.id,
-                            org.deckfour.xes.in,
-                            org.deckfour.xes.info,
-                            org.deckfour.xes.info.impl,
-                            org.deckfour.xes.logging,
-                            org.deckfour.xes.model,
-                            org.deckfour.xes.model.buffered,
-                            org.deckfour.xes.model.impl,
-                            org.deckfour.xes.nikefs2,
-                            org.deckfour.xes.out,
-                            org.deckfour.xes.util,
-                            org.deckfour.xes.xstream,
                             org.springframework.aop,
                             org.springframework.aop.framework,
                             org.springframework.context.config,
-                            org.springframework.osgi.compendium.config;resolution:=optional,
-                            org.springframework.osgi.config;resolution:=optional,
-                            org.springframework.osgi.web.context.support;resolution:=optional,
+                            org.springframework.osgi.compendium.config,
+                            org.springframework.osgi.config,
+                            org.springframework.osgi.web.context.support,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.security.authentication,
                             org.springframework.security.config,
@@ -108,7 +79,7 @@
                             org.springframework.web.filter,
                             org.zkoss.zel.impl,
                             org.zkoss.zk.au.http,
-                            *;resolution:=optional
+                            *
                         </Import-Package>
                         <Export-Package>
                             org.apromore.portal,
@@ -134,9 +105,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
-                        %regex[WEB-INF/lib/(?!hibernate-core|jbpt|jdom|json|jaxb2|spring-social).*jar]
-                    </packagingExcludes>
+                    <packagingExcludes>%regex[WEB-INF/lib/.*]</packagingExcludes>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
@@ -146,41 +115,9 @@
     </build>
 
     <dependencies>
-
-        <!--
-            Dependencies that were defined only in the assembly
-            TODO: check if these are really neded!
-        -->
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-lgpl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-lgpl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>com.springsource.javax.xml.bind</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -224,22 +161,6 @@
             <artifactId>jaxen</artifactId>
             <version>1.1.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.2.2.Final</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-         <!--Replacement for the org.javassist from the hibernate package-->
-        <dependency>
-            <groupId>org.jboss.javassist</groupId>
-            <artifactId>com.springsource.javassist</artifactId>
-        </dependency>
 
         <!-- APIs -->
         <dependency>
@@ -260,18 +181,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
         </dependency>
 
         <!-- Spring dependencies -->
@@ -391,15 +300,6 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-        </dependency>
-        <!-- Spring Social Dependencies -->
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-facebook</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-twitter</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

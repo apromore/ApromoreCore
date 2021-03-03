@@ -211,7 +211,7 @@
                             <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="Paste"/>
                             <h:span class="ap-action-sep"></h:span>
                             <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.e.portal.addFolder.hint}"/>
-                            <button id="btnAddProcess" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
+                            <button id="btnAddProcess" visible="false" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
@@ -220,7 +220,7 @@
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
                             <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file or folder"/>
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnCalendar" visible="false" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="Manage calendars"/>
+                            <button id="btnCalendar" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="Manage calendars"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />

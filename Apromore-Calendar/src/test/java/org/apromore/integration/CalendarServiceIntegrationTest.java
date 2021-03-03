@@ -136,4 +136,24 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
   }
   
 
+  @Test
+  public void testGetCalendarWithCustomHolidays() throws CalendarAlreadyExistsException, CalendarNotExistsException {
+//    Given
+      CalendarModel model = calendarService.createGenericCalendar(UUID.randomUUID().toString(), true,
+              ZoneId.systemDefault().toString());
+      HolidayModel holiday1 = new HolidayModel("CUSTOM", "Test Holiday1", "Test Holiday Desc1",
+              LocalDate.of(2020, 01, 01));
+      HolidayModel holiday2 = new HolidayModel("CUSTOM", "Test Holiday2", "Test Holiday Desc2",
+              LocalDate.of(2020, 01, 02));
+      HolidayModel holiday3 = new HolidayModel("CUSTOM", "Test Holiday3", "Test Holiday Desc3",
+              LocalDate.of(2020, 01, 03));
+      calendarService.updateHoliday(model.getId(), Arrays.asList(holiday1, holiday2, holiday3));
+
+//    when
+      List<CalendarModel> modelExpected = calendarService.getCalendars();
+
+      System.out.println(modelExpected);
+
+  }
+
 }

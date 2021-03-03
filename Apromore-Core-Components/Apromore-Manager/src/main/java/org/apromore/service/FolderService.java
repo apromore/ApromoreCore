@@ -21,26 +21,26 @@
  */
 package org.apromore.service;
 
-import java.util.List;
-
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.service.model.FolderTreeNode;
 
+import java.util.List;
+
 public interface FolderService {
-  
-  public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId);
-  
-  public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(
-      Integer parentFolderId, String userId);
-  
-  public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId);
 
-  public void updateFolderChainForSubFolders(Integer folderId, String newFolderChainPrefix);
+    List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId);
 
-  List<Folder> getParentFolders(Integer id);
+    List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(
+            Integer parentFolderId, String userId);
 
-  List<Folder> getSubFolders(Integer id, boolean includeCurrentFolder);
+    List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId);
+
+    void updateFolderChainForSubFolders(Integer folderId, String newFolderChainPrefix);
+
+    List<Folder> getParentFolders(Integer id);
+
+    List<Folder> getSubFolders(Integer id, boolean includeCurrentFolder);
 
 }

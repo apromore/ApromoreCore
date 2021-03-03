@@ -85,7 +85,6 @@
                         <Import-Package>
 							org.apromore.plugin,
                             <!-- Referenced from web.xml -->
-                            org.eclipse.virgo.web.dm;resolution:=optional,
                             org.springframework.security.web.session,
                             org.springframework.web.context,
                             org.springframework.web.context.request,

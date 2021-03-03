@@ -22,21 +22,16 @@
 package org.apromore.dao.jpa.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
-import org.apromore.dao.model.CustomCalendarInfo;
-import org.apromore.dao.model.Holiday;
 import org.apromore.dao.model.WorkDay;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
@@ -48,7 +43,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 	CustomCalendarRepository customCal;
 	
 	@Autowired
-    CustomCalendarInfoRepository customCalInfo;
+	CustomCalendarInfoRepository customCalInfo;
 
 
 	@Test

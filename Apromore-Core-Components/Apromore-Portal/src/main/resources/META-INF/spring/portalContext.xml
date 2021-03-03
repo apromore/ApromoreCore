@@ -62,7 +62,8 @@
         <constructor-arg type="boolean" value="${security.userreg.enable}"/>
         <constructor-arg type="boolean" value="${security.fulluserreg.enable}"/>
         <constructor-arg type="boolean" value="${security.subscribe.enable}"/>
-        <constructor-arg type="boolean" value="false"/> <!-- flag for calendar enable / disable-->
+        <constructor-arg type="boolean" value="${calendar.enable}"/> <!-- flag for calendar enable / disable-->
+        <constructor-arg type="long" value="${import.maxSize}"/> <!-- flag for calendar enable / disable-->
     </bean>
 
     <bean id="editor.js" class="java.lang.String">
