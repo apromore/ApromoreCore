@@ -256,10 +256,12 @@ public class EventLogServiceImpl implements EventLogService {
         // Add the user's personal group
         groupLogs.add(new GroupLog(user.getGroup(), log, true, true, true));
 
-        // Add access rights of its immediately enclosing folder
-        Set<GroupFolder> groupFolders = folder.getGroupFolders();
-        for (GroupFolder gf : groupFolders) {
-            groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
+        // Unless in the root folder, add access rights of its immediately enclosing folder
+        if (folder != null) {
+            Set<GroupFolder> groupFolders = folder.getGroupFolders();
+            for (GroupFolder gf : groupFolders) {
+                groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
+            }
         }
 
         // Add the public group
