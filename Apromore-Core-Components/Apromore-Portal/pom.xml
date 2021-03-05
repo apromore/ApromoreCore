@@ -70,6 +70,7 @@
                             org.springframework.osgi.web.context.support,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.security.authentication,
+                            org.springframework.security.authentication.jaas,
                             org.springframework.security.config,
                             org.springframework.security.core.userdetails,
                             org.springframework.security.remoting.httpinvoker,
