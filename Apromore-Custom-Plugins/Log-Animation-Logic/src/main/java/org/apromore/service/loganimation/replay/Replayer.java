@@ -101,10 +101,10 @@ public class Replayer {
         return processCheckMessage;
     }
     
-    public AnimationLog replay(XLog log, String color) {
-        AnimationLog animationLog = new AnimationLog(log);
-        animationLog.setColor(color /*this.getLogColor()*/);
-        animationLog.setName(log.getAttributes().get("concept:name").toString());
+    public AnimationLog replay(XLog log, String name) {
+        AnimationLog animationLog = new AnimationLog(log, name);
+        //animationLog.setColor(color /*this.getLogColor()*/);
+        //animationLog.setName(log.getAttributes().get("concept:name").toString());
         
         int eventCount = 0;
         eventNameKeyMap.clear();

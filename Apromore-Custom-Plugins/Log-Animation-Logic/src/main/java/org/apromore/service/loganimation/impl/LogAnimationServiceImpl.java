@@ -142,7 +142,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
 //            EncodeTraces.getEncodeTraces().read(xlogs); //build a mapping from traceId to charstream
             for (Log log: logs) {
 
-                AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+                AnimationLog animationLog = replayer.replay(log.xlog, log.fileName);
                 animationLog.setFileName(log.fileName);
                 
                 //AnimationLog animationLog = replayer.replayWithMultiThreading(log.xlog, log.color);
@@ -361,7 +361,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
 //            EncodeTraces.getEncodeTraces().read(xlogs); //build a mapping from traceId to charstream
             for (Log log: logs) {
 
-                AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+                AnimationLog animationLog = replayer.replay(log.xlog, log.fileName);
                 animationLog.setFileName(log.fileName);
                 
                 //AnimationLog animationLog = replayer.replayWithMultiThreading(log.xlog, log.color);

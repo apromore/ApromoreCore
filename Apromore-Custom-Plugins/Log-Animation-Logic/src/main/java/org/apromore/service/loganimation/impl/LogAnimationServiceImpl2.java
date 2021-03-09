@@ -135,7 +135,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         if (replayer.isValidProcess()) {
             for (Log log: logs) {
 
-                AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+                AnimationLog animationLog = replayer.replay(log.xlog, log.fileName);
                 animationLog.setFileName(log.fileName);
                 
                 if (animationLog !=null && !animationLog.isEmpty()) {
@@ -252,7 +252,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         List<AnimationLog> replayedLogs = new ArrayList<>();
         if (replayer.isValidProcess()) {
             for (Log log: logs) {
-                AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+                AnimationLog animationLog = replayer.replay(log.xlog, log.fileName);
                 animationLog.setFileName(log.fileName);
                 
                 if (animationLog !=null && !animationLog.isEmpty()) {
