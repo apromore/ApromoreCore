@@ -49,7 +49,7 @@
         <intercept-url pattern="/login.zul*" access="permitAll" requires-channel="any"/>
         <intercept-url pattern="/**" access="hasRole('ROLE_USER')" requires-channel="any"/>
 
-        <logout logout-url="/j_spring_security_logout" logout-success-url="/login.zul" delete-cookies="JSESSIONID,Apromore"/>
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/login.zul" delete-cookies="Apromore"/>
 
         <custom-filter position="FORM_LOGIN_FILTER" ref="apromoreUsernamePasswordAuthenticationFilter"/>
 
