@@ -17,7 +17,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.0.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -34,8 +33,11 @@
                             !com.fasterxml.jackson.*,
                             !com.google.protobuf,
                             !com.google.re2j,
+                            com.ibm.security.*;resolution:=optional,
+                            com.ibm.uvm.tools;resolution:=optional,
                             !com.jcraft.jsch,
                             !com.nimbusds.*,
+                            com.plutext.dsig;resolution:=optional,
                             !com.sun.javadoc,
                             !com.sun.jersey.spi.container.servlet,
                             !com.sun.jdmk.comm,
@@ -43,6 +45,7 @@
                             !javax.servlet.*,
                             !javax.ws.rs.core,
                             !jdiff,
+                            mx4j.tools.adaptor.http;resolution:=optional,
                             !org.apache.avalon.framework.logger,
                             !org.apache.avro.*,
                             !org.apache.commons.cli.*,
@@ -68,12 +71,14 @@
                             !org.apache.zookeeper.*,
                             !org.codehaus.*,
                             !org.eclipse.jetty.*,
+                            org.slf4j.impl;resolution:=optional,
                             !org.yaml.snakeyaml.*,
                             !org.wildfly.openssl,
                             !org.xbill.DNS,
                             !org.xerial.snappy,
                             !shaded.*,
                             !sun.nio.ch,
+                            sun.security.*;resolution:=optional,
                             org.codehaus.stax2,
                             *
                         </Import-Package>
