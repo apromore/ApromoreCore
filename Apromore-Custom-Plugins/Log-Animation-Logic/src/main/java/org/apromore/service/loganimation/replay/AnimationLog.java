@@ -61,8 +61,9 @@ public class AnimationLog {
     private static final Logger LOGGER = Logger.getLogger(AnimationLog.class.getCanonicalName());
     private CaseMapping caseMapping; // mapping caseID to case index for space efficiency
     
-    public AnimationLog(XLog xlog) {
+    public AnimationLog(XLog xlog, String name) {
         this.xlog = xlog;
+        this.name = name;
         this.caseMapping = new CaseMapping(xlog);
     }
     
