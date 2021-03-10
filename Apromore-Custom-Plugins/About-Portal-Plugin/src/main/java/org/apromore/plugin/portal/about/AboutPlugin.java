@@ -98,10 +98,14 @@ public class AboutPlugin extends DefaultPortalPlugin {
                 ")"
             );
             final Window pluginWindow = (Window) Executions.getCurrent().createComponentsDirectly(
-                new InputStreamReader(bundleContext.getBundle().getResource("zul/about.zul").openStream(), "UTF-8"),
+                new InputStreamReader(
+                    bundleContext.getBundle().getResource("/about/zul/about.zul").openStream(),
+                    "UTF-8"
+                ),
                 "zul",
                 null,
-                args);
+                args
+            );
             pluginWindow.setAttribute("version", "dummy");
 
             Button buttonOk = (Button) pluginWindow.getFellow("ok");
