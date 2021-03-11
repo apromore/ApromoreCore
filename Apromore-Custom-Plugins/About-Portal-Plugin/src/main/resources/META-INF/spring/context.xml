@@ -37,11 +37,15 @@
     <osgi-compendium:cm-properties id="gitProperties" persistent-id="git"/>
 
     <!-- Expose the components as OSGi services -->
+    <!--
     <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.about.AboutPlugin">
         <beans:constructor-arg type="org.osgi.framework.BundleContext" ref="bundleContext"/>
         <beans:constructor-arg type="String" value="${git.commit.id.describe}"/>
         <beans:constructor-arg type="String" value="${git.commit.time}"/>
+        <constructor-arg type="String" value="Apromore Pty Ltd."/>
+        <constructor-arg type="String" value="" />
     </beans:bean>
+
     <osgi:service ref="portalPlugin" interface="org.apromore.plugin.portal.PortalPlugin"/>
 
     <osgi:service interface="org.apromore.plugin.portal.WebContentService">
@@ -49,5 +53,5 @@
             <beans:constructor-arg type="Object" ref="portalPlugin"/>
         </beans:bean>
     </osgi:service>
-
+    -->
 </beans:beans>
