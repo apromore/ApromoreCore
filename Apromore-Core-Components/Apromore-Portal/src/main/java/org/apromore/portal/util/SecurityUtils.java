@@ -23,13 +23,13 @@ package org.apromore.portal.util;
 
 import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
-import org.apache.commons.io.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +42,7 @@ public final class SecurityUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityUtils.class);
 
-    private static final String KEYSTORE_FILE = "securityServ.jks";
+    private static final String KEYSTORE_FILE = "apSecurityTS.jks";
 
     private static SecretKeySpec secretKey;
     private static byte[] key;
@@ -51,13 +51,16 @@ public final class SecurityUtils {
 
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
 
-    public static final String KS_AND_KEY_PASSWORD_ENV_KEY = "KS_PASSWD";
+    private static final String KS_AND_KEY_PASSWORD_ENV_KEY = "KS_PASSWD";
+    private static final String SECURITY_RESOURCES_DIR_KEY = "SECURITY_RESOURCES_DIR";
 
     private static final String SYMMETRIC_CIPHER_FULL_ALG_SPEC = "AES/ECB/PKCS5Padding";
     private static final String SYMMETRIC_CIPHER_BASE_ALG = "AES";
 
     private static final String DIGEST_ALGORITHM = "SHA1";
-    private static final String CHARSET8_ENCODING = Charsets.UTF_8.toString();
+    private static final String CHARSET_ENCODING = "UTF-8";
+
+    private static String secRessKeystoreFilePathStr = null;
 
     static {
         String pwdKSStr = System.getenv(KS_AND_KEY_PASSWORD_ENV_KEY);
@@ -69,6 +72,18 @@ public final class SecurityUtils {
             throw new IllegalStateException(errMsg);
         }
 
+        String resourcesDirKey = System.getenv(SECURITY_RESOURCES_DIR_KEY);
+
+        if (resourcesDirKey == null) {
+            throw new IllegalStateException("Can not proceed as security resources directory is not defined");
+        }
+
+        if (! resourcesDirKey.endsWith("/")) {
+            resourcesDirKey = resourcesDirKey + "/";
+        }
+
+        secRessKeystoreFilePathStr = resourcesDirKey + KEYSTORE_FILE;
+
         SecurityUtils.ksPassword = pwdKSStr.toCharArray();
         // For safety/clear
         pwdKSStr = null;
@@ -79,40 +94,48 @@ public final class SecurityUtils {
     }
 
     public static final PublicKey getPublicKey(final String keyAlias) throws Exception {
-        notNullAssert(keyAlias, "keyAlias");
+        try (
+                final InputStream inputStream = new FileInputStream(secRessKeystoreFilePathStr);
+        ) {
+            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keystore.load(inputStream, SecurityUtils.ksPassword);
 
-        final InputStream inputStream = SecurityUtils.class.getClassLoader().getResourceAsStream(KEYSTORE_FILE);
+            final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
 
-        final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(inputStream, SecurityUtils.ksPassword);
+            if (key instanceof PrivateKey) {
+                // Get certificate of public key
+                final Certificate cert = keystore.getCertificate(keyAlias);
+                final PublicKey publicKey = cert.getPublicKey();
 
-        final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
-
-        if (key instanceof PrivateKey) {
-            // Get certificate of public key
-            final Certificate cert = keystore.getCertificate(keyAlias);
-            final PublicKey publicKey = cert.getPublicKey();
-
-            return publicKey;
-        } else {
-            return null;
+                return publicKey;
+            } else {
+                return null;
+            }
         }
     }
 
     public static PrivateKey getPrivateKey(final String keyAlias) throws Exception {
-        notNullAssert(keyAlias, "keyAlias");
+        logger.info("\n\nkeyAlias: {} ", keyAlias);
+        logger.info("\n\nsecRessKeystoreFilePathStr: {} ", secRessKeystoreFilePathStr);
 
-        final InputStream inputStream = SecurityUtils.class.getClassLoader().getResourceAsStream(KEYSTORE_FILE);
+        try (
+                final InputStream inputStream = new FileInputStream(secRessKeystoreFilePathStr);
+        ) {
+            logger.info("\n\nFileInputStream was opened");
 
-        final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(inputStream, SecurityUtils.ksPassword);
+            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 
-        final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
+            logger.info("\n\nSecurityUtils.ksPassword: {}", new String(SecurityUtils.ksPassword));
+            keystore.load(inputStream, SecurityUtils.ksPassword);
+            logger.info("\n\nkeystore was loaded");
 
-        if (key instanceof PrivateKey) {
-            return (PrivateKey) key;
-        } else {
-            return null;
+            final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
+
+            if (key instanceof PrivateKey) {
+                return (PrivateKey) key;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -132,7 +155,7 @@ public final class SecurityUtils {
             signature.update(rawDataStr.getBytes(StandardCharsets.UTF_8));
             signedMsg = signature.sign();
         } catch (final Exception e) {
-            logger.error("Exception in digital signing: {}", e.getMessage());
+            logger.error("\n\nException: {}", e.getMessage());
 
             e.printStackTrace();
         } finally {
@@ -160,7 +183,7 @@ public final class SecurityUtils {
 
             verified = signature.verify(signedMsg);
         } catch (final Exception e) {
-            logger.error("Exception in signature verification: {}", e.getMessage());
+            logger.error("\n\nException: {}", e.getMessage());
 
             e.printStackTrace();
         } finally {
@@ -178,11 +201,9 @@ public final class SecurityUtils {
             final Cipher cipher = Cipher.getInstance(SYMMETRIC_CIPHER_FULL_ALG_SPEC);
             cipher.init(Cipher.ENCRYPT_MODE, SecurityUtils.secretKey);
 
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(CHARSET8_ENCODING)));
+            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
         } catch (final Exception e) {
-            logger.error("Error while encrypting: " + e.toString());
-
-            e.printStackTrace();
+            System.out.println("Error while encrypting: " + e.toString());
         }
 
         return null;
@@ -200,25 +221,25 @@ public final class SecurityUtils {
 
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
         } catch (final Exception e) {
-            logger.error("Error while decrypting: " + e.toString());
+            System.out.println("Error while decrypting: " + e.toString());
 
             throw e;
         }
     }
-	
+
     private static void setKey(final String myKey) {
-        notNullAssert(myKey, "myKey");
+        MessageDigest sha;
 
         try {
-            key = myKey.getBytes(CHARSET8_ENCODING);
-
-            final MessageDigest sha = MessageDigest.getInstance(DIGEST_ALGORITHM);
-
+            key = myKey.getBytes(CHARSET_ENCODING);
+            sha = MessageDigest.getInstance(DIGEST_ALGORITHM);
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, SYMMETRIC_CIPHER_BASE_ALG);
-        } catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (final NoSuchAlgorithmException noSuchAlgorithmException) {
+            noSuchAlgorithmException.printStackTrace();
+        } catch (final UnsupportedEncodingException unsupportedEncodingException) {
+            unsupportedEncodingException.printStackTrace();
         }
     }
 }

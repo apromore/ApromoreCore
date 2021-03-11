@@ -212,14 +212,23 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                         final UserType currentUser = UserSessionManager.getCurrentUser();
                         LOGGER.debug("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
 
-                        final boolean logoutSuccess =
-                                managerService.logoutUserAllSessions(currentUser.getUsername());
-                        LOGGER.debug("\n\nlogoutSuccess: {}", logoutSuccess);
+                        try {
+                            final boolean logoutSuccess =
+                                    managerService.logoutUserAllSessions(currentUser.getUsername());
+                            LOGGER.info("\nlogoutSuccess: {}", logoutSuccess);
 
-                        final Session session = Sessions.getCurrent();
-                        if (session == null || event.getData().equals(session)) {
-                            Clients.evalJavaScript("window.close()");
-                            Executions.sendRedirect("/j_spring_security_logout");
+                            final Session session = Sessions.getCurrent();
+
+                            if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
+                                Clients.evalJavaScript("window.close()");
+                                LOGGER.info("\nBEFORE spring security logout");
+                                Executions.sendRedirect("/j_spring_security_logout");
+                                LOGGER.info("\nAFTER spring security logout");
+                            }
+                        } catch (final Exception e) {
+                            LOGGER.error("\n\nException in logging out: " + e.getMessage());
+
+                            e.printStackTrace();
                         }
                     }
                 }

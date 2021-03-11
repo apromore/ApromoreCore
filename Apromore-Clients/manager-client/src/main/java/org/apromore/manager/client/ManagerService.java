@@ -69,7 +69,7 @@ public interface ManagerService {
      *
      * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
      */
-    boolean logoutUserAllSessions(final String username);
+    boolean logoutUserAllSessions(final String username) throws Exception;
 
     /**
      * the User record.

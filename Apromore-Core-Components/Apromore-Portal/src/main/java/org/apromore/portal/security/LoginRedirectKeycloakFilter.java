@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -70,24 +71,30 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
                          final ServletResponse response,
                          final FilterChain chain)
             throws IOException, ServletException {
-        LOGGER.info("\n\n>>>>> In " + this.getClass() + ".doFilter(..)");
+        LOGGER.trace("\n\n>>>>> In " + this.getClass() + ".doFilter(..)");
 
         final HttpServletRequest servletRequest = (HttpServletRequest) request;
         final HttpServletResponse servletResponse = (HttpServletResponse) response;
 
         final String requestURI = servletRequest.getRequestURI();
-        LOGGER.info("\n\nrequestURI is: " + requestURI);
+        LOGGER.trace("\n\nrequestURI is: " + requestURI);
 
         if ((requestURI != null) && (requestURI.contains(TRAD_LOGIN_REQUEST_URI))) {
             LOGGER.info("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
 
             final String urlToUseForKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
+            LOGGER.info("\n\n##### urlToUseForKeycloakLoginPage " + urlToUseForKeycloakLoginPage);
 
-            servletResponse.setStatus(HttpStatus.SC_TEMPORARY_REDIRECT);
-            servletResponse.setHeader("Location", urlToUseForKeycloakLoginPage);
+            LOGGER.info("\nSending redirect to: " + urlToUseForKeycloakLoginPage);
+
+            // servletResponse.setStatus(HttpStatus.SC_TEMPORARY_REDIRECT);
+            // servletResponse.setHeader("Location", urlToUseForKeycloakLoginPage);
+
+            //
+            ((HttpServletResponse) response).sendRedirect(urlToUseForKeycloakLoginPage);
+        } else {
+            chain.doFilter(servletRequest, servletResponse);
         }
-
-        chain.doFilter(servletRequest, servletResponse);
     }
 
     private String determineUrlToUseForLoginRequest() {

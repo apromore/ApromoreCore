@@ -23,6 +23,7 @@
 package org.apromore.manager.client;
 
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +36,11 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.security.cert.CertificateException;
 
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apromore.common.Constants;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
@@ -84,6 +89,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -117,13 +123,37 @@ public class ManagerServiceImpl implements ManagerService {
      * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
      */
     @Override
-    public boolean logoutUserAllSessions(final String username) {
-        final RestTemplate restTemplate = new RestTemplate();
-        final Boolean restRespResult =
-                restTemplate.getForObject("https://localhost:8143/logout/" + username, Boolean.class);
-        logger.debug("\n\nrestRespResult: {}", restRespResult);
+    public boolean logoutUserAllSessions(final String username) throws Exception {
+        Boolean restRespResult = false;
 
-        return restRespResult;
+        final RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            restRespResult =
+                    restTemplate.getForObject("https://securityms:8143/logout/" + username, Boolean.class);
+            logger.debug("\n\nrestRespResult: {}", restRespResult);
+        } catch (final Exception e) {
+            final String exceptionMsg = e.getMessage();
+
+            if (e instanceof CertificateException || ((exceptionMsg != null) &&
+                    (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
+                logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
+
+                restRespResult =
+                        restTemplate.getForObject("https://localhost:8143/logout/" + username, Boolean.class);
+                logger.debug("\n\nrestRespResult: {}", restRespResult);
+
+                restRespResult = true;
+            } else {
+                e.printStackTrace();
+
+                throw e;
+            }
+        } finally {
+            logger.info("\n\n>>>>> >>>>> >>>>> Logout result: {}", restRespResult);
+
+            return restRespResult;
+        }
     }
 
     /**

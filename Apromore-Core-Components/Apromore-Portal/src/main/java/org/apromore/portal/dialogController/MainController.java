@@ -122,7 +122,7 @@ public class MainController extends BaseController implements MainControllerInte
 
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
 
-    private static final String KEY_ALIAS = "CAPS";
+    private static final String KEY_ALIAS = "apseckey";
 
     private PortalContext portalContext;
     private MenuController menu;
