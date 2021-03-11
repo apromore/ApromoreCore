@@ -50,11 +50,19 @@ public class AboutPlugin extends DefaultPortalPlugin {
     private BundleContext bundleContext;
     private String commitId;
     private String buildDate;
+    private String holder;
+    private String detail;
 
-    public AboutPlugin(final BundleContext newBundleContext, final String newCommitId, final String newBuildDate) {
+    public AboutPlugin(final BundleContext newBundleContext,
+                       final String newCommitId,
+                       final String newBuildDate,
+                       final String newHolder,
+                       final String newDetail) {
         this.bundleContext = newBundleContext;
         this.commitId = newCommitId;
         this.buildDate = newBuildDate;
+        this.holder = newHolder;
+        this.detail = newDetail;
     }
 
     public String getCommitId() {
@@ -91,6 +99,8 @@ public class AboutPlugin extends DefaultPortalPlugin {
             Map args = new HashMap();
             args.put("community", config.isCommunity());
             args.put("edition", config.getVersionEdition());
+            args.put("holder", this.holder);
+            args.put("detail", this.detail);
             args.put("version", config.getMajorVersionNumber() +
                 " (commit " +
                     getCommitId() + " built on " + getBuildDate() + " / core: " +
