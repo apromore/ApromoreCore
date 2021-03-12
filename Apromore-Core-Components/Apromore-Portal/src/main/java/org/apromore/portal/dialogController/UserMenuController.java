@@ -40,7 +40,6 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
@@ -221,9 +220,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
                             if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
                                 Clients.evalJavaScript("window.close()");
-                                LOGGER.info("\nBEFORE spring security logout");
                                 Executions.sendRedirect("/j_spring_security_logout");
-                                LOGGER.info("\nAFTER spring security logout");
                             }
                         } catch (final Exception e) {
                             LOGGER.error("\n\nException in logging out: " + e.getMessage());
