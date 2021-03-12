@@ -84,7 +84,7 @@ export JAVA_OPTS="-server -Xms20g -Xmx20g"
 startup.sh -clean
 ```
 
-### H2 Database Congiguration
+### H2 Database
 * Edit the top-level `site.properties` file, replacing the MySQL declarations in "Database and JPA" with the commented-out H2 properties.
 * Stop and restart the server so that it picks up the changes to `site.properties`.
 
