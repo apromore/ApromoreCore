@@ -7,7 +7,7 @@ This repository contains source code of the [Apromore](https://apromore.org) Cor
 * [Apromore Community Edition](https://github.com/apromore/ApromoreCE), which is open source.
 * [Apromore Enterprise Edition](https://github.com/apromore/ApromoreEE), which is proprietary.
 
-The instructions below are for the installation of Apromore Core from the source code. For convenience, we also make available a containerized image in [Docker](https://github.com/apromore/ApromoreDocker).
+The instructions below are for the installation of Apromore Core from the source code. 
 If you are looking for the commercial edition (Apromore Enterprise Edition), check the [Apromore web site](https://apromore.org/)
 
 ## System requirements
@@ -20,6 +20,26 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
 * (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.7.
 * <b>Note:</b> These instructions are tested with Linux Ubuntu 18.04. In Linux Ubuntu 20.04 there may be some dependency management issues. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and Max OS 10.8 or newer. 
+
+
+### MySQL setup
+For earnest use or development, Apromore should be configured to use MySQL. As an alternative, one can also use H2 database by changing the settings in the properties file.
+
+* Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
+
+* Execute the following commands. You will be prompted to enter the root password of MySQL
+
+```bash
+mysql -u root -p
+CREATE DATABASE apromore CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
+GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
+
+CREATE USER 'liquibase_user'@'%' IDENTIFIED BY '7fHJV41fpJ';
+GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
+	
+```
 
 ## Installation Instructions
 
@@ -38,33 +58,6 @@ When there are additional configurations specific to a particular edition, they 
 
 Almost all configuration occurs in the `site.properties` file which is located in the `ApromoreCore` directory.
 The default version of this file from a fresh git checkout contains reasonable defaults that allow the server to be started without any manual configuration.
-
-
-### MySQL setup
-By default, Apromore Core uses H2 database because it allows casual evaluation without requiring any configuration.
-For earnest use or development, Apromore should be configured to use MySQL instead.
-
-* Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
-
-* Create a database named 'apromore' in your MySQL server. Also create 2 user accounts which use the Apromore application.
-* You will be prompted to enter the root password of MySQL
-
-```bash
-mysql -u root -p
-CREATE DATABASE apromore CHARACTER SET utf8 COLLATE utf8_general_ci;
-
-CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
-GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
-
-CREATE USER 'liquibase_user'@'%' IDENTIFIED BY '7fHJV41fpJ';
-GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
-	
-```
-
-* Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
-* Stop and restart the server so that it picks up the changes to `site.properties`.
-* Identically to the default H2 database, the initial MySQL database will have one user: "admin".
-
 
 ### Heap size
 Memory limits are set using the usual JVM parameters.
@@ -90,6 +83,10 @@ On unix-style systems:
 export JAVA_OPTS="-server -Xms20g -Xmx20g"
 startup.sh -clean
 ```
+
+### H2 Database Congiguration
+* Edit the top-level `site.properties` file, replacing the MySQL declarations in "Database and JPA" with the commented-out H2 properties.
+* Stop and restart the server so that it picks up the changes to `site.properties`.
 
 
 ### Cache size
