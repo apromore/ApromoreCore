@@ -700,6 +700,106 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return folder;
     }
 
+    @Override
+    public List<Folder> getSingleOwnerFolderByUser(User user) {
+
+        // Get all GroupFolder that associated with specified user's singleton group
+        List<GroupFolder> groupFolders = groupFolderRepo.findByGroupId(user.getGroup().getId());
+        List<Folder> SingleOwnerFolderList = new ArrayList<>();
+
+        for (GroupFolder gf : groupFolders) {
+            List<GroupFolder> ownerGroupFolders = groupFolderRepo.findOwnerByFolderId(gf.getFolder().getId());
+            if (ownerGroupFolders.size() == 1) {
+                GroupFolder groupFolder = ownerGroupFolders.get(0);
+                
+                // If specified user's singleton group is the only owner of the folder
+                if (Objects.equals(groupFolder.getGroup().getId(), user.getGroup().getId())) {
+                    SingleOwnerFolderList.add(groupFolder.getFolder());
+                }
+            }
+        }
+        return SingleOwnerFolderList;
+    }
+
+    @Override
+    public List<Log> getSingleOwnerLogByUser(User user) {
+
+        // Get all GroupLog that associated with specified user's singleton group
+        List<GroupLog> groupLogs = groupLogRepo.findByGroupId(user.getGroup().getId());
+        List<Log> SingleOwnerLogList = new ArrayList<>();
+
+        for (GroupLog gf : groupLogs) {
+            List<GroupLog> ownerGroupLogs = groupLogRepo.findOwnerByLogId(gf.getLog().getId());
+            if (ownerGroupLogs.size() == 1) {
+                GroupLog groupLog = ownerGroupLogs.get(0);
+
+                // If specified user's singleton group is the only owner of the Log
+                if (Objects.equals(groupLog.getGroup().getId(), user.getGroup().getId())) {
+                    SingleOwnerLogList.add(groupLog.getLog());
+                }
+            }
+        }
+        return SingleOwnerLogList;
+    }
+
+    @Override
+    public List<Process> getSingleOwnerProcessByUser(User user) {
+
+        // Get all GroupLog that associated with specified user's singleton group
+        List<GroupProcess> groupProcesss = groupProcessRepo.findByGroupId(user.getGroup().getId());
+        List<Process> SingleOwnerProcessList = new ArrayList<>();
+
+        for (GroupProcess gf : groupProcesss) {
+            List<GroupProcess> ownerGroupProcesss = groupProcessRepo.findOwnerByProcessId(gf.getProcess().getId());
+            if (ownerGroupProcesss.size() == 1) {
+                GroupProcess groupProcess = ownerGroupProcesss.get(0);
+
+                // If specified user's singleton group is the only owner of the Process
+                if (Objects.equals(groupProcess.getGroup().getId(), user.getGroup().getId())) {
+                    SingleOwnerProcessList.add(groupProcess.getProcess());
+                }
+            }
+        }
+        return SingleOwnerProcessList;
+    }
+
+    @Override
+    public Boolean isOnlyOwner(User user) {
+        List<Folder> folders = getSingleOwnerFolderByUser(user);
+        List<Log> logs = getSingleOwnerLogByUser(user);
+        List<Process> processes = getSingleOwnerProcessByUser(user);
+
+        return folders.size() > 0 || logs.size() > 0 || processes.size() > 0;
+
+    }
+
+    @Override
+    @Transactional
+    public void transferOwnership(User sourceUser, User targetUser) {
+
+        List<Folder> folders = getSingleOwnerFolderByUser(sourceUser);
+        List<Log> logs = getSingleOwnerLogByUser(sourceUser);
+        List<Process> processes = getSingleOwnerProcessByUser(sourceUser);
+
+        for (Folder f : folders) {
+            GroupFolder gf = groupFolderRepo.findByGroupAndFolder(sourceUser.getGroup(), f);
+            gf.setGroup(targetUser.getGroup());
+            groupFolderRepo.save(gf);
+        }
+
+        for (Log l : logs) {
+            GroupLog gl = groupLogRepo.findByGroupAndLog(sourceUser.getGroup(), l);
+            gl.setGroup(targetUser.getGroup());
+            groupLogRepo.save(gl);
+        }
+
+        for (Process p : processes) {
+            GroupProcess gp = groupProcessRepo.findByGroupAndProcess(sourceUser.getGroup(), p);
+            gp.setGroup(targetUser.getGroup());
+            groupProcessRepo.save(gp);
+        }
+    }
+
     /* Save the Sub Folder Permissions. */
     private void saveSubFolderPermissions(Folder folder, Group group, boolean hasRead, boolean hasWrite,
                                           boolean hasOwnership) {

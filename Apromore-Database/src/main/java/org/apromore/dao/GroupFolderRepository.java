@@ -58,6 +58,13 @@ public interface GroupFolderRepository extends JpaRepository<GroupFolder, Intege
     List<GroupFolder> findByFolderId(final Integer folderId);
 
     /**
+     * @param groupId Id of Group
+     * @return all groups containing the group identified by <var>groupId</var>
+     */
+    @Query("SELECT gf FROM GroupFolder gf WHERE (gf.group.id = ?1)")
+    List<GroupFolder> findByGroupId(final Integer groupId);
+
+    /**
      * Returns a list of Folder Users for the folder and user combination.
      *
      * @param parentFolderId the parent folder Id
@@ -76,5 +83,11 @@ public interface GroupFolderRepository extends JpaRepository<GroupFolder, Intege
            "               User u JOIN u.groups g2 " +
            "WHERE (gf.folder.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupFolder> findByFolderAndUser(final Integer folderId, final String userRowGuid);
+
+    /**
+     * Return a list of GroupFolder that are OWNER of specified folder.
+     */
+    @Query("SELECT gf FROM GroupFolder gf WHERE (gf.folder.id = ?1) AND (gf.accessRights.ownerShip = 1)")
+    List<GroupFolder> findOwnerByFolderId(final Integer folderId);
 
 }
