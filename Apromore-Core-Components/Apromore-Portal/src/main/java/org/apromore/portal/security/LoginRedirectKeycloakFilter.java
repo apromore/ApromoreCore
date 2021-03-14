@@ -90,6 +90,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
             String urlToUseKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
             LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseKeycloakLoginPage);
 
+            /*
             final String STATE_QUERY_PARAM_KEY = "&state=";
             final int indexOfStateParamKey = urlToUseKeycloakLoginPage.indexOf(STATE_QUERY_PARAM_KEY);
             final int idxOfStartUuidStateParam = indexOfStateParamKey + STATE_QUERY_PARAM_KEY.length();
@@ -102,6 +103,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
             urlToUseKeycloakLoginPage = urlToUseKeycloakLoginPage.replaceFirst(existingUuid, substRandomStateUuid);
 
             LOGGER.info("\nSending redirect to [UPDATED] urlToUseKeycloakLoginPage: " + urlToUseKeycloakLoginPage);
+            */
 
             HttpServletRequest httpServletRequest = ((HttpServletRequest) request);
             HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
@@ -123,8 +125,6 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
             LOGGER.info("\n[AFTER] Clearing cookies for the response redirect");
             */
-
-            LOGGER.info("\n>>> LOGGING OUT ON httpServletRequest");
 
             httpServletResponse.sendRedirect(urlToUseKeycloakLoginPage);
         } else {
