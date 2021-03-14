@@ -204,7 +204,7 @@
 
         <antlr4-runtime.version>4.3</antlr4-runtime.version>
         <themis.version>1.0</themis.version>
-        <postgresql.version>9.3-1101-jdbc41</postgresql.version>
+        <postgresql.version>42.2.10</postgresql.version>
         <hikari.version>4.0.1</hikari.version>
 
         <!-- **** Settings for the building of the projects **** -->
