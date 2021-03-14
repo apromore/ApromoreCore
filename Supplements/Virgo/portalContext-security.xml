@@ -118,7 +118,7 @@
 
     <beans:bean id="loginKeycloakFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter">
         <beans:property name="keycloakLoginFormUrl"
-                        value="https://keycloak:8443/auth/realms/&lt;keycloakRealm&gt;/protocol/openid-connect/auth?response_type=code&amp;client_id=product-app&amp;redirect_uri=https%3A%2F%2Fsecurityms%3A8143%2Fsso%2Flogin&amp;state=&lt;state_uuid&gt;&amp;login=true&amp;scope=openid&amp;prompt=login" />
+                        value="http://securityms:8282/sso/initiateLogin/apromore-webapp" />
     </beans:bean>
 
     <beans:bean id="remoteAuthenticationProvider" class="org.apromore.security.provider.ApromoreRemoteAuthenticationProvider">
@@ -145,7 +145,7 @@
         <beans:property name="loginFormUrl"
                         value="/login.zul" />
         <beans:property name="keycloakLoginFormUrl"
-                        value="https://keycloak:8443/auth/realms/&lt;keycloakRealm&gt;/protocol/openid-connect/auth?response_type=code&amp;client_id=product-app&amp;redirect_uri=https%3A%2F%2Fsecurityms%3A8143%2Fsso%2Flogin&amp;state=&lt;state_uuid&gt;&amp;login=true&amp;scope=openid&amp;prompt=login" />
+                        value="http://securityms:8282/sso/initiateLogin/apromore-webapp" />
     </beans:bean>
 
     <beans:bean id="apromoreUsernamePasswordAuthenticationFilter" class="org.apromore.security.filter.ApromoreUsernamePasswordAuthenticationFilter">

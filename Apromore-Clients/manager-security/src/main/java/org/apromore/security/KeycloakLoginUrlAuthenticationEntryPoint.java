@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
@@ -37,6 +38,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
+    private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
 
     private String keycloakLoginFormUrl;
 
@@ -52,8 +54,11 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
             String tmpUrl = keycloakLoginFormUrl;
 
-            tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
+            final String randomStateUuid = UUID.randomUUID().toString();
+            LOGGER.info("\n\nrandomStateUuid: {}", randomStateUuid);
 
+            tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
+            tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
             LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
             this.keycloakLoginFormUrl = tmpUrl;
@@ -92,7 +97,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
         final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);;
 
-        final String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
+        String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
 
         LOGGER.info("\n\n>>> Resolved Keycloak loginUrl: {}", loginUrl);
 

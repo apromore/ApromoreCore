@@ -103,27 +103,10 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
             LOGGER.info("\nSending redirect to [UPDATED] urlToUseKeycloakLoginPage: " + urlToUseKeycloakLoginPage);
 
-            // servletResponse.setStatus(HttpStatus.SC_TEMPORARY_REDIRECT);
-            // servletResponse.setHeader("Location", urlToUseForKeycloakLoginPage);
-
-            /*
-            AUTH_SESSION_ID=f6bbbc15-544a-4ea3-b846-dabeb6798705.46954d10fe09;
-            AUTH_SESSION_ID_LEGACY=f6bbbc15-544a-4ea3-b846-dabeb6798705.46954d10fe09;
-            KEYCLOAK_IDENTITY=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmMzlhMWIzZi04M2VjLTQyMWEtYmQ1Yy1hOGNiMDM2Y2NhNzEifQ.eyJleHAiOjE2MTU1NTU5NzgsImlhdCI6MTYxNTUxOTk3OCwianRpIjoiMGY5NjcxMWQtZjYzNS00YmUyLWJmNGEtN2NlY2I5ZmViMzVlIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hazo4NDQzL2F1dGgvcmVhbG1zL3NwcmluZ2RlbW8iLCJzdWIiOiJmOjJjYmMzYTY1LTI3M2EtNGMxMS1iMWU0LTNmOGQ2NWUzYmJiODo5IiwidHlwIjoiU2VyaWFsaXplZC1JRCIsInNlc3Npb25fc3RhdGUiOiJmNmJiYmMxNS01NDRhLTRlYTMtYjg0Ni1kYWJlYjY3OTg3MDUiLCJzdGF0ZV9jaGVja2VyIjoidzFsVlBIdTZGd3U5cUx4aUJ3U2F6NFBMeVNfNE81S1ZjU3lXZU0wZkRZayJ9.3l_pCyXXBMCfD8QQ7zLK3WjTAvF5R6YxvuF7s4Kfx6k;
-            KEYCLOAK_IDENTITY_LEGACY=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmMzlhMWIzZi04M2VjLTQyMWEtYmQ1Yy1hOGNiMDM2Y2NhNzEifQ.eyJleHAiOjE2MTU1NTU5NzgsImlhdCI6MTYxNTUxOTk3OCwianRpIjoiMGY5NjcxMWQtZjYzNS00YmUyLWJmNGEtN2NlY2I5ZmViMzVlIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hazo4NDQzL2F1dGgvcmVhbG1zL3NwcmluZ2RlbW8iLCJzdWIiOiJmOjJjYmMzYTY1LTI3M2EtNGMxMS1iMWU0LTNmOGQ2NWUzYmJiODo5IiwidHlwIjoiU2VyaWFsaXplZC1JRCIsInNlc3Npb25fc3RhdGUiOiJmNmJiYmMxNS01NDRhLTRlYTMtYjg0Ni1kYWJlYjY3OTg3MDUiLCJzdGF0ZV9jaGVja2VyIjoidzFsVlBIdTZGd3U5cUx4aUJ3U2F6NFBMeVNfNE81S1ZjU3lXZU0wZkRZayJ9.3l_pCyXXBMCfD8QQ7zLK3WjTAvF5R6YxvuF7s4Kfx6k; KEYCLOAK_SESSION=springdemo/f:2cbc3a65-273a-4c11-b1e4-3f8d65e3bbb8:9/f6bbbc15-544a-4ea3-b846-dabeb6798705; KEYCLOAK_SESSION_LEGACY=springdemo/f:2cbc3a65-273a-4c11-b1e4-3f8d65e3bbb8:9/f6bbbc15-544a-4ea3-b846-dabeb6798705;
-            KC_RESTART=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmMzlhMWIzZi04M2VjLTQyMWEtYmQ1Yy1hOGNiMDM2Y2NhNzEifQ.eyJjaWQiOiJwcm9kdWN0LWFwcCIsInB0eSI6Im9wZW5pZC1jb25uZWN0IiwicnVyaSI6Imh0dHBzOi8vc2VjdXJpdHltczo4MTQzL3Nzby9sb2dpbiIsImFjdCI6IkFVVEhFTlRJQ0FURSIsIm5vdGVzIjp7InNjb3BlIjoib3BlbmlkIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hazo4NDQzL2F1dGgvcmVhbG1zL3NwcmluZ2RlbW8iLCJyZXNwb25zZV90eXBlIjoiY29kZSIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vc2VjdXJpdHltczo4MTQzL3Nzby9sb2dpbiIsInN0YXRlIjoiOGI5NGU2NjAtNTkxZC00Yzc5LWFlNDAtMjg5YzMwOTM5ZmE1bG9naW49dHJ1ZSIsInByb21wdCI6ImxvZ2luIn19.uDKDk1iPieJbgQAIXAsApseuj6yDikShrjWCRG-VPMM;
-            JSESSIONID=node0c66f0c3ik7jx1hf6p6ebdtfpp7.46954d10fe09
-             */
-
             HttpServletRequest httpServletRequest = ((HttpServletRequest) request);
             HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
 
             /*
-            Cookie cookie = new Cookie("AUTH_SESSION_ID", "");
-            cookie.setMaxAge(0);
-            httpServletResponse.addCookie(cookie);
-            */
-
             LOGGER.info("\n[BEFORE] Clearing cookies for the redirect");
 
             // [BEFORE] Clear cookies, for the redirect
@@ -139,10 +122,9 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
             }
 
             LOGGER.info("\n[AFTER] Clearing cookies for the response redirect");
+            */
 
             LOGGER.info("\n>>> LOGGING OUT ON httpServletRequest");
-
-            httpServletRequest.logout();
 
             httpServletResponse.sendRedirect(urlToUseKeycloakLoginPage);
         } else {
