@@ -868,3 +868,55 @@ databaseChangeLog:
            referencedColumnNames: id
            referencedTableName: custom_calendar
            validate: true
+
+ - changeSet:
+     id: 20210315090000
+     author: frankm
+     changes:
+       - dropForeignKeyConstraint:
+           baseTableName:  folder
+           constraintName:  FOLDER_CREATOR
+
+       - dropForeignKeyConstraint:
+           baseTableName:  folder
+           constraintName:  FOLDER_MODIFIED_BY
+
+       - addForeignKeyConstraint:
+           baseColumnNames: creatorid
+           baseTableName: folder
+           constraintName: FK_FOLDER_CREATOR
+           onDelete:  SET NULL
+           onUpdate:  CASCADE
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: user
+           validate: true
+
+       - addForeignKeyConstraint:
+           baseColumnNames: modifiedbyid
+           baseTableName: folder
+           constraintName: FK_FOLDER_MODIFIED_BY
+           onDelete:  SET NULL
+           onUpdate:  CASCADE
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: user
+           validate: true
+
+       - dropForeignKeyConstraint:
+           baseTableName:  process
+           constraintName:  FK_PROCESS1
+
+       - addForeignKeyConstraint:
+           baseColumnNames: owner
+           baseTableName: process
+           constraintName: FK_PROCESS_CREATOR
+           onDelete:  SET NULL
+           onUpdate:  CASCADE
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: user
+           validate: true

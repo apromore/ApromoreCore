@@ -308,6 +308,10 @@ public class TemporaryCacheService {
 	    String key = log.getFilePath() + APMLOG_CACHE_KEY_SUFFIX;
 	    APMLog element = (APMLog) cacheRepo.get(key);
 
+		if (log.getStorage() != null) {
+			key = log.getStorage().getKey();
+		}
+
 	    if (element == null) {
 		// If doesn't hit cache
 		LOGGER.info("Cache for [KEY: " + key + "] is null.");
