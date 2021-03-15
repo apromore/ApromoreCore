@@ -148,8 +148,11 @@ Apromore.Editor = {
           connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
         });
         eventBus.fire('elements.changed', { elements: connections });
-        this.zoomFitToModel();
         callback();
+        var me = this; // delay the fit until the properties panel fully collapsed
+        setTimeout(function () {
+            me.zoomFitToModel();
+        }, 500)
       }.bind(this));
     },
 
@@ -172,15 +175,9 @@ Apromore.Editor = {
     zoomFitToModel: function() {
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
+            canvas.viewbox(false); // trigger recalculate the viewbox
             // zoom to fit full viewport
-            canvas.zoom('fit-viewport');
-            var viewbox = canvas.viewbox();
-            canvas.viewbox({
-                x: viewbox.x - 200,
-                y: viewbox.y,
-                width: viewbox.outer.width * 1.5,
-                height: viewbox.outer.height * 1.5
-            });
+            canvas.zoom('fit-viewport', 'auto');
         }
     },
 

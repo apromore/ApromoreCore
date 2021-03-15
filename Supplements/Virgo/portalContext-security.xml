@@ -49,7 +49,7 @@
         <intercept-url pattern="/login.zul*" access="permitAll" requires-channel="any"/>
         <intercept-url pattern="/**" access="hasRole('ROLE_USER')" requires-channel="any"/>
 
-        <logout logout-url="/j_spring_security_logout" logout-success-url="/login.zul" delete-cookies="JSESSIONID,Apromore"/>
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/login.zul" delete-cookies="Apromore"/>
 
         <custom-filter position="FORM_LOGIN_FILTER" ref="apromoreUsernamePasswordAuthenticationFilter"/>
 
@@ -67,9 +67,10 @@
     </authentication-manager>
 
     <!-- Uncommenting this bean and adding it to #authenticationManager (above) will enable LDAP logins.
+         You will also need to create etc/login.conf; see the README.md for an example.
          See https://docs.spring.io/spring-security/site/docs/3.1.x/reference/jaas.html
     <beans:bean id="jaasAuthenticationProvider" class="org.springframework.security.authentication.jaas.JaasAuthenticationProvider">
-        <beans:property name="loginConfig" value="file:configuration/login.conf"/>
+        <beans:property name="loginConfig" value="file:etc/login.conf"/>
         <beans:property name="loginContextName" value="apromore"/>
         <beans:property name="callbackHandlers">
             <beans:list>

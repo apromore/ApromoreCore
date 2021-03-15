@@ -27,6 +27,7 @@ package org.apromore.dao;
 import java.util.List;
 
 import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,6 +59,13 @@ public interface GroupProcessRepository extends JpaRepository<GroupProcess, Inte
     List<GroupProcess> findByProcessId(final Integer processId);
 
     /**
+     * @param groupId Id of Group
+     * @return all groups containing the group identified by <var>groupId</var>
+     */
+    @Query("SELECT gp FROM GroupProcess gp WHERE (gp.group.id = ?1)")
+    List<GroupProcess> findByGroupId(final Integer groupId);
+
+    /**
      * Search for processes to which a particular user has access
      *
      * @param userRowGuid the rowGuid of a user
@@ -87,4 +95,10 @@ public interface GroupProcessRepository extends JpaRepository<GroupProcess, Inte
            "               User u JOIN u.groups g2 " +
            "WHERE (gp.process.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupProcess> findByProcessAndUser(final Integer processId, final String userRowGuid);
+
+    /**
+     * Return a list of GroupProcess that are OWNER of specified process.
+     */
+    @Query("SELECT gp FROM GroupProcess gp WHERE (gp.process.id = ?1) AND (gp.accessRights.ownerShip = 1)")
+    List<GroupProcess> findOwnerByProcessId(final Integer processId);
 }

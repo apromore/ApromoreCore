@@ -25,6 +25,7 @@
 package org.apromore.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
@@ -164,7 +165,7 @@ public interface WorkspaceService {
      * @throws Exception
      */
     Process moveProcess(Integer processId, Integer newFolderId) throws Exception;
-    
+
     /**
      * Copy a folder to a new parent folder; all subfolders and items are copied recursively
      * @param folderId
@@ -184,7 +185,39 @@ public interface WorkspaceService {
      */
     Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
 
+    /**
+     *
+     * Get a list of Folders that the specified user's singleton group is the only owner of
+     * Note: Only considering singleton group here
+     *
+     * @param user User
+     * @return Return a list of Folders that the specified user's singleton group is the only owner of
+     */
+    List<Folder> getSingleOwnerFolderByUser(User user);
+
+    /**
+     *
+     * Get a list of Logs that the specified user's singleton group is the only owner of
+     * Note: Only considering singleton group here
+     *
+     * @param user User
+     * @return Return a list of Logs that the specified user's singleton group is the only owner of
+     */
+    List<Log> getSingleOwnerLogByUser(User user);
+
+    /**
+     *
+     * Get a list of Processes that the specified user's singleton group is the only owner of
+     * Note: Only considering singleton group here
+     *
+     * @param user User
+     * @return Return a list of Processes that the specified user's singleton group is the only owner of
+     */
+    List<Process> getSingleOwnerProcessByUser(User user);
 
 
+    Boolean isOnlyOwner(User user);
+
+    void transferOwnership(User sourceUser, User targetUser);
 
 }

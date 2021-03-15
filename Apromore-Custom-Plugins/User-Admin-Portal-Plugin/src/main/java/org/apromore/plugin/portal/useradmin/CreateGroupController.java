@@ -23,6 +23,8 @@ package org.apromore.plugin.portal.useradmin;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -30,8 +32,6 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CreateGroupController extends SelectorComposer<Window> {
 
@@ -59,7 +59,8 @@ public class CreateGroupController extends SelectorComposer<Window> {
 
         } catch (Exception e) {
             LOGGER.error("Unable to create group", e);
-            Messagebox.show("Unable to create group. The group could have been present in the system.");
+            Messagebox.show("Unable to create group. The group/user with the same name could have been present in " +
+                    "the system.");
         }
         getSelf().detach();
     }

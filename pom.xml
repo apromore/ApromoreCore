@@ -16,12 +16,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <url>http://apromore.googlecode.com/svn/trunk</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk</developerConnection>
-    </scm>
-
     <distributionManagement>
         <site>
             <id>apromore.repo.googlecode</id>
@@ -123,15 +117,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
+        <maven.compiler.source>${java.source.version}</maven.compiler.source>
+        <maven.compiler.target>${java.target.version}</maven.compiler.target>
         <sonar.language>java</sonar.language>
-        <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
-        <jdk.version>1.8.0</jdk.version>
         <ant.version>1.8.3</ant.version>
 
-        <kotlin.version>1.2.41</kotlin.version>
-
         <!-- Apromore Dependency Versions -->
-        <apql.version>1.0</apql.version>
         <manager-client.version>1.1</manager-client.version>
         <filestore-client.version>1.1</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
@@ -146,7 +137,6 @@
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <httpcomponents.version>4.2.1</httpcomponents.version>
         <osgi.version>7.0.0</osgi.version>
-        <prodrift.version>1.1.0</prodrift.version>
         <pax.runner.version>1.7.6</pax.runner.version>
 
         <spring.version>3.1.0.RELEASE</spring.version>
@@ -161,7 +151,6 @@
         <eclipselink.version>2.4.2</eclipselink.version>
         <eclipselink.antlr.version>3.2.0.v201206041011</eclipselink.antlr.version>
         <eclipselink.asm.version>3.3.1.v201206041142</eclipselink.asm.version>
-        <bonecp.version>0.7.1.RELEASE</bonecp.version>
 
         <javamail.version>1.4.5</javamail.version>
         <activation.version>1.1.1</activation.version>
@@ -178,14 +167,12 @@
         <eclipse.collections.version>9.2.0</eclipse.collections.version>
         <servlet-api.version>3.0.1</servlet-api.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <logback.version>1.0.13</logback.version>
         <joda-time.version>1.6.2</joda-time.version>
         <cglib.version>2.2.0</cglib.version>
         <validation.version>1.0.0.GA</validation.version>
         <google.guava.version>27.1-jre</google.guava.version>
         <json.version>20201115</json.version>
         <inject.version>1.0.0</inject.version>
-        <sardine.version>5.0.1</sardine.version>
         <jackson.version>1.9.13</jackson.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
 
@@ -205,7 +192,6 @@
         <test-tools.version>1.1</test-tools.version>
         <jbpt.version>0.2.433</jbpt.version>
         <diffbp.version>1.0</diffbp.version>
-        <rpsdag.version>0.1</rpsdag.version>
         <mathCollection.version>0.1</mathCollection.version>
         <lpsolve.version>55j</lpsolve.version>
 
@@ -220,65 +206,48 @@
         <themis.version>1.0</themis.version>
         <postgresql.version>42.2.10</postgresql.version>
         <hikari.version>4.0.1</hikari.version>
-        <pql.version>1.2</pql.version>
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
-        <maven.ant.plugin>1.7</maven.ant.plugin>
-        <maven.aspectj.plugin>1.4</maven.aspectj.plugin>
-        <maven.assembly.plugin>2.4</maven.assembly.plugin>
+        <maven.aspectj.plugin>4.0</maven.aspectj.plugin>
+        <maven.assembly.plugin>3.3.0</maven.assembly.plugin>
         <maven.build.helper.plugin>1.8</maven.build.helper.plugin>
-        <maven.bundle.plugin>3.0.1</maven.bundle.plugin>
-        <maven.changelog.plugin>2.2</maven.changelog.plugin>
-        <maven.checkstyle.plugin>3.1.1</maven.checkstyle.plugin>
-        <maven.clean.plugin>2.5</maven.clean.plugin>
-        <maven.compiler.plugin>3.0</maven.compiler.plugin>
-        <maven.dependency.plugin>2.8</maven.dependency.plugin>
-        <maven.deploy.plugin>2.7</maven.deploy.plugin>
-        <maven.enforcer.plugin>1.3</maven.enforcer.plugin>
-        <maven.exec.plugin>1.2.1</maven.exec.plugin>
-        <maven.findbugs.plugin>2.5.2</maven.findbugs.plugin>
-        <maven.help.plugin>2.2</maven.help.plugin>
-        <maven.install.plugin>2.4</maven.install.plugin>
-        <maven.jar.plugin>2.3.2</maven.jar.plugin>
-        <maven.jacoco.version>0.8.4</maven.jacoco.version>
-        <maven.javacc.plugin>2.6</maven.javacc.plugin>
-        <maven.javadoc.plugin>2.9</maven.javadoc.plugin>
-        <maven.jetty.plugin>8.1.5.v20120716</maven.jetty.plugin>
-        <maven.jxr.plugin>2.3</maven.jxr.plugin>
-        <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
-        <maven.plugin.plugin>3.2</maven.plugin.plugin>
-        <maven.pmd.plugin>3.0</maven.pmd.plugin>
+        <maven.bundle.plugin>5.1.1</maven.bundle.plugin>
+        <maven.changelog.plugin>2.3</maven.changelog.plugin>
+        <maven.checkstyle.plugin>3.1.2</maven.checkstyle.plugin>
+        <maven.clean.plugin>3.1.0</maven.clean.plugin>
+        <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
+        <maven.dependency.plugin>3.1.2</maven.dependency.plugin>
+        <maven.deploy.plugin>3.0.0-M1</maven.deploy.plugin>
+        <maven.enforcer.plugin>3.0.0-M3</maven.enforcer.plugin>
+        <maven.findbugs.plugin>3.0.5</maven.findbugs.plugin>
+        <maven.help.plugin>3.2.0</maven.help.plugin>
+        <maven.install.plugin>3.0.0-M1</maven.install.plugin>
+        <maven.jar.plugin>3.2.0</maven.jar.plugin>
+        <maven.jacoco.version>0.8.6</maven.jacoco.version>
+        <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
+        <maven.jxr.plugin>3.0.0</maven.jxr.plugin>
+        <maven.license.plugin>2.0.0</maven.license.plugin>
+        <maven.plugin.plugin>3.6.0</maven.plugin.plugin>
         <maven.project.info.reports.plugin>2.7</maven.project.info.reports.plugin>
-        <maven.release.plugin>2.4</maven.release.plugin>
+        <maven.release.plugin>3.0.0-M1</maven.release.plugin>
         <maven.resources.plugin>3.2.0</maven.resources.plugin>
-        <maven.site.plugin>3.3</maven.site.plugin>
-        <maven.source.plugin>2.2.1</maven.source.plugin>
+        <maven.site.plugin>3.9.1</maven.site.plugin>
+        <maven.source.plugin>3.2.1</maven.source.plugin>
         <maven.surefire.plugin>3.0.0-M5</maven.surefire.plugin>
         <maven.taglist.plugin>2.4</maven.taglist.plugin>
-        <maven.tomcat.plugin>2.0-beta-1</maven.tomcat.plugin>
-        <maven.versions.plugin>2.0</maven.versions.plugin>
-        <maven.war.plugin>2.6</maven.war.plugin>
+        <maven.versions.plugin>2.8.1</maven.versions.plugin>
+        <maven.war.plugin>3.3.1</maven.war.plugin>
         <maven.version.updater.plugin>1.0</maven.version.updater.plugin>
         <maven.version.range>[3.0.3,)</maven.version.range>
-
-        <maven.wagon.svn.plugin>1.4</maven.wagon.svn.plugin>
-        <maven.wagon-scm.extension>2.4</maven.wagon-scm.extension>
-        <maven.wagon-scm-plexus.extension>1.8.1</maven.wagon-scm-plexus.extension>
-        <maven.wagon-scm-svnexe.extension>1.8.1</maven.wagon-scm-svnexe.extension>
-
-        <maven.license.plugin>2.0.0</maven.license.plugin>
-
         <!-- Config locations -->
         <checkstyle.ruleset.location>checkstyle.xml</checkstyle.ruleset.location>
-        <pmd.ruleset.location>http://apromore.googlecode.com/svn/trunk/Extras/Build-Tools/src/main/resources/pmd.xml</pmd.ruleset.location>
 
         <!-- Toggles to turn off checks -->
         <checkstyle.skip>true</checkstyle.skip>
         <jacoco.skip>true</jacoco.skip>
         <findbugs.skip>true</findbugs.skip>
         <javadocs.skip>true</javadocs.skip>
-        <pmd.skip>true</pmd.skip>
         <minimizeJar>false</minimizeJar>
 
     </properties>
@@ -377,12 +346,6 @@
                 <artifactId>spex</artifactId>
                 <version>1.0</version>
             </dependency>
-            <dependency>
-                <groupId>io.github.andreas-solti.xeslite</groupId>
-                <artifactId>xeslite</artifactId>
-                <version>0.0.1</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>apmlog</artifactId>
@@ -1289,11 +1252,9 @@
                                         <exclude>org.apache.commons:com.springsource.org.apache.commons.logging</exclude>
                                         <exclude>aspectj:aspectj*</exclude>
                                         <exclude>hsqldb:hsqldb</exclude>
-                                        <!--<exclude>log4j:log4j</exclude> -->
                                         <exclude>org.slf4j:1.5*</exclude>
                                         <exclude>org.springframework:2.*</exclude>
                                         <exclude>org.springframework:3.0.*</exclude>
-                                        <exclude>org.springframework:spring-*</exclude>
                                     </excludes>
                                 </bannedDependencies>
                                 <requireMavenVersion>
@@ -1307,41 +1268,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin}</version>
-                <configuration>
-                    <verbose>true</verbose>
-                    <fork>true</fork>
-                    <compilerVersion>${jdk.version}</compilerVersion>
-                    <source>${java.source.version}</source>
-                    <target>${java.target.version}</target>
-                    <meminitial>128m</meminitial>
-                    <maxmem>512m</maxmem>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.release.plugin}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven.assembly.plugin}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-help-plugin</artifactId>
-                <version>${maven.help.plugin}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>${maven.plugin.plugin}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
