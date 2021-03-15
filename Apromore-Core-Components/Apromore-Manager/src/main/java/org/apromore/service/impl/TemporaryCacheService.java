@@ -305,8 +305,12 @@ public class TemporaryCacheService {
 	    long elapsedNanos;
 	    // ******* profiling code end here ********
 
-	    String key = log.getStorage().getKey() + APMLOG_CACHE_KEY_SUFFIX;
+	    String key = log.getFilePath() + APMLOG_CACHE_KEY_SUFFIX;
 	    APMLog element = (APMLog) cacheRepo.get(key);
+
+		if (log.getStorage() != null) {
+			key = log.getStorage().getKey();
+		}
 
 	    if (element == null) {
 		// If doesn't hit cache
