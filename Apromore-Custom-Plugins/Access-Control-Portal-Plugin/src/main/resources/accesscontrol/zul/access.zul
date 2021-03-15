@@ -130,7 +130,6 @@
                     </listitem>
                 </template>
             </listbox>
-
         </hbox>
         <div id="umWarning" visible="false" style="padding:6px;display:flex;">
             <span sclass="z-icon-exclamation-circle" style="margin-right: 4px;"/>

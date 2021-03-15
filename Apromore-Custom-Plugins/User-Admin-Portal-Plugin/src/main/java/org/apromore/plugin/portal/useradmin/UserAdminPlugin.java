@@ -35,6 +35,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
+import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -52,6 +53,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     private String groupLabel = "Settings";
 
     @Inject private SecurityService securityService;
+    @Inject private WorkspaceService workspaceService;
 
     // PortalPlugin overrides
 
@@ -82,6 +84,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
+            arg.put("workspaceService", workspaceService);
             Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/index.zul", null, arg);
             window.doModal();
 

@@ -555,7 +555,7 @@ public class AccessController extends SelectorComposer<Div> {
     public void onClickBtnApply() {
         applyChanges();
         destroy();
-        Notification.info("Sharing is susccessfully applied");
+        Notification.info("Sharing is successfully applied");
 
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         String username = portalContext.getCurrentUser().getUsername();

@@ -33,7 +33,9 @@
                             org.apromore.plugin,  <!-- These are invoked dynamically, so have to declare explicitly -->
                             *
                         </Import-Package>
-                        <Export-Package>org.apromore.plugin.portal.accesscontrol.*</Export-Package>
+                        <Export-Package>
+                            org.apromore.plugin.portal.accesscontrol.*
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
