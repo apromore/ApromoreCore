@@ -760,18 +760,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // If newParentFolder is root folder, then set ParentFolderChain to 0 directly to avoid NPE
         if (newParentFolderId.equals(ROOT_FOLDER_ID)) {
+            folderService.updateFolderChainForSubFolders(folderId, ROOT_FOLDER_ID + "_" + folderId);
             folder.setParentFolderChain(newParentFolderId.toString());
-            folderService.updateFolderChainForSubFolders(folderId,
-                    ROOT_FOLDER_ID + "_" + newParentFolderId + "_" + folderId);
+
+            folderRepo.save(folder);
         } else {
+
             folderService.updateFolderChainForSubFolders(folderId,
                     newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
             folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
 
-        // Unless in the root folder, overwrite and inherit access rights from direct parent folder
-
+            // Unless in the root folder, overwrite and inherit access rights from direct parent folder
             Set<GroupFolder> inheritGroupFolders = newParentFolder.getGroupFolders();
-
 
             // Apply access rights to to-be-removed-folder and its child folders, and all the logs, processes within
             List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
@@ -807,7 +807,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 }
             }
             logRepo.save(logs);
-
         }
 
         return folder;
