@@ -201,6 +201,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             folder.setGEDMatrixReady(isGEDMatrixReady);
         folder = folderRepo.saveAndFlush(folder);
 
+        Set<GroupFolder> groupFolders = folder.getGroupFolders();
+
         GroupFolder gf = new GroupFolder();
         gf.setFolder(folder);
         gf.setGroup(user.getGroup());
@@ -209,8 +211,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         accessRights.setWriteOnly(true);
         accessRights.setReadOnly(true);
         gf.setAccessRights(accessRights);
+        groupFolders.add(gf);
 
-        groupFolderRepo.save(gf);
+        // Unless in the root folder, add access rights of its immediately enclosing folder
+        if (parentFolderId != 0) {
+            Folder parent = folderRepo.findOne(parentFolderId);
+            if (parent != null) {
+                for (GroupFolder groupFolder : parent.getGroupFolders()) {
+                    if (!Objects.equals(groupFolder.getGroup().getId(), user.getGroup().getId())) { // Avoid adding operating user twice
+                        groupFolders.add(new GroupFolder(groupFolder.getGroup(), folder, groupFolder.getAccessRights()));
+                    }
+                }
+            }
+        }
+        folder.setGroupFolders(groupFolders);
+        folderRepo.save(folder);
 
         return folder.getId();
     }
@@ -461,14 +476,29 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public void addProcessToFolder(Integer processId, Integer folderId) {
+    public void addProcessToFolder(User user, Integer processId, Integer folderId) {
         if (folderId != null && processId != null) {
             Process process = processRepo.findOne(processId);
             Folder folder = folderRepo.findOne(folderId);
 
             process.setFolder(folder);
 
+            // Add the user's personal group is done in org.apromore.service.impl.ProcessServiceImpl.insertProcess
+
+            // Unless in the root folder, add access rights of its immediately enclosing folder
+            if (folder != null) {
+                Set<GroupProcess> groupProcesses = process.getGroupProcesses();
+                Set<GroupFolder> groupFolders = folder.getGroupFolders();
+                for (GroupFolder gf : groupFolders) {
+                    if (!Objects.equals(gf.getGroup().getId(), user.getGroup().getId())) { // Avoid adding operating
+                        // user twice
+                        groupProcesses.add(new GroupProcess(process, gf.getGroup(), gf.getAccessRights()));
+                    }
+                }
+                process.setGroupProcesses(groupProcesses);
+            }
             processRepo.save(process);
+
         } else {
             LOGGER.warn("Missing folderID " + folderId + " Missing processID " + processId);
         }
@@ -526,13 +556,23 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Set access group
         Set<GroupLog> groupLogs = newLog.getGroupLogs();
         groupLogs.clear();
+        // Add user's singleton group
         groupLogs.add(new GroupLog(newUser.getGroup(), newLog, new AccessRights(true, true, true)));
+        // Add Public group
         if (isPublic) {
             Group publicGroup = groupRepo.findPublicGroup();
             if (publicGroup == null) {
                 LOGGER.warn("No public group present in repository");
             } else {
                 groupLogs.add(new GroupLog(publicGroup, newLog, new AccessRights(true, true, false)));
+            }
+        }
+        // Unless in the root folder, add access rights of its immediately enclosing folder
+        if (newFolder != null) {
+            for (GroupFolder gf : newFolder.getGroupFolders()) {
+                if (!Objects.equals(gf.getGroup().getId(), newUser.getGroup().getId())) { // Avoid adding operating user twice
+                    groupLogs.add(new GroupLog(gf.getGroup(), newLog, gf.getAccessRights()));
+                }
             }
         }
         newLog.setGroupLogs(groupLogs);
@@ -577,6 +617,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Log log = logRepo.findUniqueByID(logId);
         Folder newFolder = folderRepo.findUniqueByID(newFolderId);
         log.setFolder(newFolder);
+
+        // Unless in the root folder, overwrite and inherit access rights from direct parent folder
+        if (!ROOT_FOLDER_ID.equals(newFolderId)) {
+
+            Set<GroupLog> groupLogs = log.getGroupLogs();
+            groupLogs.clear();
+
+            for (GroupFolder gf : newFolder.getGroupFolders()) {
+                groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
+            }
+        }
+
         logRepo.save(log);
         return log;
     }
@@ -605,7 +657,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         newBranch.setCurrentProcessModelVersion(newPMVList.get(newPMVList.size() - 1));
 
         newProcess.getProcessBranches().clear();
-        newProcess.setProcessBranches(Arrays.asList(new ProcessBranch[]{newBranch}));
+        newProcess.setProcessBranches(Collections.singletonList(newBranch));
         newProcess.setUser(newUser);
         newProcess.setFolder(newFolder);
 
@@ -619,6 +671,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 LOGGER.warn("No public group present in repository");
             } else {
                 groupProcesses.add(new GroupProcess(newProcess, publicGroup, new AccessRights(true, true, false)));
+            }
+        }
+        // Unless in the root folder, add access rights of its immediately enclosing folder
+        if (newFolder != null) {
+            for (GroupFolder gf : newFolder.getGroupFolders()) {
+                if (!Objects.equals(gf.getGroup().getId(), newUser.getGroup().getId())) { // Avoid adding operating user twice
+                    groupProcesses.add(new GroupProcess(newProcess, gf.getGroup(), gf.getAccessRights()));
+                }
             }
         }
         newProcess.setGroupProcesses(groupProcesses);
@@ -651,6 +711,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Folder newFolder = folderRepo.findUniqueByID(newFolderId);
         Process process = processRepo.findUniqueByID(processId);
         process.setFolder(newFolder);
+
+        // Unless in the root folder, overwrite and inherit access rights from direct parent folder
+        if (!ROOT_FOLDER_ID.equals(newFolderId)) {
+
+            Set<GroupProcess> groupProcesses = process.getGroupProcesses();
+            groupProcesses.clear();
+
+            for (GroupFolder gf : newFolder.getGroupFolders()) {
+                groupProcesses.add(new GroupProcess(process, gf.getGroup(),  gf.getAccessRights()));
+            }
+        }
+
         processRepo.save(process);
 
         return process;
@@ -680,6 +752,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    @Transactional
     public Folder moveFolder(Integer folderId, Integer newParentFolderId) {
         Folder folder = folderRepo.findUniqueByID(folderId);
         Folder newParentFolder = folderRepo.findUniqueByID(newParentFolderId);
@@ -687,16 +760,55 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // If newParentFolder is root folder, then set ParentFolderChain to 0 directly to avoid NPE
         if (newParentFolderId.equals(ROOT_FOLDER_ID)) {
+            folderService.updateFolderChainForSubFolders(folderId, ROOT_FOLDER_ID + "_" + folderId);
             folder.setParentFolderChain(newParentFolderId.toString());
-            folderService.updateFolderChainForSubFolders(folderId,
-                    ROOT_FOLDER_ID + "_" + newParentFolderId + "_" + folderId);
+
+            folderRepo.save(folder);
         } else {
-            folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
+
             folderService.updateFolderChainForSubFolders(folderId,
                     newParentFolder.getParentFolderChain() + "_" + newParentFolderId + "_" + folderId);
+            folder.setParentFolderChain(newParentFolder.getParentFolderChain() + "_" + newParentFolderId);
+
+            // Unless in the root folder, overwrite and inherit access rights from direct parent folder
+            Set<GroupFolder> inheritGroupFolders = newParentFolder.getGroupFolders();
+
+            // Apply access rights to to-be-removed-folder and its child folders, and all the logs, processes within
+            List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
+            List<Integer> folderIds = new ArrayList<>();
+
+            for (Folder f : subFoldersWithCurrentFolders) {
+                folderIds.add(f.getId());
+
+                Set<GroupFolder> groupFolders = f.getGroupFolders();
+                groupFolders.clear();
+                for (GroupFolder gf : inheritGroupFolders) {
+                    groupFolders.add(new GroupFolder(gf.getGroup(), f, gf.getAccessRights()));
+                }
+            }
+            folderRepo.save(subFoldersWithCurrentFolders);
+
+            List<Process> processes = processRepo.findByFolderIdIn(folderIds);
+            for (Process process : processes) {
+                Set<GroupProcess> groupProcesses = process.getGroupProcesses();
+                groupProcesses.clear();
+                for (GroupFolder gf : inheritGroupFolders) {
+                    groupProcesses.add(new GroupProcess(process, gf.getGroup(), gf.getAccessRights()));
+                }
+            }
+            processRepo.save(processes);
+
+            List<Log> logs = logRepo.findByFolderIdIn(folderIds);
+            for (Log log : logs) {
+                Set<GroupLog> groupLogs = log.getGroupLogs();
+                groupLogs.clear();
+                for (GroupFolder gf : inheritGroupFolders) {
+                    groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
+                }
+            }
+            logRepo.save(logs);
         }
 
-        folderRepo.save(folder);
         return folder;
     }
 

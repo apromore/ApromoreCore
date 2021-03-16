@@ -260,7 +260,7 @@ public class EventLogServiceImpl implements EventLogService {
         if (folder != null) {
             Set<GroupFolder> groupFolders = folder.getGroupFolders();
             for (GroupFolder gf : groupFolders) {
-                if (gf.getGroup() != user.getGroup()) { // Avoid adding operating user twice
+                if (!Objects.equals(gf.getGroup().getId(), user.getGroup().getId())) { // Avoid adding operating user twice
                     groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
                 }
             }

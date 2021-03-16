@@ -120,8 +120,6 @@ public interface ManagerService {
 
     void createFolder(String userId, String folderName, int parentFolderId);
 
-    void addProcessToFolder(int processId, int folderId);
-
     boolean isGEDReadyFolder(int folderId);
 
     void updateFolder(int folderId, String folderName, String username);
