@@ -85,6 +85,7 @@
                         <Export-Package>
                             org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.accesscontrol.model,
                             org.apromore.portal.common.zk,
                             org.apromore.portal.common.notification,
                             org.apromore.portal.context,

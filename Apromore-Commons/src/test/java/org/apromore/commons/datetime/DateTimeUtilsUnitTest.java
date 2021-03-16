@@ -42,6 +42,7 @@ public class DateTimeUtilsUnitTest {
   private static Stream<Arguments> TEST_CASES() {
     return Stream.of(
         Arguments.of("25/05/2020", "25 May 20, 00:00"),
+        Arguments.of("2021/05/20 23:56:10", "20 May 21, 23:56"),
         Arguments.of("25-05-2020 22:37:55", "25 May 20, 22:37"),
         Arguments.of("25/05/2020 22:37:05", "25 May 20, 22:37")
     );
