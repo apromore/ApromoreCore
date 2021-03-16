@@ -74,7 +74,7 @@ public interface WorkspaceService {
 
     Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
 
-    void addProcessToFolder(Integer processId, Integer folderId);
+    void addProcessToFolder(User user, Integer processId, Integer folderId);
 
     boolean isGEDReadyFolder(Integer folderId);
 

@@ -235,11 +235,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public void addProcessToFolder(int processId, int folderId) {
-         workspaceSrv.addProcessToFolder(processId, folderId);
-    }
-
-    @Override
     public boolean isGEDReadyFolder(int folderId) {
         return workspaceSrv.isGEDReadyFolder(folderId);
     }
