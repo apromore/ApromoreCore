@@ -619,7 +619,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         log.setFolder(newFolder);
 
         // Unless in the root folder, overwrite and inherit access rights from direct parent folder
-        if (!newFolderId.equals(ROOT_FOLDER_ID)) {
+        if (!ROOT_FOLDER_ID.equals(newFolderId)) {
 
             Set<GroupLog> groupLogs = log.getGroupLogs();
             groupLogs.clear();
@@ -713,7 +713,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         process.setFolder(newFolder);
 
         // Unless in the root folder, overwrite and inherit access rights from direct parent folder
-        if (!newFolderId.equals(ROOT_FOLDER_ID)) {
+        if (!ROOT_FOLDER_ID.equals(newFolderId)) {
 
             Set<GroupProcess> groupProcesses = process.getGroupProcesses();
             groupProcesses.clear();

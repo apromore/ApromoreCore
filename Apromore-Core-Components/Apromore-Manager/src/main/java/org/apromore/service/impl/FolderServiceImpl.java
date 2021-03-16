@@ -171,7 +171,7 @@ public class FolderServiceImpl implements FolderService {
         String chain = oldFolder.getParentFolderChain() + "_" + id;
         String prefix = chain + "_";
         prefix = getEscapedString(prefix) + "%";
-        List<Folder> folders = folderRepository.findByParentFolderIdOrParentFolderChainLike(id, prefix);
+        List<Folder> folders = new ArrayList(folderRepository.findByParentFolderIdOrParentFolderChainLike(id, prefix));
         if (includeCurrentFolder) {
             folders.add(oldFolder);
         }
