@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (23/12/2020)
  * Modified: Chii Chang (26/01/2021)
+ * Modified: Chii Chang (17/03/2021)
  */
 public class PTrace implements Comparable<PTrace>, ATrace {
 
@@ -276,43 +277,24 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         previousEventNameSet = eventNameSet;
         previousActiivtyNameIndexList = activityNameIndexList;
 
-        List<AActivity> originalActList = aTrace.getActivityList();
-
-        this.eventList = new ArrayList<>();
-        this.activityList = new ArrayList<>();
-
         processingTimes = new DoubleArrayList();
         waitingTimes = new DoubleArrayList();
 
-        List<AEvent> aEventList = aTrace.getImmutableEvents();
+        this.eventList = aTrace.getImmutableEvents().stream()
+                .filter(x -> validEventIndexBS.get(x.getIndex()))
+                .collect(Collectors.toList());
+
+        this.activityList = aTrace.getActivityList().stream()
+                .filter(x -> validEventIndexBS.get(x.getEventIndexes().get(0)))
+                .collect(Collectors.toList());
 
         int actMutIndex = 0;
-
-        for (AActivity activity : originalActList) {
-            boolean valid = false;
-            IntArrayList eventIndexes = activity.getEventIndexes();
-            for (int i = 0; i < eventIndexes.size(); i++) {
-                if (validEventIndexBS.get(eventIndexes.get(i))) {
-                    valid = true;
-                    break;
-                }
-            }
-
-            if (valid) {
-                activity.setMutableIndex(actMutIndex);
-                this.activityList.add(activity);
-                actMutIndex += 1;
-            }
+        for (AActivity activity : activityList) {
+            activity.setMutableIndex(actMutIndex);
+            actMutIndex += 1;
         }
 
         if (this.activityList.size() > 0) {
-
-            for (AActivity activity : activityList) {
-                IntArrayList eventIndexes = activity.getEventIndexes();
-                for (int j = 0; j < eventIndexes.size(); j++) {
-                    this.eventList.add(aEventList.get(eventIndexes.get(j)));
-                }
-            }
 
             for (int i = 0; i < activityList.size(); i++) {
                 AActivity iAct = activityList.get(i);
@@ -327,6 +309,15 @@ public class PTrace implements Comparable<PTrace>, ATrace {
                 }
             }
         }
+
+        LongSummaryStatistics allST = activityList.stream()
+                .collect(Collectors.summarizingLong(AActivity::getStartTimeMilli));
+        LongSummaryStatistics allET = activityList.stream()
+                .collect(Collectors.summarizingLong(AActivity::getEndTimeMilli));
+
+        this.startTimeMilli = allST.getMin();
+        this.endTimeMilli = allET.getMax();
+        this.duration = endTimeMilli > startTimeMilli ? endTimeMilli - startTimeMilli : 0;
 
         if (waitingTimes.isEmpty() || processingTimes.isEmpty()) caseUtilization = 1.0;
         else {
@@ -500,7 +491,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     public double getDuration() {
-        return duration;
+        return endTimeMilli > startTimeMilli ? endTimeMilli - startTimeMilli : 0;
     }
 
     public double getOriginalDuration() {
@@ -625,6 +616,68 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         this.originalValidEventIndexBS = originalValidEventIndexBS;
     }
 
+    public UnifiedMap<String, String> getAllAttributes() { return attributeMap; }
+
+    public long getActivitySize() {
+        return activityList.size();
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setWaitingTimes(DoubleArrayList waitingTimes) {
+        this.waitingTimes = waitingTimes;
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setProcessingTimes(DoubleArrayList processingTimes) {
+        this.processingTimes = processingTimes;
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setStartTimeMilli(long startTimeMilli) {
+        this.startTimeMilli = startTimeMilli;
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setEndTimeMilli(long endTimeMilli) {
+        this.endTimeMilli = endTimeMilli;
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setCaseUtilization(double caseUtilization) {
+        this.caseUtilization = caseUtilization;
+    }
+
+    /**
+     * v7.20 new method
+     * @return
+     */
+    public void setActivityList(List<AActivity> activityList) {
+        this.activityList = activityList;
+    }
+
     public ATrace toATrace() {
 
 
@@ -648,6 +701,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
         trace.setHasActivity(hasActivity);
         trace.setWaitingTimes(waitingTimes);
         trace.setProcessingTimes(processingTimes);
+        trace.setStartTimeMilli(startTimeMilli);
+        trace.setEndTimeMilli(endTimeMilli);
 
         return trace;
     }

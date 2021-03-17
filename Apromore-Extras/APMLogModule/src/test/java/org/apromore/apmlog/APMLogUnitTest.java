@@ -22,20 +22,30 @@
 
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
+import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.*;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+
+import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test suite for {@link APMLog}.
@@ -59,7 +69,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseVariantFrequency() throws Exception {
-        printString("\n(/ 'o')/ ~ Test 'Case Variant Frequency'");
         XLog xLog = getXLog("files/sepsis-cases-young.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         Map<String, String> map = getExpectedMap("files/sepsis-cases-young-case-variant-freq.csv");
@@ -90,7 +99,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseTimeFilter1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Active In'");
         XLog xLog = getXLog("files/time_active_in.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         CaseTimeFilterTest.testActiveIn(apmLog, this);
@@ -98,7 +106,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseTimeFilter2() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Contain In'");
         XLog xLog = getXLog("files/time_active_in.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         CaseTimeFilterTest.testContainIn(apmLog, this);
@@ -106,7 +113,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseTimeFilter3() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - Start In'");
         XLog xLog = getXLog("files/time_active_in.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         CaseTimeFilterTest.testStartIn(apmLog, this);
@@ -114,7 +120,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseTimeFilter4() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Timeframe - End In'");
         XLog xLog = getXLog("files/time_active_in.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         CaseTimeFilterTest.testEndIn(apmLog, this);
@@ -122,7 +127,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Duration'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testDuration(apmLog, this);
@@ -130,7 +134,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter2() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Total Processing Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testTotalProcessTime(apmLog, this);
@@ -138,7 +141,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter3() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Average Processing Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testAverageProcessTime(apmLog, this);
@@ -146,7 +148,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter4() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Max Processing Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testMaxProcessTime(apmLog, this);
@@ -154,7 +155,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter5() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Total Waiting Time'");
         XLog xLog = getXLog("files/perf.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testTotalWaitTime(apmLog, this);
@@ -162,7 +162,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter6() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Average Waiting Time'");
         XLog xLog = getXLog("files/perf_avg_wt.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testAverageWaitTime(apmLog, this);
@@ -170,7 +169,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter7() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Max Waiting Time'");
         XLog xLog = getXLog("files/perf_avg_wt.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testMaxWaitTime(apmLog, this);
@@ -178,7 +176,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter8() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Utilization'");
         XLog xLog = getXLog("files/perf_avg_wt.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PerfFilterTest.testUtilization(apmLog, this);
@@ -186,7 +183,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPerfFilter9() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Length'");
         XLog xLog = getXLog("files/caseLengthTest.xes");
         /**
          * Note: Case length is the size of activities, not events.
@@ -198,7 +194,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testDirectFollowFilter1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 1");
         XLog xLog = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/_sample5.xes.gz")).get(0);
         APMLog apmLog = LogFactory.convertXLog(xLog);
         DirectFollowFilterTest.runTest1(apmLog, this);
@@ -206,7 +201,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testDirectFollowFilter2() throws Exception {
-        printString("\n(/ 'o')/ ~ Test 'Direct Follow' Filter 2");
         XLog xLog = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/_sample5.xes.gz")).get(0);
         APMLog apmLog = LogFactory.convertXLog(xLog);
         DirectFollowFilterTest.runTest2(apmLog, this);
@@ -214,7 +208,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testEventualFollowFilter1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test 'Eventual Follow' Filter 1");
         XLog xLog = getXLog("files/_sample2ef.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         EventualFollowFilterTest.runTest1(apmLog, this);
@@ -222,7 +215,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater Only'");
         XLog xLog = getXLog("files/rework.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testGreaterOnly(apmLog, this);
@@ -230,7 +222,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework2() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater Equal'");
         XLog xLog = getXLog("files/rework.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testGreaterEqual(apmLog, this);
@@ -238,7 +229,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework3() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Less Only'");
         XLog xLog = getXLog("files/rework.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testLessOnly(apmLog, this);
@@ -246,7 +236,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework4() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Less Equal'");
         XLog xLog = getXLog("files/rework.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testLessEqual(apmLog, this);
@@ -254,7 +243,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework5() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater and Less Equal'");
         XLog xLog = getXLog("files/rework.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testGreaterAndLessEqual(apmLog, this);
@@ -262,7 +250,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework6() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Less Equal 0'");
         XLog xLog = getXLog("files/rework.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testLessEqual0(apmLog, this);
@@ -270,7 +257,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testRework7() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Rework & Repetition - Greater Equal 0'");
         XLog xLog = getXLog("files/_reworkTest2.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ReworkRepetitionFilterTest.testGreaterEqual0(apmLog, this);
@@ -278,7 +264,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testEventSectionEventAttribute1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Event Section Event Attribute - Resource'");
         XLog xLog = getXLog("files/eventattr.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         EventSectionAttributeFilterTest.testResource(apmLog, this);
@@ -286,7 +271,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testEventSectionEventAttribute2() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Event Section Event Attribute - Activity'");
         XLog xLog = getXLog("files/eventattr.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         EventSectionAttributeFilterTest.testActivity(apmLog, this);
@@ -294,7 +278,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseSectionEventAttribute1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Case Section Event Attribute - Activity'");
         XLog xLog = getXLog("files/eventattr.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         CaseSectionEventAttributeFilterTest.testActivity(apmLog, this);
@@ -302,7 +285,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testCaseSectionEventTime1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Event Time 1'");
         XLog xLog = getXLog("files/eventattr.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         EventTimeFilterTest.testRetain(apmLog, this);
@@ -310,7 +292,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrCombFilterEventEvent1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute combination: eventAttr > eventAttr (1)'");
         XLog xLog = getXLog("files/attrCombTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeCombinationTest.testRetainEventEvent1(apmLog, this);
@@ -318,7 +299,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrCombFilterEventCase1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute combination: eventAttr > caseAttr (1)'");
         XLog xLog = getXLog("files/attrCombTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeCombinationTest.testRetainEventCase1(apmLog, this);
@@ -326,7 +306,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrDuration1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute duration (1)'");
         XLog xLog = getXLog("files/attrCombTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeDurationTest.testRetainAttributeDuration1(apmLog, this);
@@ -334,7 +313,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrArcDur1() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (1)'");
         XLog xLog = getXLog("files/attrArcDurTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeArcDurationTest.testRetain1(apmLog, this);
@@ -342,7 +320,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrArcDur2() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (2)'");
         XLog xLog = getXLog("files/attrArcDurTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeArcDurationTest.testRetain2(apmLog, this);
@@ -350,7 +327,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrArcDur3() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (3)'");
         XLog xLog = getXLog("files/attrArcDurTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeArcDurationTest.testRetain3(apmLog, this);
@@ -358,7 +334,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAttrArcDur4() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Filter 'Attribute arc duration (4) - arc average duration'");
         XLog xLog = getXLog("files/2TracesArcDurTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         AttributeArcDurationTest.testAvgDur1(apmLog, this);
@@ -366,7 +341,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testAPMLogDurations() throws Exception {
-        printString("\n(/ 'o')/ ~ Test APMLog's durations'");
         XLog xLog = getXLog("files/durationTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         LogsDurationsTest.testAPMLogDurations(apmLog);
@@ -374,7 +348,6 @@ public class APMLogUnitTest {
 
     @Test
     public void testPLogDurations() throws Exception {
-        printString("\n(/ 'o')/ ~ Test PLog's durations'");
         XLog xLog = getXLog("files/durationTest.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         LogsDurationsTest.testPLogDurations(apmLog);
@@ -382,35 +355,30 @@ public class APMLogUnitTest {
 
     @Test
     public void testImmutableLogDurations() throws Exception {
-        printString("\n(/ 'o')/ ~ Test ImmutableLog's durations'");
         XLog xLog = getXLog("files/durationTest.xes");
         LogsDurationsTest.testImmutableLogDurations(xLog);
     }
 
     @Test
     public void testClonedImmutableLogDurations() throws Exception {
-        printString("\n(/ 'o')/ ~ Test Cloned ImmutableLog's durations'");
         XLog xLog = getXLog("files/durationTest.xes");
         LogsDurationsTest.testClonedImmutableLogDurations(xLog);
     }
 
     @Test
     public void testImmutableTraceTimestamp() throws Exception {
-        printString("\n(/ 'o')/ ~ Test ImmutableTrace timestamp'");
         XLog xLog = getXLog("files/durationTest.xes");
         ImmutableTraceTest.testStartEndTimestamps(xLog);
     }
 
     @Test
     public void testLogFactoryAttributeOccurMap() throws Exception {
-        printString("\n(/ 'o')/ ~ Test AttributeOccurMap of LogFactory'");
         XLog xLog = getXLog("files/TestLogFactory.xes");
         LogsMethodsTests.testAttributeOccurMap(xLog);
     }
 
     @Test
     public void testLogsActivityNameIndexes() throws Exception {
-        printString("\n(/ 'o')/ ~ Test ActivityNameIndexes of Logs'");
         XLog xLog = getXLog("files/TestLogFactory.xes");
         LogsMethodsTests.testActivityNameIndexes(xLog);
     }
@@ -446,15 +414,22 @@ public class APMLogUnitTest {
     @Test
     public void testCaseIdRemove() throws Exception {
         XLog xLog = getXLog("files/5cases.xes");
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        CaseIdFilterTest.test1(apmLog);
+        APMLog originalLog = LogFactory.convertXLog(xLog);
+        CaseIdFilterTest.test1(originalLog);
     }
 
     @Test
     public void testSequencialEventThenArc01() throws Exception {
         XLog xLog = getXLog("files/ArcFilterTest02.xes");
+        APMLog originalLog = LogFactory.convertXLog(xLog);
+        AttributeArcDurationTest.testSequencialFiltering01(originalLog);
+    }
+
+    @Test
+    public void testCaseDurationAfterEventAttrFilter() throws Exception {
+        XLog xLog = getXLog("files/ArcSimple03.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        AttributeArcDurationTest.testSequencialFiltering01(apmLog);
+        CaseStatsTest.testCaseDurationAfterEventAttrFilter(apmLog);
     }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {

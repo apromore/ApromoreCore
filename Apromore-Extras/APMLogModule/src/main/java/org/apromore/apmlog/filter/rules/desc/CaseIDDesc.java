@@ -21,11 +21,13 @@
  */
 package org.apromore.apmlog.filter.rules.desc;
 
+import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Chii Chang
@@ -34,39 +36,34 @@ public class CaseIDDesc {
 
 
 
-    public static String getDescription(LogFilterRule logFilterRule) {
-        String desc = "";
+    public static String getDescription(LogFilterRule logFilterRule, APMLog apmLog) {
+        PLog log = (PLog) apmLog;
+
+        StringBuilder desc = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where case ID is ";
+        desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where case ID is ");
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        if (ruleValues.size() == 1) desc += "equal to [";
-        else desc += "in [";
+        if (ruleValues.size() == 1) desc.append("equal to [");
+        else desc.append("in [");
 
-        List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
-        Collections.sort(ruleValueList);
+        BitSet selection = (BitSet) ruleValues.iterator().next().getObjectVal();
 
-//        for (int i = 0; i < ruleValueList.size(); i++) {
-//            desc += ruleValueList.get(i).getStringValue();
-//            if (i < ruleValueList.size() -1) desc += ", ";
-//        }
+        List<String> caseIds = log.getOriginalPTraceList().stream()
+                .filter(x -> selection.get(x.getImmutableIndex()))
+                .map(x->x.getCaseId())
+                .collect(Collectors.toList());
 
-        if (allNumeric(ruleValueList)) {
-            List<Pair> pairList = getPairs(ruleValueList);
+        int count = 0;
+        for (String s : caseIds) {
+            desc.append(s.intern());
+            if (count < caseIds.size() - 1) desc.append(", ");
 
-            for (int i = 0; i < pairList.size(); i++) {
-                desc += pairList.get(i).toString();
-                if (i < pairList.size() -1) desc += ", ";
-            }
-        } else {
-            for (int i = 0; i < ruleValueList.size(); i++) {
-                desc += ruleValueList.get(i).getStringValue();
-                if (i < ruleValueList.size() -1) desc += ", ";
-            }
+            count += 1;
         }
 
-        desc += "]";
+        desc.append("]");
+        return desc.toString();
 
-        return desc;
     }
 
     private static boolean allNumeric(List<RuleValue> ruleValueList) {

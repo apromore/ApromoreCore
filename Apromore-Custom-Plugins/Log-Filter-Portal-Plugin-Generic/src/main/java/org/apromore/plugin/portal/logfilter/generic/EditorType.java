@@ -1,6 +1,6 @@
 /*-
  * #%L
- * This file is part of "Apromore Core".
+ * This file is part of "Apromore Enterprise Edition".
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
@@ -19,19 +19,14 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 package org.apromore.plugin.portal.logfilter.generic;
-
-import org.apromore.plugin.portal.generic.GenericPlugin;
-
 /**
- * This interface is used to register this plugin as an OSGi service for
- * other plugins to call to
- * @author Bruce Hoang Nguyen (30/08/2019)
- * Modified: Chii Chang (2021-03-15)
+ * @author Chii Chang (2021-03-15)
  */
-public interface LogFilterPlugin extends GenericPlugin {
-    void execute(LogFilterContext filterContext, LogFilterInputParams inputParams,
-            LogFilterResultListener resultListener) throws Exception;
-    void execute(LogFilterRequest logFilterRequest);
+public enum EditorType {
+    CASE_VARIANT,CASE_ID,CASE_SECTION_ATTRIBUTE,CASE_TIMEFRAME,PERFORMANCE,PATH,REWORK_REPETITION,
+    EVENT_SECTION_ATTRIBUTE,
+    EVENT_TIMEFRAME,
+    UNKNOWN
 }
+

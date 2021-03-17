@@ -43,12 +43,13 @@ public class EventSectionAttributeDesc {
         desc +=  AttributeKeyTranslator.translate(attributeKey) + " is equal to [";
 
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
-        Collections.sort(ruleValueList);
+        Set<String> valSet = (Set<String>) ruleValues.iterator().next().getObjectVal();
+        List<String> valList = new ArrayList<>(valSet);
+        Collections.sort(valList);
 
-        for (int i = 0; i < ruleValueList.size(); i++) {
-            desc += ruleValueList.get(i).getStringValue();
-            if (i < ruleValueList.size() -1) {
+        for (int i = 0; i < valList.size(); i++) {
+            desc += valList.get(i);
+            if (i < valList.size() -1) {
                 desc += " OR ";
             }
         }

@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -28,12 +28,12 @@ import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.stats.EventAttributeValue;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CaseSectionAttributeCombinationFilter {
     public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
@@ -46,9 +46,8 @@ public class CaseSectionAttributeCombinationFilter {
 
     private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
 
-
         Set<String> primaryValues = logFilterRule.getPrimaryValuesInString();
-        Set<String> secondaryValues = logFilterRule.getSecondaryValuesInString();
+        Set<String> secondaryValues = (Set<String>) logFilterRule.getSecondaryValues().iterator().next().getObjectVal();
 
         String firstKey = logFilterRule.getPrimaryValues().iterator().next().getKey();
         String secondKey = logFilterRule.getSecondaryValues().iterator().next().getKey();
@@ -67,32 +66,6 @@ public class CaseSectionAttributeCombinationFilter {
         } else if (sect1.equals("event") && sect2.equals("case")) {
             return confirmEventToCaseAttrValues(trace, firstKey, secondKey, primaryValues, secondaryValues, inclusion);
         }
-
-//        switch (sect1) {
-//            case "event":
-//                List<AEvent> eventList = trace.getEventList();
-//
-//                if (logFilterRule.getInclusion() == Inclusion.ALL_VALUES) {
-//                    Set<String> matchedValues = new HashSet<>();
-//
-//                    for (int i = 0; i < eventList.size(); i++) {
-//                        AEvent event = eventList.get(i);
-//                        String matchedVal = getConformedEventAttrValue(event, firstKey, secondKey, primaryValues, secondaryValues);
-//                        if (matchedVal != null) matchedValues.add(matchedVal);
-//                    }
-//
-//                    return matchedValues.size() == secondaryValues.size();
-//                } else {
-//                    for (int i = 0; i < eventList.size(); i++) {
-//                        AEvent event = eventList.get(i);
-//                        String matchedVal = getConformedEventAttrValue(event, firstKey, secondKey, primaryValues, secondaryValues);
-//                        if (matchedVal != null) return true;
-//                    }
-//                    return false;
-//                }
-//            case "case":
-//                break;
-//        }
 
         return false;
     }
@@ -135,31 +108,21 @@ public class CaseSectionAttributeCombinationFilter {
         UnifiedMap<String, String> caseAttrMap = trace.getAttributeMap();
         if (!caseAttrMap.containsKey(firstKey)) return false;
         else {
-            if (!primaryValues.contains(caseAttrMap.get(firstKey))) return false;
-            else {
-                List<AActivity> activityList = trace.getActivityList();
+            String primVal = primaryValues.iterator().next();
+            if (!caseAttrMap.get(firstKey).equals(primVal)) return false;
 
-                switch (inclusion) {
-                    case ALL_VALUES:
-                        Set<String> matchedValues = new HashSet<>();
+            Map<String, List<AActivity>> grouped = trace.getActivityList().stream()
+                    .filter(x -> x.getAllAttributes().containsKey(secondKey) &&
+                            secondaryValues.contains(x.getAllAttributes().get(secondKey)))
+                    .collect(Collectors.groupingBy(x -> x.getAllAttributes().get(secondKey)));
 
-                        for (int i = 0; i < activityList.size(); i++) {
-                            AActivity activity = activityList.get(i);
-                            String confirmedVal = getConfirmedActivityAttrValue(activity, secondKey, secondaryValues);
-                            if (confirmedVal != null) matchedValues.add(confirmedVal);
-                        }
+            LongSummaryStatistics valActSizes = grouped.entrySet().stream()
+                    .collect(Collectors.summarizingLong(x -> x.getValue().size()));
 
-                        return matchedValues.size() == secondaryValues.size();
-                    case ANY_VALUE:
-                        for (int i = 0; i < activityList.size(); i++) {
-                            AActivity activity = activityList.get(i);
-                            String confirmedVal = getConfirmedActivityAttrValue(activity, secondKey, secondaryValues);
-                            if (confirmedVal != null) return true;
-                        }
-                }
-            }
+            if (inclusion == Inclusion.ALL_VALUES) return valActSizes.getMin() > 0;
+            else return valActSizes.getMax() > 0;
+
         }
-        return false;
     }
 
     private static String getConfirmedActivityAttrValue(AActivity activity, String attrKey, Set<String> values) {
@@ -187,8 +150,8 @@ public class CaseSectionAttributeCombinationFilter {
         switch (inclusion) {
             case ALL_VALUES:
                 UnifiedSet<String> matchedVals = new UnifiedSet<>();
-                for (int i = 0; i < activityList.size(); i++) {
-                    AEvent event0 = activityList.get(i).getImmutableEventList().get(0);
+                for (AActivity act : activityList) {
+                    AEvent event0 = act.getImmutableEventList().get(0);
                     String confirmedVal =
                             getConformedEventAttrValue(event0, firstKey, secondKey, primaryValues, secondaryValues);
                     if (confirmedVal != null) matchedVals.add(confirmedVal);
@@ -196,8 +159,8 @@ public class CaseSectionAttributeCombinationFilter {
 
                 return matchedVals.size() == secondaryValues.size();
             case ANY_VALUE:
-                for (int i = 0; i < activityList.size(); i++) {
-                    AEvent event0 = activityList.get(i).getImmutableEventList().get(0);
+                for (AActivity act : activityList) {
+                    AEvent event0 = act.getImmutableEventList().get(0);
                     String confirmedVal =
                             getConformedEventAttrValue(event0, firstKey, secondKey, primaryValues, secondaryValues);
                     if (confirmedVal != null) return true;
@@ -272,8 +235,8 @@ public class CaseSectionAttributeCombinationFilter {
     }
 
     private static boolean confirmEventToCaseAttrValues(ATrace trace, String firstKey, String secondKey,
-                                                         Set<String> primaryValues, Set<String> secondaryValues,
-                                                         Inclusion inclusion) {
+                                                        Set<String> primaryValues, Set<String> secondaryValues,
+                                                        Inclusion inclusion) {
         UnifiedMap<String, String> caseAttrMap = trace.getAttributeMap();
 
         List<AActivity> activityList = trace.getActivityList();

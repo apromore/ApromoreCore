@@ -22,13 +22,11 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.ATrace;
-
-import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
-import org.deckfour.xes.model.XTrace;
 
+import java.util.BitSet;
 import java.util.Set;
 
 public class CaseSectionCaseAttributeFilter {
@@ -48,23 +46,24 @@ public class CaseSectionCaseAttributeFilter {
 
         switch (filterType) {
             case CASE_ID:
-                String caseId = trace.getCaseId();
-                Set<String> ids = logFilterRule.getPrimaryValuesInString();
+                int immutableIndex = trace.getImmutableIndex();
+                BitSet bitSet = (BitSet) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
 
-                return ids.contains(caseId);
+                return bitSet.get(immutableIndex);
+
             case CASE_VARIANT:
                 String caseVariant = trace.getCaseVariantId() + "";
                 Set<String> variants = logFilterRule.getPrimaryValuesInString();
 
                 return variants.contains(caseVariant);
-                default:
-                    if (!trace.getAttributeMap().keySet().contains(attributeKey)) return false;
+            default:
+                if (!trace.getAttributeMap().keySet().contains(attributeKey)) return false;
 
-                    String value = trace.getAttributeMap().get(attributeKey);
+                String value = trace.getAttributeMap().get(attributeKey);
 
-                    Set<String> values = logFilterRule.getPrimaryValuesInString();
+                Set<String> ruleVals = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
 
-                    return values.contains(value);
+                return ruleVals.contains(value);
         }
 
     }

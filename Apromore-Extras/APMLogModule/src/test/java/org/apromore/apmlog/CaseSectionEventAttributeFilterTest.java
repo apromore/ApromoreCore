@@ -32,20 +32,23 @@ import org.apromore.apmlog.filter.types.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CaseSectionEventAttributeFilterTest {
 
     public static void testActivity(APMLog apmLog, APMLogUnitTest parent) throws Exception {
         String attrKey = "concept:name";
+
+        Set<String> mainVals = new HashSet<>(Arrays.asList("a", "c"));
+
         Set<RuleValue> primaryValues = new HashSet<>();
-        primaryValues.add(new RuleValue(
-                FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "a"));
-        primaryValues.add(new RuleValue(
-                FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "c"));
+
+        RuleValue rv1 = new RuleValue(FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, mainVals);
+        rv1.putCustomAttribute("section", "event" );
+
+        primaryValues.add(rv1);
+
         UnifiedSet<String> expectedCaseIds = new UnifiedSet<>();
         expectedCaseIds.add("c1");
         expectedCaseIds.add("c3");
