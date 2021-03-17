@@ -215,9 +215,27 @@ public interface WorkspaceService {
      */
     List<Process> getSingleOwnerProcessByUser(User user);
 
-
+    /**
+     * Whether the specified user is the only owner of any folder, log or process
+     *
+     * @param user User to be checked
+     * @return Whether the specified user is the only owner of any folder, log or process
+     */
     Boolean isOnlyOwner(User user);
 
+    /**
+     * Transfer the ownership of all the folder, log and process that the user-to-be-deleted is the only owner of
+     *
+     * @param sourceUser User to be deleted
+     * @param targetUser User to transfer ownership to
+     */
     void transferOwnership(User sourceUser, User targetUser);
+
+    /**
+     * Remove all the folder, log and process that the user-to-be-deleted is the only owner of
+     *
+     * @param user user to be deleted
+     */
+    void deleteOwnerlessArtifact(User user);
 
 }

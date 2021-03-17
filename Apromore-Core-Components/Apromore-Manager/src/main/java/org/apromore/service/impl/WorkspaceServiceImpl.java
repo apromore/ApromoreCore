@@ -912,6 +912,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
+    @Override
+    @Transactional
+    public void deleteOwnerlessArtifact(User user) {
+
+        folderRepo.delete(getSingleOwnerFolderByUser(user));
+        logRepo.delete(getSingleOwnerLogByUser(user));
+        processRepo.delete(getSingleOwnerProcessByUser(user));
+
+    }
+
     /* Save the Sub Folder Permissions. */
     private void saveSubFolderPermissions(Folder folder, Group group, boolean hasRead, boolean hasWrite,
                                           boolean hasOwnership) {
