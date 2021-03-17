@@ -96,8 +96,9 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     @Override
     public Availability getAvailability() {
-
+        return Availability.HIDDEN; // Hide from user menu
         // Require that the caller has the "Edit users" permission
+        /*
         UserType user = UserSessionManager.getCurrentUser();
         if (user != null) {
             for (PermissionType permission: user.getPermissions()) {
@@ -106,8 +107,8 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
                 }
             }
         }
-
         // Otherwise, this UI is unavailable
         return Availability.UNAVAILABLE;
+        */
     }
 }

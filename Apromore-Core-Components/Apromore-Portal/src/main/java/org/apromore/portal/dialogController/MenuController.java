@@ -94,7 +94,8 @@ public class MenuController extends SelectorComposer<Menubar> {
 
             SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
             for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
-                if (plugin.getAvailability() == PortalPlugin.Availability.UNAVAILABLE) {
+                PortalPlugin.Availability availability = plugin.getAvailability();
+                if (availability == PortalPlugin.Availability.UNAVAILABLE || availability == PortalPlugin.Availability.HIDDEN) {
                     continue;
                 }
 
