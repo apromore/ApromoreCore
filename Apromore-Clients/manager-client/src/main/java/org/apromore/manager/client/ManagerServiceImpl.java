@@ -130,7 +130,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         try {
             restRespResult =
-                    restTemplate.getForObject("http://securityms:8282/logout/" + username, Boolean.class);
+                    restTemplate.getForObject("http://securityms.apromoresso.net:8282/logout/" + username, Boolean.class);
             logger.debug("\n\nrestRespResult: {}", restRespResult);
         } catch (final Exception e) {
             final String exceptionMsg = e.getMessage();

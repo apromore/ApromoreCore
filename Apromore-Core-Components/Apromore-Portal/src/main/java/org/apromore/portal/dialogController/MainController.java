@@ -83,6 +83,7 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.ApromoreEnvUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -101,6 +102,8 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.apromore.portal.common.UserSessionManager.initializeUser;
 
@@ -159,7 +162,15 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public MainController() {
-        LOGGER.info("\n\n>>>In MainController() default constructor");
+        LOGGER.info("\n\n>>> In MainController() default constructor");
+        final Object nativeRequest = Executions.getCurrent().getNativeRequest();
+        LOGGER.info("\n### nativeRequest {}", nativeRequest);
+        final SecurityContextHolderAwareRequestWrapper servReqWrapper =
+                (SecurityContextHolderAwareRequestWrapper)nativeRequest;
+        final String appAuthHeader = servReqWrapper.getHeader("App_Auth");
+        final String signedAppAuthHeader = servReqWrapper.getHeader("Signed_App_Auth");
+        LOGGER.info("\n### appAuthHeader {}", appAuthHeader);
+        LOGGER.info("\n### signedAppAuthHeader {}", signedAppAuthHeader);
 
         portalSession = new PortalSession(this);
 
