@@ -24,4 +24,5 @@ package org.apromore.portal.types;
 public class EventQueueTypes {
     public static final String UPDATE_USERMETADATA = "updateUsermetadata";
     public static final String TRANSFER_OWNERSHIP = "transferOwnership";
+    public static final String PURGE_ASSETS = "purgeAssets";
 }

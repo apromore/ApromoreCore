@@ -23,6 +23,7 @@ package org.apromore.portal.types;
 
 public class EventQueueEvents {
     public static final String ON_TRANSFERRED = "onTransferred";
+    public static final String ON_PURGED = "onPurged";
 }
 
 
