@@ -167,6 +167,10 @@ public abstract class BaseListboxController extends BaseController {
 		}
 	}
 
+	public User getCurrentUser() {
+		return currentUser;
+	}
+
 	public void setPersistedView(String view) {
 		Clients.evalJavaScript("Ap.common.setCookie('view','" + view + "')");
 	}
@@ -405,19 +409,19 @@ public abstract class BaseListboxController extends BaseController {
 
 	    boolean canChange = currentFolder == null || currentFolder.getId() == 0 ? true : false;
 	    try {
-		canChange = canChange || ItemHelpers.isChangeable(currentFolder, currentUser);;
+			canChange = canChange || ItemHelpers.canModify(currentUser, currentFolder);;
 	    } catch (Exception e) {
-		Notification.error(e.getMessage());
-		return;
+			Notification.error(e.getMessage());
+			return;
 	    }
 	    if (canChange) {
-		try {
-		    new ImportController(getMainController());
-		} catch (DialogException e) {
-		    Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-		}
+			try {
+				new ImportController(getMainController());
+			} catch (DialogException e) {
+				Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+			}
 	    } else {
-		Notification.error("Cannot upload in readonly folder");
+			Notification.error("Cannot upload in readonly folder");
 	    }
 	}
 
@@ -433,9 +437,10 @@ public abstract class BaseListboxController extends BaseController {
 	}
 
 	protected void addFolder() throws InterruptedException {
+		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 		getMainController().eraseMessage();
 		try {
-			new AddFolderController(getMainController());
+			new AddFolderController(getMainController(), currentUser, currentFolder);
 		} catch (DialogException e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -495,7 +500,7 @@ public abstract class BaseListboxController extends BaseController {
 
 			boolean canChange = false;
 			try {
-				canChange = ItemHelpers.isChangeable(selectedItem, currentUser);
+				canChange = ItemHelpers.canModify(currentUser, selectedItem);
 			} catch (Exception e) {
 				Notification.error(e.getMessage());
 				return;
@@ -553,48 +558,19 @@ public abstract class BaseListboxController extends BaseController {
 	public void cut() {
 		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
-		try {
-			canChange = canChange || ItemHelpers.isChangeable(currentFolder, currentUser);
-		} catch (Exception e) {
-			Notification.error(e.getMessage());
-			return;
-		}
-
-		if (canChange) {
-			copyAndPasteController.cut(getSelection(), getSelectionCount());
-		} else {
-			Notification.error("Only Owner or Editor can cut from here.");
-		}
+		copyAndPasteController.cut(getSelection(), getSelectionCount(), currentFolder);
 	}
 
 	public void copy() {
-		copyAndPasteController.copy(getSelection(), getSelectionCount());
+		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+
+		copyAndPasteController.copy(getSelection(), getSelectionCount(), currentFolder);
 	}
 
 	public void paste() throws Exception {
-		// FolderType currentFolder = UserSessionManager.getCurrentFolder();
 		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-		boolean canChange = currentFolder == null || currentFolder.getId() == 0;
-		try {
-			canChange = canChange || ItemHelpers.isChangeable(currentFolder, currentUser);
-		} catch (Exception e) {
-			Notification.error(e.getMessage());
-			return;
-		}
-
-		if (canChange) {
-			Integer targetFolderId = currentFolder == null ? 0 : currentFolder.getId();
-			try {
-				copyAndPasteController.paste(targetFolderId);
-			} catch (Exception e) {
-				Messagebox.show("An error occurred during paste process", "Apromore", Messagebox.OK,
-						Messagebox.ERROR);
-			}
-		} else {
-		    Notification.error("Only Owner of Folder can paste here.");
-		}
+		copyAndPasteController.paste(currentFolder);
 		refreshContent();
 	}
 
@@ -789,6 +765,7 @@ public abstract class BaseListboxController extends BaseController {
 		PortalPlugin accessControlPlugin;
 
 		getMainController().eraseMessage();
+		// Check for ownership is moved to plugin level
 		try {
 			if (getSelectionCount() == 0) {
 				Notification.error("Please select a log or model to share");

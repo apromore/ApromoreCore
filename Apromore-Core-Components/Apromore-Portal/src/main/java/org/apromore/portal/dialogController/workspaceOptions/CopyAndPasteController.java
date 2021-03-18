@@ -23,7 +23,9 @@
 package org.apromore.portal.dialogController.workspaceOptions;
 
 // import org.apromore.exception.NotAuthorizedException;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.BaseListboxController;
 import org.apromore.portal.dialogController.ProcessListboxController;
@@ -38,9 +40,10 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.dao.model.User;
-import org.apromore.service.WorkspaceService;
 
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zk.ui.util.Clients;
 
@@ -68,20 +71,24 @@ public class CopyAndPasteController extends BaseController {
     private boolean isCut = false;
     private MainController mainController;
     private UserType user;
+    private User currentUser;
     private String userName;
     private String userId;
     private Integer selectedTargetFolderId = null;
     private ArrayList<Object> selectedItems = new ArrayList<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(CopyAndPasteController.class);
 
-    private WorkspaceService workspaceService;
-
     public CopyAndPasteController(MainController mainController, UserType user) {
+        super();
         this.mainController = mainController;
         this.user = user;
         this.userName = user.getUsername();
         this.userId = user.getId();
-        workspaceService = (WorkspaceService) SpringUtil.getBean("workspaceService");
+        try {
+            this.currentUser = getSecurityService().getUserById(this.userId);
+        } catch (Exception e) {
+            this.currentUser = null;
+        }
     }
 
     public boolean isInside(Integer folderId, Integer targetFolderId, int level) {
@@ -163,7 +170,7 @@ public class CopyAndPasteController extends BaseController {
             LOGGER.error("No log or target folder is defined");
             return;
         }
-        workspaceService.copyLog(log.getId(), targetFolderId, userName, false);
+        getWorkspaceService().copyLog(log.getId(), targetFolderId, userName, false);
     }
 
     private void cloneProcess(ProcessSummaryType model, Integer targetFolderId) throws Exception {
@@ -171,11 +178,11 @@ public class CopyAndPasteController extends BaseController {
             LOGGER.error("No process or target folder is defined");
             return;
         }
-        workspaceService.copyProcess(model.getId(), targetFolderId, userName, false);
+        getWorkspaceService().copyProcess(model.getId(), targetFolderId, userName, false);
     }
 
     private void moveFolder(FolderType folder, Integer targetFolderId, int level) throws Exception {
-        workspaceService.moveFolder(folder.getId(), targetFolderId);
+        getWorkspaceService().moveFolder(folder.getId(), targetFolderId);
     }
 
     private void moveLog(LogSummaryType log, Integer targetFolderId) throws Exception {
@@ -183,7 +190,7 @@ public class CopyAndPasteController extends BaseController {
             LOGGER.error("No log or target folder is defined");
             return;
         }
-        workspaceService.moveLog(log.getId(), targetFolderId);
+        getWorkspaceService().moveLog(log.getId(), targetFolderId);
     }
 
     private void moveProcess(ProcessSummaryType model, Integer targetFolderId) throws Exception {
@@ -191,7 +198,7 @@ public class CopyAndPasteController extends BaseController {
             LOGGER.error("No process or target folder is defined");
             return;
         }
-        workspaceService.moveProcess(model.getId(), targetFolderId);
+        getWorkspaceService().moveProcess(model.getId(), targetFolderId);
     }
 
     public void clearSelectedItems() {
@@ -224,7 +231,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    notify("A folder cannot be copied into its subfolder", "error");
+                    Notification.error("A folder cannot be copied into its subfolder");
                 } else {
                     cloneFolder(folder, selectedTargetFolderId, 0);
                 }
@@ -241,7 +248,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    notify("A folder cannot be moved into its subfolder", "error");
+                    Notification.error("A folder cannot be moved into its subfolder");
                 } else {
                     moveFolder(folder, selectedTargetFolderId, 0);
                 }
@@ -253,43 +260,79 @@ public class CopyAndPasteController extends BaseController {
         }
     }
 
-    private void notify(String message, String type) {
-        Clients.evalJavaScript("Ap.common.notify('" + message + "','" + type + "');");
+    private boolean checkContext(Set<Object> selections, int selectionCount, FolderType currentFolder) {
+        if (currentFolder == null) {
+            Notification.error("Failed to find the current folder");
+            return false;
+        } else if (selectionCount == 0) {
+            clearSelectedItems();
+            Notification.error("Select at least one item");
+            return false;
+        }
+        return true;
     }
 
-    public void cut(Set<Object> selections, int selectionCount) {
-        if (selectionCount == 0) {
-            clearSelectedItems();
-            notify("Select at least one item.", "error");
-        } else {
-            isCut = true;
-            updateSelectedItems(selections);
-            notify(getSelectedItemsSize() + " item(s) have been selected to be moved", "info");
+    public void cut(Set<Object> selections, int selectionCount, FolderType currentFolder) {
+
+        if (checkContext(selections, selectionCount, currentFolder)) {
+            try {
+                if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+                    isCut = true;
+                    updateSelectedItems(selections);
+                    Notification.info(getSelectedItemsSize() + " item(s) have been selected to be moved");
+                } else {
+                    Notification.error("Only Owner can cut from the current folder");
+                }
+            } catch (Exception e) {
+                Messagebox.show("An error occurred during cut process", "Apromore", Messagebox.OK,
+                    Messagebox.ERROR);
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
-    public void copy(Set<Object> selections, int selectionCount) {
-        if (selectionCount == 0) {
-            clearSelectedItems();
-            notify("Select at least one item.", "error");
-        } else {
-            isCut = false;
-            updateSelectedItems(selections);
-            notify(getSelectedItemsSize() + " item(s) have been selected to be copied", "info");
+    public void copy(Set<Object> selections, int selectionCount, FolderType currentFolder) {
+
+        if (checkContext(selections, selectionCount, currentFolder)) {
+            try {
+                isCut = false;
+                updateSelectedItems(selections);
+                Notification.info(getSelectedItemsSize() + " item(s) have been selected to be copied");
+            } catch (Exception e) {
+                Messagebox.show("An error occurred during copy process", "Apromore", Messagebox.OK,
+                    Messagebox.ERROR);
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 
-    public void paste(Integer targetFolderId) throws Exception {
-        selectedTargetFolderId = targetFolderId;
-        if (selectedItems.isEmpty()) {
-            notify("Select at least one item and press Cut or Copy first", "error");
+    public void paste(FolderType currentFolder) throws Exception {
+
+        if (currentFolder == null) {
+            Notification.error("Failed to find the current folder");
             return;
         }
-        if (isCut) {
-            moveSelectedItems();
-        } else {
-            cloneSelectedItems();
+        if (selectedItems.isEmpty()) {
+            Notification.error("Select at least one item and press Cut or Copy first");
+            return;
         }
-        clearSelectedItems();
+        if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+            Notification.error("Only Owner can paste to the current folder");
+            return;
+        }
+        try {
+            selectedTargetFolderId = currentFolder.getId();
+            if (isCut) {
+                moveSelectedItems();
+            } else {
+                cloneSelectedItems();
+            }
+            Notification.info(getSelectedItemsSize() + " item(s) have been successfully pasted");
+            clearSelectedItems();
+        } catch (Exception e) {
+            Messagebox.show("An error occurred during paste process", "Apromore", Messagebox.OK,
+                Messagebox.ERROR);
+            LOGGER.error(e.getMessage());
+        }
     }
 }
