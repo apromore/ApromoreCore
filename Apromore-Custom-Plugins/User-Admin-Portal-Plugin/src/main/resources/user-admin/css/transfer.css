@@ -23,3 +23,15 @@
 .ap-transfer-from {
     font-weight: 700;
 }
+
+.ap-usrmgt-delete-option .z-label {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.ap-usrmgt-delete-option-container {
+    border-radius: 8px;
+    padding: 6px 6px 6px 10px;
+    background-color: #e0e0e0;
+}

@@ -55,9 +55,9 @@ import org.apromore.util.AccessType;
  * Corresponds to resources/user-admin/transfer-ownership.zul
  */
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class TransferOwnershipController extends SelectorComposer<Window> {
+public class DeleteUserController extends SelectorComposer<Window> {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(TransferOwnershipController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(DeleteUserController.class);
 
     @WireVariable("workspaceService")
     private WorkspaceService workspaceService;
@@ -88,6 +88,9 @@ public class TransferOwnershipController extends SelectorComposer<Window> {
     @Wire("#transferFromLabel")
     Label transferFromLabel;
 
+    @Wire("#deletedUserLabel")
+    Label deletedUserLabel;
+
     @Wire("#transferToCombobox")
     Combobox transferToCombobox;
 
@@ -103,7 +106,13 @@ public class TransferOwnershipController extends SelectorComposer<Window> {
     @Wire("#assignmentListbox")
     Listbox assignmentListbox;
 
-    public TransferOwnershipController() throws Exception {
+    @Wire("#deleteOptionTransfer")
+    Radio deleteOptionTransfer;
+
+    @Wire("#deleteOptionPurge")
+    Radio deleteOptionPurge;
+
+    public DeleteUserController() throws Exception {
         pullArgs();
     }
 
@@ -118,6 +127,7 @@ public class TransferOwnershipController extends SelectorComposer<Window> {
         super.doAfterCompose(win);
         container = win;
         transferFromLabel.setValue(selectedUserName);
+        deletedUserLabel.setValue(selectedUserName);
         loadTransferTo();
         loadOwnedList();
     }
@@ -242,11 +252,23 @@ public class TransferOwnershipController extends SelectorComposer<Window> {
                 EventQueues.lookup(EventQueueTypes.TRANSFER_OWNERSHIP, EventQueues.DESKTOP, true)
                     .publish(new Event(EventQueueEvents.ON_TRANSFERRED, null, selectedUser));
             } catch(Exception e) {
-                Notification.error("An error occured while trying to transfer ownership");
+                Notification.error("An error occurred while trying to transfer ownership");
             }
         } else {
             Notification.error("No target user is specified");
         }
+    }
+
+    private void purgeOwnedAssets() {
+        try {
+            workspaceService.deleteOwnerlessArtifact(selectedUser);
+            Notification.info("All items owned by the deleted user are successfully deleted");
+            EventQueues.lookup(EventQueueTypes.PURGE_ASSETS, EventQueues.DESKTOP, true)
+                .publish(new Event(EventQueueEvents.ON_PURGED, null, selectedUser));
+        } catch(Exception e) {
+            Notification.error("An error occurred while trying to delete all the deleted user's items");
+        }
+
     }
 
     @Listen("onSelect = #ownedListbox")
@@ -262,7 +284,12 @@ public class TransferOwnershipController extends SelectorComposer<Window> {
     @Listen("onClick = #btnApply")
     public void onClickBtnApply() {
         destroy();
-        applyTransfer();
+        if (deleteOptionTransfer.isChecked()) {
+            applyTransfer();
+        }
+        if (deleteOptionPurge.isChecked()) {
+            purgeOwnedAssets();
+        }
     }
 
     @Listen("onClick = #btnCancel")

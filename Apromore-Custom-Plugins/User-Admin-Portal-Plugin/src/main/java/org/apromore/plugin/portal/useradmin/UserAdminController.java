@@ -499,6 +499,21 @@ public class UserAdminController extends SelectorComposer<Window> {
                 }
             );
 
+        EventQueues.lookup(EventQueueTypes.PURGE_ASSETS, EventQueues.DESKTOP, true)
+            .subscribe(
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event evt) {
+                        if (EventQueueEvents.ON_PURGED.equals(evt.getName())) {
+                            User user = (User) evt.getData();
+                            if (user != null) {
+                                securityService.deleteUser(user);
+                            }
+                        }
+                    }
+                }
+            );
+
         // Register OSGi event handler
         BundleContext bundleContext = (BundleContext) getSelf().getDesktop().getWebApp().getServletContext().getAttribute("osgi-bundlecontext");
         String filter = "(" + EventConstants.EVENT_TOPIC + "=" + SecurityService.EVENT_TOPIC + ")";
@@ -974,7 +989,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                                     try {
                                         Map arg = new HashMap<>();
                                         arg.put("selectedUser", user);
-                                        Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/transfer-ownership.zul", getSelf(), arg);
+                                        Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/delete-user.zul", getSelf(), arg);
                                         window.doModal();
                                     } catch (Exception ex) {
                                         LOGGER.error("Unable to create transfer owner dialog", ex);
