@@ -22,42 +22,25 @@
 
 package org.apromore.portal.dialogController.workspaceOptions;
 
-// import org.apromore.exception.NotAuthorizedException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.zul.Messagebox;
+
 import org.apromore.portal.common.ItemHelpers;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.BaseController;
-import org.apromore.portal.dialogController.BaseListboxController;
-import org.apromore.portal.dialogController.ProcessListboxController;
-import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
-import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.dao.model.User;
-
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-import org.zkoss.spring.SpringUtil;
-import org.zkoss.zk.ui.Execution;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zk.ui.util.Clients;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-import java.io.IOException;
-import javax.xml.datatype.DatatypeFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CopyAndPasteController extends BaseController {
 
