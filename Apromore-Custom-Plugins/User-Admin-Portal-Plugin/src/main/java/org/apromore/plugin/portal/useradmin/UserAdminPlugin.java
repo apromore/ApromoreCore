@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.PermissionType;
@@ -49,6 +50,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserAdminPlugin.class);
 
+    private String ID = Constants.USER_ADMIN_PLUGIN;
     private String label = "Manage user permissions";
     private String groupLabel = "Settings";
 
@@ -56,6 +58,11 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     @Inject private WorkspaceService workspaceService;
 
     // PortalPlugin overrides
+
+    @Override
+    public String getID() {
+        return ID;
+    }
 
     @Override
     public String getLabel(Locale locale) {

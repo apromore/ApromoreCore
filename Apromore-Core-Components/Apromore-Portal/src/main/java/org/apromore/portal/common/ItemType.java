@@ -25,7 +25,7 @@ package org.apromore.portal.common;
  * Item types
  */
 public enum ItemType {
-    LOG("log", "ap-icon-folder"),
+    LOG("log", "ap-icon-log"),
     MODEL("model", "ap-icon-bpmn-model"),
     FOLDER("folder", "ap-icon-folder");
 
