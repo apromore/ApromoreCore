@@ -87,7 +87,7 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
             Object selectedItem = arg.get("selectedItem");
             User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
             if (selectedItem != null) {
-                canShare = ItemHelpers.isShareable(selectedItem, currentUser);
+                canShare = ItemHelpers.isOwner(currentUser, selectedItem);
             }
             boolean withFolderTree = (boolean) arg.getOrDefault("withFolderTree", false);
             if (withFolderTree) {

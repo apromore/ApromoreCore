@@ -30,6 +30,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apromore.dao.model.User;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -38,12 +39,10 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.model.EditSessionType;
-import org.apromore.portal.model.ExportFormatResultType;
-import org.apromore.portal.model.PluginMessages;
-import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.model.*;
 import org.apromore.portal.util.StreamUtil;
+import org.apromore.util.AccessType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -51,6 +50,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -75,12 +75,15 @@ public class BPMNEditorController extends BaseController {
     private ProcessSummaryType process;
     private VersionSummaryType vst;
     boolean isNewProcess = false;
+    private UserType currentUserType;
+    private AccessType currentUserAccessType;
 
     @Inject private UserSessionManager userSessionManager;
 
     public BPMNEditorController() {
         super();
-        if (userSessionManager.getCurrentUser() == null) {
+        currentUserType = userSessionManager.getCurrentUser();
+        if (currentUserType == null) {
         	throw new AssertionError("Cannot open the editor without any login user!");
         }
 
@@ -100,7 +103,16 @@ public class BPMNEditorController extends BaseController {
         mainC = session.getMainC();
         process = session.getProcess();
         vst = session.getVersion();
-        
+
+        try {
+            User user = getSecurityService().getUserById(currentUserType.getId());
+            currentUserAccessType = getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+        } catch (Exception e) {
+            currentUserAccessType = AccessType.VIEWER;
+        }
+        String klass = "access-type-" + currentUserAccessType.getLabel().toLowerCase();
+        Clients.evalJavaScript("Ap.common.injectGlobalClass(\"" + klass + "\")");
+
         Map<String, Object> param = new HashMap<>();
         try {
             PluginMessages pluginMessages = null;
@@ -178,6 +190,10 @@ public class BPMNEditorController extends BaseController {
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
+                if (currentUserAccessType == AccessType.VIEWER) {
+                    Notification.error("You do not have a sufficient privilege to save or modify this file");
+                    return;
+                }
             	if (isNewProcess) {
             		new SaveAsDialogController(process, vst, session, false, eventToString(event));
             	}
@@ -190,6 +206,10 @@ public class BPMNEditorController extends BaseController {
         this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
+                if (currentUserAccessType == AccessType.VIEWER) {
+                    Notification.error("You do not have a sufficient privilege to save or modify this file");
+                    return;
+                }
                 new SaveAsDialogController(process, vst, session, false, eventToString(event));
             }
         });
@@ -198,6 +218,10 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 PortalPlugin accessControlPlugin;
+                if (currentUserAccessType != AccessType.OWNER) {
+                    Notification.error("You do not have a sufficient privilege to share this file");
+                    return;
+                }
 
                 if (isNewProcess || process == null) {
                     Notification.error("You need to save your new model first.");
@@ -240,7 +264,7 @@ public class BPMNEditorController extends BaseController {
     }
 
     /**
-     * @param json
+     * @param xml
      * @return the <var>json</var> escaped so that it can be quoted in Javascript.
      *     Specifically, it replaces apostrophes with \\u0027 and removes embedded newlines and leading and trailing whitespace.
      */

@@ -82,20 +82,41 @@ public final class ItemHelpers {
         } else if ((id = ItemHelpers.getModelId(item)) != null) {
             accessType = authorizationService.getProcessAccessTypeByUser(id, user);
         } else if ((id = ItemHelpers.getFolderId(item)) != null) {
-            accessType = authorizationService.getFolderAccessTypeByUser(id, user);
+            if (id == 0) { // everyone is the owner of root
+                accessType = AccessType.OWNER;
+            } else {
+                accessType = authorizationService.getFolderAccessTypeByUser(id, user);
+            }
         } else {
             throw new UnknownItemTypeException("Invalid item type");
         }
         return accessType;
     }
 
-    public static final boolean isShareable(Object item, User user) throws Exception {
+    public static final boolean isOwner(User user, Object item) throws Exception {
         AccessType accessType = ItemHelpers.getEffectiveAccessType(item, user);
         return AccessType.OWNER.equals(accessType);
     }
 
-    public static final boolean isChangeable(Object item, User user) throws Exception {
+    public static final boolean canModify(User user, Object item) throws Exception {
         AccessType accessType = ItemHelpers.getEffectiveAccessType(item, user);
         return AccessType.OWNER.equals(accessType) || AccessType.EDITOR.equals(accessType);
     }
+
+    public static final boolean canShare(User user, Object item) throws Exception {
+        return ItemHelpers.isOwner(user, item);
+    }
+
+    public static final boolean canAddIn(User user, Object targetFolder) throws Exception {
+        return ItemHelpers.isOwner(user, targetFolder);
+    }
+
+    public static final boolean canDelete(User user, Object item) throws Exception {
+        return ItemHelpers.isOwner(user, item);
+    }
+
+    public static final boolean canRename(User user, Object item) throws Exception {
+        return ItemHelpers.canModify(user, item);
+    }
+
 }

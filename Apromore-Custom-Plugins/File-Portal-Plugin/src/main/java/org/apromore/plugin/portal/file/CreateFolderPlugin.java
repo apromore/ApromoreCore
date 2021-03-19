@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.file;
 
 import java.util.Locale;
+import org.apromore.dao.model.User;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.exception.DialogException;
@@ -37,7 +38,6 @@ public class CreateFolderPlugin extends DefaultPortalPlugin {
 
     private String label = "Create folder";
     private String groupLabel = "File";
-
 
     // PortalPlugin overrides
 
@@ -59,10 +59,10 @@ public class CreateFolderPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         MainController mainC = (MainController) portalContext.getMainController();
-
+        User currentUser = mainC.getBaseListboxController().getCurrentUser();
         mainC.eraseMessage();
         try {
-            new AddFolderController(mainC);
+            new AddFolderController(mainC, currentUser, portalContext.getCurrentFolder());
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

@@ -70,3 +70,8 @@
     right: 0;
     bottom: 0;
 }
+
+.access-type-viewer button[title^="Save"]{
+    opacity: 0.5;
+    pointer-events: none;
+}
