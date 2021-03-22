@@ -751,6 +751,7 @@ public abstract class BaseListboxController extends BaseController {
 			arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
 			arg.put("autoInherit", true);
 			arg.put("showRelatedArtifacts", true);
+			arg.put("enablePublish", config.getEnablePublish());
 			accessControlPlugin.setSimpleParams(arg);
 			accessControlPlugin.execute(portalContext);
 		} catch (Exception e) {
@@ -782,6 +783,7 @@ public abstract class BaseListboxController extends BaseController {
 			arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
 			arg.put("autoInherit", true);
 			arg.put("showRelatedArtifacts", true);
+			arg.put("enablePublish", config.getEnablePublish());
 			accessControlPlugin.setSimpleParams(arg);
 			accessControlPlugin.execute(portalContext);
 		} catch (Exception e) {
