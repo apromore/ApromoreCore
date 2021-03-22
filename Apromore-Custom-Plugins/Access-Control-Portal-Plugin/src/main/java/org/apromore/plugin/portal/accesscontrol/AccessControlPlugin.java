@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 
+import org.apromore.portal.common.Constants;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.MainController;
@@ -47,7 +48,7 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessControlPlugin.class);
 
-    private String ID = "ACCESS_CONTROL_PLUGIN";
+    private String ID = Constants.ACCESS_CONTROL_PLUGIN;
     private String label = "Manage access control";
     private String groupLabel = "Security";
 

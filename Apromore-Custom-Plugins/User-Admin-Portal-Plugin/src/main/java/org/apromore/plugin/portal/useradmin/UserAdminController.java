@@ -162,7 +162,7 @@ public class UserAdminController extends SelectorComposer<Window> {
     boolean canEditRoles;
 
     private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
-    private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
+    private SecurityService securityService = (SecurityService) Executions.getCurrent().getArg().get("securityService");
     private WorkspaceService workspaceService = (WorkspaceService) Executions.getCurrent().getArg().get("workspaceService");
 
     @Wire("#tabbox")
