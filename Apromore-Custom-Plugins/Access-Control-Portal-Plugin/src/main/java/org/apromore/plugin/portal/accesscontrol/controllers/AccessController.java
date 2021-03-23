@@ -455,13 +455,7 @@ public class AccessController extends SelectorComposer<Div> {
             } else if (selectedItem instanceof ProcessSummaryType) {
                 authorizationService.deleteProcessAccess(selectedItemId, rowGuid);
             } else if (selectedItem instanceof LogSummaryType) {
-                try {
-                    authorizationService.deleteLogAccess(selectedItemId, rowGuid, name);
-                } catch (UserNotFoundException e) {
-                    LOGGER.error("User not found", e.getMessage(), e);
-                    Messagebox.show("The user cannot be found.", "Delete access error", Messagebox.OK,
-                            Messagebox.ERROR);
-                }
+                authorizationService.deleteLogAccess(selectedItemId, rowGuid, name, accessType);
             } else if (selectedItem instanceof UserMetadataSummaryType) {
                 authorizationService.deleteUserMetadataAccess(selectedItemId, rowGuid);
             }

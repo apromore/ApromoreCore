@@ -95,8 +95,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         for (Log l : logSet) {
             AccessType at = getLogAccessTypeByUser(l.getId(), user);
-            if ( at == AccessType.NONE) {
-                return AccessType.NONE; // If specified user can't access one of the multi-log, then return NONE
+            if ( at == null) {
+                return null; // If specified user can't access to one of the multi-log, then return null
             }
             accessTypes.add(at);
         }
@@ -118,7 +118,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {
 
         if (accessTypes == null || accessTypes.size() == 0) {
-            return AccessType.NONE;
+            return null;
         }
 
         if (accessTypes.contains(AccessType.OWNER)) {
@@ -127,17 +127,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             return AccessType.EDITOR;
         } else if (accessTypes.contains(AccessType.VIEWER)) {
             return AccessType.VIEWER;
-        } else return AccessType.NONE;
+        } else if (accessTypes.contains(AccessType.RESTRICTED)) {
+            return  AccessType.RESTRICTED;
+        } else return null;
     }
 
     public AccessType getMostRestrictiveAccessType(List<AccessType> accessTypes) {
 
         if (accessTypes == null || accessTypes.size() == 0) {
-            return AccessType.NONE;
+            return null;
         }
 
-        if (accessTypes.contains(AccessType.NONE)) {
-            return AccessType.NONE;
+        if (accessTypes.contains(AccessType.RESTRICTED)) {
+            return AccessType.RESTRICTED;
         } else if (accessTypes.contains(AccessType.VIEWER)) {
             return  AccessType.VIEWER;
         } else if (accessTypes.contains(AccessType.EDITOR)) {
@@ -150,7 +152,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         accessType = accessRights.hasAll() ?
                 AccessType.OWNER  : accessRights.hasReadWrite() ?
                 AccessType.EDITOR : accessRights.isReadOnly() ?
-                AccessType.VIEWER : AccessType.NONE;
+                AccessType.VIEWER : AccessType.RESTRICTED;
         return accessType;
     }
 
@@ -216,6 +218,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId) {
 
         // User metadata list on share window is disabled in version 7.19
+        // Used in AccessController
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
@@ -231,6 +234,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) {
 
+        // Used in UsermetadataListBox and dashboardList
+
         Usermetadata u = usermetadataRepository.findById(usermetadataId);
         Set<Log> logSet = u.getLogs();
 
@@ -238,9 +243,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata) {
+    public void saveLogAccessType(Integer logId, String groupRowGuid, AccessType accessType,
+                                  boolean shareUserMetadata) {
 
-        if (!AccessType.NONE.equals(accessType)) {
+        if (accessType != null) {
             workspaceService.saveLogAccessRights(logId, groupRowGuid, accessType, shareUserMetadata);
         }
     }
@@ -248,7 +254,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveProcessAccessType(Integer processId, String groupRowGuid, AccessType accessType) {
 
-        if (!AccessType.NONE.equals(accessType)) {
+        if (accessType != null) {
             workspaceService.saveProcessPermissions(processId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
                     accessType.isOwner());
         }
@@ -257,7 +263,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void saveFolderAccessType(Integer folderId, String groupRowGuid, AccessType accessType) {
 
-        if (!AccessType.NONE.equals(accessType)) {
+        if (accessType != null) {
             workspaceService.saveFolderPermissions(folderId, groupRowGuid, accessType.isRead(), accessType.isWrite(),
                     accessType.isOwner());
         }
@@ -267,14 +273,17 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public void saveUserMetadataAccessType(Integer userMetadataId, String groupRowGuid, AccessType accessType) {
 
         // Explicitly share User metadata disabled in version 7.19
+        if (accessType != null) {
+            workspaceService.saveUserMetadataAccessRights(userMetadataId, groupRowGuid, accessType);
+        }
     }
 
     // Delete Log's access right may lead to logical deleting of user metadata, which need username to fill UpdateBy
     // field ( TODO: Unnecessary in 7.19 since no need to update user metadata after deleting of log )
     @Override
-    public void deleteLogAccess(Integer logId, String groupRowGuid, String username) throws UserNotFoundException {
+    public void deleteLogAccess(Integer logId, String groupRowGuid, String username, AccessType accessType) {
 
-        workspaceService.removeLogPermissions(logId, groupRowGuid, username);
+        workspaceService.removeLogPermissions(logId, groupRowGuid, username, accessType);
     }
 
     @Override
@@ -292,6 +301,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid) {
         // Explicitly share User metadata disabled in version 7.19
+        workspaceService.removeUsermetadataPermissions(userMetadataId, groupRowGuid);
     }
 
 }

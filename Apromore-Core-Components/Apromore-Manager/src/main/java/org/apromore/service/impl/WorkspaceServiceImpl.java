@@ -68,12 +68,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository pmvRepo;
     private LogRepository logRepo;
+    private UsermetadataRepository usermetadataRepo;
     private FolderRepository folderRepo;
     private UserRepository userRepo;
     private GroupRepository groupRepo;
     private GroupFolderRepository groupFolderRepo;
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
+    private GroupUsermetadataRepository groupUsermetadataRepo;
     private EventLogFileService logFileService;
     private FolderService folderService;
     private StorageRepository storageRepository;
@@ -98,11 +100,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final ProcessRepository processRepository,
                                 final ProcessModelVersionRepository pmvRepository,
                                 final LogRepository logRepository,
+                                final UsermetadataRepository usermetadataRepository,
                                 final FolderRepository folderRepository,
                                 final GroupRepository groupRepository,
                                 final GroupFolderRepository groupFolderRepository,
                                 final GroupProcessRepository groupProcessRepository,
                                 final GroupLogRepository groupLogRepository,
+                                final GroupUsermetadataRepository groupUsermetadataRepository,
                                 final EventLogFileService eventLogFileService,
                                 final FolderService folderService,
                                 final StorageManagementFactory storageFactory,
@@ -114,11 +118,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         processRepo = processRepository;
         pmvRepo = pmvRepository;
         logRepo = logRepository;
+        usermetadataRepo  = usermetadataRepository;
         folderRepo = folderRepository;
         groupRepo = groupRepository;
         groupFolderRepo = groupFolderRepository;
         groupProcessRepo = groupProcessRepository;
         groupLogRepo = groupLogRepository;
+        groupUsermetadataRepo = groupUsermetadataRepository;
         logFileService = eventLogFileService;
         this.folderService = folderService;
         this.storageFactory = storageFactory;
@@ -402,15 +408,31 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public String removeLogPermissions(Integer logId, String groupRowGuid, String username)
-            throws UserNotFoundException {
+    public String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType) {
         Log log = logRepo.findOne(logId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupLog(group, log);
 
-        // Sync permission with user metadata that linked to specified log
+        // TODO: If access type = restricted, remove GroupUsermetadata
+        // If access type = restricted, remove permission with user metadata that linked to specified log
 //        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
 
+        if (accessType != AccessType.RESTRICTED) {
+
+            for (Usermetadata u : logRepo.findUniqueByID(logId).getUsermetadataSet()) {
+                removeGroupUsermetadata(group, u);
+            }
+        }
+
+        return "";
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid) {
+        Usermetadata um = usermetadataRepo.findOne(usermetadataId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        removeGroupUsermetadata(group, um);
         return "";
     }
 
@@ -470,6 +492,26 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         setReadOnlyParentFolders(group, parentFolder);
 
         // shareUserMetadata flag is disabled for now
+
+        // If not restricted viewer, then remove all GroupUsermetadata associated with specified log and group
+        if (accessType != AccessType.RESTRICTED) {
+
+            for (Usermetadata u : logRepo.findUniqueByID(logId).getUsermetadataSet()) {
+                removeGroupUsermetadata(group, u);
+            }
+        }
+
+        return "";
+    }
+
+    @Override
+    @Transactional
+    public String saveUserMetadataAccessRights(Integer usermetadataId, String groupRowGuid, AccessType accessType) {
+
+        Usermetadata usermetadata = usermetadataRepo.findById(usermetadataId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        createGroupUsermetadata(group, usermetadata, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
 
         return "";
     }
@@ -987,6 +1029,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupLogRepo.save(groupLog);
     }
 
+    private void createGroupUsermetadata(Group group, Usermetadata usermetadata, boolean hasRead, boolean hasWrite,
+                                         boolean hasOwnership) {
+        GroupUsermetadata groupUsermetadata = groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+        AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
+        if (groupUsermetadata == null) {
+            groupUsermetadata = new GroupUsermetadata(group, usermetadata, accessRights);
+            usermetadata.getGroupUserMetadata().add(groupUsermetadata);
+        } else {
+            groupUsermetadata.setAccessRights(accessRights);
+        }
+        groupUsermetadataRepo.save(groupUsermetadata);
+    }
+
     private void removeGroupFolder(Group group, Folder folder) {
         GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
         if (groupFolder != null) {
@@ -1005,6 +1060,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
         if (groupLog != null) {
             groupLogRepo.delete(groupLog);
+        }
+    }
+
+    private void removeGroupUsermetadata(Group group, Usermetadata usermetadata) {
+        GroupUsermetadata groupUsermetadata = groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
+        if (groupUsermetadata != null) {
+            groupUsermetadataRepo.delete(groupUsermetadata);
         }
     }
 
