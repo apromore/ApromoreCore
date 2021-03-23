@@ -175,6 +175,7 @@
         <inject.version>1.0.0</inject.version>
         <jackson.version>1.9.13</jackson.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
+        <xstream.version>1.4.16</xstream.version>
 
         <zk.version>8.6.0.1</zk.version>
         <zk.spring.version>3.1</zk.spring.version>
@@ -257,7 +258,7 @@
             <dependency>
                 <groupId>com.thoughtworks.xstream</groupId>
                 <artifactId>xstream</artifactId>
-                <version>1.4.16</version>
+                <version>${xstream.version}</version>
             </dependency>
 
             <dependency>
