@@ -46,10 +46,10 @@ public abstract class GenericLogFilterPlugin extends DefaultGenericPlugin
                    (LogFilterResultListener)resultListener);
         }
         else {
-           throw new WrongTargetPluginException("Wrong plugin called!"); 
+           throw new WrongTargetPluginException("Wrong plugin called!");
         }
     }
-    
+
     //Implement PluginResultListener interface as LogFilerResultListener interface
     @Override
     public void onPluginExecutionFinished(PluginOutputResult outputParams) throws Exception {
@@ -57,7 +57,7 @@ public abstract class GenericLogFilterPlugin extends DefaultGenericPlugin
             this.onPluginExecutionFinished((LogFilterOutputResult)outputParams);
         }
         else {
-            throw new WrongTargetPluginException("Wrong plugin called!"); 
+            throw new WrongTargetPluginException("Wrong plugin called!");
         }
     }
 

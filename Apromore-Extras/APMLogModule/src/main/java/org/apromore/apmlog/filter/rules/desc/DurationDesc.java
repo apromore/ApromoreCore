@@ -31,7 +31,7 @@ import org.apromore.apmlog.util.TimeUtil;
 public class DurationDesc {
 
     public static String getDescription(LogFilterRule logFilterRule) {
-        String desc = "";
+        StringBuilder sb = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
         long fromDur = 0, toDur = 0;
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
@@ -42,29 +42,29 @@ public class DurationDesc {
 
         FilterType filterType = logFilterRule.getFilterType();
 
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where all events have ";
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases with ");
 
         switch (filterType) {
             case DURATION:
-                desc += "duration range equal to ["; break;
+                sb.append("duration between ["); break;
             case MAX_PROCESSING_TIME:
-                desc += "max processing time between ["; break;
+                sb.append("max processing time between ["); break;
             case AVERAGE_PROCESSING_TIME:
-                desc += "average processing time between ["; break;
+                sb.append("average processing time between ["); break;
             case TOTAL_PROCESSING_TIME:
-                desc += "total processing time between ["; break;
+                sb.append("total processing time between ["); break;
             case TOTAL_WAITING_TIME:
-                desc += "total waiting time between ["; break;
+                sb.append("total waiting time between ["); break;
             case AVERAGE_WAITING_TIME:
-                desc += "average waiting time between ["; break;
+                sb.append("average waiting time between ["); break;
             case MAX_WAITING_TIME:
-                desc += "max waiting time between ["; break;
+                sb.append("max waiting time between ["); break;
             default: break;
         }
 
-        desc += TimeUtil.durationStringOf(fromDur) + " AND " + TimeUtil.durationStringOf(toDur) + "]";
+        sb.append(TimeUtil.durationStringOf(fromDur) + " AND " + TimeUtil.durationStringOf(toDur) + "]");
 
 
-        return desc;
+        return sb.toString();
     }
 }

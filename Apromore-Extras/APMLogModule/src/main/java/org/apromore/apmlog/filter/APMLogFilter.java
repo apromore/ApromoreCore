@@ -207,14 +207,14 @@ public class APMLogFilter {
     }
 
     private List<PTrace> filterByCaseSectEventAttribute(LogFilterRule rule, List<PTrace> traces) {
-        /** CaseSectionEventAttributeFilter handles Choice **/
+        // CaseSectionEventAttributeFilter handles Choice
         return traces.stream()
                 .filter(x -> CaseSectionEventAttributeFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
     }
 
     private List<PTrace> filterByCaseSectAttributeCombination(LogFilterRule rule, List<PTrace> traces) {
-        /** CaseSectionAttributeCombinationFilter handles Choice **/
+        // CaseSectionAttributeCombinationFilter handles Choice
         return traces.stream()
                 .filter(x -> CaseSectionAttributeCombinationFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
@@ -274,6 +274,9 @@ public class APMLogFilter {
 
     private boolean filterActivitiesByAttribute(LogFilterRule rule, PTrace pTrace) {
         String key = rule.getKey();
+
+        if (rule.getPrimaryValues() == null || rule.getPrimaryValues().isEmpty()) return false;
+
         Set<String> values = (Set<String>) rule.getPrimaryValues().iterator().next().getObjectVal();
 
         List<AActivity> validActs = pTrace.getOriginalActivityList().stream()
@@ -292,7 +295,7 @@ public class APMLogFilter {
 
         if (validActs.size() == 0) return false;
 
-        /** update valid event index BitSet **/
+        // update valid event index BitSet
         pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalValidEventIndexBS().size()));
 
         for (AActivity activity : validActs) {
@@ -328,14 +331,14 @@ public class APMLogFilter {
     }
 
     private List<PTrace> filterByPath(LogFilterRule rule, List<PTrace> traces) {
-        /** PathFilter handles Choice **/
+        // PathFilter handles Choice
         return traces.stream()
                 .filter(x -> PathFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
     }
 
     private List<PTrace> filterByRework(LogFilterRule rule, List<PTrace> traces) {
-        /** PathFilter handles Choice **/
+        // PathFilter handles Choice
         return traces.stream()
                 .filter(x -> ReworkFilter.toKeep(x, rule))
                 .collect(Collectors.toList());

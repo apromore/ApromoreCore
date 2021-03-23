@@ -22,7 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
-import org.apromore.apmlog.filter.APMLogFilterPackage;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -34,18 +33,15 @@ import org.apromore.plugin.portal.processdiscoverer.controllers.LogFilterControl
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * LogFilterControllerWithAPMLog is {@link LogFilterController} but uses APMLog to do filtering.
@@ -73,9 +69,10 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                     ((List<LogFilterRule>) logData.getCurrentFilterCriteria()).isEmpty() ?
                     getRequestWithOption(new EditorOption(FilterType.CASE_VARIANT)) : getDefaultRequest();
             parent.getLogFilterPlugin().execute(lfr);
+        } else if (event.getData() instanceof JSONObject) {
+            onInvokeExtEvent((JSONObject) event.getData());
         } else {
-            if (event.getData() instanceof JSONObject) onInvokeExtEvent((JSONObject) event.getData());
-            else onInvokeEvent(event.getData().toString());
+            onInvokeEvent(event.getData().toString());
         }
     }
 
@@ -93,31 +90,36 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         String data, source, target;
         Map<String, Object> parameters = new UnifiedMap<>();
         String mainAttribute = parent.getUserOptions().getMainAttributeKey();
-        if (filterType == FilterType.CASE_SECTION_ATTRIBUTE_COMBINATION ||
-                filterType == FilterType.EVENT_ATTRIBUTE_DURATION) {
-            data = (String) param.get("data");
-            if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
-                    !logData.hasSufficientDurationVariant(mainAttribute, data)) {
-                Messagebox.show("Unable to filter on node duration as there's only one value.",
-                        "Filter error", Messagebox.OK, Messagebox.ERROR);
+
+        switch (filterType) {
+            case CASE_SECTION_ATTRIBUTE_COMBINATION:
+            case EVENT_ATTRIBUTE_DURATION:
+                data = (String) param.get("data");
+                if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
+                        !logData.hasSufficientDurationVariant(mainAttribute, data)) {
+                    Messagebox.show("Unable to filter on node duration as there's only one value.",
+                            "Filter error", Messagebox.OK, Messagebox.ERROR);
+                    return;
+                }
+                parameters.put("key", mainAttribute);
+                parameters.put("value", data);
+                break;
+            case ATTRIBUTE_ARC_DURATION:
+                source = (String) param.get("source");
+                target = (String) param.get("target");
+                if (!logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
+                    Messagebox.show("Unable to filter on arc duration as there's only one value.",
+                            "Filter error", Messagebox.OK, Messagebox.ERROR);
+                    return;
+                }
+                parameters.put("key", mainAttribute);
+                parameters.put("from", source);
+                parameters.put("to", target);
+                break;
+            default:
                 return;
-            }
-            parameters.put("key", mainAttribute);
-            parameters.put("value", data);
-        } else if (filterType == FilterType.ATTRIBUTE_ARC_DURATION) {
-            source = (String) param.get("source");
-            target = (String) param.get("target");
-            if (!logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
-                Messagebox.show("Unable to filter on arc duration as there's only one value.",
-                        "Filter error", Messagebox.OK, Messagebox.ERROR);
-                return;
-            }
-            parameters.put("key", mainAttribute);
-            parameters.put("from", source);
-            parameters.put("to", target);
-        } else {
-            return;
         }
+
         Clients.showBusy("Launch Filter Dialog ...");
 
         LogFilterRule rule = getLastMatchedRuleWithValues(filterType, parameters,
@@ -129,6 +131,16 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         LogFilterRequest lfr = getRequestWithOption(option);
         parent.getLogFilterPlugin().execute(lfr);
         Clients.clearBusy();
+    }
+
+    private boolean isValidEventAttributeDuration(String mainAttribute, String data) {
+        if (!logData.hasSufficientDurationVariant(mainAttribute, data)) {
+            Messagebox.show("Unable to filter on node duration as there's only one value.",
+                    "Filter error", Messagebox.OK, Messagebox.ERROR);
+            return false;
+        }
+
+        return true;
     }
 
     private LogFilterRequest getRequestWithOption(EditorOption option) {
@@ -149,23 +161,39 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             case "CaseTabAttribute": return FilterType.CASE_EVENT_ATTRIBUTE;
             case "CaseTabPerformance": return FilterType.DURATION;
             case "CaseTabTimeframe": return FilterType.CASE_TIME;
-            case "CASE_SECTION_ATTRIBUTE_COMBINATION": return FilterType.CASE_SECTION_ATTRIBUTE_COMBINATION;
-            case "EVENT_ATTRIBUTE_DURATION": return FilterType.EVENT_ATTRIBUTE_DURATION;
-            case "ATTRIBUTE_ARC_DURATION": return FilterType.ATTRIBUTE_ARC_DURATION;
+            default:
+                return FilterType.valueOf(payload);
         }
-        return FilterType.UNKNOWN;
     }
 
     private LogFilterRule getLastMatchedRule(FilterType filterType, List<LogFilterRule> criteria) {
         if (criteria == null || criteria.isEmpty()) return null;
 
-        for (int i = criteria.size() - 1; i >= 0; i--) {
-            if (criteria.get(i).getFilterType() == filterType) {
-                return criteria.get(i);
-            }
-        }
+        List<LogFilterRule> criteriaCopy = new ArrayList<>(criteria);
+        Collections.reverse(criteriaCopy);
 
-        return null;
+        return criteriaCopy.stream()
+                .filter(x -> asSameFilterGroup(x.getFilterType(), filterType))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean asSameFilterGroup(FilterType ruleFilterType, FilterType targetFilterType) {
+        switch (ruleFilterType) {
+            case STARTTIME:
+            case ENDTIME:
+            case CASE_TIME:
+                switch (targetFilterType) {
+                    case STARTTIME:
+                    case ENDTIME:
+                    case CASE_TIME:
+                        return true;
+                    default:
+                        return false;
+                }
+            default:
+                return ruleFilterType == targetFilterType;
+        }
     }
 
     private LogFilterRule getLastMatchedRuleWithValues(FilterType filterType,
@@ -174,13 +202,13 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
         if (criteria == null || criteria.isEmpty()) return null;
 
-        for (int i = criteria.size() - 1; i >= 0; i--) {
-            if (matchRuleValues(criteria.get(i), filterType, parameters)) {
-                return criteria.get(i);
-            }
-        }
+        List<LogFilterRule> criteriaCopy = new ArrayList<>(criteria);
+        Collections.reverse(criteriaCopy);
 
-        return null;
+        return criteriaCopy.stream()
+                .filter(x -> matchRuleValues(x, filterType, parameters))
+                .findFirst()
+                .orElse(null);
     }
 
     private boolean matchRuleValues(LogFilterRule logFilterRule,
@@ -189,18 +217,21 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         if (logFilterRule.getFilterType() != filterType) return false;
         if (!logFilterRule.getKey().equals(parameters.get("key"))) return false;
 
+        Set<RuleValue> primVals = logFilterRule.getPrimaryValues();
+
+        if (primVals == null || primVals.isEmpty()) return false;
+
         switch (filterType) {
             case ATTRIBUTE_ARC_DURATION:
-                RuleValue rvFrom = findRuleValueByOpeType(OperationType.FROM, logFilterRule.getPrimaryValues());
-                RuleValue rvTo = findRuleValueByOpeType(OperationType.TO, logFilterRule.getPrimaryValues());
+                RuleValue rvFrom = findRuleValueByOpeType(OperationType.FROM, primVals);
+                RuleValue rvTo = findRuleValueByOpeType(OperationType.TO, primVals);
                 if (rvFrom == null || rvTo == null) return false;
 
                 return rvFrom.getStringValue().equals(parameters.get("from")) &&
                         rvTo.getStringValue().equals(parameters.get("to"));
 
             case EVENT_ATTRIBUTE_DURATION:
-                String val = logFilterRule.getPrimaryValues().iterator().next().getKey();
-                return val.equals(parameters.get("value"));
+                return primVals.iterator().next().getKey().equals(parameters.get("value"));
             default:
                 return false;
         }
@@ -224,34 +255,6 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         parent.updateUI(true);
     }
 
-    /**
-     * Not used anymore. Replaced by processResponse(LogFilterResponse logFilterResponse)
-     */
-    @Override
-    public void subscribeFilterResult() {
-
-        // Process filtering result
-        EventQueue<Event> filterEventQueue = EventQueues.lookup("apmlog_filter_package", EventQueues.DESKTOP, true);
-        EventListener<Event> filteredLogEventListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                try {
-                    APMLogFilterPackage result = (APMLogFilterPackage) event.getData();
-                    PLog pLog = result.getPLog();
-                    if (!pLog.getPTraceList().isEmpty()) {
-                        parent.getLogData().setCurrentFilterCriteria(result.getCriteria());
-                        logData.updateLog(pLog, result.getFilteredAPMLog());
-                        parent.updateUI(true);
-                    }
-                }
-                finally {
-                    filterEventQueue.unsubscribe(this);
-                }
-            }
-        };
-        filterEventQueue.subscribe(filteredLogEventListener);
-    }
-
     @Override
     public void processResponse(LogFilterResponse logFilterResponse) {
         PLog pLog = logFilterResponse.getPLog();
@@ -261,8 +264,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 logData.updateLog(pLog, logFilterResponse.getApmLog());
                 parent.updateUI(true);
             } catch (Exception e) {
-                e.printStackTrace();
-                Messagebox.show(e.toString(), "Filter Response Error",
+                Messagebox.show(e.toString(), "Filter Response Error. " + e.getMessage(),
                         Messagebox.OK,
                         Messagebox.ERROR);
             }

@@ -30,17 +30,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EventSectionAttributeDesc {
+public class EventSectionAttributeDesc extends AttributeDesc{
 
     public static String getDescription(LogFilterRule logFilterRule) {
 
-        String desc = "";
+        StringBuilder sb = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all events where ";
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all events where attribute ");
 
         String attributeKey = logFilterRule.getKey();
 
-        desc +=  AttributeKeyTranslator.translate(attributeKey) + " is equal to [";
+        sb.append(getKeyLabel(attributeKey) + " is equal to [");
 
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
         Set<String> valSet = (Set<String>) ruleValues.iterator().next().getObjectVal();
@@ -48,14 +48,14 @@ public class EventSectionAttributeDesc {
         Collections.sort(valList);
 
         for (int i = 0; i < valList.size(); i++) {
-            desc += valList.get(i);
+            sb.append(valList.get(i));
             if (i < valList.size() -1) {
-                desc += " OR ";
+                sb.append(" OR ");
             }
         }
 
-        desc += "]";
+        sb.append("]");
 
-        return desc;
+        return sb.toString();
     }
 }

@@ -21,49 +21,49 @@
  */
 package org.apromore.apmlog.filter.rules.desc;
 
-import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.Choice;
-import org.apromore.apmlog.util.TimeUtil;
+import org.apromore.apmlog.filter.types.Inclusion;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EventAttributeDurationDesc {
-    public static String getDescription(LogFilterRule logFilterRule) {
+public abstract class AttributeDesc {
+
+    protected static String getDescriptionFromSetValue(Set<RuleValue> ruleValues, Inclusion inclusion) {
+
+        Set<String> valSet = ruleValues != null && !ruleValues.isEmpty() ?
+                (Set<String>) ruleValues.iterator().next().getObjectVal() : null;
+
+        if (valSet == null) return "";
+
+        List<String> valList = new ArrayList<>(valSet);
+        Collections.sort(valList);
 
         StringBuilder sb = new StringBuilder();
 
-        String attributeKey = logFilterRule.getKey();
-        String attributeVal = logFilterRule.getPrimaryValues().iterator().next().getKey();
+        if (valList.size() > 1) sb.append("[");
 
-        sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain " : "Remove ");
-        sb.append(" all cases where ");
-        sb.append(getDisplayAttributeKey(attributeKey) + " '" + attributeVal + "' has duration between ");
-
-        Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        List<RuleValue> ruleValueList = new ArrayList<>(ruleValues);
-        Collections.sort(ruleValueList);
-
-        for (int i = 0; i < ruleValueList.size(); i++) {
-            RuleValue rv = ruleValueList.get(i);
-            String unit = rv.getCustomAttributes().get("unit");
-            sb.append(TimeUtil.durationStringOf(ruleValueList.get(i).getDoubleValue(), unit));
-            if (i < ruleValueList.size() -1) {
-                sb.append(" AND ");
+        int count = 0;
+        for (String s : valList) {
+            sb.append("'" + s + "'");
+            if (count < valList.size() -1) {
+                sb.append(inclusion == Inclusion.ANY_VALUE ? " OR " : " AND ");
             }
+            count += 1;
         }
+
+        if (valList.size() > 1) sb.append("]");
 
         return sb.toString();
     }
 
-    private static String getDisplayAttributeKey(String attributeKey) {
+    protected static String getKeyLabel(String attributeKey) {
         switch (attributeKey) {
             case "concept:name": return "Activity";
             case "org:resource": return "Resource";
-            case "org:group": return "Resource group";
+            case "org:group": return "Group";
             case "org:role": return "Role";
             case "lifecycle:transition": return "Status";
             default: return attributeKey;

@@ -152,13 +152,6 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
     }
 
     public RuleValue clone() {
-        FilterType filterTypeCopy = filterType;
-        OperationType operationTypeCopy = operationType;
-        String keyCopy = key;
-        String stringValCopy = stringVal;
-        long longValCopy = longVal;
-        double doubleValCopy = doubleVal;
-        int intValCopy = intVal;
 
         Map<String, String> customAttrCopy = null;
 
@@ -173,11 +166,11 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
 
         RuleValue rv = null;
 
-        if (objectVal != null) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, objectVal);
-        else if (longValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, longValCopy );
-        else if (doubleValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, doubleValCopy );
-        else if (intValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, intValCopy );
-        else rv = new  RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, stringValCopy );
+        if (objectVal != null) rv = new RuleValue(filterType, operationType, key, objectVal);
+        else if (longVal != 0) rv = new RuleValue(filterType, operationType, key, longVal );
+        else if (doubleVal != 0) rv = new RuleValue(filterType, operationType, key, doubleVal );
+        else if (intVal != 0) rv = new RuleValue(filterType, operationType, key, intVal );
+        else rv = new  RuleValue(filterType, operationType, key, stringVal );
 
         if (customAttrCopy != null) rv.setCustomAttributes(customAttrCopy);
 

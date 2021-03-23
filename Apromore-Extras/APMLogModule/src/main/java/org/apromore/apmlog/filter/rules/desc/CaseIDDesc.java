@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
  */
 public class CaseIDDesc {
 
-
-
     public static String getDescription(LogFilterRule logFilterRule, APMLog apmLog) {
         PLog log = (PLog) apmLog;
 
@@ -43,22 +41,26 @@ public class CaseIDDesc {
         String choice = logFilterRule.getChoice().toString().toLowerCase();
         desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where case ID is ");
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        if (ruleValues.size() == 1) desc.append("equal to [");
-        else desc.append("in [");
 
-        BitSet selection = (BitSet) ruleValues.iterator().next().getObjectVal();
 
-        List<String> caseIds = log.getOriginalPTraceList().stream()
-                .filter(x -> selection.get(x.getImmutableIndex()))
-                .map(x->x.getCaseId())
-                .collect(Collectors.toList());
+        if (ruleValues != null && !ruleValues.isEmpty()) {
+            BitSet selection = (BitSet) ruleValues.iterator().next().getObjectVal();
 
-        int count = 0;
-        for (String s : caseIds) {
-            desc.append(s.intern());
-            if (count < caseIds.size() - 1) desc.append(", ");
+            if (selection.cardinality() == 1) desc.append("equal to [");
+            else desc.append(" [");
 
-            count += 1;
+            List<String> caseIds = log.getOriginalPTraceList().stream()
+                    .filter(x -> selection.get(x.getImmutableIndex()))
+                    .map(x->x.getCaseId())
+                    .collect(Collectors.toList());
+
+            int count = 0;
+            for (String s : caseIds) {
+                desc.append(s.intern());
+                if (count < caseIds.size() - 1) desc.append(", ");
+
+                count += 1;
+            }
         }
 
         desc.append("]");

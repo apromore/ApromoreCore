@@ -623,7 +623,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setWaitingTimes(DoubleArrayList waitingTimes) {
@@ -631,7 +631,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setProcessingTimes(DoubleArrayList processingTimes) {
@@ -639,7 +639,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setDuration(double duration) {
@@ -647,7 +647,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setStartTimeMilli(long startTimeMilli) {
@@ -655,7 +655,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setEndTimeMilli(long endTimeMilli) {
@@ -663,7 +663,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setCaseUtilization(double caseUtilization) {
@@ -671,7 +671,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     /**
-     * v7.20 new method
+     * @since v7.20
      * @return
      */
     public void setActivityList(List<AActivity> activityList) {

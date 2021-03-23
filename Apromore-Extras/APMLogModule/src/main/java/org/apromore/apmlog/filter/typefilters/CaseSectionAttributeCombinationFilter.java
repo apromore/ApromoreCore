@@ -26,6 +26,7 @@ import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.ATrace;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.stats.EventAttributeValue;
@@ -47,13 +48,17 @@ public class CaseSectionAttributeCombinationFilter {
     private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
 
         Set<String> primaryValues = logFilterRule.getPrimaryValuesInString();
-        Set<String> secondaryValues = (Set<String>) logFilterRule.getSecondaryValues().iterator().next().getObjectVal();
+        Set<RuleValue> secoRV = logFilterRule.getSecondaryValues();
+
+        if (secoRV == null || secoRV.isEmpty()) return false;
+
+        Set<String> secondaryValues = (Set<String>) secoRV.iterator().next().getObjectVal();
 
         String firstKey = logFilterRule.getPrimaryValues().iterator().next().getKey();
-        String secondKey = logFilterRule.getSecondaryValues().iterator().next().getKey();
+        String secondKey = secoRV.iterator().next().getKey();
 
         String sect1 = logFilterRule.getPrimaryValues().iterator().next().getCustomAttributes().get("section");
-        String sect2 = logFilterRule.getSecondaryValues().iterator().next().getCustomAttributes().get("section");
+        String sect2 = secoRV.iterator().next().getCustomAttributes().get("section");
 
         Inclusion inclusion = logFilterRule.getInclusion();
 
@@ -119,8 +124,9 @@ public class CaseSectionAttributeCombinationFilter {
             LongSummaryStatistics valActSizes = grouped.entrySet().stream()
                     .collect(Collectors.summarizingLong(x -> x.getValue().size()));
 
-            if (inclusion == Inclusion.ALL_VALUES) return valActSizes.getMin() > 0;
-            else return valActSizes.getMax() > 0;
+            if (inclusion == Inclusion.ALL_VALUES) {
+                return valActSizes.getMin() > 0 && valActSizes.getCount() == secondaryValues.size();
+            } else return valActSizes.getMax() > 0;
 
         }
     }

@@ -34,9 +34,9 @@ public class CaseVariantDesc {
         desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where case variant is ";
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
         if (ruleValues.size() == 1) desc += "equal to [";
-        else desc += "in [";
+        else desc += " [";
 
-        List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
+        List<RuleValue> ruleValueList = new ArrayList<>(ruleValues);
         Collections.sort(ruleValueList);
 
         List<Pair> pairList = getPairs(ruleValueList);

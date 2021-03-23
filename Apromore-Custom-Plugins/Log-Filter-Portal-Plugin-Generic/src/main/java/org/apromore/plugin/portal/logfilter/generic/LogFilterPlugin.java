@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.logfilter.generic;
 
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.generic.GenericPlugin;
 
 /**
@@ -31,7 +32,6 @@ import org.apromore.plugin.portal.generic.GenericPlugin;
  * Modified: Chii Chang (2021-03-15)
  */
 public interface LogFilterPlugin extends GenericPlugin {
-    void execute(LogFilterContext filterContext, LogFilterInputParams inputParams,
-            LogFilterResultListener resultListener) throws Exception;
     void execute(LogFilterRequest logFilterRequest);
+    void execute(PortalContext portalContext);
 }

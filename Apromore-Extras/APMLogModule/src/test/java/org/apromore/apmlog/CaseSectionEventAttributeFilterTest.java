@@ -21,10 +21,8 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogUnitTest;
-import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -33,7 +31,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CaseSectionEventAttributeFilterTest {
 
@@ -81,10 +78,7 @@ public class CaseSectionEventAttributeFilterTest {
 
         UnifiedSet<String> resultCaseIds = new UnifiedSet<>();
 
-        System.out.println("Trace size:" + traceList.size());
-
         for (ATrace trace : traceList) {
-            System.out.println(trace.getCaseId());
             resultCaseIds.add(trace.getCaseId());
         }
 

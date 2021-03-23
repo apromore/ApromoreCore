@@ -24,6 +24,7 @@ package org.apromore.apmlog.filter.typefilters;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 
@@ -44,12 +45,15 @@ public class CaseSectionEventAttributeFilter {
 
     private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
+        Set<RuleValue> primRV = logFilterRule.getPrimaryValues();
 
-        Set<String> values = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
+        if (primRV == null || primRV.isEmpty()) return false;
+
+        Set<String> values = (Set<String>) primRV.iterator().next().getObjectVal();
 
         if (values == null) {
-            if (logFilterRule.getPrimaryValues().size() > 0) {
-                String val = logFilterRule.getPrimaryValues().iterator().next().getStringValue();
+            if (primRV.size() > 0) {
+                String val = primRV.iterator().next().getStringValue();
                 values = new HashSet<>(Arrays.asList(val));
             } else return false;
         }

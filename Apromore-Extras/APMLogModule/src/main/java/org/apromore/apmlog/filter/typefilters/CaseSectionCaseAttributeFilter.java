@@ -27,6 +27,7 @@ import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 
 import java.util.BitSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class CaseSectionCaseAttributeFilter {
@@ -44,25 +45,23 @@ public class CaseSectionCaseAttributeFilter {
 
         FilterType filterType = logFilterRule.getFilterType();
 
+        if (logFilterRule.getPrimaryValues() == null || logFilterRule.getPrimaryValues().isEmpty()) {
+            return false;
+        }
+
         switch (filterType) {
             case CASE_ID:
                 int immutableIndex = trace.getImmutableIndex();
                 BitSet bitSet = (BitSet) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
-
                 return bitSet.get(immutableIndex);
-
             case CASE_VARIANT:
                 String caseVariant = trace.getCaseVariantId() + "";
                 Set<String> variants = logFilterRule.getPrimaryValuesInString();
-
                 return variants.contains(caseVariant);
             default:
                 if (!trace.getAttributeMap().keySet().contains(attributeKey)) return false;
-
                 String value = trace.getAttributeMap().get(attributeKey);
-
                 Set<String> ruleVals = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
-
                 return ruleVals.contains(value);
         }
 

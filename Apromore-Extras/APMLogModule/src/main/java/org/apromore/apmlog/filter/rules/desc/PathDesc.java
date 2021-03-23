@@ -23,6 +23,7 @@ package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.util.TimeUtil;
@@ -31,28 +32,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class PathDesc {
+public class PathDesc extends AttributeDesc{
 
     public static String getDescription(LogFilterRule logFilterRule) {
-        String desc = "";
-        String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) +
-                " all cases where their events contain the ";
-        FilterType filterType = logFilterRule.getFilterType();
-        if (filterType == FilterType.DIRECT_FOLLOW) {
-            desc += "Direct-follows relation ";
-        } else {
-            desc += "Eventually-follows relation ";
-        }
 
-        String mainAttrKey = getDisplayAttributeKey(logFilterRule.getKey());
-
-        desc += "of the \"" + mainAttrKey + "\" equal to [" ;
-
+        String mainAttrKey = getKeyLabel(logFilterRule.getKey());
         List<String> fromList = new ArrayList<>();
         List<String> toList = new ArrayList<>();
 
-//        String fromVal = "", toVal = "";
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
             OperationType operationType = ruleValue.getOperationType();
             if (operationType == OperationType.FROM) {
@@ -65,17 +52,23 @@ public class PathDesc {
             }
         }
 
+        StringBuilder sb = new StringBuilder();
+        sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain" : "Remove");
+        sb.append(" all cases that contain the ");
+        sb.append(logFilterRule.getFilterType() == FilterType.DIRECT_FOLLOW ?
+                        "direct-follows relation " : "eventually-follows relation ");
+
         for (int i = 0; i < fromList.size(); i++) {
             String fromVal = fromList.get(i);
             for (int j = 0; j < toList.size(); j++) {
                 String toVal = toList.get(j);
-                desc += fromVal + " => " + toVal;
-                if (j < toList.size()-1) desc += ", ";
+                sb.append("'" + fromVal + "' -> '" + toVal + "'");
+                if (j < toList.size()-1) sb.append(" OR ");
             }
-            if (i < fromList.size()-1) desc += ", ";
+            if (i < fromList.size()-1) sb.append(", ");
         }
 
-        desc += "] ";
+        sb.append(" between " + mainAttrKey + " nodes ");
 
         Set<RuleValue> secondaryValues = logFilterRule.getSecondaryValues();
 
@@ -114,41 +107,30 @@ public class PathDesc {
             }
 
             if (requireOpt == OperationType.EQUAL) {
-                desc += "and have the same \"" + getDisplayAttributeKey(requireAttrKey) + "\" ";
+                sb.append("and have same " + getKeyLabel(requireAttrKey) + " ");
             }
             if (requireOpt == OperationType.NOT_EQUAL) {
-                desc += "and have the different \"" + getDisplayAttributeKey(requireAttrKey) + "\" ";
+                sb.append("and have different " + getKeyLabel(requireAttrKey) + " ");
             }
             if (lowerBoundOpt != OperationType.UNKNOWN || upperBoundOpt != OperationType.UNKNOWN) {
-                desc += "and time interval ";
+                sb.append("and time interval ");
             }
             if (lowerBoundOpt == OperationType.GREATER) {
-                desc += "is greater than " + TimeUtil.durationStringOf(lowerBoundVal) + " ";
-                if (upperBoundOpt != OperationType.UNKNOWN) desc += "and ";
+                sb.append("is greater than " + TimeUtil.durationStringOf(lowerBoundVal) + " ");
+                if (upperBoundOpt != OperationType.UNKNOWN) sb.append("and ");
             }
             if (lowerBoundOpt == OperationType.GREATER_EQUAL) {
-                desc += "is at least " + TimeUtil.durationStringOf(lowerBoundVal) + " ";
-                if (upperBoundOpt != OperationType.UNKNOWN) desc += "and ";
+                sb.append("is greater than equal to " + TimeUtil.durationStringOf(lowerBoundVal) + " ");
+                if (upperBoundOpt != OperationType.UNKNOWN) sb.append("and ");
             }
             if (upperBoundOpt == OperationType.LESS) {
-                desc += "is less than " + TimeUtil.durationStringOf(upperBoundVal) + " ";
+                sb.append("is less than " + TimeUtil.durationStringOf(upperBoundVal) + " ");
             }
             if (upperBoundOpt == OperationType.LESS_EQUAL) {
-                desc += "is up to " + TimeUtil.durationStringOf(upperBoundVal) + " ";
+                sb.append("is less than equal to " + TimeUtil.durationStringOf(upperBoundVal) + " ");
             }
         }
 
-        return desc;
-    }
-
-    private static String getDisplayAttributeKey(String attributeKey) {
-        switch (attributeKey) {
-            case "concept:name": return "Activity";
-            case "org:resource": return "Resource";
-            case "org:group": return "Resource group";
-            case "org:role": return "Role";
-            case "lifecycle:transition": return "Status";
-            default: return attributeKey;
-        }
+        return sb.toString();
     }
 }

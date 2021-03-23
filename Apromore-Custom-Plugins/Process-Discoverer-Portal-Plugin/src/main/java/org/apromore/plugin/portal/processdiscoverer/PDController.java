@@ -83,7 +83,9 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -345,8 +347,8 @@ public class PDController extends BaseController {
             initialize();
             initializeDefaults();
 
-            System.out.println("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
-            System.out.println("Desktop ID = " + getDesktop().getId());
+            LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
+            LOGGER.debug("Desktop ID = " + getDesktop().getId());
 
             // Finally, store objects to be cleaned up when the session timeouts
             getDesktop().setAttribute("processDiscoverer", processDiscoverer);
@@ -367,7 +369,7 @@ public class PDController extends BaseController {
             viewSettingsController.updateUI(null);
             initializeEventListeners();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             Messagebox.show(e.getMessage(), "Process Discoverer", Messagebox.OK, Messagebox.ERROR);
         }
     }

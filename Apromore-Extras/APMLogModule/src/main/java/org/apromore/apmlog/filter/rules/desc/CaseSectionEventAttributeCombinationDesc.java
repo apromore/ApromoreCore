@@ -30,46 +30,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class CaseSectionEventAttributeCombinationDesc {
+public class CaseSectionEventAttributeCombinationDesc extends AttributeDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
 
         StringBuilder desc = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where ");
+        desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases that contain ");
 
-        String attributeKey = getDisplayName(logFilterRule.getPrimaryValues().iterator().next().getKey());
-
+        String attributeKey = getKeyLabel(logFilterRule.getPrimaryValues().iterator().next().getKey());
         String firstVal = logFilterRule.getPrimaryValuesInString().iterator().next();
 
-        desc.append("'" + attributeKey + "' is equal to [" + firstVal + "] and ");
+        desc.append(attributeKey + " '" + firstVal + "' with ");
 
-        String secondKey = getDisplayName(logFilterRule.getSecondaryValues().iterator().next().getKey());
+        String secondKey = getKeyLabel(logFilterRule.getSecondaryValues().iterator().next().getKey());
 
-        desc.append("'" + secondKey + "' contains [");
-
-        Set<String> secVals = (Set<String>) logFilterRule.getSecondaryValues().iterator().next().getObjectVal();
-
-        int count = 0;
-        for (String s : secVals) {
-            desc.append(s);
-            if (count < secVals.size() -1) {
-                desc.append(logFilterRule.getInclusion() == Inclusion.ANY_VALUE ? " OR " : " AND ");
-            }
-            count += 1;
-        }
-
-
-        desc.append("]");
+        desc.append(secondKey + " ");
+        desc.append(getDescriptionFromSetValue(logFilterRule.getSecondaryValues(), logFilterRule.getInclusion()));
+//        desc.append("]");
 
         return desc.toString();
-    }
-
-    private static String getDisplayName(String attributeKey) {
-        switch (attributeKey) {
-            case "concept:name": return "Activity";
-            case "org:resource": return "Resource";
-            case "org:group": return "Resource Group";
-            default: return attributeKey;
-        }
     }
 }
