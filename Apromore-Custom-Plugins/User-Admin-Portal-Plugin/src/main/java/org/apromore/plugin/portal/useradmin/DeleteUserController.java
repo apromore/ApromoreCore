@@ -31,6 +31,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -340,6 +341,8 @@ public class DeleteUserController extends SelectorComposer<Window> {
         if (deleteOptionPurge.isChecked()) {
             purgeOwnedAssets();
         }
+        EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
+                .publish(new Event("onSignout", null, Sessions.getCurrent()));
     }
 
     @Listen("onClick = #btnCancel")
