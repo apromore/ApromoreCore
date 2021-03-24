@@ -70,9 +70,10 @@ public class CalendarItemRenderer implements ListitemRenderer {
         return renderCell(listItem, new Label(content));
     }
 
-    public Listcell renderIconCell(Listitem listItem, String sclass) {
+    public Listcell renderIconCell(Listitem listItem, String sclass, String tooltip) {
         Span span = new Span();
         span.setSclass(sclass);
+        span.setTooltiptext(tooltip);
         return renderCell(listItem, span);
     }
 
@@ -80,7 +81,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         try {
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
-            Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendar.zul", null, arg);
+            Window window = (Window) Executions.getCurrent().createComponents("/calendar/zul/calendar.zul", null, arg);
             window.doModal();
         } catch(Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);
@@ -126,8 +127,8 @@ public class CalendarItemRenderer implements ListitemRenderer {
 
         OffsetDateTime created = calendarItem.getCreated();
         renderTextCell(listItem, created.format(DateTimeFormatter.ofPattern("yyyy MMM dd")));
-        Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit");
-        Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash");
+        Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit", "Edit calendar");
+        Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash", "Delete calendar");
 
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
