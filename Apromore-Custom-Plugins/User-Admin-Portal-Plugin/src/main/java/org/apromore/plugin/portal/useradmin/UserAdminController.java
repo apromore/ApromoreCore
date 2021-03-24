@@ -997,6 +997,9 @@ public class UserAdminController extends SelectorComposer<Window> {
                                     }
                                 } else {
                                     securityService.deleteUser(user);
+                                    // Force logout the deleted user
+                                    EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
+                                            .publish(new Event("onSignout", null, user.getUsername()));
                                 }
                             }
                             setSelectedUsers(null);
