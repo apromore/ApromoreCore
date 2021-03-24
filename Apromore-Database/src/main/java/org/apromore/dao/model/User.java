@@ -288,7 +288,7 @@ public class User implements Serializable {
     /**
      * @return the user's personal access control group
      */
-    @ManyToOne(optional = false)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "groupId")
     public Group getGroup() {
         return group;
@@ -387,7 +387,7 @@ public class User implements Serializable {
         this.foldersForModifiedById = foldersForModifiedById;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     public Set<Process> getProcesses() {
         return this.processes;
     }

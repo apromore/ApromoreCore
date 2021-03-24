@@ -19,10 +19,31 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.portal.types;
 
-public class EventQueueTypes {
-    public static final String UPDATE_USERMETADATA = "updateUsermetadata";
-    public static final String TRANSFER_OWNERSHIP = "transferOwnership";
-    public static final String PURGE_ASSETS = "purgeAssets";
+package org.apromore.portal.accesscontrol.model;
+
+import org.apromore.dao.model.Group.Type;
+
+public class Assignee {
+    private String name;
+    private String rowGuid;
+    private Type type; // Type.USER or Type.GROUP
+
+    public Assignee(String name, String rowGuid, Type type) {
+        this.name = name;
+        this.rowGuid = rowGuid;
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRowGuid() {
+        return rowGuid;
+    }
+
+    public Type getType() {
+        return type;
+    }
 }

@@ -105,3 +105,12 @@ Ap.common.pullClientTimeZone = function () {
     zAu.send(new zk.Event(zk.Widget.$('$setTimeZone'), 'onClientUpdate', { offset, tz } ));
   }, 200);
 }
+
+/**
+ * Inject additional global class to body
+ *
+ * @param klass {String} An additional CSS class
+ */
+Ap.common.injectGlobalClass = function (klass) {
+    jQuery('body')[0].classList.add(klass);
+}

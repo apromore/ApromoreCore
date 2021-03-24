@@ -42,8 +42,11 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.types.EventQueueTypes;
+import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.service.SecurityService;
 import org.apromore.security.util.SecurityUtil;
+import org.apromore.service.WorkspaceService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 //import org.osgi.service.event.Event;
@@ -67,6 +70,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -158,7 +162,8 @@ public class UserAdminController extends SelectorComposer<Window> {
     boolean canEditRoles;
 
     private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
-    private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
+    private SecurityService securityService = (SecurityService) Executions.getCurrent().getArg().get("securityService");
+    private WorkspaceService workspaceService = (WorkspaceService) Executions.getCurrent().getArg().get("workspaceService");
 
     @Wire("#tabbox")
     Tabbox tabbox;
@@ -478,6 +483,36 @@ public class UserAdminController extends SelectorComposer<Window> {
                 }
             }
         });
+
+        EventQueues.lookup(EventQueueTypes.TRANSFER_OWNERSHIP, EventQueues.DESKTOP, true)
+            .subscribe(
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event evt) {
+                        if (EventQueueEvents.ON_TRANSFERRED.equals(evt.getName())) {
+                            User user = (User) evt.getData();
+                            if (user != null) {
+                                securityService.deleteUser(user);
+                            }
+                        }
+                    }
+                }
+            );
+
+        EventQueues.lookup(EventQueueTypes.PURGE_ASSETS, EventQueues.DESKTOP, true)
+            .subscribe(
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event evt) {
+                        if (EventQueueEvents.ON_PURGED.equals(evt.getName())) {
+                            User user = (User) evt.getData();
+                            if (user != null) {
+                                securityService.deleteUser(user);
+                            }
+                        }
+                    }
+                }
+            );
 
         // Register OSGi event handler
         BundleContext bundleContext = (BundleContext) getSelf().getDesktop().getWebApp().getServletContext().getAttribute("osgi-bundlecontext");
@@ -950,7 +985,19 @@ public class UserAdminController extends SelectorComposer<Window> {
                         if (Messagebox.ON_OK.equals(e.getName())) {
                             for (User user : selectedUsers) {
                                 LOGGER.info("Deleting user " + user.getUsername());
-                                securityService.deleteUser(user);
+                                if (workspaceService.isOnlyOwner(user)) {
+                                    try {
+                                        Map arg = new HashMap<>();
+                                        arg.put("selectedUser", user);
+                                        Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/delete-user.zul", getSelf(), arg);
+                                        window.doModal();
+                                    } catch (Exception ex) {
+                                        LOGGER.error("Unable to create transfer owner dialog", ex);
+                                        Messagebox.show("Unable to create transfer owner dialog");
+                                    }
+                                } else {
+                                    securityService.deleteUser(user);
+                                }
                             }
                             setSelectedUsers(null);
                         }
