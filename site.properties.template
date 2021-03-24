@@ -129,10 +129,16 @@ liquibase.jdbc.password = 7fHJV41fpJ
 cache.numOfEvent = 0
 cache.numOfTrace = 0
 
-impala.jdbc.driver   = com.cloudera.impala.jdbc41.Driver
 impala.jdbc.url      = jdbc:impala://localhost:21050
 impala.jdbc.username = apromore
 impala.jdbc.password = MAcri
+
+# ETL scheduler pipeline
+etlplugin.pipeline.s3.bucketname = mayank-test-databucket
+etlplugin.pipeline.s3.region = ap-southeast-2
+airflow.username = airflow
+airflow.password = airflow
+airflow.hostname = http://localhost:8080
 
 #
 # GED Matrix support
