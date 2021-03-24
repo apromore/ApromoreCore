@@ -341,8 +341,9 @@ public class DeleteUserController extends SelectorComposer<Window> {
         if (deleteOptionPurge.isChecked()) {
             purgeOwnedAssets();
         }
-        EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
-                .publish(new Event("onSignout", null, Sessions.getCurrent()));
+        // Force logout the deleted user
+        EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
+                .publish(new Event("onSignout", null, selectedUser.getUsername()));
     }
 
     @Listen("onClick = #btnCancel")
