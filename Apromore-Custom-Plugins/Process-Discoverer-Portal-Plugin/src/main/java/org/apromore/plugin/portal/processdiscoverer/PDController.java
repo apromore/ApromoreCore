@@ -750,16 +750,16 @@ public class PDController extends BaseController {
 
             timer1 = System.currentTimeMillis();
             String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
-            System.out.println("JsonBuilder.generateJSONFromBPMN: " + (System.currentTimeMillis() - timer1) + " ms.");
+            LOGGER.debug("JsonBuilder.generateJSONFromBPMN: " + (System.currentTimeMillis() - timer1) + " ms.");
             outputData = pdFactory.createOutputData(currentAbstraction, visualizedText);
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            System.out.println("Sent json data to browser at " + formatter.format(new Date()));
+            LOGGER.debug("Sent json data to browser at " + formatter.format(new Date()));
 
             graphVisController.displayDiagram(visualizedText);
             contextData.setFirstTimeLoadingFinished(true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Unexpected error while generating visualization.", e);
             Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.",
                     "Process Discoverer",
                     Messagebox.OK,
