@@ -1,6 +1,6 @@
 /*-
  * #%L
- * This file is part of "Apromore Core".
+ * This file is part of "Apromore Enterprise Edition".
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
@@ -19,30 +19,14 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog.stats;
-
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-
-import java.util.Set;
-
-public interface AttributeValue {
-    String getValue();
-
-    long getCases();
-
-    String getFrequency();
-
-    long getTotal();
-
-    double getRatio();
-
-    double getOppCases();
-
-    IntArrayList getOccurCaseIndexes();
-
-    Set<Integer> getOccurCasesIndexSet();
-
-    double getPercent();
-
-    double getValueInDouble();
+package org.apromore.plugin.portal.logfilter.generic;
+/**
+ * @author Chii Chang (2021-03-15)
+ */
+public enum EditorType {
+    CASE_VARIANT,CASE_ID,CASE_SECTION_ATTRIBUTE,CASE_TIMEFRAME,PERFORMANCE,PATH,REWORK_REPETITION,
+    EVENT_SECTION_ATTRIBUTE,
+    EVENT_TIMEFRAME,
+    UNKNOWN
 }
+

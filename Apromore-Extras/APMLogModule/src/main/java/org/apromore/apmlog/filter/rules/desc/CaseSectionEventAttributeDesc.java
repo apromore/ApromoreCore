@@ -30,43 +30,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class CaseSectionEventAttributeDesc {
+public class CaseSectionEventAttributeDesc extends AttributeDesc {
 
     public static String getDescription(LogFilterRule logFilterRule) {
 
-        String desc = "";
+        StringBuilder desc = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases containing events where ";
+        desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases that contain ");
 
         String attributeKey = logFilterRule.getKey();
 
-        desc += "'" + getDisplayAttributeKey(attributeKey) + "' equal to [";
+        desc.append(getKeyLabel(attributeKey) + " ");
+        desc.append(getDescriptionFromSetValue(logFilterRule.getPrimaryValues(), logFilterRule.getInclusion()));
+//        desc.append("]");
 
-        Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
-        Collections.sort(ruleValueList);
-
-        for (int i = 0; i < ruleValueList.size(); i++) {
-            desc += ruleValueList.get(i).getStringValue();
-            if (i < ruleValueList.size() -1) {
-                if (logFilterRule.getInclusion() == Inclusion.ANY_VALUE) desc += " OR ";
-                else desc += " AND ";
-            }
-        }
-
-        desc += "]";
-
-        return desc;
-    }
-
-    private static String getDisplayAttributeKey(String attributeKey) {
-        switch (attributeKey) {
-            case "concept:name": return "Activity";
-            case "org:resource": return "Resource";
-            case "org:group": return "Resource group";
-            case "org:role": return "Role";
-            case "lifecycle:transition": return "Status";
-            default: return attributeKey;
-        }
+        return desc.toString();
     }
 }

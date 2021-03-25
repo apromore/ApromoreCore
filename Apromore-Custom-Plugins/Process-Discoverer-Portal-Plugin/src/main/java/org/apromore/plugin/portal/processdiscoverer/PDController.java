@@ -29,10 +29,13 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -40,7 +43,9 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface;
+import org.apromore.plugin.portal.logfilter.generic.EditorOption;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterRequest;
 import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.controllers.GraphVisController;
@@ -54,6 +59,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.impl.apmlog.LogDataWithAPMLog;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.portal.common.Constants;
@@ -79,8 +85,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -101,10 +106,10 @@ import org.zkoss.zul.Window;
  * then ZK client engine sends an onLoaded event to the main window, triggering windowListener().
  * TODO: as this is open in a separate browser tab with a different ZK execution from that of the portal,
  * if the user signs out of the portal tab, the actions in this plugin calling to the portal session would fail
- * 
+ *
  * In addition, as PD consumes substantial memory resources in various ways (e.g. using third-party libraries),
- * it implements SessionCleanup interface and registers with ZK to be called upon the Session is destroyed 
- * by ZK and the web server. For example, in its cleanup routine, data-intensive components such as PD Logic 
+ * it implements SessionCleanup interface and registers with ZK to be called upon the Session is destroyed
+ * by ZK and the web server. For example, in its cleanup routine, data-intensive components such as PD Logic
  * and Process Visualizer will be called to clean up themselves.
  */
 public class PDController extends BaseController {
@@ -196,7 +201,7 @@ public class PDController extends BaseController {
     public PDController() throws Exception {
         super();
     }
-    
+
     //Note: this method is only valid inside onCreate() as it calls ZK current Execution
     private boolean preparePluginSessionId() {
         pluginSessionId = Executions.getCurrent().getParameter("id");
@@ -204,9 +209,9 @@ public class PDController extends BaseController {
         if (UserSessionManager.getEditSession(pluginSessionId) == null) return false;
         return true;
     }
-    
+
     // True means the current portal session is not valid to go ahead any more
-    // It could be the Apromore Portal session has timed out or user has logged off, or 
+    // It could be the Apromore Portal session has timed out or user has logged off, or
     // or something has made it crashed
     private boolean preparePortalSession(String pluginSessionId) {
         portalSession = UserSessionManager.getEditSession(pluginSessionId);
@@ -224,10 +229,10 @@ public class PDController extends BaseController {
         catch (Exception ex) {
             return false;
         }
-        
+
         return true;
-    } 
-    
+    }
+
     // Check infrastructure services to be available. They can become unavailable
     // because of system crashes or modules crashed/undeployed
     private boolean prepareSystemServices() {
@@ -235,7 +240,7 @@ public class PDController extends BaseController {
         domainService = (DomainService) Sessions.getCurrent().getAttribute("domainService");
         processService = (ProcessService) Sessions.getCurrent().getAttribute("processService");
         eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
-        logAnimationPluginCE = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPluginCE"); 
+        logAnimationPluginCE = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPluginCE");
         logAnimationPluginEE = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPluginEE");
         logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
 
@@ -246,7 +251,7 @@ public class PDController extends BaseController {
         }
         return true;
     }
-    
+
     // This is to check the availability of system services before executing a related action
     // E.g. before calling export log/model to the portal.
     public boolean prepareCriticalServices() {
@@ -254,37 +259,37 @@ public class PDController extends BaseController {
             Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
             return false;
         }
-        
+
         if (!preparePortalSession(pluginSessionId)) {
             Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
             return false;
         }
-        
+
         if (!prepareSystemServices()) {
             Messagebox.show("Key system services for PD are not available. Please contact your administrator.");
             return false;
         }
-        
+
         return true;
     }
-     
+
     public void onCreate() throws InterruptedException {
         try {
             if (!preparePluginSessionId()) {
                 Messagebox.show("Process Discoverer session has not been initialized. Please open it again properly!");
                 return;
             }
-            
+
             if (!prepareCriticalServices()) {
                 return;
             }
-            
+
             // Prepare data
             ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             pdFactory = (PDFactory) session.get("pdFactory");
-            
+
             configData = pdFactory.createConfigData();
             contextData = pdFactory.createContextData(
                     portalContext,
@@ -305,26 +310,26 @@ public class PDController extends BaseController {
             userOptions.setFixedAggregation(MeasureAggregation.CASES);
             userOptions.setInvertedNodesMode(false);
             userOptions.setInvertedArcsMode(false);
-    
+
             // Prepare log data
             logData = pdFactory.createLogData(contextData, eventLogService);
             IndexableAttribute mainAttribute = logData.getAttribute(configData.getDefaultAttribute());
             if (mainAttribute == null) {
-                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.", 
-                        "Process Discoverer", 
-                        Messagebox.OK, 
+                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.",
+                        "Process Discoverer",
+                        Messagebox.OK,
                         Messagebox.INFORMATION);
                 return;
             }
             else if (mainAttribute.getValueSize() > configData.getMaxNumberOfUniqueValues()) {
                 Messagebox.show("We cannot display the process map due to a large number of activities in the log " +
-                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")", 
-                                "Process Discoverer", 
-                                Messagebox.OK, 
+                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")",
+                                "Process Discoverer",
+                                Messagebox.OK,
                                 Messagebox.INFORMATION);
                 return;
             }
-            
+
             logData.setMainAttribute(configData.getDefaultAttribute());
             userOptions.setMainAttributeKey(configData.getDefaultAttribute());
             processDiscoverer = new ProcessDiscoverer(logData.getAttributeLog());
@@ -341,11 +346,11 @@ public class PDController extends BaseController {
 
             initialize();
             initializeDefaults();
-            
-            System.out.println("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
-            System.out.println("Desktop ID = " + getDesktop().getId());
-            
-            // Finally, store objects to be cleaned up when the session timeouts 
+
+            LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
+            LOGGER.debug("Desktop ID = " + getDesktop().getId());
+
+            // Finally, store objects to be cleaned up when the session timeouts
             getDesktop().setAttribute("processDiscoverer", processDiscoverer);
             getDesktop().setAttribute("processVisualizer", processVisualizer);
             getDesktop().setAttribute("pluginSessionId", pluginSessionId);
@@ -364,7 +369,7 @@ public class PDController extends BaseController {
             viewSettingsController.updateUI(null);
             initializeEventListeners();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             Messagebox.show(e.getMessage(), "Process Discoverer", Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -380,17 +385,17 @@ public class PDController extends BaseController {
             Label logTitle = (Label) mainWindow.getFellow("logTitle");
             mainWindow.setTitle(contextData.getLogName());
             logTitle.setValue(contextData.getLogName());
-    
+
             viewSettingsController.initializeControls(contextData);
             graphSettingsController.initializeControls(contextData);
             timeStatsController.initializeControls(contextData);
             logStatsController.initializeControls(contextData);
             graphVisController.initializeControls(contextData);
-    
+
             Component compLogStats = mainWindow.query(".ap-pd-logstats");
-    
+
             perspectiveSelected = (Label) compLogStats.getFellow("perspectiveSelected");
-    
+
             // Main action buttons
             casesDetails = (Button) mainWindow.getFellow("caseDetails");
             perspectiveDetails = (Button) mainWindow.getFellow("perspectiveDetails");
@@ -400,13 +405,13 @@ public class PDController extends BaseController {
             animate = (Button) mainWindow.getFellow("animate");
             fitScreen = (Button) mainWindow.getFellow("fitScreen");
             share = (Button) mainWindow.getFellow("share");
-    
+
             exportFilteredLog = (Button) mainWindow.getFellow("exportUnfitted");
             // export = (Combobutton) mainWindow.getFellow(StringValues.b[70]);
             downloadPDF = (Button) mainWindow.getFellow("downloadPDF");
             downloadPNG = (Button) mainWindow.getFellow("downloadPNG");
             exportBPMN = (Button) mainWindow.getFellow("exportBPMN");
-    
+
             // Layout
             layoutHierarchy = (Checkbox) mainWindow.getFellow(LAYOUT_HIERARCHY);
             layoutHierarchy.setChecked(userOptions.getLayoutHierarchy());
@@ -427,13 +432,14 @@ public class PDController extends BaseController {
         return logFilterController;
     }
 
-    private void initializeEventListeners() {
+    private void initializeEventListeners() throws InterruptedException {
+
         PDController me = this;
         try {
             viewSettingsController.initializeEventListeners(contextData);
             graphSettingsController.initializeEventListeners(contextData);
             graphVisController.initializeEventListeners(contextData);
-    
+
             // Layout
             EventListener<Event> layoutListener = new EventListener<Event>() {
                 @Override
@@ -444,14 +450,14 @@ public class PDController extends BaseController {
             };
             layoutHierarchy.addEventListener("onClick", layoutListener);
             layoutDagreTopBottom.addEventListener("onClick", layoutListener);
-    
+
             fitScreen.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     graphVisController.fitToWindow();
                 }
             });
-    
+
             casesDetails.addEventListener("onApShow",
                 new EventListener<Event>() {
                     @Override
@@ -469,99 +475,13 @@ public class PDController extends BaseController {
                 }
             );
 
-            filterClear.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Messagebox.show(
-                        "Are you sure you want to clear all filters?",
-                        "Filter log",
-                        Messagebox.OK | Messagebox.CANCEL,
-                        Messagebox.QUESTION,
-                        new org.zkoss.zk.ui.event.EventListener() {
-                            @Override
-                            public void onEvent(Event evt) {
-                                if (evt.getName().equals("onOK")) {
-                                    try {
-                                        me.clearFilter();
-                                    } catch (Exception e) {
-                                        Messagebox.show("Unable to clear the filter", "Filter error", Messagebox.OK, Messagebox.ERROR);
-                                    }
-                                    /*
-                                    LogFilterController logFilterController = me.getFilterController();
-                                    logFilterController.subscribeFilterResult();
+            filterClear.addEventListener("onClick", e -> onClearFilter());
+            filter.addEventListener("onInvoke", e -> logFilterController.onEvent(e));
+            filter.addEventListener("onInvokeExt", e -> logFilterController.onEvent(e));
 
-                                    EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
-                                    if (eqFilteredView != null) {
-                                        eqFilteredView.publish(new Event("ctrl", null, "removeall"));
-                                    }
-                                    */
-                                }
-                            }
-                        }
-                    );
-                }
-            });
+            LogFilterController lfc = getFilterController();
+            filter.addEventListener(Events.ON_CLICK, e -> lfc.onEvent(e));
 
-            filter.addEventListener("onInvoke", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Clients.showBusy("Launch Filter Dialog ...");
-                    Sessions.getCurrent().setAttribute("sourceLogId", sourceLogId);
-                    String payload = event.getData().toString();
-                    LogFilterController logFilterController = me.getFilterController();
-                    logFilterController.onEvent(event);
-                    EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
-                    eqFilteredView.publish(new Event("ctrl", null, payload));
-                    Clients.clearBusy();
-                }
-            });
-            filter.addEventListener("onInvokeExt", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    try {
-                        JSONObject param = (JSONObject) event.getData();
-                        String type = (String) param.get("type");
-                        String data, source, target;
-                        UnifiedMap<String, String> parameters = new UnifiedMap<>();
-                        String mainAttribute = me.getUserOptions().getMainAttributeKey();
-                        if (CASE_SECTION_ATTRIBUTE_COMBINATION.equals(type) || EVENT_ATTRIBUTE_DURATION.equals(type)) {
-                            data = (String) param.get("data");
-                            if (EVENT_ATTRIBUTE_DURATION.equals(type) && !me.logData.hasSufficientDurationVariant(mainAttribute, data)) {
-                                Messagebox.show("Unable to filter on node duration as there's only one value.",
-                                        "Filter error", Messagebox.OK, Messagebox.ERROR);
-                                return;
-                            }
-                            parameters.put("filterType", type);
-                            parameters.put("attributeKey", mainAttribute);
-                            parameters.put("attributeValue", data);
-                        } else if (ATTRIBUTE_ARC_DURATION.equals(type)) {
-                            source = (String) param.get("source");
-                            target = (String) param.get("target");
-                            if (!me.logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
-                                Messagebox.show("Unable to filter on arc duration as there's only one value.",
-                                        "Filter error", Messagebox.OK, Messagebox.ERROR);
-                                return;
-                            }
-                            parameters.put("filterType", type);
-                            parameters.put("attributeKey", mainAttribute);
-                            parameters.put("indegreeValue", source);
-                            parameters.put("outdegreeValue", target);
-                        } else {
-                            return;
-                        }
-                        Clients.showBusy("Launch Filter Dialog ...");
-                        Sessions.getCurrent().setAttribute("sourceLogId", sourceLogId);
-                        LogFilterController logFilterController = me.getFilterController();
-                        logFilterController.onEvent(event);
-                        EventQueue eqFilteredView = EventQueues.lookup("filter_view_ctrl", EventQueues.DESKTOP, true);
-                        eqFilteredView.publish(new Event("ctrl", null, parameters));
-                        Clients.clearBusy();
-                    } catch (Exception e) {
-                        LOGGER.error("Error occurred while launching quick filter: " + e.getMessage(), e);
-                    }
-                }
-            });
-            filter.addEventListener("onClick", this.getFilterController());
             animate.addEventListener("onClick", pdFactory.createAnimationController(this));
     
             exportFilteredLog.addEventListener("onExport", pdFactory.createLogExportController(this));
@@ -622,6 +542,27 @@ public class PDController extends BaseController {
             Messagebox.show("Errors occured while initializing event handlers.");
         }
 
+    }
+
+    private void onClearFilter() {
+        Messagebox.show(
+                "Are you sure you want to clear all filters?",
+                "Filter log",
+                Messagebox.OK | Messagebox.CANCEL,
+                Messagebox.QUESTION,
+                e -> proceedClearFilter(e)
+        );
+    }
+
+    private void proceedClearFilter(Event evt) {
+        if (evt.getName().equals("onOK")) {
+            try {
+                clearFilter();
+            } catch (Exception e) {
+                Messagebox.show("Unable to clear the filter", "Filter error",
+                        Messagebox.OK, Messagebox.ERROR);
+            }
+        }
     }
 
     private void showSingleDurationFilterError() {
@@ -809,16 +750,16 @@ public class PDController extends BaseController {
 
             timer1 = System.currentTimeMillis();
             String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
-            System.out.println("JsonBuilder.generateJSONFromBPMN: " + (System.currentTimeMillis() - timer1) + " ms.");
+            LOGGER.debug("JsonBuilder.generateJSONFromBPMN: " + (System.currentTimeMillis() - timer1) + " ms.");
             outputData = pdFactory.createOutputData(currentAbstraction, visualizedText);
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            System.out.println("Sent json data to browser at " + formatter.format(new Date()));
+            LOGGER.debug("Sent json data to browser at " + formatter.format(new Date()));
 
             graphVisController.displayDiagram(visualizedText);
             contextData.setFirstTimeLoadingFinished(true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Unexpected error while generating visualization.", e);
             Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.",
                     "Process Discoverer",
                     Messagebox.OK,

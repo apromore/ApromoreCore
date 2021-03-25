@@ -22,13 +22,12 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.ATrace;
-
-import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
-import org.deckfour.xes.model.XTrace;
 
+import java.util.BitSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class CaseSectionCaseAttributeFilter {
@@ -46,25 +45,24 @@ public class CaseSectionCaseAttributeFilter {
 
         FilterType filterType = logFilterRule.getFilterType();
 
+        if (logFilterRule.getPrimaryValues() == null || logFilterRule.getPrimaryValues().isEmpty()) {
+            return false;
+        }
+
         switch (filterType) {
             case CASE_ID:
-                String caseId = trace.getCaseId();
-                Set<String> ids = logFilterRule.getPrimaryValuesInString();
-
-                return ids.contains(caseId);
+                int immutableIndex = trace.getImmutableIndex();
+                BitSet bitSet = (BitSet) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
+                return bitSet.get(immutableIndex);
             case CASE_VARIANT:
                 String caseVariant = trace.getCaseVariantId() + "";
                 Set<String> variants = logFilterRule.getPrimaryValuesInString();
-
                 return variants.contains(caseVariant);
-                default:
-                    if (!trace.getAttributeMap().keySet().contains(attributeKey)) return false;
-
-                    String value = trace.getAttributeMap().get(attributeKey);
-
-                    Set<String> values = logFilterRule.getPrimaryValuesInString();
-
-                    return values.contains(value);
+            default:
+                if (!trace.getAttributeMap().keySet().contains(attributeKey)) return false;
+                String value = trace.getAttributeMap().get(attributeKey);
+                Set<String> ruleVals = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
+                return ruleVals.contains(value);
         }
 
     }

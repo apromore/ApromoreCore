@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -68,94 +68,98 @@ import java.util.List;
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (22/01/2021)
  * Modified: Chii Chang (26/01/2021)
+ * Modified: Chii Chang (17/03/2021)
  */
 public interface ATrace {
 
 
-     UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap();
+    UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap();
 
-//     void addActivity(AActivity aActivity, UnifiedMap<String, String> attributes);
-     void addActivity(AActivity aActivity);
+    void addActivity(AActivity aActivity);
 
-     int getImmutableIndex();
+    int getImmutableIndex();
 
-     int getMutableIndex();
+    int getMutableIndex();
 
-     void setMutableIndex(int mutableIndex);
+    void setMutableIndex(int mutableIndex);
 
-     String getCaseId();
+    String getCaseId();
 
-     void setCaseVariantId(int caseVariantId);
+    void setCaseVariantId(int caseVariantId);
 
-     int getCaseVariantId();
+    int getCaseVariantId();
 
-     int getEventSize();
+    int getEventSize();
 
-     long getStartTimeMilli();
+    long getStartTimeMilli();
 
-     long getEndTimeMilli();
+    long getEndTimeMilli();
 
-     double getDuration();
+    double getDuration();
 
-     boolean isHasActivity();
+    boolean isHasActivity();
 
-     void setHasActivity(boolean opt);
+    void setHasActivity(boolean opt);
 
-     List<AActivity> getActivityList();
+    List<AActivity> getActivityList();
 
-     List<String> getActivityNameList();
+    List<String> getActivityNameList();
 
-     UnifiedSet<String> getEventNameSet();
+    UnifiedSet<String> getEventNameSet();
 
-     UnifiedMap<String, String> getAttributeMap();
+    UnifiedMap<String, String> getAttributeMap();
 
-     List<AEvent> getEventList();
+    List<AEvent> getEventList();
 
-     int size();
+    int size();
 
-     AEvent get(int index);
+    AEvent get(int index);
 
-     double getTotalProcessingTime();
+    double getTotalProcessingTime();
 
-     double getAverageProcessingTime();
+    double getAverageProcessingTime();
 
-     double getMaxProcessingTime();
+    double getMaxProcessingTime();
 
-     double getTotalWaitingTime();
+    double getTotalWaitingTime();
 
-     double getAverageWaitingTime();
+    double getAverageWaitingTime();
 
-     double getMaxWaitingTime();
+    double getMaxWaitingTime();
 
-     double getCaseUtilization();
+    double getCaseUtilization();
 
-     BitSet getValidEventIndexBitSet();
+    BitSet getValidEventIndexBitSet();
 
-     String getStartTimeString();
+    String getStartTimeString();
 
-     String getEndTimeString();
+    String getEndTimeString();
 
-     String getDurationString();
+    String getDurationString();
 
-     long getCaseIdDigit();
+    long getCaseIdDigit();
 
-     List<Integer> getActivityNameIndexList();
+    List<Integer> getActivityNameIndexList();
 
-     void setCaseVariantIdForDisplay(int caseVariantIdForDisplay);
+    void setCaseVariantIdForDisplay(int caseVariantIdForDisplay);
 
-     int getCaseVariantIdForDisplay();
+    int getCaseVariantIdForDisplay();
 
-     void addEvent(AEvent event);
+    void addEvent(AEvent event);
 
-     void setEventList(List<AEvent> eventList);
+    void setEventList(List<AEvent> eventList);
 
-     List<AEvent> getImmutableEvents();
+    List<AEvent> getImmutableEvents();
 
-     void setImmutableEvents(List<AEvent> events);
+    void setImmutableEvents(List<AEvent> events);
 
-     DoubleArrayList getWaitingTimes();
-     DoubleArrayList getProcessingTimes();
+    DoubleArrayList getWaitingTimes();
+    DoubleArrayList getProcessingTimes();
 
-     ATrace clone();
+    void setStartTimeMilli(long startTimeMilli);
+    void setEndTimeMilli(long endTimeMilli);
+
+
+    ATrace clone();
 
 }

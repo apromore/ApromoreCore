@@ -138,12 +138,8 @@ public class AAttributeGraph {
             durSubGraphs.put(v, new DurSubGraph());
         }
 
-//        int count = 1;
-
         for (PTrace pTrace : pLog.getPTraceList()) {
             int pTraceIndex = pTrace.getMutableIndex();
-
-
 
             List<AActivity> activityList = pTrace.getActivityList();
             for (AActivity iAct : activityList) {
@@ -268,6 +264,8 @@ public class AAttributeGraph {
     public UnifiedSet<Double> getDurations(String attributeKey, String indegree, String outdegree, APMLog theLog) {
 
         DurSubGraph subGraph = getNextValueDurations(attributeKey, indegree, theLog);
+
+        if (subGraph == null) return null;
 
         UnifiedMap<String, UnifiedMap<Double, UnifiedSet<Integer>>> valDurCaseMap = subGraph.getValDurCaseIndexMap();
 

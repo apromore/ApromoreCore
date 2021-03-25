@@ -19,30 +19,10 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog.stats;
-
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-
-import java.util.Set;
-
-public interface AttributeValue {
-    String getValue();
-
-    long getCases();
-
-    String getFrequency();
-
-    long getTotal();
-
-    double getRatio();
-
-    double getOppCases();
-
-    IntArrayList getOccurCaseIndexes();
-
-    Set<Integer> getOccurCasesIndexSet();
-
-    double getPercent();
-
-    double getValueInDouble();
+package org.apromore.plugin.portal.logfilter.generic;
+/**
+ * @author Chii Chang (2021-03-15)
+ */
+public interface LogFilterClient {
+    void processResponse(LogFilterResponse logFilterResponse);
 }

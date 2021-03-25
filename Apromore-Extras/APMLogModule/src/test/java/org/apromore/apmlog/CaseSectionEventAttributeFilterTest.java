@@ -21,10 +21,8 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogUnitTest;
-import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -32,20 +30,22 @@ import org.apromore.apmlog.filter.types.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CaseSectionEventAttributeFilterTest {
 
     public static void testActivity(APMLog apmLog, APMLogUnitTest parent) throws Exception {
         String attrKey = "concept:name";
+
+        Set<String> mainVals = new HashSet<>(Arrays.asList("a", "c"));
+
         Set<RuleValue> primaryValues = new HashSet<>();
-        primaryValues.add(new RuleValue(
-                FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "a"));
-        primaryValues.add(new RuleValue(
-                FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "c"));
+
+        RuleValue rv1 = new RuleValue(FilterType.CASE_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, mainVals);
+        rv1.putCustomAttribute("section", "event" );
+
+        primaryValues.add(rv1);
+
         UnifiedSet<String> expectedCaseIds = new UnifiedSet<>();
         expectedCaseIds.add("c1");
         expectedCaseIds.add("c3");
@@ -78,10 +78,7 @@ public class CaseSectionEventAttributeFilterTest {
 
         UnifiedSet<String> resultCaseIds = new UnifiedSet<>();
 
-        System.out.println("Trace size:" + traceList.size());
-
         for (ATrace trace : traceList) {
-            System.out.println(trace.getCaseId());
             resultCaseIds.add(trace.getCaseId());
         }
 
