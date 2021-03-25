@@ -30,10 +30,10 @@ import java.util.*;
 
 public class ReworkDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
-        String desc = "";
+        StringBuilder sb = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) +
-                " all cases where their activities contain ";
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) +
+                " all cases where Activity ");
 
         Inclusion inclusion = logFilterRule.getInclusion();
 
@@ -80,26 +80,22 @@ public class ReworkDesc {
 
             subDesc = reorderList(subDesc);
 
-            desc += key + " (occur ";
+            sb.append("'" + key + "' occurs [");
 
             for (int i = 0; i < subDesc.size(); i++) {
-                desc += subDesc.get(i);
+                sb.append(subDesc.get(i));
                 if (subDesc.size() > 1 && i == 0) {
-                    desc += " and ";
+                    sb.append(" and ");
                 }
             }
-            desc += ") ";
+            sb.append("] ");
             if (count < mergedDescMap.size()) {
-                if (inclusion == Inclusion.ALL_VALUES) desc += "AND ";
-                else desc += "OR ";
+                if (inclusion == Inclusion.ALL_VALUES) sb.append("AND ");
+                else sb.append("OR ");
             }
         }
 
-
-
-
-
-        return desc;
+        return sb.toString();
     }
 
     private static List<String> reorderList(List<String> descList) {

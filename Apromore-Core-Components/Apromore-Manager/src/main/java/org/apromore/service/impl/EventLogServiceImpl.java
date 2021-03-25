@@ -55,7 +55,8 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
-import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
@@ -192,8 +193,34 @@ public class EventLogServiceImpl implements EventLogService {
             throw new Exception("No process instances contained in log!");
         }
 
-        return log;
+        return checkMissingLifecycleTransitionAttribute(log);
 
+    }
+
+    private static XLog checkMissingLifecycleTransitionAttribute(XLog log) {
+
+        boolean hasTransitionAttribute = false;
+
+        for(XTrace trace : log) {
+            for(XEvent event : trace) {
+                XAttributeMap attributeMap = event.getAttributes();
+                for(XAttribute attribute : attributeMap.values()) {
+                    String key = attribute.getKey();
+                    if ("lifecycle:transition".equals(key)){
+                        hasTransitionAttribute = true;
+                        break;
+                    }
+                }
+
+                if(!hasTransitionAttribute) {
+                    attributeMap.put("lifecycle:transition", new XAttributeLiteralImpl("lifecycle:transition",
+                            "complete", null));
+                    hasTransitionAttribute = false;
+                }
+            }
+        }
+
+        return log;
     }
 
     @Override

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+	<string key="concept:name" value="Poking example"/>
+	<trace>
+		<string key="concept:name" value="100000000001"/>
+		<event>
+			<string key="concept:name" value="a"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="a"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T00:20:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="b"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T00:30:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="b"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T01:20:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="c"/>
+			<string key="org:resource" value="r3"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T01:20:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="c"/>
+			<string key="org:resource" value="r3"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T01:40:00.000+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="100000000002"/>
+		<event>
+			<string key="concept:name" value="a"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T02:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="a"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T02:20:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="b"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T02:35:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="b"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T02:50:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="c"/>
+			<string key="org:resource" value="r3"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T03:20:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="c"/>
+			<string key="org:resource" value="r3"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T03:30:00.000+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="100000000002"/>
+		<event>
+			<string key="concept:name" value="a"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T03:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="a"/>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T03:30:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="b"/>
+			<string key="org:resource" value="r2"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T03:40:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="b"/>
+			<string key="org:resource" value="r2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T04:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="c"/>
+			<string key="org:resource" value="r3"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2021-01-01T05:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="c"/>
+			<string key="org:resource" value="r3"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2021-01-01T05:30:00.000+11:00"/>
+		</event>
+	</trace>
+</log>

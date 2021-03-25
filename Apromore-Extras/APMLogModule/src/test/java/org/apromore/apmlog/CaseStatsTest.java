@@ -21,11 +21,26 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
+import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import java.util.Map;
+
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
+import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
+import static org.junit.Assert.assertArrayEquals;
 
 public class CaseStatsTest {
     public static void testCaseVariantFrequency(APMLog apmLog, Map<String, String> expectedMap, APMLogUnitTest parent)
@@ -44,4 +59,34 @@ public class CaseStatsTest {
             parent.printString("'Case Variant Frequency' test PASS.\n");
         }
     }
+
+    public static void testCaseDurationAfterEventAttrFilter(APMLog apmLog) throws UnsupportedEncodingException {
+
+        String key = "concept:name";
+        Set<String> selActVals = new HashSet<>(Arrays.asList("a", "c"));
+        RuleValue rv2 = new RuleValue(EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, key, selActVals);
+        Set<RuleValue> primaryValues2 = new HashSet<>(Arrays.asList(rv2));
+
+        LogFilterRule logFilterRule2 = new LogFilterRuleImpl(Choice.REMOVE, Inclusion.ANY_VALUE, Section.EVENT,
+                EVENT_EVENT_ATTRIBUTE, key, primaryValues2, null);
+
+        List<LogFilterRule> criteria = Arrays.asList(logFilterRule2);
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        apmLogFilter.filter(criteria);
+        apmLogFilter.getPLog().updateStats();
+
+
+        DoubleArrayList caseDurs = apmLogFilter.getPLog().getCaseDurations();
+
+        double[] expected = {900000.0,
+                1200000.0,
+                1700000.0,
+                3000000.0,
+                5100000.0};
+
+        double[] result = {caseDurs.min(), caseDurs.median(), caseDurs.average(), caseDurs.max(), caseDurs.sum()};
+
+        assertArrayEquals(expected, result, 0);
+    }
+
 }

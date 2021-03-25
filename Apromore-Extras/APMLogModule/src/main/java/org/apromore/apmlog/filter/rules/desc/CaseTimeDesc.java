@@ -28,11 +28,17 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.util.TimeUtil;
 
+import static org.apromore.apmlog.filter.types.FilterType.CASE_TIME;
+import static org.apromore.apmlog.filter.types.FilterType.STARTTIME;
+import static org.apromore.apmlog.filter.types.Inclusion.ALL_VALUES;
+import static org.apromore.apmlog.filter.types.Inclusion.ANY_VALUE;
+
 
 public class CaseTimeDesc {
 
     public static String getDescription(LogFilterRule logFilterRule) {
-        String desc = "";
+        StringBuilder sb = new StringBuilder();
+
         String choice = logFilterRule.getChoice().toString().toLowerCase();
         long fromTime = 0, toTime = 0;
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
@@ -44,27 +50,22 @@ public class CaseTimeDesc {
         FilterType filterType = logFilterRule.getFilterType();
         Inclusion inclusion = logFilterRule.getInclusion();
 
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " ";
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases that ");
 
-
-        if (filterType == FilterType.CASE_TIME) {
-            desc += "all cases where timestamp ";
-            if (inclusion == Inclusion.ALL_VALUES) {
-                desc += "is from " + TimeUtil.convertTimestamp(fromTime);
-            } else {
-                desc += "intersect from " + TimeUtil.convertTimestamp(fromTime);
-            }
-            desc += " to " + TimeUtil.convertTimestamp(toTime);
+        if (filterType == CASE_TIME && inclusion == ALL_VALUES) {
+            sb.append("are contained between " + getText(fromTime, toTime));
+        } else  if (filterType == CASE_TIME && inclusion == ANY_VALUE) {
+            sb.append("are active between " + getText(fromTime, toTime));
+        } else if (filterType == STARTTIME) {
+            sb.append("start between " + getText(fromTime, toTime));
         } else {
-            if (filterType == FilterType.STARTTIME) {
-                desc += "cases that contain start event in the timestamp range between ";
-            } else if (filterType == FilterType.ENDTIME) {
-                desc += "cases that contain end event in the timestamp range between ";
-            }
-            desc += TimeUtil.convertTimestamp(fromTime) + " and ";
-            desc += TimeUtil.convertTimestamp(toTime);
+            sb.append("end between " + getText(fromTime, toTime));
         }
 
-        return desc;
+        return sb.toString();
+    }
+
+    private static String getText(long from, long to) {
+        return TimeUtil.convertTimestamp(from) + " and " + TimeUtil.convertTimestamp(to);
     }
 }
