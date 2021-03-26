@@ -39,6 +39,8 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
+    private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
+    private String fullConfigurableReturnPath = "http://localhost:8181/";
 
     private String keycloakLoginFormUrl;
 
@@ -59,6 +61,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
             tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
             tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
+            tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
             LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
             this.keycloakLoginFormUrl = tmpUrl;
@@ -98,6 +101,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);;
 
         String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
+        loginUrl = loginFormPattern.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
 
         LOGGER.info("\n\n>>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
 

@@ -118,7 +118,7 @@
 
     <beans:bean id="loginKeycloakFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter">
         <beans:property name="keycloakLoginFormUrl"
-                        value="http://securityms.apromoresso.net:8282/sso/initiateLogin/apromorewebapp.apromoresso.net" />
+                        value="http://securityms.apromoresso.net:8282/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
     </beans:bean>
 
     <beans:bean id="remoteAuthenticationProvider" class="org.apromore.security.provider.ApromoreRemoteAuthenticationProvider">
@@ -145,7 +145,7 @@
         <beans:property name="loginFormUrl"
                         value="/login.zul" />
         <beans:property name="keycloakLoginFormUrl"
-                        value="http://securityms.apromoresso.net:8282/sso/initiateLogin/apromorewebapp.apromoresso.net" />
+                        value="http://securityms.apromoresso.net:8282/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
     </beans:bean>
 
     <beans:bean id="apromoreUsernamePasswordAuthenticationFilter" class="org.apromore.security.filter.ApromoreUsernamePasswordAuthenticationFilter">

@@ -41,6 +41,8 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
+    private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
+    private String fullConfigurableReturnPath = "http://localhost:8181/";
 
     private static final String TRAD_LOGIN_REQUEST_URI = "/login.zul";
 
@@ -63,6 +65,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
             tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
             tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
+            tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
 
             LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
@@ -89,41 +92,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
             String urlToUseKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
             LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseKeycloakLoginPage);
 
-            /*
-            final String STATE_QUERY_PARAM_KEY = "&state=";
-            final int indexOfStateParamKey = urlToUseKeycloakLoginPage.indexOf(STATE_QUERY_PARAM_KEY);
-            final int idxOfStartUuidStateParam = indexOfStateParamKey + STATE_QUERY_PARAM_KEY.length();
-            final String existingUuid =
-                    urlToUseKeycloakLoginPage.substring(idxOfStartUuidStateParam, idxOfStartUuidStateParam + 37);
-
-            final String substRandomStateUuid = UUID.randomUUID().toString();
-            LOGGER.info("\n\n>>>>> substRandomStateUuid: {}", substRandomStateUuid);
-
-            urlToUseKeycloakLoginPage = urlToUseKeycloakLoginPage.replaceFirst(existingUuid, substRandomStateUuid);
-
-            LOGGER.info("\nSending redirect to [UPDATED] urlToUseKeycloakLoginPage: " + urlToUseKeycloakLoginPage);
-            */
-
-            HttpServletRequest httpServletRequest = ((HttpServletRequest) request);
             HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
-
-            /*
-            LOGGER.info("\n[BEFORE] Clearing cookies for the redirect");
-
-            // [BEFORE] Clear cookies, for the redirect
-            final Cookie[] cookies = httpServletRequest.getCookies();
-            if (cookies != null) {
-                for (final Cookie cookie : cookies) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-
-                    httpServletResponse.addCookie(cookie);
-                }
-            }
-
-            LOGGER.info("\n[AFTER] Clearing cookies for the response redirect");
-            */
 
             httpServletResponse.sendRedirect(urlToUseKeycloakLoginPage);
         } else {
@@ -141,6 +110,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
         String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
         loginUrl = loginUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
+        loginUrl = loginUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
 
         LOGGER.info("\n\n>>> >>> >>> Resolved/populated substitution placeholders Keycloak loginUrl: {}", loginUrl);
 
