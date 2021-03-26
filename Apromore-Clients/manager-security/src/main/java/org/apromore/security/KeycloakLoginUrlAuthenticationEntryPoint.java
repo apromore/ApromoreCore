@@ -99,7 +99,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
         String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
 
-        LOGGER.info("\n\n>>> Resolved Keycloak loginUrl: {}", loginUrl);
+        LOGGER.info("\n\n>>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
 
         return loginUrl;
     }
