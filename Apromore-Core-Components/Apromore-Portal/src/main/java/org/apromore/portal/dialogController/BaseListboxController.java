@@ -422,7 +422,7 @@ public abstract class BaseListboxController extends BaseController {
 				Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 			}
 	    } else {
-			Notification.error("Cannot upload in readonly folder");
+			Notification.error("Cannot upload in read-only folder");
 	    }
 	}
 

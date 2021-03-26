@@ -31,6 +31,9 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupController;
+import org.apromore.service.AuthorizationService;
+import org.apromore.service.UserMetadataService;
+import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -53,6 +56,9 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
     private String groupLabel = "Security";
 
     @Inject private SecurityService securityService;
+    @Inject private WorkspaceService workspaceService;
+    @Inject private AuthorizationService authorizationService;
+    @Inject private UserMetadataService userMetadataService;
 
     @Override
     public String getID() {
@@ -83,6 +89,11 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
     public void execute(final PortalContext portalContext) {
         LOGGER.info("execute");
         Map arg = getSimpleParams();
+        arg.put("securityService", securityService);
+        arg.put("workspaceService", workspaceService);
+        arg.put("userMetadataService", userMetadataService);
+        arg.put("authorizationService", authorizationService);
+
         try {
             boolean canShare = false;
             Object selectedItem = arg.get("selectedItem");

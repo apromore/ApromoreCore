@@ -71,7 +71,7 @@
                 <listhead>
                     <listheader align="center" label="" width="40px"/><!-- user/group icon -->
                     <listheader align="left" label="Name" sort="auto(name)"/>
-                    <listheader align="center" label="Permission" width="130px"/>
+                    <listheader align="center" label="Permission" width="170px"/>
                     <!--
                     <listheader align="center" id="shareUM" tooltiptext="Share also the associated user metadata"
                                 label="Incl. metadata"
@@ -96,7 +96,8 @@
                                       forward="onChange=assignmentListbox.onChange"
                                       ca:data-id="${each.rowGuid}"
                                       ca:onSelectDisabled="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
-                                <comboitem label="Viewer"/>
+                                <comboitem label="Restricted Viewer" visible="${accessContainer$composer.logSelected}"/>
+                                <comboitem label="Full Viewer"/>
                                 <comboitem label="Editor"/>
                                 <comboitem label="Owner"/>
                             </combobox>
@@ -116,7 +117,7 @@
             <listbox id="artifactListbox" multiple="false" checkmark="false" nonselectableTags="*" vflex="1" hflex="1"
                      visible="false">
                 <listhead>
-                    <listheader align="center" label="" width="40px"/><!-- type icon -->
+                    <listheader align="center" label="" width="80px"/><!-- type icon -->
                     <listheader align="left" hflex="1" label="Associated artifacts" sort="auto(name)"/>
                     <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
                 </listhead>
@@ -124,7 +125,7 @@
                     <listitem>
                         <listcell>
                             <span sclass="ap-icon ap-icon-static ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-speed'}"
-                                  style="display: inline-block"/>
+                                  style="display: inline-block; vertical-align: middle"/>
                         </listcell>
                         <listcell label="${each.name}"/>
                         <listcell label="${each.updatedTime}"/>
