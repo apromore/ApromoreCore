@@ -44,6 +44,9 @@
     <beans:bean id="portalPlugin2" class="org.apromore.plugin.portal.account.DebugPlugin"/>
     <osgi:service ref="portalPlugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
     -->
+    <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
+        <beans:bean class="org.apromore.plugin.portal.account.ReportIssuePlugin"/>
+    </osgi:service>
 
     <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
         <beans:bean class="org.apromore.plugin.portal.account.SignOutPlugin"/>
