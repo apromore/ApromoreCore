@@ -46,6 +46,9 @@ public class ConfigBean implements Serializable {
     private String  versionEdition;
     private String  versionBuildDate;
 
+    // SSO for Keycloak/securityms return
+    private String fullProtocolHostPortUrl;
+
     // LDAP
     private String  ldapProviderURL;
     private String  ldapUserContext;
@@ -78,7 +81,8 @@ public class ConfigBean implements Serializable {
                       boolean enablePublish, boolean enableTC, boolean enablePP,
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
                       boolean enableCalendar,
-                      long maxUploadSize) {
+                      long maxUploadSize,
+                      String fullProtocolHostPortUrl) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -90,7 +94,8 @@ public class ConfigBean implements Serializable {
             " majorversion.number=" + majorVersionNumber +
             " minorversion.number=" + minorVersionNumber +
             " version.edition=" + versionEdition +
-            " version.builddate=" + versionBuildDate);
+            " version.builddate=" + versionBuildDate +
+            " site.fullProtocolHostPortUrl=" + fullProtocolHostPortUrl);
 
         this.siteEditor         = siteEditor;
         this.siteExternalHost   = siteExternalHost;
@@ -120,6 +125,9 @@ public class ConfigBean implements Serializable {
         this.enableCalendar     = enableCalendar;
 
         this.maxUploadSize = maxUploadSize;
+
+        LoggerFactory.getLogger(getClass()).info("\n\n>>> >>> > fullProtocolHostPortUrl {}:", fullProtocolHostPortUrl);
+        this.fullProtocolHostPortUrl = fullProtocolHostPortUrl;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -150,6 +158,8 @@ public class ConfigBean implements Serializable {
     public boolean getEnableCalendar()  { return enableCalendar; }
 
     public long getMaxUploadSize()  { return maxUploadSize; }
+
+    public String getFullProtocolHostPortUrl() { return fullProtocolHostPortUrl; }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
