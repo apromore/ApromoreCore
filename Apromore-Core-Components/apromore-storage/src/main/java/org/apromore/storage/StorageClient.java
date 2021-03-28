@@ -34,18 +34,25 @@ import org.apromore.storage.exception.ObjectNotFoundException;
  */
 
 public interface StorageClient {
-
+    int COPY_BUFFER_SIZE = 8192;
     String getStorageType();
-
     InputStream getInputStream(String prefix, String key) throws ObjectNotFoundException;
-
     OutputStream getOutputStream(String prefix, String key) throws ObjectCreationException;
-
     boolean delete(String prefix, String key);
+    boolean delete(String key);
 
     default String getValidPrefix(String prefix) {
 	prefix = prefix == null ? "" : prefix;
 	return prefix;
     }
 
+    default void copyStream(InputStream sourceFile, OutputStream targetFile) throws Exception {
+    byte[] buf = new byte[COPY_BUFFER_SIZE];
+    int length;
+    while ((length = sourceFile.read(buf)) > 0) {
+        targetFile.write(buf, 0, length);
+    }
+    sourceFile.close();
+    targetFile.close();
+    }
 }
