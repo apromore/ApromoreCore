@@ -40,7 +40,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
-    private String fullConfigurableReturnPath = "http://localhost:8181/";
+    private String fullConfigurableReturnPath = "http://localhost:8181/"; // @2do: Inject, and get via ConfigBean getFullProtocolHostPortUrl()
 
     private String keycloakLoginFormUrl;
 
