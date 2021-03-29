@@ -30,9 +30,6 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apromore.plugin.portal.WebContentService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.http.SimpleWebApp;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
@@ -96,25 +93,26 @@ public class ApromoreWebApp extends SimpleWebApp {
      * @return all the {@link WebContentServices} registered in the OSGi context
      */
     private List<WebContentService> getWebContentServices() {
-        BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
-        /* This single-expression stream-based code is incompatible with Virgo's classpath scanner
-        List<WebContentService> webContentServices = (List<WebContentService>) bundleContext.getServiceReferences(WebContentService.class, null)
-            .stream()
-            .map(serviceReference -> ((WebContentService) bundleContext.getService((ServiceReference) serviceReference)))
-            .collect(Collectors.toList());
-        */
-        List<WebContentService> webContentServices = new java.util.ArrayList<>();
-        try {
-            java.util.Collection<ServiceReference> references = (java.util.Collection<ServiceReference>) bundleContext.getServiceReferences(WebContentService.class, null);
-            if (references != null) {
-                for (ServiceReference serviceReference: references) {
-                    webContentServices.add((WebContentService) bundleContext.getService((ServiceReference) serviceReference));
-                }
-            }
-            return webContentServices;
-
-        } catch (InvalidSyntaxException e) {
-            throw new Error("Bad hardcoded filter in BundleContext.getServiceReferences call", e);
-        }
+//        BundleContext bundleContext = (BundleContext) getServletContext().getAttribute("osgi-bundlecontext");
+//        /* This single-expression stream-based code is incompatible with Virgo's classpath scanner
+//        List<WebContentService> webContentServices = (List<WebContentService>) bundleContext.getServiceReferences(WebContentService.class, null)
+//            .stream()
+//            .map(serviceReference -> ((WebContentService) bundleContext.getService((ServiceReference) serviceReference)))
+//            .collect(Collectors.toList());
+//        */
+//        List<WebContentService> webContentServices = new java.util.ArrayList<>();
+//        try {
+//            java.util.Collection<ServiceReference> references = (java.util.Collection<ServiceReference>) bundleContext.getServiceReferences(WebContentService.class, null);
+//            if (references != null) {
+//                for (ServiceReference serviceReference: references) {
+//                    webContentServices.add((WebContentService) bundleContext.getService((ServiceReference) serviceReference));
+//                }
+//            }
+//            return webContentServices;
+//
+//        } catch (InvalidSyntaxException e) {
+//            throw new Error("Bad hardcoded filter in BundleContext.getServiceReferences call", e);
+//        }
+    	return null;
     }
 }

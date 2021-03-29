@@ -22,7 +22,7 @@
 
 package org.apromore.test.service.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import java.io.FileInputStream;
 import java.nio.file.Files;
@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.apromore.calendar.service.CustomCalendarService;
-import org.apromore.common.ConfigBean;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -147,7 +147,8 @@ public class EventLogServiceImplTest {
 
     eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository,
         folderRepo, userSrv, config, userMetadataRepo, temporaryCacheService, storageFactory,
-        logFileService, storageRepository, calendarRepository, calendarService, authorizationService);
+        logFileService, storageRepository, calendarRepository, calendarService,
+        authorizationService);
   }
 
   @Test

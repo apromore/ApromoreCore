@@ -67,7 +67,7 @@ public class LockServiceImpl implements LockService {
     @Transactional(readOnly = false)
     public boolean lockProcessModelVersion(Integer processModelVersionId) {
         ProcessModelVersion result = null;
-        ProcessModelVersion prsModelVersion = processModelVersionRepo.findOne(processModelVersionId);
+        ProcessModelVersion prsModelVersion = processModelVersionRepo.findById(processModelVersionId).get();
 
         if (prsModelVersion.getLockStatus().equals(Constants.NO_LOCK)) {
             prsModelVersion.setLockStatus(Constants.DIRECT_LOCK);

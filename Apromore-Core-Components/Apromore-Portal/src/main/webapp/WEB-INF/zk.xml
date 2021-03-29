@@ -24,6 +24,8 @@
 <zk>
 
     <!-- Defines the application's name -->
+    <config-name>Apromore</config-name>
+    
     <preference>
         <name>org.zkoss.zk.ui.WebApp.name</name>
         <value>Apromore</value>
@@ -34,27 +36,26 @@
     <client-config>
             <debug-js>true</debug-js>
     </client-config>
-
     <library-property>
         <name>org.zkoss.theme.preferred</name>
         <value>chiaroscuro_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail, chiaroscuro_c -->
     </library-property>
+        
 
   <system-property>
     <name>themex</name>
     <value>themey</value>
   </system-property>
 
-  <library-property>
-    <name>org.zkoss.util.label.web.location</name>
-    <value>/WEB-INF/ui.properties</value>
-  </library-property>
 
   <system-config>
-    <label-location>/WEB-INF/zk-label.properties</label-location>
-    <label-location>/WEB-INF/brand.properties</label-location>
-    <label-location>/WEB-INF/msg.properties</label-location>
-    <web-app-class>org.apromore.portal.ApromoreWebApp</web-app-class>
+
+<!--     <label-location>/WEB-INF/ui.properties</label-location> -->
+<!--     <label-location>/WEB-INF/brand.properties</label-location> -->
+<!--     <label-location>/WEB-INF/msg.properties</label-location> -->
+<!--     <web-app-class>org.apromore.portal.ApromoreWebApp</web-app-class> -->
+<!--     <web-app-class>org.zkoss.zk.ui.http.SimpleWebApp</web-app-class> -->
+
   </system-config>
 
   <library-property>
@@ -396,9 +397,9 @@
             <listener-class>org.apromore.zk.ApromoreDesktopInit</listener-class>
     </listener>    
 
-    <listener>
-            <listener-class>org.apromore.zk.ApromoreDesktopCleanup</listener-class>
-    </listener>
+<!--     <listener> -->
+<!--             <listener-class>org.apromore.zk.ApromoreDesktopCleanup</listener-class> -->
+<!--     </listener> -->
 
     <listener>
             <listener-class>org.apromore.portal.ApromoreZKListener</listener-class>
@@ -440,6 +441,10 @@
             </error-reload>
     </client-config>
 
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/pages/401.zul</location>
+    </error-page>
 
     <!-- Uncomment the following to customize the client-polling-based
             server push.

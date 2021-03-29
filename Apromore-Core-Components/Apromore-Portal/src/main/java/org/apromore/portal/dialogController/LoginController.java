@@ -25,79 +25,84 @@
 
 package org.apromore.portal.dialogController;
 
+
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.i18n.I18nConfig;
 import org.apromore.portal.common.i18n.I18nSession;
-import org.zkoss.spring.SpringUtil;
-import org.zkoss.zul.*;
-import org.zkoss.util.resource.Labels;
-
-import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
+import org.zkoss.spring.SpringUtil;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Window;
 
 public class LoginController extends BaseController {
 
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoginController.class);
-    public LoginController() {
-        super();
-        setupLocale();
+  private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoginController.class);
+
+  public LoginController() {
+    super();
+    setupLocale();
+  }
+
+  /**
+   * onCreate is executed after the main window has been created it is responsible for instantiating
+   * all necessary controllers (one for each window defined in the interface) see description in
+   * index.zul
+   * 
+   * @throws InterruptedException
+   */
+  public void onCreate() throws InterruptedException {
+    Window mainW = (Window) this.getFellow("login-main");
+    Div registerBtn = (Div) mainW.getFellow("registerBtn");
+    Div agree = (Div) mainW.getFellow("agree");
+    Div subscribe = (Div) mainW.getFellow("subscribe");
+    Div role = (Div) mainW.getFellow("role");
+    Div organization = (Div) mainW.getFellow("organization");
+    Div country = (Div) mainW.getFellow("country");
+    Div phone = (Div) mainW.getFellow("phone");
+    Html ppAgree = (Html) mainW.getFellow("ppAgree");
+    Html andAgree = (Html) mainW.getFellow("andAgree");
+    Html tcAgree = (Html) mainW.getFellow("tcAgree");
+    Html ppLink = (Html) mainW.getFellow("ppLink");
+    Html tcLink = (Html) mainW.getFellow("tcLink");
+    Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
+    String src = "~./themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
+
+    boolean enableTC = config.isEnableTC();
+    boolean enablePP = config.isEnablePP();
+    boolean enableUserReg = config.isEnableUserReg();
+    boolean enableFullUserReg = config.isEnableFullUserReg();
+    boolean enableSubscription = config.isEnableSubscription();
+
+    registerBtn.setVisible(enableUserReg);
+    subscribe.setVisible(enableSubscription);
+    tcLink.setVisible(enableTC);
+    ppLink.setVisible(enablePP);
+    tcAgree.setVisible(enableTC);
+    ppAgree.setVisible(enablePP);
+    agree.setVisible(enableTC || enablePP);
+    andAgree.setVisible(enableTC && enablePP);
+
+    if (enableFullUserReg) {
+      role.setVisible(true);
+      organization.setVisible(true);
+      country.setVisible(true);
+      phone.setVisible(true);
     }
 
-    /**
-     * onCreate is executed after the main window has been created it is
-     * responsible for instantiating all necessary controllers (one for each
-     * window defined in the interface) see description in index.zul
-     * @throws InterruptedException
-     */
-    public void onCreate() throws InterruptedException {
-        Window mainW = (Window) this.getFellow("login-main");
-        Div registerBtn = (Div) mainW.getFellow("registerBtn");
-        Div agree = (Div) mainW.getFellow("agree");
-        Div subscribe = (Div) mainW.getFellow("subscribe");
-        Div role = (Div) mainW.getFellow("role");
-        Div organization = (Div) mainW.getFellow("organization");
-        Div country = (Div) mainW.getFellow("country");
-        Div phone = (Div) mainW.getFellow("phone");
-        Html ppAgree = (Html) mainW.getFellow("ppAgree");
-        Html andAgree = (Html) mainW.getFellow("andAgree");
-        Html tcAgree = (Html) mainW.getFellow("tcAgree");
-        Html ppLink = (Html) mainW.getFellow("ppLink");
-        Html tcLink = (Html) mainW.getFellow("tcLink");
-        Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
-        String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
-
-        boolean enableTC = config.getEnableTC();
-        boolean enablePP = config.getEnablePP();
-        boolean enableUserReg = config.getEnableUserReg();
-        boolean enableFullUserReg = config.getEnableFullUserReg();
-        boolean enableSubscription = config.getEnableSubscription();
-
-        registerBtn.setVisible(enableUserReg);
-        subscribe.setVisible(enableSubscription);
-        tcLink.setVisible(enableTC);
-        ppLink.setVisible(enablePP);
-        tcAgree.setVisible(enableTC);
-        ppAgree.setVisible(enablePP);
-        agree.setVisible(enableTC || enablePP);
-        andAgree.setVisible(enableTC && enablePP);
-
-        if (enableFullUserReg) {
-            role.setVisible(true);
-            organization.setVisible(true);
-            country.setVisible(true);
-            phone.setVisible(true);
-        }
-
-        if (config.isCommunity()) {
-            src += "-" + "community";
-        }
-        logoWithTag.setSrc(src + ".svg");
+    if (config.isCommunity()) {
+      src += "-" + "community";
     }
+    logoWithTag.setSrc(src + ".svg");
+  }
 
-    private void setupLocale() {
-        I18nConfig config = (I18nConfig) SpringUtil.getBean("i18nConfig");
-        I18nSession i18nSession = new I18nSession(config);
-        UserSessionManager.setCurrentI18nSession(i18nSession);
-        i18nSession.applyLocaleFromClient();
-    }
+  private void setupLocale() {
+    I18nConfig config = (I18nConfig) SpringUtil.getBean("i18nConfig");
+    I18nSession i18nSession = new I18nSession(config);
+    UserSessionManager.setCurrentI18nSession(i18nSession);
+    i18nSession.applyLocaleFromClient();
+  }
 }

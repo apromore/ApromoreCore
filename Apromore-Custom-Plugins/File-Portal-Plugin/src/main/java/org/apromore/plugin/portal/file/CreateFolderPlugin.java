@@ -23,57 +23,64 @@ package org.apromore.plugin.portal.file;
 
 import java.util.Locale;
 import org.apromore.dao.model.User;
-import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.exception.DialogException;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
+import org.apromore.portal.exception.DialogException;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class CreateFolderPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(CreateFolderPlugin.class);
+  private static Logger LOGGER = PortalLoggerFactory.getLogger(CreateFolderPlugin.class);
 
-    private String label = "Create folder";
-    private String groupLabel = "File";
+  private String label = "Create folder";
+  private String groupLabel = "File";
 
-    // PortalPlugin overrides
+  // PortalPlugin overrides
 
-    @Override
-    public String getItemCode(Locale locale) { return label; }
+  @Override
+  public String getItemCode(Locale locale) {
+    return label;
+  }
 
-    @Override
-    public String getGroup(Locale locale) {
-        return "File";
+  @Override
+  public String getGroup(Locale locale) {
+    return "File";
+  }
+
+  @Override
+  public String getLabel(Locale locale) {
+    return Labels.getLabel("plugin_file_createFolder_text", label);
+  }
+
+  @Override
+  public String getGroupLabel(Locale locale) {
+    return Labels.getLabel("plugin_file_title_text", groupLabel);
+  }
+
+
+  @Override
+  public String getIconPath() {
+    return "folder-add.svg";
+  }
+
+  @Override
+  public void execute(PortalContext portalContext) {
+    MainController mainC = (MainController) portalContext.getMainController();
+    User currentUser = mainC.getBaseListboxController().getCurrentUser();
+    mainC.eraseMessage();
+    try {
+      new AddFolderController(mainC, currentUser, portalContext.getCurrentFolder());
+    } catch (DialogException e) {
+      Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
     }
 
-    @Override
-    public String getLabel(Locale locale) {
-        return Labels.getLabel("plugin_file_createFolder_text",label);
-    }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return Labels.getLabel("plugin_file_title_text", groupLabel);
-    }
-
-    @Override
-    public String getIconPath() {
-        return "folder-add.svg";
-    }
-
-    @Override
-    public void execute(PortalContext portalContext) {
-        MainController mainC = (MainController) portalContext.getMainController();
-        User currentUser = mainC.getBaseListboxController().getCurrentUser();
-        mainC.eraseMessage();
-        try {
-            new AddFolderController(mainC, currentUser, portalContext.getCurrentFolder());
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
+  }
 }
+

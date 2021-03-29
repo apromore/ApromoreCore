@@ -23,6 +23,8 @@
 package org.apromore.dao;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.apromore.dao.model.Holiday;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,7 +34,7 @@ import org.springframework.stereotype.Repository;
 public interface HolidayRepository extends JpaRepository<Holiday, Long>{
 
 	
-  Holiday findById(Long id);
+  Optional<Holiday> findById(Long id);
   
 
 

@@ -72,7 +72,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
      * @param user  an arbitrary, existing user
      * @return all non-elective groups; this should always be exactly the public group and the <var>user</var>'s singleton group
      */
-    @Query("SELECT g FROM User u JOIN u.groups g WHERE u = ?1 AND g.type != org.apromore.dao.model.Group.Type.GROUP")
+    @Query("SELECT g FROM User u JOIN u.groups g WHERE u = ?1 AND g.type != 'GROUP'")
     Set<Group> findCompulsoryGroups(User user);
 
     /**
@@ -84,12 +84,12 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     /**
      * @return all elective groups
      */
-    @Query("SELECT g FROM Group g WHERE (g.type = org.apromore.dao.model.Group.Type.GROUP)")
+    @Query("SELECT g FROM Group g WHERE (g.type = 'GROUP')")
     List<Group> findElectiveGroups();
 
     /**
      * Find the public group.
      */
-    @Query("SELECT g FROM Group g WHERE (g.type = org.apromore.dao.model.Group.Type.PUBLIC)")
+    @Query("SELECT g FROM Group g WHERE (g.type = 'PUBLIC')")
     Group findPublicGroup();
 }

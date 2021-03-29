@@ -50,146 +50,146 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 public class CaseDetailsController extends DataListController {
-	private Window caseDetailsWindow;
-	private boolean disabled = false;
-	private Map<String,Map<String,String>> activityToAttributeMap = new HashMap<>();
-	private AttributesStandardizer attStandardizer = new AttributesStandardizer();
+    private Window caseDetailsWindow;
+    private boolean disabled = false;
+    private Map<String,Map<String,String>> activityToAttributeMap = new HashMap<>();
+    private AttributesStandardizer attStandardizer = new AttributesStandardizer();
 
-	public CaseDetailsController(PDController controller) {
-		super(controller);
-		attStandardizer = AttributesStandardizer.SIMPLE;
-	}
+    public CaseDetailsController(PDController controller) {
+        super(controller);
+        attStandardizer = AttributesStandardizer.SIMPLE;
+    }
 
-	private void generateData() {
-		List<CaseDetails> caseDetails = parent.getProcessAnalyst().getCaseDetails();
-		records = new ListModelList();
-		rows = new ArrayList<String[]>();
-		for (CaseDetails c : caseDetails) {
-			records.add(c);
-			rows.add(new String[] { c.getCaseId(), Integer.toString(c.getCaseEvents()),
-					Integer.toString(c.getCaseVariantId()), c.getCaseVariantFreqStr() });
-		}
-	}
+    private void generateData() {
+        List<CaseDetails> caseDetails = parent.getProcessAnalyst().getCaseDetails();
+        records = new ListModelList();
+        rows = new ArrayList<String[]>();
+        for (CaseDetails c : caseDetails) {
+            records.add(c);
+            rows.add(new String[] { c.getCaseId(), Integer.toString(c.getCaseEvents()),
+                    Integer.toString(c.getCaseVariantId()), c.getCaseVariantFreqStr() });
+        }
+    }
 
-	private void populateCasesBasedOnActivities(Listbox listbox) {
-		generateData();
-		listbox.setModel(records);
-	}
+    private void populateCasesBasedOnActivities(Listbox listbox) {
+        generateData();
+        listbox.setModel(records);
+    }
 
-	@Override
-	public String[] getDataHeaders() {
-		return new String[] { "Case ID", "Events", "Case Variant", "Percentage (%)" };
-	}
+    @Override
+    public String[] getDataHeaders() {
+        return new String[] { "Case ID", "Events", "Case Variant", "Percentage (%)" };
+    }
 
-	@Override
-	public String getExportFilename() {
-		return parent.getContextData().getLogName() + ".csv";
-	}
+    @Override
+    public String getExportFilename() {
+        return parent.getContextData().getLogName() + ".csv";
+    }
 
-	/**
-	 * Update Activity <-> Attributes Map for quick lookup
-	 **/
-	private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
-		activityToAttributeMap.clear();
-		AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
-		AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
-		if (attTrace != null) {
-		    BPMNNode node = diagram.getStartNode();
-		    for (int index=0; index<attTrace.getValueTrace().size(); index++) {
-		        activityToAttributeMap.put(node.getId().toString(),
-		                attStandardizer.standardizedAttributeMap(attTrace.getAttributeMapAtIndex(index)));
-		        if (!diagram.getOutEdges(node).isEmpty()) node = diagram.getOutEdges(node).iterator().next().getTarget();
-		    }
-		    updateActivityToAttributeMapClient();
-		}
-	}
+    /**
+     * Update Activity <-> Attributes Map for quick lookup
+     **/
+    private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
+        activityToAttributeMap.clear();
+        AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
+        AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
+        if (attTrace != null) {
+            BPMNNode node = diagram.getStartNode();
+            for (int index=0; index<attTrace.getValueTrace().size(); index++) {
+                activityToAttributeMap.put(node.getId().toString(),
+                        attStandardizer.standardizedAttributeMap(attTrace.getAttributeMapAtIndex(index)));
+                if (!diagram.getOutEdges(node).isEmpty()) node = diagram.getOutEdges(node).iterator().next().getTarget();
+            }
+            updateActivityToAttributeMapClient();
+        }
+    }
 
-	/**
-	 * Serialize Activity <-> Attributes Map and sent it to client-side JS
-	 * for fast tooltip
- 	 */
-	private void updateActivityToAttributeMapClient() {
-		JSONObject json = new JSONObject();
-		for (String nodeId : activityToAttributeMap.keySet()) {
-			json.put(nodeId, makeJSONArray(activityToAttributeMap.get(nodeId)));
-		}
-		Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
-	}
-	
-	private JSONArray makeJSONArray(Map<String,String> attributeMap) {
-	    JSONArray array = new JSONArray();
-	    for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
-			array.put(
-				(new JSONObject())
-					.put("name", entry.getKey())
-					.put("value", entry.getValue())
-			);
-	    }
-	    return array;
-	}
+    /**
+     * Serialize Activity <-> Attributes Map and sent it to client-side JS
+     * for fast tooltip
+     */
+    private void updateActivityToAttributeMapClient() {
+        JSONObject json = new JSONObject();
+        for (String nodeId : activityToAttributeMap.keySet()) {
+            json.put(nodeId, makeJSONArray(activityToAttributeMap.get(nodeId)));
+        }
+        Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
+    }
+    
+    private JSONArray makeJSONArray(Map<String,String> attributeMap) {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+            array.put(
+                (new JSONObject())
+                    .put("name", entry.getKey())
+                    .put("value", entry.getValue())
+            );
+        }
+        return array;
+    }
 
-	@Override
-	public void onEvent(Event event) throws Exception {
-		if (caseDetailsWindow == null) {
-			Map<String, Object> arg = new HashMap<>();
-			arg.put("pdLabels", parent.getLabels());
-			caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, arg);
-			caseDetailsWindow.setTitle("Case Inspector");
-			caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
+    @Override
+    public void onEvent(Event event) throws Exception {
+        if (caseDetailsWindow == null) {
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("pdLabels", parent.getLabels());
+            caseDetailsWindow = (Window) Executions.createComponents("static/processdiscoverer/zul/caseDetails.zul", null, arg);
+            caseDetailsWindow.setTitle("Case Inspector");
+            caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 
-			caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					caseDetailsWindow = null;
-					if (parent.getInteractiveMode() == InteractiveMode.TRACE_MODE) {
-					    parent.restoreModelView();
-						Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap()"); // reset
-					}
-				}
-			});
+            caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    caseDetailsWindow = null;
+                    if (parent.getInteractiveMode() == InteractiveMode.TRACE_MODE) {
+                        parent.restoreModelView();
+                        Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap()"); // reset
+                    }
+                }
+            });
 
-			Listbox listbox = (Listbox) caseDetailsWindow.getFellow("caseDetailsList");
-			populateCasesBasedOnActivities(listbox);
+            Listbox listbox = (Listbox) caseDetailsWindow.getFellow("caseDetailsList");
+            populateCasesBasedOnActivities(listbox);
 
-			listbox.addEventListener("onSelect", new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-				    if (disabled) return;
-					try {
-						String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
-						OutputData result = parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
-						updateActivityToAttributeMap(traceID, (TraceBPMNDiagram)result.getAbstraction().getDiagram());
-						parent.showTrace(result.getVisualizedText());
-					} catch (Exception e) {
-						// LOGGER.error(e.getMessage());
-						Messagebox.show("Fail to show trace detail for the selected case");
-					}
-				}
-			});
+            listbox.addEventListener("onSelect", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    if (disabled) return;
+                    try {
+                        String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
+                        OutputData result = parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
+                        updateActivityToAttributeMap(traceID, (TraceBPMNDiagram)result.getAbstraction().getDiagram());
+                        parent.showTrace(result.getVisualizedText());
+                    } catch (Exception e) {
+                        // LOGGER.error(e.getMessage());
+                        Messagebox.show("Fail to show trace detail for the selected case");
+                    }
+                }
+            });
 
-			Button save = (Button) caseDetailsWindow.getFellow("downloadCSV");
-			save.addEventListener("onClick", new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					exportData();
-				}
-			});
-			try {
-				org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
-				caseDetailsWindow.setPosition("nocenter");
-				caseDetailsWindow.setLeft((String) param.get("left"));
-				caseDetailsWindow.setTop((String) param.get("top"));
-			} catch (Exception e) {
-				// ignore the exception and proceed with default centered window
-			}
-			caseDetailsWindow.doOverlapped();
-		}
-	}
+            Button save = (Button) caseDetailsWindow.getFellow("downloadCSV");
+            save.addEventListener("onClick", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    exportData();
+                }
+            });
+            try {
+                org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
+                caseDetailsWindow.setPosition("nocenter");
+                caseDetailsWindow.setLeft((String) param.get("left"));
+                caseDetailsWindow.setTop((String) param.get("top"));
+            } catch (Exception e) {
+                // ignore the exception and proceed with default centered window
+            }
+            caseDetailsWindow.doOverlapped();
+        }
+    }
 
-	public Window getWindow() {
-		return caseDetailsWindow;
-	}
-	
+    public Window getWindow() {
+        return caseDetailsWindow;
+    }
+    
     @Override
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;

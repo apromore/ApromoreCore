@@ -24,12 +24,21 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * The access control details corresponding to a particular group and folder.
@@ -39,7 +48,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "group_folder")
 @Configurable("group_folder")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class GroupFolder implements Serializable {
 
     private Integer id;
@@ -91,7 +99,7 @@ public class GroupFolder implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "groupId", nullable = false)
+    @JoinColumn(name = "groupid", nullable = false)
     public Group getGroup() {
         return this.group;
     }
@@ -101,7 +109,7 @@ public class GroupFolder implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "folderId", nullable = true)
+    @JoinColumn(name = "folderid", nullable = true)
     public Folder getFolder() {
         return this.folder;
     }
@@ -119,16 +127,19 @@ public class GroupFolder implements Serializable {
         this.accessRights = accessRights;
     }
 
+    @Transient
     public boolean isHasRead() {
         // TODO Auto-generated method stub
         return accessRights.isReadOnly();
     }
 
+    @Transient
     public boolean isHasWrite() {
         // TODO Auto-generated method stub
         return accessRights.isWriteOnly();
     }
 
+    @Transient
     public boolean isHasOwnership() {
         // TODO Auto-generated method stub
         return accessRights.isOwnerShip();

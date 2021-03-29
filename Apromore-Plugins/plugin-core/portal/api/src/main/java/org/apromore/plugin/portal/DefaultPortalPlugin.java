@@ -86,9 +86,9 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     @Override
     public RenderedImage getIcon() {
         try {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("/icon.png");
+            InputStream in = getClass().getClassLoader().getResourceAsStream("icon.png");
             if (in == null) {
-                in = DefaultPortalPlugin.class.getClassLoader().getResourceAsStream("/icon.png");
+                in = DefaultPortalPlugin.class.getClassLoader().getResourceAsStream("icon.png");
             }
             BufferedImage icon = ImageIO.read(in);
             in.close();

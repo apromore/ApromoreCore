@@ -38,11 +38,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @Ignore
@@ -51,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-@TransactionConfiguration(defaultRollback = true)
+@Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
 public class ExportProcessServiceImplIT {
 

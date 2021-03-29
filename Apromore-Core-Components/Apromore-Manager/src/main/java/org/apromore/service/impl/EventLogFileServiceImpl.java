@@ -22,7 +22,7 @@
 package org.apromore.service.impl;
 
 import org.apache.commons.io.FileUtils;
-import org.apromore.common.ConfigBean;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.service.EventLogFileService;
 import org.springframework.stereotype.Service;
 

@@ -46,8 +46,9 @@ public class TemporaryFileServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse res) throws IOException {
 
+    	
         // A minimal security check: only allow filenames that look like PDFs
-        if (!req.getServletPath().startsWith(PREFIX) || !req.getServletPath().endsWith(SUFFIX)) {
+        if (!req.getRequestURI().startsWith(PREFIX) || !req.getRequestURI().endsWith(SUFFIX)) {
             log(String.format("Denied access to temporary file area for non-PDF path %s", req.getServletPath()));
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -55,7 +56,7 @@ public class TemporaryFileServlet extends HttpServlet {
 
         // Reconstruct the real path to the PDF in the temporary folder
         File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
-        File pdfFile = new File(tmpFolder, req.getServletPath().substring(PREFIX.length()));
+        File pdfFile = new File(tmpFolder, req.getRequestURI().substring(PREFIX.length()));
 
         // Return the file, presumed to be a PDF
         res.setContentType("application/pdf");

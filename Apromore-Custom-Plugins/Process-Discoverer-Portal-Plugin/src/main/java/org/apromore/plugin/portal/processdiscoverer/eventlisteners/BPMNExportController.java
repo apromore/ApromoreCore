@@ -74,7 +74,7 @@ import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
  *
  */
 public class BPMNExportController extends AbstractController {
-	private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
     private static final String EVENT_QUEUE = BPMNExportController.class.getCanonicalName();
     private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
     private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
@@ -95,7 +95,7 @@ public class BPMNExportController extends AbstractController {
 
     public BPMNExportController(PDController controller, boolean showProgressBar) {
         super(controller);
-    	this.controller = controller;
+        this.controller = controller;
         this.showProgressBar = showProgressBar;
         this.progressListener = new ProgressEventListener();
         eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
@@ -122,11 +122,11 @@ public class BPMNExportController extends AbstractController {
                     break;
     
                 case MINING_COMPLETE:
-                	if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue(100);
+                    if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue(100);
                     if (descriptionLabel != null) descriptionLabel.setValue(parent.getLabel("savingBPMN_message"));
                     try {
-                    	BPMNExportController.this.save();
-                    	if (window != null) window.detach();
+                        BPMNExportController.this.save();
+                        if (window != null) window.detach();
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -154,19 +154,19 @@ public class BPMNExportController extends AbstractController {
     
     @Override
     public void onEvent(Event event) throws Exception {
-    	if (this.showProgressBar) {
-	    	window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
-	        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-	            @Override
+        if (this.showProgressBar) {
+            window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
+            ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
+                @Override
                 public void onEvent(Event event) throws Exception {
-	                window.detach();
-	            }
-	        });
-	        
-	        descriptionLabel = (Label) window.getFellow("description");
-	        fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
-	        window.doModal();
-    	}
+                    window.detach();
+                }
+            });
+            
+            descriptionLabel = (Label) window.getFellow("description");
+            fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+            window.doModal();
+        }
         
         eventQueue.subscribe(progressListener); // subscribe to start listening to events
 
@@ -257,29 +257,29 @@ public class BPMNExportController extends AbstractController {
         InputDialog.showInputDialog(
             parent.getLabel("saveBPMN_message"),
             parent.getLabel("saveBPMNName_message"),
-			defaultProcessName,
-			new EventListener<Event>() {
-				@Override
-            	public void onEvent(Event event) throws Exception {
-					if (event.getName().equals("onOK")) {
-    				    String modelName = (String)event.getData();
-				        String user = controller.getContextData().getUsername();
-				        Version version = new Version(1, 0);
-				        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-				        boolean publicModel = false;
+            defaultProcessName,
+            new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    if (event.getName().equals("onOK")) {
+                        String modelName = (String)event.getData();
+                        String user = controller.getContextData().getUsername();
+                        Version version = new Version(1, 0);
+                        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+                        boolean publicModel = false;
 
-				        try {
+                        try {
                             ProcessModelVersion pmv = controller.getProcessService().importProcess(user,
-    				        		controller.getContextData().getFolderId(),
-    				        		modelName,
-    				                version,
-    				                "BPMN 2.0",
-    				                new ByteArrayInputStream(minedModel.getBytes()),
-    				                "",
-    				                "Model generated by the Apromore BPMN process mining service.",
-    				                now,  // creation timestamp
-    				                now,  // last update timestamp
-    				                publicModel);
+                                    controller.getContextData().getFolderId(),
+                                    modelName,
+                                    version,
+                                    "BPMN 2.0",
+                                    new ByteArrayInputStream(minedModel.getBytes()),
+                                    "",
+                                    "Model generated by the Apromore BPMN process mining service.",
+                                    now,  // creation timestamp
+                                    now,  // last update timestamp
+                                    publicModel);
                             Folder folder = controller.getProcessService().getFolderByPmv(pmv);
                             String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
                             String notif = MessageFormat.format(
@@ -288,17 +288,17 @@ public class BPMNExportController extends AbstractController {
                                 "<strong>" + folderName + "</strong>"
                             );
                             Notification.info(notif);
-    				        controller.refreshPortal();
-				        }
-				        catch (Exception ex) {
-				            Messagebox.show(
+                            controller.refreshPortal();
+                        }
+                        catch (Exception ex) {
+                            Messagebox.show(
                                 parent.getLabel("failedSaveModel_message")
                             );
-				            LOGGER.error("Error in saving model: ", ex);
-				        }
-					}
-            	}
-			});
+                            LOGGER.error("Error in saving model: ", ex);
+                        }
+                    }
+                }
+            });
 
 
     };

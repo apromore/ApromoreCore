@@ -30,13 +30,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+
+  public KeycloakLoginUrlAuthenticationEntryPoint(String loginFormUrl) {
+    super(loginFormUrl);
+
+  }
 
   private static final Logger LOGGER =
       PortalLoggerFactory.getLogger(KeycloakLoginUrlAuthenticationEntryPoint.class);

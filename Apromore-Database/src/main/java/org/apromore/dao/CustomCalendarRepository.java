@@ -22,6 +22,8 @@
 
 package org.apromore.dao;
 
+import java.util.Optional;
+
 import org.apromore.dao.model.CustomCalendar;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -31,7 +33,7 @@ public interface CustomCalendarRepository extends JpaRepository<CustomCalendar, 
 
 	CustomCalendar findByName(String name);
 
-    CustomCalendar findById(Long id);
+    Optional<CustomCalendar> findById(Long id);
 
 
 }

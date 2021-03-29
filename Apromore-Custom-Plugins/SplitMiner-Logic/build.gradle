@@ -1,0 +1,24 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'SplitMiner-Logic'
+
+dependencies {
+
+	
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-ProcessMining-Collection')
+	
+	
+//	de.hp dependencies
+	implementation 'de.hpi.jbpt:de-jbpt:0.2.77'
+	implementation 'hub.top:uma:1.3.1'
+	implementation 'org.antlr.runtime:antlr-rt:3.2.0'
+	implementation 'hub.top.petrinet:pnapi-java:1.0.5'
+	
+    
+   
+}

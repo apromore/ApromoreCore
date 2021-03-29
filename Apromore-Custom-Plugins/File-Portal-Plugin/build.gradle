@@ -1,0 +1,16 @@
+group = 'org.apromore.plugin'
+version = '1.0'
+description = 'File operations portal plugin'
+
+dependencies {
+
+
+	implementation project(':Apromore-Custom-Plugins:CSVExporter-Logic')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Clients:manager-client')
+	implementation project(':Apromore-Zk')
+}
+

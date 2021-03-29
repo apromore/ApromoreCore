@@ -1,0 +1,130 @@
+
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		jcenter()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:2.4.4"
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+		classpath "com.gorylenko.gradle-git-properties:gradle-git-properties:2.3.1-rc1"
+		classpath "gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin:0.15.0"
+	}
+}
+
+group = 'org.apromore'
+version = '0.0.1-SNAPSHOT'
+
+apply plugin: "com.gorylenko.gradle-git-properties"
+subprojects {
+	apply plugin : "org.springframework.boot"
+	apply plugin : "io.spring.dependency-management"
+	apply plugin : "java"
+	apply plugin : "java-library"
+	apply plugin: "eclipse"
+	apply plugin: "com.github.hierynomus.license"
+
+	sourceCompatibility = '11'
+
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
+
+	repositories {
+		mavenCentral()
+
+		maven {
+			url = uri('https://raw.github.com/apromore/ApromoreCore_SupportLibs/master/mvn-repo/')
+		}
+
+		maven {
+			url = uri('https://mavensync.zkoss.org/maven2')
+		}
+
+		maven {
+			url = uri('http://repository.springsource.com/maven/bundles/external')
+		}
+	}
+
+
+	ext['zk.version'] = '8.6.0.1'
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter'
+		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'javax.activation:javax.activation-api'
+		implementation 'javax.annotation:javax.annotation-api'
+		implementation 'javax.inject:javax.inject:1'
+		implementation 'commons-io:commons-io:2.8.0'
+		implementation 'com.google.guava:guava:30.1.1-jre'
+		compileOnly 	'javax.servlet:javax.servlet-api'
+		implementation 'org.apache.commons:commons-lang3'
+		implementation "org.json:json:20201115"
+		implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.joda-time:2.3_1'
+		implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
+		implementation 'org.springframework.boot:spring-boot-starter-jersey'
+
+		implementation 'org.codehaus.groovy:groovy-all:2.0.5'
+
+
+		compileOnly 'org.projectlombok:lombok'
+		developmentOnly 'org.springframework.boot:spring-boot-devtools'
+		annotationProcessor 'org.projectlombok:lombok'
+
+
+
+		testImplementation('org.springframework.boot:spring-boot-starter-test') {
+			exclude group: 'org.junit', module: 'junit'
+		}
+		testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+		testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine'
+	}
+
+	project(':Apromore-Boot') {
+
+		bootJar.baseName="Apromore-Core"
+		ext['user_home'] = System.properties['user.home']
+		ext['version_edition'] = 'Apromore Community Edition'
+
+		processResources {
+			dependsOn generateGitProperties
+			filesMatching('**/application*.yml') {
+			expand(user_home: user_home, version_edition : version_edition, project_version : project.version)
+		}
+		 from ('../build/resources/main')
+		}
+	}
+
+	bootJar {
+		enabled = false
+	}
+
+	bootJarMainClassName {
+		enabled = false
+	}
+
+	jar {
+		enabled = true
+	}
+	license {
+		 header = rootProject.file('LICENSE.txt')
+		skipExistingHeaders = true
+		includes(["**/*.java", "**/*.xml","**/*.zul", "**/*.css",  "**/*.html"])
+		excludes(["**/*.properties","**/*.zul", "**/package-info.java"])
+		ext.year ='2018 - 2021'
+		ext.company = 'Apromore Pty Ltd'
+		ext.module = 'Apromore Core'
+	}
+	licenseMain.dependsOn licenseFormat
+}
+
+gitProperties {
+	failOnNoGitDirectory = false
+	keys = ['git.commit.id','git.commit.time','git.commit.id.abbrev']
+	dateFormat = "yyyy-MM-dd'T'HH.mmZ"
+	
+}

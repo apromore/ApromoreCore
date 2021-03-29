@@ -140,7 +140,7 @@ public class SaveAsDialogController extends BaseController {
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, ApromoreSession session,
             Boolean isUpdate, String data) {
     	this(process, version, session, isUpdate, data, 
-    	        (Window) Executions.createComponents("saveAsDialog.zul", null, null));
+    	        (Window) Executions.createComponents("~./macros/saveAsDialog.zul", null, null));
     }
     
     protected void cancel() throws Exception {

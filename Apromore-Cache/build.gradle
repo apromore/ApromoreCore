@@ -1,0 +1,12 @@
+
+group = 'org.apromore'
+version = '1.0'
+description = 'Apromore Cache'
+
+dependencies {
+    
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.ehcache:2.6.11_1'
+	implementation 'net.sf.ehcache:ehcache'
+	implementation 'javax.cache:cache-api'	
+}

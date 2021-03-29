@@ -1,0 +1,15 @@
+
+group = 'org.apromore'
+version = '1.0'
+description = 'Apromore Database'
+
+dependencies {	
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'    
+	api  group: 'org.liquibase', name: 'liquibase-core'
+    implementation 'com.h2database:h2'
+    implementation 'mysql:mysql-connector-java:5.1.31'
+
+}
+
+
+

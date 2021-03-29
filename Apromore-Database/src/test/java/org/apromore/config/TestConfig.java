@@ -43,73 +43,19 @@ import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-@ImportResource({ "classpath:META-INF/spring/database-jpa.xml" })
 public class TestConfig {
 
-    @Value("${jdbc.username}")
-    private String dbUser;
-
-    @Value("${jdbc.password}")
-    private String password;
-
-    @Value("${liquibase.jdbc.username}")
-    private String liquibaseDbUser;
-
-    @Value("${liquibase.jdbc.password}")
-    private String liquibasePassword;
-
-    @Value("${jdbc.url}")
-    private String url;
-
-    @Value("${jdbc.driver}")
-    private String driver;
-
-    @Value("${jdbc.context}")
-    private String context;
-
     @Autowired
-    EntityManagerFactory entityManagerFactory;
-
-    @Bean
-    public DataSource dataSource() {
-	HikariDataSource ds = new HikariDataSource();
-	ds.setJdbcUrl(url);
-	ds.setDriverClassName(driver);
-	ds.setUsername(dbUser);
-	ds.setPassword(password);
-	return ds;
-    }
-
-    public DataSource unPooledDataSource() throws ClassNotFoundException {
-	SimpleDriverDataSource ds = new SimpleDriverDataSource();
-	ds.setUrl(url);
-	ds.setDriverClass((Class<? extends Driver>) Class.forName(driver));
-	ds.setUsername(liquibaseDbUser);
-	ds.setPassword(liquibasePassword);
-	return ds;
-    }
+    DataSource dataSource;
 
     @Bean
     public SpringLiquibase liquibase() throws ClassNotFoundException {
 	SpringLiquibase liquibase = new SpringLiquibase();
-	liquibase.setDataSource(unPooledDataSource());
+	liquibase.setDataSource(dataSource);
 	liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
-	liquibase.setContexts(context);
+	liquibase.setContexts("H2");
 	liquibase.setDropFirst(true);
 	return liquibase;
     }
 
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-	return new JpaTransactionManager(entityManagerFactory);
-    }
-
-    @Bean
-    public static PropertyPlaceholderConfigurer properties() {
-	PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-	Resource[] resources = new ClassPathResource[] { new ClassPathResource("database/test-config.properties") };
-	ppc.setLocations(resources);
-	ppc.setIgnoreUnresolvablePlaceholders(true);
-	return ppc;
-    }
 }

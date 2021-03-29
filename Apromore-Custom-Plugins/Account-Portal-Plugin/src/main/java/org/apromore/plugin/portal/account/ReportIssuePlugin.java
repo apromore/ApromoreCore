@@ -23,56 +23,57 @@
 package org.apromore.plugin.portal.account;
 
 import java.util.Locale;
-
-import org.apromore.portal.ConfigBean;
-import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
-import org.zkoss.zk.ui.util.Clients;
-
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.util.Clients;
 
+@Component
 public class ReportIssuePlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(ReportIssuePlugin.class);
+  private static Logger LOGGER = PortalLoggerFactory.getLogger(ReportIssuePlugin.class);
 
-    private String label = "Report issue";
-    private String groupLabel = "Account";
+  private String label = "Report issue";
+  private String groupLabel = "Account";
 
-    // PortalPlugin overrides
+  @Autowired
+  ConfigBean config;
 
-    @Override
-    public Availability getAvailability() {
-        ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
-        String email = config.getContactEmail();
+  // PortalPlugin overrides
 
-        return (email == null || email.isEmpty() || email.indexOf("@") < 0) ?
-            Availability.UNAVAILABLE :
-            Availability.AVAILABLE;
-    }
+  @Override
+  public Availability getAvailability() {
+    String email = config.getContactEmail();
 
-    @Override
-    public String getLabel(Locale locale) {
-        return label;
-    }
+    return (email == null || email.isEmpty() || email.indexOf("@") < 0) ? Availability.UNAVAILABLE
+        : Availability.AVAILABLE;
+  }
 
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
+  @Override
+  public String getLabel(Locale locale) {
+    return label;
+  }
 
-    @Override
-    public String getIconPath() {
-        return "/report-issue.svg";
-    }
+  @Override
+  public String getGroupLabel(Locale locale) {
+    return groupLabel;
+  }
 
-    @Override
-    public void execute(PortalContext portalContext) {
-        String email = portalContext.getMainController().getContactEmail();
-        String userName = UserSessionManager.getCurrentUser().getUsername();
-        LOGGER.info("launch mail client");
-        Clients.evalJavaScript("Ap.common.reportIssue('" + email + "', '" + userName + "');");
-    }
+  @Override
+  public String getIconPath() {
+    return "report-issue.svg";
+  }
+
+  @Override
+  public void execute(PortalContext portalContext) {
+    String email = portalContext.getMainController().getContactEmail();
+    String userName = UserSessionManager.getCurrentUser().getUsername();
+    LOGGER.info("launch mail client");
+    Clients.evalJavaScript("Ap.common.reportIssue('" + email + "', '" + userName + "');");
+  }
 }

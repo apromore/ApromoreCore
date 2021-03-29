@@ -24,9 +24,10 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,11 +40,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
-import java.util.Date;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the history of when stuff happens in apromore.
@@ -53,7 +51,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "history_event")
 @Configurable("history_event")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class HistoryEvent implements Serializable {
 
     private Integer id;
@@ -103,7 +100,7 @@ public class HistoryEvent implements Serializable {
         this.status = newStatus;
     }
 
-    @Column(name = "occurDate", nullable = true)
+    @Column(name = "occurdate", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getOccurDate() {
         return this.occurDate;

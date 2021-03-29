@@ -1,0 +1,33 @@
+group = 'org.apromore'
+version = '1.1'
+description = 'Apromore Portal'
+
+repositories {
+	maven {
+		url "http://mavensync.zkoss.org/maven2"
+	}
+}
+dependencies {
+	
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Clients:manager-client')
+	implementation project(':Apromore-Plugins:plugin-core:editor:api')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Plugins:plugin-templates:portal-custom-gui')
+	implementation project(':Apromore-Zk')
+
+	
+	compileOnly 'javax.servlet:javax.servlet-api'
+	implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.7'
+	compileOnly group: 'org.keycloak', name: 'keycloak-servlet-filter-adapter', version: '14.0.0'
+	
+	
+	
+	testImplementation group: 'org.junit.contrib', name: 'junit-theories', version: '4.12'
+	
+	
+	
+	
+}

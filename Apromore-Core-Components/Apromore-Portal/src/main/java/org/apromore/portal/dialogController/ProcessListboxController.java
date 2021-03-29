@@ -52,7 +52,7 @@ public class ProcessListboxController extends BaseListboxController {
     private Listheader columnName;
 
     public ProcessListboxController(MainController mainController) {
-        super(mainController, "macros/listbox/processSummaryListbox.zul", new SummaryItemRenderer(mainController));
+        super(mainController, "~./macros/listbox/processSummaryListbox.zul", new SummaryItemRenderer(mainController));
 
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
         this.columnName = (Listheader) this.getListBox().getFellow("columnName");

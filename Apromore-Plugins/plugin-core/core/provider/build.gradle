@@ -1,0 +1,8 @@
+group = 'org.apromore.plugin.provider'
+version = '1.1'
+description = 'Apromore Plugin API Provider'
+
+dependencies {
+    
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+}

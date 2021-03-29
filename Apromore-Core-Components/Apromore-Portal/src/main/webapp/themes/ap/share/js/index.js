@@ -26,7 +26,7 @@ Ap.share.updateAssignee = (rowGuid, name, access) => {
  * @param index {number} index of item in the list
  */
 Ap.share.removeAssignee = (rowGuid, name) => {
-  zAu.send(new zk.Event(zk.Widget.$('$editBtn'), 'onRemove', { rowGuid, name }));
+	zAu.send(new zk.Event(zk.Widget.$('$editBtn'), 'onRemove', { rowGuid, name }));
 };
 
 /**

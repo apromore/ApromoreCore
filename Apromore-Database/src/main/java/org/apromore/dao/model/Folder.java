@@ -24,15 +24,27 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -47,7 +59,6 @@ import java.util.Set;
         }
 )
 @Configurable("folder")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Folder implements Serializable {
 
     private Integer id;
@@ -162,7 +173,7 @@ public class Folder implements Serializable {
      * @return Returns the workspace.
      */
     @ManyToOne
-    @JoinColumn(name = "workspaceId")
+    @JoinColumn(name = "workspaceid")
     public Workspace getWorkspace() {
         return this.workspace;
     }
@@ -182,7 +193,7 @@ public class Folder implements Serializable {
      * @return Returns the createdBy.
      */
     @ManyToOne
-    @JoinColumn(name = "creatorId")
+    @JoinColumn(name = "creatorid")
     public User getCreatedBy() {
         return this.createdBy;
     }
@@ -202,7 +213,7 @@ public class Folder implements Serializable {
      * @return Returns the modified by.
      */
     @ManyToOne
-    @JoinColumn(name = "modifiedById")
+    @JoinColumn(name = "modifiedbyid")
     public User getModifiedBy() {
         return this.modifiedBy;
     }
@@ -262,7 +273,7 @@ public class Folder implements Serializable {
      * @return Returns the parent folder.
      */
     @ManyToOne
-    @JoinColumn(name = "parentId")
+    @JoinColumn(name = "parentid")
     public Folder getParentFolder() {
         return this.parentFolder;
     }
@@ -317,6 +328,7 @@ public class Folder implements Serializable {
         return "Folder [id=" + id + ", name=" + name + ", parentFolderChain=" + parentFolderChain + "]";
     }
 
+    @Transient
     public void updateParentFolder(Folder parent) {
         this.setParentFolder(parent);
         this.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());

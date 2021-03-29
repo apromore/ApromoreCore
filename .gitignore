@@ -8,7 +8,8 @@
 **/.checkstyle
 **/dependency-reduced-pom.xml
 **/catalina.home_IS_UNDEFINED
-
+**/apromore-editor.js
+Apromore-Core-Components/Apromore-BPMNEditor/src/main/resources/static/bpmneditor/editor/apromore-editor.js
 # IntelliJ IDEA artifacts, see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
 **/.idea/*
 **/*.iws
@@ -47,5 +48,7 @@ Apromore-Assembly/Manager-Repository*
 Apromore-Assembly/Parquet-Repository
 Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
 
-# Gradle
-.gradle/
+Event-Logs-Repository/
+# Ignore Gradle project-specific cache directory
+.gradle
+

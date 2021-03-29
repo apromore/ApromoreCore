@@ -21,17 +21,24 @@
  */
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Entity
 @Table(name = "group_usermetadata")
 @Configurable("group_usermetadata")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class GroupUsermetadata implements Serializable {
 
     /**
@@ -127,16 +134,19 @@ public class GroupUsermetadata implements Serializable {
         this.usermetadata = usermetadata;
     }
 
+    @Transient
     public Boolean getHasRead() {
         // TODO Auto-generated method stub
         return getAccessRights().isReadOnly();
     }
 
+    @Transient
     public Boolean getHasWrite() {
         // TODO Auto-generated method stub
         return getAccessRights().isWriteOnly();
     }
 
+    @Transient
     public Boolean getHasOwnership() {
         // TODO Auto-generated method stub
         return getAccessRights().isOwnerShip();

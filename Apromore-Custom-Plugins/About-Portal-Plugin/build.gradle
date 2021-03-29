@@ -1,0 +1,10 @@
+group = 'org.apromore.plugin'
+version = '1.0'
+description = 'About portal plugin'
+
+dependencies {
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Zk')
+}

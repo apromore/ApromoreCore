@@ -72,6 +72,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
+import com.google.common.io.Files;
 import com.sun.xml.bind.IDResolver;
 
 import static org.junit.Assert.assertEquals;
@@ -194,6 +195,9 @@ public class DefinitionsIDResolverTest {
         // Marshal once without validation so that there's a complete (possibly invalid) file written out
         Marshaller marshaller = jaxb.createMarshaller();
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
+        File f=new File("target");
+        f.mkdirs();
+        
         marshaller.marshal(definitions, new FileWriter(new File(new File("target"), filename)));  // TODO: figure out why marshalling definitions twice fails
 
         // Marshal the second time to confirm schema-validity

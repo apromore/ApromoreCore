@@ -64,7 +64,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -46,7 +46,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
     public ProcessVersionDetailController(MainController mainController) {
         super(mainController);
 
-        listBox = ((Listbox) Executions.createComponents("macros/detail/processVersionsDetail.zul", getMainController(), null));
+        listBox = ((Listbox) Executions.createComponents("~./macros/detail/processVersionsDetail.zul", getMainController(), null));
         listBox.setItemRenderer(new VersionSummaryItemRenderer(mainController));
         ListModelList<VersionDetailType> model = new ListModelList<>();
         model.setMultiple(true);

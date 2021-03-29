@@ -1,0 +1,11 @@
+
+group = 'org.apromore.plugin.editor'
+version = '1.1'
+description = 'Apromore Editor Plugin API'
+jar.baseName="editor-api"
+dependencies {
+	
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	implementation project(':Apromore-Clients:manager-client')
+    
+}

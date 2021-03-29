@@ -1,0 +1,13 @@
+
+group = 'org.apromore.plugin'
+version = '1.0.0'
+description = 'Log Animation Portal Plugin API'
+
+dependencies {
+   
+    
+	implementation project(':Apromore-Custom-Plugins:Generic-Portal-Plugin')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Extras:OpenXES')
+}
+

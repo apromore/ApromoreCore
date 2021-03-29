@@ -50,8 +50,7 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
+import org.hibernate.Hibernate;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -65,8 +64,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class,value = "transactionManager")
+@Service("securityService")
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class,value = "transactionManager")
 public class SecurityServiceImpl implements SecurityService {
 
     private static final Logger LOGGER = Logger.getLogger(SecurityServiceImpl.class.getCanonicalName());
@@ -85,7 +84,6 @@ public class SecurityServiceImpl implements SecurityService {
     private MembershipRepository membershipRepo;
     private WorkspaceService workspaceService;
     private MailSender mailSender;
-    private EventAdmin eventAdmin;
 
 
     /**
@@ -101,8 +99,8 @@ public class SecurityServiceImpl implements SecurityService {
                                final PermissionRepository permissionRepository,
                                final MembershipRepository membershipRepository,
                                final WorkspaceService     wrkSrv,
-                               final MailSender           mailSender,
-                               final EventAdmin           eventAdmin) {
+                               final MailSender           mailSender
+                               ) {
 
         userRepo         = userRepository;
         groupRepo        = groupRepository;
@@ -111,7 +109,7 @@ public class SecurityServiceImpl implements SecurityService {
         membershipRepo   = membershipRepository;
         workspaceService = wrkSrv;
         this.mailSender  = mailSender;
-        this.eventAdmin  = eventAdmin;
+        
     }
 
 
@@ -132,7 +130,14 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public User getUserByName(String username) {
-        return userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
+        Hibernate.initialize(user.getRoles());
+        for (Role role:user.getRoles()) {
+            Hibernate.initialize(role.getPermissions());
+        }
+        Hibernate.initialize(user.getMembership());
+        Hibernate.initialize(user.getSearchHistories());
+        return user;
     }
 
     /**
@@ -189,7 +194,12 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public Group getGroupByName(String name) {
-        return groupRepo.findByName(name);
+        Group group = groupRepo.findByName(name);
+        if(group!=null)
+        {
+        group.getUsers().size();
+        }
+		return group;
     }
 
     @Override
@@ -431,6 +441,6 @@ public class SecurityServiceImpl implements SecurityService {
             properties.put("group.rowGuid", group.getRowGuid());
             properties.put("group.name", group.getName());
         }
-        eventAdmin.postEvent(new Event(EVENT_TOPIC, properties));
+//        eventAdmin.postEvent(new Event(EVENT_TOPIC, properties));
     }
 }

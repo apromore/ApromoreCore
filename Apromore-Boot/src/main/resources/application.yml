@@ -1,0 +1,169 @@
+airflow:
+  hostname: 'http://54.206.190.197:8000'
+  password: 'apromore2020!'
+  username: 'admin'
+
+apromore:
+  tenant: 'ap'
+
+bimp:
+  simulation:
+    post:
+      baseURL: http://localhost:8080
+
+cache:
+  numOfEvent: 0
+  numOfTrace: 0
+
+calendar:
+  enable: false
+
+contactEmail: support@apromore.atlassian.net
+
+editor:
+  dir: ../Editor-Repository
+  js: apromore-editor-min.js
+
+etl:
+  s3:
+    url: 'S3::mayank-test-databucket::ap-southeast-2::https://s3.ap-southeast-2.amazonaws.com'
+
+etlplugin:
+  pipeline:
+    s3:
+      bucketname: 'mayank-test-databucket'
+      region: 'ap-southeast-2'
+
+
+filestore:
+  dir: ../Filestore-Repository
+
+
+impala:
+  etl:
+    dataStore: '/etl_data'
+    s3:
+      directory: 'apromore/etl/portal/users/'
+  jdbc:
+    password: 'MAcri'
+    url: 'jdbc:impala://49.192.153.100:21050/'
+    username: 'apromore'
+
+import:
+  maxSize: 100000000
+
+ldap:
+  emailAttribute: mail
+  firstNameAttribute: givenName
+  lastNameAttribute: sn
+  providerURL: ldaps://centaur.unimelb.edu.au
+  userContext: ou=people,o=unimelb
+  usernameAttribute: uid
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: ${user_home}/.apromore/logs/apromore.log
+    max-size: 20MB
+    total-size-cap: 20GB
+    clean-history-on-start: true
+  pattern:
+    rolling-file-name: ${user_home}/.apromore/logs/apromore-%d{yyyy-MM-dd}.%i.log
+
+logs:
+  dir: ${user_home}/.apromore/Event-Logs-Repository
+
+mail:
+  host: smtp.gmail.com
+  password: password
+  port: 587
+  username: user@gmail.com
+
+
+management:
+  security:
+    enabled: false
+
+manager:
+  ehcache:
+    config:
+      url: classpath:ehcache.xml
+
+portal:
+  menuitemorder:
+    File: Upload,Download,ETLPlugin,Export log as CSV,Create folder,Create model,Create
+      model (legacy editor),Edit model,Edit model (legacy editor),Rename,Delete
+  menuorder: About,File,Discover,Analyze,Redesign,Implement,Monitor,Account
+
+security:
+  basic:
+    enabled: false
+  fulluserreg:
+    enable: true
+  ppagree:
+    enable: true
+  publish:
+    enable: false
+  subscribe:
+    enable: true
+  tcagree:
+    enable: true
+  userreg:
+    enable: false
+
+
+site:
+  editor: editor
+  externalhost: localhost
+  externalport: 8181
+  filestore: filestore
+  fullProtocolHostPortUrl: http://localhost:8181/
+  host: localhost
+  logvisualizer: logvisualizer
+  manager: manager
+  port: 9000
+  portal: /
+  pql: pql
+  securityms:
+    httplogoutUrl: ''
+    httpslogoutUrl: ''
+    host: localhost
+    port: 8282
+  useKeycloakSso: false
+
+
+spring:
+  datasource:
+    password: MAcri
+#    url: jdbc:h2:mem:Manager-Repository;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url : jdbc:mysql://localhost:3307/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=GMT%2B10
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  liquibase:
+    change-log: classpath:db/migration/changeLog.yaml
+    contexts: MYSQL
+    password: MAcri
+    user: root
+
+
+storage:
+  path: FILE::${user_home}/.apromore/Event-Logs-Repository
+
+
+version:
+  number: ${project_version}
+  edition: ${version_edition}  
+
+maxUploadSize : 100000000
+
+numOfEvent : 10000
+
+numOfTrace : 10000
+
+aboutMeName : 'Apromore Pty Ltd.'

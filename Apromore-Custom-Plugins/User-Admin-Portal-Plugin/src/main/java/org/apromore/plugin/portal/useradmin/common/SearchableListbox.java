@@ -21,7 +21,6 @@
  */
 package org.apromore.plugin.portal.useradmin.common;
 
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;

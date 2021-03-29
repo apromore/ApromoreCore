@@ -1,0 +1,10 @@
+
+group = 'org.apromore'
+version = '1.0.0'
+description = 'The APMLogModule Project'
+
+dependencies {    
+   
+	api project(':Apromore-Extras:OpenXES')
+    
+}

@@ -24,81 +24,86 @@ package org.apromore.plugin.portal.file;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.file.impl.EditListMetadataController;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
+  private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
 
-    private String label = "Rename"; // "Edit metadata"
-    private String groupLabel = "File";
+  private String label = "Rename"; // "Edit metadata"
+  private String groupLabel = "File";
 
-    // PortalPlugin overrides
-
-    @Override
-    public String getItemCode(Locale locale) { return label; }
-
-    @Override
-    public String getGroup(Locale locale) {
-        return "File";
-    }
-
-    @Override
-    public String getLabel(Locale locale) {
-        return Labels.getLabel("plugin_file_rename_text",label);
-    }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return Labels.getLabel("plugin_file_title_text", groupLabel);
-    }
+  // PortalPlugin overrides
 
 
-    @Override
-    public String getIconPath() {
-        return "rename.svg"; // "meta-edit.svg"
-    }
 
-    @Override
-    public void execute(PortalContext portalContext) {
-        try {
-            MainController mainC = (MainController) portalContext.getMainController();
+  @Override
+  public String getItemCode(Locale locale) {
+    return label;
+  }
 
-            mainC.eraseMessage();
-            if (!mainC.getBaseListboxController().isSingleFileSelected()) {
-                Notification.error("Please select single file or folder to rename");
-                return;
-            }
-            List<Integer> folderIds = mainC.getPortalSession().getSelectedFolderIds();
+  @Override
+  public String getGroup(Locale locale) {
+    return "File";
+  }
 
-            if (folderIds.size() > 0) {
-                mainC.getBaseListboxController().renameFolder();
-            } else {
-                Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
+  @Override
+  public String getLabel(Locale locale) {
+    return Labels.getLabel("plugin_file_rename_text", label);
+  }
 
-                if (selectedElements.size() > 0) {
-                    new EditListMetadataController(mainC, selectedElements);
-                } else {
-                    mainC.displayMessage("No folder, process version or event log is selected.");
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error("Unable to edit selection metadata", e);
-            Messagebox.show("Unable to edit selection metadata");
+  @Override
+  public String getGroupLabel(Locale locale) {
+    return Labels.getLabel("plugin_file_title_text", groupLabel);
+  }
+
+
+  @Override
+  public String getIconPath() {
+    return "rename.svg"; // "meta-edit.svg"
+  }
+
+
+
+  @Override
+  public void execute(PortalContext portalContext) {
+    try {
+      MainController mainC = (MainController) portalContext.getMainController();
+
+      mainC.eraseMessage();
+      if (!mainC.getBaseListboxController().isSingleFileSelected()) {
+        Notification.error("Please select single file or folder to rename");
+        return;
+      }
+      List<Integer> folderIds = mainC.getPortalSession().getSelectedFolderIds();
+
+      if (folderIds.size() > 0) {
+        mainC.getBaseListboxController().renameFolder();
+      } else {
+        Map<SummaryType, List<VersionSummaryType>> selectedElements =
+            mainC.getSelectedElementsAndVersions();
+
+        if (selectedElements.size() > 0) {
+          new EditListMetadataController(mainC, selectedElements);
+        } else {
+          mainC.displayMessage("No folder, process version or event log is selected.");
         }
+      }
+    } catch (Exception e) {
+      LOGGER.error("Unable to edit selection metadata", e);
+      Messagebox.show("Unable to edit selection metadata");
     }
+  }
 }

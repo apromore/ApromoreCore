@@ -1,0 +1,9 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'Apromore-Commons'
+
+dependencies {
+    
+    api 'com.github.dozermapper:dozer-core:6.5.0'
+   
+}

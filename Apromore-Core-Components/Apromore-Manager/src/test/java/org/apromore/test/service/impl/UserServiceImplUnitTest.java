@@ -35,6 +35,7 @@ import static org.powermock.api.easymock.PowerMock.verify;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apromore.dao.SearchHistoryRepository;
@@ -114,7 +115,7 @@ public class UserServiceImplUnitTest {
         String username = "username";
         User usr = createUser();
 
-        expect(usrRepo.findOne(id)).andReturn(usr);
+        expect(usrRepo.findById(id)).andReturn(Optional.of(usr));
         expect(usrRepo.save((User) anyObject())).andReturn(usr);
         replay(usrRepo);
 

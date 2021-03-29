@@ -74,7 +74,7 @@ public class PluginsHandlerServlet extends HttpServlet {
 			additionalPlugins.append("<plugin source=\""+plugin.getJavaScriptURI()+"\" name=\""+plugin.getJavaScriptPackage()+"\"/>");
 		}
 
-		InputStream pluginConf = PluginsHandlerServlet.class.getClassLoader().getResourceAsStream("/bpmneditor/WEB-INF/xml/editor/plugins.xml");
+		InputStream pluginConf = PluginsHandlerServlet.class.getClassLoader().getResourceAsStream("static/bpmneditor/WEB-INF/xml/editor/plugins.xml");
 		if(pluginConf != null) {
   			res.setStatus(200);
   	  		res.setContentType("text/xml");

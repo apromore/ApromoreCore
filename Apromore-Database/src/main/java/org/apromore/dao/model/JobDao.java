@@ -22,12 +22,9 @@
 package org.apromore.dao.model;
 
 
-import lombok.Setter;
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.ReadOnly;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -36,84 +33,81 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Configurable;
+import lombok.Setter;
 
 @Entity
 @Table(name = "job", uniqueConstraints = {@UniqueConstraint(columnNames = {"dag_id"})})
 @Configurable("job")
-@Cache(expiry = 180000, size = 1000,
-    coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+
 @Setter
 public class JobDao implements Serializable {
 
-    private Long id;
-    private String dagId;
-    private List<DagConnection> connections = new ArrayList<>();
-    private List<StaticLog> staticLogs = new ArrayList<>();
-    private OutputLogInfo logInfo;
-    private String finalTransformQuery;
-    private String schedule;
-    private String username;
-    private String pipelineName;
+  private Long id;
+  private String dagId;
+  private List<DagConnection> connections = new ArrayList<>();
+  private List<StaticLog> staticLogs = new ArrayList<>();
+  private OutputLogInfo logInfo;
+  private String finalTransformQuery;
+  private String schedule;
+  private String username;
+  private String pipelineName;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getId() {
-        return id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", unique = true, nullable = false)
+  public Long getId() {
+    return id;
+  }
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<DagConnection> getConnections() {
-        return connections;
-    }
+  @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+  public List<DagConnection> getConnections() {
+    return connections;
+  }
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<StaticLog> getStaticLogs() {
-        return staticLogs;
-    }
+  @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+  public List<StaticLog> getStaticLogs() {
+    return staticLogs;
+  }
 
-    @Column(name = "dag_id")
-    public String getDagId() {
-        return dagId;
-    }
+  @Column(name = "dag_id")
+  public String getDagId() {
+    return dagId;
+  }
 
-    @Column(name = "final_transform_query")
-    public String getFinalTransformQuery() {
-        return finalTransformQuery;
-    }
+  @Column(name = "final_transform_query")
+  public String getFinalTransformQuery() {
+    return finalTransformQuery;
+  }
 
-    @Column(name = "schedule")
-    public String getSchedule() {
-        return schedule;
-    }
+  @Column(name = "schedule")
+  public String getSchedule() {
+    return schedule;
+  }
 
-    @Column(name = "username")
-    public String getUsername() {
-        return username;
-    }
+  @Column(name = "username")
+  public String getUsername() {
+    return username;
+  }
 
-    @Column(name = "pipeline_name")
-    public String getPipelineName() {
-        return pipelineName;
-    }
+  @Column(name = "pipeline_name")
+  public String getPipelineName() {
+    return pipelineName;
+  }
 
-    @Embedded
-    public OutputLogInfo getLogInfo() {
-        return logInfo;
-    }
+  @Embedded
+  public OutputLogInfo getLogInfo() {
+    return logInfo;
+  }
 
-    public void synchronizedMetaData() {
-        for (DagConnection connection: connections) {
-            connection.setJob(this);
-        }
-        for (StaticLog staticLog: staticLogs) {
-            staticLog.setJob(this);
-        }
+  public void synchronizedMetaData() {
+    for (DagConnection connection : connections) {
+      connection.setJob(this);
     }
+    for (StaticLog staticLog : staticLogs) {
+      staticLog.setJob(this);
+    }
+  }
 }

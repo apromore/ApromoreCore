@@ -1,0 +1,19 @@
+
+group = 'org.apromore'
+version = '1.1.0'
+description = 'similaritysearch-portal'
+
+dependencies {
+    
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	implementation project(':Apromore-Clients:portal-model')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Plugins:plugin-templates:portal-custom-gui')
+	implementation project(':Apromore-Custom-Plugins:Similarity-Search-Logic')
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	
+           
+    
+}

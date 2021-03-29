@@ -72,10 +72,14 @@ import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.zkoss.util.Locales;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 import org.zkoss.web.Attributes;
@@ -101,7 +105,7 @@ import org.zkoss.web.Attributes;
  * </ul>
  * 
  */
-public class PDController extends BaseController {
+public class PDController extends BaseController implements Composer<Component> {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
 
@@ -109,8 +113,10 @@ public class PDController extends BaseController {
 
     private DomainService domainService;
     private ProcessService processService;
+    @WireVariable
     private EventLogService eventLogService;
     private LogAnimationService2 logAnimationService;
+    @WireVariable
     private LogFilterPlugin logFilterPlugin;
     private PDFactory pdFactory;
     
@@ -151,6 +157,8 @@ public class PDController extends BaseController {
     
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; //initial mode
     private String pluginExecutionId;
+
+    private Component pdComponent;
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -253,7 +261,7 @@ public class PDController extends BaseController {
         return true;
     }
 
-    public void onCreate() throws InterruptedException {
+    public void onCreate(Component comp) throws InterruptedException {
         try {
             if (!preparePluginSessionId()) {
                 Messagebox.show(getLabel("sessionNotInitialized_message"));
@@ -793,5 +801,22 @@ public class PDController extends BaseController {
                 if (action instanceof FilterAction) this.updateUI(false);
             }
         }
+    }
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+      this.pdComponent = comp;
+      onCreate(comp);
+
+    }
+
+    @Override
+    public Component query(String selector) {
+      return this.pdComponent.query(selector);
+    }
+
+    @Override
+    public Component getFellow(String compId) throws ComponentNotFoundException {
+      return pdComponent.getFellow(compId);
     }
 }

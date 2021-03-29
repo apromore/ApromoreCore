@@ -1,0 +1,12 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'apromore-calendar'
+
+
+dependencies {
+    implementation project(':Apromore-Database')
+    implementation project(':Apromore-Commons') 	
+	
+}
+
+

@@ -1,0 +1,8 @@
+group = 'org.apromore'
+version = '1.1'
+description = 'Apromore Manager Client'
+
+dependencies {
+	implementation project(':Apromore-Core-Components:Apromore-Manager')	
+	
+}

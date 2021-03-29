@@ -25,9 +25,8 @@
 package org.apromore.portal.helper;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.StringTokenizer;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
 
 /**
  * Version identifier for capabilities such as bundles and packages.
@@ -372,11 +371,9 @@ public class Version implements Comparable<Version> {
         }
 
         Version other = (Version) object;
-        return new EqualsBuilder()
-                .append(major, other.major)
-                .append(minor, other.minor)
-                .append(micro, other.micro)
-                .append(qualifier, other.qualifier).isEquals();
+        return Objects.equals(major, other.major) && Objects.equals(minor, other.minor)
+        		&& Objects.equals(micro, other.micro) && Objects.equals(qualifier, other.qualifier);
+               
     }
 
     /**

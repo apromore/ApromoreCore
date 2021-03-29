@@ -103,10 +103,10 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             }
 
             if (folder.getId() == 0) {
-                hl.appendChild(new Image("/img/icon/svg/folder_home.svg"));
+                hl.appendChild(new Image("~./img/icon/svg/folder_home.svg"));
                 hl.setSclass("ap-ico-home h-inline-block");
             } else {
-                hl.appendChild(new Image("/img/icon/svg/folder_icons.svg"));
+                hl.appendChild(new Image("~./img/icon/svg/folder_icons.svg"));
                 hl.setSclass("ap-ico-folder h-inline-block");
             }
 

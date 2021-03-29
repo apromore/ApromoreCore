@@ -36,8 +36,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import lombok.NoArgsConstructor;
@@ -45,7 +43,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "holiday")
 @Configurable("holiday")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @NoArgsConstructor
 public class Holiday implements Serializable {
 

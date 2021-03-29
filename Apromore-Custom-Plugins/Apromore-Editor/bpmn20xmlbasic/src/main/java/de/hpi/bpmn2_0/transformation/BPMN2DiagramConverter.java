@@ -559,35 +559,35 @@ public class BPMN2DiagramConverter {
      * Synergia extensions for configurable BPMN are additionally supported in the input file.
      * @param args  first argument is the path of a BPMN XML file
      */
-    public static void main(String[] args) throws JAXBException, JSONException {
-        try {
-            logger.fine("Starting test for " + args[0]);
-
-            // Parse BPMN from XML to JAXB
-            Unmarshaller unmarshaller = newContext().createUnmarshaller();
-            unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-            Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class).getValue();
-
-            logger.finer("Parsed BPMN");
-
-            // Convert BPMN to JSON
-            BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
-            if (definitions.getDiagram() == null || definitions.getDiagram().isEmpty()) {
-                definitions = converter.createDiagram(definitions);
-            }
-
-            List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
-
-            logger.finer("Diagrams=" + diagrams);
-            for (BasicDiagram diagram : diagrams) {
-                System.out.println(diagram.getString());
-            }
-
-            logger.fine("Completed test for " + args[0]);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) throws JAXBException, JSONException {
+//        try {
+//            logger.fine("Starting test for " + args[0]);
+//
+//            // Parse BPMN from XML to JAXB
+//            Unmarshaller unmarshaller = newContext().createUnmarshaller();
+//            unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+//            Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class).getValue();
+//
+//            logger.finer("Parsed BPMN");
+//
+//            // Convert BPMN to JSON
+//            BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
+//            if (definitions.getDiagram() == null || definitions.getDiagram().isEmpty()) {
+//                definitions = converter.createDiagram(definitions);
+//            }
+//
+//            List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
+//
+//            logger.finer("Diagrams=" + diagrams);
+//            for (BasicDiagram diagram : diagrams) {
+//                System.out.println(diagram.getString());
+//            }
+//
+//            logger.fine("Completed test for " + args[0]);
+//        } catch (Throwable t) {
+//            t.printStackTrace();
+//        }
+//    }
 
     // Used to create the BPMN diagram, the basic data needed to visualise the diagram.
     private Definitions createDiagram(Definitions definitions) {

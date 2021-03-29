@@ -29,13 +29,17 @@ package org.apromore.dao.jpa;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 /**
  * implementation of the org.apromore.dao.LogRepositoryCustom interface.

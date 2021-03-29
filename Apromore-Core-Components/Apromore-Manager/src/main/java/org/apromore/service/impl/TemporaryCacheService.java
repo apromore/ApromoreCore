@@ -36,7 +36,7 @@ import javax.annotation.Resource;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
 import org.apromore.cache.ehcache.CacheRepository;
-import org.apromore.common.ConfigBean;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.jpa.LogRepositoryCustomImpl;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Storage;

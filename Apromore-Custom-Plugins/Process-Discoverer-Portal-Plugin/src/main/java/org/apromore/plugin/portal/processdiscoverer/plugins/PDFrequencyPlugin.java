@@ -33,6 +33,8 @@ import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Desktop;
@@ -50,8 +52,15 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     @Inject DomainService domainService;
     @Inject EventLogService eventLogService;
     @Inject ProcessService processService;
-    @Inject LogFilterPlugin logFilterPlugin;
-    @Inject LogAnimationService2 logAnimationService;
+
+
+    @Autowired(required = false) 
+    LogFilterPlugin logFilterPlugin;
+    
+    @Autowired
+    @Qualifier("logAnimationService2")
+    LogAnimationService2 logAnimationService;
+
 
     @Override
     public String getItemCode(Locale locale) { return "Discover model"; }
@@ -82,6 +91,11 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "discover_model.svg";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         try {
         	boolean prepare = this.prepare(context, MeasureType.FREQUENCY); //prepare session
@@ -95,7 +109,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
                 Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
 
         	if (!prepare) return;
-        	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
+        	Clients.evalJavaScript("window.open('processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
         } catch (Exception e) {
             e.printStackTrace();
         }
