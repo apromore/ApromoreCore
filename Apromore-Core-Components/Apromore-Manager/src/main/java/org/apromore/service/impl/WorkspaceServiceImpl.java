@@ -80,8 +80,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private EventLogService eventLogService;
 
     private StorageManagementFactory<StorageClient> storageFactory;
-
-    @Resource
     private ConfigBean config;
 
     /**
@@ -107,7 +105,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final FolderService folderService,
                                 final StorageManagementFactory storageFactory,
                                 final EventLogService eventLogService,
-                                final StorageRepository storageRepository) {
+                                final StorageRepository storageRepository,
+                                final ConfigBean configBean) {
 
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
@@ -124,6 +123,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         this.storageFactory = storageFactory;
         this.eventLogService = eventLogService;
         this.storageRepository = storageRepository;
+        this.config = configBean;
     }
 
     @Override
