@@ -1,0 +1,13 @@
+group = 'org.apromore'
+version = '7.21-SNAPSHOT'
+description = 'Apromore-ProcessMining-Collection'
+
+dependencies {
+
+	api project(':Apromore-ProcessMining-Collection:jgraph')
+	api project(':Apromore-ProcessMining-Collection:prom-bpmn')
+	api project(':Apromore-ProcessMining-Collection:prom-models')
+	api project(':Apromore-ProcessMining-Collection:prom-widgets')
+	api project(':Apromore-ProcessMining-Collection:similaritysearch')
+
+}

@@ -1,0 +1,17 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'CSV Exporter portal plugin'
+
+dependencies {
+    
+    implementation project(':Apromore-Custom-Plugins:CSVExporter-Logic')
+    implementation project(':Apromore-Core-Components:Apromore-Manager')
+    implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Extras:OpenXES')
+	
+    
+    
+    
+    
+}

@@ -23,8 +23,8 @@
         vflex="min" height="230px"
         width="672px"
         position="center" title="Matched schema mapping found!">
-    <style src="/themes/ap/csv-importer/css/index.css"/>
-    <style src="/themes/ap/common/css/utils.css"/>
+    <style src="~./themes/ap/csv-importer/css/index.css"/>
+    <style src="~./themes/ap/common/css/utils.css"/>
     <!--<style>-->
     <!--.ap-csv-mapping-win{-->
     <!--z-index:4000 !important;-->

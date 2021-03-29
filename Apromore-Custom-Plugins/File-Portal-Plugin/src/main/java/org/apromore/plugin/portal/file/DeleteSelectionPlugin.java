@@ -32,8 +32,10 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class DeleteSelectionPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DeleteSelectionPlugin.class);

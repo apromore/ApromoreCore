@@ -25,12 +25,14 @@ package org.apromore.plugin.portal.account;
 import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.common.UserSessionManager;
 
+@Component
 public class ReportIssuePlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ReportIssuePlugin.class);
@@ -52,7 +54,7 @@ public class ReportIssuePlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "/report-issue.svg";
+        return "report-issue.svg";
     }
 
     @Override

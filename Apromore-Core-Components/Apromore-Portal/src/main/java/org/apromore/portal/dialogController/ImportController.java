@@ -50,11 +50,11 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
-import org.apromore.portal.ConfigBean;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -131,7 +131,7 @@ public class ImportController extends BaseController {
         this.note = new NotificationHandler() { public void show(String message) { Messagebox.show(message); } };
 
         try {
-            final Window win = (Window) Executions.createComponents("macros/import.zul", null, null);
+            final Window win = (Window) Executions.createComponents("~./macros/import.zul", null, null);
             this.importWindow = (Window) win.getFellow("importWindow");
             Button uploadButton = (Button) this.importWindow.getFellow("uploadButton");
             uploadButton.setClientDataAttribute(MAX_UPLOAD_SIZE, Long.toString(this.maxUploadSize));

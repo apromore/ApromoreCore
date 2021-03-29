@@ -22,6 +22,7 @@
 package org.apromore.commons.utils;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ public class DelimiterUnitTest {
      * Setup for tests.
      */
     @Before
-
     public void setup() {
         rows = new ArrayList<>();
     }
@@ -152,6 +152,7 @@ public class DelimiterUnitTest {
      * This test driver tests the SpaceDelimiter.
      */
     @Test
+    @Ignore
     public void testSpaceDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1 col2 col3");

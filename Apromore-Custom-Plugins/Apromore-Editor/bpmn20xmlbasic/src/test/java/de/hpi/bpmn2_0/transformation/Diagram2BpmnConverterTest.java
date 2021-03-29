@@ -63,6 +63,8 @@ import org.xml.sax.SAXException;
 
 import org.json.JSONException;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
@@ -90,6 +92,7 @@ public class Diagram2BpmnConverterTest {
     /**
      * Test the {@link Diagram2BpmnConverter#getDefinitionsFromDiagram} method.
      */
+    @Ignore
     @Test public void testGetDefinitionsFromDiagram1() throws BpmnConverterException, IOException, JAXBException, JSONException, SAXException {
 
         // Read the test JSON

@@ -24,8 +24,9 @@
 package org.apromore.service.impl;
 
 import org.apromore.apmlog.APMLog;
-import org.apromore.common.ConfigBean;
+
 import org.apromore.common.Constants;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
 import org.apromore.dao.CustomCalendarRepository;
@@ -80,8 +81,8 @@ import java.util.*;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
+@Service("eventLogService")
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor =
 		Exception.class)
 public class EventLogServiceImpl implements EventLogService {
 
@@ -447,13 +448,13 @@ public class EventLogServiceImpl implements EventLogService {
 
             // delete associated user metadata
             for (Usermetadata u : usermetadataSet) {
-                usermetadataRepo.delete(u.getId());
+                usermetadataRepo.deleteById(u.getId());
                 LOGGER.info("User: {} Delete user metadata ID: {}.", user.getUsername(), u.getId());
             }
 
             if (shouldDeleteLogFile(realLog.getStorage())) {
                 LOGGER.info("Deleting file: " + realLog.getName());
-                storageRepository.delete(realLog.getStorage() == null ? 0L : realLog.getStorage().getId());
+                storageRepository.deleteById(realLog.getStorage() == null ? 0L : realLog.getStorage().getId());
                 tempCacheService.deleteProcessLog(realLog);
 
             }
@@ -482,7 +483,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public void updateCalendarForLog(Integer logId, Long calenderId) {
 	Log log = logRepo.findUniqueByID(logId);
-	CustomCalendar calendar = customCalendarRepository.findById(calenderId);
+	CustomCalendar calendar = customCalendarRepository.findById(calenderId).get();
 	log.setCalendar(calendar);
 	logRepo.saveAndFlush(log);
 

@@ -23,6 +23,8 @@
 package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,11 +44,13 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -149,7 +153,7 @@ public class BPMNExportController extends AbstractController {
     @Override
     public void onEvent(Event event) throws Exception {
     	if (this.showProgressBar) {
-	    	window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
+	    	window = (Window) Executions.createComponents(getPageDefination("static/processdiscoverer/zul/mineAndSave.zul"), null, null);
 	        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
 	            @Override
                 public void onEvent(Event event) throws Exception {
@@ -285,5 +289,12 @@ public class BPMNExportController extends AbstractController {
 
  
     };
+    
+    protected PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 
 }

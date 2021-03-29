@@ -50,6 +50,7 @@ import org.apromore.service.search.SearchExpressionBuilder;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
@@ -61,12 +62,13 @@ import org.zkoss.zul.Window;
 
 public class SimpleSearchController {
 
-    private MainController mainC;
+    private Component mainC;
+    private MainController mainController;
     private Combobox previousSearchesCB;
 
-    public SimpleSearchController(MainController mainController) throws UnsupportedEncodingException, ExceptionDao, JAXBException {
-        mainC = mainController;
-
+    public SimpleSearchController(MainController mainController,Component mainControllerComponent) throws UnsupportedEncodingException, ExceptionDao, JAXBException {
+        mainC = mainControllerComponent;
+        this.mainController=mainController;
         Window simpleSearchW = (Window) mainC.getFellow("simplesearchcomp").getFellow("simplesearchwindow");
         Hbox previousSearchesH = (Hbox) simpleSearchW.getFellow("previoussearcheshbox");
         Button simpleSearchesBu = (Button) previousSearchesH.getFellow("previoussearchesbutton");
@@ -85,7 +87,7 @@ public class SimpleSearchController {
         clearSearchBtn.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 clearSearches();
-                mainC.reloadSummaries();
+                mainController.reloadSummaries();
                 setVisibility(clearSearchBtn, false);
             }
         });
@@ -181,7 +183,7 @@ public class SimpleSearchController {
         if (userService == null) {
             throw new Exception("User service unavailable");
         }
-        FolderType folder = mainC.getPortalSession().getCurrentFolder();
+        FolderType folder = mainController.getPortalSession().getCurrentFolder();
         if (folder == null) {
             throw new Exception("Search requires a folder to be selected");
         }
@@ -192,8 +194,8 @@ public class SimpleSearchController {
         }
         SummariesType summaries = readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query);
         int nbAnswers = summaries.getSummary().size();
-        mainC.displayMessage("Search returned " + nbAnswers + ((nbAnswers == 1) ? " result." : " results."));
-        mainC.displaySearchResult(summaries);
+        mainController.displayMessage("Search returned " + nbAnswers + ((nbAnswers == 1) ? " result." : " results."));
+        mainController.displaySearchResult(summaries);
 
         // Update the current user's search history
         User currentUser = UserMapper.convertFromUserType(UserSessionManager.getCurrentUser(), securityService);

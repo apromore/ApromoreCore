@@ -1,0 +1,6 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'JGraph 5 OSGi bundle'
+
+
+

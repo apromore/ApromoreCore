@@ -22,15 +22,15 @@
   #L%
   -->
 
-<?link rel="stylesheet" type="text/css" href="/themes/ap/common/css/headload.css" ?>
-<?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/common/css/index.css" ?>
-<?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/portal/css/portal.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/ap/common/css/headload.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/${labels.theme}/common/css/index.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/${labels.theme}/portal/css/portal.css" ?>
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
     <window closable="true" id="mainWindow" minimizable="false" sizable="false" maximizable="false" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="${mainWindow$composer.labels.mainWindow_title}" style="min-width: 1100px;max-width: 95vw;min-height: 600px; max-height: 95vh;" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer"
             apply="org.apromore.plugin.portal.csvimporter.CSVImporterController">
-        <style src="/themes/ap/csv-importer/css/index.css" />
-        <style src="/themes/ap/common/css/utils.css" />
-        <script type="text/javascript" src="/themes/ap/csv-importer/js/index.js"></script>
+        <style src="~./themes/ap/csv-importer/css/index.css" />
+        <style src="~./themes/ap/common/css/utils.css" />
+        <script type="text/javascript" src="~./themes/ap/csv-importer/js/index.js"></script>
         <caption>
             <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/uploadafile.html" target="_blank" />
         </caption>
@@ -144,7 +144,7 @@
                 </div>
             </south>
         </borderlayout>
-        <script defer="true" type="text/javascript" src="/themes/ap/csv-importer/js/deferred.js"></script>
+        <script defer="true" type="text/javascript" src="~./themes/ap/csv-importer/js/deferred.js"></script>
         <popup id="autoParsed" width="165px">
             <label value="${mainWindow$composer.labels.autoParsed_label}"/>
         </popup>

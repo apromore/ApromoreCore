@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -77,11 +78,17 @@ import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -110,7 +117,7 @@ import org.zkoss.zul.Window;
  * and active state of UI controls in each mode.
  * 
  */
-public class PDController extends BaseController {
+public class PDController extends BaseController implements Composer<Component> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
 
@@ -121,9 +128,13 @@ public class PDController extends BaseController {
 
     private DomainService domainService;
     private ProcessService processService;
+    
+    @WireVariable
     private EventLogService eventLogService;
     private LogAnimationService2 logAnimationService;
     private ProcessDiscoverer processDiscoverer;
+    
+    @WireVariable
     private LogFilterPlugin logFilterPlugin;
     private PDFactory pdFactory;
 
@@ -161,6 +172,7 @@ public class PDController extends BaseController {
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; //initial mode
     private String pluginExecutionId;
 
+    private Component pdComponent;
     /////////////////////////////////////////////////////////////////////////
 
     public PDController() throws Exception {
@@ -211,8 +223,8 @@ public class PDController extends BaseController {
         eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
         logAnimationService = (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
         logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
-
-        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null) {
+//        logFilterPlugin == null
+        if (domainService == null || processService == null || eventLogService == null ) {
             return false;
         }
         return true;
@@ -239,7 +251,7 @@ public class PDController extends BaseController {
         return true;
     }
 
-    public void onCreate() throws InterruptedException {
+    public void onCreate(Component comp) throws InterruptedException {
         try {
             if (!preparePluginSessionId()) {
                 Messagebox.show("Process Discoverer session has not been initialized. Please open it again properly!");
@@ -314,12 +326,12 @@ public class PDController extends BaseController {
 
             initialize();
             LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
-            LOGGER.debug("Desktop ID = " + getDesktop().getId());
+            LOGGER.debug("Desktop ID = " + comp.getDesktop().getId());
             
             // Finally, store objects to be cleaned up when the session timeouts
-            getDesktop().setAttribute("processDiscoverer", processDiscoverer);
-            getDesktop().setAttribute("processVisualizer", processVisualizer);
-            getDesktop().setAttribute("pluginSessionId", pluginSessionId);
+            comp.getDesktop().setAttribute("processDiscoverer", processDiscoverer);
+            comp.getDesktop().setAttribute("processVisualizer", processVisualizer);
+            comp.getDesktop().setAttribute("pluginSessionId", pluginSessionId);
         }
         catch (Exception ex) {
             Messagebox.show("Error occurred while initializing: " + ex.getMessage());
@@ -803,4 +815,21 @@ public class PDController extends BaseController {
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
     }
+
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		this.pdComponent=comp;
+		onCreate(comp);
+		
+	}
+	
+	@Override
+	public Component query(String selector) {
+		return this.pdComponent.query(selector);
+	}
+	
+	@Override
+	public Component getFellow(String compId) throws ComponentNotFoundException {
+		return pdComponent.getFellow(compId);
+	}
 }

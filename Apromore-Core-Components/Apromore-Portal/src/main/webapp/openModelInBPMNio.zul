@@ -1,0 +1,150 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+
+<?link rel="shortcut icon" href="~./themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        sclass="ap-bpmneditor"
+        use="org.apromore.portal.dialogController.BPMNEditorController">
+  <z:style>
+    .x-panel-editor-north .x-toolbar {
+      background-image: none !important;
+    }
+    .x-panel-editor-north .x-btn {
+      opacity: 0 !important;
+    }
+  </z:style>
+	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->
+    <n:style media="screen" type="text/css">
+        @import url("${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
+        @import url("${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+    </n:style>
+
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
+    <n:script src="js/jquery.js" type="text/javascript"/>
+
+
+    <!-- STYLESHEET FOR BPMN.IO -->
+    <n:link rel="stylesheet" href="${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
+    <n:link rel="stylesheet" href="${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
+    <n:script src="${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
+
+    <custom-attributes theme="${labels.theme}"/>
+<!--    <custom-attributes theme="ap"/>-->
+
+    <n:link rel="stylesheet" type="text/css" href='themes/${theme}/common/css/index.css' />
+    <n:link rel="stylesheet" type="text/css" href='themes/ap/editor/css/index.css'  />
+    <n:link rel="stylesheet" type="text/css" href='themes/ap/editor/css/simulation.css'  />
+
+    <n:div class="ap-header">
+        <n:a href="index.zul"><n:div class="ap-header-logo"></n:div></n:a>
+        <n:div class="ap-header-title">BPMN Editor</n:div>
+        <n:div class="ap-header-actions">
+            <n:a href="https://documentation.apromore.org/gettingstarted/createoreditprocessmodel.html" target="_blank">
+              <n:button class="ap-icon ap-icon-help"/>
+            </n:a>
+        </n:div>
+    </n:div>
+
+    <!-- User menu -->
+    <n:link rel="stylesheet" href="themes/${theme}/portal/css/portal.css" type="text/css"/>
+    <z:menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
+    
+	<n:div id="editorwrapper" style="display: none">
+        <n:script>
+            <![CDATA[
+                if (!Apromore) {
+                    var Apromore = {};
+                }
+                if (!Apromore.CONFIG) {
+                    Apromore.CONFIG = {};
+                }
+                //Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+            ]]>
+        </n:script>
+
+	    <n:script src="${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
+      <!-- <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/> -->
+      <n:script src="${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+      <n:script src="${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+      <n:script src="${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+      <n:script src="${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+      <n:script src="${arg.editor}/libs/autolayout.js" type="text/javascript"/>
+
+      <n:script src="${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+      <n:script src="${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+
+
+        <z:zk forEach="${arg.plugins}">
+            <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
+        </z:zk>
+        <n:script src="themes/ap/common/js/index.js" type="text/javascript"/>
+
+        <n:span id="Apromorestartupcode">
+            <n:script>
+                <![CDATA[
+                    var editorWrapper;
+                    createEditor = function (bpmnXML) {
+                      editorWrapper = new Apromore.EditorApp ({
+                        xml: bpmnXML,
+                        id : 'editorcanvas',
+                        fullscreen : true,
+                        useSimulationPanel: true
+                      });
+                    }
+					//console.log('${arg.bpmnXML}');
+                    createEditor('${arg.bpmnXML}');
+                    window.Ap = window.Ap || {};
+                    Apromore.Plugins.Share.shareExt = function() {
+                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
+                    };
+
+                    Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                      //console.log(xml);
+                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
+                    };
+
+                    Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                      //console.log(xml);
+                      //console.log(svg);
+                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
+                    };
+
+					//window.setTimeout(function() {
+					  //console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
+					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
+					//}, 1000);
+
+					document.title = '${labels.brand.shortName} - BPMN Editor';
+                ]]>
+            </n:script>
+        </n:span>
+    </n:div>
+
+    <n:div id="editorcanvas"></n:div>
+    <n:div id="js-properties-panel"></n:div>
+</window>
+

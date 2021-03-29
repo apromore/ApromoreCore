@@ -76,7 +76,7 @@ public class PerspectiveDetailsController extends DataListController {
     @Override
     public void onEvent(Event event) throws Exception {
     	if (perspectiveDetailsWindow==null) {
-            perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, null);
+            perspectiveDetailsWindow = (Window) Executions.createComponents(getPageDefination("static/processdiscoverer/zul/perspectiveDetails.zul"), null, null);
             String perspective = parent.getPerspective();
             perspectiveDetailsWindow.setTitle(!perspective.isEmpty() ? perspective : "EmptyPerspective");
             Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");

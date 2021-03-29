@@ -23,21 +23,21 @@
 
 <?page title="${labels.brand.shortName} - Portal" contentType="text/html;charset=UTF-8" ?>
 
-<?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
-<?component name="Navigation" macroURI="macros/navigation.zul" ?>
-<?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
+<?component name="ShortMessages" macroURI="~./macros/shortmessages.zul" ?>
+<?component name="Navigation" macroURI="~./macros/navigation.zul" ?>
+<?component name="SimpleSearch" macroURI="~./macros/simplesearch.zul" ?>
 <!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
-<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
-<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
+<?component name="DetailView" macroURI="~./macros/detail/baseDetail.zul" ?>
+<?component name="BaseListbox" macroURI="~./macros/listbox/baseListbox.zul" ?>
 
 <!-- must call this in the head -->
-<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
-<?link rel="prefetch" href="themes/${labels.theme}/common/img/brand/loader.svg" ?>
-<?link rel="stylesheet" type="text/css" href="themes/ap/common/css/headload.css" ?>
-<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/common/css/index.css" ?>
-<?link rel="stylesheet" type="text/css" href="themes/${labels.theme}/portal/css/portal.css" ?>
-<?script src="themes/ap/common/js/index.js"?>
-<?script src="themes/ap/portal/js/portal.js" ?>
+<?link rel="shortcut icon" href="~./themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="prefetch" href="~./themes/${labels.theme}/common/img/brand/loader.svg" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/ap/common/css/headload.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/${labels.theme}/common/css/index.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/${labels.theme}/portal/css/portal.css" ?>
+<?script src="~./themes/ap/common/js/index.js"?>
+<?script src="~./themes/ap/portal/js/portal.js" ?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -46,9 +46,9 @@
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
     xmlns:x="xhtml" xmlns:zk="zk">
 
-    <style src="css/cytoscape-context-menus.css"/>
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <style src="css/chiaroscuro.css"></style>
+    <style src="~./css/cytoscape-context-menus.css"/>
+    <script type="text/javascript" src="~./js/jquery.js"></script>
+    <style src="~./css/chiaroscuro.css"></style>
     <style>
         /* must be embedded here */
         .ap-portal .z-north-body,
@@ -136,7 +136,7 @@
     </style>
 
     <style> body { padding: 0} </style>
-    <style src="css/astyle.css"/>
+    <style src="~./css/astyle.css"/>
     <style>
         .ap-portal-menu-buttons button {
         background: transparent;
@@ -152,7 +152,7 @@
         }
     </script>
 
-    <window id="mainW" border="none" height="100%" width="100%" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
+    <window id="mainW" border="none" height="100%" width="100%" apply="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
         <!--<div class="z-listheader">-->
         <!--
@@ -161,14 +161,14 @@
             @import url('https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap');
             ]]>
         </style>
-        <image src="img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
+        <image src="~./img/logo.svg" style="font-size: 24pt; height: 2ex; margin: 3px"/>
         <label value="apromore" zclass="z-listheader" style="font-family: 'Lexend Deca'; font-size: 24pt; position: absolute; top: -0.3ex"/>
         -->
         <!--<h:a href="https://apromore.org" style="position: relative; top: 1.3ex; left: 0.3em">
-            <h:img src="img/apromore_header.png" width="115"/>
+            <h:img src="~./img/apromore_header.png" width="115"/>
         </h:a>
         <h:a href="https://apromore.org/documentation/features" style="float: right; padding: 6px">
-            <h:img src="img/icon/svg/help-icon.svg"/>
+            <h:img src="~./img/icon/svg/help-icon.svg"/>
         </h:a>-->
         <!--</div>-->
 
@@ -176,7 +176,7 @@
             <north height="34px" border="0" sclass="ap-header-region" >
                 <div height="34px" hflex="1">
                     <h:div class="ap-header">
-                        <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
+                        <h:a href="index.zul"><h:div class="ap-header-logo"></h:div></h:a>
                         <h:div class="ap-header-title">Portal</h:div>
                         <h:div class="ap-header-actions">
                             <h:a href="https://documentation.apromore.org/gettingstarted/navigatingtheapromoreportal.html" target="_blank">
@@ -206,7 +206,7 @@
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
                             <button id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.e.portal.reload.hint}" />
                             <h:span class="ap-action-sep"></h:span>
-                            <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
+                            <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="~./img/clustering.png" tooltiptext="Show Clustering" />-->
                             <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
                             <h:span class="ap-action-sep"></h:span>
@@ -277,5 +277,5 @@
             window.__AP__ = {};
         ]]>
     </script>
-    <h:script type="text/javascript" defer="defer" src="libs/jschardet/jschardet.min.js"></h:script>
+    <h:script type="text/javascript" defer="defer" src="~./libs/jschardet/jschardet.min.js"></h:script>
 </zk>

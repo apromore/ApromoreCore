@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service("authorizationService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class AuthorizationServiceImpl implements AuthorizationService {
 
@@ -309,7 +309,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         Map<Group, AccessType> accessTypeMap = getFolderAccessType(folderId);
 
         List<AccessType> accessTypes = new ArrayList<>();
-
+        
         for (Group g : user.getGroups()) {
             if (accessTypeMap.containsKey(g)) {
                 accessTypes.add(accessTypeMap.get(g));
@@ -340,7 +340,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         // Used by UsermetadataListBox, filterList and dashboardList
 
-        Usermetadata u = usermetadataRepository.findById(usermetadataId);
+        Usermetadata u = usermetadataRepository.findById(usermetadataId).get();
+
         Set<Log> logSet = u.getLogs();
 
         AccessType inheritedAccessType = getLogsAccessTypeByUser(logSet, user);
@@ -368,7 +369,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public AccessType getUsermetadataAccessTypeByGroup(Integer usermetadataId, Group group) {
 
         // Used by File/Folder Sharing to identify user selections
-        Usermetadata u = usermetadataRepository.findById(usermetadataId);
+        Usermetadata u = usermetadataRepository.findById(usermetadataId).get();
         GroupUsermetadata gu = groupUsermetadataRepository.findByGroupAndUsermetadata(group, u);
         if (gu == null ) {
             return null;

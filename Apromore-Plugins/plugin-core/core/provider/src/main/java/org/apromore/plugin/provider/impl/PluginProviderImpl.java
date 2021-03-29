@@ -35,8 +35,9 @@ import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProvider;
 import org.apromore.plugin.provider.PluginProviderHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * Default OSGi based implementation of the {@link PluginProvider}
@@ -44,12 +45,13 @@ import org.springframework.stereotype.Service;
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
  */
 @Component
+@Qualifier("pluginProvider")
 public class PluginProviderImpl implements PluginProvider {
 
     /**
      * Will be injected by Eclipse Blueprint OSGi Framework at runtime
      */
-	@Resource
+	@Autowired
     private Set<Plugin> pluginSet;
 
     // Getter and Setter need to be public for DI

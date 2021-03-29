@@ -52,6 +52,7 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
 import org.deckfour.xes.model.XLog;
+import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
@@ -80,6 +81,11 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
         this.groupLabel = groupLabel;
     }
 
+    @Override
+    public String getIconPath() {
+        return "static/loganimation/images/icon.svg";
+    }
+    
     @Override
     public void execute(PortalContext portalContext) {
 
@@ -128,7 +134,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
 
         String id = UUID.randomUUID().toString();
         UserSessionManager.setEditSession(id, session);
-        Clients.evalJavaScript("window.open('../loganimation/animateLog.zul?id=" + id + "')");
+        Clients.evalJavaScript("window.open('loganimation/animateLog.zul?id=" + id + "')");
     }
 
     private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
@@ -217,7 +223,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             session.put("logs", logs);
             String id = UUID.randomUUID().toString();
             UserSessionManager.setEditSession(id, session);
-            Clients.evalJavaScript("window.open('/loganimation/animateLog.zul?id=" + id + "')");
+            Clients.evalJavaScript("window.open('loganimation/animateLog.zul?id=" + id + "')");
         } catch (Exception e) {
             e.printStackTrace();
         }        
@@ -259,7 +265,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             session.put("logs", logs);
             String id = UUID.randomUUID().toString();
             UserSessionManager.setEditSession(id, session);
-            Clients.evalJavaScript("window.open('/loganimation/animateLog.zul?id=" + id + "')");
+            Clients.evalJavaScript("window.open('loganimation/animateLog.zul?id=" + id + "')");
         } catch (Exception e) {
             e.printStackTrace();
         }        

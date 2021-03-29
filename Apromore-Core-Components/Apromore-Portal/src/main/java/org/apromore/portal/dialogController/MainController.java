@@ -25,6 +25,8 @@
 
 package org.apromore.portal.dialogController;
 
+import static org.apromore.portal.common.UserSessionManager.initializeUser;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -40,24 +42,27 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+
 import com.nimbusds.jwt.JWTClaimsSet;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.dao.model.Log;
+import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.Plugin;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.PortalSession;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -81,6 +86,9 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -88,7 +96,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
@@ -108,13 +119,18 @@ import static org.apromore.portal.common.UserSessionManager.initializeUser;
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
  */
-public class MainController extends BaseController implements MainControllerInterface {
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+public class MainController extends BaseController implements MainControllerInterface,Composer<Component>{
 
     private static final long serialVersionUID = 5147685906484044300L;
 
     private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
-
+    
+    @WireVariable
+    private Map<String, Plugin> plugins;
+    
+    
     private static String encKey;
 
     private EventQueue<Event> qe;
@@ -141,12 +157,13 @@ public class MainController extends BaseController implements MainControllerInte
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
     private Map<String, PortalPlugin> portalPluginMap;
+    private Component mainComponent;
 
     public static MainController getController() {
         return controller;
     }
 
-    public MainController() {
+    public  MainController() {
         final boolean usingKeycloak = config.isUseKeycloakSso();
         LOGGER.debug("Using keycloak: {}", usingKeycloak);
 
@@ -232,24 +249,25 @@ public class MainController extends BaseController implements MainControllerInte
      * onCreate is executed after the main window has been created it is
      * responsible for instantiating all necessary controllers (one for each
      * window defined in the interface) see description in index.zul
+     * @param comp 
      * @throws InterruptedException
      */
-    public void onCreate() throws InterruptedException {
+    public void onCreate(Component comp) throws InterruptedException {
         try {
             loadProperties();
-
-            Window mainW = (Window) this.getFellow("mainW");
+            this.mainComponent=comp;
+            Window mainW = (Window) comp.getFellow("mainW");
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
-            Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
+            Window shortmessageW = (Window) comp.getFellow("shortmessagescomp").getFellow("shortmessage");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
             this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
             this.tabBox = (Tabbox) mainW.getFellow("tabbox");
             this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
-            this.simplesearch = new SimpleSearchController(this);
+            this.simplesearch = new SimpleSearchController(this,comp);
             this.portalContext = new PluginPortalContext(this);
-            this.navigation = new NavigationController(this);
+            this.navigation = new NavigationController(this,comp);
 
             controller = this;
             MainController self = this;
@@ -596,7 +614,7 @@ public class MainController extends BaseController implements MainControllerInte
             ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "macros/openModelInBPMNio.zul?id=" + id;
+            String url = "openModelInBPMNio.zul?id=" + id;
             if (newProcess) url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
@@ -964,7 +982,7 @@ public class MainController extends BaseController implements MainControllerInte
 								String valuePattern,
 								String allowedValues, 
 								EventListener<Event> returnValueHander) {
-    	Window win = (Window) Executions.createComponents("macros/inputDialog.zul", null, null);
+    	Window win = (Window) Executions.createComponents("~./macros/inputDialog.zul", null, null);
     	Window dialog = (Window) win.getFellow("inputDialog");
     	dialog.setTitle(title);
     	Label labelMessage = (Label)dialog.getFellow("labelMessage"); 
@@ -1042,5 +1060,24 @@ public class MainController extends BaseController implements MainControllerInte
         }
         return ItemNameUtils.deriveName(existingNames, processName, suffix);
     }
+
+	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		onCreate(comp);
+		
+	}
+	
+	@Override
+	public Component getFellow(String id) {
+		return mainComponent.getFellow(id);
+		
+	}
+	
+	@Override
+	public Desktop getDesktop() {
+		return mainComponent.getDesktop();
+	}
+
 
 }

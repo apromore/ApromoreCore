@@ -35,6 +35,8 @@ import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
@@ -49,12 +51,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.transaction.Transactional;
+
+@Component
 public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
+    @Autowired
     private ParquetFactoryProvider parquetFactoryProvider;
+    @Autowired
     private LogImporterProvider logImporterProvider;
+    @Autowired
     private UserMetadataService userMetadataService;
 
     private static String getMediaFormat(Media media) throws Exception {
@@ -92,6 +100,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
     }
 
     @Override
+    @Transactional
     public void importFile(Media media, boolean isLogPublic) {
 
         // Configure the arguments to pass to the CSV importer view

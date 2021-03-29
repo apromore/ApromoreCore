@@ -1,0 +1,40 @@
+group = 'org.apromore.plugin'
+version = '7.21-SNAPSHOT'
+
+dependencies {
+
+	runtime project(':Apromore-Custom-Plugins:About-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:Account-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:Access-Control-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:File-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:CSVExporter-Logic')
+
+	runtime project(':Apromore-Custom-Plugins:Apromore-Editor')
+	runtime project(':Apromore-Custom-Plugins:Calendar-Portal')
+	runtime project(':Apromore-Custom-Plugins:CSVImporter-Logic')
+	runtime project(':Apromore-Custom-Plugins:CSVImporter-Portal')
+	runtime project(':Apromore-Custom-Plugins:CSVExporter-Portal')
+	runtime project(':Apromore-Custom-Plugins:User-Admin-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:SplitMiner-Logic')
+
+//	runtime project(':Apromore-Custom-Plugins:Generic-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:Log-Animation-Logic')
+	runtime project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin-API')
+	runtime project(':Apromore-Custom-Plugins:Log-Logic')
+	runtime project(':Apromore-Core-Components:Apromore-BPMNEditor')
+	
+	runtime project(':Apromore-Custom-Plugins:Merge-Logic')
+	runtime project(':Apromore-Custom-Plugins:Similarity-Search-Logic')
+	runtime project(':Apromore-Custom-Plugins:Process-Discoverer-Logic')
+	runtime project(':Apromore-Custom-Plugins:Merge-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:Similarity-Search-Portal-Plugin')
+	runtime project(':Apromore-Custom-Plugins:Process-Discoverer-Portal-Plugin')
+	
+	
+	
+	
+
+	
+
+}

@@ -59,13 +59,13 @@
         }
 
         .ap-nav-header .ap-icon-folder-expand-solid {
-            background-image: url('/themes/ap/common/img/icons-2/folder-expand-solid.svg') !important;
+            background-image: url('themes/ap/common/img/icons-2/folder-expand-solid.svg') !important;
             width: 28.5px !important;
             filter: none !important;
         }
 
         .ap-nav-header .ap-icon-folder-collapse-solid {
-            background-image: url('/themes/ap/common/img/icons-2/folder-collapse-solid.svg') !important;
+            background-image: url('themes/ap/common/img/icons-2/folder-collapse-solid.svg') !important;
             width: 26.390625px !important;
             filter: none !important;
         }

@@ -28,7 +28,9 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ChangePasswordPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ChangePasswordPlugin.class);
@@ -56,7 +58,7 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "/change-password-icon.svg";
+        return "change-password-icon.svg";
     }
 
     @Override

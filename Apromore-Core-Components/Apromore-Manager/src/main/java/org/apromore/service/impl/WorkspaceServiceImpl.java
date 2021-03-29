@@ -24,8 +24,10 @@
 
 package org.apromore.service.impl;
 
-import org.apache.commons.lang.StringUtils;
-import org.apromore.common.ConfigBean;
+
+
+import org.apache.commons.lang3.StringUtils;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
@@ -55,8 +57,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
+@Service("workspaceService")
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor =
         Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
@@ -133,7 +135,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Folder getFolder(Integer folderId) {
-        return folderRepo.findOne(folderId);
+        return folderRepo.findById(folderId).orElse(null);
     }
 
     @Override
@@ -179,8 +181,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 
-    @Override
-    @Transactional(readOnly = false)
+    @Override    
     public Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady) {
         Folder folder = new Folder();
         folder.setName(folderName);
@@ -188,14 +189,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         User user = userRepo.findByRowGuid(userId);
 
         if (parentFolderId != 0) {
-            Folder parent = folderRepo.findOne(parentFolderId);
+            Folder parent = folderRepo.findById(parentFolderId).get();
             if (parent != null) {
                 folder.setParentFolder(parent);
                 folder.setParentFolderChain(parent.getParentFolderChain() + "_" + parent.getId());
             }
         }
 
-        Workspace workspace = workspaceRepo.findOne(1);
+        Workspace workspace = workspaceRepo.findById(1).orElse(null);
         folder.setWorkspace(workspace);
         folder.setCreatedBy(user);
         folder.setModifiedBy(user);
@@ -220,7 +221,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // Unless in the root folder, add access rights of its immediately enclosing folder
         if (parentFolderId != 0) {
-            Folder parent = folderRepo.findOne(parentFolderId);
+            Folder parent = folderRepo.findById(parentFolderId).get();
             if (parent != null) {
                 for (GroupFolder groupFolder : parent.getGroupFolders()) {
                     if (!Objects.equals(groupFolder.getGroup().getId(), user.getGroup().getId())) { // Avoid adding
@@ -239,7 +240,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public boolean isGEDReadyFolder(Integer folderId) {
-        Folder folder = folderRepo.findOne(folderId);
+        Folder folder = folderRepo.findById(folderId).get();
         return folder.isGEDMatrixReady();
     }
 
@@ -250,7 +251,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new NotAuthorizedException(
                     "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
         }
-        Folder folder = folderRepo.findOne(folderId);
+        Folder folder = folderRepo.findById(folderId).orElse(null);
         if (folderName != null && !folderName.isEmpty())
             folder.setName(folderName);
         if (isGEDMatrixReady != null) {
@@ -259,7 +260,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
             }
         }
-        folderRepo.save(folder);
+        folderRepo.saveAndFlush(folder);
     }
 
     /**
@@ -284,7 +285,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new NotAuthorizedException(
                     "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
         }
-        Folder folder = folderRepo.findOne(folderId);
+        Folder folder = folderRepo.findById(folderId).get();
         if (folder != null) {
 
             // Remove logs that are contained in specified folder and its sub-folders
@@ -312,11 +313,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public List<Folder> getBreadcrumbs(Integer folderId) {
         List<Folder> folders = new ArrayList<>();
 
-        Folder folder = folderRepo.findOne(folderId);
+        Folder folder = folderRepo.findById(folderId).orElse(null);
         if (folder != null) {
             folders.add(folder);
             while (folder.getParentFolder() != null && folder.getParentFolder().getId() != 0) {
-                folder = folderRepo.findOne(folder.getParentFolder().getId());
+                folder = folderRepo.findById(folder.getParentFolder().getId()).get();
                 folders.add(folder);
             }
         }
@@ -404,7 +405,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public String removeProcessPermissions(Integer processId, String groupRowGuid) {
-        Process process = processRepo.findOne(processId);
+        Process process = processRepo.findById(processId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupProcess(group, process);
         return "";
@@ -413,7 +414,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType) {
-        Log log = logRepo.findOne(logId);
+        Log log = logRepo.findById(logId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupLog(group, log);
 
@@ -434,7 +435,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid) {
-        Usermetadata um = usermetadataRepo.findOne(usermetadataId);
+        Usermetadata um = usermetadataRepo.findById(usermetadataId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         removeGroupUsermetadata(group, um);
         return "";
@@ -444,7 +445,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional(readOnly = false)
     public String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
                                          boolean hasOwnership) {
-        Process process = processRepo.findOne(processId);
+        Process process = processRepo.findById(processId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
         createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
 
@@ -458,7 +459,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional(readOnly = false)
     public String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
                                      boolean hasOwnership) {
-        Log log = logRepo.findOne(logId);
+        Log log = logRepo.findById(logId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
         createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
@@ -487,7 +488,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional
     public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType,
                                       boolean shareUserMetadata) {
-        Log log = logRepo.findOne(logId);
+        Log log = logRepo.findById(logId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
         createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
@@ -512,7 +513,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional
     public String saveUserMetadataAccessRights(Integer usermetadataId, String groupRowGuid, AccessType accessType) {
 
-        Usermetadata usermetadata = usermetadataRepo.findById(usermetadataId);
+        Usermetadata usermetadata = usermetadataRepo.findById(usermetadataId).get();
         Group group = groupRepo.findByRowGuid(groupRowGuid);
 
         createGroupUsermetadata(group, usermetadata, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
@@ -523,9 +524,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public void addProcessToFolder(User user, Integer processId, Integer folderId) {
-        if (folderId != null && processId != null) {
-            Process process = processRepo.findOne(processId);
-            Folder folder = folderRepo.findOne(folderId);
+        if ((folderId != null || folderId!=0) && processId != null) {
+            Process process = processRepo.findById(processId).get();
+            Folder folder = folderRepo.findById(folderId).orElse(null);
 
             process.setFolder(folder);
 
@@ -834,7 +835,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     groupFolders.add(new GroupFolder(gf.getGroup(), f, gf.getAccessRights()));
                 }
             }
-            folderRepo.save(subFoldersWithCurrentFolders);
+            folderRepo.saveAll(subFoldersWithCurrentFolders);
 
             List<Process> processes = processRepo.findByFolderIdIn(folderIds);
             for (Process process : processes) {
@@ -844,7 +845,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     groupProcesses.add(new GroupProcess(process, gf.getGroup(), gf.getAccessRights()));
                 }
             }
-            processRepo.save(processes);
+            processRepo.saveAll(processes);
 
             List<Log> logs = logRepo.findByFolderIdIn(folderIds);
             for (Log log : logs) {
@@ -854,7 +855,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
                 }
             }
-            logRepo.save(logs);
+            logRepo.saveAll(logs);
         }
 
         return folder;
@@ -988,7 +989,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             for(Usermetadata u : usermetadataSet) {
                 u.setCreatedBy(targetUser.getRowGuid());
             }
-            usermetadataRepo.save(usermetadataSet);
+            usermetadataRepo.saveAll(usermetadataSet);
         }
 
         for (Process p : processes) {
@@ -1050,9 +1051,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional
     public void deleteOwnerlessArtifact(User user) {
 
-        folderRepo.delete(getSingleOwnerFolderByUser(user));
-        logRepo.delete(getSingleOwnerLogByUser(user));
-        processRepo.delete(getSingleOwnerProcessByUser(user));
+        folderRepo.deleteAll(getSingleOwnerFolderByUser(user));
+        logRepo.deleteAll(getSingleOwnerLogByUser(user));
+        processRepo.deleteAll(getSingleOwnerProcessByUser(user));
 
     }
 

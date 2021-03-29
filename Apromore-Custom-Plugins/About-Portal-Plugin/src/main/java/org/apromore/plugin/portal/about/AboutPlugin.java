@@ -26,13 +26,17 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.ConfigBean;
-import org.osgi.framework.BundleContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.spring.SpringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -41,95 +45,92 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+@Component
 public class AboutPlugin extends DefaultPortalPlugin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AboutPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AboutPlugin.class);
 
-    private String label = "About Apromore"; // default label
-    private String groupLabel = "About";
-    private BundleContext bundleContext;
-    private String commitId;
-    private String buildDate;
-    private String holder;
-    private String detail;
+	private String label = "About Apromore"; // default label
+	private String groupLabel = "About";
+	private String commitId;
+	private String buildDate;
+	private String holder;
+	private String detail;
+	private ConfigBean config;
+    
+	public AboutPlugin(
+			@Value("${git.commit.id.abbrev}") final String newCommitId, 
+			@Value("${git.commit.time}") final String newBuildDate, 
+			@Value("${aboutMeName}") final String newHolder,
+			@Value("${newDetail:#{null}}") final String newDetail, 
+			ConfigBean configBean) {
+		this.commitId = newCommitId;
+		this.buildDate = newBuildDate;
+		this.holder = newHolder;
+		this.detail = newDetail;
+		this.config = configBean;
+	}
 
-    public AboutPlugin(final BundleContext newBundleContext,
-                       final String newCommitId,
-                       final String newBuildDate,
-                       final String newHolder,
-                       final String newDetail) {
-        this.bundleContext = newBundleContext;
-        this.commitId = newCommitId;
-        this.buildDate = newBuildDate;
-        this.holder = newHolder;
-        this.detail = newDetail;
-    }
 
-    public String getCommitId() {
-        return this.commitId;
-    }
+	public String getCommitId() {
+		return this.commitId;
+	}
 
-    public String getBuildDate() {
-        return this.buildDate;
-    }
+	public String getBuildDate() {
+		return this.buildDate;
+	}
 
-    // PortalPlugin overrides
+	// PortalPlugin overrides
 
-    @Override
-    public String getLabel(final Locale locale) {
-        return Labels.getLabel("brand.about", label);
-    }
+	@Override
+	public String getLabel(final Locale locale) {
+		return Labels.getLabel("brand.about", label);
+	}
 
-    @Override
-    public String getGroupLabel(final Locale locale) {
-        return groupLabel;
-    }
+	@Override
+	public String getGroupLabel(final Locale locale) {
+		return groupLabel;
+	}
 
-    @Override
-    public String getIconPath() {
-        return "/about-icon.svg";
-    }
+	@Override
+	public String getIconPath() {
+		return "about-icon.svg";
+	}
 
-    @Override
-    public void execute(final PortalContext portalContext) {
-        LOGGER.info("Debug");
+	@Override
+	public void execute(final PortalContext portalContext) {
+		LOGGER.info("Debug");
 
-        try {
-            ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
-            Map args = new HashMap();
-            args.put("community", config.isCommunity());
-            args.put("edition", config.getVersionEdition());
-            args.put("holder", this.holder);
-            args.put("detail", this.detail);
-            args.put("version", config.getMajorVersionNumber() +
-                " (commit " +
-                    getCommitId() + " built on " + getBuildDate() + " / core: " +
-                    config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() +
-                ")"
-            );
-            final Window pluginWindow = (Window) Executions.getCurrent().createComponentsDirectly(
-                new InputStreamReader(
-                    bundleContext.getBundle().getResource("/about/zul/about.zul").openStream(),
-                    "UTF-8"
-                ),
-                "zul",
-                null,
-                args
-            );
-            pluginWindow.setAttribute("version", "dummy");
+		try {
 
-            Button buttonOk = (Button) pluginWindow.getFellow("ok");
-            buttonOk.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    pluginWindow.detach();
-                }
-            });
-            pluginWindow.doModal();
+			Map args = new HashMap();
+			args.put("community", config.isCommunity());
+			args.put("edition", config.getVersionEdition());
+			args.put("holder", this.holder);
+			args.put("detail", this.detail);
+			args.put("version",
+					config.getMajorVersionNumber() + " (commit " + getCommitId() + " built on " + getBuildDate()
+							+ " / core: " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate()
+							+ ")");
+			final Window pluginWindow = (Window) Executions.getCurrent()
+					.createComponentsDirectly(
+							new InputStreamReader(
+									getClass().getClassLoader().getResourceAsStream("about/zul/about.zul"), "UTF-8"),
+							"zul", null, args);
+			pluginWindow.setAttribute("version", "dummy");
 
-        } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-            LOGGER.error("Unable to display About dialog", e);
-        }
-    }
+			Button buttonOk = (Button) pluginWindow.getFellow("ok");
+			buttonOk.addEventListener("onClick", new EventListener<Event>() {
+				@Override
+				public void onEvent(final Event event) throws Exception {
+					pluginWindow.detach();
+				}
+			});
+			pluginWindow.doModal();
+
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+			LOGGER.error("Unable to display About dialog", e);
+		}
+	}
 }

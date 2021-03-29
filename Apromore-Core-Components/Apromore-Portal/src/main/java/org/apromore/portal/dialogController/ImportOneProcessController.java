@@ -80,7 +80,7 @@ public class ImportOneProcessController extends BaseController {
         this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
         this.nativeType = nativeType;
         this.isPublic = isPublic;
-        this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
+        this.importOneProcessWindow = (Window) Executions.createComponents("~./macros/importOneProcess.zul", null, null);
         Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getChildren().get(0);
         this.processNameTb = (Textbox) processNameR.getChildren().get(1);

@@ -52,7 +52,7 @@ public class RenameFolderController extends BaseController {
         this.mainController = mainController;
 
         try {
-            final Window win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
+            final Window win = (Window) Executions.createComponents("~./macros/folderRename.zul", null, null);
             this.folderEditWindow = (Window) win.getFellow("winFolderRename");
             this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
             this.txtName.setValue(name);

@@ -34,8 +34,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -44,7 +42,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "process_model_attribute")
 @Configurable("processModelAttribute")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class ProcessModelAttribute implements java.io.Serializable {
 
     private Integer id;
@@ -113,7 +110,7 @@ public class ProcessModelAttribute implements java.io.Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "processModelVersionId")
+    @JoinColumn(name = "processmodelversionid")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }

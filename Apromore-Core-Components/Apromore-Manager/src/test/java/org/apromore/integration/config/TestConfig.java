@@ -24,71 +24,113 @@ package org.apromore.integration.config;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.apromore.apmlog.APMLogService;
+import org.apromore.apmlog.config.APMLogConfig;
 import org.apromore.apmlog.impl.APMLogServiceImpl;
+import org.apromore.cache.CacheConfig;
+import org.apromore.config.ManagerConfig;
+import org.apromore.dao.config.DatabaseConfig;
 import org.apromore.plugin.DefaultPlugin;
 import org.apromore.plugin.Plugin;
+import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProvider;
-import org.apromore.plugin.provider.impl.PluginProviderImpl;
-import org.apromore.stub.EventAdminStub;
-import org.osgi.service.event.EventAdmin;
+import org.apromore.storage.config.StorageConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
-@Configuration
-@ImportResource(value = {
-	"classpath:META-INF/spring/database-jpa.xml",
-	"classpath:META-INF/spring/cache-config.xml", "classpath:META-INF/spring/storage-context.xml",
-	"classpath:META-INF/spring/managerContext-services.xml" })
+import liquibase.integration.spring.SpringLiquibase;
+
+@TestPropertySource(value = { "classpath:application.properties", "classpath:integration-test/cache-config.properties",
+		"classpath:integration-test/mail-config.properties" })
+@ComponentScan(basePackages = "org.apromore")
 public class TestConfig {
 
-    @Bean
-    public static PropertyPlaceholderConfigurer properties() {
-	PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-	Resource[] resources = new ClassPathResource[] { new ClassPathResource("integration-test/db-config.properties"),
-		new ClassPathResource("integration-test/cache-config.properties"),
-		new ClassPathResource("integration-test/mail-config.properties") };
-	ppc.setLocations(resources);
-	ppc.setIgnoreUnresolvablePlaceholders(true);
-	return ppc;
-    }
+	@Bean
+	public static PropertyPlaceholderConfigurer properties() {
+		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+		Resource[] resources = new ClassPathResource[] { new ClassPathResource("application.properties"),
+				new ClassPathResource("integration-test/cache-config.properties"),
+				new ClassPathResource("integration-test/mail-config.properties") };
+		ppc.setLocations(resources);
+		ppc.setIgnoreUnresolvablePlaceholders(true);
+		return ppc;
+	}
 
-    @Bean
-    public APMLogService apmLogService() {
-	return new APMLogServiceImpl();
-    }
-   
-    @Bean
-    public EventAdmin eventAdmin() {
-	return new EventAdminStub();
-    }
-    
-    
-    @Bean
-    @Qualifier("pluginProvider")
-    public PluginProvider PluginProvider()
-    {
-	PluginProviderImpl pluginProvider=new PluginProviderImpl();
-	Set<Plugin> pluginSet=new HashSet<Plugin>();
-	pluginSet.add(testPlugin());
-	pluginProvider.setPluginList(pluginSet);
-	return pluginProvider;
-	
-    }
-    @Bean
-    public Plugin testPlugin() {
-	return new DefaultPlugin() {
-	    
-	};
-    }
-    
+//	@Bean
+//	@Qualifier("pluginProvider")
+//	public PluginProvider PluginProvider() {
+//		PluginProvider pluginProvider = new PluginProvider() {
+//
+//			@Override
+//			public Set<Plugin> listAll() {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//
+//			@Override
+//			public Set<Plugin> listByType(String type) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//
+//			@Override
+//			public Set<Plugin> listByName(String name) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//
+//			@Override
+//			public Plugin findByName(String name) throws PluginNotFoundException {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//
+//			@Override
+//			public Plugin findByNameAndVersion(String name, String version) throws PluginNotFoundException {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//
+//		};
+//		Set<Plugin> pluginSet = new HashSet<Plugin>();
+//		pluginSet.add(testPlugin());
+//		return pluginProvider;
+//
+//	}
 
-  
-   
+	@Bean
+	public Plugin testPlugin() {
+		return new DefaultPlugin() {
+
+		};
+	}
+
+	@Autowired
+	DataSource dataSource;
+
+	@Bean
+	public SpringLiquibase liquibase() throws ClassNotFoundException {
+		SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setDataSource(dataSource);
+		liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
+		liquibase.setContexts("H2");
+		liquibase.setDropFirst(true);
+		return liquibase;
+	}
 
 }

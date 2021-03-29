@@ -345,6 +345,12 @@ public class DeleteUserController extends SelectorComposer<Window> {
         // Force logout the deleted user
         EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
                 .publish(new Event("onSignout", null, selectedUser.getUsername()));
+        
+        Map dataMap = Map.of("type", "DELETE_USER");
+
+		EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+				.publish(new Event("User Delete", null, dataMap));
+
     }
 
     @Listen("onClick = #btnCancel")

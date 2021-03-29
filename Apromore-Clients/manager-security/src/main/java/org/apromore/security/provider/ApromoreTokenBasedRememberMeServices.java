@@ -53,10 +53,10 @@ public class ApromoreTokenBasedRememberMeServices extends TokenBasedRememberMeSe
     /**
      * @deprecated Use with-args constructor
      */
-    @Deprecated
-    public ApromoreTokenBasedRememberMeServices() {
-        super();
-    }
+//    @Deprecated
+//    public ApromoreTokenBasedRememberMeServices() {
+//        super();
+//    }
 
 
     /**

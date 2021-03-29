@@ -74,7 +74,7 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 	folder2.setParentFolderChain("0_1_2");
 
 	Folder folder3 = new Folder();
-	folder2.setName("folder3");
+	folder3.setName("folder3");
 	folder3.setParentFolderChain("0_12_5");
 
 	folder1 = folderRepo.saveAndFlush(folder1);
@@ -106,7 +106,7 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 	folder2.setParentFolderChain("0_1_2");
 
 	Folder folder3 = new Folder();
-	folder2.setName("folder3");
+	folder3.setName("folder3");
 	folder3.setParentFolderChain("0_12_5");
 
 	folder1 = folderRepo.saveAndFlush(folder1);
@@ -180,9 +180,9 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 //	When
 	int count = folderInfoRepository.countByparentFolderChain("-1");
 	folderParentChainPopulator.init();
-	FolderInfo foldersExpected1 = folderInfoRepository.findOne(folder1.getId());
-	FolderInfo foldersExpected2 = folderInfoRepository.findOne(folder2.getId());
-	FolderInfo foldersExpected3 = folderInfoRepository.findOne(folder3.getId());
+	FolderInfo foldersExpected1 = folderInfoRepository.findById(folder1.getId()).get();
+	FolderInfo foldersExpected2 = folderInfoRepository.findById(folder2.getId()).get();
+	FolderInfo foldersExpected3 = folderInfoRepository.findById(folder3.getId()).get();
 
 //	Then
 	assertThat(count).isEqualTo(3);
@@ -204,7 +204,7 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
 	folder2.setParentFolderChain("0_1_2");
 
 	Folder folder3 = new Folder();
-	folder2.setName("folder3");
+	folder3.setName("folder3");
 	folder3.setParentFolderChain("0_12_5");
 
 	folder1 = folderRepo.saveAndFlush(folder1);

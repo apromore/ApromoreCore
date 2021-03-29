@@ -42,9 +42,11 @@ import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -54,6 +56,8 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -630,5 +634,12 @@ public class AccessController extends SelectorComposer<Div> {
     public void onClickBtnCancel() {
         destroy();
     }
+    
+    private PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 
 }

@@ -1,0 +1,17 @@
+group = 'org.apromore.plugin'
+version = '1.0.0'
+description = 'Log Filter Generic Portal Plugin'
+
+
+
+dependencies {
+    
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Extras:APMLogModule')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	
+    implementation project(':Apromore-Custom-Plugins:Generic-Portal-Plugin')
+   
+}
+

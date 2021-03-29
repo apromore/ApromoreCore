@@ -24,6 +24,8 @@ package org.apromore.plugin.portal.accesscontrol;
 
 import java.util.Locale;
 import java.util.Map;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.Boolean;
 import javax.inject.Inject;
 
@@ -38,7 +40,9 @@ import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 import org.apromore.dao.model.User;
@@ -105,7 +109,11 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
                         UserSessionManager.getCurrentUser(), selectedItem, canShare);
             } else {
                 if (canShare) {
-                    Window window = (Window) Executions.getCurrent().createComponents("/accesscontrol/zul/share.zul", null, arg);
+                	
+                    PageDefinition pageDefinition = getPageDefination("accesscontrol/zul/share.zul");
+                    
+					Window window = (Window) Executions.getCurrent().createComponents(pageDefinition, null, arg);
+					
                     window.doModal();
                 } else {
                     Notification.error("Only Owner can share an item");
@@ -115,4 +123,11 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
+
+	private PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 }

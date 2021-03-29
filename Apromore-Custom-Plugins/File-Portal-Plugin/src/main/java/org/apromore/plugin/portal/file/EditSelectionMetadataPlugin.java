@@ -37,8 +37,10 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(EditSelectionMetadataPlugin.class);

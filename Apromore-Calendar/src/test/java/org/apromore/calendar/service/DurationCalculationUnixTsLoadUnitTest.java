@@ -21,31 +21,21 @@
  */
 package org.apromore.calendar.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.builder.Container;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.model.DurationModel;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import lombok.Data;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.ignoreStubs;
-// This is to test compute load with 100k records, 
-//With 2 months difference the response comes in 860 milliseconds.
 
 @Ignore("Ignored as this is a intensive test")
 public class DurationCalculationUnixTsLoadUnitTest {
@@ -113,13 +103,6 @@ public class DurationCalculationUnixTsLoadUnitTest {
   }
 
 
-  @Data
-  class Container {
-
-    List<Long> start;
-    List<Long> end;
-    List<Long> diff;
-  }
 
 
 }

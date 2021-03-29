@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.transaction.Transactional;
+
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -46,10 +48,13 @@ import org.apromore.dao.model.HOLIDAYTYPE;
 import org.apromore.dao.model.Holiday;
 import org.apromore.dao.model.WorkDay;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import lombok.Data;
 
 @Data
+@Service
+@Transactional
 public class CustomCalendarService implements CalendarService {
 
     @Autowired
@@ -94,7 +99,7 @@ public class CustomCalendarService implements CalendarService {
     @Override
     public CalendarModel getCalendar(Long id) {
 
-        return modelMapper.getMapper().map(calendarRepo.findById(id), CalendarModel.class);
+        return modelMapper.getMapper().map(calendarRepo.findById(id).orElse(null), CalendarModel.class);
 
     }
 
@@ -164,7 +169,7 @@ public class CustomCalendarService implements CalendarService {
     }
 
     private CustomCalendar getExistingCalendar(Long id) throws CalendarNotExistsException {
-        CustomCalendar calendar = calendarRepo.findById(id);
+        CustomCalendar calendar = calendarRepo.findById(id).orElse(null);
 
         if (calendar == null) {
             throw new CalendarNotExistsException("calendar does not exist");
@@ -178,7 +183,7 @@ public class CustomCalendarService implements CalendarService {
         // Bad way to delete, but we need to upgrade jpa of springs to make use of
         // better ways of delete
         for (Long idLong : holidayIds) {
-            holidayRepository.delete(idLong);
+            holidayRepository.deleteById(idLong);
 
         }
 
@@ -186,7 +191,7 @@ public class CustomCalendarService implements CalendarService {
 
     @Override
     public void deleteCalendar(Long calendarId) {
-        calendarRepo.delete(calendarId);
+        calendarRepo.deleteById(calendarId);
 
     }
 

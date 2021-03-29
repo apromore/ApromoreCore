@@ -28,8 +28,10 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class CreateProcessPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CreateProcessPlugin.class);

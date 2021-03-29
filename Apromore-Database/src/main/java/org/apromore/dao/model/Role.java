@@ -24,6 +24,11 @@
 
 package org.apromore.dao.model;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,13 +41,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -58,7 +57,6 @@ import org.springframework.beans.factory.annotation.Configurable;
         }
 )
 @Configurable("role")
-@Cache(expiry = 180000, size = 10, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Role implements Serializable {
 
     private Integer id;
@@ -153,8 +151,8 @@ public class Role implements Serializable {
      */
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",
-            joinColumns = { @JoinColumn(name = "roleId") },
-            inverseJoinColumns = { @JoinColumn(name = "userId") }
+            joinColumns = { @JoinColumn(name = "roleid") },
+            inverseJoinColumns = { @JoinColumn(name = "userid") }
     )
     public Set<User> getUsers() {
         return this.users;
@@ -174,8 +172,8 @@ public class Role implements Serializable {
      */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "role_permission",
-            joinColumns = { @JoinColumn(name = "roleId") },
-            inverseJoinColumns = { @JoinColumn(name = "permissionId") }
+            joinColumns = { @JoinColumn(name = "roleid") },
+            inverseJoinColumns = { @JoinColumn(name = "permissionid") }
     )
     public Set<Permission> getPermissions() {
         return this.permissions;

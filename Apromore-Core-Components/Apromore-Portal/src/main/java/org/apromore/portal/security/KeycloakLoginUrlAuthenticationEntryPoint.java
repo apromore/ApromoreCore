@@ -37,7 +37,12 @@ import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakLoginUrlAuthenticationEntryPoint.class);
+    public KeycloakLoginUrlAuthenticationEntryPoint(String loginFormUrl) {
+		super(loginFormUrl);
+		this.keycloakLoginFormUrl=loginFormUrl;
+	}
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakLoginUrlAuthenticationEntryPoint.class);
 
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";

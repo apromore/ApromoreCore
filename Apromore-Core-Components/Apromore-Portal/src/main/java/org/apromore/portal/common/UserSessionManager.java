@@ -36,8 +36,9 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apromore.dao.model.User;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.portal.ConfigBean;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.UserAuthenticationHelper;
 import org.apromore.portal.dialogController.dto.ApromoreSession;

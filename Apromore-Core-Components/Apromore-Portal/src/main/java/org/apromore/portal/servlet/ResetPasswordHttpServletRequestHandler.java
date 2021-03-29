@@ -24,24 +24,26 @@
 
 package org.apromore.portal.servlet;
 
-import org.apache.commons.lang.StringUtils;
-import org.apromore.manager.client.ManagerService;
-import org.apromore.portal.common.WebAttributes;
-import org.apromore.portal.model.UserType;
-import org.apromore.portal.util.RandomPasswordGenerator;
-import org.apromore.security.util.SecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.common.WebAttributes;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.util.RandomPasswordGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.google.common.base.Strings;
 
 /**
  * HACK to get new user registrations working outside of ZK.
@@ -113,7 +115,7 @@ public class ResetPasswordHttpServletRequestHandler extends BaseServletRequestHa
     /* Check that all the data is correct and present so we can proceed with user registration. */
     private boolean isUserRequestOk(HttpServletRequest request, Set<String> messages) {
         boolean ok = true;
-        if (StringUtils.isEmpty(request.getParameter(USERNAME))) {
+        if (Strings.isNullOrEmpty(request.getParameter(USERNAME))) {
             ok = false;
             messages.add("Username cannot be empty!");
         }

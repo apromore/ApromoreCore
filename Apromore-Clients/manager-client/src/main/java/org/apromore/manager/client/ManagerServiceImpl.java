@@ -31,7 +31,7 @@ import java.util.*;
 import javax.inject.Inject;
 import javax.security.cert.CertificateException;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.common.Constants;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;

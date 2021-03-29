@@ -1,0 +1,7 @@
+
+dependencies {
+    implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.fop:2.5_1'
+    
+}
+
+description = 'Apromore Editor Extension: PDF'

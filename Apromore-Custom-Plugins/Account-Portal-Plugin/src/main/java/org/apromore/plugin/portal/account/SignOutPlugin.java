@@ -33,6 +33,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.common.UserSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -40,6 +41,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class SignOutPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SignOutPlugin.class);
@@ -61,7 +63,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
 
     @Override
     public RenderedImage getIcon() {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("/sign-out-icon.png")) {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("sign-out-icon.png")) {
             BufferedImage icon = ImageIO.read(in);
             return icon;
 
@@ -73,7 +75,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getIconPath() {
-        return "/sign-out-icon.svg";
+        return "sign-out-icon.svg";
     }
 
     @Override

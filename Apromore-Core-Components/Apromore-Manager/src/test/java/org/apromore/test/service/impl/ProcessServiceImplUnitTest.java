@@ -27,8 +27,9 @@ package org.apromore.test.service.impl;
 import com.google.common.io.CharStreams;
 import org.junit.Assert;
 import org.apromore.TestData;
-import org.apromore.common.ConfigBean;
+
 import org.apromore.common.Constants;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
@@ -46,17 +47,19 @@ import org.apromore.service.impl.ProcessServiceImpl;
 import org.apromore.service.model.ProcessData;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
-import org.eclipse.persistence.internal.oxm.ByteArrayDataSource;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.easymock.EasyMock.anyObject;
@@ -346,7 +349,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
             .getInputStream();
 
     // Mock Recording
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
         Arrays.asList(new GroupProcess[] {groupProcess}));
     expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
@@ -395,7 +398,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
             .getInputStream();
 
     // Mock Recording
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
         Arrays.asList(new GroupProcess[] {groupProcess}));
     replayAll();
@@ -435,7 +438,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
             .getInputStream();
 
     // Mock Recording
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
         Arrays.asList(new GroupProcess[] {groupProcess}));
     expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
@@ -477,7 +480,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
             .getInputStream();
 
     // Mock Recording
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
         Arrays.asList(new GroupProcess[] {groupProcess}));
     expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
@@ -521,7 +524,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
             .getInputStream();
 
     // Mock Recording
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(
         Arrays.asList(new GroupProcess[] {groupProcess}));
     expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
@@ -579,7 +582,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     // Mock Recording
     expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber))
         .andReturn(pmv);
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
     expect(groupRepo.findPublicGroup()).andStubReturn(publicGroup);
 
@@ -650,7 +653,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     // Mock Recording
     expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber))
         .andReturn(pmv);
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
     expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
     expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
@@ -723,7 +726,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     // Mock Recording
     expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber))
         .andReturn(pmv);
-    expect(processRepo.findOne(processId)).andReturn(process);
+    expect(processRepo.findById(processId)).andReturn(Optional.of(process));
     expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
     expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
     expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
@@ -970,7 +973,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
   private Folder createFolder() {
     Folder folder = new Folder();
-    folder.setId(0);
+    folder.setId(1);
     return folder;
   }
 

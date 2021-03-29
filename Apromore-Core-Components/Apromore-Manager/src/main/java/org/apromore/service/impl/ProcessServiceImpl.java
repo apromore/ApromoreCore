@@ -41,8 +41,9 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
-import org.apromore.common.ConfigBean;
+
 import org.apromore.common.Constants;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
@@ -85,7 +86,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Implementation of the ProcessService Contract.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Service
+@Service("processService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ProcessServiceImpl implements ProcessService {
 
@@ -187,7 +188,7 @@ public class ProcessServiceImpl implements ProcessService {
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
-        Process process = processRepo.findOne(processId);
+        Process process = processRepo.findById(processId).get();
         String processName = process.getName();
 
         try {
@@ -234,7 +235,7 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessModelVersion pmv;
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
-        Process process = processRepo.findOne(processId);
+        Process process = processRepo.findById(processId).get();
         String processName = process.getName();
 
         try {
@@ -343,7 +344,7 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion.toString());
             ProcessBranch branch = processModelVersion.getProcessBranch();
-            Process process = processRepo.findOne(processId);
+            Process process = processRepo.findById(processId).get();
 
             process.setDomain(domain);
             process.setName(processName);
@@ -560,7 +561,7 @@ public class ProcessServiceImpl implements ProcessService {
             process.setDomain(domain);
             process.setNativeType(nativeType);
             process.setCreateDate(created);
-            if (folderId != null) {
+            if (folderId != null && folderId!=0) {
                 process.setFolder(workspaceSrv.getFolder(folderId));
             }
 

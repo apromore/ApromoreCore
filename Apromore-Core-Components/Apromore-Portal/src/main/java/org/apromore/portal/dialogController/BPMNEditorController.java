@@ -39,18 +39,24 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.model.*;
+import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.PluginMessages;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.util.AccessType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -63,7 +69,7 @@ import org.zkoss.zul.Messagebox;
  * @author Bruce Nguyen
  *
  */
-public class BPMNEditorController extends BaseController {
+public class BPMNEditorController extends BaseController implements Composer<Component> {
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(BPMNEditorController.class.getCanonicalName());
@@ -243,7 +249,7 @@ public class BPMNEditorController extends BaseController {
                         arg.put("currentUser", UserSessionManager.getCurrentUser());
                         arg.put("autoInherit", true);
                         arg.put("showRelatedArtifacts", true);
-                        arg.put("enablePublish", getConfig().getEnablePublish());
+                        arg.put("enablePublish", getConfig().isEnablePublish());
                         accessControlPlugin.setSimpleParams(arg);
                         accessControlPlugin.execute(portalContext);
                     } catch (Exception e) {
@@ -296,6 +302,12 @@ public class BPMNEditorController extends BaseController {
 
         throw new RuntimeException("Unsupported class of event data: " + event.getData());
     }
+
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
     
 
 }

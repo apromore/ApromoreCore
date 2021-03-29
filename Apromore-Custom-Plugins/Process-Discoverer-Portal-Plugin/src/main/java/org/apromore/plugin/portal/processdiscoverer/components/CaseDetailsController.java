@@ -81,7 +81,7 @@ public class CaseDetailsController extends DataListController {
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (caseDetailsWindow == null) {
-			caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
+			caseDetailsWindow = (Window) Executions.createComponents(getPageDefination("static/processdiscoverer/zul/caseDetails.zul"), null, null);
 			caseDetailsWindow.setTitle("Cases");
 			caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 

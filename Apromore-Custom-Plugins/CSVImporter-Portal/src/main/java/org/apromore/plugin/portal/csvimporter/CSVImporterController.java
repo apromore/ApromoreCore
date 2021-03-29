@@ -24,8 +24,10 @@
 
 package org.apromore.plugin.portal.csvimporter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
@@ -38,7 +40,6 @@ import org.apromore.service.csvimporter.services.*;
 import org.apromore.service.csvimporter.services.legacy.LogImporter;
 import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
@@ -51,7 +52,9 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.*;
@@ -65,6 +68,7 @@ import java.util.*;
 /**
  * Controller for <code>csvimporter.zul</code>.
  */
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class CSVImporterController extends SelectorComposer<Window> implements Constants {
 
     /**
@@ -75,18 +79,22 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private static final int ROW_INDEX_START_FROM = 1;
     //Get Data layer config
     private final String propertyFile = "datalayer.config";
-    // Fields injected from Spring beans/OSGi services
-    private EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
-    private UserMetadataService userMetadataService = (UserMetadataService) SpringUtil.getBean("userMetadataService");
+
+    @WireVariable
+    private EventLogService eventLogService ;
+    
+    @WireVariable
+    private UserMetadataService userMetadataService ;
     // Fields injected from the ZK session
     private Media media = (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
     private JSONObject mappingJSON =
             (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("mappingJSON");
-    private ParquetFactoryProvider parquetFactoryProvider = (ParquetFactoryProvider) ((Map) Sessions.getCurrent()
-            .getAttribute(SESSION_ATTRIBUTE_KEY)).get("parquetFactoryProvider");
-    private LogImporterProvider logImporterProvider = (LogImporterProvider) ((Map) Sessions.getCurrent()
-            .getAttribute(SESSION_ATTRIBUTE_KEY)).get("logImporterProvider");
+    @WireVariable
+    private ParquetFactoryProvider parquetFactoryProvider;
+    
+    @WireVariable
+    private LogImporterProvider logImporterProvider;
     // Fields injected from csvimporter.zul
     private @Wire("#mainWindow")
     Window window;
@@ -414,7 +422,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     public ResourceBundle getLabels() {
-        return ResourceBundle.getBundle("WEB-INF.zk-label",
+        return ResourceBundle.getBundle("csvLabel",
                 Locales.getCurrent(),
                 CSVImporterController.class.getClassLoader());
     }

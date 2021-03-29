@@ -21,11 +21,15 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
+import java.util.Map;
+
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -35,38 +39,43 @@ import org.zkoss.zul.Window;
 
 public class CreateGroupController extends SelectorComposer<Window> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CreateGroupController.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(CreateGroupController.class);
 
-    private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
-    private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
+	private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
+	private SecurityService securityService = (SecurityService) /* SpringUtil.getBean("securityService"); */ Executions
+			.getCurrent().getArg().get("securityService");
 
-    @Wire("#groupNameTextbox") Textbox groupNameTextbox;
+	@Wire("#groupNameTextbox")
+	Textbox groupNameTextbox;
 
-    @Listen("onClick = #createBtn")
-    public void onClickCreateButton() throws Exception {
-        boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
-        if (!canEditGroups) {
-            throw new Exception("Cannot edit groups without permission");
-        }
+	@Listen("onClick = #createBtn")
+	public void onClickCreateButton() throws Exception {
+		boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(),
+				Permissions.EDIT_GROUPS.getRowGuid());
+		if (!canEditGroups) {
+			throw new Exception("Cannot edit groups without permission");
+		}
 
-        try {
-            if(securityService.getGroupByName(groupNameTextbox.getValue())!=null)
-            {
-        	throw new Exception("Group already exists");
-            }
-            securityService.createGroup(groupNameTextbox.getValue());
-            getSelf().detach();
+		try {
+			if (securityService.getGroupByName(groupNameTextbox.getValue()) != null) {
+				throw new Exception("Group already exists");
+			}
+			securityService.createGroup(groupNameTextbox.getValue());
+			Map dataMap = Map.of("type", "CREATE_GROUP");
 
-        } catch (Exception e) {
-            LOGGER.error("Unable to create group", e);
-            Messagebox.show("Unable to create group. The group/user with the same name could have been present in " +
-                    "the system.");
-        }
-        getSelf().detach();
-    }
+			EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+					.publish(new Event("Group Create", null, dataMap));
 
-    @Listen("onClick = #cancelBtn")
-    public void onClickCancelButton() {
-        getSelf().detach();
-    }
+		} catch (Exception e) {
+			LOGGER.error("Unable to create group", e);
+			Messagebox.show("Unable to create group. The group/user with the same name could have been present in "
+					+ "the system.");
+		}
+		getSelf().detach();
+	}
+
+	@Listen("onClick = #cancelBtn")
+	public void onClickCancelButton() {
+		getSelf().detach();
+	}
 }

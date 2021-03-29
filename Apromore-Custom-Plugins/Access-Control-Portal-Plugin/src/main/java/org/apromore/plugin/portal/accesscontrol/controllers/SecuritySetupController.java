@@ -29,12 +29,16 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.UserType;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Window;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,9 +60,9 @@ public class SecuritySetupController extends BaseController {
         arg.put("currentUser", currentUser);
         arg.put("autoInherit", true);
         arg.put("showRelatedArtifacts", true);
-        arg.put("enablePublish", config.getEnablePublish());
+        arg.put("enablePublish", config.isEnablePublish());
         try {
-            final Window win = (Window) Executions.createComponents("/accesscontrol/zul/securitySetup.zul", null, arg);
+            final Window win = (Window) Executions.createComponents(getPageDefination("accesscontrol/zul/securitySetup.zul"), null, arg);
             FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
             this.folderTreeController = new SecurityFolderTreeController(this, win, currentFolder.getId());
@@ -90,4 +94,11 @@ public class SecuritySetupController extends BaseController {
     public MainController getMainController(){
         return this.mainController;
     }
+    
+    private PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 }

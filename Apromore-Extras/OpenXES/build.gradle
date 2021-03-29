@@ -1,0 +1,14 @@
+group = 'org.apromore'
+version = '2.27'
+description = 'OpenXES'
+
+dependencies {
+
+	api 'org.eclipse.collections:eclipse-collections:10.4.0'
+	implementation 'com.thoughtworks.xstream:xstream:1.4.16'	
+	implementation 'javax.xml.bind:jaxb-api'
+	implementation 'org.deckfour:spex:1.0'
+	implementation 'com.esotericsoftware:kryo:4.0.2'
+	
+	
+}

@@ -1,0 +1,11 @@
+
+group = 'org.apromore'
+version = '1.0'
+description = 'prom-widgets-osgi'
+
+dependencies {
+   
+    implementation project(':Apromore-ProcessMining-Collection:jgraph')
+    implementation project(':Apromore-ProcessMining-Collection:prom-models')
+    
+}

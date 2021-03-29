@@ -23,8 +23,6 @@
  */
 package org.apromore.plugin.editor;
 
-import org.apromore.manager.client.ManagerService;
-import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
 
 import java.io.IOException;

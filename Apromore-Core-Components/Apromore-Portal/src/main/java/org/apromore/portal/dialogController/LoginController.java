@@ -25,6 +25,15 @@
 
 package org.apromore.portal.dialogController;
 
+
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.plugin.portal.SessionTab;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.model.*;
 import org.zkoss.zul.*;
 import org.zkoss.util.resource.Labels;
 
@@ -59,13 +68,13 @@ public class LoginController extends BaseController {
         Html ppLink = (Html) mainW.getFellow("ppLink");
         Html tcLink = (Html) mainW.getFellow("tcLink");
         Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
-        String src = "/themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
+        String src = "~./themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
-        boolean enableTC = config.getEnableTC();
-        boolean enablePP = config.getEnablePP();
-        boolean enableUserReg = config.getEnableUserReg();
-        boolean enableFullUserReg = config.getEnableFullUserReg();
-        boolean enableSubscription = config.getEnableSubscription();
+        boolean enableTC = config.isEnableTC();
+        boolean enablePP = config.isEnablePP();
+        boolean enableUserReg = config.isEnableUserReg();
+        boolean enableFullUserReg = config.isEnableFullUserReg();
+        boolean enableSubscription = config.isEnableSubscription();
 
         registerBtn.setVisible(enableUserReg);
         subscribe.setVisible(enableSubscription);

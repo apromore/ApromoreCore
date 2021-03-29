@@ -1,0 +1,16 @@
+group = 'org.apromore.editor'
+version = '1.0'
+description = 'Apromore Editor'
+
+dependencies {
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+    implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.joda-time:2.3_1'	
+	implementation group: 'org.json', name: 'json', version: '20201115'
+	api group: 'com.sun.xml', name: 'com.springsource.com.sun.xml.bind', version: '2.2.0'	
+    api group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.1'
+
+    api project(':Apromore-Custom-Plugins:Apromore-Editor:diagramcore')
+	
+	
+}
+

@@ -21,77 +21,66 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
-import java.util.Comparator;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.apromore.portal.common.zk.ComponentUtils;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.types.EventQueueTypes;
+import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
+import org.apromore.plugin.portal.useradmin.listbox.AssignedUserListbox;
+import org.apromore.plugin.portal.useradmin.listbox.GroupListbox;
+import org.apromore.plugin.portal.useradmin.listbox.TristateItemRenderer;
+import org.apromore.plugin.portal.useradmin.listbox.TristateListbox;
+import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
+import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
+import org.apromore.portal.common.notification.Notification;
+import org.apromore.portal.common.zk.ComponentUtils;
 import org.apromore.portal.types.EventQueueEvents;
-import org.apromore.service.SecurityService;
+import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.security.util.SecurityUtil;
+import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-//import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //import org.zkoss.spring.SpringUtil;
 import org.zkoss.json.JSONObject;
-import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.ListModels;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModels;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
-
-import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
-import org.apromore.plugin.portal.useradmin.listbox.*;
-import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
 
 public class UserAdminController extends SelectorComposer<Window> {
 
@@ -515,24 +504,24 @@ public class UserAdminController extends SelectorComposer<Window> {
                 }
             );
 
-        // Register OSGi event handler
-        BundleContext bundleContext = (BundleContext) getSelf().getDesktop().getWebApp().getServletContext().getAttribute("osgi-bundlecontext");
-        String filter = "(" + EventConstants.EVENT_TOPIC + "=" + SecurityService.EVENT_TOPIC + ")";
-        Collection<ServiceReference> forwarders = bundleContext.getServiceReferences(EventHandler.class, filter);
-        if (forwarders.isEmpty()) {
-            Dictionary<String, Object> properties = new Hashtable<>();
-            properties.put(EventConstants.EVENT_TOPIC, SecurityService.EVENT_TOPIC);
-            bundleContext.registerService(EventHandler.class.getName(), new EventHandler() {
-                @Override
-                public final void handleEvent(org.osgi.service.event.Event event) {
-                    Map<String, Object> properties = new HashMap<>();
-                    for (String propertyName : event.getPropertyNames()) {
-                        properties.put(propertyName, event.getProperty(propertyName));
-                    }
-                    securityEventQueue.publish(new Event(event.getTopic(), null, properties));
-                }
-            }, properties);
-        }
+		/*
+		 * // Register OSGi event handler BundleContext bundleContext = (BundleContext)
+		 * getSelf().getDesktop().getWebApp().getServletContext().getAttribute(
+		 * "osgi-bundlecontext"); String filter = "(" + EventConstants.EVENT_TOPIC + "="
+		 * + SecurityService.EVENT_TOPIC + ")"; Collection<ServiceReference> forwarders
+		 * = bundleContext.getServiceReferences(EventHandler.class, filter); if
+		 * (forwarders.isEmpty()) { Dictionary<String, Object> properties = new
+		 * Hashtable<>(); properties.put(EventConstants.EVENT_TOPIC,
+		 * SecurityService.EVENT_TOPIC);
+		 * bundleContext.registerService(EventHandler.class.getName(), new
+		 * EventHandler() {
+		 * 
+		 * @Override public final void handleEvent(org.osgi.service.event.Event event) {
+		 * Map<String, Object> properties = new HashMap<>(); for (String propertyName :
+		 * event.getPropertyNames()) { properties.put(propertyName,
+		 * event.getProperty(propertyName)); } securityEventQueue.publish(new
+		 * Event(event.getTopic(), null, properties)); } }, properties); }
+		 */
     }
 
     private void refreshUsers() {
@@ -948,7 +937,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/create-user.zul", getSelf(), arg);
+            Window window = (Window) Executions.getCurrent().createComponents(getPageDefination("static/zul/create-user.zul"), getSelf(), arg);
             window.doModal();
 
         } catch (Exception e) {
@@ -990,7 +979,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                                     try {
                                         Map arg = new HashMap<>();
                                         arg.put("selectedUser", user);
-                                        Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/delete-user.zul", getSelf(), arg);
+                                        Window window = (Window) Executions.getCurrent().createComponents(getPageDefination("static/zul/delete-user.zul"), getSelf(), arg);
                                         window.doModal();
                                     } catch (Exception ex) {
                                         LOGGER.error("Unable to create transfer owner dialog", ex);
@@ -1001,6 +990,10 @@ public class UserAdminController extends SelectorComposer<Window> {
                                     // Force logout the deleted user
                                     EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
                                             .publish(new Event("onSignout", null, user.getUsername()));
+                                    
+                                    Map dataMap = Map.of("type", "DELETE_USER");
+                                    EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                    				.publish(new Event("User Delete", null, dataMap));
                                 }
                             }
                             setSelectedUsers(null);
@@ -1231,7 +1224,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
-            Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/create-group.zul", getSelf(), arg);
+            Window window = (Window) Executions.getCurrent().createComponents(getPageDefination("static/zul/create-group.zul"), getSelf(), arg);
             window.doModal();
 
         } catch (Exception e) {
@@ -1356,5 +1349,12 @@ public class UserAdminController extends SelectorComposer<Window> {
     public void onChangingGroupNameTextbox() {
         isGroupDetailDirty = true;
     }
+    
+    private PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 
 }

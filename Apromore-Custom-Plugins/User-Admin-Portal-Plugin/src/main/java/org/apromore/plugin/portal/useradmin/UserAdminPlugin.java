@@ -21,6 +21,8 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -40,8 +42,10 @@ import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -87,12 +91,12 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
                 return;
             }
 
-            // Present the user admin window
+            // Present the user admin window˙
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
             arg.put("workspaceService", workspaceService);
-            Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/index.zul", null, arg);
+            Window window = (Window) Executions.getCurrent().createComponents(getPageDefination("static/zul/index.zul"), null, arg);
             window.doModal();
 
         } catch(Exception e) {
@@ -100,6 +104,13 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Notification.error("Unable to create user administration dialog");
         }
     }
+    
+    private PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 
     @Override
     public Availability getAvailability() {

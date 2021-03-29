@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.apromore.common.ConfigBean;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -144,7 +144,7 @@ public class EventLogServiceImplTest {
         storageFactory=createMock(StorageManagementFactory.class);
         logFileService=createMock(EventLogFileService.class);
         storageRepository=createMock(StorageRepository.class);
-	calendarRepository = createMock(CustomCalendarRepository.class);
+        calendarRepository = createMock(CustomCalendarRepository.class);
         ConfigBean config = new ConfigBean();
 
         eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,

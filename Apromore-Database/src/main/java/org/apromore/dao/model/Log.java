@@ -46,8 +46,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -62,7 +60,6 @@ import org.springframework.beans.factory.annotation.Configurable;
         }
 )
 @Configurable("log")
-@Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Log implements Serializable {
 
     private Integer id;
@@ -145,7 +142,7 @@ public class Log implements Serializable {
         this.ranking = newRanking;
     }
 
-    @Column(name = "createDate")
+    @Column(name = "createdate")
     public String getCreateDate() {
         return this.createDate;
     }
@@ -156,7 +153,7 @@ public class Log implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "folderId")
+    @JoinColumn(name = "folderid")
     public Folder getFolder() {
         return this.folder;
     }

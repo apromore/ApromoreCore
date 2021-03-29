@@ -56,6 +56,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -351,7 +352,7 @@ public abstract class BaseListboxController extends BaseController {
 			}
 		});
 
-		this.btnCalendar.setVisible(config.getEnableCalendar());
+		this.btnCalendar.setVisible(config.isEnableCalendar());
 		this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -781,7 +782,7 @@ public abstract class BaseListboxController extends BaseController {
 			arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
 			arg.put("autoInherit", true);
 			arg.put("showRelatedArtifacts", true);
-			arg.put("enablePublish", config.getEnablePublish());
+			arg.put("enablePublish", config.isEnablePublish());
 			accessControlPlugin.setSimpleParams(arg);
 			accessControlPlugin.execute(portalContext);
 		} catch (Exception e) {
@@ -813,7 +814,7 @@ public abstract class BaseListboxController extends BaseController {
 			arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
 			arg.put("autoInherit", true);
 			arg.put("showRelatedArtifacts", true);
-			arg.put("enablePublish", config.getEnablePublish());
+			arg.put("enablePublish", config.isEnablePublish());
 			accessControlPlugin.setSimpleParams(arg);
 			accessControlPlugin.execute(portalContext);
 		} catch (Exception e) {

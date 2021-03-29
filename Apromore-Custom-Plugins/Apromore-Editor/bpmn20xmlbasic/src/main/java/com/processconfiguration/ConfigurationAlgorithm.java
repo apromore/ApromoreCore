@@ -724,23 +724,23 @@ public abstract class ConfigurationAlgorithm {
      * @param arg  command line arguments are ignored
      * @throws JAXBException if XML parsing fails
      */
-    public static void main(final String[] arg) throws JAXBException {
-
-        // Read a BPMN XML document from standard input
-        JAXBContext context = JAXBContext.newInstance(Definitions.class,
-                                                      ConfigurationAnnotationAssociation.class,
-                                                      ConfigurationAnnotationShape.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-        Definitions definitions = (Definitions) unmarshaller.unmarshal(System.in);
-
-        // Exercise the method
-        ConfigurationAlgorithm.configure(definitions);
-
-        // Write the configured BPMN XML document to standard output
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new BPMNPrefixMapper());
-        marshaller.marshal(definitions, System.out);
-    }
+//    public static void main(final String[] arg) throws JAXBException {
+//
+//        // Read a BPMN XML document from standard input
+//        JAXBContext context = JAXBContext.newInstance(Definitions.class,
+//                                                      ConfigurationAnnotationAssociation.class,
+//                                                      ConfigurationAnnotationShape.class);
+//        Unmarshaller unmarshaller = context.createUnmarshaller();
+//        unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+//        Definitions definitions = (Definitions) unmarshaller.unmarshal(System.in);
+//
+//        // Exercise the method
+//        ConfigurationAlgorithm.configure(definitions);
+//
+//        // Write the configured BPMN XML document to standard output
+//        Marshaller marshaller = context.createMarshaller();
+//        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new BPMNPrefixMapper());
+//        marshaller.marshal(definitions, System.out);
+//    }
 }

@@ -1,0 +1,38 @@
+group = 'org.apromore'
+version = '2.0.0'
+description = 'Process Discoverer Portal Plugin'
+
+dependencies {
+    
+	
+	implementation project(':Apromore-Custom-Plugins:Log-Filter-Portal-Plugin-Generic')
+	implementation project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin-API')
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Custom-Plugins:Process-Discoverer-Logic')
+	implementation project(':Apromore-Custom-Plugins:Log-Logic')
+	implementation project(':Apromore-ProcessMining-Collection')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Clients:manager-client')
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Extras:APMLogModule')
+	implementation project(':Apromore-Custom-Plugins:Log-Animation-Logic')
+	implementation project(':Apromore-Custom-Plugins:Apromore-Editor:bpmn20xmlbasic')
+	implementation project(':Apromore-Custom-Plugins:Generic-Portal-Plugin')
+	
+	implementation group: 'org.roaringbitmap', name: 'RoaringBitmap', version: '0.9.10'
+	implementation "com.opencsv:opencsv:${opencsvVersion}"
+    
+
+  
+//    implementation 'org.ow2.bundles:ow2-bundles-externals-opencsv:1.0.36'
+        
+//    implementation 'org.everit.osgi.bundles:org.everit.osgi.bundles.com.lodborg.interval-tree:1.0.0'
+	implementation 'com.lodborg:interval-tree:1.0.0'
+    
+  
+}
+

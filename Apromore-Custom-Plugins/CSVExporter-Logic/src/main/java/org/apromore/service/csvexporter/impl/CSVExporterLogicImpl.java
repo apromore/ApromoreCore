@@ -26,11 +26,13 @@ package org.apromore.service.csvexporter.impl;
 
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.*;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Service
 public class CSVExporterLogicImpl implements CSVExporterLogic {
 
     private List<String> columnNames;

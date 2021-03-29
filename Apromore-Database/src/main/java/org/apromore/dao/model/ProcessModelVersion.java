@@ -45,8 +45,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 
@@ -56,7 +54,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "process_model_version")
 @Configurable("processModelVersion")
-@Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class ProcessModelVersion implements Serializable {
 
     private Integer id;
@@ -96,7 +93,7 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
-    @Column(name = "originalId")
+    @Column(name = "originalid")
     public String getOriginalId() {
         return this.originalId;
     }
@@ -114,7 +111,7 @@ public class ProcessModelVersion implements Serializable {
         this.versionNumber = newVersionNumber;
     }
 
-    @Column(name = "createDate")
+    @Column(name = "createdate")
     public String getCreateDate() {
         return this.createDate;
     }
@@ -123,7 +120,7 @@ public class ProcessModelVersion implements Serializable {
         this.createDate = newCreationDate;
     }
 
-    @Column(name = "lastUpdateDate")
+    @Column(name = "lastupdatedate")
     public String getLastUpdateDate() {
         return this.lastUpdateDate;
     }
@@ -174,7 +171,7 @@ public class ProcessModelVersion implements Serializable {
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "nativeId", referencedColumnName = "id")
+    @JoinColumn(name = "nativeid", referencedColumnName = "id")
     public Native getNativeDocument() {
         return this.nativeDocument;
     }
@@ -185,7 +182,7 @@ public class ProcessModelVersion implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "branchId")
+    @JoinColumn(name = "branchid")
     public ProcessBranch getProcessBranch() {
         return this.processBranch;
     }
@@ -195,7 +192,7 @@ public class ProcessModelVersion implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "nativeTypeId")
+    @JoinColumn(name = "nativetypeid")
     public NativeType getNativeType() {
         return this.nativeType;
     }

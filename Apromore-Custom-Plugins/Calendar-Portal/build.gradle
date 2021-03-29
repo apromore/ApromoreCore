@@ -1,0 +1,14 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'Custom calendar portal plugin'
+
+dependencies {
+   
+	
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')    
+	implementation project(':Apromore-Plugins:plugin-core:core:api')    
+    implementation project(':Apromore-Calendar')    
+    
+}

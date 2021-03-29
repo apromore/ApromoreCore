@@ -48,20 +48,21 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.loganimation.LogAnimationService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WebApps;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 /**
  * Java bound to the <code>animateLogInSignavio.zul</code> ZUML document.
  */
-public class LogAnimationController extends BaseController {
+public class LogAnimationController extends BaseController implements Composer<Component>  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationController.class.getCanonicalName());
 
@@ -171,12 +172,8 @@ public class LogAnimationController extends BaseController {
                     LOGGER.warn("Unsupported request parameter \"" + requestParameter.getId() + "\" with value " + requestParameter.getValue());
                 }
             }
-
-            BundleContext bundleContext = (BundleContext) WebApps.getCurrent().getServletContext().getAttribute("osgi-bundlecontext");
-            ServiceReference[] references = bundleContext.getServiceReferences(EditorPlugin.class.getName(), "(org.apromore.plugin.editor=bpmn.io)");
-            List<EditorPlugin> editorPlugins = (references == null)
-                ? Collections.emptyList()
-                : Arrays.stream(references).map(ref -> (EditorPlugin) bundleContext.getService(ref)).collect(Collectors.toList());
+            
+            List<EditorPlugin> editorPlugins = (List<EditorPlugin>) SpringUtil.getBean("editorPlugins");
             //List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("editorPluginsBPMN");
             param.put("plugins", editorPlugins);
 
@@ -218,9 +215,9 @@ public class LogAnimationController extends BaseController {
      * file. The ZK Desktop can only be active inside the onCreate method once the ZUL
      * file has been processed by ZK.
      */
-    public void onCreate() throws InterruptedException {
+    public void onCreate(Component comp) throws InterruptedException {
         // Store objects to be cleaned up when the session timeouts 
-        Desktop desktop = getDesktop();
+        Desktop desktop = comp.getDesktop();
         desktop.setAttribute("pluginSessionId", pluginSessionId);
     }
 
@@ -250,5 +247,11 @@ public class LogAnimationController extends BaseController {
 
         throw new RuntimeException("Unsupported class of event data: " + event.getData());
     }
+
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		onCreate(comp);
+		
+	}
 
 }

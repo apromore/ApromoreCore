@@ -44,8 +44,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -54,7 +52,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "process_branch")
 @Configurable("processBranch")
-@Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class ProcessBranch implements Serializable {
 
     private Integer id;
@@ -97,7 +94,7 @@ public class ProcessBranch implements Serializable {
         this.branchName = newBranchName;
     }
 
-    @Column(name = "createDate")
+    @Column(name = "createdate")
     public String getCreateDate() {
         return this.createDate;
     }
@@ -106,7 +103,7 @@ public class ProcessBranch implements Serializable {
         this.createDate = newCreationDate;
     }
 
-    @Column(name = "lastUpdateDate")
+    @Column(name = "lastupdatedate")
     public String getLastUpdateDate() {
         return this.lastUpdateDate;
     }
@@ -117,7 +114,7 @@ public class ProcessBranch implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "processId")
+    @JoinColumn(name = "processid")
     public Process getProcess() {
         return this.process;
     }
@@ -127,7 +124,7 @@ public class ProcessBranch implements Serializable {
     }
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "currentProcessModelVersion")
+    @JoinColumn(name = "currentprocessmodelversion")
     public ProcessModelVersion getCurrentProcessModelVersion() {
         return this.currentProcessModelVersion;
     }
@@ -138,7 +135,7 @@ public class ProcessBranch implements Serializable {
 
     //Unused
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sourceProcessModelVersion")
+    @JoinColumn(name = "sourceprocessmodelversion")
     public ProcessModelVersion getSourceProcessModelVersion() {
         return this.sourceProcessModelVersion;
     }
@@ -149,7 +146,7 @@ public class ProcessBranch implements Serializable {
     }
 
     @OneToMany(mappedBy = "processBranch")
-    @OrderBy("versionNumber ASC")
+    @OrderBy("version_number ASC")
     public List<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
     }

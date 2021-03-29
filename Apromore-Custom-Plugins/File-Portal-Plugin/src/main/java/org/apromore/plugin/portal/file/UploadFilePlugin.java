@@ -26,12 +26,13 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.stereotype.Component;
 import org.apromore.portal.dialogController.ImportController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
 import org.zkoss.zul.Messagebox;
 
+@Component
 public class UploadFilePlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UploadFilePlugin.class);

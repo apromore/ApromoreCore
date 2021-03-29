@@ -21,6 +21,8 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
+import java.util.Map;
+
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.security.util.SecurityUtil;
@@ -28,6 +30,8 @@ import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -67,6 +71,12 @@ public class CreateUserController extends SelectorComposer<Window> {
 
         try {
             securityService.createUser(user);
+            
+            Map dataMap = Map.of("type", "CREATE_USER");
+
+			EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+					.publish(new Event("User Create", null, dataMap));
+
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
             Messagebox.show("Unable to create user. The user could have been present in the system.");

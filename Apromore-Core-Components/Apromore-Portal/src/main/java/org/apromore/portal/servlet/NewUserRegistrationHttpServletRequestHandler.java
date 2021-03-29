@@ -24,7 +24,7 @@
 
 package org.apromore.portal.servlet;
 
-import org.apache.commons.lang.StringUtils;
+
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.WebAttributes;
 import org.apromore.portal.model.MembershipType;
@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.common.base.Strings;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -121,27 +123,27 @@ public class NewUserRegistrationHttpServletRequestHandler extends BaseServletReq
     /* Check that all the data is correct and present so we can proceed with user registration. */
     private boolean isUserRequestOk(HttpServletRequest request, Set<String> messages) {
         boolean ok = true;
-        if (StringUtils.isEmpty(request.getParameter(USERNAME))) {
+        if (Strings.isNullOrEmpty(request.getParameter(USERNAME))) {
             ok = false;
             messages.add("Username cannot be empty!");
         }
-        if (StringUtils.isEmpty(request.getParameter(FIRSTNAME))) {
+        if (Strings.isNullOrEmpty(request.getParameter(FIRSTNAME))) {
             ok = false;
             messages.add("First Name cannot be empty!");
         }
-        if (StringUtils.isEmpty(request.getParameter(SURNAME))) {
+        if (Strings.isNullOrEmpty(request.getParameter(SURNAME))) {
             ok = false;
             messages.add("Surname cannot be empty!");
         }
-        if (StringUtils.isEmpty(request.getParameter(EMAIL))) {
+        if (Strings.isNullOrEmpty(request.getParameter(EMAIL))) {
             ok = false;
             messages.add("Email cannot be empty!");
         }
-        if (StringUtils.isEmpty(request.getParameter(PASSWORD))) {
+        if (Strings.isNullOrEmpty(request.getParameter(PASSWORD))) {
             ok = false;
             messages.add("Password cannot be empty!");
         }
-        if (StringUtils.isEmpty(request.getParameter(CONFIRM_PASSWORD))) {
+        if (Strings.isNullOrEmpty(request.getParameter(CONFIRM_PASSWORD))) {
             ok = false;
             messages.add("Confirm Password cannot be empty!");
         }

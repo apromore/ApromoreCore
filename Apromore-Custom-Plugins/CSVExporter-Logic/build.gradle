@@ -1,0 +1,13 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'CSVExporter-Logic'
+
+
+dependencies {
+    
+	implementation project(':Apromore-Extras:OpenXES')
+    implementation project(':Apromore-Zk')
+    implementation "com.opencsv:opencsv:${opencsvVersion}"
+    
+}
+

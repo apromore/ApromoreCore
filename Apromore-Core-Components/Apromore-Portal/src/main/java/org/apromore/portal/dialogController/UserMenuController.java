@@ -34,10 +34,11 @@ import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import com.google.common.base.Strings;
+
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
@@ -76,7 +77,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
     public UserMenuController() {
         beanFactory = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext()).getAutowireCapableBeanFactory();
-        config = (ConfigBean) beanFactory.getBean("portalConfig");
+        config = (ConfigBean) beanFactory.getBean(ConfigBean.class);
     }
 
     public ManagerService getManagerService() {
@@ -137,7 +138,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
                 } else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
                     try {
-                        menuitem.setImage("portalPluginResource/"
+                        menuitem.setImage("/portalPluginResource/"
                             + URLEncoder.encode(plugin.getGroupLabel(Locale.getDefault()), "utf-8") + "/"
                             + URLEncoder.encode(plugin.getLabel(Locale.getDefault()), "utf-8") + "/"
                             + plugin.getIconPath());
@@ -224,10 +225,11 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                             }
 
                             final Session session = Sessions.getCurrent();
-
+                            
+                            session.invalidate();
                             if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
-                                Clients.evalJavaScript("window.close()");
-                                Executions.sendRedirect("/j_spring_security_logout");
+//                                Clients.evalJavaScript("window.close()");
+                                Executions.sendRedirect("/logout");
                             }
                         } catch (final Exception e) {
                             LOGGER.error("\n\nException in logging out: " + e.getMessage());

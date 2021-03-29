@@ -25,11 +25,11 @@ import static org.apromore.portal.common.UserSessionManager.initializeUser;
 import static org.apromore.portal.util.SecurityUtils.symmetricDecrypt;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.mapper.UserMapper;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.PortalSession;
 import org.apromore.portal.dialogController.MainController;

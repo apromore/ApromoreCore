@@ -24,16 +24,27 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * A group of users for access control.
@@ -48,7 +59,6 @@ import java.util.logging.Logger;
         }
 )
 @Configurable("group")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Group implements Serializable {
 
     private static Logger LOGGER = Logger.getLogger(Group.class.getCanonicalName());
@@ -62,7 +72,7 @@ public class Group implements Serializable {
      * <dt>PUBLIC</dt> <dd>Every user is a member of the (unique) public group.</dd>
      * </dl>
      */
-    public enum Type {USER, GROUP, PUBLIC};
+    public static enum Type {USER, GROUP, PUBLIC};
 
     // Column fields
     private Integer id;
@@ -163,8 +173,8 @@ public class Group implements Serializable {
      */
     @ManyToMany
     @JoinTable(name = "user_group",
-        joinColumns        = @JoinColumn(name = "groupId",  referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"))
+        joinColumns        = @JoinColumn(name = "groupid",  referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "userid", referencedColumnName = "id"))
     public Set<User> getUsers() {
         return users;
     }

@@ -40,8 +40,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -52,7 +50,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "native")
 @Configurable("native")
-@Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Native implements Serializable {
 
     private Integer id;
@@ -82,7 +79,7 @@ public class Native implements Serializable {
     }
 
 
-    @Column(name = "lastUpdateDate")
+    @Column(name = "lastupdatedate")
     public String getLastUpdateDate() {
         return this.lastUpdateDate;
     }
@@ -101,7 +98,7 @@ public class Native implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "nativeTypeId")
+    @JoinColumn(name = "nativetypeid")
     public NativeType getNativeType() {
         return this.nativeType;
     }
