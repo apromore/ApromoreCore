@@ -122,7 +122,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 folderServiceImpl,
                                                 storageFactory,
                                                 eventLogService,
-                                                storageRepository);
+                                                storageRepository,
+                                                config);
     }
 
     @Test
