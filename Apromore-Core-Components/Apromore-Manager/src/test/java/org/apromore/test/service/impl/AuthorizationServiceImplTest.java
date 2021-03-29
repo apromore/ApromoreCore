@@ -182,6 +182,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     @Rollback
     public void testGetLeastRestrictiveAccessType() {
         List<AccessType> accessTypes = new ArrayList<>();
+        accessTypes.add(AccessType.RESTRICTED);
         accessTypes.add(AccessType.VIEWER);
         accessTypes.add(AccessType.EDITOR);
         accessTypes.add(AccessType.OWNER);
@@ -209,6 +210,18 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         accessTypes.add(AccessType.OWNER);
 
         Assert.assertEquals(authorizationService.getMostRestrictiveAccessType(accessTypes), AccessType.VIEWER);
+    }
+
+    @Test
+    @Rollback
+    public void testGetMostRestrictiveAccessTypeReturnRestrictedViewer() {
+        List<AccessType> accessTypes = new ArrayList<>();
+        accessTypes.add(AccessType.RESTRICTED);
+        accessTypes.add(AccessType.VIEWER);
+        accessTypes.add(AccessType.EDITOR);
+        accessTypes.add(AccessType.OWNER);
+
+        Assert.assertEquals(authorizationService.getMostRestrictiveAccessType(accessTypes), AccessType.RESTRICTED);
     }
 
     @Test
