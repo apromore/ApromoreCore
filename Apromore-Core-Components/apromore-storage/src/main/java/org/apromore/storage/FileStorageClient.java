@@ -85,7 +85,7 @@ public class FileStorageClient implements StorageClient {
     }
 
 	@Override
-	public boolean delete(String key) {
+	public boolean delete(String prefix) {
 		return false;
 	}
 }
