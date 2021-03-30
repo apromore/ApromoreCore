@@ -85,7 +85,7 @@ public class FileStorageClient implements StorageClient {
     }
 
 	@Override
-	public boolean delete(String prefix) {
-		return false;
+	public boolean delete(String prefix) throws IllegalAccessException {
+    	throw new IllegalAccessException();
 	}
 }

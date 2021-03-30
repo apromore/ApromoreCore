@@ -39,7 +39,7 @@ public interface StorageClient {
     InputStream getInputStream(String prefix, String key) throws ObjectNotFoundException;
     OutputStream getOutputStream(String prefix, String key) throws ObjectCreationException;
     boolean delete(String prefix, String key);
-    boolean delete(String prefix);
+    boolean delete(String prefix) throws IllegalAccessException;
 
     default String getValidPrefix(String prefix) {
 	prefix = prefix == null ? "" : prefix;
