@@ -125,9 +125,9 @@ Ap.common.reportIssue = function (email, username) {
     let subject = 'Apromore Issue Report';
     let ua = (typeof navigator === 'undefined') ? '' : navigator.userAgent.toLowerCase();
     let href = window.location.href;
-    let body = `Username: ${username}%0D%0A` + `Browser info: ${ua}%0D%0A` + `URL: ${href}%0D%0A`;
+    let body = `Username: ${username}\r\n` + `Browser info: ${ua}\r\n` + `URL: ${href}\r\n`;
     body += 'Description of your issue:'
     let url = "mailto:" + email + "?subject=" + subject + "&body=" + body;
-    window.open(url, '_self');
+    window.open(encodeURI(url), '_self');
 }
 

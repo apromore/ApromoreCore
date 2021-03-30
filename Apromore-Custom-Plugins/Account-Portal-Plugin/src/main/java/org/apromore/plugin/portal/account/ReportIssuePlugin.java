@@ -57,7 +57,7 @@ public class ReportIssuePlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
-        String email = "support@apromore.com";
+        String email = portalContext.getMainController().getContactEmail();
         String userName = UserSessionManager.getCurrentUser().getUsername();
         Clients.evalJavaScript("Ap.common.reportIssue('" + email + "', '" + userName + "');");
     }
