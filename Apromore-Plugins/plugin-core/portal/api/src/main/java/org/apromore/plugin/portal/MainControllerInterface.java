@@ -41,6 +41,7 @@ public interface MainControllerInterface {
             Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
 			throws InterruptedException;
 
-	
+
+    String getContactEmail();
 }
 
