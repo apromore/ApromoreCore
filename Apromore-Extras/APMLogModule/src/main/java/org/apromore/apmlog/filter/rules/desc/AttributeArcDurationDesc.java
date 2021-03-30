@@ -23,6 +23,7 @@ package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.util.TimeUtil;
 
@@ -34,9 +35,8 @@ import java.util.Set;
 public class AttributeArcDurationDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
 
-        String desc = "";
-        String choice = logFilterRule.getChoice().toString().toLowerCase();
-        String attributeKey = logFilterRule.getKey();
+        StringBuilder sb = new StringBuilder();
+
         String fromVal = "", toVal = "";
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
             if (ruleValue.getOperationType() == OperationType.FROM) {
@@ -47,33 +47,25 @@ public class AttributeArcDurationDesc {
             }
         }
 
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) +
-                " all cases where their events contain the direct-follows relation of the \"";
-
-
-
-        desc += getDisplayAttributeKey(attributeKey) + "\" equal to [";
-        desc += fromVal + " -> " + toVal + "]";
-        desc += " and with duration range between [";
+        sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain " : "Remove ");
+        sb.append(" all cases where the direct-follows relation '");
+        sb.append(fromVal + "' -> '" + toVal + "'");
+        sb.append(" has duration between ");
 
         Set<RuleValue> secRuleValues = logFilterRule.getSecondaryValues();
         List<RuleValue> secRuleValueList = new ArrayList<RuleValue>(secRuleValues);
         Collections.sort(secRuleValueList);
 
-
-
         for (int i = 0; i < secRuleValueList.size(); i++) {
             RuleValue rv = secRuleValueList.get(i);
             String unit = rv.getCustomAttributes().get("unit");
-            desc += TimeUtil.durationStringOf(secRuleValueList.get(i).getDoubleValue(), unit);
+            sb.append(TimeUtil.durationStringOf(secRuleValueList.get(i).getDoubleValue(), unit));
             if (i < secRuleValueList.size() -1) {
-                desc += " AND ";
+                sb.append(" AND ");
             }
         }
 
-        desc += "]";
-
-        return desc;
+        return sb.toString();
     }
 
     private static String getDisplayAttributeKey(String attributeKey) {

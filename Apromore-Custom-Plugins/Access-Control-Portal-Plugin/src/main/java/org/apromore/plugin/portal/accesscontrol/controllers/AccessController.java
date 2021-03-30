@@ -66,6 +66,7 @@ import java.util.*;
 public class AccessController extends SelectorComposer<Div> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AccessController.class);
+    private static boolean USE_STRICT_USER_ADDITION = true;
 
     @WireVariable("managerService")
     private ManagerService managerService;
@@ -84,12 +85,14 @@ public class AccessController extends SelectorComposer<Div> {
     private UserType currentUser = (UserType) argMap.get("currentUser");
     private Boolean autoInherit = (Boolean) argMap.get("autoInherit");
     private Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+    Boolean enablePublish = (Boolean) argMap.get("enablePublish");
     private String userName;
 
     private Integer selectedItemId;
     private String selectedItemName;
     private Assignment selectedAssignment;
 
+    private Map<String, Assignee> candidateAssigneeMap;
     private ListModelList<Assignee> candidateAssigneeModel;
     private ListModelList<Assignment> assignmentModel;
     private ListModelList<Artifact> artifactModel;
@@ -122,6 +125,9 @@ public class AccessController extends SelectorComposer<Div> {
 
     @Wire("#candidateAssigneeCombobox")
     Combobox candidateAssigneeCombobox;
+
+    @Wire("#candidateAssigneeTextbox")
+    Textbox candidateAssigneeTextbox;
 
     @Wire("#candidateAssigneeAdd")
     Button candidateAssigneeAdd;
@@ -160,6 +166,7 @@ public class AccessController extends SelectorComposer<Div> {
         currentUser = (UserType) argMap.get("currentUser");
         autoInherit = (Boolean) argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
+        enablePublish = (Boolean) argMap.get("enablePublish");
     }
 
     private void checkShowRelatedArtifacts() {
@@ -175,6 +182,8 @@ public class AccessController extends SelectorComposer<Div> {
         super.doAfterCompose(div);
         container = div;
 
+        candidateAssigneeTextbox.setVisible(USE_STRICT_USER_ADDITION);
+        candidateAssigneeCombobox.setVisible(!USE_STRICT_USER_ADDITION);
         loadCandidateAssignee();
         setSelectedItem(selectedItem);
 
@@ -288,10 +297,17 @@ public class AccessController extends SelectorComposer<Div> {
     private void loadCandidateAssignee() {
         List<Group> groups = securityService.findAllGroups();
         List<Assignee> candidates = new ArrayList<Assignee>();
+        candidateAssigneeMap = new HashMap<String, Assignee>();
 
         for (Group group : groups) {
             String groupName = group.getName();
-            candidates.add(new Assignee(groupName, group.getRowGuid(), group.getType()));
+            Type type = group.getType();
+            if (type.equals(Type.PUBLIC) && !enablePublish) {
+                continue;
+            }
+            Assignee assignee = new Assignee(groupName, group.getRowGuid(), type);
+            candidates.add(assignee);
+            candidateAssigneeMap.put(groupName, assignee);
         }
         candidateAssigneeModel = new ListModelList<>(candidates, false);
         candidateAssigneeModel.setMultiple(false);
@@ -513,25 +529,41 @@ public class AccessController extends SelectorComposer<Div> {
         selectedName.setValue(selectedItemName);
     }
 
+    public void addCandidateUser(Assignee assignee) {
+        String rowGuid = assignee.getRowGuid();
+
+        boolean showWarning = false;
+        if (selectedItem instanceof UserMetadataSummaryType) {
+            showWarning =
+                !userMetadataService.canAccessAssociatedLog(((UserMetadataSummaryType) selectedItem).getId(),
+                    rowGuid);
+        }
+
+        Assignment assignment = new Assignment(assignee.getName(), rowGuid, assignee.getType(), AccessType.VIEWER.getLabel());
+        assignment.setShowWarning(showWarning);
+        if (assignmentMap.get(rowGuid) == null) {
+            assignmentModel.add(assignment);
+            assignmentMap.put(rowGuid, assignment);
+        } else {
+            Notification.info("The user or group has already been assigned");
+        }
+    }
+
     @Listen("onClick = #candidateAssigneeAdd")
     public void onClickCandidateUserAdd() {
-        Set<Assignee> assignees = candidateAssigneeModel.getSelection();
-        if (assignees != null && assignees.size() == 1 && selectedItem != null && selectedItemId != null) {
-            Assignee assignee = assignees.iterator().next();
-            String rowGuid = assignee.getRowGuid();
-
-            boolean showWarning = false;
-            if (selectedItem instanceof UserMetadataSummaryType) {
-                showWarning =
-                        !userMetadataService.canAccessAssociatedLog(((UserMetadataSummaryType) selectedItem).getId(),
-                                rowGuid);
+        if (USE_STRICT_USER_ADDITION) {
+            String userName = candidateAssigneeTextbox.getValue();
+            Assignee assignee = candidateAssigneeMap.get(userName);
+            if (assignee != null) {
+                addCandidateUser(assignee);
+            } else {
+                Notification.error("There is no such user or group name");
             }
-
-            Assignment assignment = new Assignment(assignee.getName(), rowGuid, assignee.getType(), AccessType.VIEWER.getLabel());
-            assignment.setShowWarning(showWarning);
-            if (!assignmentModel.contains(assignment)) {
-                assignmentModel.add(assignment);
-                assignmentMap.put(rowGuid, assignment);
+        } else {
+            Set<Assignee> assignees = candidateAssigneeModel.getSelection();
+            if (assignees != null && assignees.size() == 1 && selectedItem != null && selectedItemId != null) {
+                Assignee assignee = assignees.iterator().next();
+                addCandidateUser(assignee);
             }
         }
     }
@@ -555,7 +587,7 @@ public class AccessController extends SelectorComposer<Div> {
     public void onClickBtnApply() {
         applyChanges();
         destroy();
-        Notification.info("Sharing is susccessfully applied");
+        Notification.info("Sharing is successfully applied");
 
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         String username = portalContext.getCurrentUser().getUsername();

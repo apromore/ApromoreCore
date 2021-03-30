@@ -24,39 +24,50 @@ package org.apromore.apmlog.filter.types;
 public enum FilterType {
 
     // attributes
-    EVENT_EVENT_ATTRIBUTE,
-    CASE_EVENT_ATTRIBUTE,
-    CASE_CASE_ATTRIBUTE,
-    CASE_VARIANT,
-    CASE_ID,
+    EVENT_EVENT_ATTRIBUTE("EVENT_EVENT_ATTRIBUTE"),
+    CASE_EVENT_ATTRIBUTE("CASE_EVENT_ATTRIBUTE"),
+    CASE_CASE_ATTRIBUTE("CASE_CASE_ATTRIBUTE"),
+    CASE_VARIANT("CASE_VARIANT"),
+    CASE_ID("CASE_ID"),
 
-    // activity-based
-    REWORK_REPETITION,
+    // rework-based
+    REWORK_REPETITION("REWORK_REPETITION"),
+
+    // time
+    CASE_TIME("CASE_TIME"),  // time:timestamp (filter in case section)
+    EVENT_TIME("EVENT_TIME"),  // time:timestamp (filter in event section)
+    STARTTIME("STARTTIME"),
+    ENDTIME("ENDTIME"),
 
     // range-based
-    CASE_TIME,                              // time:timestamp (filter in case section)
-    EVENT_TIME,                             // time:timestamp (filter in event section)
-    STARTTIME,
-    ENDTIME,
-    DURATION,
-    CASE_UTILISATION,
-    TOTAL_PROCESSING_TIME,
-    AVERAGE_PROCESSING_TIME,
-    MAX_PROCESSING_TIME,
-    TOTAL_WAITING_TIME,
-    AVERAGE_WAITING_TIME,
-    MAX_WAITING_TIME,
-    CASE_SECTION_ATTRIBUTE_COMBINATION,
-    EVENT_ATTRIBUTE_DURATION,
-    ATTRIBUTE_ARC_DURATION,
-    CASE_LENGTH,
+    DURATION("DURATION"),
+    CASE_UTILISATION("CASE_UTILISATION"),
+    TOTAL_PROCESSING_TIME("TOTAL_PROCESSING_TIME"),
+    AVERAGE_PROCESSING_TIME("AVERAGE_PROCESSING_TIME"),
+    MAX_PROCESSING_TIME("MAX_PROCESSING_TIME"),
+    TOTAL_WAITING_TIME("TOTAL_WAITING_TIME"),
+    AVERAGE_WAITING_TIME("AVERAGE_WAITING_TIME"),
+    MAX_WAITING_TIME("MAX_WAITING_TIME"),
+    CASE_SECTION_ATTRIBUTE_COMBINATION("CASE_SECTION_ATTRIBUTE_COMBINATION"),
+    EVENT_ATTRIBUTE_DURATION("EVENT_ATTRIBUTE_DURATION"),
+    ATTRIBUTE_ARC_DURATION("ATTRIBUTE_ARC_DURATION"),
+    CASE_LENGTH("CASE_LENGTH"),
 
     // path
-    DIRECT_FOLLOW,
-    EVENTUAL_FOLLOW,
-
-
+    DIRECT_FOLLOW("DIRECT_FOLLOW"),
+    EVENTUAL_FOLLOW("EVENTUAL_FOLLOW"),
 
     // others
-    UNKNOWN
+    UNKNOWN("UNKNOWN");
+
+    private String stringValue;
+
+    FilterType(String stringValue) {
+        this.stringValue = stringValue;
+    }
+
+    public String toString() {
+        return stringValue;
+    }
+
 }

@@ -32,6 +32,8 @@
         http://www.springframework.org/schema/osgi                  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <reference id="securityService" interface="org.apromore.service.SecurityService"/>
+    <reference id="workspaceService" interface="org.apromore.service.WorkspaceService"/>
+    <reference id="userService" interface="org.apromore.service.UserService"/>
 
     <!-- Create beans for each class annotated with @Component within the package -->
     <context:component-scan base-package="org.apromore.plugin.portal.useradmin" />

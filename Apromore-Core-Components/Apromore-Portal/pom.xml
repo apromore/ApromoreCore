@@ -70,6 +70,7 @@
                             org.springframework.osgi.web.context.support,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.security.authentication,
+                            org.springframework.security.authentication.jaas,
                             org.springframework.security.config,
                             org.springframework.security.core.userdetails,
                             org.springframework.security.remoting.httpinvoker,
@@ -84,6 +85,7 @@
                         <Export-Package>
                             org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.accesscontrol.model,
                             org.apromore.portal.common.zk,
                             org.apromore.portal.common.notification,
                             org.apromore.portal.context,

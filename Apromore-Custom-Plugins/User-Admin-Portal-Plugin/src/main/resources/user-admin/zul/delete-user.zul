@@ -1,0 +1,106 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  Copyright (C) 2012 - 2017 Queensland University of Technology.
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?component name="AccessView" macroURI="/user-admin/zul/access-view.zul" inline="true" ?>
+<window
+    sclass="ap-transfer-win"
+    width="900px" height="700px" position="center"
+    closable="true"
+    title="Delete user"
+    apply="org.apromore.plugin.portal.useradmin.DeleteUserController">
+    <caption>
+        <toolbarbutton visible="false" iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/sharingandaccessrights.html" target="_blank" />
+    </caption>
+    <vbox hflex="1" vflex="1" spacing="0">
+        <div hflex="1" height="34px" style="box-sizing: border-box; padding: 8px;">
+            <span>We found that </span>
+            <label id="deletedUserLabel" class="ap-transfer-from"></label>
+            <span> is the only owner of the following assets:</span>
+        </div>
+        <borderlayout hflex="1" vflex="1">
+            <west autoscroll="true" sclass="ap-owned-assets" splittable="true" size="60%" vflex="1" border="none">
+                <listbox id="ownedListbox"
+                         multiple="false"
+                         checkmark="false"
+                         vflex="1"
+                         hflex="1">
+                    <listhead>
+                        <listheader align="center" label="" width="40px"/><!-- type icon -->
+                        <listheader align="left" hflex="1" label="File" sort="auto(name)"/>
+                        <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
+                    </listhead>
+                    <template name="model">
+                        <listitem>
+                            <listcell>
+                                <span sclass="ap-icon ap-icon-static ${each.iconClass}" style="display: inline-block"/>
+                            </listcell>
+                            <listcell label="${each.name}"/>
+                            <listcell label="${each.modifiedDate}"/>
+                        </listitem>
+                    </template>
+                </listbox>
+            </west>
+            <center autoscroll="true" vflex="1" border="none">
+                <AccessView vflex="1" hflex="1" id="accessView" />
+            </center>
+        </borderlayout>
+        <div hflex="1" height="34px" style="box-sizing: border-box; padding: 8px 8px 0 8px;" >
+            Select one of the two options below:
+        </div>
+        <hbox hflex="1" height="73px" spacing="8px">
+            <radiogroup id="deleteOptionGroup" />
+            <div hflex="1" vflex="1" style="padding-bottom: 8px;">
+                <div hflex="1" vflex="1" sclass="ap-usrmgt-delete-option-container">
+                    <div style="margin-bottom: 4px;">
+                        <radio id="deleteOptionTransfer" checked="true" label="" radiogroup="deleteOptionGroup" />
+                        <span sclass="ap-usrmgt-delete-option">Transfer ownership</span>
+                    </div>
+                    <span>Transfer ownership from </span>
+                    <label id="transferFromLabel" class="ap-transfer-from"></label>
+                    <span> to</span>
+                    <combobox id="transferToCombobox" placeholder="Select a user">
+                        <template name="model">
+                            <comboitem label="${each.username}"/>
+                        </template>
+                    </combobox>
+                    <textbox id="transferToTextbox"
+                             width="200px" style="margin-right: 7px"
+                             placeholder="Type in a user or group name"
+                    />
+                </div>
+            </div>
+            <div hflex="1" vflex="1" style="padding: 0 8px 8px 0;">
+                <div hflex="1" vflex="1" sclass="ap-usrmgt-delete-option-container">
+                    <div style="margin-bottom: 4px;">
+                        <radio id="deleteOptionPurge" label="" radiogroup="deleteOptionGroup" />
+                        <span sclass="ap-usrmgt-delete-option">Delete assets</span>
+                    </div>
+                    <span>Delete all assets owned by <label id="deletedUserLabelPurge" class="ap-transfer-from"></label></span>
+                </div>
+            </div>
+        </hbox>
+        <div sclass="ap-window-footer-actions" height="42px">
+            <button id="btnApply" style="background-color: red;" label="Delete user" iconSclass="z-icon-check-circle"/>
+            <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"/>
+        </div>
+    </vbox>
+</window>

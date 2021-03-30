@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog.filter.rules;
 
+import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
@@ -108,10 +109,6 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return secondaryValues;
     }
 
-    public String toString() {
-        return DescriptionProducer.getDescription(this);
-    }
-
     public LogFilterRule clone() {
         Choice choiceCopy = choice;
         Inclusion inclusionCopy = inclusion;
@@ -135,4 +132,12 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
         return new LogFilterRuleImpl(choiceCopy, inclusionCopy, sectionCopy, filterTypeCopy, keyCopy, priValCopy, secValCopy);
     }
+
+    @Override
+    public String toString(APMLog log) {
+        return DescriptionProducer.getDescription(this, log);
+    }
+
+    @Override
+    public String toString() { return DescriptionProducer.getDescription(this, null); }
 }

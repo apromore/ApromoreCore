@@ -222,6 +222,18 @@ public class ImmutableTrace implements ATrace {
     }
 
     @Override
+    public void setStartTimeMilli(long startTimeMilli) {
+        this.startTime = startTimeMilli;
+    }
+
+    @Override
+    public void setEndTimeMilli(long endTimeMilli) {
+        this.endTime = endTimeMilli;
+    }
+
+
+
+    @Override
     public int size() {
         return events.size();
     }

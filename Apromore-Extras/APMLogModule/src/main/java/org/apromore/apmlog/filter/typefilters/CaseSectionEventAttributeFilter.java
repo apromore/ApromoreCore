@@ -22,12 +22,13 @@
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.AEvent;
-
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,18 @@ public class CaseSectionEventAttributeFilter {
 
     private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
-        Set<String> values = logFilterRule.getPrimaryValuesInString();
+        Set<RuleValue> primRV = logFilterRule.getPrimaryValues();
+
+        if (primRV == null || primRV.isEmpty()) return false;
+
+        Set<String> values = (Set<String>) primRV.iterator().next().getObjectVal();
+
+        if (values == null) {
+            if (primRV.size() > 0) {
+                String val = primRV.iterator().next().getStringValue();
+                values = new HashSet<>(Arrays.asList(val));
+            } else return false;
+        }
 
         List<AEvent> eventList = trace.getEventList();
 
@@ -52,8 +64,7 @@ public class CaseSectionEventAttributeFilter {
 
             Set<String> matchedValues = new HashSet<>();
 
-            for (int i = 0; i < eventList.size(); i++) {
-                AEvent event = eventList.get(i);
+            for (AEvent event : eventList) {
                 String matchedVal = getConformdValue(event, attributeKey, values);
                 if (matchedVal != null) matchedValues.add(matchedVal);
             }
@@ -61,13 +72,13 @@ public class CaseSectionEventAttributeFilter {
             if (matchedValues.size() == values.size()) return true;
             else return false;
         } else {
-            for (int i = 0; i < eventList.size(); i++) {
-                AEvent event = eventList.get(i);
+            for (AEvent event : eventList) {
                 String matchedVal = getConformdValue(event, attributeKey, values);
                 if (matchedVal != null) return true;
             }
             return false;
         }
+
     }
 
     private static String getConformdValue(AEvent event, String attributeKey, Set<String> values) {

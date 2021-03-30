@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.PermissionType;
@@ -35,6 +36,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.SecurityService;
+import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -48,12 +50,19 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserAdminPlugin.class);
 
+    private String ID = Constants.USER_ADMIN_PLUGIN;
     private String label = "Manage user permissions";
     private String groupLabel = "Settings";
 
     @Inject private SecurityService securityService;
+    @Inject private WorkspaceService workspaceService;
 
     // PortalPlugin overrides
+
+    @Override
+    public String getID() {
+        return ID;
+    }
 
     @Override
     public String getLabel(Locale locale) {
@@ -82,6 +91,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Map arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
+            arg.put("workspaceService", workspaceService);
             Window window = (Window) Executions.getCurrent().createComponents("user-admin/zul/index.zul", null, arg);
             window.doModal();
 
@@ -93,8 +103,9 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     @Override
     public Availability getAvailability() {
-
+        return Availability.HIDDEN; // Hide from user menu
         // Require that the caller has the "Edit users" permission
+        /*
         UserType user = UserSessionManager.getCurrentUser();
         if (user != null) {
             for (PermissionType permission: user.getPermissions()) {
@@ -103,8 +114,8 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
                 }
             }
         }
-
         // Otherwise, this UI is unavailable
         return Availability.UNAVAILABLE;
+        */
     }
 }

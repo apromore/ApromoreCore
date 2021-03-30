@@ -23,6 +23,7 @@ package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.util.TimeUtil;
 
 import java.util.ArrayList;
@@ -33,37 +34,29 @@ import java.util.Set;
 public class EventAttributeDurationDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
 
-        String desc = "";
-        String choice = logFilterRule.getChoice().toString().toLowerCase();
+        StringBuilder sb = new StringBuilder();
 
         String attributeKey = logFilterRule.getKey();
         String attributeVal = logFilterRule.getPrimaryValues().iterator().next().getKey();
 
-
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases containing ";
-
-
-
-        desc += getDisplayAttributeKey(attributeKey) + " - '"+attributeVal+"' with duration range between [";
+        sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain " : "Remove ");
+        sb.append(" all cases where ");
+        sb.append(getDisplayAttributeKey(attributeKey) + " '" + attributeVal + "' has duration between ");
 
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
+        List<RuleValue> ruleValueList = new ArrayList<>(ruleValues);
         Collections.sort(ruleValueList);
-
-
 
         for (int i = 0; i < ruleValueList.size(); i++) {
             RuleValue rv = ruleValueList.get(i);
             String unit = rv.getCustomAttributes().get("unit");
-            desc += TimeUtil.durationStringOf(ruleValueList.get(i).getDoubleValue(), unit);
+            sb.append(TimeUtil.durationStringOf(ruleValueList.get(i).getDoubleValue(), unit));
             if (i < ruleValueList.size() -1) {
-                desc += " AND ";
+                sb.append(" AND ");
             }
         }
 
-        desc += "]";
-
-        return desc;
+        return sb.toString();
     }
 
     private static String getDisplayAttributeKey(String attributeKey) {

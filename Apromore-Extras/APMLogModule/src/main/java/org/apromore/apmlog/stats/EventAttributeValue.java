@@ -27,6 +27,9 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class EventAttributeValue implements AttributeValue {
     private String value;
 
@@ -48,6 +51,20 @@ public class EventAttributeValue implements AttributeValue {
 
     private IntArrayList occurCaseIndexes;
     private UnifiedSet<AActivity> occurActivities;
+    private Set<Integer> occurCasesIndexSet;
+
+    public EventAttributeValue(String value, UnifiedSet<AActivity> occurActivities, long totalCasesOfLog) {
+        this.value = value;
+        this.occurActivities = occurActivities;
+        occurCasesIndexSet = occurActivities.stream()
+                .map(AActivity::getImmutableTraceIndex)
+                .collect(Collectors.toSet());
+        this.totalCases = totalCasesOfLog;
+        this.percent = 100 * ((double) occurCasesIndexSet.size() / totalCases);
+        this.frequency = String.format("%.2f", percent );
+        this.oppCases = totalCasesOfLog - occurCasesIndexSet.size();
+        this.total = occurActivities.stream().collect(Collectors.summingLong(AActivity::getEventSize));
+    }
 
     public EventAttributeValue(String value, IntArrayList occurCaseIndexes, long totalCases,
                                UnifiedSet<AActivity> occurActivities) {
@@ -67,6 +84,15 @@ public class EventAttributeValue implements AttributeValue {
         this.total = sum;
     }
 
+    public Set<Integer> getOccurCasesIndexSet() {
+        if (occurCasesIndexSet == null) {
+            occurCasesIndexSet = occurActivities.stream()
+                    .map(AActivity::getImmutableTraceIndex)
+                    .collect(Collectors.toSet());
+        }
+        return occurCasesIndexSet;
+    }
+
     public void setRatio(double ratio) {
         this.ratio = ratio;
     }
@@ -81,7 +107,7 @@ public class EventAttributeValue implements AttributeValue {
     }
 
     public long getCases() {
-        return occurCaseIndexes.size();
+        return getOccurCasesIndexSet().size();
     }
 
     public String getFrequency() {
@@ -106,6 +132,10 @@ public class EventAttributeValue implements AttributeValue {
     }
 
     public IntArrayList getOccurCaseIndexes() {
+        if (occurCaseIndexes == null) {
+            int[] array = occurCasesIndexSet.stream().mapToInt(x -> x).toArray();
+            occurCaseIndexes =new IntArrayList(array);
+        }
         return occurCaseIndexes;
     }
 
@@ -125,6 +155,15 @@ public class EventAttributeValue implements AttributeValue {
         double[] array = occurActivities.stream().mapToDouble(s -> s.getDuration()).toArray();
         DoubleArrayList dal = new DoubleArrayList(array);
         return dal.sum();
+    }
+
+    public Set<Double> getUniqueDurations() {
+        return occurActivities.stream().map(s -> s.getDuration()).collect(Collectors.toSet());
+    }
+
+    public DoubleArrayList getAllDurations() {
+        double[] array = occurActivities.stream().mapToDouble(s -> s.getDuration()).toArray();
+        return new DoubleArrayList(array);
     }
 
     @Override

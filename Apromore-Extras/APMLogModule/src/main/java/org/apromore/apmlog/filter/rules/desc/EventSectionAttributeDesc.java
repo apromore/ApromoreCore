@@ -30,31 +30,32 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EventSectionAttributeDesc {
+public class EventSectionAttributeDesc extends AttributeDesc{
 
     public static String getDescription(LogFilterRule logFilterRule) {
 
-        String desc = "";
+        StringBuilder sb = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all events where ";
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all events where attribute ");
 
         String attributeKey = logFilterRule.getKey();
 
-        desc +=  AttributeKeyTranslator.translate(attributeKey) + " is equal to [";
+        sb.append(getKeyLabel(attributeKey) + " is equal to [");
 
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
-        List<RuleValue> ruleValueList = new ArrayList<RuleValue>(ruleValues);
-        Collections.sort(ruleValueList);
+        Set<String> valSet = (Set<String>) ruleValues.iterator().next().getObjectVal();
+        List<String> valList = new ArrayList<>(valSet);
+        Collections.sort(valList);
 
-        for (int i = 0; i < ruleValueList.size(); i++) {
-            desc += ruleValueList.get(i).getStringValue();
-            if (i < ruleValueList.size() -1) {
-                desc += " OR ";
+        for (int i = 0; i < valList.size(); i++) {
+            sb.append(valList.get(i));
+            if (i < valList.size() -1) {
+                sb.append(" OR ");
             }
         }
 
-        desc += "]";
+        sb.append("]");
 
-        return desc;
+        return sb.toString();
     }
 }

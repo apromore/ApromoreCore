@@ -306,7 +306,10 @@ public class TemporaryCacheService {
 	    // ******* profiling code end here ********
 
 	    String key = log.getFilePath() + APMLOG_CACHE_KEY_SUFFIX;
-	    APMLog element = (APMLog) cacheRepo.get(key);
+            APMLog element = (APMLog) cacheRepo.get(key);
+		if (log.getStorage() != null) {
+                    key = log.getStorage().getKey() + APMLOG_CACHE_KEY_SUFFIX;
+		}
 
 	    if (element == null) {
 		// If doesn't hit cache

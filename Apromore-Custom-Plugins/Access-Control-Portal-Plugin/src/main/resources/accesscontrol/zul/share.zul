@@ -21,7 +21,7 @@
 <window
     sclass="ap-share-win"
     width="700px" height="80%" position="center"
-    closable="true"
+    closable="false"
     title="File/folder sharing" apply="org.apromore.plugin.portal.accesscontrol.controllers.ShareController">
     <caption>
         <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/sharingandaccessrights.html" target="_blank" />
@@ -30,6 +30,7 @@
                    currentUser="${arg.currentUser}"
                    selectedItem="${arg.selectedItem}"
                    autoInherit="${arg.autoInherit}"
+                   enablePublish="${arg.enablePublish}"
                    showRelatedArtifacts="${arg.showRelatedArtifacts}"
     />
 </window>

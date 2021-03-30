@@ -230,6 +230,20 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                     }
                 }
             );
+
+            // Force logout a user that has been deleted by admin
+            EventQueues.lookup("forceSignOutQueue",  EventQueues.APPLICATION, true).subscribe(
+                    new EventListener() {
+                        public void onEvent(Event event) {
+                            Session session = Sessions.getCurrent();
+
+                            UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
+                            if (session == null || event.getData().equals(userType.getUsername())) {
+                                Executions.sendRedirect("/j_spring_security_logout");
+                            }
+                        }
+                    }
+            );
         }
     }
 }

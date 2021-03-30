@@ -55,7 +55,8 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
-import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
@@ -192,8 +193,34 @@ public class EventLogServiceImpl implements EventLogService {
             throw new Exception("No process instances contained in log!");
         }
 
-        return log;
+        return checkMissingLifecycleTransitionAttribute(log);
 
+    }
+
+    private static XLog checkMissingLifecycleTransitionAttribute(XLog log) {
+
+        boolean hasTransitionAttribute = false;
+
+        for(XTrace trace : log) {
+            for(XEvent event : trace) {
+                XAttributeMap attributeMap = event.getAttributes();
+                for(XAttribute attribute : attributeMap.values()) {
+                    String key = attribute.getKey();
+                    if ("lifecycle:transition".equals(key)){
+                        hasTransitionAttribute = true;
+                        break;
+                    }
+                }
+
+                if(!hasTransitionAttribute) {
+                    attributeMap.put("lifecycle:transition", new XAttributeLiteralImpl("lifecycle:transition",
+                            "complete", null));
+                    hasTransitionAttribute = false;
+                }
+            }
+        }
+
+        return log;
     }
 
     @Override
@@ -235,7 +262,8 @@ public class EventLogServiceImpl implements EventLogService {
                 logName, xLog, user.getId(), domain, created);
 
         Log log = new Log();
-        log.setFolder(folderRepo.findUniqueByID(folderId));
+        Folder folder = folderRepo.findUniqueByID(folderId);
+        log.setFolder(folder);
         log.setDomain(domain);
         log.setCreateDate(created);
         log.setFilePath("PROXY_PATH");
@@ -255,6 +283,16 @@ public class EventLogServiceImpl implements EventLogService {
         // Add the user's personal group
         groupLogs.add(new GroupLog(user.getGroup(), log, true, true, true));
 
+        // Unless in the root folder, add access rights of its immediately enclosing folder
+        if (folder != null) {
+            Set<GroupFolder> groupFolders = folder.getGroupFolders();
+            for (GroupFolder gf : groupFolders) {
+                if (!Objects.equals(gf.getGroup().getId(), user.getGroup().getId())) { // Avoid adding operating user twice
+                    groupLogs.add(new GroupLog(gf.getGroup(), log, gf.getAccessRights()));
+                }
+            }
+        }
+
         // Add the public group
         if (publicModel) {
             Group publicGroup = groupRepo.findPublicGroup();
@@ -264,8 +302,6 @@ public class EventLogServiceImpl implements EventLogService {
                 groupLogs.add(new GroupLog(publicGroup, log, true, true, false));
             }
         }
-
-//        log.setGroupLogs(groupLogs);
 
         // Perform the update
         logRepo.saveAndFlush(log);

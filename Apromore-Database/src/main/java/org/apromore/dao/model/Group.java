@@ -28,18 +28,7 @@ import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,6 +70,7 @@ public class Group implements Serializable {
     private String name;
     private Type type;
     private Set<User> users = new HashSet<>();
+    private User user;
 
     /**
      * Default Constructor.
@@ -185,6 +175,15 @@ public class Group implements Serializable {
      */
     public void setUsers(final Set<User> newUsers) {
         this.users = newUsers;
+    }
+
+    @OneToOne(mappedBy = "group")
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     // Overridden object methods
