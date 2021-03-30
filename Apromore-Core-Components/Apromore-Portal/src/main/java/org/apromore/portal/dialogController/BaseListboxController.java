@@ -334,6 +334,7 @@ public abstract class BaseListboxController extends BaseController {
 			}
 		});
 
+		this.btnCalendar.setVisible(config.getEnableCalendar());
 		this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
