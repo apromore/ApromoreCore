@@ -161,6 +161,14 @@ public interface AuthorizationService {
     Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId);
 
 
+    /**
+     * The specified user has access to specified user metadata
+     *
+     * @param usermetadataId
+     * @param user
+     * @return
+     * @throws UserNotFoundException
+     */
     AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) throws UserNotFoundException;
 
     /**
@@ -207,7 +215,7 @@ public interface AuthorizationService {
      * @param username     User username
      * @throws UserNotFoundException Client side should handle this exception and prompt user as error
      */
-    void deleteLogAccess(Integer logId, String groupRowGuid, String username) throws UserNotFoundException;
+    void deleteLogAccess(Integer logId, String groupRowGuid, String username, AccessType accessType);
 
     /**
      * Delete one GroupLog record

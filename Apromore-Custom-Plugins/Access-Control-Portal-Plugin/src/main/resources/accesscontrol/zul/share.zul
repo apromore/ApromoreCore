@@ -31,6 +31,10 @@
                    selectedItem="${arg.selectedItem}"
                    autoInherit="${arg.autoInherit}"
                    enablePublish="${arg.enablePublish}"
+                   securityService="${arg.securityService}"
+                   workspaceService="${arg.workspaceService}"
+                   authorizationService="${arg.authorizationService}"
+                   userMetadataService="${arg.userMetadataService}"
                    showRelatedArtifacts="${arg.showRelatedArtifacts}"
     />
 </window>
