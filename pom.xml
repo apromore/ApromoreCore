@@ -170,7 +170,7 @@
         <joda-time.version>1.6.2</joda-time.version>
         <cglib.version>2.2.0</cglib.version>
         <validation.version>1.0.0.GA</validation.version>
-        <google.guava.version>30.0-jre</google.guava.version>
+        <google.guava.version>30.1.1-jre</google.guava.version>
         <json.version>20201115</json.version>
         <inject.version>1.0.0</inject.version>
         <jackson.version>1.9.13</jackson.version>
