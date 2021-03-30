@@ -69,7 +69,7 @@ public class Delimiter {
      */
     private static int findDelimiterCount(final List<String> rows, final String delimiter)
             throws NullPointerException  {
-        int headRowCount = rows.isEmpty() ? -1 : rows.get(0).split(delimiter).length;
+        int headRowCount = rows.isEmpty() ? -1 : (rows.get(0) + PLACE_HOLDER).split(delimiter).length;
         // parse row per for DelimiterTypes and get integers List and compare if they all are bigger
         for (String row : rows) {
             if ((row + PLACE_HOLDER).split(delimiter).length != headRowCount) {

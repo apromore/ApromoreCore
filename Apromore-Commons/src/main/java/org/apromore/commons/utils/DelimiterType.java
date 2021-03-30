@@ -28,7 +28,6 @@ public enum DelimiterType {
     SEMI_COLON(";"),
     COLON(":"),
     TAB("\t"),
-    SPACE(" "),
     PIPE("\\|"),
     NONE("!");
 
