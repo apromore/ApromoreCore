@@ -33,6 +33,6 @@
     <listheader label="Rating" width="90px" align="center" visible="false"/> <!-- ranking -->
     <listheader label="Last version" width="140px" align="center"/> <!-- lastVersion -->
     <listheader label="Last update" width="140px" align="center"  /> <!-- lastVersion -->
-    <listheader label="Owner" hflex="1"/>                   <!-- owner -->
+    <listheader label="Creator" hflex="1"/>                   <!-- creator -->
   </listhead>
 </listbox>

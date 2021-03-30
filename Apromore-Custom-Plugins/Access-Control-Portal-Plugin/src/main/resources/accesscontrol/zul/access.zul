@@ -32,16 +32,16 @@
         <div vflex="min">
             <div sclass="ap-share-detail" style="padding: 6px;" height="34px">
                 <span id="selectedIconLog" visible="false" >
-                    <image src="/themes/ap/common/img/icons/log.svg" />
+                    <image height="20px" src="/themes/ap/common/img/icons/log.svg" />
                 </span>
                 <span id="selectedIconModel" visible="false" >
-                    <image src="/themes/ap/common/img/icons/bpmn-model.svg" />
+                    <image height="20px" src="/themes/ap/common/img/icons/bpmn-model.svg" />
                 </span>
                 <span id="selectedIconFolder" visible="false" >
-                    <image src="/themes/ap/common/img/icons-2/folder-solid.svg" />
+                    <image height="20px" src="/themes/ap/common/img/icons-2/folder-solid.svg" />
                 </span>
                 <span id="selectedIconMetadata" visible="false" >
-                    <image src="/themes/ap/common/img/icons/metadata.svg" />
+                    <image height="20px" src="/themes/ap/common/img/icons/metadata.svg" />
                 </span>
                 <label id="selectedName"/>
             </div>
@@ -62,6 +62,7 @@
                         <comboitem sclass="type-${each.type}" label="${each.name}"/>
                     </template>
                 </combobox>
+                <textbox id="candidateAssigneeTextbox" width="240px" style="margin-right: 7px" placeholder="Type in a user or group name" />
                 <button id="candidateAssigneeAdd" label="Share"/>
             </div>
         </div>
@@ -130,7 +131,6 @@
                     </listitem>
                 </template>
             </listbox>
-
         </hbox>
         <div id="umWarning" visible="false" style="padding:6px;display:flex;">
             <span sclass="z-icon-exclamation-circle" style="margin-right: 4px;"/>

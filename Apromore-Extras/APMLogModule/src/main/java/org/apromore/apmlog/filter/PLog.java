@@ -72,6 +72,7 @@ import java.util.stream.IntStream;
  * Modified: Chii Chang (11/11/2020)
  * Modified: Chii Chang (06/01/2021)
  * Modified: Chii Chang (26/01/2021)
+ * Modified: Chii Chang (17/03/2021)
  */
 public class PLog implements APMLog {
 
@@ -200,12 +201,12 @@ public class PLog implements APMLog {
         }
 
 
-        LOGGER.info("init values for validTraceIndexBS, originalValidTraceIndexBS, previousValidTraceIndexBS");
+
         this.validTraceIndexBS.set(0, apmLog.getImmutableTraces().size(), true);
         this.originalValidTraceIndexBS.set(0, apmLog.getImmutableTraces().size(), true);
 
 
-        List<ATrace> apmTraceList = apmLog.getTraceList();
+        List<ATrace> apmTraceList = apmLog.getImmutableTraces();
 
         this.immutableTraces = apmLog.getImmutableTraces();
         this.pTraceList = new ArrayList<>(apmTraceList.size());
@@ -237,7 +238,6 @@ public class PLog implements APMLog {
         }
 
 
-        LOGGER.info("do the rest of copies");
         this.caseVariantSize = apmLog.getCaseVariantSize();
         this.originalCaseVariantSize = apmLog.getCaseVariantSize();
 
@@ -261,9 +261,7 @@ public class PLog implements APMLog {
         this.originalEndTime = apmLog.getEndTime();
 
 
-        LOGGER.info("copy case variant id freq map");
         UnifiedMap<Integer, Integer> apmVariantIdFreqMap = apmLog.getCaseVariantIdFrequencyMap();
-        LOGGER.info("done");
 
         this.variantIdFreqMap = new UnifiedMap<>(apmVariantIdFreqMap);
         this.originalVariantIdFreqMap = new UnifiedMap<>(apmVariantIdFreqMap);
@@ -272,7 +270,6 @@ public class PLog implements APMLog {
 
         this.originalActivityMaxOccurMap = new UnifiedMap<>(apmLog.getActivityMaxOccurMap());
 
-        LOGGER.info("done");
     }
 
     public void updateStats() {
@@ -297,7 +294,7 @@ public class PLog implements APMLog {
 
         pTraceUnifiedMap.clear();
 
-        this.caseDurationList = new DoubleArrayList(pTraceList.size());
+
 
         UnifiedMap<String, UnifiedMap<String, IntArrayList>> caseAttrValOccurMap = new UnifiedMap<>();
 
@@ -328,8 +325,6 @@ public class PLog implements APMLog {
                 }
             }
 
-            caseDurationList.add(trace.getDuration());
-
             trace.update(index);
 
             pTraceUnifiedMap.put(trace.getCaseId(), trace);
@@ -352,6 +347,11 @@ public class PLog implements APMLog {
 
             index += 1;
         }
+
+        double[] caseDurArray = pTraceList.stream()
+                .mapToDouble(PTrace::getDuration)
+                .toArray();
+        this.caseDurationList = new DoubleArrayList(caseDurArray);
 
         caseAttributeValues = new UnifiedMap<>();
 
@@ -442,6 +442,13 @@ public class PLog implements APMLog {
         }
     }
 
+    public void resetIndex() {
+        setValidTraceIndexBS(originalValidTraceIndexBS);
+        setPTraceList(originalPTraceList);
+        for (PTrace pTrace : pTraceList) {
+            pTrace.setValidEventIndexBS(pTrace.getOriginalValidEventIndexBS());
+        }
+    }
 
     public void reset() {
 
@@ -893,7 +900,9 @@ public class PLog implements APMLog {
 
     @Override
     public DoubleArrayList getCaseDurations() {
-        return caseDurationList;
+        double[] array = pTraceList.stream().mapToDouble(PTrace::getDuration).toArray();
+        return new DoubleArrayList(array);
+//        return caseDurationList;
     }
 
     @Override

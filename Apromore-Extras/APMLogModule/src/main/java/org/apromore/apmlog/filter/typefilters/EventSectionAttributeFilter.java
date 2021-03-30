@@ -44,7 +44,7 @@ public class EventSectionAttributeFilter {
 
     private static boolean conformRule(AActivity aActivity, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
-        Set<String> values = logFilterRule.getPrimaryValuesInString();
+        Set<String> values = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
 
         UnifiedMap<String, String> allAttributes = aActivity.getAllAttributes();
 

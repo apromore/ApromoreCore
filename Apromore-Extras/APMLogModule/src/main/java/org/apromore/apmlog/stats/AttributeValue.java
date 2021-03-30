@@ -23,6 +23,8 @@ package org.apromore.apmlog.stats;
 
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
+import java.util.Set;
+
 public interface AttributeValue {
     String getValue();
 
@@ -37,6 +39,8 @@ public interface AttributeValue {
     double getOppCases();
 
     IntArrayList getOccurCaseIndexes();
+
+    Set<Integer> getOccurCasesIndexSet();
 
     double getPercent();
 

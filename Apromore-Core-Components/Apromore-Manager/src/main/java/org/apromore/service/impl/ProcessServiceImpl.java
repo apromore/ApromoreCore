@@ -164,7 +164,7 @@ public class ProcessServiceImpl implements ProcessService {
             pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType,nat);
             LOGGER.info("Process model version: " + pmv);
             
-            workspaceSrv.addProcessToFolder(process.getId(), folderId);
+            workspaceSrv.addProcessToFolder(user, process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
         } catch (UserNotFoundException | JAXBException | IOException e) {

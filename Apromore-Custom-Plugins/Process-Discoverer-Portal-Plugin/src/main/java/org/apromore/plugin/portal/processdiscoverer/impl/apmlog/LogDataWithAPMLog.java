@@ -202,6 +202,7 @@ public class LogDataWithAPMLog extends LogData {
     public boolean hasSufficientDurationVariant(String attribute, String value) {
         DurSubGraph dsg = this.originalAPMLog.getAAttributeGraph().getValueDurations(attribute);
         if (!dsg.getValDurCaseIndexMap().containsKey(value)) return false;
+        if (dsg.getValDurCaseIndexMap().get(value).isEmpty()) return false;
         return dsg.getValDurCaseIndexMap().get(value).size() > 1;
     }
 

@@ -25,7 +25,7 @@
 package org.apromore.test.service.impl;
 
 import com.google.common.io.CharStreams;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apromore.TestData;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
@@ -150,7 +150,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         nativeType, Constants.INITIAL_ANNOTATION, nativeStream)).andReturn(nativeDoc);
 
     // Update workspace
-    workspaceSrv.addProcessToFolder(process.getId(), folder.getId());
+    workspaceSrv.addProcessToFolder(user, process.getId(), folder.getId());
 
     replayAll();
 
@@ -250,7 +250,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     expect(fmtSrv.storeNative(processName, createDate, lastUpdateDate, user, nativeType,
         Constants.INITIAL_ANNOTATION, nativeStream)).andReturn(nativeDoc);
     // Update workspace
-    workspaceSrv.addProcessToFolder(process.getId(), folder.getId());
+    workspaceSrv.addProcessToFolder(user, process.getId(), folder.getId());
 
     replayAll();
 
@@ -686,7 +686,6 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
 
   @Test
-  @Ignore // Needs to be checked by Frank 
   public void testUpdateProcessMetadata_CurrentPublic_TobeMadeNonPublic() throws Exception {
     // Test Data setup
     Folder folder = createFolder();

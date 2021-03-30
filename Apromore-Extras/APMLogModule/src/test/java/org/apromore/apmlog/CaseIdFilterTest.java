@@ -35,31 +35,33 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertArrayEquals;
 
 public class CaseIdFilterTest {
-    public static void test1(APMLog apmLog) {
+    public static void test1(APMLog originalLog) {
 
         Choice choice =  Choice.REMOVE;
 
-        List<String> selectedIds = Arrays.asList("3007", "AKB308DsO", "J9ASD9J23IUHH D887GGDG 7G72GVVSH721", "3010");
+        BitSet bitSet = new BitSet(originalLog.size());
+        bitSet.set(0);
+        bitSet.set(1);
+        bitSet.set(2);
+        bitSet.set(3);
 
         Set<RuleValue> primaryValues = new HashSet<>();
 
-        for (String s : selectedIds) {
-            primaryValues.add(new RuleValue(FilterType.CASE_ID, OperationType.EQUAL,"case:id", s));
-        }
+        RuleValue rv = new RuleValue(FilterType.CASE_ID, OperationType.EQUAL,"case:id", bitSet);
+        primaryValues.add(rv);
 
         LogFilterRule logFilterRule = new LogFilterRuleImpl(choice, Inclusion.ALL_VALUES, Section.CASE,
                 FilterType.CASE_ID, "case:id",
                 primaryValues, null);
 
-        List<LogFilterRule> rules = new ArrayList<>();
-        rules.add(logFilterRule);
+        List<LogFilterRule> rules = Arrays.asList(logFilterRule);
 
-        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        APMLogFilter apmLogFilter = new APMLogFilter(originalLog);
         apmLogFilter.filter(rules);
+        APMLog apmLog = apmLogFilter.getApmLog();
 
         Object[] expected = new Object[]{"3011"};
         Object[] result = apmLog.getTraceList().stream()
-                .filter(x -> !selectedIds.contains(x.getCaseId()))
                 .map(ATrace::getCaseId)
                 .toArray();
 

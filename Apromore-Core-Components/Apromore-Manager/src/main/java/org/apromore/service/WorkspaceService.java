@@ -25,6 +25,7 @@
 package org.apromore.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
@@ -73,7 +74,7 @@ public interface WorkspaceService {
 
     Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
 
-    void addProcessToFolder(Integer processId, Integer folderId);
+    void addProcessToFolder(User user, Integer processId, Integer folderId);
 
     boolean isGEDReadyFolder(Integer folderId);
 
@@ -164,7 +165,7 @@ public interface WorkspaceService {
      * @throws Exception
      */
     Process moveProcess(Integer processId, Integer newFolderId) throws Exception;
-    
+
     /**
      * Copy a folder to a new parent folder; all subfolders and items are copied recursively
      * @param folderId
@@ -184,7 +185,57 @@ public interface WorkspaceService {
      */
     Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
 
+    /**
+     *
+     * Get a list of Folders that the specified user's singleton group is the only owner of
+     * Note: Only considering singleton group here
+     *
+     * @param user User
+     * @return Return a list of Folders that the specified user's singleton group is the only owner of
+     */
+    List<Folder> getSingleOwnerFolderByUser(User user);
 
+    /**
+     *
+     * Get a list of Logs that the specified user's singleton group is the only owner of
+     * Note: Only considering singleton group here
+     *
+     * @param user User
+     * @return Return a list of Logs that the specified user's singleton group is the only owner of
+     */
+    List<Log> getSingleOwnerLogByUser(User user);
 
+    /**
+     *
+     * Get a list of Processes that the specified user's singleton group is the only owner of
+     * Note: Only considering singleton group here
+     *
+     * @param user User
+     * @return Return a list of Processes that the specified user's singleton group is the only owner of
+     */
+    List<Process> getSingleOwnerProcessByUser(User user);
+
+    /**
+     * Whether the specified user is the only owner of any folder, log or process
+     *
+     * @param user User to be checked
+     * @return Whether the specified user is the only owner of any folder, log or process
+     */
+    Boolean isOnlyOwner(User user);
+
+    /**
+     * Transfer the ownership of all the folder, log and process that the user-to-be-deleted is the only owner of
+     *
+     * @param sourceUser User to be deleted
+     * @param targetUser User to transfer ownership to
+     */
+    void transferOwnership(User sourceUser, User targetUser);
+
+    /**
+     * Remove all the folder, log and process that the user-to-be-deleted is the only owner of
+     *
+     * @param user user to be deleted
+     */
+    void deleteOwnerlessArtifact(User user);
 
 }

@@ -33,6 +33,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -268,16 +269,18 @@ public class AttributeArcDurationTest {
      * (i.e. the 'b' of {'a', 'b', 'c'}),
      * if the next filter rule is the Arc duration filter, it should compute the arc duration between the rest
      * activities (i.e. 'a' and 'c') without considering the medium activity - 'b' which is no longer exist.
-     * @param apmLog
+     * @param originalLog
      */
-    public static void testSequencialFiltering01(APMLog apmLog) {
+    public static void testSequencialFiltering01(APMLog originalLog) {
 
         /** First rule **/
-        Set<RuleValue> pvSet1 = new HashSet<>();
-        pvSet1.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
-                "concept:name", "b"));
+        Set<String> r1V = new HashSet<>(Arrays.asList("b"));
+        RuleValue rv1 = new RuleValue(EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, "concept:name", r1V);
+        Set<RuleValue> primaryValues = new HashSet<>();
+        primaryValues.add(rv1);
         LogFilterRule rule1 = new LogFilterRuleImpl(Choice.REMOVE, Inclusion.ANY_VALUE, Section.EVENT,
-                FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", pvSet1, null);
+                FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", primaryValues, null);
+
 
         /** Second rule **/
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
@@ -326,7 +329,7 @@ public class AttributeArcDurationTest {
         List<LogFilterRule> rules = Arrays.asList(rule1, rule2);
 
         /** Filter by first rule **/
-        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        APMLogFilter apmLogFilter = new APMLogFilter(originalLog);
         apmLogFilter.filter(rules);
         APMLog filteredLog = apmLogFilter.getApmLog();
 

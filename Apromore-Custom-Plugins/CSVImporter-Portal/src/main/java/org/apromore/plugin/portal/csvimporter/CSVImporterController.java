@@ -318,11 +318,11 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         } catch (MissingHeaderFieldsException e) {
             Messagebox.show(e.getMessage(), getLabels().getString("missing_fields"),
-                Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.OK, Messagebox.ERROR);
 
         } catch (Exception e) {
             Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error",
-                Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Conversion to XES button handler failed", e);
         }
     }
@@ -354,21 +354,21 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         LogModel logModel;
         if (useParquet) {
             logModel = parquetImporter.importParqeuetFile(
-                getInputSream(media),
-                logMetaData,
-                getFileEncoding(),
-                parquetFile,
-                false
+                    getInputSream(media),
+                    logMetaData,
+                    getFileEncoding(),
+                    parquetFile,
+                    false
             );
         } else {
             logModel = logImporter.importLog(
-                getInputSream(media),
-                logMetaData,
-                getFileEncoding(),
-                false,
-                portalContext.getCurrentUser().getUsername(),
-                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                media.getName().replaceFirst("[.][^.]+$", "")
+                    getInputSream(media),
+                    logMetaData,
+                    getFileEncoding(),
+                    false,
+                    portalContext.getCurrentUser().getUsername(),
+                    portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                    media.getName().replaceFirst("[.][^.]+$", "")
             );
         }
 
@@ -393,10 +393,25 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 log.getId());
     }
 
+    protected String getLogTag() {
+        // Creating Object of ObjectMapper define in Jakson Api
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(logMetaData);
+        } catch (IOException e) {
+            LOGGER.error("Unable to convert log metadata into JSON; will store an empty string instead", e);
+        }
+        return null;
+    }
+
+    protected LogMetaData getLogMetaData() {
+        return logMetaData;
+    }
+
     public ResourceBundle getLabels() {
         return ResourceBundle.getBundle("WEB-INF.zk-label",
-            Locales.getCurrent(),
-            CSVImporterController.class.getClassLoader());
+                Locales.getCurrent(),
+                CSVImporterController.class.getClassLoader());
     }
 
     // Internal methods handling page setup (doFinally)

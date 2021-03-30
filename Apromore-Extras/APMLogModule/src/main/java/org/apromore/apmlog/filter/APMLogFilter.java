@@ -41,6 +41,7 @@
 
 package org.apromore.apmlog.filter;
 
+import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
@@ -62,6 +63,10 @@ import java.util.stream.Collectors;
 /**
  * This class handles log filtering mechanisms for APMLog.
  * It creates PLog (pointer log) of APMLog for performing filtering without modifying the original APMLog.
+ * Two filtering methods are provided
+ * (1) filter then update the stats of the log
+ * (2) filter without update the stats of the log in which only the indexes (BitSets) and the traceList were updated
+ *
  * @author Chii Chang
  * Modified: Chii Chang (12/02/2020)
  * Modified: Chii Chang (12/03/2020)
@@ -69,6 +74,7 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (15/04/2020)
  * Modified: Chii Chang (17/04/2020) - bug fixed
  * Modified: Chii Chang (26/01/2020)
+ * Modified: Chii Chang (16/03/2021) - Replaced with new code
  */
 public class APMLogFilter {
 
@@ -77,9 +83,7 @@ public class APMLogFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(APMLogFilter.class);
 
     public APMLogFilter(APMLog apmLog) {
-        LOGGER.info("Create new PLog");
         this.pLog = new PLog(apmLog);
-        LOGGER.info("Create new PLog complete");
     }
 
     public PLog getPLog() {
@@ -90,6 +94,7 @@ public class APMLogFilter {
     APMLog finalAPMLog;
 
     public APMLog getFinalAPMLog() {
+        if (finalAPMLog == null) finalAPMLog = pLog.toAPMLog();
         return this.finalAPMLog;
     }
 
@@ -98,228 +103,245 @@ public class APMLogFilter {
         return finalAPMLog;
     }
 
-    public void reset() {
-        this.pLog.reset();
+    /**
+     * Filter PLog's indexes without update stats
+     * @param logFilterRuleList
+     * @return
+     */
+    public PLog filterIndex(List<LogFilterRule> logFilterRuleList) {
+        proceedFiltering(logFilterRuleList);
+        return pLog;
     }
 
-    public void initPrevious() {
-        // Set previous values
-        this.pLog.previousValidTraceIndexBS = new BitSet(this.pLog.getValidTraceIndexBS().size());
-        for(int i=0; i < this.pLog.getValidTraceIndexBS().size(); i++) {
-            this.pLog.previousValidTraceIndexBS.set(i, this.pLog.getValidTraceIndexBS().get(i));
-        }
-        this.pLog.previousPTraceList = new ArrayList<>();
-        for(int i=0; i<this.pLog.getPTraceList().size(); i++) {
-            this.pLog.previousPTraceList.add(this.pLog.getPTraceList().get(i));
-        }
-        this.pLog.previousCaseVariantSize = this.pLog.getCaseVariantSize();
-        this.pLog.previousEventSize = this.pLog.getEventSize();
-        this.pLog.previousMinDuration = this.pLog.getMinDuration();
-        this.pLog.previousMaxDuration = this.pLog.getMaxDuration();
-        this.pLog.previousMedianDuration = this.pLog.getMedianDuration();
-        this.pLog.previousAverageDuration = this.pLog.getAverageDuration();
-        this.pLog.previousStartTime = this.pLog.getStartTime();
-        this.pLog.previousEndTime = this.pLog.getEndTime();
-        this.pLog.previousVariantIdFreqMap = this.pLog.getVariantIdFreqMap();
-    }
-
-    public void resetPrevious() {
-        this.pLog.resetPrevious();
-    }
-
-    public void updatePrevious() {
-        this.pLog.updatePrevious();
-    }
-
-
-
+    /**
+     * Filter PLog and update stats
+     * @param logFilterRuleList
+     */
     public void filter(List<LogFilterRule> logFilterRuleList) {
-        LOGGER.info("*** reset PLog");
+        proceedFiltering(logFilterRuleList);
+        pLog.updateStats();
+    }
 
-        pLog.reset();
+    private void proceedFiltering(List<LogFilterRule> logFilterRuleList) {
+        // Reset indexes
+        List<PTrace> traces = new ArrayList<>(pLog.getOriginalPTraceList());
+        for (PTrace pTrace : traces) {
+            pTrace.setValidEventIndexBS(pTrace.getOriginalValidEventIndexBS());
+        }
 
-        LOGGER.info("*** reset PLog complete");
-
-        List<PTrace> filteredPTraceList = new ArrayList<>();
-
-        BitSet validTraceBS = new BitSet(pLog.getOriginalPTraceList().size());
-        List<PTrace> pTraceList = pLog.getPTraceList();
-
-        if (logFilterRuleList.size() == 1 && logFilterRuleList.get(0).getFilterType() == FilterType.CASE_ID) {
-            Set<String> selection = logFilterRuleList.get(0).getPrimaryValuesInString();
-            boolean retain = logFilterRuleList.get(0).getChoice() == Choice.RETAIN;
-            filteredPTraceList = pTraceList.stream()
-                    .filter(p -> retain ? selection.contains(p.getCaseId()) : !selection.contains(p.getCaseId()) )
-                    .collect(Collectors.toList());
-            for (int i = 0; i < filteredPTraceList.size(); i++) {
-                PTrace pTrace = filteredPTraceList.get(i);
-                validTraceBS.set(pTrace.getImmutableIndex());
-                pTrace.setMutableIndex(i);
+        if (logFilterRuleList != null && !logFilterRuleList.isEmpty()) {
+            for (LogFilterRule rule : logFilterRuleList) {
+                FilterType filterType = rule.getFilterType();
+                switch (filterType) {
+                    case CASE_ID:
+                    case CASE_VARIANT:
+                    case CASE_CASE_ATTRIBUTE:
+                        traces = filterByCaseSectionCaseAttribute(rule, traces);
+                        break;
+                    case CASE_EVENT_ATTRIBUTE:
+                        traces = filterByCaseSectEventAttribute(rule, traces);
+                        break;
+                    case CASE_SECTION_ATTRIBUTE_COMBINATION:
+                        traces = filterByCaseSectAttributeCombination(rule, traces);
+                        break;
+                    case CASE_TIME:
+                    case STARTTIME:
+                    case ENDTIME:
+                        traces = filterByCaseTime(rule, traces);
+                        break;
+                    case EVENT_ATTRIBUTE_DURATION:
+                        traces = filterByNodeDuration(rule, traces);
+                        break;
+                    case ATTRIBUTE_ARC_DURATION:
+                        traces = filterByArcDuration(rule, traces);
+                        break;
+                    case DURATION:
+                    case TOTAL_WAITING_TIME:
+                    case AVERAGE_WAITING_TIME:
+                    case MAX_WAITING_TIME:
+                    case TOTAL_PROCESSING_TIME:
+                    case AVERAGE_PROCESSING_TIME:
+                    case MAX_PROCESSING_TIME:
+                        traces = filterByDuration(rule, traces);
+                        break;
+                    case CASE_UTILISATION:
+                        traces = filterByCaseUtilization(rule, traces);
+                        break;
+                    case CASE_LENGTH:
+                        traces = filterByCaseLength(rule, traces);
+                        break;
+                    case DIRECT_FOLLOW:
+                    case EVENTUAL_FOLLOW:
+                        traces = filterByPath(rule, traces);
+                        break;
+                    case REWORK_REPETITION:
+                        traces = filterByRework(rule, traces);
+                        break;
+                    case EVENT_EVENT_ATTRIBUTE:
+                        traces = filterByEventSectAttribute(rule, traces);
+                        break;
+                    case EVENT_TIME:
+                        traces = filterByEventTime(rule, traces);
+                        break;
+                    default:
+                        break;
+                }
             }
+        }
 
-            pLog.setValidTraceIndexBS(validTraceBS);
+        BitSet validTracesBS = new BitSet(pLog.getOriginalPTraceList().size());
+        for (PTrace trace : traces) {
+            validTracesBS.set(trace.getImmutableIndex());
+        }
 
+        pLog.setValidTraceIndexBS(validTracesBS);
+        pLog.setPTraceList(traces);
+    }
+
+
+
+    private List<PTrace> filterByCaseSectionCaseAttribute(LogFilterRule rule, List<PTrace> traces) {
+        return traces.stream()
+                .filter(x -> CaseSectionCaseAttributeFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+    }
+
+    private List<PTrace> filterByCaseSectEventAttribute(LogFilterRule rule, List<PTrace> traces) {
+        // CaseSectionEventAttributeFilter handles Choice
+        return traces.stream()
+                .filter(x -> CaseSectionEventAttributeFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+    }
+
+    private List<PTrace> filterByCaseSectAttributeCombination(LogFilterRule rule, List<PTrace> traces) {
+        // CaseSectionAttributeCombinationFilter handles Choice
+        return traces.stream()
+                .filter(x -> CaseSectionAttributeCombinationFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+    }
+
+    public static List<PTrace> filterByCaseTime(LogFilterRule rule, List<PTrace> traces) {
+
+        return traces.stream()
+                .filter(x -> CaseTimeFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+
+    }
+
+    private List<PTrace> filterByNodeDuration(LogFilterRule rule, List<PTrace> traces) {
+
+        return traces.stream()
+                .filter(x -> EventAttributeDurationFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+
+    }
+
+    private List<PTrace> filterByArcDuration(LogFilterRule rule, List<PTrace> traces) {
+
+        return traces.stream()
+                .filter(x -> AttributeArcDurationFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+
+    }
+
+    private static List<PTrace> filterByDuration(LogFilterRule rule, List<PTrace> traces) {
+        return traces.stream()
+                .filter(x -> DurationFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+    }
+
+    private List<PTrace> filterByCaseUtilization(LogFilterRule rule, List<PTrace> traces) {
+
+        return traces.stream()
+                .filter(x -> CaseUtilisationFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+
+    }
+
+    private List<PTrace> filterByCaseLength(LogFilterRule rule, List<PTrace> traces) {
+
+        return traces.stream()
+                .filter(x -> CaseLengthFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
+        return traces.stream()
+                .filter(x -> filterActivitiesByAttribute(rule, x))
+                .collect(Collectors.toList());
+    }
+
+    private boolean filterActivitiesByAttribute(LogFilterRule rule, PTrace pTrace) {
+        String key = rule.getKey();
+
+        if (rule.getPrimaryValues() == null || rule.getPrimaryValues().isEmpty()) return false;
+
+        Set<String> values = (Set<String>) rule.getPrimaryValues().iterator().next().getObjectVal();
+
+        List<AActivity> validActs = pTrace.getOriginalActivityList().stream()
+                .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getEventIndexes().get(0)))
+                .collect(Collectors.toList());
+
+        List<AActivity> matched = pTrace.getOriginalActivityList().stream()
+                .filter(x -> x.getAllAttributes().containsKey(key) && values.contains(x.getAllAttributes().get(key)))
+                .collect(Collectors.toList());
+
+        if (rule.getChoice() == Choice.RETAIN) {
+            validActs = matched;
         } else {
-            validTraceBS.set(0, pLog.getOriginalPTraceList().size());
-
-            for (int i = 0; i < pTraceList.size(); i++) {
-
-                if (validTraceBS.get(i)) {
-
-                    PTrace pTrace = pTraceList.get(i);
-
-                    PTrace filteredPTrace = getFilteredPTrace(pTrace, logFilterRuleList);
-
-                    if (filteredPTrace != null) {
-                        if (filteredPTrace.getValidEventIndexBitSet().cardinality() > 0) {
-                            filteredPTraceList.add(filteredPTrace);
-                            pLog.getPTraceList().add(pTrace);
-                        } else {
-                            pTrace.getValidEventIndexBitSet().clear();
-                            validTraceBS.set(i, false);
-                        }
-                    } else {
-                        pTrace.getValidEventIndexBitSet().clear();
-                        validTraceBS.set(i, false);
-                    }
-                }
-            }
-
-            pLog.setValidTraceIndexBS(validTraceBS);
+            validActs.removeAll(matched);
         }
 
+        if (validActs.size() == 0) return false;
 
-        if (validTraceBS.cardinality() > 0 ) {
-            pLog.updateStats(filteredPTraceList);
-        } else {
-            pLog.getPTraceList().clear();
-            pLog.setEventSize(0);
-            pLog.setVariantIdFreqMap(new UnifiedMap<>());
+        // update valid event index BitSet
+        pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalValidEventIndexBS().size()));
+
+        for (AActivity activity : validActs) {
+            updateValidEventBitSet(pTrace, activity);
+        }
+
+        return true;
+    }
+
+    public static List<PTrace> filterByEventTime(LogFilterRule rule, List<PTrace> traces) {
+        return traces.stream()
+                .filter(x -> filterEventsByTime(rule, x))
+                .collect(Collectors.toList());
+    }
+
+    private static boolean filterEventsByTime(LogFilterRule rule, PTrace pTrace) {
+        List<AEvent> validEvents = pTrace.getOriginalEventList().stream()
+                .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getIndex()) &&
+                        EventTimeFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
+        pTrace.setEventList(validEvents);
+        pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalEventList().size()));
+        for (AEvent aEvent : validEvents) {
+            pTrace.getValidEventIndexBitSet().set(aEvent.getIndex());
+        }
+        return !validEvents.isEmpty();
+    }
+
+    private static void updateValidEventBitSet(PTrace trace, AActivity activity) {
+        for (int i = 0; i < activity.getEventIndexes().size(); i++) {
+            trace.getValidEventIndexBitSet().set(activity.getEventIndexes().get(i));
         }
     }
 
-    private PTrace getFilteredPTrace(PTrace pTrace, List<LogFilterRule> logFilterRules) {
-
-        PTrace filteredTrace = pTrace;
-
-        // Set all events as selected first
-        BitSet validEventBS = (BitSet)pTrace.getOriginalValidEventIndexBS().clone();
-        filteredTrace.setValidEventIndexBS(validEventBS);
-
-        // Filter events and set bits accordingly
-        for (int i = 0; i < logFilterRules.size(); i++) {
-            LogFilterRule logFilterRule = logFilterRules.get(i);
-
-            Section section = logFilterRule.getSection();
-
-            if (section == Section.CASE) {
-                boolean keepTrace = toKeep(pTrace, logFilterRule);
-                if (!keepTrace) {
-                    return null;
-                }
-
-            } else { //Event section
-
-                List<AEvent> eventList = pTrace.getOriginalEventList();
-
-                for (int j = 0; j < eventList.size(); j++) {
-                    if (validEventBS.get(j)) {
-                        AEvent event = eventList.get(j);
-                        if (!toKeep(event, logFilterRule)) {
-                            validEventBS.set(j, false);
-                        } else {
-                            validEventBS.set(j);
-                        }
-                    }
-                }
-
-                if (validEventBS.cardinality() == 0) {
-                    filteredTrace = null;
-                    break;
-                } else {
-                    filteredTrace.setValidEventIndexBS(validEventBS);
-                }
-            }
-        }
-
-        // Prepare returning result
-        if (filteredTrace!= null) {
-            if (filteredTrace.getValidEventIndexBitSet().cardinality() == 0) {
-                filteredTrace = null;
-            }
-        }
-        return filteredTrace;
+    private List<PTrace> filterByPath(LogFilterRule rule, List<PTrace> traces) {
+        // PathFilter handles Choice
+        return traces.stream()
+                .filter(x -> PathFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
     }
 
-    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
-        FilterType filterType = logFilterRule.getFilterType();
-        switch (filterType) {
-            case CASE_VARIANT:
-            case CASE_ID:
-            case CASE_CASE_ATTRIBUTE:
-                return CaseSectionCaseAttributeFilter.toKeep(trace, logFilterRule);
-            case CASE_EVENT_ATTRIBUTE:
-                return CaseSectionEventAttributeFilter.toKeep(trace, logFilterRule);
-            case CASE_TIME:
-            case STARTTIME:
-            case ENDTIME:
-                return CaseTimeFilter.toKeep(trace, logFilterRule);
-            case DURATION:
-            case AVERAGE_PROCESSING_TIME:
-            case MAX_PROCESSING_TIME:
-            case TOTAL_PROCESSING_TIME:
-            case AVERAGE_WAITING_TIME:
-            case MAX_WAITING_TIME:
-            case TOTAL_WAITING_TIME:
-                return DurationFilter.toKeep(trace, logFilterRule);
-            case CASE_UTILISATION:
-                return CaseUtilisationFilter.toKeep(trace, logFilterRule);
-            case DIRECT_FOLLOW:
-            case EVENTUAL_FOLLOW:
-                return PathFilter.toKeep(trace, logFilterRule);
-            case REWORK_REPETITION:
-                return ReworkFilter.toKeep(trace, logFilterRule);
-            case CASE_SECTION_ATTRIBUTE_COMBINATION:
-                return CaseSectionAttributeCombinationFilter.toKeep(trace, logFilterRule);
-            case EVENT_ATTRIBUTE_DURATION:
-                return EventAttributeDurationFilter.toKeep(trace, logFilterRule);
-            case ATTRIBUTE_ARC_DURATION:
-                return AttributeArcDurationFilter.toKeep(trace, logFilterRule);
-            case CASE_LENGTH:
-                return CaseLengthFilter.toKeep(trace, logFilterRule);
-            default:
-                return false;
-        }
+    private List<PTrace> filterByRework(LogFilterRule rule, List<PTrace> traces) {
+        // PathFilter handles Choice
+        return traces.stream()
+                .filter(x -> ReworkFilter.toKeep(x, rule))
+                .collect(Collectors.toList());
     }
-
-    public static boolean toKeep(AEvent event, LogFilterRule logFilterRule) {
-        FilterType filterType = logFilterRule.getFilterType();
-        switch (filterType) {
-            case EVENT_EVENT_ATTRIBUTE:
-                return EventSectionAttributeFilter.toKeep(event, logFilterRule);
-            case EVENT_TIME:
-                return EventTimeFilter.toKeep(event, logFilterRule);
-            default:
-                return false;
-        }
-    }
-
-    private void updateCaseVariants() {
-
-        UnifiedSet<Integer> existVariants = new UnifiedSet<>();
-        for(PTrace pTrace : this.pLog.getPTraceList()) {
-            existVariants.put(pTrace.getCaseVariantId());
-        }
-
-        UnifiedMap<Integer, Integer> variantIdFreqMap = new UnifiedMap<>();
-        for(int key : this.pLog.getOriginalVariantIdFreqMap().keySet()) {
-            if(existVariants.contains(key)) {
-                variantIdFreqMap.put(key, this.pLog.getOriginalVariantIdFreqMap().get(key));
-            }
-        }
-
-        this.pLog.setVariantIdFreqMap(variantIdFreqMap);
-    }
-
 
 }

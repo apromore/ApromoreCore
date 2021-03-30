@@ -28,10 +28,7 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AttributeCombinationTest {
 
@@ -52,7 +49,8 @@ public class AttributeCombinationTest {
         firstValues.add(rv1);
 
         Set<RuleValue> secondaryValues = new HashSet<>();
-        RuleValue rv2 = new RuleValue(filterType, OperationType.EQUAL, secondKey, "B");
+        RuleValue rv2 = new RuleValue(filterType, OperationType.EQUAL, secondKey, new HashSet<>(Arrays.asList("B")));
+
         rv2.getCustomAttributes().put("section", section2);
         secondaryValues.add(rv2);
 
@@ -102,7 +100,8 @@ public class AttributeCombinationTest {
         firstValues.add(rv1);
 
         Set<RuleValue> secondaryValues = new HashSet<>();
-        RuleValue rv2 = new RuleValue(filterType, OperationType.EQUAL, secondKey, "completed");
+        RuleValue rv2 = new RuleValue(filterType, OperationType.EQUAL, secondKey, new HashSet<>(Arrays.asList("completed")));
+
         rv2.getCustomAttributes().put("section", section2);
         secondaryValues.add(rv2);
 

@@ -39,7 +39,7 @@ public class EventSectionAttributeFilterTest {
         String attrKey = "org:resource";
         Set<RuleValue> primaryValues = new HashSet<>();
         primaryValues.add(new RuleValue(
-                FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "r2"));
+                FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, new HashSet<>(Arrays.asList("r2"))));
         UnifiedSet<String> expectedCaseIds = new UnifiedSet<>();
         expectedCaseIds.add("c2");
         expectedCaseIds.add("c3");
@@ -51,9 +51,7 @@ public class EventSectionAttributeFilterTest {
         String attrKey = "concept:name";
         Set<RuleValue> primaryValues = new HashSet<>();
         primaryValues.add(new RuleValue(
-                FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "a"));
-        primaryValues.add(new RuleValue(
-                FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, "c"));
+                FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, attrKey, new HashSet<>(Arrays.asList("a", "c"))));
         UnifiedSet<String> expectedCaseIds = new UnifiedSet<>();
         expectedCaseIds.add("c1");
         expectedCaseIds.add("c2");
@@ -123,10 +121,10 @@ public class EventSectionAttributeFilterTest {
     public static void testEventAttrFreqAfterEventAttrFilter(APMLog apmLog) {
         Set<RuleValue> primaryValues = new HashSet<>();
 
+        Set<String> selectedVals = new HashSet<>(Arrays.asList("Turning & Milling Q.C.", "Laser Marking - Machine 7"));
+
         primaryValues.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
-                "concept:name", "Turning & Milling Q.C."));
-        primaryValues.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
-                "concept:name", "Laser Marking - Machine 7"));
+                "concept:name", selectedVals));
 
         LogFilterRule logFilterRule = new LogFilterRuleImpl(Choice.RETAIN, Inclusion.ANY_VALUE, Section.EVENT,
                 FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", primaryValues, null);
@@ -138,7 +136,7 @@ public class EventSectionAttributeFilterTest {
 
 
         int actSizeOfCFM = apmLogFilter.getPLog().getEventAttributeValues().get("concept:name").size();
-        int actSizeOfEFM =  apmLogFilter.getPLog().getEventAttributeOccurMap().get("concept:name").size();
+        int actSizeOfEFM = apmLogFilter.getPLog().getEventAttributeOccurMap().get("concept:name").size();
 
         assertTrue(actSizeOfCFM == 2);
         assertTrue(actSizeOfEFM == 2);

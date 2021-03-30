@@ -30,7 +30,13 @@
                              org.w3c.dom.*;version=0
                         </Export-Package>
                         <Import-Package>
+                             com.ibm.jtc.jax.xml.bind.v2.runtime.unmarshaller;resolution:=optional,
+                             com.plutext.*;resolution:=optional,
+                             com.sun.xml.internal.bind.v2.runtime.unmarshaller;resolution:=optional,
                              !org.checkerframework.checker.*,
+                             org.docx4j.convert.out.*;resolution:=optional,
+                             org.docx4j.jaxb.*;resolution:=optional,
+                             org.docx4j.openpackaging.parts.digitalsignature;resolution:=optional,
                              *
                         </Import-Package>
                     </instructions>

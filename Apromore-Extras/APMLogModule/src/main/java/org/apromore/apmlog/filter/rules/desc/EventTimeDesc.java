@@ -29,7 +29,7 @@ import org.apromore.apmlog.util.TimeUtil;
 public class EventTimeDesc {
 
     public static String getDescription(LogFilterRule logFilterRule) {
-        String desc = "";
+        StringBuilder sb = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
         long fromTime = 0, toTime = 0;
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
@@ -38,12 +38,12 @@ public class EventTimeDesc {
             if (operationType == OperationType.LESS_EQUAL) toTime = ruleValue.getLongValue();
         }
 
-        desc += choice.substring(0, 1).toUpperCase() + choice.substring(1) + " ";
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " ");
 
-        desc += "all events where timestamp ";
-        desc += "is from " + TimeUtil.convertTimestamp(fromTime) + " ";
-        desc += "to " + TimeUtil.convertTimestamp(toTime);
+        sb.append("all events whose timestamp ");
+        sb.append("is [from " + TimeUtil.convertTimestamp(fromTime) + " ");
+        sb.append("to " + TimeUtil.convertTimestamp(toTime) + "]");
 
-        return desc;
+        return sb.toString();
     }
 }

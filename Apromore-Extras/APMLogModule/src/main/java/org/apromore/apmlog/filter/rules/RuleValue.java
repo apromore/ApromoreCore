@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -27,8 +27,7 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RuleValue implements Comparable<RuleValue>, Serializable {
 
@@ -39,7 +38,17 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
     private long longVal = 0;
     private double doubleVal = 0;
     private int intVal = 0;
+    private Object objectVal;
+
     private Map<String, String> customAttributes;
+
+    public RuleValue(FilterType filterType, OperationType operationType, String key, Object objectVal) {
+        this.filterType = filterType;
+        this.operationType = operationType;
+        this.key = key;
+        this.objectVal = objectVal;
+        this.stringVal = objectVal.toString();
+    }
 
     public RuleValue(FilterType filterType, OperationType operationType, String key, String stringVal) {
         this.filterType = filterType;
@@ -76,6 +85,12 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         if (customAttributes == null) customAttributes = new HashMap<>();
 
         return customAttributes;
+    }
+
+    public void putCustomAttribute(String key, String value) {
+        if (customAttributes == null) customAttributes = new HashMap<>();
+
+        customAttributes.put(key, value);
     }
 
     public void setCustomAttributes(Map<String, String> customAttributes) {
@@ -128,14 +143,15 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         return intVal;
     }
 
+    public Object getObjectVal() {
+        /** to be compliant to the old methods **/
+        if (objectVal == null && stringVal != null) {
+            return new HashSet<>(Arrays.asList(stringVal));
+        }
+        return objectVal;
+    }
+
     public RuleValue clone() {
-        FilterType filterTypeCopy = filterType;
-        OperationType operationTypeCopy = operationType;
-        String keyCopy = key;
-        String stringValCopy = stringVal;
-        long longValCopy = longVal;
-        double doubleValCopy = doubleVal;
-        int intValCopy = intVal;
 
         Map<String, String> customAttrCopy = null;
 
@@ -150,10 +166,12 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
 
         RuleValue rv = null;
 
-        if (longValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, longValCopy );
-        else if (doubleValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, doubleValCopy );
-        else if (intValCopy != 0) rv = new RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, intValCopy );
-        else rv = new  RuleValue(filterTypeCopy, operationTypeCopy, keyCopy, stringValCopy );
+        if (objectVal != null) rv = new RuleValue(filterType, operationType, key, objectVal);
+        else if (longVal != 0) rv = new RuleValue(filterType, operationType, key, longVal );
+        else if (doubleVal != 0) rv = new RuleValue(filterType, operationType, key, doubleVal );
+        else if (intVal != 0) rv = new RuleValue(filterType, operationType, key, intVal );
+        else rv = new  RuleValue(filterType, operationType, key, stringVal );
+
         if (customAttrCopy != null) rv.setCustomAttributes(customAttrCopy);
 
         return rv;
@@ -177,5 +195,9 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         } else {
             return this.stringVal.compareTo(o.getStringValue());
         }
+    }
+
+    public void setObjectVal(Object obj) {
+        this.objectVal = obj;
     }
 }

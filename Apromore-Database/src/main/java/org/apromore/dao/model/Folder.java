@@ -68,6 +68,8 @@ public class Folder implements Serializable {
     private Set<Process> processes = new HashSet<>();
     private Set<Folder> subFolders = new HashSet<>();
 
+    private Set<GroupFolder> groupFolders = new HashSet<>();
+
 
     /**
      * Default Constructor.
@@ -299,6 +301,15 @@ public class Folder implements Serializable {
 
     public void setParentFolderChain(String parentFolderChain) {
         this.parentFolderChain = parentFolderChain;
+    }
+
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<GroupFolder> getGroupFolders() {
+        return this.groupFolders;
+    }
+
+    public void setGroupFolders(Set<GroupFolder> newGroupFolders) {
+        this.groupFolders = newGroupFolders;
     }
 
     @Override

@@ -24,6 +24,12 @@ package org.apromore.apmlog.stats;
 import org.apromore.apmlog.util.Util;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class CaseAttributeValue implements AttributeValue {
     private String value;
 
@@ -51,6 +57,11 @@ public class CaseAttributeValue implements AttributeValue {
         this.oppCases = totalCases - occurCaseIndexes.size();
     }
 
+    public Set<Integer> getOccurCasesIndexSet() {
+        List<Integer> list = Arrays.stream(occurCaseIndexes.toArray()).boxed().collect(Collectors.toList());
+        return new HashSet<>(list);
+    }
+
     public void setRatio(double ratio) {
         this.ratio = ratio;
     }
@@ -60,7 +71,7 @@ public class CaseAttributeValue implements AttributeValue {
     }
 
     public long getCases() {
-        return occurCaseIndexes.size();
+        return getOccurCasesIndexSet().size();
     }
 
     public String getFrequency() {
