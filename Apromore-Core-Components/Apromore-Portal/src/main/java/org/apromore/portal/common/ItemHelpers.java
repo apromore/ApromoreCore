@@ -75,7 +75,7 @@ public final class ItemHelpers {
 
     private static final AccessType getEffectiveAccessType(Object item, User user) throws Exception {
         Integer id;
-        AccessType accessType = AccessType.NONE;
+        AccessType accessType = AccessType.RESTRICTED;
 
         if ((id = ItemHelpers.getLogId(item)) != null) {
             accessType = authorizationService.getLogAccessTypeByUser(id, user);

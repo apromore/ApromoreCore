@@ -178,6 +178,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             setTimeZone.setModel(model);
             setTimeZone.setValue(defaultValue);
 
+            /*
+            // Disable for now until timezone backend handling is resolved
             setTimeZone.addEventListener("onSelect", event -> {
                 if (getTimeZone() == null) {
                     this.logMetaData.setTimeZone(defaultValue.split(" ")[1]);
@@ -185,6 +187,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     this.logMetaData.setTimeZone(getTimeZone());
                 }
             });
+            */
 
             setTimeZone.addEventListener("onClientUpdate", event -> {
                 JSONObject param = (JSONObject) event.getData();
@@ -253,7 +256,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     event -> close()
             );
         }
-        Clients.evalJavaScript("Ap.common.pullClientTimeZone()");
+        // Clients.evalJavaScript("Ap.common.pullClientTimeZone()");
     }
 
     //Create a dialog to ask for user option regarding matched schema mapping
