@@ -1,0 +1,116 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+    background: #2b2b2b;
+    border-color: transparent;
+}
+
+/*
+#speed-control .ui-slider-tip:before,
+#speed-control .ui-slider-tip:after {
+    display: none; }
+
+#speed-control .ui-slider-handle.ui-state-active .ui-slider-tip,
+#speed-control .ui-slider-handle.ui-state-focus .ui-slider-tip,
+#speed-control .ui-slider-handle.ui-state-hover .ui-slider-tip,
+#speed-control .ui-slider-handle:focus .ui-slider-tip,
+#speed-control .ui-slider-handle:hover .ui-slider-tip {
+    top: -1px; }
+
+#speed-control .ui-slider-handle.ui-state-focus {
+    z-index: 100; }
+*/
+
+/* new ones */
+
+.ui-widget {
+    font-family: var(--ap-font-base);
+}
+
+#speed-control.ui-slider-float .ui-slider-tip,
+#speed-control.ui-slider-float .ui-slider-tip-label {
+    visibility: visible !important;
+}
+
+#speed-control.ui-slider {
+    border-radius: 8px;
+    background-color: var(--ap-c-grey-light-5);
+    border: none;
+    height: 6px;
+}
+
+#speed-control .ui-slider-tip {
+    box-sizing: border-box;
+    border-radius: 44px;
+    height: 22px;
+    width: 22px;
+    margin-left: 0;
+    top: 0;
+    left: 0;
+    background: var(--ap-c-grey-light-3);
+    font-weight: normal;
+    padding-top: 5px;
+    color: white;
+    border: none;
+    font-size: 12px;
+    line-height: 12px;
+    z-index: 5;
+    text-align: center;
+}
+
+
+.ui-slider-float .ui-slider-tip,
+.ui-slider-float .ui-slider-tip-label {
+    /* opacity: 1 !important; */
+}
+
+#speed-control .ui-slider-handle {
+    box-sizing: border-box;
+    border-radius: 44px;
+    height: 22px;
+    width: 22px;
+    top: -7px;
+    /*margin-left: -11px;*/
+    background-color: var(--ap-c-widget);
+    border: 0px;
+    z-index: 3;
+}
+
+/* give the tooltip a css triangle arrow */
+#speed-control.ui-slider-float .ui-slider-tip:before,
+#speed-control.ui-slider-float .ui-slider-tip:after {
+    display: none !important;
+}
+
+#speed-control.ui-slider-float .ui-slider-tip,
+#speed-control.ui-slider-float .ui-slider-tip-label {
+    visibility: visible;
+    opacity: 1;
+}
