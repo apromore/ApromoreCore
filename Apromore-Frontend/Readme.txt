@@ -12,9 +12,11 @@ Folder structure:
 - scripts: NPM script files, if any.
 - dist: distribution bundles
 
-Commands
+Commands:
 
-npm install: to install all dependencies
+npm install --production=false: to install all dependencies
+npm i -g webpack-cli: to install webpack-cli if asked when run 'npm run build'.
+npm install: to install only production dependencies if the development dependencies have been installed and unchanged.
 npm run test: to run unit tests.
 npm run build: to build distribution bundles
     - processdiscoverer.js bundle: used for Process Discoverer
