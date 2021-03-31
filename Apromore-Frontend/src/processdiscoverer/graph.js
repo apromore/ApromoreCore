@@ -15,7 +15,7 @@ edgeBendEditing(cytoscape, {
 undoRedo(cytoscape);
 
 import GraphModelWrapper from "../processmap/graphModelWrapper";
-import LogAnimation from "../loganimation";
+import LogAnimation from "../loganimation/logAnimation";
 import tippy from "tippy.js";
 import * as jsPDF from "jspdf";
 const Undoo = require('undoo');
