@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.accesscontrol;
 
 import java.util.Locale;
 import java.util.Map;
+import java.lang.Boolean;
 import javax.inject.Inject;
 
 import org.apromore.portal.common.Constants;
@@ -93,6 +94,10 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
         arg.put("workspaceService", workspaceService);
         arg.put("userMetadataService", userMetadataService);
         arg.put("authorizationService", authorizationService);
+        Boolean enablePublish = (Boolean) arg.get("enablePublish");
+        if (enablePublish == null) {
+            arg.put("enablePublish", false);
+        }
 
         try {
             boolean canShare = false;

@@ -237,6 +237,7 @@ public class BPMNEditorController extends BaseController {
                         arg.put("currentUser", UserSessionManager.getCurrentUser());
                         arg.put("autoInherit", true);
                         arg.put("showRelatedArtifacts", true);
+                        arg.put("enablePublish", getConfig().getEnablePublish());
                         accessControlPlugin.setSimpleParams(arg);
                         accessControlPlugin.execute(portalContext);
                     } catch (Exception e) {
