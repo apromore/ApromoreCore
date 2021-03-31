@@ -1,0 +1,58 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+/*
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+#x-debug-browser .x-tree .x-tree-node a span {
+    color:#222297;
+    font-size:11px;
+    padding-top:2px;
+    font-family:"monotype","courier new",sans-serif;
+    line-height:18px;
+}
+#x-debug-browser .x-tree a i {
+    color:#FF4545;
+    font-style:normal;
+}
+#x-debug-browser .x-tree a em {
+    color:#999;
+}
+#x-debug-browser .x-tree .x-tree-node .x-tree-selected a span{
+    background:#c3daf9;
+}
+#x-debug-browser  .x-tool-toggle {
+    background-position:0 -75px;
+}
+#x-debug-browser  .x-tool-toggle-over {
+    background-position:-15px -75px;
+}
+#x-debug-browser.x-panel-collapsed .x-tool-toggle {
+    background-position:0 -60px;
+}
+#x-debug-browser.x-panel-collapsed .x-tool-toggle-over {
+    background-position:-15px -60px;
+}

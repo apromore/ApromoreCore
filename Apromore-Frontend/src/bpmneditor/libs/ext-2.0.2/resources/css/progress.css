@@ -1,0 +1,64 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+/*
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+.x-progress-wrap {
+    border:1px solid #6593cf;
+    overflow:hidden;
+}
+.x-progress-inner {
+    height:18px;
+    background: #e0e8f3 url(../images/default/qtip/bg.gif) repeat-x;
+    position:relative;
+}
+.x-progress-bar {
+    height:18px;
+    float:left;
+    width:0;
+    background:#9CBFEE url( ../images/default/progress/progress-bg.gif ) repeat-x left center;
+    border-top:1px solid #D1E4FD;
+    border-bottom:1px solid #7FA9E4;
+    border-right:1px solid #7FA9E4;
+}
+.x-progress-text {
+    font-size:11px;
+    font-weight:bold;
+    color:#fff;
+    padding:1px 5px;
+    overflow:hidden;
+    position:absolute;
+    left:0;
+    text-align:center;
+}
+.x-progress-text-back {
+    color:#396095;
+    line-height:16px;
+}
+.ext-ie .x-progress-text-back {
+    line-height:15px;
+}

@@ -1,0 +1,69 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+/*
+ * FileUploadField component styles
+ */
+.x-form-file-wrap {
+	position: relative;
+	height: 22px;
+}
+.x-form-file-wrap .x-form-file {
+	position: absolute;
+	right: 0;
+	-moz-opacity: 0;
+	filter:alpha(opacity: 0);
+	opacity: 0;
+	z-index: 2;
+	height: 22px;
+}
+.x-form-file-wrap .x-form-file-btn {
+	position: absolute;
+	right: 0;
+	z-index: 1;
+}
+.x-form-file-wrap .x-form-file-text {
+	position: absolute;
+	left: 0;
+	z-index: 3;
+	color: #777;
+}
+
+/*
+ * These rules ought to only apply to animationExtension.js, but I don't have the patience to find a cleaner way to include them there.
+ */
+.upload-icon {background: url('../images/default/page_white_add.png') no-repeat 0 0 !important;}
+#fi-button-msg {
+	border: 2px solid #ccc;
+	padding: 5px 10px;
+	background: #eee;
+	margin: 5px;
+	float: left;
+}
+
