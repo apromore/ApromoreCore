@@ -21,28 +21,14 @@
  */
 package org.apromore.plugin.portal.accesscontrol.controllers;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import com.google.common.base.Strings;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Group.Type;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Usermetadata;
-import org.apromore.dao.model.UsermetadataType;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.manager.client.ManagerService;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.accesscontrol.model.Artifact;
-import org.apromore.plugin.portal.accesscontrol.model.Assignee;
-import org.apromore.plugin.portal.accesscontrol.model.Assignment;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
-import org.apromore.portal.model.*;
-import org.apromore.portal.types.EventQueueTypes;
-import org.apromore.service.AuthorizationService;
-import org.apromore.service.SecurityService;
-import org.apromore.service.UserMetadataService;
-import org.apromore.service.WorkspaceService;
-import org.apromore.util.AccessType;
-import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
@@ -56,23 +42,44 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
-
-import java.util.*;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.ListModels;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Span;
+import org.zkoss.zul.Textbox;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Group.Type;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataType;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.accesscontrol.model.Artifact;
+import org.apromore.plugin.portal.accesscontrol.model.Assignee;
+import org.apromore.plugin.portal.accesscontrol.model.Assignment;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.notification.Notification;
+import org.apromore.portal.model.*;
+import org.apromore.portal.types.EventQueueTypes;
+import org.apromore.service.AuthorizationService;
+import org.apromore.service.SecurityService;
+import org.apromore.service.UserMetadataService;
+import org.apromore.util.AccessType;
+import org.apromore.util.UserMetadataTypeEnum;
 
 /**
  * Controller for handling share interface
  * Corresponds to components/access/access.zul
  */
-// @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class AccessController extends SelectorComposer<Div> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AccessController.class);
     private static boolean USE_STRICT_USER_ADDITION = true;
-
-    /*
-    @WireVariable("managerService")
-    private ManagerService managerService;
 
     @WireVariable("securityService")
     private SecurityService securityService;
@@ -82,12 +89,6 @@ public class AccessController extends SelectorComposer<Div> {
 
     @WireVariable("userMetadataService")
     private UserMetadataService userMetadataService;
-    */
-
-    private SecurityService securityService = (SecurityService) Executions.getCurrent().getArg().get("securityService");
-    private WorkspaceService workspaceService = (WorkspaceService) Executions.getCurrent().getArg().get("workspaceService");
-    private AuthorizationService authorizationService = (AuthorizationService) Executions.getCurrent().getArg().get("authorizationService");
-    private UserMetadataService userMetadataService = (UserMetadataService) Executions.getCurrent().getArg().get("userMetadataService");
 
     private Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
     private Object selectedItem = argMap.get("selectedItem");
