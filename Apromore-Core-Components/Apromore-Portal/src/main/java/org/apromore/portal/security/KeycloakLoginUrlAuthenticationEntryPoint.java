@@ -19,10 +19,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.security;
+package org.apromore.portal.security;
 
+import org.apromore.portal.ConfigBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -40,7 +42,19 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
-    private String fullConfigurableReturnPath = "http://localhost:8181/"; // @2do: Inject, and get via ConfigBean getFullProtocolHostPortUrl()
+    private String fullConfigurableReturnPath = "http://localhost:8181/";
+
+    protected AutowireCapableBeanFactory beanFactory;
+    protected ConfigBean config;
+
+    /*
+    public KeycloakLoginUrlAuthenticationEntryPoint() {
+        final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
+
+        fullConfigurableReturnPath = config.getFullProtocolHostPortUrl();
+        LOGGER.info("\n\nFROM config, fullConfigurableReturnPath is: {}", fullConfigurableReturnPath);
+    }
+    */
 
     private String keycloakLoginFormUrl;
 

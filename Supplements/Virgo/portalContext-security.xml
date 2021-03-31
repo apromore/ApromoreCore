@@ -139,7 +139,7 @@
 
 
     <!-- Custom Filters for Apromore -->
-    <beans:bean id="apromoreAuthenticationEntryPoint" class="org.apromore.security.KeycloakLoginUrlAuthenticationEntryPoint">
+    <beans:bean id="apromoreAuthenticationEntryPoint" class="org.apromore.portal.security.KeycloakLoginUrlAuthenticationEntryPoint">
         <beans:property name="loginFormUrl"
                         value="/login.zul" />
         <beans:property name="keycloakLoginFormUrl"

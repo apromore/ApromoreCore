@@ -21,8 +21,10 @@
  */
 package org.apromore.portal.security;
 
+import org.apromore.portal.ConfigBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -31,7 +33,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.UUID;
 
 public class LoginRedirectKeycloakFilter extends GenericFilterBean {
@@ -42,11 +47,35 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
-    private String fullConfigurableReturnPath = "http://localhost:8181/"; // @2do: Inject, and get via ConfigBean getFullProtocolHostPortUrl()
+    private String fullConfigurableReturnPath = "http://localhost:8181/";
 
     private static final String TRAD_LOGIN_REQUEST_URI = "/login.zul";
 
     private String keycloakLoginFormUrl;
+
+    protected AutowireCapableBeanFactory beanFactory;
+    protected ConfigBean config;
+
+    public LoginRedirectKeycloakFilter() {
+        readSiteFileProperties();
+    }
+
+    private Properties readSiteFileProperties() {
+        try {
+            final Properties properties = new Properties();
+            properties.load(this.getClass().getResourceAsStream(
+                    "/assembly/etc/site.cfg"));
+            LOGGER.info("\n\nsite.cfg properties file properties {}", properties);
+
+            return properties;
+        } catch (IOException | NullPointerException e) {
+            LOGGER.error("Exception reading site.cfg properties {}: " + e.getMessage());
+
+            e.printStackTrace();
+
+            return null;
+        }
+    }
 
     public String getKeycloakLoginFormUrl() {
         return keycloakLoginFormUrl;
