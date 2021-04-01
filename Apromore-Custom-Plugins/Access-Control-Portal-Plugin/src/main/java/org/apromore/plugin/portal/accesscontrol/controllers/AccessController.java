@@ -411,7 +411,7 @@ public class AccessController extends SelectorComposer<Div> {
             artifactMap.put(id, artifact);
             try {
                 artifactAccessType = authorizationService.getUserMetadataAccessTypeByUser(id, user);
-                if (artifactAccessType != null && (artifactAccessType == AccessType.VIEWER || artifactAccessType == AccessType.RESTRICTED)) {
+                if (artifactAccessType != null && (artifactAccessType == AccessType.VIEWER)) {
                     artifactModel.addToSelection(artifact);
                 }
             } catch (Exception e) {
