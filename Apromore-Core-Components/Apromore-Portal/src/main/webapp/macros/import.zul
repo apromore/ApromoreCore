@@ -64,11 +64,13 @@
                                 <label sclass="ap-importer-filename" value="Consider uploading logs in zip or gz format" />
                             </row>
                             <row spans="3" sclass="ap-window-footer-actions">
-                                <div align="center">
-                                    <button id="defineDataPipelines" label="Define data pipeline" visible="false"/>
+                                <div align="center" sclass="ap-importer-window-footer-wrapper">
+                                    <hlayout id="defineDataPipelines" visible="false" sclass="z-button" spacing="0">
+                                        <div sclass="ap-icon ap-icon-etl-pipeline ap-importer-icon-button" />
+                                        <label value="Define data pipeline" />
+                                    </hlayout>
                                     <button id="okButtonImport" label="OK" width="85px" iconSclass="z-icon-check-circle" disabled="true" />
-                                    <button id="cancelButtonImport" label="Cancel" width="85px" iconSclass="z-icon-times-circle" >
-                                    </button>
+                                    <button id="cancelButtonImport" label="Cancel" width="85px" iconSclass="z-icon-times-circle" />
                                 </div>
                             </row>
                         </rows>

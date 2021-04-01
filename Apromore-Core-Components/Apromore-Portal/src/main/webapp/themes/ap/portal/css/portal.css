@@ -581,6 +581,18 @@ img[src="img/icon/bpmn-22x22.png"] {
   color: var(--ap-c-text-heading) !important;
 }
 
+.ap-importer-icon-button {
+    filter: var(--ap-filter-ico-white);
+    background-color: transparent;
+    background-size: 15px !important;
+    height: 18px !important;
+}
+
+.ap-importer-window-footer-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .ap-portal-crumb {
   margin: 0 6px;
   cursor: pointer;

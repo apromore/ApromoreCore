@@ -91,6 +91,12 @@
     color: var(--ap-c-text-normal);
 }
 
+.ap-form table td:first-child .z-button .z-label {
+    color:white;
+    font-weight:200;
+    line-height: 18px
+}
+
 .ap-stateful-button input {
     display: none;
 }

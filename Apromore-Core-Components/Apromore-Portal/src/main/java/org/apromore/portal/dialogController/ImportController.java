@@ -75,12 +75,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 
 public class ImportController extends BaseController {
 
@@ -142,7 +137,7 @@ public class ImportController extends BaseController {
             Button uploadURLButton = (Button) this.importWindow.getFellow("uploadURLButton");
             Button cancelButton = (Button) this.importWindow.getFellow("cancelButtonImport");
             Button cancelButtonURL = (Button) this.importWindow.getFellow("cancelButtonImportURL");
-            Button defineDataPipelinesButton = (Button) this.importWindow.getFellow("defineDataPipelines");
+            Hlayout defineDataPipelinesButton = (Hlayout) this.importWindow.getFellow("defineDataPipelines");
             okButton = (Button) this.importWindow.getFellow("okButtonImport");
             okButton_URL = (Button) this.importWindow.getFellow("okButtonImportURL");
             this.fileNameLabel = (Label) this.importWindow.getFellow("fileNameLabel");
