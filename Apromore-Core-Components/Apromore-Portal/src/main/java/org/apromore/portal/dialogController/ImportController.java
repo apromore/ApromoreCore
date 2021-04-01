@@ -52,9 +52,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -139,6 +142,7 @@ public class ImportController extends BaseController {
             Button uploadURLButton = (Button) this.importWindow.getFellow("uploadURLButton");
             Button cancelButton = (Button) this.importWindow.getFellow("cancelButtonImport");
             Button cancelButtonURL = (Button) this.importWindow.getFellow("cancelButtonImportURL");
+            Button defineDataPipelinesButton = (Button) this.importWindow.getFellow("defineDataPipelines");
             okButton = (Button) this.importWindow.getFellow("okButtonImport");
             okButton_URL = (Button) this.importWindow.getFellow("okButtonImportURL");
             this.fileNameLabel = (Label) this.importWindow.getFellow("fileNameLabel");
@@ -208,6 +212,18 @@ public class ImportController extends BaseController {
                     importWindow.detach();
                 }
             });
+            if (!config.isCommunity()) {
+                defineDataPipelinesButton.setVisible(true);
+                defineDataPipelinesButton.addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        PortalPlugin etlPluginPortal = PortalPluginResolver.getPortalPluginMap().get("Define data pipeline");
+                        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+                        if (etlPluginPortal != null) {
+                            etlPluginPortal.execute(portalContext);
+                        }
+                    }
+                });
+            }
 
             win.doModal();
         } catch (Exception e) {
