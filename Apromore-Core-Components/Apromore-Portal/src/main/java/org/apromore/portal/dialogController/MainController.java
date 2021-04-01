@@ -163,14 +163,20 @@ public class MainController extends BaseController implements MainControllerInte
 
     public MainController() {
         LOGGER.info("\n\n>>> In MainController() default constructor");
-        final Object nativeRequest = Executions.getCurrent().getNativeRequest();
-        LOGGER.info("\n### nativeRequest {}", nativeRequest);
-        final SecurityContextHolderAwareRequestWrapper servReqWrapper =
-                (SecurityContextHolderAwareRequestWrapper)nativeRequest;
-        final String appAuthHeader = servReqWrapper.getHeader("App_Auth");
-        final String signedAppAuthHeader = servReqWrapper.getHeader("Signed_App_Auth");
-        LOGGER.info("\n### appAuthHeader {}", appAuthHeader);
-        LOGGER.info("\n### signedAppAuthHeader {}", signedAppAuthHeader);
+
+        final boolean usingKeycloak = config.isUseKeycloakSso();
+        LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
+
+        if (usingKeycloak) {
+            final Object nativeRequest = Executions.getCurrent().getNativeRequest();
+            LOGGER.info("\n### nativeRequest {}", nativeRequest);
+            final SecurityContextHolderAwareRequestWrapper servReqWrapper =
+                    (SecurityContextHolderAwareRequestWrapper) nativeRequest;
+            final String appAuthHeader = servReqWrapper.getHeader("App_Auth");
+            final String signedAppAuthHeader = servReqWrapper.getHeader("Signed_App_Auth");
+            LOGGER.info("\n### appAuthHeader {}", appAuthHeader);
+            LOGGER.info("\n### signedAppAuthHeader {}", signedAppAuthHeader);
+        }
 
         portalSession = new PortalSession(this);
 
@@ -179,28 +185,29 @@ public class MainController extends BaseController implements MainControllerInte
 
         String usernameParsed = null;
 
-        try {
-            if (StringUtils.isNotBlank(urlDecoded)) {
-                // @2do: get this secret securely from the environment
-                final String decryptedUrlParam = symmetricDecrypt(urlDecoded, MainController.encKey);
-                LOGGER.info("\n\n>>>>> >>>>> >>>>> decryptedUrlParam: {}", decryptedUrlParam);
+        if (usingKeycloak) {
+            try {
+                if (StringUtils.isNotBlank(urlDecoded)) {
+                    final String decryptedUrlParam = symmetricDecrypt(urlDecoded, MainController.encKey);
+                    LOGGER.info("\n\n>>>>> >>>>> >>>>> decryptedUrlParam: {}", decryptedUrlParam);
 
-                final StringTokenizer stringTokenizer = new StringTokenizer(decryptedUrlParam, ";");
+                    final StringTokenizer stringTokenizer = new StringTokenizer(decryptedUrlParam, ";");
 
-                final String usernameKeyValuePair = stringTokenizer.nextToken();
-                usernameParsed = usernameKeyValuePair.substring(usernameKeyValuePair.indexOf("=") + 1);
+                    final String usernameKeyValuePair = stringTokenizer.nextToken();
+                    usernameParsed = usernameKeyValuePair.substring(usernameKeyValuePair.indexOf("=") + 1);
 
-                LOGGER.info("\n\n>>>>> >>>>> >>>>> usernameParsed: {}", usernameParsed);
+                    LOGGER.info("\n\n>>>>> >>>>> >>>>> usernameParsed: {}", usernameParsed);
+                }
+            } catch (final Exception e) {
+                LOGGER.error("\n\n##### Error in decrypting url param: {}", e.getMessage());
+
+                LOGGER.error("\n\nBefore stacktrace\n");
+                e.printStackTrace();
+                LOGGER.error("\n\nAfter stacktrace\n");
             }
-        } catch (final Exception e) {
-            LOGGER.error("\n\n##### Error in decrypting url param: {}", e.getMessage());
-
-            LOGGER.error("\n\nBefore stacktrace\n");
-            e.printStackTrace();
-            LOGGER.error("\n\nAfter stacktrace\n");
         }
 
-        if (StringUtils.isNotBlank(usernameParsed)) {
+        if (usingKeycloak && StringUtils.isNotBlank(usernameParsed)) {
             try {
                 Sessions.getCurrent().setMaxInactiveInterval(-10);
                 LOGGER.info("\n\n>>> Set max inactive interval to negative number <<<");

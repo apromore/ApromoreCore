@@ -21,10 +21,8 @@
  */
 package org.apromore.portal.security;
 
-import org.apromore.portal.ConfigBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -33,9 +31,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -47,28 +43,34 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
-    private String fullConfigurableReturnPath = "http://localhost:8181/";
 
     private static final String TRAD_LOGIN_REQUEST_URI = "/login.zul";
 
-    private String keycloakLoginFormUrl;
+    private static String keycloakLoginFormUrl;
 
-    protected AutowireCapableBeanFactory beanFactory;
-    protected ConfigBean config;
+    private static String s_fullConfigurableReturnPath = "http://localhost:8181/";
+    private static boolean s_utiliseKeycloakSso = false;
 
-    public LoginRedirectKeycloakFilter() {
-        readSiteFileProperties();
+    static {
+        final Properties keycloakProperties = readKeycloakProperties();
+
+        s_fullConfigurableReturnPath = keycloakProperties.getProperty("fullProtocolHostPortUrl");
+        LOGGER.info("\n\n>>> >>> >>> > [FROM keycloak.properties] keycloakLoginFormUrl: {}",
+                s_fullConfigurableReturnPath);
+
+        s_utiliseKeycloakSso = Boolean.valueOf(keycloakProperties.getProperty("useKeycloakSso"));
+        LOGGER.info("\n\n>>> utiliseKeycloakSso {}", s_utiliseKeycloakSso);
     }
 
-    private Properties readSiteFileProperties() {
+    private static Properties readKeycloakProperties() {
         try {
             final Properties properties = new Properties();
-            properties.load(this.getClass().getResourceAsStream(
-                    "/assembly/etc/site.cfg"));
-            LOGGER.info("\n\nsite.cfg properties file properties {}", properties);
+            properties.load(LoginRedirectKeycloakFilter.class.getResourceAsStream(
+                    "/keycloak.properties"));
+            LOGGER.info("\n\nkeycloak.properties properties file properties {}", properties);
 
             return properties;
-        } catch (IOException | NullPointerException e) {
+        } catch (final IOException | NullPointerException e) {
             LOGGER.error("Exception reading site.cfg properties {}: " + e.getMessage());
 
             e.printStackTrace();
@@ -94,7 +96,8 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
             tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
             tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
-            tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
+            tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER,
+                    s_fullConfigurableReturnPath);
 
             LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
@@ -115,16 +118,21 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
         final String requestURI = servletRequest.getRequestURI();
         LOGGER.trace("\n\nrequestURI is: " + requestURI);
 
-        if ((requestURI != null) && (requestURI.contains(TRAD_LOGIN_REQUEST_URI))) {
-            LOGGER.info("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
+        if (s_utiliseKeycloakSso) {
+            if ((requestURI != null) && (requestURI.contains(TRAD_LOGIN_REQUEST_URI))) {
+                LOGGER.info("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
 
-            String urlToUseKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
-            LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseKeycloakLoginPage);
+                final String urlToUseKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
+                LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseKeycloakLoginPage);
 
-            HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
+                HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
 
-            httpServletResponse.sendRedirect(urlToUseKeycloakLoginPage);
+                httpServletResponse.sendRedirect(urlToUseKeycloakLoginPage);
+            } else {
+                chain.doFilter(servletRequest, servletResponse);
+            }
         } else {
+            LOGGER.info("[[ Keycloak SSO is disabled ]]");
             chain.doFilter(servletRequest, servletResponse);
         }
     }
@@ -139,7 +147,8 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
         String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
         loginUrl = loginUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
-        loginUrl = loginUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
+        loginUrl = loginUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER,
+                s_fullConfigurableReturnPath);
 
         LOGGER.info("\n\n>>> >>> >>> Resolved/populated substitution placeholders Keycloak loginUrl: {}", loginUrl);
 

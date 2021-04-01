@@ -46,9 +46,6 @@ public class ConfigBean implements Serializable {
     private String  versionEdition;
     private String  versionBuildDate;
 
-    // SSO for Keycloak/securityms return
-    private String fullProtocolHostPortUrl;
-
     // LDAP
     private String  ldapProviderURL;
     private String  ldapUserContext;
@@ -71,6 +68,8 @@ public class ConfigBean implements Serializable {
     // Maximum upload size
     private long     maxUploadSize;
 
+    private boolean useKeycloakSso;
+
     public ConfigBean() {}
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore,
@@ -82,7 +81,7 @@ public class ConfigBean implements Serializable {
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
                       boolean enableCalendar,
                       long maxUploadSize,
-                      String fullProtocolHostPortUrl) {
+                      boolean useKeycloakSso) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -95,7 +94,7 @@ public class ConfigBean implements Serializable {
             " minorversion.number=" + minorVersionNumber +
             " version.edition=" + versionEdition +
             " version.builddate=" + versionBuildDate +
-            " site.fullProtocolHostPortUrl=" + fullProtocolHostPortUrl);
+            " site.useKeycloakSso=" + useKeycloakSso);
 
         this.siteEditor         = siteEditor;
         this.siteExternalHost   = siteExternalHost;
@@ -126,8 +125,8 @@ public class ConfigBean implements Serializable {
 
         this.maxUploadSize = maxUploadSize;
 
-        LoggerFactory.getLogger(getClass()).info("\n\n>>> >>> > fullProtocolHostPortUrl {}:", fullProtocolHostPortUrl);
-        this.fullProtocolHostPortUrl = fullProtocolHostPortUrl;
+        LoggerFactory.getLogger(getClass()).info("\n\n>>> >>> > useKeycloakSso {}:", useKeycloakSso);
+        this.useKeycloakSso = useKeycloakSso;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -159,7 +158,7 @@ public class ConfigBean implements Serializable {
 
     public long getMaxUploadSize()  { return maxUploadSize; }
 
-    public String getFullProtocolHostPortUrl() { return fullProtocolHostPortUrl; }
+    public boolean isUseKeycloakSso() { return useKeycloakSso; }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);
