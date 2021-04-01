@@ -861,6 +861,10 @@ public class MainController extends BaseController implements MainControllerInte
         setBuildDate(config.getVersionBuildDate());
     }
 
+    public String getContactEmail () {
+        return config.getContactEmail();
+    }
+
     /* From a list of version summary types find the max version number. */
     private static String findMaxVersion(ProcessSummaryType process) {
         Version versionNum;

@@ -1,0 +1,78 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+.ap-mc-icon {
+    --bg-height: 20px;
+    box-sizing: border-box !important;
+    border: none !important;
+    background-size: auto var(--bg-height) !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-origin: padding-box !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer;
+    filter: var(--ap-filter-ico-normal-dark);
+    border-radius: 64px;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+}
+
+.ap-mc-icon:hover {
+    filter: none;
+    background-color: var(--ap-c-grey-light-5) !important;
+}
+
+.ap-mc-icon-begin {
+    background-image: url('begin.svg') !important;
+}
+
+.ap-mc-icon-end {
+    background-image: url('end.svg') !important;
+}
+
+.ap-mc-icon-fast-backward {
+    background-image: url('fast-backward.svg') !important;
+}
+
+.ap-mc-icon-fast-forward {
+    background-image: url('fast-forward.svg') !important;
+}
+
+.ap-mc-icon-pause {
+    background-image: url('pause.svg') !important;
+    background-position-x: center !important;
+}
+
+.ap-mc-icon-play {
+    background-image: url('play.svg') !important;
+    background-position-x: 6px !important;
+}
+
+.ap-mc-icon-step-backward {
+    background-image: url('step-backward.svg') !important;
+}
+
+.ap-mc-icon-step-forward {
+    background-image: url('step-forward.svg') !important;
+}

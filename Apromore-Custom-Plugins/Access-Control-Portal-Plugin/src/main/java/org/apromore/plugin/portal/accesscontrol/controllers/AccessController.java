@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.accesscontrol.controllers;
 import com.google.common.base.Strings;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
+import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.exception.UserNotFoundException;
@@ -39,6 +40,7 @@ import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserMetadataService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
@@ -62,12 +64,13 @@ import java.util.*;
  * Controller for handling share interface
  * Corresponds to components/access/access.zul
  */
-@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+// @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class AccessController extends SelectorComposer<Div> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AccessController.class);
     private static boolean USE_STRICT_USER_ADDITION = true;
 
+    /*
     @WireVariable("managerService")
     private ManagerService managerService;
 
@@ -79,6 +82,12 @@ public class AccessController extends SelectorComposer<Div> {
 
     @WireVariable("userMetadataService")
     private UserMetadataService userMetadataService;
+    */
+
+    private SecurityService securityService = (SecurityService) Executions.getCurrent().getArg().get("securityService");
+    private WorkspaceService workspaceService = (WorkspaceService) Executions.getCurrent().getArg().get("workspaceService");
+    private AuthorizationService authorizationService = (AuthorizationService) Executions.getCurrent().getArg().get("authorizationService");
+    private UserMetadataService userMetadataService = (UserMetadataService) Executions.getCurrent().getArg().get("userMetadataService");
 
     private Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
     private Object selectedItem = argMap.get("selectedItem");
@@ -91,6 +100,7 @@ public class AccessController extends SelectorComposer<Div> {
     private Integer selectedItemId;
     private String selectedItemName;
     private Assignment selectedAssignment;
+    public boolean logSelected;
 
     private Map<String, Assignee> candidateAssigneeMap;
     private ListModelList<Assignee> candidateAssigneeModel;
@@ -167,6 +177,9 @@ public class AccessController extends SelectorComposer<Div> {
         autoInherit = (Boolean) argMap.get("autoInherit");
         showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
         enablePublish = (Boolean) argMap.get("enablePublish");
+        if (selectedItem != null) {
+            logSelected = selectedItem.getClass().equals(LogSummaryType.class);
+        }
     }
 
     private void checkShowRelatedArtifacts() {
@@ -275,6 +288,15 @@ public class AccessController extends SelectorComposer<Div> {
         if (oldAccess.equals(access)) { // No change please ignore
             return true;
         }
+        if (assignment.equals(selectedAssignment)) {
+            String restrictiveViewerLabel = AccessType.RESTRICTED.getLabel();
+            if (restrictiveViewerLabel.equals(access)) {
+                artifactListbox.setCheckmark(true);
+                updateArtifacts(selectedAssignment.getRowGuid());
+            } else {
+                artifactListbox.setCheckmark(false);
+            }
+        }
         String ownerLabel = AccessType.OWNER.getLabel();
         // If an attempt tries change the last owner access type
         if (ownerLabel.equals(oldAccess) && ownerMap.size() == 1 && ownerMap.containsKey(rowGuid)) {
@@ -350,11 +372,12 @@ public class AccessController extends SelectorComposer<Div> {
         assignmentListbox.setModel(assignmentModel);
     }
 
-    private boolean isLogSelected() {
+    public boolean isLogSelected() {
         if (selectedItem == null) {
             return false;
         }
-        return selectedItem.getClass().equals(LogSummaryType.class);
+        logSelected = selectedItem.getClass().equals(LogSummaryType.class);
+        return logSelected;
     }
 
     private void clearArtifacts() {
@@ -367,6 +390,9 @@ public class AccessController extends SelectorComposer<Div> {
         if (!isLogSelected()) {
             return;
         }
+        String selectedUserName = securityService.findGroupByRowGuid(rowGuid).getName();
+        User user = securityService.getUserByName(selectedUserName);
+
         artifactModel = new ListModelList<Artifact>();
         groupArtifactsMap.put(rowGuid, artifactModel);
         artifactMap = new HashMap<Integer, Artifact>();
@@ -380,10 +406,23 @@ public class AccessController extends SelectorComposer<Div> {
                     userMetadata.getUpdatedTime();
             UsermetadataType usermetadataType = userMetadata.getUsermetadataType();
             Artifact artifact = new Artifact(id, name, updatedTime, usermetadataType);
+            AccessType artifactAccessType;
             artifactModel.add(artifact);
             artifactMap.put(id, artifact);
+            try {
+                artifactAccessType = authorizationService.getUserMetadataAccessTypeByUser(id, user);
+                if (artifactAccessType != null && (artifactAccessType == AccessType.VIEWER || artifactAccessType == AccessType.RESTRICTED)) {
+                    artifactModel.addToSelection(artifact);
+                }
+            } catch (Exception e) {
+                // artifactAccessType = null;
+            }
         }
-        // Set<Artifact> selectionSet = new HashSet<Artifact>();
+        artifactModel.setMultiple(true);
+        artifactListbox.setModel(artifactModel);
+        /*
+        // Old method
+        Set<Artifact> selectionSet = new HashSet<Artifact>();
         String selectedUserName = securityService.findGroupByRowGuid(rowGuid).getName();
         try {
             Set<Usermetadata> selectedUserMetadataSet = userMetadataService.getUserMetadataByUserAndLog(selectedUserName, selectedItemId, UserMetadataTypeEnum.FILTER);
@@ -399,9 +438,8 @@ public class AccessController extends SelectorComposer<Div> {
         } catch (Exception e) {
             LOGGER.info("Cannot find usermeta data selection for the current user");
         }
-        artifactModel.setMultiple(true);
-        artifactListbox.setModel(artifactModel);
-        // artifactModel.setSelection(selectionSet);
+        artifactModel.setSelection(selectionSet);
+        */
     }
 
     /**
@@ -431,10 +469,18 @@ public class AccessController extends SelectorComposer<Div> {
                 authorizationService.saveProcessAccessType(selectedItemId, rowGuid, accessType);
             } else if (selectedItem instanceof LogSummaryType) {
                 authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType, shareUserMetadata);
-                if (groupArtifactsMap.containsKey(rowGuid)) {
-                    Set<Artifact> selectedArtifacts = groupArtifactsMap.get(rowGuid).getSelection();
-                    for (Artifact artifact: selectedArtifacts) {
-                        userMetadataService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
+                if (groupArtifactsMap.containsKey(rowGuid) ) {
+                    ListModelList<Artifact> artifactListModelList = groupArtifactsMap.get(rowGuid);
+                    for (Artifact artifact: artifactListModelList) {
+                        if (accessType.equals(AccessType.RESTRICTED)) {
+                            if (artifactListModelList.isSelected(artifact)) {
+                                authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid, AccessType.VIEWER);
+                            } else {
+                                authorizationService.deleteUserMetadataAccess(artifact.getId(), rowGuid);
+                            }
+                        } else {
+                            authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
+                        }
                     }
                 }
             } else if (selectedItem instanceof UserMetadataSummaryType) {
@@ -455,13 +501,7 @@ public class AccessController extends SelectorComposer<Div> {
             } else if (selectedItem instanceof ProcessSummaryType) {
                 authorizationService.deleteProcessAccess(selectedItemId, rowGuid);
             } else if (selectedItem instanceof LogSummaryType) {
-                try {
-                    authorizationService.deleteLogAccess(selectedItemId, rowGuid, name);
-                } catch (UserNotFoundException e) {
-                    LOGGER.error("User not found", e.getMessage(), e);
-                    Messagebox.show("The user cannot be found.", "Delete access error", Messagebox.OK,
-                            Messagebox.ERROR);
-                }
+                authorizationService.deleteLogAccess(selectedItemId, rowGuid, name, accessType);
             } else if (selectedItem instanceof UserMetadataSummaryType) {
                 authorizationService.deleteUserMetadataAccess(selectedItemId, rowGuid);
             }
@@ -576,6 +616,12 @@ public class AccessController extends SelectorComposer<Div> {
         Set<Assignment> assignments = event.getSelectedObjects();
         if (assignments.size() == 1) {
             selectedAssignment = assignments.iterator().next();
+            String restrictiveViewerLabel = AccessType.RESTRICTED.getLabel();
+            if (restrictiveViewerLabel.equals(selectedAssignment.getAccess())) {
+                artifactListbox.setCheckmark(true);
+            } else {
+                artifactListbox.setCheckmark(false);
+            }
             updateArtifacts(selectedAssignment.getRowGuid());
         } else {
             selectedAssignment = null;

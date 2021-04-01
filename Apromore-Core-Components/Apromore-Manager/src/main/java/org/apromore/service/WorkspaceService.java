@@ -40,6 +40,7 @@ import org.apromore.service.model.FolderTreeNode;
 import org.apromore.util.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Interface for the User Service. Defines all the methods that will do the majority of the work for
@@ -96,11 +97,16 @@ public interface WorkspaceService {
 
     String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata);
 
-    String removeFolderPermissions(Integer folderId, String userId);
+    String saveUserMetadataAccessRights(Integer usermetadataId, String groupRowGuid, AccessType accessType);
 
-    String removeProcessPermissions(Integer processId, String userId);
+    String removeFolderPermissions(Integer folderId, String groupRowGuid);
 
-    String removeLogPermissions(Integer logId, String userId, String username) throws UserNotFoundException;
+    String removeProcessPermissions(Integer processId, String groupRowGuid);
+
+    String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType);
+
+    String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid);
+
 
     /**
      * Creates the public status for the users to have read rights to this model.

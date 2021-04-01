@@ -81,7 +81,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
         if ((requestURI != null) && (requestURI.contains(TRAD_LOGIN_REQUEST_URI))) {
             LOGGER.info("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
 
-            final String urlToUseForKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
+            final String urlToUManagerseForKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
 
             servletResponse.setStatus(HttpStatus.SC_TEMPORARY_REDIRECT);
             servletResponse.setHeader("Location", urlToUseForKeycloakLoginPage);

@@ -54,6 +54,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.util.AccessType;
 
 /**
  * Manager interface.
@@ -145,7 +146,7 @@ public interface ManagerService {
 
     String removeProcessPermissions(int processId, String userId);
 
-    String removeLogPermissions(int logId, String userId, String username) throws UserNotFoundException;
+    String removeLogPermissions(int logId, String userId, String username, AccessType accessType) throws UserNotFoundException;
 
     /**
      * Read all the users from the apromore manager.
@@ -215,8 +216,6 @@ public interface ManagerService {
      * @param processName the process name
      * @param branch the process branch name
      * @param nativeType the native type of the process model
-     * @param annotationName the annotations name
-     * @param withAnnotations with ot without annotations
      * @param owner the owner of the model
      * @return the request process model as a Stream
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
@@ -233,7 +232,6 @@ public interface ManagerService {
      * @param nativeType the native type of the process
      * @param processName the processes name
      * @param versionNumber the version number of this model.
-     * @param xml_process the process as an XML Stream. The Actual Data
      * @param domain the domain this process model belongs
      * @param documentation any documentation that is needed with this process
      * @param created the date and time created
@@ -288,10 +286,6 @@ public interface ManagerService {
      * @param username the Username.
      * @param nativeType the process Native type.
      * @param processId the process Identifier.
-     * @param domain the process domain.
-     * @param processName the process name.
-     * @param originalBranchName the originalBranchName.
-     * @param newBranchName the originalBranchName.
      * @param versionNumber the versionNumber.
      * @param originalVersionNumber the original version number of the model.
      * @param preVersion the process current version.
@@ -307,7 +301,6 @@ public interface ManagerService {
      * Update a process model version in the repository.
      * @param processId the process Identifier.
      * @param nativeType the process Native type.
-     * @param processName the process name.
      * @param branchName the BranchName.
      * @param versionNumber the versionNumber.
      * @param username the Username.

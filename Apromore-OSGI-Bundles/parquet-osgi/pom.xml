@@ -31,7 +31,7 @@
                         </Export-Package>
                         <Import-Package>
                             !com.fasterxml.jackson.*,
-                            com.google.common.*;version="[27,30)",
+                            com.google.common.*;version="[27,31)",
                             !com.google.protobuf,
                             !com.google.re2j,
                             com.ibm.security.*;resolution:=optional,

@@ -29,17 +29,18 @@ import java.util.Arrays;
 /**
  * Access types in ACL, which can map to flags in Group_[artifact] POJOs.
  * <p>
- * |        | has_read | has_write | has_ownership |
- * |--------|----------|-----------|---------------|
- * | Viewer | 1        | 0         | 0             |
- * | Editor | 1        | 1         | 0             |
- * | Owner  | 1        | 1         | 1             |
+ * |            | has_read | has_write | has_ownership |
+ * |------------|----------|-----------|---------------|
+ * | Restricted | 0        | 0         | 0             |
+ * | Viewer     | 1        | 0         | 0             |
+ * | Editor     | 1        | 1         | 0             |
+ * | Owner      | 1        | 1         | 1             |
  */
 @Getter
 public enum AccessType {
 
-    NONE(false, false, false, "None"),
-    VIEWER(true, false, false, "Viewer"),
+    RESTRICTED(false, false, false, "Restricted Viewer"),
+    VIEWER(true, false, false, "Full Viewer"),
     EDITOR(true, true, false, "Editor"),
     OWNER(true, true, true, "Owner");
 
@@ -69,13 +70,13 @@ public enum AccessType {
         return Arrays.asList(AccessType.values()).stream()
                 .filter(accessType -> accessType.label.equals(label))
                 .findFirst()
-                .orElse(AccessType.NONE);
+                .orElse(AccessType.RESTRICTED);
     }
 
     public static AccessType getAccessType(boolean isRead, boolean isWrite, boolean isOwner) {
         return Arrays.asList(AccessType.values()).stream().filter(accessType -> accessType.isRead == isRead &&
                 accessType.isWrite == isWrite &&
-                accessType.isOwner == isOwner).findFirst().orElse(AccessType.NONE);
+                accessType.isOwner == isOwner).findFirst().orElse(AccessType.RESTRICTED);
     }
 
     public static AccessType getAccessType(AccessRights accessRights) {
