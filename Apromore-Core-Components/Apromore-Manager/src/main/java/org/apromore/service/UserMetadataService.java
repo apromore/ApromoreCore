@@ -179,8 +179,19 @@ public interface UserMetadataService {
      */
     Set<Usermetadata> getUserMetadataByLogs(List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum);
 
-    Set<Usermetadata> getUserMetadataByLogs(String username, List<Integer> logIds,
+    Set<Usermetadata> getUserMetadataByUserAndLogs(String username, List<Integer> logIds,
                                             UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
+    /**
+     * FInd a set of user metadata that specified group has restricted access to
+     *
+     * @param group group
+     * @param logId log id
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A set of user metadata
+     */
+    Set<Usermetadata> getUserMetadataWithRestrictedViewer(Group group, Integer logId,
+                                                          UserMetadataTypeEnum userMetadataTypeEnum);
 
     /**
      * Find a set of user metadata that are linked to specified Log and type

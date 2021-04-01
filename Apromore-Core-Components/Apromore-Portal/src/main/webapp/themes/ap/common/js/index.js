@@ -114,3 +114,20 @@ Ap.common.pullClientTimeZone = function () {
 Ap.common.injectGlobalClass = function (klass) {
     jQuery('body')[0].classList.add(klass);
 }
+
+/**
+ * Encapsulate mailto for issue reporting
+ *
+ * @param email {String} Email
+ * @param username {String} Username
+ */
+Ap.common.reportIssue = function (email, username) {
+    let subject = 'Apromore Issue Report';
+    let ua = (typeof navigator === 'undefined') ? '' : navigator.userAgent.toLowerCase();
+    let href = window.location.href;
+    let body = `Username: ${username}\r\n` + `Browser info: ${ua}\r\n` + `URL: ${href}\r\n`;
+    body += 'Description of your issue:'
+    let url = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+    window.open(encodeURI(url), '_self');
+}
+

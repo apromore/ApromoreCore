@@ -30,17 +30,7 @@ import java.util.*;
 import org.apromore.AbstractTest;
 import org.apromore.TestData;
 import org.apromore.common.ConfigBean;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.StorageRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.WorkspaceRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
 import org.apromore.service.EventLogFileService;
@@ -69,6 +59,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private WorkspaceRepository workspaceRepo;
     private FolderRepository folderRepo;
     private LogRepository logRepo;
+    private UsermetadataRepository usermetadataRepo;
     private EventLogFileService logFileService;
     private FolderServiceImpl folderServiceImpl;
     
@@ -76,6 +67,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private GroupFolderRepository groupFolderRepo;
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
+    private GroupUsermetadataRepository groupUsermetadataRepo;
     
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository pmvRepo;
@@ -93,8 +85,10 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         groupFolderRepo = createMock(GroupFolderRepository.class);
         groupProcessRepo = createMock(GroupProcessRepository.class);
         groupLogRepo = createMock(GroupLogRepository.class);
+        groupUsermetadataRepo = createMock(GroupUsermetadataRepository.class);
 
         logRepo = createMock(LogRepository.class);
+        usermetadataRepo = createMock(UsermetadataRepository.class);
         folderRepo = createMock(FolderRepository.class);
         logFileService = createMock(EventLogFileService.class);
         
@@ -113,11 +107,13 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 processRepo,
                                                 pmvRepo,
                                                 logRepo,
+                                                usermetadataRepo,
                                                 folderRepo,
                                                 groupRepo,
                                                 groupFolderRepo,
                                                 groupProcessRepo,
                                                 groupLogRepo,
+                                                groupUsermetadataRepo,
                                                 logFileService,
                                                 folderServiceImpl,
                                                 storageFactory,

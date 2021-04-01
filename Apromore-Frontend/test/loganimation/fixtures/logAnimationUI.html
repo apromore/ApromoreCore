@@ -1,0 +1,113 @@
+<div>
+    <div class="ap-header">
+        <a href="/"><div class="ap-header-logo"></div></a>
+        <div class="ap-header-title">Log Animator</div>
+        <div class="ap-header-actions">
+            <a href="https://apromore.org/documentation/features/animate-log-map/" target="_blank">
+                <button class="ap-icon ap-icon-help"/>
+            </a>
+        </div>
+    </div>
+    <div id="editorwrapper" style="display: none">
+    </div>
+
+    <!-- THIS PAGE USE DIV FLOAT FOR LAYOUTING -->
+
+    <div id="editorcanvas"></div>
+    <div id="controls">
+        <!-- Relative positioning: relative to its normal position using top, left, right,...-->
+        <!-- Its normal position is the top left corner of the containing div -->
+        <!-- Relative positioning is used so that the speed control can overlay on top of the others -->
+        <div id="playback_controls">
+            <!-- SVG for the timeline -->
+
+            <div class="ap-la-left-container">
+                <div class="ap-la-controls">
+                    <div class="ap-la-clock" id="ap-la-clock">
+                        <span id="ap-la-clock-date">&#xA0;</span>
+                        <span id="ap-la-clock-time">&#x2D;-:&#x2D;-:&#x2D;-</span>
+                        <span id="ap-la-clock-subtitle">&#xA0;</span>
+                    </div>
+
+                    <div id="ap-la-buttons">
+                        <button id='ap-la-buttons-start' onclick="Ap.la.session.gotoStart(event);" title="Start" sclass="ap-mc-icon ap-mc-icon-begin">
+                            <img></img>
+                        </button>
+                        <button id='ap-la-buttons-backward' onclick="Ap.la.session.fastBackward();" disabled="disabled" title="Backward" sclass="ap-mc-icon ap-mc-icon-fast-backward">
+                            <img></img>
+                        </button>
+                        <button id="ap-la-buttons-pause" onclick="Ap.la.session.playPause();" disabled="disabled" title="Play" sclass="ap-mc-icon ap-mc-icon-play">
+                            <img></img>
+                        </button>
+                        <button id='ap-la-buttons-forward' onclick="Ap.la.session.fastForward();" disabled="disabled" title="Forward" sclass="ap-mc-icon ap-mc-icon-fast-forward">
+                            <img></img>
+                        </button>
+                        <button id='ap-la-buttons-end' onclick="Ap.la.session.gotoEnd(event);" disabled="disabled" title="End" sclass="ap-mc-icon ap-mc-icon-end">
+                            <img></img>
+                        </button>
+                    </div>
+
+                    <!-- Use jQuery-ui-Slider-Pips at github.com/simeydotme/jQuery-ui-Slider-Pips -->
+                    <div id="speed-control-wrapper">
+                        <!-- <center style="font: 1em monospace">Replay Speed</center> -->
+                        <div id="speed-control" disabled="disabled" style="margin: auto;">
+                            <div class="speed-control-tip">Speed control</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Log Information -->
+                <div id="log_list">
+                    <table id="metrics_table">
+                        <tr id="header">
+                            <td>No.</td>
+                            <td>Log</td>
+                            <td>Total Traces</td>
+                            <td>Replayed</td>
+                            <td>Reliable</td>
+                            <td>Fitness</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="ap-la-right-container">
+                <!-- Animation progress -->
+                <div id="ap-la-progress"></div>
+                <div class="ap-la-timeline" style="background:none;">
+                    <div style="position:absolute; background:none; width:100%">
+                        <svg id="timeline_svg" style="background:none;" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 1140 80"></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ap-la-info-tip">
+        <table>
+            <tr>
+                <td>No</td>
+                <td id="info-no"></td>
+            </tr>
+            <tr>
+                <td>Log</td>
+                <td id="info-log"></td>
+            </tr>
+            <tr>
+                <td>Total Traces</td>
+                <td id="info-traces"></td>
+            </tr>
+            <tr>
+                <td>Replayed</td>
+                <td id="info-replayed"></td>
+            </tr>
+            <tr>
+                <td>Reliable</td>
+                <td id="info-reliable"></td>
+            </tr>
+            <tr>
+                <td>Fitness</td>
+                <td id="info-fitness"></td>
+            </tr>
+        </table>
+        <div class="tip-arrow"></div>
+    </div>
+</div>

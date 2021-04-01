@@ -70,6 +70,9 @@ public class ConfigBean implements Serializable {
 
     private boolean useKeycloakSso;
 
+    // Email for issue reporting
+    private String  contactEmail;
+
     public ConfigBean() {}
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore,
@@ -81,6 +84,7 @@ public class ConfigBean implements Serializable {
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
                       boolean enableCalendar,
                       long maxUploadSize,
+                      String contactEmail,
                       boolean useKeycloakSso) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
@@ -127,6 +131,8 @@ public class ConfigBean implements Serializable {
 
         LoggerFactory.getLogger(getClass()).info("\n\n>>> >>> > useKeycloakSso {}:", useKeycloakSso);
         this.useKeycloakSso = useKeycloakSso;
+
+        this.contactEmail       = contactEmail;
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -155,8 +161,8 @@ public class ConfigBean implements Serializable {
     public boolean getEnableSubscription()  { return enableSubscription; }
 
     public boolean getEnableCalendar()  { return enableCalendar; }
-
     public long getMaxUploadSize()  { return maxUploadSize; }
+    public String getContactEmail() { return contactEmail; }
 
     public boolean isUseKeycloakSso() { return useKeycloakSso; }
 

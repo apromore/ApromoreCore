@@ -87,6 +87,8 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
+import org.apromore.service.search.SearchExpressionBuilder;
+import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -322,8 +324,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public String removeLogPermissions(int logId, String userId, String username) throws UserNotFoundException {
-        return workspaceSrv.removeLogPermissions(logId, userId, username);
+    public String removeLogPermissions(int logId, String userId, String username, AccessType accessType) throws UserNotFoundException {
+        return workspaceSrv.removeLogPermissions(logId, userId, username, accessType);
     }
 
     /**
@@ -443,7 +445,6 @@ public class ManagerServiceImpl implements ManagerService {
      * @param nativeType the native type of the process
      * @param processName the processes name
      * @param versionNumber the version number of this model.
-     * @param xml_process the process as an XML Stream. The Actual Data
      * @param domain the domain this process model belongs
      * @param documentation any documentation that is needed with this process
      * @param created the date and time created
@@ -569,7 +570,6 @@ public class ManagerServiceImpl implements ManagerService {
      * @param username the Username.
      * @param nativeType the process Native type.
      * @param processId the process Identifier.
-     * @param processName the process name.
      * @param branchName the BranchName.
      * @param versionNumber the versionNumber.
      * @param originalVersionNumber the original version number of the model.

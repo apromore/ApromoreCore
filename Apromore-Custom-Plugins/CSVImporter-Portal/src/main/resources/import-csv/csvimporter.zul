@@ -91,8 +91,8 @@
                                 </textbox>
                             </span>
                             <space spacing="10px" />
-                            <label value="${mainWindow$composer.labels.timeZone_label}"/>
-                            <combobox id="setTimeZone" autodrop="true" width="230px" readonly="true">
+                            <label visible="false" value="${mainWindow$composer.labels.timeZone_label}"/>
+                            <combobox visible="false" id="setTimeZone" autodrop="true" width="230px" readonly="true">
                                 <template name="model">
                                     <comboitem label="${each}" />
                                 </template>

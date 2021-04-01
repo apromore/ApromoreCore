@@ -278,8 +278,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                             accessTypes.add(AccessType.getAccessType(groupLogRepo.findByGroupAndLog(group, l).getAccessRights()));
                         }
 
-                        if (accessTypes.contains(AccessType.NONE)) {
-                            return;
+                        if (accessTypes.contains(AccessType.RESTRICTED)) {
+                            at = AccessType.RESTRICTED;
                         } else if (accessTypes.contains(AccessType.VIEWER)) {
                             at = AccessType.VIEWER;
                         } else if (accessTypes.contains(AccessType.EDITOR)) {
@@ -418,7 +418,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
-    public Set<Usermetadata> getUserMetadataByLogs(String username, List<Integer> logIds,
+    public Set<Usermetadata> getUserMetadataByUserAndLogs(String username, List<Integer> logIds,
                                                    UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
         Set<Usermetadata> result = new HashSet<>();
 
@@ -431,10 +431,14 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Get all the user metadata that linked to specified logs, and the specified user has access to
         List<Set<Usermetadata>> lists = new ArrayList<>();
         for (Integer logId : logIds) {
-            if(authorizationService.getLogAccessTypeByUser(logId, user) == AccessType.NONE) {
+            AccessType accessType = authorizationService.getLogAccessTypeByUser(logId, user);
+            if (accessType == null) {
                 return result; // If specified user doesn't have access to one log, return empty result
             }
-            lists.add(getUserMetadataByLog(logId, userMetadataTypeEnum));
+            if (accessType == AccessType.RESTRICTED) {
+                lists.add(getUserMetadataWithRestrictedViewer(user, logId, userMetadataTypeEnum));
+
+            } else lists.add(getUserMetadataByLog(logId, userMetadataTypeEnum));
         }
         // Find intersection of user metadata lists that get from specified logIds
         for (Set<Usermetadata> umSet : lists) {
@@ -456,6 +460,71 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
         return result;
     }
+
+    private Set<Usermetadata> getUserMetadataWithRestrictedViewer(User user, Integer logId,
+                                                                  UserMetadataTypeEnum userMetadataTypeEnum ) {
+
+        // Get all the user metadata that can be accessed by groups that contain specified user
+        Set<Usermetadata> umSet = new HashSet<>();
+
+        for (Group group : user.getGroups()) {
+            List<GroupUsermetadata> guList = groupUsermetadataRepo.findByGroup(group);
+
+            for (GroupUsermetadata gu : guList) {
+                Usermetadata u = gu.getUsermetadata();
+                if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
+                    umSet.add(u);
+                }
+            }
+        }
+
+        // Get all the user metadata that associated with specified log
+        Set<Usermetadata> umSet2 = new HashSet<>();
+
+        for (Usermetadata u : logRepo.findUniqueByID(logId).getUsermetadataSet()) {
+            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
+                umSet2.add(u);
+            }
+        }
+
+        // Get intersection of two result set
+        umSet.retainAll(umSet2);
+
+        return umSet;
+    }
+
+    @Override
+    public Set<Usermetadata> getUserMetadataWithRestrictedViewer(Group group, Integer logId,
+                                                                 UserMetadataTypeEnum userMetadataTypeEnum) {
+
+        // Get all the user metadata that can be accessed by groups that contain specified user
+        Set<Usermetadata> umSet = new HashSet<>();
+
+        List<GroupUsermetadata> guList = groupUsermetadataRepo.findByGroup(group);
+
+        for (GroupUsermetadata gu : guList) {
+            Usermetadata u = gu.getUsermetadata();
+            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
+                umSet.add(u);
+            }
+        }
+
+        // Get all the user metadata that associated with specified log
+        Set<Usermetadata> umSet2 = new HashSet<>();
+
+        for (Usermetadata u : logRepo.findUniqueByID(logId).getUsermetadataSet()) {
+            if (u.getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId()) && u.getIsValid()) {
+                umSet2.add(u);
+            }
+        }
+
+        // Get intersection of two result set
+        umSet.retainAll(umSet2);
+
+        return umSet;
+    }
+
+
 
     @Override
     public Set<Usermetadata> getUserMetadataByLog(Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) {
@@ -482,8 +551,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                              UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
         // Since restricted viewer is not supported at version 7.19, criteria is simplified here
-        // TODO: Add logic to get usermetadata based on GroupUsermetadata in 7.20
-        return getUserMetadataByLogs(username, logIds, userMetadataTypeEnum);
+        // Don't need to consider Restricted-viewer for multi-log user metadata
+        // Only used in Dash and Filter
+        return getUserMetadataByUserAndLogs(username, logIds, userMetadataTypeEnum);
     }
 
 
@@ -517,7 +587,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     private AccessType getLeastRestrictiveAccessType(List<AccessType> accessTypes) {
 
         if (accessTypes == null || accessTypes.size() == 0) {
-            return AccessType.NONE;
+            return null;
         }
 
         if (accessTypes.contains(AccessType.OWNER)) {
@@ -526,7 +596,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             return AccessType.EDITOR;
         } else if (accessTypes.contains(AccessType.VIEWER)) {
             return AccessType.VIEWER;
-        } else return AccessType.NONE;
+        } else return AccessType.RESTRICTED;
     }
 
     private AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group) {
@@ -541,8 +611,8 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             accessTypes.add(AccessType.getAccessType(groupLogRepo.findByGroupAndLog(group, l).getAccessRights()));
         }
 
-        if (accessTypes.contains(AccessType.NONE)) {
-            at = AccessType.NONE;
+        if (accessTypes.contains(AccessType.RESTRICTED)) {
+            at = AccessType.RESTRICTED;
         } else if (accessTypes.contains(AccessType.VIEWER)) {
             at = AccessType.VIEWER;
         } else if (accessTypes.contains(AccessType.EDITOR)) {
