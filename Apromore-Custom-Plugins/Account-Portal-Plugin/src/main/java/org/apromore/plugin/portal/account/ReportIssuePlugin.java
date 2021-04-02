@@ -59,6 +59,7 @@ public class ReportIssuePlugin extends DefaultPortalPlugin {
     public void execute(PortalContext portalContext) {
         String email = portalContext.getMainController().getContactEmail();
         String userName = UserSessionManager.getCurrentUser().getUsername();
+        LOGGER.info("launch mail client");
         Clients.evalJavaScript("Ap.common.reportIssue('" + email + "', '" + userName + "');");
     }
 }
