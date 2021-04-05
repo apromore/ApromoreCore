@@ -28,12 +28,15 @@ package org.apromore.portal;
 import java.io.Serializable;
 
 // Third party packages
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConfigBean implements Serializable {
 
     private static final long serialVersionUID = 117L;
     private static final String COMMUNITY_TAG = "community";
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private String  siteEditor;
     private String  siteExternalHost;
@@ -87,7 +90,7 @@ public class ConfigBean implements Serializable {
                       String contactEmail,
                       boolean useKeycloakSso) {
 
-        LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
+        logger.info("Portal configured with:" +
             " site.editor=" + siteEditor +
             " site.externalHost=" + siteExternalHost +
             " site.externalPort=" + siteExternalPort +
@@ -129,7 +132,6 @@ public class ConfigBean implements Serializable {
 
         this.maxUploadSize = maxUploadSize;
 
-        LoggerFactory.getLogger(getClass()).info("\n\n>>> >>> > useKeycloakSso {}:", useKeycloakSso);
         this.useKeycloakSso = useKeycloakSso;
 
         this.contactEmail       = contactEmail;
