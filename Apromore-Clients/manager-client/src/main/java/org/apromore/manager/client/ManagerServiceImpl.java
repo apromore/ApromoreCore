@@ -40,6 +40,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.security.cert.CertificateException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apromore.common.Constants;
 import org.apromore.dao.model.Group;
@@ -147,12 +148,13 @@ public class ManagerServiceImpl implements ManagerService {
 
                 restRespResult = true;
             } else {
-                e.printStackTrace();
+                logger.error("\n\nException in logging out user - stacktrace: {}",
+                        ExceptionUtils.getStackTrace(e));
 
                 throw e;
             }
         } finally {
-            logger.info("\n\n>>>>> >>>>> >>>>> Logout result: {}", restRespResult);
+            logger.info("\n\n>>>>> Logging out user result: {}", restRespResult);
 
             return restRespResult;
         }

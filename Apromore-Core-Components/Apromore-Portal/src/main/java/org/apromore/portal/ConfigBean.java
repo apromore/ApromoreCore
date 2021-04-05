@@ -36,7 +36,7 @@ public class ConfigBean implements Serializable {
     private static final long serialVersionUID = 117L;
     private static final String COMMUNITY_TAG = "community";
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigBean.class);
 
     private String  siteEditor;
     private String  siteExternalHost;
@@ -90,7 +90,7 @@ public class ConfigBean implements Serializable {
                       String contactEmail,
                       boolean useKeycloakSso) {
 
-        logger.info("Portal configured with:" +
+        LOGGER.info("Portal configured with:" +
             " site.editor=" + siteEditor +
             " site.externalHost=" + siteExternalHost +
             " site.externalPort=" + siteExternalPort +
