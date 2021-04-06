@@ -81,6 +81,8 @@ import org.apromore.service.model.ProcessData;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -90,8 +92,10 @@ import org.springframework.web.client.RestTemplate;
 @Service("managerClient")
 public class ManagerServiceImpl implements ManagerService {
 
-    public static final String SECURITYMS_HTTP_LOGOUT_URL = "securityms.http.logoutUrl";
-    public static final String SECURITYMS_HTTPS_LOGOUT_URL = "securityms.https.logoutUrl";
+    private static final String SECURITYMS_HTTP_LOGOUT_URL = "securityms.http.logoutUrl";
+    private static final String SECURITYMS_HTTPS_LOGOUT_URL = "securityms.https.logoutUrl";
+
+    private static final int HTTP_CONN_TIMEOUT_MILLS = 3000;
 
     @Inject private PluginService pluginService;
     @Inject private ProcessService procSrv;
@@ -109,6 +113,17 @@ public class ManagerServiceImpl implements ManagerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceImpl.class);
 
+    @Bean
+    public RestTemplate restTemplate() {
+        final SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+
+        simpleClientHttpRequestFactory.setConnectTimeout(HTTP_CONN_TIMEOUT_MILLS);
+        simpleClientHttpRequestFactory.setReadTimeout(HTTP_CONN_TIMEOUT_MILLS);
+
+        return new RestTemplate(simpleClientHttpRequestFactory);
+    }
+
+
 // Implementation of ManagerService
 
     /**
@@ -122,13 +137,12 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean logoutUserAllSessions(final String username) throws Exception {
         Boolean restRespResult = false;
 
-        final RestTemplate restTemplate = new RestTemplate();
+        final RestTemplate restTemplate = restTemplate();
 
         final Properties securityMsProps = readSecurityMsProperties();
 
         try {
-            restRespResult =
-                    restTemplate.getForObject(
+            restRespResult = restTemplate.getForObject(
                             securityMsProps.getProperty(SECURITYMS_HTTP_LOGOUT_URL) + username,
                             Boolean.class);
             logger.debug("\n\nrestRespResult: {}", restRespResult);
@@ -139,8 +153,7 @@ public class ManagerServiceImpl implements ManagerService {
                     (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
                 logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
 
-                restRespResult =
-                        restTemplate.getForObject(
+                restRespResult = restTemplate.getForObject(
                                 securityMsProps.getProperty(SECURITYMS_HTTPS_LOGOUT_URL) + username,
                                 Boolean.class);
                 logger.debug("\n\nrestRespResult: {}", restRespResult);

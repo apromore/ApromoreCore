@@ -56,7 +56,7 @@ public class SecuritySsoHelper {
         String encPassphStr = ApromoreEnvUtils.getEnvPropValue(
                 SYMMETRIC_KEY_SECRET_ENV_KEY, "encryption passphrase could *not* be attained from environment");
 
-        LOGGER.info("\n\nInitialised main controller and obtained encKey from environment\n");
+        LOGGER.info("\n\nObtained encKey from environment\n");
 
         return encPassphStr;
     }

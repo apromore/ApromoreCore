@@ -100,8 +100,6 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static org.apromore.portal.common.UserSessionManager.initializeUser;
 
 /**
@@ -146,8 +144,6 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public MainController() {
-        MainController.encKey = SecuritySsoHelper.getEnvEncKey();
-
         final boolean usingKeycloak = config.isUseKeycloakSso();
         LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
 
@@ -161,6 +157,8 @@ public class MainController extends BaseController implements MainControllerInte
         if (usingKeycloak) {
             final String appAuthHeader = SecuritySsoHelper.getAppAuthHeader();
             final String signedAppAuthHeader = SecuritySsoHelper.getSignedAppAuthHeader();
+
+            MainController.encKey = SecuritySsoHelper.getEnvEncKey();
 
             try {
                 if (StringUtils.isNotBlank(urlDecoded)) {
