@@ -63,13 +63,7 @@ import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listhead;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Paging;
+import org.zkoss.zul.*;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -92,6 +86,8 @@ public abstract class BaseListboxController extends BaseController {
 	private final Button refreshB;
 	private final Button btnUpload;
 	private final Button btnDownload;
+	private final Hlayout dataPipelinesSection;
+	private final Button btnCreateDataPipeline;
 	private final Button btnSelectAll;
 	private final Button btnSelectNone;
 	private final Button btnCut;
@@ -134,6 +130,8 @@ public abstract class BaseListboxController extends BaseController {
 		refreshB = (Button) mainController.getFellow("refreshB");
 		btnUpload = (Button) mainController.getFellow("btnUpload");
 		btnDownload = (Button) mainController.getFellow("btnDownload");
+		dataPipelinesSection = (Hlayout) mainController.getFellow("dataPipelinesSection");
+		btnCreateDataPipeline = (Button) mainController.getFellow("btnCreateDataPipeline");
 		btnSelectAll = (Button) mainController.getFellow("btnSelectAll");
 		btnSelectNone = (Button) mainController.getFellow("btnSelectNone");
 		btnCut = (Button) mainController.getFellow("btnCut");
@@ -151,6 +149,8 @@ public abstract class BaseListboxController extends BaseController {
 		btnShare = (Button) mainController.getFellow("btnShare");
 		btnCalendar = (Button) mainController.getFellow("btnCalendar");
 
+		portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+
 		attachEvents();
 
 		appendChild(listBox);
@@ -160,7 +160,6 @@ public abstract class BaseListboxController extends BaseController {
 			setTileView(true);
 		}
 
-		portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 		try {
 			currentUser = getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId());
 		} catch (Exception e) {
@@ -223,6 +222,16 @@ public abstract class BaseListboxController extends BaseController {
 				exportFile();
 			}
 		});
+
+		if (portalPluginMap.containsKey("Define data pipeline")) {
+			dataPipelinesSection.setVisible(true);
+			this.btnCreateDataPipeline.addEventListener("onClick", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					openETL();
+				}
+			});
+		}
 
 		this.btnSelectAll.addEventListener("onClick", new EventListener<Event>() {
 			@Override
@@ -433,6 +442,17 @@ public abstract class BaseListboxController extends BaseController {
 		try {
 			downloadPlugin = portalPluginMap.get("Download");
 			downloadPlugin.execute(portalContext);
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	protected void openETL() throws Exception {
+		PortalPlugin etlPlugin;
+
+		try {
+			etlPlugin = portalPluginMap.get("Define data pipeline");
+			etlPlugin.execute(portalContext);
 		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
@@ -798,7 +818,7 @@ public abstract class BaseListboxController extends BaseController {
 	    getMainController().eraseMessage();
 
 	    EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
-	    
+
 	    Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
 
 	    queue.subscribe(new EventListener<Event>() {
