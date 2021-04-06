@@ -167,12 +167,14 @@ public class MainController extends BaseController implements MainControllerInte
                     if (StringUtils.isNotBlank(usernameParsed)) {
                         final PortalSessionQePair portalSessionQePair =
                             SecuritySsoHelper.initialiseKeycloakUser(
-                                usernameParsed, getUserService(), getSecurityService(), getService(), config, this);
+                                usernameParsed, getUserService(), getSecurityService(), getService(), config,
+                                    this);
 
                         qe = portalSessionQePair.getQe();
                         portalSession = portalSessionQePair.getPortalSession();
                     } else {
-                        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+                        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
+                                true);
                         portalSession = new PortalSession(this);
 
                         initializeUser(getService(), config, null, null);

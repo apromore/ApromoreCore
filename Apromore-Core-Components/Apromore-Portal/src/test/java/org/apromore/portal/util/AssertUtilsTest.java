@@ -41,7 +41,7 @@ public class AssertUtilsTest {
     @Test
     public void notNullAssert_suppliedParamNameParam_suppliedParamNameMentionedInAssertOutput() {
         exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("'testing' must not be null");
+        exceptionRule.expectMessage("'testing' parameter must not be null");
 
         AssertUtils.notNullAssert(null, "testing");
     }
@@ -62,7 +62,7 @@ public class AssertUtilsTest {
     @Test
     public void hasTextAssert_suppliedParamNameParam_suppliedParamNameMentionedInAssertOutput() {
         exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("'testing' must not be empty");
+        exceptionRule.expectMessage("'testing' parameter must not be empty");
 
         AssertUtils.hasTextAssert(null, "testing");
     }

@@ -21,18 +21,46 @@
  */
 package org.apromore.portal.util;
 
-import static org.springframework.util.Assert.hasText;
-import static org.springframework.util.Assert.notNull;
+import org.apache.commons.lang3.StringUtils;
 
 public final class AssertUtils {
 
     public static final void notNullAssert(final Object paramValue, final String paramName) {
-        notNull(paramValue, "parameter must not be null");
-        notNull(paramValue, "'" + paramName + "' must not be null");
+        AssertUtils.paramUnspecifiedMessage(paramValue, paramName, true);
     }
 
     public static final void hasTextAssert(final String strParamValue, final String paramName) {
-        hasText(strParamValue, "parameter must not be empty");
-        hasText(strParamValue, "'" + paramName + "' must not be empty");
+        AssertUtils.paramUnspecifiedMessage(strParamValue, paramName, false);
+    }
+
+    /**
+     * Helper method that accepts either an object, or String - and, checks for either not null or empty string
+     * respectively.
+     *
+     * @param paramValue Parameter object to check.
+     * @param paramName Optional parameter name.
+     * @param notNullCheck <code>true</code> if checking for null, otherwise <code>false</code> for empty string check.
+     */
+    private static final void paramUnspecifiedMessage(
+            final Object paramValue,
+            final String paramName,
+            final boolean notNullCheck) {
+        if (notNullCheck) {
+            if (paramValue == null) {
+                String exceptionMsg = "parameter must not be null";
+                if (paramName != null) {
+                    exceptionMsg = "'" + paramName + "' " + exceptionMsg;
+                }
+                throw new IllegalArgumentException(exceptionMsg);
+            }
+        } else {
+            if (StringUtils.isEmpty((String)paramValue)) {
+                String exceptionMsg = "parameter must not be empty";
+                if (paramName != null) {
+                    exceptionMsg = "'" + paramName + "' " + exceptionMsg;
+                }
+                throw new IllegalArgumentException(exceptionMsg);
+            }
+        }
     }
 }
