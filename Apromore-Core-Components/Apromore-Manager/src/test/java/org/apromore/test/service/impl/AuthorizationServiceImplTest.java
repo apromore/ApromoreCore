@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -69,7 +69,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         usermetadataRepository = createMock(UsermetadataRepository.class);
         logRepository = createMock(LogRepository.class);
         authorizationService = new AuthorizationServiceImpl(workspaceService, groupUsermetadataRepository,
-                usermetadataRepository, logRepository);
+                usermetadataRepository, logRepository, groupLogRepository);
 
         // Set up test data
         group1 = createGroup(1, Group.Type.GROUP);
@@ -192,6 +192,37 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
     @Test
     @Rollback
+    public void testGetLeastRestrictiveAccessTypeAndGroup() {
+        Map<Group, AccessType> accessTypes = new HashMap<>();
+        Map<Group, AccessType> result = new HashMap<>();
+
+        accessTypes.put(group1, AccessType.RESTRICTED);
+        accessTypes.put(group2, AccessType.VIEWER);
+        accessTypes.put(group3, AccessType.EDITOR);
+        accessTypes.put(group4, AccessType.OWNER);
+
+        result.put(group4, AccessType.OWNER);
+
+        Assert.assertEquals(authorizationService.getLeastRestrictiveAccessTypeAndGroup(accessTypes), result);
+    }
+
+    @Test
+    @Rollback
+    public void testGetLeastRestrictiveAccessTypeAndGroupReturnMultiResult() {
+        Map<Group, AccessType> accessTypes = new HashMap<>();
+        Map<Group, AccessType> result = new HashMap<>();
+
+        accessTypes.put(group1, AccessType.RESTRICTED);
+        accessTypes.put(group2, AccessType.RESTRICTED);
+
+        result.put(group1, AccessType.RESTRICTED);
+        result.put(group2, AccessType.RESTRICTED);
+
+        Assert.assertEquals(authorizationService.getLeastRestrictiveAccessTypeAndGroup(accessTypes), result);
+    }
+
+    @Test
+    @Rollback
     public void testGetLeastRestrictiveAccessType_False() {
         List<AccessType> accessTypes = new ArrayList<>();
         accessTypes.add(AccessType.VIEWER);
@@ -222,6 +253,37 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         accessTypes.add(AccessType.OWNER);
 
         Assert.assertEquals(authorizationService.getMostRestrictiveAccessType(accessTypes), AccessType.RESTRICTED);
+    }
+
+    @Test
+    @Rollback
+    public void testGetMostRestrictiveAccessTypeAndGroup() {
+        Map<Group, AccessType> accessTypes = new HashMap<>();
+        Map<Group, AccessType> result = new HashMap<>();
+
+        accessTypes.put(group1, AccessType.RESTRICTED);
+        accessTypes.put(group2, AccessType.VIEWER);
+        accessTypes.put(group3, AccessType.EDITOR);
+        accessTypes.put(group4, AccessType.OWNER);
+
+        result.put(group1, AccessType.RESTRICTED);
+
+        Assert.assertEquals(authorizationService.getMostRestrictiveAccessTypeAndGroup(accessTypes), result);
+    }
+
+    @Test
+    @Rollback
+    public void testGetMostRestrictiveAccessTypeAndGroupReturnMultiResult() {
+        Map<Group, AccessType> accessTypes = new HashMap<>();
+        Map<Group, AccessType> result = new HashMap<>();
+
+        accessTypes.put(group1, AccessType.OWNER);
+        accessTypes.put(group2, AccessType.OWNER);
+
+        result.put(group1, AccessType.OWNER);
+        result.put(group2, AccessType.OWNER);
+
+        Assert.assertEquals(authorizationService.getMostRestrictiveAccessTypeAndGroup(accessTypes), result);
     }
 
     @Test

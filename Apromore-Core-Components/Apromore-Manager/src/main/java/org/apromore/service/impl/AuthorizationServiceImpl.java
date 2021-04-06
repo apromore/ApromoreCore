@@ -21,11 +21,11 @@
  */
 package org.apromore.service.impl;
 
+import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupUsermetadataRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.model.*;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
@@ -45,16 +46,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private GroupUsermetadataRepository groupUsermetadataRepository;
     private UsermetadataRepository usermetadataRepository;
     private LogRepository logRepository;
+    private GroupLogRepository groupLogRepository;
 
     @Inject
     public AuthorizationServiceImpl(final WorkspaceService workspaceService,
                                     final GroupUsermetadataRepository groupUsermetadataRepository,
                                     final UsermetadataRepository usermetadataRepository,
-                                    final LogRepository logRepository) {
+                                    final LogRepository logRepository,
+                                    final GroupLogRepository groupLogRepository) {
         this.workspaceService = workspaceService;
         this.groupUsermetadataRepository = groupUsermetadataRepository;
         this.usermetadataRepository = usermetadataRepository;
         this.logRepository = logRepository;
+        this.groupUsermetadataRepository = groupUsermetadataRepository;
     }
 
     @Override
@@ -88,6 +92,34 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return getLeastRestrictiveAccessType(accessTypes);
     }
 
+    public AccessType getLogAccessTypeByGroup(Integer logId, Group group) {
+
+        Map<Group, AccessType> accessTypeMap = getLogAccessType(logId);
+
+        for (Map.Entry<Group, AccessType> entry : accessTypeMap.entrySet()) {
+            if(group.equals(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    public Map<Group, AccessType> getLogAccessTypeAndGroupByUser(Integer logId, User user) {
+
+        Map<Group, AccessType> accessTypeMap = getLogAccessType(logId);
+
+        Map<Group, AccessType> result = new HashMap<>();
+
+        for (Group g : user.getGroups()) {
+            if (accessTypeMap.containsKey(g)) {
+                result.put(g, accessTypeMap.get(g));
+            }
+        }
+
+        return getLeastRestrictiveAccessTypeAndGroup(result);
+    }
+
     @Override
     public AccessType getLogsAccessTypeByUser(Set<Log> logSet, User user) {
 
@@ -95,8 +127,23 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         for (Log l : logSet) {
             AccessType at = getLogAccessTypeByUser(l.getId(), user);
-            if ( at == null) {
+            if (at == null) {
                 return null; // If specified user can't access to one of the multi-log, then return null
+            }
+            accessTypes.add(at);
+        }
+
+        return getMostRestrictiveAccessType(accessTypes);
+    }
+
+    public AccessType getLogsAccessTypeByGroup(Set<Log> logSet, Group group) {
+
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        for (Log l : logSet) {
+            AccessType at = getLogAccessTypeByGroup(l.getId(), group);
+            if (at == null) {
+                return null; // If specified group can't access to one of the multi-log, then return null
             }
             accessTypes.add(at);
         }
@@ -108,7 +155,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     public AccessType getLogsAccessTypeByUser(List<Integer> logIds, User user) {
         Set<Log> logSet = new HashSet<>();
 
-        for(Integer logId : logIds) {
+        for (Integer logId : logIds) {
             logSet.add(logRepository.findUniqueByID(logId));
         }
 
@@ -128,8 +175,38 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         } else if (accessTypes.contains(AccessType.VIEWER)) {
             return AccessType.VIEWER;
         } else if (accessTypes.contains(AccessType.RESTRICTED)) {
-            return  AccessType.RESTRICTED;
+            return AccessType.RESTRICTED;
         } else return null;
+    }
+
+    public Map<Group, AccessType> getLeastRestrictiveAccessTypeAndGroup(Map<Group, AccessType> accessTypes) {
+
+        if (accessTypes == null || accessTypes.size() == 0) {
+            return null;
+        }
+
+        List<AccessType> accessTypeList = new ArrayList<>(accessTypes.values());
+        AccessType leastRestrictiveAccessType;
+
+        if (accessTypeList.contains(AccessType.OWNER)) {
+            leastRestrictiveAccessType = AccessType.OWNER;
+        } else if (accessTypeList.contains(AccessType.EDITOR)) {
+            leastRestrictiveAccessType = AccessType.EDITOR;
+        } else if (accessTypeList.contains(AccessType.VIEWER)) {
+            leastRestrictiveAccessType = AccessType.VIEWER;
+        } else if (accessTypeList.contains(AccessType.RESTRICTED)) {
+            leastRestrictiveAccessType = AccessType.RESTRICTED;
+        } else return null;
+
+        Map<Group, AccessType> result = new HashMap<>();
+        for (Map.Entry<Group, AccessType> map : accessTypes.entrySet()) {
+            if (leastRestrictiveAccessType.equals(map.getValue())) {
+                if (result.put(map.getKey(), map.getValue()) != null) {
+                    throw new IllegalStateException("Duplicate key");
+                }
+            }
+        }
+        return result;
     }
 
     public AccessType getMostRestrictiveAccessType(List<AccessType> accessTypes) {
@@ -141,16 +218,44 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (accessTypes.contains(AccessType.RESTRICTED)) {
             return AccessType.RESTRICTED;
         } else if (accessTypes.contains(AccessType.VIEWER)) {
-            return  AccessType.VIEWER;
+            return AccessType.VIEWER;
         } else if (accessTypes.contains(AccessType.EDITOR)) {
-            return  AccessType.EDITOR;
-        } else return  AccessType.OWNER;
+            return AccessType.EDITOR;
+        } else return AccessType.OWNER;
+    }
+
+    public Map<Group, AccessType> getMostRestrictiveAccessTypeAndGroup(Map<Group, AccessType> accessTypes) {
+
+        if (accessTypes == null || accessTypes.size() == 0) {
+            return null;
+        }
+
+        List<AccessType> accessTypeList = new ArrayList<>(accessTypes.values());
+        AccessType mostRestrictiveAccessType;
+
+        if (accessTypeList.contains(AccessType.RESTRICTED)) {
+            mostRestrictiveAccessType = AccessType.RESTRICTED;
+        } else if (accessTypeList.contains(AccessType.VIEWER)) {
+            mostRestrictiveAccessType = AccessType.VIEWER;
+        } else if (accessTypeList.contains(AccessType.EDITOR)) {
+            mostRestrictiveAccessType = AccessType.EDITOR;
+        } else mostRestrictiveAccessType = AccessType.OWNER;
+
+        Map<Group, AccessType> result = new HashMap<>();
+        for (Map.Entry<Group, AccessType> map : accessTypes.entrySet()) {
+            if (mostRestrictiveAccessType.equals(map.getValue())) {
+                if (result.put(map.getKey(), map.getValue()) != null) {
+                    throw new IllegalStateException("Duplicate key");
+                }
+            }
+        }
+        return result;
     }
 
     private AccessType getAccessType(AccessRights accessRights) {
         AccessType accessType;
         accessType = accessRights.hasAll() ?
-                AccessType.OWNER  : accessRights.hasReadWrite() ?
+                AccessType.OWNER : accessRights.hasReadWrite() ?
                 AccessType.EDITOR : accessRights.isReadOnly() ?
                 AccessType.VIEWER : AccessType.RESTRICTED;
         return accessType;
@@ -217,8 +322,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId) {
 
-        // User metadata list on share window is disabled in version 7.19
-        // Used in AccessController
+        // Used in AccessController, only return result from GroupUsermetadata table
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
@@ -234,12 +338,45 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) {
 
-        // Used in UsermetadataListBox and dashboardList
+        // Used by UsermetadataListBox, filterList and dashboardList
 
         Usermetadata u = usermetadataRepository.findById(usermetadataId);
         Set<Log> logSet = u.getLogs();
 
-        return getLogsAccessTypeByUser(logSet, user);
+        AccessType inheritedAccessType = getLogsAccessTypeByUser(logSet, user);
+
+        // Cross checking whether specified user has access to um, which may not be necessary if specified
+        // usermetadata is retrieved by using getUsermetadata() method.
+        if (AccessType.RESTRICTED.equals(inheritedAccessType)) {
+            // Note: RESTRICTED access type only applies to single log artifact
+            Map<Group, AccessType> AccessTypes = getLogAccessTypeAndGroupByUser(logSet.iterator().next().getId(), user);
+
+            // Get all the records from GroupUsermetadata tables that are associated with specified groups and um
+            List<GroupUsermetadata> gu = new ArrayList<>();
+            for (Group g : AccessTypes.keySet()) {
+                gu.add(groupUsermetadataRepository.findByGroupAndUsermetadata(g, u));
+            }
+            if (gu.size() == 0) {
+                // If cross checking false, then specified user doesn't has access to um
+                return null;
+            }
+            return AccessType.VIEWER; // override AccessType.RESTRICTED
+        }
+        return inheritedAccessType;
+    }
+
+    public AccessType getUsermetadataAccessTypeByGroup(Integer usermetadataId, Group group) {
+
+        // Used by File/Folder Sharing
+        Usermetadata u = usermetadataRepository.findById(usermetadataId);
+        Set<Log> logSet = u.getLogs();
+
+        AccessType inheritedAccessType = getLogsAccessTypeByGroup(logSet, group);
+
+        if (AccessType.RESTRICTED.equals(inheritedAccessType)) {
+            return AccessType.VIEWER; // override AccessType.RESTRICTED
+        }
+        return inheritedAccessType;
     }
 
     @Override
