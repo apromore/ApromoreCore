@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.accesscontrol;
 
 import java.util.Locale;
 import java.util.Map;
+import java.lang.Boolean;
 import javax.inject.Inject;
 
 import org.apromore.portal.common.Constants;
@@ -56,9 +57,6 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
     private String groupLabel = "Security";
 
     @Inject private SecurityService securityService;
-    @Inject private WorkspaceService workspaceService;
-    @Inject private AuthorizationService authorizationService;
-    @Inject private UserMetadataService userMetadataService;
 
     @Override
     public String getID() {
@@ -89,10 +87,10 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
     public void execute(final PortalContext portalContext) {
         LOGGER.info("execute");
         Map arg = getSimpleParams();
-        arg.put("securityService", securityService);
-        arg.put("workspaceService", workspaceService);
-        arg.put("userMetadataService", userMetadataService);
-        arg.put("authorizationService", authorizationService);
+        Boolean enablePublish = (Boolean) arg.get("enablePublish");
+        if (enablePublish == null) {
+            arg.put("enablePublish", false);
+        }
 
         try {
             boolean canShare = false;

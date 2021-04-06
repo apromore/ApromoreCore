@@ -67,6 +67,15 @@ public interface AuthorizationService {
     AccessType getLogAccessTypeByUser(Integer logId, User user);
 
     /**
+     * Same functionality as getLogAccessTypeByUser(Integer logId, User user) but return Map<Group, AccessType>
+     *
+     * @param logId Log Id
+     * @param user User
+     * @return Map<Group, AccessType> A map contains Group and corresponding access type
+     */
+    Map<Group, AccessType> getLogAccessTypeAndGroupByUser(Integer logId, User user);
+
+    /**
      * Get the least restrictive AccessType the specified user has on the specified multi-log
      *
      * How to identify a user’s access type to multi-log?
@@ -164,12 +173,21 @@ public interface AuthorizationService {
     /**
      * The specified user has access to specified user metadata
      *
-     * @param usermetadataId
-     * @param user
-     * @return
-     * @throws UserNotFoundException
+     * @param usermetadataId User metadata ID
+     * @param user User
+     * @return AccessType
+     * @throws UserNotFoundException Specified user can't be found
      */
     AccessType getUserMetadataAccessTypeByUser(Integer usermetadataId, User user) throws UserNotFoundException;
+
+    /**
+     * The specified group has access to specified user metadata
+     *
+     * @param usermetadataId User metadata ID
+     * @param group Group
+     * @return AccessType
+     */
+    AccessType getUsermetadataAccessTypeByGroup(Integer usermetadataId, Group group);
 
     /**
      * Save new GroupLog or update existing one
@@ -213,7 +231,6 @@ public interface AuthorizationService {
      * @param logId        Log ID
      * @param groupRowGuid Group UID
      * @param username     User username
-     * @throws UserNotFoundException Client side should handle this exception and prompt user as error
      */
     void deleteLogAccess(Integer logId, String groupRowGuid, String username, AccessType accessType);
 

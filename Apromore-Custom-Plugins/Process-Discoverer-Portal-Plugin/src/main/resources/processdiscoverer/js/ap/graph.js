@@ -283,37 +283,47 @@
         if (evt.shiftKey || 16 === evt.keyCode || 16 === evt.which) {
           isShiftPressed = true;
         }
-        if (evt.ctrlKey || 17 === evt.keyCode || 17 === evt.which) {
+        if (evt.ctrlKey || evt.metaKey || 17 === evt.keyCode || 17 === evt.which) {
           isCtrlPressed = true;
         }
         if (evt.altKey || 18 === evt.keyCode || 18 === evt.which) {
           isAltPressed = true;
         }
-        if (evt.ctrlKey && evt.which === 90) { // "Z" key
-          if (cy.undoRedo().isUndoStackEmpty()) {
-            history.undo((hist) => {
-              if (hist) {
-                zkSendEvent(vizBridgeId, hist.event, hist.data);
-              }
-            });
-          } else {
-            cy.undoRedo().undo();
-          }
-        } else if (evt.ctrlKey && evt.which === 89) { // "Y" key
-          if (cy.undoRedo().isRedoStackEmpty()) {
-            let hist = history.redo((hist) => {
-              if (hist) {
-                zkSendEvent(vizBridgeId, hist.event, hist.data);
-              }
-            });
-          } else {
-            cy.undoRedo().redo();
-          }
+        if (isCtrlPressed && evt.which === 90) { // "Z" key
+          evt.preventDefault();
+          undo();
+        } else if (isCtrlPressed && evt.which === 89) { // "Y" key
+          evt.preventDefault();
+          redo();
         }
       })
       $(document).keyup(function() {
         isAltPressed = isCtrlPressed = isShiftPressed = false;
       });
+    }
+  }
+
+  function undo () {
+    if (cy.undoRedo().isUndoStackEmpty()) {
+      history.undo((hist) => {
+        if (hist) {
+          zkSendEvent(vizBridgeId, hist.event, hist.payload);
+        }
+      });
+    } else {
+      cy.undoRedo().undo();
+    }
+  }
+
+  function redo () {
+    if (cy.undoRedo().isRedoStackEmpty()) {
+      let hist = history.redo((hist) => {
+        if (hist) {
+          zkSendEvent(vizBridgeId, hist.event, hist.payload);
+        }
+      });
+    } else {
+      cy.undoRedo().redo();
     }
   }
 
@@ -378,11 +388,17 @@
     isTraceMode = true;
     reset();
     init();
+    json = json.replaceAll('\n', '\\n'); // escape
     const source = $.parseJSON(json);
     cy.add(source);
     layout(LAYOUT_MANUAL_BEZIER);
     Ap.pd.setupSearch(source);
     fit(1);
+    history.save({
+      compId: vizBridgeId,
+      event: "onCaseFilter",
+      payload: json
+    });
   }
 
   function zoomIn() {
@@ -462,29 +478,41 @@
     let target = evTarget.target().data(NAME_PROP);
     if (source === '') { source = '|>'; }
     if (target === '') { target = '[]'; }
+    let graphEvent;
     let payload = source.concat(' => ', target);
+    let compId = vizBridgeId;
     if (isShiftPressed) {
-      zkSendEvent('$filter', 'onInvokeExt', { type: 'ATTRIBUTE_ARC_DURATION', source, target  });
+      payload = { type: 'ATTRIBUTE_ARC_DURATION', source, target  };
+      compId = '$filter';
+      graphEvent = 'onInvokeExt';
     } else if (isCtrlPressed) {
-      zkSendEvent(vizBridgeId, 'onEdgeRetained', payload);
+      graphEvent = 'onEdgeRetained';
     } else {
-      zkSendEvent(vizBridgeId, 'onEdgeRemoved', payload);
+      graphEvent = 'onEdgeRemoved';
     }
+    zkSendEvent(compId, graphEvent, payload);
+    history.save({
+      compId,
+      event: graphEvent,
+      payload
+    });
   }
 
   function removeNode(evt) {
     let evTarget = evt.target;
     let graphEvent;
     let data = evTarget.data(NAME_PROP);
+    let compId = vizBridgeId;
+    let payload = data
     if (data !== '') {
       if (isShiftPressed) {
-        if  (isCtrlPressed) {
-          zkSendEvent('$filter', 'onInvokeExt', { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data });
+        compId = '$filter';
+        graphEvent = 'onInvokeExt';
+        if (isCtrlPressed) {
+          payload = { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data };
         } else {
-          zkSendEvent('$filter', 'onInvokeExt', { type: 'EVENT_ATTRIBUTE_DURATION', data });
+          payload = { type: 'EVENT_ATTRIBUTE_DURATION', data };
         }
-        // skip the history
-        return;
       } else if (isCtrlPressed || isAltPressed) {
         if (isCtrlPressed && !isAltPressed) {
           graphEvent = 'onNodeRetainedTrace'
@@ -496,10 +524,11 @@
       } else {
         graphEvent = 'onNodeRemovedTrace'
       }
-      zkSendEvent(vizBridgeId, graphEvent, data);
+      zkSendEvent(vizBridgeId, graphEvent, payload);
       history.save({
+        compId,
         event: graphEvent,
-        data: data
+        payload
       });
     }
   }
@@ -632,6 +661,8 @@
     zoomIn,
     zoomOut,
     resize,
+    redo,
+    undo,
     showCaseDetails,
     showPerspectiveDetails,
   })
