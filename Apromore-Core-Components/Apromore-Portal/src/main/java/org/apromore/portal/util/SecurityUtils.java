@@ -241,7 +241,7 @@ public final class SecurityUtils {
 
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
         } catch (final Exception e) {
-            logger.error("Error while decrypting {} - stackTrace {}", e.toString(),
+            logger.error("Error while decrypting: {} - stackTrace {}", e.toString(),
                     ExceptionUtils.getStackTrace(e));
 
             throw e;
@@ -259,8 +259,9 @@ public final class SecurityUtils {
             secretKey = new SecretKeySpec(key, SYMMETRIC_CIPHER_BASE_ALG);
         } catch (final NoSuchAlgorithmException noSuchAlgorithmException) {
             noSuchAlgorithmException.printStackTrace();
-        } catch (final UnsupportedEncodingException unsupportedEncodingException) {
-            unsupportedEncodingException.printStackTrace();
+        } catch (final UnsupportedEncodingException uEE) {
+            logger.error("Error while setting key: {} - stackTrace {}", uEE.getMessage(),
+                    ExceptionUtils.getStackTrace(uEE));
         }
     }
 }
