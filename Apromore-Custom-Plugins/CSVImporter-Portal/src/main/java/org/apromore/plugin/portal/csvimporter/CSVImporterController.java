@@ -96,6 +96,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     Button toPublicXESButton;
     private @Wire("#matchedMapping")
     Button matchedMapping;
+
+    protected boolean isModal = true;
     private boolean useParquet;
     private File parquetFile;
 
@@ -1107,7 +1109,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     successMessage = MessageFormat.format(
                             getLabels().getString("successful_upload"), logModel.getRowsCount());
                 }
-                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, isModal ? event -> close() : null);
                 portalContext.refreshContent();
 
             } else {
@@ -1121,7 +1123,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                             logModel.getRowsCount());
                 }
 
-                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, event -> close());
+                Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, isModal ? event -> close() : null);
                 portalContext.refreshContent();
             }
 
