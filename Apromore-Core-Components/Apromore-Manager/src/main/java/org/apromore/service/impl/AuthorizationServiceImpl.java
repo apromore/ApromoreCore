@@ -367,16 +367,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     public AccessType getUsermetadataAccessTypeByGroup(Integer usermetadataId, Group group) {
 
-        // Used by File/Folder Sharing
+        // Used by File/Folder Sharing to identify user selections
         Usermetadata u = usermetadataRepository.findById(usermetadataId);
-        Set<Log> logSet = u.getLogs();
-
-        AccessType inheritedAccessType = getLogsAccessTypeByGroup(logSet, group);
-
-        if (AccessType.RESTRICTED.equals(inheritedAccessType)) {
-            return AccessType.VIEWER; // override AccessType.RESTRICTED
+        GroupUsermetadata gu = groupUsermetadataRepository.findByGroupAndUsermetadata(group, u);
+        if (gu == null ) {
+            return null;
         }
-        return inheritedAccessType;
+        return getAccessType(gu.getAccessRights());
     }
 
     @Override
