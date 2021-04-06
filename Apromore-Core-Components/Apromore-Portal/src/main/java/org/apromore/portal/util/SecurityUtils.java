@@ -23,6 +23,7 @@ package org.apromore.portal.util;
 
 import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -221,7 +222,8 @@ public final class SecurityUtils {
 
             return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
         } catch (final Exception e) {
-            System.out.println("Error while encrypting: " + e.toString());
+            logger.error("Error while encrypting: {} - stackTrace {}", e.toString(),
+                    ExceptionUtils.getStackTrace(e));
         }
 
         return null;
@@ -239,7 +241,8 @@ public final class SecurityUtils {
 
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
         } catch (final Exception e) {
-            System.out.println("Error while decrypting: " + e.toString());
+            logger.error("Error while decrypting {} - stackTrace {}", e.toString(),
+                    ExceptionUtils.getStackTrace(e));
 
             throw e;
         }
