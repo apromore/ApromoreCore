@@ -322,8 +322,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public Map<Group, AccessType> getUserMetadataAccessType(Integer userMetadataId) {
 
-        // User metadata list on share window is disabled in version 7.19
-        // Used in AccessController
+        // Used in AccessController, only return result from GroupUsermetadata table
 
         Map<Group, AccessType> groupAccessTypeMap = new HashMap<>();
 
@@ -361,6 +360,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 // If cross checking false, then specified user doesn't has access to um
                 return null;
             }
+            return AccessType.VIEWER; // override AccessType.RESTRICTED
         }
         return inheritedAccessType;
     }
@@ -371,7 +371,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         Usermetadata u = usermetadataRepository.findById(usermetadataId);
         Set<Log> logSet = u.getLogs();
 
-        return getLogsAccessTypeByGroup(logSet, group);
+        AccessType inheritedAccessType = getLogsAccessTypeByGroup(logSet, group);
+
+        if (AccessType.RESTRICTED.equals(inheritedAccessType)) {
+            return AccessType.VIEWER; // override AccessType.RESTRICTED
+        }
+        return inheritedAccessType;
     }
 
     @Override
