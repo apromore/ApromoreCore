@@ -25,8 +25,6 @@
 
 package org.apromore.portal.dialogController;
 
-import static org.apromore.portal.util.SecurityUtils.symmetricDecrypt;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,6 +41,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -80,6 +79,8 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.security.helper.PortalSessionQePair;
+import org.apromore.portal.security.helper.SecuritySsoHelper;
 import org.apromore.portal.util.ApromoreEnvUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,8 +118,6 @@ public class MainController extends BaseController implements MainControllerInte
     private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
-    private static final String SYMMETRIC_KEY_SECRET_ENV_KEY = "ENV_KEY";
-
     private static String encKey;
 
     private EventQueue<Event> qe;
@@ -146,37 +145,15 @@ public class MainController extends BaseController implements MainControllerInte
     public PortalSession portalSession;
     private Map<String, PortalPlugin> portalPluginMap;
 
-    static {
-        String encPassphStr = ApromoreEnvUtils.getEnvPropValue(
-                SYMMETRIC_KEY_SECRET_ENV_KEY, "encryption passphrase could *not* be attained from environment");
-
-        MainController.encKey = encPassphStr;
-        LOGGER.info("\n\nInitialised main controller and obtained encKey from environment\n");
-
-        // For safety/clear
-        encPassphStr = null;
-    }
-
     public static MainController getController() {
         return controller;
     }
 
     public MainController() {
-        LOGGER.info("\n\n>>> In MainController() default constructor");
+        MainController.encKey = SecuritySsoHelper.getEnvEncKey();
 
         final boolean usingKeycloak = config.isUseKeycloakSso();
         LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
-
-        if (usingKeycloak) {
-            final Object nativeRequest = Executions.getCurrent().getNativeRequest();
-            LOGGER.info("\n### nativeRequest {}", nativeRequest);
-            final SecurityContextHolderAwareRequestWrapper servReqWrapper =
-                    (SecurityContextHolderAwareRequestWrapper) nativeRequest;
-            final String appAuthHeader = servReqWrapper.getHeader("App_Auth");
-            final String signedAppAuthHeader = servReqWrapper.getHeader("Signed_App_Auth");
-            LOGGER.info("\n### appAuthHeader {}", appAuthHeader);
-            LOGGER.info("\n### signedAppAuthHeader {}", signedAppAuthHeader);
-        }
 
         portalSession = new PortalSession(this);
 
@@ -186,51 +163,32 @@ public class MainController extends BaseController implements MainControllerInte
         String usernameParsed = null;
 
         if (usingKeycloak) {
+            final String appAuthHeader = SecuritySsoHelper.getAppAuthHeader();
+            final String signedAppAuthHeader = SecuritySsoHelper.getSignedAppAuthHeader();
+
             try {
                 if (StringUtils.isNotBlank(urlDecoded)) {
-                    final String decryptedUrlParam = symmetricDecrypt(urlDecoded, MainController.encKey);
-                    LOGGER.info("\n\n>>>>> >>>>> >>>>> decryptedUrlParam: {}", decryptedUrlParam);
+                    usernameParsed = SecuritySsoHelper.getSsoUsername(urlDecoded, encKey);
+                }
 
-                    final StringTokenizer stringTokenizer = new StringTokenizer(decryptedUrlParam, ";");
+                if (StringUtils.isNotBlank(usernameParsed)) {
+                    final PortalSessionQePair portalSessionQePair =
+                        SecuritySsoHelper.initialiseKeycloakUser(
+                            usernameParsed, getUserService(), getSecurityService(), getService(), config, this);
 
-                    final String usernameKeyValuePair = stringTokenizer.nextToken();
-                    usernameParsed = usernameKeyValuePair.substring(usernameKeyValuePair.indexOf("=") + 1);
+                    qe = portalSessionQePair.getQe();
+                    portalSession = portalSessionQePair.getPortalSession();
+                } else {
+                    qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+                    portalSession = new PortalSession(this);
 
-                    LOGGER.info("\n\n>>>>> >>>>> >>>>> usernameParsed: {}", usernameParsed);
+                    initializeUser(getService(), config, null, null);
                 }
             } catch (final Exception e) {
-                LOGGER.error("\n\n##### Error in decrypting url param: {}", e.getMessage());
-
-                LOGGER.error("\n\nBefore stacktrace\n");
-                e.printStackTrace();
-                LOGGER.error("\n\nAfter stacktrace\n");
+                LOGGER.error("\n\n##### Error in decrypting url param: {} - stackTrace {}",
+                        e.getMessage(),
+                        ExceptionUtils.getStackTrace(e));
             }
-        }
-
-        if (usingKeycloak && StringUtils.isNotBlank(usernameParsed)) {
-            try {
-                Sessions.getCurrent().setMaxInactiveInterval(-10);
-                LOGGER.info("\n\n>>> Set max inactive interval to negative number <<<");
-
-                final User samlSsoUser = getUserService().findUserByLogin(usernameParsed);
-                final UserType userType = UserMapper.convertUserTypes(samlSsoUser, getSecurityService());
-
-                qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, false);
-                portalSession = new PortalSession(this);
-
-                initializeUser(getService(), config, userType, samlSsoUser);
-            } catch (UserNotFoundException e) {
-                LOGGER.error("\n\nUserNotFoundException: {}", e.getMessage());
-
-                e.printStackTrace();
-            }
-        } else {
-            LOGGER.info("\n\n>>> About to call initializeUser");
-
-            qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-            portalSession = new PortalSession(this);
-
-            initializeUser(getService(), config, null, null);
         }
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
@@ -239,13 +197,13 @@ public class MainController extends BaseController implements MainControllerInte
     private void setupUserDynamically(final UserType userType) {
 	    LOGGER.info("\n\n*** DYNAMICALLY Setting*** userType {} as currentUser", userType);
         UserSessionManager.setCurrentUser(userType);
-
-        LOGGER.info("\n\n*** AFTER DYNAMICALLY setting*** userType {} as currentUser", userType);
+        LOGGER.info("\n\n*** DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
     }
 
 	/** Unit test constructor. */
     public MainController(ConfigBean configBean) {
         super(configBean);
+
         portalSession = new PortalSession(this);
     }
 
