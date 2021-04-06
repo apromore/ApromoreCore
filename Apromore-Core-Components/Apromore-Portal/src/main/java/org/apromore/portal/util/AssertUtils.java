@@ -27,18 +27,12 @@ import static org.springframework.util.Assert.notNull;
 public final class AssertUtils {
 
     public static final void notNullAssert(final Object paramValue, final String paramName) {
-        if (paramName == null) {
-            notNull(paramValue, "parameter must not be null");
-        } else {
-            notNull(paramValue, "'" + paramName + "' must not be null");
-        }
+        notNull(paramValue, "parameter must not be null");
+        notNull(paramValue, "'" + paramName + "' must not be null");
     }
 
     public static final void hasTextAssert(final String strParamValue, final String paramName) {
-        if (paramName == null) {
-            hasText(strParamValue, "parameter must not be empty");
-        } else {
-            hasText(strParamValue, "'" + paramName + "' must not be empty");
-        }
+        hasText(strParamValue, "parameter must not be empty");
+        hasText(strParamValue, "'" + paramName + "' must not be empty");
     }
 }

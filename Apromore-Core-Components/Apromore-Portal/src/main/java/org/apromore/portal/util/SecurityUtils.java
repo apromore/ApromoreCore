@@ -93,6 +93,15 @@ public final class SecurityUtils {
         // Intentionally private constructor
     }
 
+    /**
+     * Get public key from keystore.
+     *
+     * @param keyAlias The alias for looking up the target key.
+     *
+     * @return <code>null</code> if the looked-up/retrieved (associated keypair) is not a PrivateKey.
+     *
+     * @throws Exception if there is a mismatch between passed-in key store password & ks password, etc/
+     */
     public static final PublicKey getPublicKey(final String keyAlias) throws Exception {
         try (
                 final InputStream inputStream = new FileInputStream(secRessKeystoreFilePathStr);
@@ -114,6 +123,15 @@ public final class SecurityUtils {
         }
     }
 
+    /**
+     * Get private key from keystore.
+     *
+     * @param keyAlias The alias for looking up the target key.
+     *
+     * @return <code>null</code> if the looked-up/retrieved key is not a PrivateKey.
+     *
+     * @throws Exception if there is a mismatch between passed-in key store password & ks password, etc/
+     */
     public static PrivateKey getPrivateKey(final String keyAlias) throws Exception {
         logger.info("\n\nkeyAlias: {} ", keyAlias);
         logger.info("\n\nsecRessKeystoreFilePathStr: {} ", secRessKeystoreFilePathStr);
