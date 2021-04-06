@@ -32,7 +32,6 @@ import org.apromore.mapper.UserMapper;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.PortalSession;
-import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ApromoreEnvUtils;
@@ -92,7 +91,6 @@ public class SecuritySsoHelper {
 
         final String usernameKeyValuePair = stringTokenizer.nextToken();
         final String usernameParsed = usernameKeyValuePair.substring(usernameKeyValuePair.indexOf("=") + 1);
-
         LOGGER.info("\n\n>>>>> >>>>> >>>>> usernameParsed: {}", usernameParsed);
 
         return usernameParsed;

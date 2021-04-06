@@ -169,20 +169,20 @@ public class MainController extends BaseController implements MainControllerInte
             try {
                 if (StringUtils.isNotBlank(urlDecoded)) {
                     usernameParsed = SecuritySsoHelper.getSsoUsername(urlDecoded, encKey);
-                }
 
-                if (StringUtils.isNotBlank(usernameParsed)) {
-                    final PortalSessionQePair portalSessionQePair =
-                        SecuritySsoHelper.initialiseKeycloakUser(
-                            usernameParsed, getUserService(), getSecurityService(), getService(), config, this);
+                    if (StringUtils.isNotBlank(usernameParsed)) {
+                        final PortalSessionQePair portalSessionQePair =
+                            SecuritySsoHelper.initialiseKeycloakUser(
+                                usernameParsed, getUserService(), getSecurityService(), getService(), config, this);
 
-                    qe = portalSessionQePair.getQe();
-                    portalSession = portalSessionQePair.getPortalSession();
-                } else {
-                    qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-                    portalSession = new PortalSession(this);
+                        qe = portalSessionQePair.getQe();
+                        portalSession = portalSessionQePair.getPortalSession();
+                    } else {
+                        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+                        portalSession = new PortalSession(this);
 
-                    initializeUser(getService(), config, null, null);
+                        initializeUser(getService(), config, null, null);
+                    }
                 }
             } catch (final Exception e) {
                 LOGGER.error("\n\n##### Error in decrypting url param: {} - stackTrace {}",
