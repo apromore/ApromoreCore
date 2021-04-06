@@ -22,26 +22,16 @@
 
 package org.apromore.manager.client;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.inject.Inject;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.security.cert.CertificateException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apromore.common.Constants;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
@@ -88,11 +78,9 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
-import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -101,6 +89,9 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service("managerClient")
 public class ManagerServiceImpl implements ManagerService {
+
+    public static final String SECURITYMS_HTTP_LOGOUT_URL = "securityms.http.logoutUrl";
+    public static final String SECURITYMS_HTTPS_LOGOUT_URL = "securityms.https.logoutUrl";
 
     @Inject private PluginService pluginService;
     @Inject private ProcessService procSrv;
@@ -115,6 +106,8 @@ public class ManagerServiceImpl implements ManagerService {
     private boolean isGEDMatrixReady = true;
     
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceImpl.class);
 
 // Implementation of ManagerService
 
@@ -131,9 +124,13 @@ public class ManagerServiceImpl implements ManagerService {
 
         final RestTemplate restTemplate = new RestTemplate();
 
+        final Properties securityMsProps = readSecurityMsProperties();
+
         try {
             restRespResult =
-                    restTemplate.getForObject("http://securityms.apromoresso.net:8282/logout/" + username, Boolean.class);
+                    restTemplate.getForObject(
+                            securityMsProps.getProperty(SECURITYMS_HTTP_LOGOUT_URL) + username,
+                            Boolean.class);
             logger.debug("\n\nrestRespResult: {}", restRespResult);
         } catch (final Exception e) {
             final String exceptionMsg = e.getMessage();
@@ -143,7 +140,9 @@ public class ManagerServiceImpl implements ManagerService {
                 logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
 
                 restRespResult =
-                        restTemplate.getForObject("https://localhost:8143/logout/" + username, Boolean.class);
+                        restTemplate.getForObject(
+                                securityMsProps.getProperty(SECURITYMS_HTTPS_LOGOUT_URL) + username,
+                                Boolean.class);
                 logger.debug("\n\nrestRespResult: {}", restRespResult);
 
                 restRespResult = true;
@@ -157,6 +156,25 @@ public class ManagerServiceImpl implements ManagerService {
             logger.info("\n\n>>>>> Logging out user result: {}", restRespResult);
 
             return restRespResult;
+        }
+    }
+
+    private static Properties readSecurityMsProperties() {
+        final Properties properties = new Properties();
+
+        try (final InputStream inputStream =
+                     ManagerServiceImpl.class.getResourceAsStream(
+                             "/securityms.properties")) {
+
+            properties.load(inputStream);
+            LOGGER.info("\n\nsecurityms.properties properties file properties {}", properties);
+
+            return properties;
+        } catch (final IOException | NullPointerException e) {
+            LOGGER.error("Exception reading securityms properties: {} - stackTrace {}",
+                    e.getMessage(), ExceptionUtils.getStackTrace(e));
+
+            return null;
         }
     }
 

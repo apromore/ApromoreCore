@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.security;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -71,9 +72,8 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
             return properties;
         } catch (final IOException | NullPointerException e) {
-            LOGGER.error("Exception reading site.cfg properties {}: " + e.getMessage());
-
-            e.printStackTrace();
+            LOGGER.error("Exception reading keycloak properties: {} - stackTrace {}",
+                    e.getMessage(), ExceptionUtils.getStackTrace(e));
 
             return null;
         }
