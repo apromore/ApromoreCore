@@ -379,6 +379,7 @@ public class AccessController extends SelectorComposer<Div> {
         Group selectedGroup = securityService.findGroupByRowGuid(rowGuid);
 
         artifactModel = new ListModelList<Artifact>();
+        artifactModel.setMultiple(true);
         groupArtifactsMap.put(rowGuid, artifactModel);
         artifactMap = new HashMap<Integer, Artifact>();
         Set<Usermetadata> userMetadataSet = userMetadataService.getUserMetadataByLog(selectedItemId, UserMetadataTypeEnum.FILTER);
@@ -400,7 +401,6 @@ public class AccessController extends SelectorComposer<Div> {
                 artifactModel.addToSelection(artifact);
             }
         }
-        artifactModel.setMultiple(true);
         artifactListbox.setModel(artifactModel);
         /*
         // Old method
