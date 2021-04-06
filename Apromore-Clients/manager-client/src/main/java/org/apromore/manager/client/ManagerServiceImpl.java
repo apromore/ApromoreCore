@@ -22,23 +22,17 @@
 
 package org.apromore.manager.client;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.inject.Inject;
+import javax.security.cert.CertificateException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apromore.common.Constants;
-//import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.NativeType;
@@ -49,7 +43,6 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.GroupMapper;
 import org.apromore.mapper.NativeTypeMapper;
-import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
 import org.apromore.plugin.ParameterAwarePlugin;
@@ -70,7 +63,6 @@ import org.apromore.portal.model.PluginInfo;
 import org.apromore.portal.model.PluginInfoResult;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
@@ -86,17 +78,24 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
-import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Implements {@link ManagerService} by delegating to OSGi services.
  */
 @Service("managerClient")
 public class ManagerServiceImpl implements ManagerService {
+
+    private static final String SECURITYMS_HTTP_LOGOUT_URL = "securityms.http.logoutUrl";
+    private static final String SECURITYMS_HTTPS_LOGOUT_URL = "securityms.https.logoutUrl";
+
+    private static final int HTTP_CONN_TIMEOUT_MILLS = 3000;
 
     @Inject private PluginService pluginService;
     @Inject private ProcessService procSrv;
@@ -110,10 +109,87 @@ public class ManagerServiceImpl implements ManagerService {
 
     private boolean isGEDMatrixReady = true;
     
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceImpl.class);
 
+    @Bean
+    public RestTemplate restTemplate() {
+        final SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
 
-    // Implementation of ManagerService
+        simpleClientHttpRequestFactory.setConnectTimeout(HTTP_CONN_TIMEOUT_MILLS);
+        simpleClientHttpRequestFactory.setReadTimeout(HTTP_CONN_TIMEOUT_MILLS);
+
+        return new RestTemplate(simpleClientHttpRequestFactory);
+    }
+
+
+// Implementation of ManagerService
+
+    /**
+     * Logout, in Keycloak, user sessions associated with said user.
+     *
+     * @param username The username of the user to logout.
+     *
+     * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
+     */
+    @Override
+    public boolean logoutUserAllSessions(final String username) throws Exception {
+        Boolean restRespResult = false;
+
+        final RestTemplate restTemplate = restTemplate();
+
+        final Properties securityMsProps = readSecurityMsProperties();
+
+        try {
+            restRespResult = restTemplate.getForObject(
+                            securityMsProps.getProperty(SECURITYMS_HTTP_LOGOUT_URL) + username,
+                            Boolean.class);
+            logger.debug("\n\nrestRespResult: {}", restRespResult);
+        } catch (final Exception e) {
+            final String exceptionMsg = e.getMessage();
+
+            if (e instanceof CertificateException || ((exceptionMsg != null) &&
+                    (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
+                logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
+
+                restRespResult = restTemplate.getForObject(
+                                securityMsProps.getProperty(SECURITYMS_HTTPS_LOGOUT_URL) + username,
+                                Boolean.class);
+                logger.debug("\n\nrestRespResult: {}", restRespResult);
+
+                restRespResult = true;
+            } else {
+                logger.error("\n\nException in logging out user - stacktrace: {}",
+                        ExceptionUtils.getStackTrace(e));
+
+                throw e;
+            }
+        } finally {
+            logger.info("\n\n>>>>> Logging out user result: {}", restRespResult);
+
+            return restRespResult;
+        }
+    }
+
+    private static Properties readSecurityMsProperties() {
+        final Properties properties = new Properties();
+
+        try (final InputStream inputStream =
+                     ManagerServiceImpl.class.getResourceAsStream(
+                             "/securityms.properties")) {
+
+            properties.load(inputStream);
+            LOGGER.info("\n\nsecurityms.properties properties file properties {}", properties);
+
+            return properties;
+        } catch (final IOException | NullPointerException e) {
+            LOGGER.error("Exception reading securityms properties: {} - stackTrace {}",
+                    e.getMessage(), ExceptionUtils.getStackTrace(e));
+
+            return null;
+        }
+    }
 
     /**
      * the User record.

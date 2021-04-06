@@ -40,10 +40,12 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.commons.item.ItemNameUtils;
-import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -55,7 +57,6 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.PortalSession;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -73,8 +74,11 @@ import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.security.helper.PortalSessionQePair;
+import org.apromore.portal.security.helper.SecuritySsoHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -96,6 +100,8 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
 
+import static org.apromore.portal.common.UserSessionManager.initializeUser;
+
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
@@ -103,11 +109,16 @@ import org.zkoss.zul.ext.Paginal;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
+    private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
-    private EventQueue<Event> qe; // = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+    private static String encKey;
+
+    private EventQueue<Event> qe;
 
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
+
+    private static final String KEY_ALIAS = "apseckey";
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -128,16 +139,67 @@ public class MainController extends BaseController implements MainControllerInte
     public PortalSession portalSession;
     private Map<String, PortalPlugin> portalPluginMap;
 
+    public static MainController getController() {
+        return controller;
+    }
+
     public MainController() {
-        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+        final boolean usingKeycloak = config.isUseKeycloakSso();
+        LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
+
         portalSession = new PortalSession(this);
-        UserSessionManager.initializeUser(getService(), config);
+
+        final String urlDecoded = Executions.getCurrent().getParameter("encodedToken");
+        LOGGER.info("\n\nIn PORTAL MainController, urlDecoded {}", urlDecoded);
+
+        String usernameParsed = null;
+
+        if (usingKeycloak) {
+            final String appAuthHeader = SecuritySsoHelper.getAppAuthHeader();
+            final String signedAppAuthHeader = SecuritySsoHelper.getSignedAppAuthHeader();
+
+            MainController.encKey = SecuritySsoHelper.getEnvEncKey();
+
+            try {
+                if (StringUtils.isNotBlank(urlDecoded)) {
+                    usernameParsed = SecuritySsoHelper.getSsoUsername(urlDecoded, encKey);
+
+                    if (StringUtils.isNotBlank(usernameParsed)) {
+                        final PortalSessionQePair portalSessionQePair =
+                            SecuritySsoHelper.initialiseKeycloakUser(
+                                usernameParsed, getUserService(), getSecurityService(), getService(), config,
+                                    this);
+
+                        qe = portalSessionQePair.getQe();
+                        portalSession = portalSessionQePair.getPortalSession();
+                    } else {
+                        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
+                                true);
+                        portalSession = new PortalSession(this);
+
+                        initializeUser(getService(), config, null, null);
+                    }
+                }
+            } catch (final Exception e) {
+                LOGGER.error("\n\n##### Error in decrypting url param: {} - stackTrace {}",
+                        e.getMessage(),
+                        ExceptionUtils.getStackTrace(e));
+            }
+        }
+
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     }
 
-    /** Unit test constructor. */
+    private void setupUserDynamically(final UserType userType) {
+	    LOGGER.info("\n\n*** DYNAMICALLY Setting*** userType {} as currentUser", userType);
+        UserSessionManager.setCurrentUser(userType);
+        LOGGER.info("\n\n*** DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
+    }
+
+	/** Unit test constructor. */
     public MainController(ConfigBean configBean) {
         super(configBean);
+
         portalSession = new PortalSession(this);
     }
 
@@ -172,6 +234,7 @@ public class MainController extends BaseController implements MainControllerInte
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
 
+            controller = this;
             MainController self = this;
 
             Sessions.getCurrent().setAttribute("portalContext", portalContext);
@@ -191,6 +254,10 @@ public class MainController extends BaseController implements MainControllerInte
                     self.reloadBreadcrumbs();
                 }
             });
+
+            if (qe == null) {
+               qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+            }
 
             qe.subscribe(new EventListener<Event>() {
                 @Override
@@ -215,6 +282,10 @@ public class MainController extends BaseController implements MainControllerInte
             pagingandbuttons.setVisible(true);
 
         } catch (Exception e) {
+            LOGGER.error("\n\n##### Repository NOT available: {}", e.getMessage());
+
+            e.printStackTrace();
+
             String message;
             if (e.getMessage() == null) {
                 message = "Please contact your Apromore Administrator";
@@ -222,7 +293,9 @@ public class MainController extends BaseController implements MainControllerInte
                 message = e.getMessage();
             }
             e.printStackTrace();
-            Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Repository not available (" + message + ")",
+                    "Attention",
+                    Messagebox.OK, Messagebox.ERROR);
         }
 
     }
@@ -308,6 +381,7 @@ public class MainController extends BaseController implements MainControllerInte
      * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
     public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
+        LOGGER.debug("\n\n----- In displayProcessSummaries(..) -----");
         int folderId;
 
         if (isQueryResult) {
@@ -468,8 +542,6 @@ public class MainController extends BaseController implements MainControllerInte
      * @param process the process summary
      * @param version the version of the process
      * @param nativeType the native type of the process
-     * @param annotation the annotation of that process
-     * @param readOnly is this model readonly or not
      * @param requestParameterTypes request parameters types.
      * @throws InterruptedException
      */
@@ -751,6 +823,8 @@ public class MainController extends BaseController implements MainControllerInte
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
+        LOGGER.trace("Loading properties of webapp");
+
         setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
         String date = config.getVersionBuildDate();
         date = date.substring(0, date.indexOf("@") - 1);

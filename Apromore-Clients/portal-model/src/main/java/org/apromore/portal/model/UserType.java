@@ -48,6 +48,34 @@ public class UserType {
     protected String lastActivityDate;
     protected String username;
 
+    public UserType() {
+    }
+
+
+    /**
+     * Constructs a basic UserType based on four specified parameters.
+     *
+     * @param username Username for user.
+     * @param email Email address for user.
+     * @param givenName Given name for user.
+     * @param familyName Family name for user.
+     */
+    public UserType(final String username,
+                    final String email,
+                    final String givenName,
+                    final String familyName) {
+        // Create the user record
+        final MembershipType membershipType = new MembershipType();
+        membershipType.setEmail(email);
+        membershipType.setFailedLogins(0);
+        membershipType.setFailedAnswers(0);
+
+        this.setFirstName(givenName);
+        this.setLastName(familyName);
+        this.setUsername(username);
+        this.setMembership(membershipType);
+    }
+
     /**
      * Gets the value of the roles property.
      * 
