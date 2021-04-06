@@ -117,6 +117,10 @@ public class BaseController extends Window {
         return workspaceService;
     }
 
+    public ConfigBean getConfig() {
+        return config;
+    }
+
     /**
      * Turn a ZUL document into a ZK {@link Component}.
      *

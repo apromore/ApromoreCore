@@ -128,6 +128,11 @@ Ap.common.reportIssue = function (email, username) {
     let body = `Username: ${username}\r\n` + `Browser info: ${ua}\r\n` + `URL: ${href}\r\n`;
     body += 'Description of your issue:'
     let url = "mailto:" + email + "?subject=" + subject + "&body=" + body;
-    window.open(encodeURI(url), '_self');
+    // DO NOT use the following, trying to load to 'self', though doesn't replace the current href
+    // breaks the ZK event handling
+    // window.open(encodeURI(url), '_self');
+    // Use dummy iframe approach instead
+    let dummy = jQuery('<iframe src="' + encodeURI(url) + '">').appendTo('body').css("display", "none");
+    setTimeout(function() { dummy.remove() }, 1000);
 }
 
