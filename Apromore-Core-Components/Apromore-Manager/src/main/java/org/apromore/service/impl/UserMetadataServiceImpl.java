@@ -550,7 +550,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public Set<Usermetadata> getUserMetadata(String username, List<Integer> logIds,
                                              UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
-        // Since restricted viewer is not supported at version 7.19, criteria is simplified here
         // Don't need to consider Restricted-viewer for multi-log user metadata
         // Only used in Dash and Filter
         return getUserMetadataByUserAndLogs(username, logIds, userMetadataTypeEnum);

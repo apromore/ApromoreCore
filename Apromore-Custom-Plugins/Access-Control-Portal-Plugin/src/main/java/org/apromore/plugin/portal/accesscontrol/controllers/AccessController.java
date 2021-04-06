@@ -24,11 +24,8 @@ package org.apromore.plugin.portal.accesscontrol.controllers;
 import com.google.common.base.Strings;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
-import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.accesscontrol.model.Artifact;
 import org.apromore.plugin.portal.accesscontrol.model.Assignee;
@@ -40,7 +37,6 @@ import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserMetadataService;
-import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
@@ -64,15 +60,11 @@ import java.util.*;
  * Controller for handling share interface
  * Corresponds to components/access/access.zul
  */
-// @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class AccessController extends SelectorComposer<Div> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AccessController.class);
     private static boolean USE_STRICT_USER_ADDITION = true;
-
-    /*
-    @WireVariable("managerService")
-    private ManagerService managerService;
 
     @WireVariable("securityService")
     private SecurityService securityService;
@@ -82,12 +74,6 @@ public class AccessController extends SelectorComposer<Div> {
 
     @WireVariable("userMetadataService")
     private UserMetadataService userMetadataService;
-    */
-
-    private SecurityService securityService = (SecurityService) Executions.getCurrent().getArg().get("securityService");
-    private WorkspaceService workspaceService = (WorkspaceService) Executions.getCurrent().getArg().get("workspaceService");
-    private AuthorizationService authorizationService = (AuthorizationService) Executions.getCurrent().getArg().get("authorizationService");
-    private UserMetadataService userMetadataService = (UserMetadataService) Executions.getCurrent().getArg().get("userMetadataService");
 
     private Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
     private Object selectedItem = argMap.get("selectedItem");
@@ -390,10 +376,10 @@ public class AccessController extends SelectorComposer<Div> {
         if (!isLogSelected()) {
             return;
         }
-        String selectedUserName = securityService.findGroupByRowGuid(rowGuid).getName();
-        User user = securityService.getUserByName(selectedUserName);
+        Group selectedGroup = securityService.findGroupByRowGuid(rowGuid);
 
         artifactModel = new ListModelList<Artifact>();
+        artifactModel.setMultiple(true);
         groupArtifactsMap.put(rowGuid, artifactModel);
         artifactMap = new HashMap<Integer, Artifact>();
         Set<Usermetadata> userMetadataSet = userMetadataService.getUserMetadataByLog(selectedItemId, UserMetadataTypeEnum.FILTER);
@@ -409,16 +395,12 @@ public class AccessController extends SelectorComposer<Div> {
             AccessType artifactAccessType;
             artifactModel.add(artifact);
             artifactMap.put(id, artifact);
-            try {
-                artifactAccessType = authorizationService.getUserMetadataAccessTypeByUser(id, user);
-                if (artifactAccessType != null && (artifactAccessType == AccessType.VIEWER || artifactAccessType == AccessType.RESTRICTED)) {
-                    artifactModel.addToSelection(artifact);
-                }
-            } catch (Exception e) {
-                // artifactAccessType = null;
+
+            artifactAccessType = authorizationService.getUsermetadataAccessTypeByGroup(id, selectedGroup);
+            if (artifactAccessType == AccessType.VIEWER) {
+                artifactModel.addToSelection(artifact);
             }
         }
-        artifactModel.setMultiple(true);
         artifactListbox.setModel(artifactModel);
         /*
         // Old method
@@ -478,13 +460,14 @@ public class AccessController extends SelectorComposer<Div> {
                             } else {
                                 authorizationService.deleteUserMetadataAccess(artifact.getId(), rowGuid);
                             }
-                        } else {
-                            authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
-                        }
+                        } // Only save usermetadata access type if RESTRICTED is selected
+//                        else {
+//                            authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
+//                        }
                     }
                 }
-            } else if (selectedItem instanceof UserMetadataSummaryType) {
-                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
+//            } else if (selectedItem instanceof UserMetadataSummaryType) {
+//                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
             } else {
                 LOGGER.error("Unknown item type.");
             }
