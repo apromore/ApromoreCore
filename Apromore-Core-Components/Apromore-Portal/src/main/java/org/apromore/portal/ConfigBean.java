@@ -28,12 +28,15 @@ package org.apromore.portal;
 import java.io.Serializable;
 
 // Third party packages
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConfigBean implements Serializable {
 
     private static final long serialVersionUID = 117L;
     private static final String COMMUNITY_TAG = "community";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigBean.class);
 
     private String  siteEditor;
     private String  siteExternalHost;
@@ -68,6 +71,8 @@ public class ConfigBean implements Serializable {
     // Maximum upload size
     private long     maxUploadSize;
 
+    private boolean useKeycloakSso;
+
     // Email for issue reporting
     private String  contactEmail;
 
@@ -82,9 +87,10 @@ public class ConfigBean implements Serializable {
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
                       boolean enableCalendar,
                       long maxUploadSize,
-                      String contactEmail) {
+                      String contactEmail,
+                      boolean useKeycloakSso) {
 
-        LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
+        LOGGER.info("Portal configured with:" +
             " site.editor=" + siteEditor +
             " site.externalHost=" + siteExternalHost +
             " site.externalPort=" + siteExternalPort +
@@ -94,7 +100,8 @@ public class ConfigBean implements Serializable {
             " majorversion.number=" + majorVersionNumber +
             " minorversion.number=" + minorVersionNumber +
             " version.edition=" + versionEdition +
-            " version.builddate=" + versionBuildDate);
+            " version.builddate=" + versionBuildDate +
+            " site.useKeycloakSso=" + useKeycloakSso);
 
         this.siteEditor         = siteEditor;
         this.siteExternalHost   = siteExternalHost;
@@ -122,7 +129,11 @@ public class ConfigBean implements Serializable {
         this.enableSubscription = enableSubscription;
 
         this.enableCalendar     = enableCalendar;
-        this.maxUploadSize      = maxUploadSize;
+
+        this.maxUploadSize = maxUploadSize;
+
+        this.useKeycloakSso = useKeycloakSso;
+
         this.contactEmail       = contactEmail;
     }
 
@@ -154,6 +165,8 @@ public class ConfigBean implements Serializable {
     public boolean getEnableCalendar()  { return enableCalendar; }
     public long getMaxUploadSize()  { return maxUploadSize; }
     public String getContactEmail() { return contactEmail; }
+
+    public boolean isUseKeycloakSso() { return useKeycloakSso; }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);

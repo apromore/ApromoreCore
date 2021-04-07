@@ -44,7 +44,6 @@
     -->
 
     <!-- Http Security Setup -->
-    <http pattern="/applets/**" security="none"/>
     <http pattern="/css/**" security="none"/>
     <http pattern="/font/**" security="none"/>
     <http pattern="/img/**" security="none"/>
@@ -113,9 +112,10 @@
         </beans:property>
     </beans:bean>
     -->
+
     <beans:bean id="loginKeycloakFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter">
         <beans:property name="keycloakLoginFormUrl"
-                        value="http://localhost:8180/auth/realms/&lt;keycloakRealm&gt;/protocol/openid-connect/auth?response_type=code&amp;client_id=product-app&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fsso%2Flogin&amp;state=c8a5aa26-04ee-4e7e-a4af-a7c885764071&amp;login=true&amp;scope=openid" />
+                        value="http://securityms.apromoresso.net:8282/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
     </beans:bean>
 
     <beans:bean id="remoteAuthenticationProvider" class="org.apromore.security.provider.ApromoreRemoteAuthenticationProvider">
@@ -138,11 +138,11 @@
 
 
     <!-- Custom Filters for Apromore -->
-    <beans:bean id="apromoreAuthenticationEntryPoint" class="org.apromore.security.KeycloakLoginUrlAuthenticationEntryPoint">
+    <beans:bean id="apromoreAuthenticationEntryPoint" class="org.apromore.portal.security.KeycloakLoginUrlAuthenticationEntryPoint">
         <beans:property name="loginFormUrl"
                         value="/login.zul" />
         <beans:property name="keycloakLoginFormUrl"
-                        value="http://localhost:8180/auth/realms/&lt;keycloakRealm&gt;/protocol/openid-connect/auth?response_type=code&amp;client_id=product-app&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fsso%2Flogin&amp;state=c8a5aa26-04ee-4e7e-a4af-a7c885764071&amp;login=true&amp;scope=openid" />
+                        value="http://securityms.apromoresso.net:8282/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
     </beans:bean>
 
     <beans:bean id="apromoreUsernamePasswordAuthenticationFilter" class="org.apromore.security.filter.ApromoreUsernamePasswordAuthenticationFilter">

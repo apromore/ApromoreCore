@@ -40,7 +40,6 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
@@ -201,22 +200,32 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true).subscribe(
                 new EventListener() {
                     public void onEvent(Event event) {
-                        LOGGER.info("\n\nIn sign out queue/event handler for logout");
+                        LOGGER.debug("\n\nIn sign out queue/event handler for logout");
 
-                        LOGGER.info("\n\n>>>>> About to utilise managerService to logout of all user " +
+                        LOGGER.debug("\n\n>>>>> About to utilise managerService to logout of all user " +
                                 "sessions [transparently calls Keycloak, via the Security Microservice]");
 
                         final ManagerService managerService = getManagerService();
-                        LOGGER.info("\n\nmanagerService: {}", managerService);
+                        LOGGER.debug("\n\nmanagerService: {}", managerService);
 
-                        final boolean logoutSuccess =
-                                managerService.logoutUserAllSessions("admin");
-                        LOGGER.info("\n\nlogoutSuccess: {}", logoutSuccess);
+                        final UserType currentUser = UserSessionManager.getCurrentUser();
+                        LOGGER.debug("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
 
-                        Session session = Sessions.getCurrent();
-                        if (session == null || event.getData().equals(session)) {
-                            Clients.evalJavaScript("window.close()");
-                            Executions.sendRedirect("/j_spring_security_logout");
+                        try {
+                            final boolean logoutSuccess =
+                                    managerService.logoutUserAllSessions(currentUser.getUsername());
+                            LOGGER.info("\nlogoutSuccess: {}", logoutSuccess);
+
+                            final Session session = Sessions.getCurrent();
+
+                            if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
+                                Clients.evalJavaScript("window.close()");
+                                Executions.sendRedirect("/j_spring_security_logout");
+                            }
+                        } catch (final Exception e) {
+                            LOGGER.error("\n\nException in logging out: " + e.getMessage());
+
+                            e.printStackTrace();
                         }
                     }
                 }

@@ -21,13 +21,16 @@
  */
 package org.apromore.portal.util;
 
-import org.apache.commons.io.Charsets;
+import static org.apromore.portal.util.AssertUtils.notNullAssert;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -40,65 +43,127 @@ public final class SecurityUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityUtils.class);
 
-    private static final String KEYSTORE_FILE = "securityServ.jks";
+    private static final String KEYSTORE_FILE = "apSecurityTS.jks";
 
     private static SecretKeySpec secretKey;
     private static byte[] key;
 
-    private SecurityUtils() {
-    }
+    private static char[] ksPassword;
 
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
-    // @2do: change to get from environment securely
-    public static final String KS_AND_KEY_PASSWORD = "topSecret";
+
+    private static final String KS_AND_KEY_PASSWORD_ENV_KEY = "KS_PASSWD";
+    private static final String SECURITY_RESOURCES_DIR_KEY = "SECURITY_RESOURCES_DIR";
 
     private static final String SYMMETRIC_CIPHER_FULL_ALG_SPEC = "AES/ECB/PKCS5Padding";
     private static final String SYMMETRIC_CIPHER_BASE_ALG = "AES";
 
     private static final String DIGEST_ALGORITHM = "SHA1";
-    private static final String CHARSET8_ENCODING = Charsets.UTF_8.toString();
+    private static final String CHARSET_ENCODING = "UTF-8";
 
+    private static String secRessKeystoreFilePathStr = null;
+
+    static {
+        String pwdKSStr = System.getenv(KS_AND_KEY_PASSWORD_ENV_KEY);
+
+        if (! StringUtils.hasText(pwdKSStr)) {
+            final String errMsg = "keystore password could not be attained from environment";
+
+            logger.info("\n\n{}\n", errMsg);
+            throw new IllegalStateException(errMsg);
+        }
+
+        String resourcesDirKey = System.getenv(SECURITY_RESOURCES_DIR_KEY);
+
+        if (resourcesDirKey == null) {
+            throw new IllegalStateException("Can not proceed as security resources directory is not defined");
+        }
+
+        if (! resourcesDirKey.endsWith("/")) {
+            resourcesDirKey = resourcesDirKey + "/";
+        }
+
+        secRessKeystoreFilePathStr = resourcesDirKey + KEYSTORE_FILE;
+
+        SecurityUtils.ksPassword = pwdKSStr.toCharArray();
+        // For safety/clear
+        pwdKSStr = null;
+    }
+
+    private SecurityUtils() {
+        // Intentionally private constructor
+    }
+
+    /**
+     * Get public key from keystore.
+     *
+     * @param keyAlias The alias for looking up the target key.
+     *
+     * @return <code>null</code> if the looked-up/retrieved (associated keypair) is not a PrivateKey.
+     *
+     * @throws Exception if there is a mismatch between passed-in key store password & ks password, etc/
+     */
     public static final PublicKey getPublicKey(final String keyAlias) throws Exception {
-        final InputStream inputStream = SecurityUtils.class.getClassLoader().getResourceAsStream(KEYSTORE_FILE);
+        try (
+                final InputStream inputStream = new FileInputStream(secRessKeystoreFilePathStr);
+        ) {
+            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keystore.load(inputStream, SecurityUtils.ksPassword);
 
-        final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(inputStream, KS_AND_KEY_PASSWORD.toCharArray());
+            final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
 
-        final Key key = keystore.getKey(keyAlias, KS_AND_KEY_PASSWORD.toCharArray());
+            if (key instanceof PrivateKey) {
+                // Get certificate of public key
+                final Certificate cert = keystore.getCertificate(keyAlias);
+                final PublicKey publicKey = cert.getPublicKey();
 
-        if (key instanceof PrivateKey) {
-            // Get certificate of public key
-            final Certificate cert = keystore.getCertificate(keyAlias);
-            final PublicKey publicKey = cert.getPublicKey();
-
-            return publicKey;
-        } else {
-            return null;
+                return publicKey;
+            } else {
+                return null;
+            }
         }
     }
 
+    /**
+     * Get private key from keystore.
+     *
+     * @param keyAlias The alias for looking up the target key.
+     *
+     * @return <code>null</code> if the looked-up/retrieved key is not a PrivateKey.
+     *
+     * @throws Exception if there is a mismatch between passed-in key store password & ks password, etc/
+     */
     public static PrivateKey getPrivateKey(final String keyAlias) throws Exception {
-        final InputStream inputStream =
-                SecurityUtils.class.getClassLoader().getResourceAsStream("securityServ.jks");
+        logger.info("\n\nkeyAlias: {} ", keyAlias);
+        logger.info("\n\nsecRessKeystoreFilePathStr: {} ", secRessKeystoreFilePathStr);
 
-        final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(inputStream, KS_AND_KEY_PASSWORD.toCharArray());
+        try (
+                final InputStream inputStream = new FileInputStream(secRessKeystoreFilePathStr);
+        ) {
+            logger.info("\n\nFileInputStream was opened");
 
-        final Key key = keystore.getKey(keyAlias, KS_AND_KEY_PASSWORD.toCharArray());
+            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 
-        if (key instanceof PrivateKey) {
-            return (PrivateKey) key;
-        } else {
-            return null;
+            logger.info("\n\nSecurityUtils.ksPassword: {}", new String(SecurityUtils.ksPassword));
+            keystore.load(inputStream, SecurityUtils.ksPassword);
+            logger.info("\n\nkeystore was loaded");
+
+            final Key key = keystore.getKey(keyAlias, SecurityUtils.ksPassword);
+
+            if (key instanceof PrivateKey) {
+                return (PrivateKey) key;
+            } else {
+                return null;
+            }
         }
     }
 
     public static byte[] signData(final PrivateKey privateKey,
                                   final String rawDataStr,
                                   final Logger logger) {
-        Assert.notNull(privateKey, "'privateKey' must not be null");
-        Assert.notNull(rawDataStr, "'rawDataStr' must not be null");
-        Assert.notNull(logger, "'logger' must not be null");
+        notNullAssert(privateKey, "privateKey");
+        notNullAssert(rawDataStr, "rawDataStr");
+        notNullAssert(logger, "logger");
 
         byte[] signedMsg = null;
 
@@ -109,7 +174,7 @@ public final class SecurityUtils {
             signature.update(rawDataStr.getBytes(StandardCharsets.UTF_8));
             signedMsg = signature.sign();
         } catch (final Exception e) {
-            logger.error("Exception in digital signing: {}", e.getMessage());
+            logger.error("\n\nException: {}", e.getMessage());
 
             e.printStackTrace();
         } finally {
@@ -121,10 +186,10 @@ public final class SecurityUtils {
                                      final String dataStr,
                                      final byte[] signedMsg,
                                      final Logger logger) {
-        Assert.notNull(publicKey, "'publicKey' must not be null");
-        Assert.notNull(dataStr, "'dataStr' must not be null");
-        Assert.notNull(signedMsg, "'signedMsg' must not be null");
-        Assert.notNull(logger, "'logger' must not be null");
+        notNullAssert(publicKey, "publicKey");
+        notNullAssert(dataStr, "dataStr");
+        notNullAssert(signedMsg, "signedMsg");
+        notNullAssert(logger, "logger");
 
         boolean verified = false;
 
@@ -137,7 +202,7 @@ public final class SecurityUtils {
 
             verified = signature.verify(signedMsg);
         } catch (final Exception e) {
-            logger.error("Exception in signature verification: {}", e.getMessage());
+            logger.error("\n\nException: {}", e.getMessage());
 
             e.printStackTrace();
         } finally {
@@ -146,8 +211,8 @@ public final class SecurityUtils {
     }
 
     public static String symmetricEncrypt(final String strToEncrypt, final String encryptionSecret) {
-        Assert.notNull(strToEncrypt, "'strToEncrypt' must not be null");
-        Assert.notNull(encryptionSecret, "'encryptionSecret' must not be null");
+        notNullAssert(strToEncrypt, "strToEncrypt");
+        notNullAssert(encryptionSecret, "encryptionSecret");
 
         try {
             setKey(encryptionSecret);
@@ -157,17 +222,16 @@ public final class SecurityUtils {
 
             return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
         } catch (final Exception e) {
-            logger.error("Error while encrypting: " + e.toString());
-
-            e.printStackTrace();
+            logger.error("Error while encrypting: {} - stackTrace {}", e.toString(),
+                    ExceptionUtils.getStackTrace(e));
         }
 
         return null;
     }
 
     public static String symmetricDecrypt(final String strToDecrypt, final String encryptionSecret) throws Exception {
-        Assert.notNull(strToDecrypt, "'strToDecrypt' must not be null");
-        Assert.notNull(encryptionSecret, "'encryptionSecret' must not be null");
+        notNullAssert(strToDecrypt, "strToDecrypt");
+        notNullAssert(encryptionSecret, "encryptionSecret");
 
         try {
             setKey(encryptionSecret);
@@ -177,21 +241,27 @@ public final class SecurityUtils {
 
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
         } catch (final Exception e) {
-            logger.error("Error while decrypting: " + e.toString());
+            logger.error("Error while decrypting: {} - stackTrace {}", e.toString(),
+                    ExceptionUtils.getStackTrace(e));
 
             throw e;
         }
     }
-	
+
     private static void setKey(final String myKey) {
+        MessageDigest sha;
+
         try {
-            key = myKey.getBytes(CHARSET8_ENCODING);
-            final MessageDigest sha = MessageDigest.getInstance(DIGEST_ALGORITHM);
+            key = myKey.getBytes(CHARSET_ENCODING);
+            sha = MessageDigest.getInstance(DIGEST_ALGORITHM);
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
             secretKey = new SecretKeySpec(key, SYMMETRIC_CIPHER_BASE_ALG);
-        } catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (final NoSuchAlgorithmException noSuchAlgorithmException) {
+            noSuchAlgorithmException.printStackTrace();
+        } catch (final UnsupportedEncodingException uEE) {
+            logger.error("Error while setting key: {} - stackTrace {}", uEE.getMessage(),
+                    ExceptionUtils.getStackTrace(uEE));
         }
     }
 }

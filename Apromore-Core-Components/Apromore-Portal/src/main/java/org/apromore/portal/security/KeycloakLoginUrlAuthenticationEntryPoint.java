@@ -19,8 +19,9 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.security;
+package org.apromore.portal.security;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -30,6 +31,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
@@ -37,8 +41,43 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
+    private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
+    private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
+
+    private static String s_fullConfigurableReturnPath = "http://localhost:8181/";
+    private static boolean s_utiliseKeycloakSso = false;
 
     private String keycloakLoginFormUrl;
+
+    static {
+        final Properties keycloakProperties = readKeycloakProperties();
+
+        s_fullConfigurableReturnPath = keycloakProperties.getProperty("fullProtocolHostPortUrl");
+        LOGGER.info("\n\n>>> >>> >>> > [FROM keycloak.properties] keycloakLoginFormUrl: {}",
+                s_fullConfigurableReturnPath);
+
+        s_utiliseKeycloakSso = Boolean.valueOf(keycloakProperties.getProperty("useKeycloakSso"));
+        LOGGER.info("\n\n>>> utiliseKeycloakSso {}", s_utiliseKeycloakSso);
+    }
+
+    private static Properties readKeycloakProperties() {
+        final Properties properties = new Properties();
+
+        try (final InputStream inputStream =
+                     KeycloakLoginUrlAuthenticationEntryPoint.class.getResourceAsStream(
+                "/keycloak.properties")) {
+
+            properties.load(inputStream);
+            LOGGER.info("\n\nkeycloak.properties properties file properties {}", properties);
+
+            return properties;
+        } catch (final IOException | NullPointerException e) {
+            LOGGER.error("Exception reading keycloak properties: {} - stackTrace {}",
+                    e.getMessage(), ExceptionUtils.getStackTrace(e));
+
+            return null;
+        }
+    }
 
     public String getKeycloakLoginFormUrl() {
         return keycloakLoginFormUrl;
@@ -52,8 +91,12 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
             String tmpUrl = keycloakLoginFormUrl;
 
-            tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
+            final String randomStateUuid = UUID.randomUUID().toString();
+            LOGGER.info("\n\nrandomStateUuid: {}", randomStateUuid);
 
+            tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
+            tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
+            tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, s_fullConfigurableReturnPath);
             LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
             this.keycloakLoginFormUrl = tmpUrl;
@@ -72,6 +115,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
             final HttpServletRequest request,
             final HttpServletResponse response,
             final AuthenticationException authException) {
+
         return super.buildRedirectUrlToLoginPage(request, response, authException);
     }
 
@@ -85,17 +129,35 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
      */
     @Override
     protected String determineUrlToUseForThisRequest(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
+            final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse,
             final AuthenticationException exception) {
-        final String loginFormPattern = getKeycloakLoginFormUrl();
+        if (s_utiliseKeycloakSso) {
+            final String loginFormPattern = getKeycloakLoginFormUrl();
 
-        final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);;
+            final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
 
-        final String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
+            String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
+            loginUrl = loginFormPattern.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, s_fullConfigurableReturnPath);
 
-        LOGGER.info("\n\n>>> Resolved Keycloak loginUrl: {}", loginUrl);
+            LOGGER.info("\n\n>>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
 
-        return loginUrl;
+            return loginUrl;
+        } else {
+            LOGGER.info("\n\n[ Keycloak SSO turned off ]");
+
+            final String requestURI = httpServletRequest.getRequestURI().trim();
+            LOGGER.info("\n\nrequestURI: {}", requestURI);
+
+            if (requestURI.endsWith("/") || requestURI.endsWith("81")) {
+                final String str = requestURI + "/login.zul";
+
+                LOGGER.info("\n\nstrToReturn: {}", str);
+
+                return str;
+            } else {
+                return requestURI;
+            }
+        }
     }
 }

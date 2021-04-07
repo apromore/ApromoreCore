@@ -25,23 +25,25 @@ import java.security.Principal;
 
 public class SecurityPrincipal implements Principal, java.io.Serializable {
 
-	private String username;
+	private String name;
 
-    public SecurityPrincipal(String username) {
-        if (username == null) throw new NullPointerException("illegal null input");
+    public SecurityPrincipal(final String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("parameter 'name' has an illegal null input");
+        }
 
-        this.username = username;
+        this.name = name;
     }
 
     public String getName() {
-        return username;
+        return name;
     }
 
     public String toString() {
-        return("SecurityPrincipal:  " + username);
+        return("SecurityPrincipal:  " + name);
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null)
             return false;
 
@@ -58,6 +60,6 @@ public class SecurityPrincipal implements Principal, java.io.Serializable {
     }
 
     public int hashCode() {
-        return username.hashCode();
+        return name.hashCode();
     }
 }

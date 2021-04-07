@@ -24,7 +24,6 @@
 
 package org.apromore.portal.common;
 
-
 import java.util.Hashtable;
 
 import javax.naming.Context;

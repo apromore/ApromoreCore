@@ -41,12 +41,11 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Log;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.mapper.UserMapper;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -58,7 +57,6 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.PortalSession;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -79,8 +77,8 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.portal.plugincontrol.PluginExecutionManager;
-import org.apromore.portal.util.SecurityUtils;
+import org.apromore.portal.security.helper.PortalSessionQePair;
+import org.apromore.portal.security.helper.SecuritySsoHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -114,14 +112,13 @@ public class MainController extends BaseController implements MainControllerInte
     private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
-    private static final String SYMMETRIC_KEY_SECRET = "changeThisTopSecret";
+    private static String encKey;
 
     private EventQueue<Event> qe;
 
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
 
-    // @2do: grab this securely from the environment
-    private static final String KEY_ALIAS = "CAPS";
+    private static final String KEY_ALIAS = "apseckey";
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -147,67 +144,47 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public MainController() {
-        LOGGER.info("\n\n>>>In MainController() default constructor");
-
-        // qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-        // portalSession = new PortalSession(this);
-
-        // final String username = Executions.getCurrent().getParameter("username");
-        // LOGGER.info("\n\nIn PORTAL MainController, username parameter {}\n", username);
+        final boolean usingKeycloak = config.isUseKeycloakSso();
+        LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
 
         portalSession = new PortalSession(this);
-        // UserSessionManager.initializeUser(getService(), config);
-        // portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 
-        String urlDecoded = Executions.getCurrent().getParameter("encodedToken");
+        final String urlDecoded = Executions.getCurrent().getParameter("encodedToken");
         LOGGER.info("\n\nIn PORTAL MainController, urlDecoded {}", urlDecoded);
 
         String usernameParsed = null;
 
-        try {
-            if (StringUtils.isNotBlank(urlDecoded)) {
-                final String decryptedUrlParam = SecurityUtils.symmetricDecrypt(urlDecoded, "changeThisTopSecret");
-                LOGGER.info("\n\n>>>>> >>>>> >>>>> decryptedUrlParam: {}", decryptedUrlParam);
+        if (usingKeycloak) {
+            final String appAuthHeader = SecuritySsoHelper.getAppAuthHeader();
+            final String signedAppAuthHeader = SecuritySsoHelper.getSignedAppAuthHeader();
 
-                final StringTokenizer stringTokenizer = new StringTokenizer(decryptedUrlParam, ";");
+            MainController.encKey = SecuritySsoHelper.getEnvEncKey();
 
-                final String usernameKeyValuePair = stringTokenizer.nextToken();
-                usernameParsed = usernameKeyValuePair.substring(usernameKeyValuePair.indexOf("=") + 1);
-
-                LOGGER.info("\n\n>>>>> >>>>> >>>>> usernameParsed: {}", usernameParsed);
-            }
-        } catch (final Exception e) {
-            LOGGER.error("\n\n##### Error in decrypting url param: {}", e.getMessage());
-
-            LOGGER.error("\n\nBefore stacktrace\n");
-            e.printStackTrace();
-            LOGGER.error("\n\nAfter stacktrace\n");
-        }
-
-        if (StringUtils.isNotBlank(usernameParsed)) {
             try {
-                Sessions.getCurrent().setMaxInactiveInterval(-10);
-                LOGGER.info("\n\n>>> Set max inactive interval to negative number <<<");
+                if (StringUtils.isNotBlank(urlDecoded)) {
+                    usernameParsed = SecuritySsoHelper.getSsoUsername(urlDecoded, encKey);
 
-                final User samlSsoUser = getUserService().findUserByLogin(usernameParsed);
-                final UserType userType = UserMapper.convertUserTypes(samlSsoUser, getSecurityService());
+                    if (StringUtils.isNotBlank(usernameParsed)) {
+                        final PortalSessionQePair portalSessionQePair =
+                            SecuritySsoHelper.initialiseKeycloakUser(
+                                usernameParsed, getUserService(), getSecurityService(), getService(), config,
+                                    this);
 
-                qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, false);
-                portalSession = new PortalSession(this);
+                        qe = portalSessionQePair.getQe();
+                        portalSession = portalSessionQePair.getPortalSession();
+                    } else {
+                        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
+                                true);
+                        portalSession = new PortalSession(this);
 
-                initializeUser(getService(), config, userType, samlSsoUser);
-            } catch (UserNotFoundException e) {
-                LOGGER.error("\n\nUserNotFoundException: {}", e.getMessage());
-
-                e.printStackTrace();
+                        initializeUser(getService(), config, null, null);
+                    }
+                }
+            } catch (final Exception e) {
+                LOGGER.error("\n\n##### Error in decrypting url param: {} - stackTrace {}",
+                        e.getMessage(),
+                        ExceptionUtils.getStackTrace(e));
             }
-        } else {
-            LOGGER.info("\n\n>>> About to call initializeUser");
-
-            qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-            portalSession = new PortalSession(this);
-
-            initializeUser(getService(), config, null, null);
         }
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
@@ -216,13 +193,13 @@ public class MainController extends BaseController implements MainControllerInte
     private void setupUserDynamically(final UserType userType) {
 	    LOGGER.info("\n\n*** DYNAMICALLY Setting*** userType {} as currentUser", userType);
         UserSessionManager.setCurrentUser(userType);
-
-        LOGGER.info("\n\n*** AFTER DYNAMICALLY setting*** userType {} as currentUser", userType);
+        LOGGER.info("\n\n*** DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
     }
 
 	/** Unit test constructor. */
     public MainController(ConfigBean configBean) {
         super(configBean);
+
         portalSession = new PortalSession(this);
     }
 
@@ -316,7 +293,9 @@ public class MainController extends BaseController implements MainControllerInte
                 message = e.getMessage();
             }
             e.printStackTrace();
-            Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Repository not available (" + message + ")",
+                    "Attention",
+                    Messagebox.OK, Messagebox.ERROR);
         }
 
     }
