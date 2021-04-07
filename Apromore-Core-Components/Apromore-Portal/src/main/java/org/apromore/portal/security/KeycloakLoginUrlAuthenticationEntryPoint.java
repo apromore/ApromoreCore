@@ -89,17 +89,21 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
             final String keycloakRealm = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
             LOGGER.info("\n\nFROM environment property keycloakRealm[" + keycloakRealm + "]");
 
-            String tmpUrl = keycloakLoginFormUrl;
+            if (keycloakRealm != null) {
+                String tmpUrl = keycloakLoginFormUrl;
 
-            final String randomStateUuid = UUID.randomUUID().toString();
-            LOGGER.info("\n\nrandomStateUuid: {}", randomStateUuid);
+                final String randomStateUuid = UUID.randomUUID().toString();
+                LOGGER.info("\n\nrandomStateUuid: {}", randomStateUuid);
 
-            tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
-            tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
-            tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, s_fullConfigurableReturnPath);
-            LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
+                tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
+                tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
+                tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, s_fullConfigurableReturnPath);
+                LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
-            this.keycloakLoginFormUrl = tmpUrl;
+                this.keycloakLoginFormUrl = tmpUrl;
+            }  else {
+                LOGGER.info("Keycloak login realm was null - maybe keycloak feature turned-off? [proceeding]");
+            }
         }
     }
 
