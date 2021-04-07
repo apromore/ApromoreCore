@@ -122,12 +122,12 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
             if ((requestURI != null) && (requestURI.contains(TRAD_LOGIN_REQUEST_URI))) {
                 LOGGER.info("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
 
-                final String urlToUseKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
-                LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseKeycloakLoginPage);
+                final String urlToUseForKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
+                LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseForKeycloakLoginPage);
 
                 HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
 
-                httpServletResponse.sendRedirect(urlToUseKeycloakLoginPage);
+                httpServletResponse.sendRedirect(urlToUseForKeycloakLoginPage);
             } else {
                 chain.doFilter(servletRequest, servletResponse);
             }
