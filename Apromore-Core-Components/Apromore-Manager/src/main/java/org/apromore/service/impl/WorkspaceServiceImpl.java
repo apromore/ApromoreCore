@@ -358,7 +358,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         List<Folder> parentFolders = folderService.getParentFolders(folderId);
         for (Folder folder : parentFolders) {
-            createGroupFolder(group, folder, true, false, false);
+            // Give parent folders viewer access only if specified group doesn't have access to
+            if(groupFolderRepo.findByGroupAndFolder(group, folder) == null) {
+                createGroupFolder(group, folder, true, false, false);
+            }
         }
 
         for (Process process : processRepo.findByFolderIdIn(folderIds)) {
