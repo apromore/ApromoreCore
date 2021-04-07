@@ -185,6 +185,12 @@ public class MainController extends BaseController implements MainControllerInte
                         e.getMessage(),
                         ExceptionUtils.getStackTrace(e));
             }
+        } else {
+            qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
+                    true);
+            portalSession = new PortalSession(this);
+
+            initializeUser(getService(), config, null, null);
         }
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
