@@ -94,6 +94,9 @@
         <module>Apromore-Custom-Plugins/Calendar-Portal</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
+        <!-- Security Lib -->
+        <module>apromoresecuritylib</module>
+
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/portal-model</module>
         <module>Apromore-Clients/manager-client</module>
