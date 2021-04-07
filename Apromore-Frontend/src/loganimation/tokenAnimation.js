@@ -66,8 +66,11 @@ export default class TokenAnimation {
         this._TOKEN_LOG_GAP = 3;
         this._backgroundJobsAllowed = false;
 
-        let mapBox = processMapController.getBoundingClientRect();
-        this.setPosition(mapBox.x, mapBox.y, mapBox.width, mapBox.height, processMapController.getTransformMatrix());
+        // BPMNEditor has transformation matrix requiring recalculting the animation canvas position
+        if (processMapController.isBPMNEditor()) {
+            let mapBox = processMapController.getBoundingClientRect();
+            this.setPosition(mapBox, processMapController.getTransformMatrix());
+        }
     }
 
     _createCanvasElement(containerId) {
@@ -166,11 +169,18 @@ export default class TokenAnimation {
         return this._playingFrameRate;
     }
 
-    setPosition(x, y, width, height, matrix) {
-        this._canvasContext.canvas.width = width;
-        this._canvasContext.canvas.height = height;
-        this._canvasContext.canvas.x = x;
-        this._canvasContext.canvas.y = y;
+    /**
+     * @param {Object} boundingBox: x, y, width, height, top, left
+     * @param matrix: transformation matrix
+     */
+    setPosition(boundingBox, matrix) {
+        // Must set both the HTML and CSS width and height the same.
+        this._canvasContext.canvas.setAttribute('width', boundingBox.width);
+        this._canvasContext.canvas.setAttribute('height', boundingBox.height);
+        this._canvasContext.canvas.style.width = boundingBox.width + "px";
+        this._canvasContext.canvas.style.height = boundingBox.height + "px";
+        this._canvasContext.canvas.style.top = boundingBox.top + "px";
+        this._canvasContext.canvas.style.left = boundingBox.left + "px";
         if (matrix.a) this._canvasContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
         this.setTokenStyle();
         if (!this.isWaitingForData()) this._drawFrame(this.getCurrentFrame());
@@ -475,7 +485,7 @@ export default class TokenAnimation {
 
     // Require switching transformation matrix back and forth to clear the canvas properly.
     _clearAnimation() {
-        if (this._processMapController.supportTransformMatrix()) {
+        if (this._processMapController.isBPMNEditor()) {
             let matrix = this._canvasContext.getTransform();
             this._canvasContext.setTransform(1,0,0,1,0,0);
             this._canvasContext.clearRect(0, 0, this._canvasContext.canvas.width, this._canvasContext.canvas.height);

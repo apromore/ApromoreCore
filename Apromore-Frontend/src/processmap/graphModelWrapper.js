@@ -63,7 +63,7 @@ export default class GraphModelWrapper {
         return {};
     }
 
-    supportTransformMatrix() {
+    isBPMNEditor() {
         return false;
     }
 
