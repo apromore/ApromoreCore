@@ -83,7 +83,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         return keycloakLoginFormUrl;
     }
 
-    public void setKeycloakLoginFormUrl(String keycloakLoginFormUrl) {
+    public void setKeycloakLoginFormUrl(final String keycloakLoginFormUrl) {
         if ((this.keycloakLoginFormUrl == null) ||
                 (this.keycloakLoginFormUrl.contains(KEYCLOAK_REALM_PLACEHOLDER))) {
             final String keycloakRealm = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
