@@ -63,6 +63,7 @@ PDp.collectNodeNames = function(source) {
 }
 
 PDp.selectNodes = function() {
+    let cy = this._private.cy;
     selectedNodeIds.forEach(function (id) {
         cy.getElementById(id).unselect();
     });
@@ -217,7 +218,7 @@ PDp.setupSearch = function(source, reset) {
                     } else {
                         searchClear.css({visibility: 'hidden'});
                     }
-                    searchResults = miniSearch.search(inputVal);
+                     searchResults = miniSearch.search(inputVal);
                     searchOptions.empty();
                     currentOptionIndex = null;
                     searchResults.forEach(function (result, index) {
@@ -231,7 +232,7 @@ PDp.setupSearch = function(source, reset) {
                                 .click(
                                     function (e) {
                                         currentOptionIndex = index;
-                                        forceSelect(e.target);
+                                        r.forceSelect(e.target);
                                     }
                                 )
                         );

@@ -103,7 +103,7 @@ export default class BPMNModelWrapper {
     }
 
     /**
-     * @returns {DOMRect}
+     * @returns {x, y, width, height, top, left}
      */
     getBoundingClientRect() {
         let box = this._svgMain.getBoundingClientRect();

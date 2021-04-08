@@ -19,6 +19,21 @@ export default class GraphModelWrapper {
 
     initialize(elementIndexIDMap) {
         this._createElementCache(elementIndexIDMap);
+
+        let me = this;
+        this._cy.on('pan', function (event) {
+            let modelBox = me.getBoundingClientRect();
+            let modelMatrix = me.getTransformMatrix();
+            me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVING,
+                {viewbox: modelBox, transformMatrix: modelMatrix}));
+        });
+
+        this._cy.on('zoom', function (event) {
+            let modelBox = me.getBoundingClientRect();
+            let modelMatrix = me.getTransformMatrix();
+            me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVING,
+                {viewbox: modelBox, transformMatrix: modelMatrix}));
+        });
     }
 
     /**
@@ -55,8 +70,21 @@ export default class GraphModelWrapper {
         }
     }
 
+    /**
+     * @returns {x, y, width, height, top, left}
+     */
     getBoundingClientRect() {
-        return this._cy.container().getBoundingClientRect();
+        //let box = this._cy.container().getBoundingClientRect();
+        let box = this._cy.elements().boundingBox();
+        let jContainer = $j(this._cy.container());
+        let paddingTop = jContainer.css('padding-top');
+        let paddingLeft = jContainer.css('padding-left');
+        return {x: paddingLeft,
+                y: paddingTop,
+                top: paddingTop,
+                left: paddingLeft,
+                width: box.w,
+                height: box.h};
     }
 
     getTransformMatrix() {
@@ -79,6 +107,7 @@ export default class GraphModelWrapper {
         }
         else {
             console.log("Error getPointAtDistance for elementIndex=" + elementIndex + ', distance=' + distance );
+            console.log(this._element(elementIndex).isEdge() ? 'This element is an edge' : 'This element is a node');
         }
         return p;
     }
@@ -156,5 +185,14 @@ export default class GraphModelWrapper {
 
     registerListener(listener) {
         this._listeners.push(listener);
+    }
+
+    /**
+     * @param {AnimationEvent} event
+     */
+    _notifyAll(event) {
+        this._listeners.forEach(function(listener){
+            listener.handleEvent(event);
+        })
     }
 }

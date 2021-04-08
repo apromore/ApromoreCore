@@ -18,6 +18,7 @@ import GraphModelWrapper from "../processmap/graphModelWrapper";
 import LogAnimation from "../loganimation/logAnimation";
 import tippy from "tippy.js";
 import * as jsPDF from "jspdf";
+import { saveAs } from 'file-saver';
 const Undoo = require('undoo');
 
 
@@ -33,7 +34,7 @@ let PDp = {};
 let SIGNATURE = '/themes/ap/common/img/brand/logo-colour.svg';
 
 const layouters = {
-    [LAYOUT_MANUAL_BEZIER]: function () {
+    [LAYOUT_MANUAL_BEZIER]: function (cy) {
         cy.style().selector('edge').style({
             'curve-style': function (ele) {
                 return ele.data('edge-style');
@@ -59,7 +60,7 @@ const layouters = {
             name: 'preset',
         }).run();
     },
-    [LAYOUT_DAGRE_LR]: function () {
+    [LAYOUT_DAGRE_LR]: function (cy) {
         cy.elements().layout({
             avoidOverlap: !0,
             edgeSep: 50,
@@ -70,7 +71,7 @@ const layouters = {
             ranker: 'network-simplex',
         }).run();
     },
-    [LAYOUT_DAGRE_TB]: function (randomize) {
+    [LAYOUT_DAGRE_TB]: function (cy, randomize) {
         cy.style().selector('edge').style({
             'text-background-opacity': 1,
             'text-margin-y': 0,
@@ -86,7 +87,7 @@ const layouters = {
             ranker: 'tight-tree',
         }).run();
     },
-    [LAYOUT_BREADTH_FIRST]: function () {
+    [LAYOUT_BREADTH_FIRST]: function (cy) {
         cy.style().selector('edge').style({
             'text-background-opacity': 1,
             'text-margin-y': 0,
@@ -109,7 +110,6 @@ history.save({
 
 let container;
 let sourceJSON;
-let cy = null;
 let vizBridgeId = '$vizBridge';
 let eventRegistered = false;
 let options = {
@@ -236,8 +236,8 @@ let isTraceMode = false; // source trace or source full log
 PDp.init = function() {
     let pd = this;
     SIGNATURE = `/themes/${Ap.theme}/common/img/brand/logo-colour.svg`;
-    container = $j('#' + pd._private.interactiveViewContainerId)[0];
-    cy = cytoscape(Object.assign(options, {
+    container = $j('#' + pd._private.processModelContainerId)[0];
+    let cy = this._private.cy = cytoscape(Object.assign(options, {
         container,
         style,
         elements,
@@ -245,12 +245,12 @@ PDp.init = function() {
 
     cy.on('cxttap', 'edge', function (source) {
         if (!isTraceMode) {
-            this.removeEdge(source);
+            pd.removeEdge(source);
         }
     });
     cy.on('cxttap', 'node', function (source) {
         if (!isTraceMode) {
-            this.removeNode(source);
+            pd.removeNode(source);
         }
     });
     cy.on('pan', function (event) {
@@ -306,10 +306,12 @@ PDp.init = function() {
 }
 
 PDp.undo = function() {
+    let pd = this;
+    let cy = this._private.cy;
     if (cy.undoRedo().isUndoStackEmpty()) {
         history.undo((hist) => {
             if (hist) {
-                this.zkSendEvent(vizBridgeId, hist.event, hist.payload);
+                pd.zkSendEvent(vizBridgeId, hist.event, hist.payload);
             }
         });
     } else {
@@ -318,10 +320,12 @@ PDp.undo = function() {
 }
 
 PDp.redo = function() {
+    let pd = this;
+    let cy = this._private.cy;
     if (cy.undoRedo().isRedoStackEmpty()) {
         let hist = history.redo((hist) => {
             if (hist) {
-                this.zkSendEvent(vizBridgeId, hist.event, hist.payload);
+                pd.zkSendEvent(vizBridgeId, hist.event, hist.payload);
             }
         });
     } else {
@@ -346,6 +350,7 @@ PDp.makeTippy = function(node, text) {
 }
 
 PDp.reset = function() {
+    let cy = this._private.cy;
     if (cy) {
         cy.destroy();
     }
@@ -362,9 +367,10 @@ PDp.loadLog = function(json, layoutType, retain) {
     isTraceMode = false;
     this.reset();
     this.init();
+
+    let cy = this._private.cy;
     let source = $.parseJSON(json);
     sourceJSON = source;
-
     cy.add(source);
     this.layout(layoutType);
     this.setupSearch(source, true);
@@ -384,24 +390,34 @@ PDp.loadTrace = function(json) {
     isTraceMode = true;
     this.reset();
     this.init();
+
+    let cy = this._private.cy;
     const source = $.parseJSON(json);
     cy.add(source);
     this.layout(LAYOUT_MANUAL_BEZIER);
     this.setupSearch(source);
     this.fit(1);
+    history.save({
+        compId: vizBridgeId,
+        event: "onCaseFilter",
+        payload: json
+    });
 }
 
 PDp.zoomIn = function() {
+    let cy = this._private.cy;
     cy.zoom(cy.zoom() + 0.1);
     cy.center();
 }
 
 PDp.zoomOut = function() {
+    let cy = this._private.cy;
     cy.zoom(cy.zoom() - 0.1);
     cy.center();
 }
 
 PDp.fit = function(layoutType) {
+    let cy = this._private.cy;
     cy.fit();
     if (cy.zoom() > MAX_AUTOFIT_ZOOM) {
         cy.zoom(MAX_AUTOFIT_ZOOM);
@@ -411,16 +427,19 @@ PDp.fit = function(layoutType) {
 }
 
 PDp.center = function(layoutType) {
+    let cy = this._private.cy;
     cy.center();
     //moveTop(layoutType);
 }
 
 PDp.resize = function() {
+    let cy = this._private.cy;
     cy.resize();
     this.fit();
 }
 
 PDp.moveTop = function(layoutType) {
+    let cy = this._private.cy;
     let currentPos = cy.pan();
     let box = cy.elements().boundingBox({includeNodes: true, includeEdges: true});
 
@@ -448,9 +467,10 @@ PDp.moveTop = function(layoutType) {
 }
 
 PDp.layout = function(layoutType) {
+    let cy = this._private.cy;
     let layouter = layouters[layoutType];
     if (layouter) {
-        layouter(true);
+        layouter(cy, true);
     }
 }
 
@@ -466,12 +486,8 @@ PDp.removeEdge = function(evt) {
     let evTarget = evt.target;
     let source = evTarget.source().data(NAME_PROP);
     let target = evTarget.target().data(NAME_PROP);
-    if (source === '') {
-        source = '|>';
-    }
-    if (target === '') {
-        target = '[]';
-    }
+    if (source === '') { source = '|>'; }
+    if (target === '') { target = '[]'; }
     let graphEvent;
     let payload = source.concat(' => ', target);
     let compId = vizBridgeId;
@@ -499,52 +515,52 @@ PDp.removeNode = function(evt) {
     let compId = vizBridgeId;
     let payload = data;
     if (data !== '') {
-        if (isShiftPressed) {
-            compId = '$filter';
-            graphEvent = 'onInvokeExt';
-            if (isCtrlPressed) {
-                payload = {type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data};
-            } else {
-                payload = {type: 'EVENT_ATTRIBUTE_DURATION', data};
-            }
-        } else if (isCtrlPressed || isAltPressed) {
-            if (isCtrlPressed && !isAltPressed) {
-                graphEvent = 'onNodeRetainedTrace';
-            } else if (!isCtrlPressed && isAltPressed) {
-                graphEvent = 'onNodeRemovedEvent';
-            } else {
-                graphEvent = 'onNodeRetainedEvent';
-            }
+      if (isShiftPressed) {
+        compId = '$filter';
+        graphEvent = 'onInvokeExt';
+        if (isCtrlPressed) {
+          payload = { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data };
         } else {
-            graphEvent = 'onNodeRemovedTrace';
+          payload = { type: 'EVENT_ATTRIBUTE_DURATION', data };
         }
-        zkSendEvent(vizBridgeId, graphEvent, payload);
-        history.save({
-            compId,
-            event: graphEvent,
-            payload
-        });
+      } else if (isCtrlPressed || isAltPressed) {
+        if (isCtrlPressed && !isAltPressed) {
+          graphEvent = 'onNodeRetainedTrace'
+        } else if (!isCtrlPressed && isAltPressed) {
+          graphEvent = 'onNodeRemovedEvent'
+        } else {
+          graphEvent = 'onNodeRetainedEvent'
+        }
+      } else {
+        graphEvent = 'onNodeRemovedTrace'
+      }
+      this.zkSendEvent(vizBridgeId, graphEvent, payload);
+      history.save({
+        compId,
+        event: graphEvent,
+        payload
+      });
     }
-}
+  }
 
 PDp.zkSendEvent = function(widgetId, event, payload) {
     zAu.send(new zk.Event(zk.Widget.$(widgetId), event, payload));
 }
 
 PDp.rediscover = function() {
-    this.zkSendEvent(vizBridgeId, 'onNodeFiltered', cy.json());
+    this.zkSendEvent(vizBridgeId, 'onNodeFiltered', this._private.cy.json());
 }
 
 PDp.animate = function() {
-    this.zkSendEvent(vizBridgeId, 'onAnimate', cy.json());
+    this.zkSendEvent(vizBridgeId, 'onAnimate', this._private.cy.json());
 }
 
 PDp.exportFitted = function() {
-    this.zkSendEvent('$exportFitted', 'onExport', cy.json());
+    this.zkSendEvent('$exportFitted', 'onExport', this._private.cy.json());
 }
 
 PDp.exportUnfitted = function () {
-    this.zkSendEvent('$exportUnfitted', 'onExport', cy.json());
+    this.zkSendEvent('$exportUnfitted', 'onExport', this._private.cy.json());
 }
 
 PDp.loadImage = function(src) {
@@ -560,6 +576,7 @@ const SIGN_HEIGHT = 100;
 const MARGIN = 100;
 
 PDp.rasterizeForPrint = function() {
+    let cy = this._private.cy;
     return Promise.all([
         this.loadImage(SIGNATURE),
         this.loadImage('data:image/png;base64,' + cy.png({
@@ -586,10 +603,11 @@ PDp.rasterizeForPrint = function() {
 }
 
 PDp.exportPDF = function(filename) {
+    let pd = this;
     this.rasterizeForPrint()
         .then(function (canvas) {
             let pdf = new jsPDF('l', 'px', [canvas.width, canvas.height], false, true);
-            this.loadImage(canvas.toDataURL())
+            pd.loadImage(canvas.toDataURL())
                 .then(function (raster) {
                     pdf.addImage(raster, 'PNG', 0, 0, canvas.width, canvas.height, NaN, 'FAST');
                     pdf.save(filename + '.pdf', {returnPromise: true});
@@ -614,15 +632,14 @@ PDp.saveAsFile = function(t, f, m) {
         var b = new Blob([t], {type: m});
         saveAs(b, f);
     } catch (e) {
-        window.open("data:" + m + "," + encodeURIComponent(t), '_blank', '');
+        window.alert('Error in saving file: ' + e.message);
     }
 }
 
 PDp.exportJSON = function(filename) {
     if (!sourceJSON) {
-        return;
+        window.alert('Process model doesn\'t exist or it has no associated JSON file!');
     }
-    filename = filename || $('.ap-pd-log-title').text();
     this.saveAsFile(
         JSON.stringify(sourceJSON, null, 2),
         filename + ".json",
@@ -633,27 +650,25 @@ PDp.exportJSON = function(filename) {
 PDp.showCaseDetails = function() {
     let {left, top} = $('.ap-pd-logstats').offset();
     left -= 700; // width of caseDetail window
-    this.zkSendEvent('$caseDetails', 'onApShow', {top: top + 'px', left: left + 'px'});
+    this.zkSendEvent('$win', 'onCaseDetails', {top: 0 + 'px', left: left + 'px'});
 }
 
 PDp.showPerspectiveDetails = function() {
     let {left, top} = $('.ap-pd-logstats').offset();
     left -= 700; // width of perspectiveDetail window
-    this.zkSendEvent('$perspectiveDetails', 'onApShow', {top: top + 'px', left: left + 'px'});
+    this.zkSendEvent('$win', 'onPerspectiveDetails', {top: 0 + 'px', left: left + 'px'});
 }
 
 PDp.switchToAnimationView = function(setupDataJSON) {
+    let cy = this._private.cy;
+    cy.nodes().ungrabify();
     let pd = this;
-    //cy.unmount(); //not unmount as it will set renderer to NullRenderer.
-    $j('#' + pd._private.interactiveViewContainerId).hide();
-    cy.mount($j('#' + pd._private.animationModelContainerId)[0]);
-    $j('#' + pd._private.animationViewContainerId).show();
-
+    $j('#' + pd._private.animationPanelContainerId).show();
     let processMapController = new GraphModelWrapper(cy);
     let logAnimation = this._private.logAnimation = new LogAnimation(
                                         pd._private.pluginExecutionId,
                                         processMapController,
-                                        pd._private.animationModelContainerId,
+                                        pd._private.processModelContainerId,
                                         pd._private.timelineContainerId,
                                         pd._private.speedControlContainerId,
                                         pd._private.progressContainerId,
@@ -667,12 +682,10 @@ PDp.switchToAnimationView = function(setupDataJSON) {
 
 PDp.switchToInteractiveView = function() {
     let pd = this;
+    this._private.cy.nodes().grabify();
     let la = pd._private.logAnimation;
     if (la) la.destroy();
-    //cy.unmount();
-    $j('#' + pd._private.animationViewContainerId).hide();
-    cy.mount($j('#' + pd._private.interactiveViewContainerId)[0]);
-    $j('#' + pd._private.interactiveViewContainerId).show();
+    $j('#' + pd._private.animationPanelContainerId).hide();
 }
 
 export default PDp;

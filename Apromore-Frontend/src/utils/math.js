@@ -63,7 +63,7 @@ export const getBoxSkipPath = function(startPoint, endPoint, taskRectPoints) {
         (Math.abs(startPoint.y - endPoint.y) < 10 &&
             Math.abs(endPoint.y - taskRectPoints.sw.y) < 10)
     ) {
-        skipPath.push(startPoint, endPoint);
+        skipPath.push(startPoint.x, endPoint);
     } else {
         arrayAbove = []
         arrayBelow = []
@@ -136,6 +136,7 @@ export const getBoxSkipPath = function(startPoint, endPoint, taskRectPoints) {
             }
         }
     }
+    return skipPath;
 }
 
 /**
@@ -184,6 +185,7 @@ export const getPointAtLengthBezier = function(pts, length) {
     return {x: pts[pts.length - 2], y: pts[pts.length - 1]};
 }
 
+//https://gist.github.com/tunght13488/6744e77c242cc7a94859
 export const quadraticBezierLength = function(x1, y1, x2, y2, x3, y3) {
     let a, b, e, c, d, u, a1, e1, c1, d1, u1, v1x, v1y;
 
@@ -201,7 +203,9 @@ export const quadraticBezierLength = function(x1, y1, x2, y2, x3, y3) {
     u1 = b / u;
     a = 4 * c * a - b * b;
     c = 2 * Math.sqrt(c);
-    return (a1 * c1 + u * b * (c1 - c) + a * Math.log((2 * u + u1 + c1) / (u1 + c))) / (4 * a1);
+
+    let Y = (u1 + c) > 0 ? Math.log((2 * u + u1 + c1) / (u1 + c)) : 0;
+    return a1===0 ? 0 : (a1 * c1 + u * b * (c1 - c) + a * Y) / (4 * a1);
 }
 
 // from http://en.wikipedia.org/wiki/Bézier_curve#Quadratic_curves
@@ -211,8 +215,8 @@ export const qbezierAt = function (p0, p1, p2, t) {
 
 /**
  *
- * @param pts: series of points on segments
- * @returns {number}
+ * @param {Array} pts: array, each element is either x or y coordinate, each consecutive x,y pair is a point
+ * @returns {Number}
  */
 export const getTotalLengthSegments = function (pts) {
     //let pts = edge._private.rscratch.allpts;
@@ -229,9 +233,9 @@ export const getTotalLengthSegments = function (pts) {
 
 /**
  *
- * @param pts: series of points on segments
- * @param length: the distance of the point on the segments
- * @returns {number}
+ * @param {Array} pts: array, each element is either x or y coordinate, each consecutive x,y pair is a point
+ * @param {Number} length: the distance of the point on the segments
+ * @returns {Number}
  */
 export const getPointAtLengthSegments = function (pts, length) {
     //let pts = edge._private.rscratch.allpts;
