@@ -948,6 +948,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupFolderRepo.save(gf);
         }
 
+
         for (Log l : logs) {
             GroupLog targetUserGL = groupLogRepo.findByGroupAndLog(targetUser.getGroup(), l);
             if (targetUserGL != null) {
@@ -956,6 +957,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             GroupLog gl = groupLogRepo.findByGroupAndLog(sourceUser.getGroup(), l);
             gl.setGroup(targetUser.getGroup());
             groupLogRepo.save(gl);
+            l.setUser(targetUser);
+            logRepo.save(l);
         }
 
         for (Process p : processes) {
@@ -966,6 +969,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             GroupProcess gp = groupProcessRepo.findByGroupAndProcess(sourceUser.getGroup(), p);
             gp.setGroup(targetUser.getGroup());
             groupProcessRepo.save(gp);
+            p.setUser(targetUser);
+            processRepo.save(p);
         }
     }
 
