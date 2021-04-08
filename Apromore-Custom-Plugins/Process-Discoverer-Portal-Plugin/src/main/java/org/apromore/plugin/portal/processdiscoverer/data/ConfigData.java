@@ -27,19 +27,10 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
 public class ConfigData {
-    public final String DEFAULT_SELECTOR = "concept:name";
-    private final int NUMBER_OF_UNIQUE_VALUES_ADJUST = 100;
-    private final int NUMBER_OF_UNIQUE_VALUES_FORCE_ADJUST = 200;
-    private final int NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = 500;
-    private final int MAX_NUMBER_OF_NODES = 80;
-    private final int MAX_NUMBER_OF_ARCS = 150;
-    
-    public static MeasureType DEFAULT_MEASURE_TYPE = MeasureType.FREQUENCY;
-    public static MeasureAggregation DEFAULT_MEASURE_AGGREGATE = MeasureAggregation.CASES;
-    
-    private HashBiMap<String,String> displayToOriginKeyMapping = new HashBiMap<>();
-    
-    public ConfigData() {
+    private final String DEFAULT_SELECTOR;
+    private final int NUMBER_OF_UNIQUE_VALUES_MAX_SELECT;
+    private final HashBiMap<String,String> displayToOriginKeyMapping = new HashBiMap<>();
+    {
         displayToOriginKeyMapping.put("concept:name", "Activity");
         displayToOriginKeyMapping.put("lifecycle:transition", "State");
         displayToOriginKeyMapping.put("org:group", "Resource group");
@@ -47,28 +38,22 @@ public class ConfigData {
         displayToOriginKeyMapping.put("org:role", "Role");
     }
     
+    public static MeasureType DEFAULT_MEASURE_TYPE = MeasureType.FREQUENCY;
+    public static MeasureAggregation DEFAULT_MEASURE_AGGREGATE = MeasureAggregation.CASES;
+
+    public static ConfigData DEFAULT = new ConfigData("concept:name", 500);
+    
+    private ConfigData(String selector, int maxNumberOfUniqueValues) {
+        DEFAULT_SELECTOR = selector;
+        NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = maxNumberOfUniqueValues;
+    }
+    
     public String getDefaultAttribute() {
         return DEFAULT_SELECTOR;
     }
     
-    public int getAttributeUniqueValuesToAdjust() {
-        return NUMBER_OF_UNIQUE_VALUES_ADJUST;
-    }
-    
-    public int getAttributeUniqueValuesToForceAdjust() {
-        return NUMBER_OF_UNIQUE_VALUES_FORCE_ADJUST;
-    }
-    
     public int getMaxNumberOfUniqueValues() {
         return NUMBER_OF_UNIQUE_VALUES_MAX_SELECT;
-    }
-    
-    public int getMaxNumberOfNodes() {
-        return MAX_NUMBER_OF_NODES;
-    }
-    
-    public int getMaxNumberOfArcs() {
-        return MAX_NUMBER_OF_ARCS;
     }
     
     public String getDisplayAttributeName(String attributeName) {

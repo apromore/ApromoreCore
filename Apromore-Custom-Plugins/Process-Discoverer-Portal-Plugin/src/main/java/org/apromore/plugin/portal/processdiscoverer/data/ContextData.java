@@ -22,8 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
-import org.apromore.plugin.portal.PortalContext;
-
 /**
  * ContextData contains contextual data of this plugin
  * Many data items are about the calling plugin or the portal
@@ -32,32 +30,34 @@ import org.apromore.plugin.portal.PortalContext;
  *
  */
 public class ContextData {
-    private int containingFolderId = 0;
-    private String containingFolderName = "";  
-    private PortalContext portalContext;
-    private String domain;
-    private String logName;
-    private int logId;
-    private boolean firstTimeLoadingFinished = false;
-    private ConfigData configData;
+    private final String userName;
+    private final int containingFolderId;
+    private final String containingFolderName;  
+    private final String domain;
+    private final String logName;
+    private final int logId;
     
-    public ContextData(PortalContext portalContext, 
-                        String domain,
+    private ContextData (String domain,
+                        String userName,
                         int logId, String logName,
-                        int containingFolderId, String containingFolderName, 
-                        ConfigData configData) {
+                        int containingFolderId, String containingFolderName) {
+        this.userName = userName;
         this.containingFolderId = containingFolderId;
         this.containingFolderName = containingFolderName;
-        this.portalContext = portalContext;
         this.domain = domain;
         this.logId = logId;
         this.logName = logName;
-        this.firstTimeLoadingFinished = false;
-        this.configData = configData;
     }
     
-    public PortalContext  getPortalContext() {
-        return this.portalContext;
+    public static ContextData valueOf (String domain,
+                        String userName,
+                        int logId, String logName,
+                        int containingFolderId, String containingFolderName) {
+        return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName);
+    }
+    
+    public String getUsername() {
+        return this.userName;
     }
     
     public String getLogName() {
@@ -80,16 +80,4 @@ public class ContextData {
         return this.containingFolderName;
     }
     
-    public boolean getFirstTimeLoadingFinished() {
-        return this.firstTimeLoadingFinished;
-    }
-    
-    public void setFirstTimeLoadingFinished(boolean value) {
-        this.firstTimeLoadingFinished = value;
-    }
-    
-    public ConfigData getConfigData() {
-        return this.configData;
-    }
-            
 }

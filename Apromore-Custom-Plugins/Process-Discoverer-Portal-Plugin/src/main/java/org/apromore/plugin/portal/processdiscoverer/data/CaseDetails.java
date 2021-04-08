@@ -26,20 +26,24 @@ import java.text.DecimalFormat;
 
 public class CaseDetails {
 
-    private String caseId;
-    private int caseEvents;
-    private int caseVariantId;
-    private double caseVariantFreq;
-    private String caseVariantFreqStr;
+    private final String caseId;
+    private final int caseEvents;
+    private final int caseVariantId;
+    private final double caseVariantFreq;
+    private final String caseVariantFreqStr;
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
 
-    public CaseDetails(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
+    private CaseDetails(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
         this.caseId = caseId;
         this.caseEvents = caseEvents;
         this.caseVariantId = caseVariantId;
         this.caseVariantFreq = caseVariantFreq;
         this.caseVariantFreqStr = decimalFormat.format(100 * caseVariantFreq);
+    }
+    
+    public static CaseDetails valueOf(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
+        return new CaseDetails(caseId, caseEvents, caseVariantId, caseVariantFreq);
     }
 
     public String getCaseId () {
