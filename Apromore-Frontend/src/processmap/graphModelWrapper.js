@@ -75,7 +75,9 @@ export default class GraphModelWrapper {
      */
     getBoundingClientRect() {
         //let box = this._cy.container().getBoundingClientRect();
-        let box = this._cy.elements().boundingBox();
+        //let box = this._cy.elements().boundingBox();
+        let width = $j("canvas[data-id='layer2-node']").attr('width');
+        let height = $j("canvas[data-id='layer2-node']").attr('height');
         let jContainer = $j(this._cy.container());
         let paddingTop = jContainer.css('padding-top');
         let paddingLeft = jContainer.css('padding-left');
@@ -83,8 +85,8 @@ export default class GraphModelWrapper {
                 y: paddingTop,
                 top: paddingTop,
                 left: paddingLeft,
-                width: box.w,
-                height: box.h};
+                width: width,
+                height: height};
     }
 
     getTransformMatrix() {
