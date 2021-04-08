@@ -149,3 +149,10 @@ databaseChangeLog:
         - delete:
             tableName: usermetadata
             where: STR_TO_DATE(created_time,'%d-%m-%Y %H:%i:%s') < '2021-02-10' AND type_id = 3
+
+  - changeSet:
+      id:  20210409080300
+      author:  frankma
+      changes:
+        - delete:
+            tableName: group_usermetadata
