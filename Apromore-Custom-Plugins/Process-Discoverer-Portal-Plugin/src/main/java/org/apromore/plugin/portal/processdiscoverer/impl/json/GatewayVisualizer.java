@@ -47,6 +47,7 @@ public class GatewayVisualizer extends AbstractNodeVisualizer {
 		}
 		
 		Gateway gateway = (Gateway)node;
+		jsonData.put("id", gateway.getId().toString());
 		jsonData.put("shape", "diamond");
         jsonData.put("color", visSettings.getColorSettings().getGatewayBackgroundColor());
         jsonData.put("width", visSettings.getGatewayHeight()+"px");

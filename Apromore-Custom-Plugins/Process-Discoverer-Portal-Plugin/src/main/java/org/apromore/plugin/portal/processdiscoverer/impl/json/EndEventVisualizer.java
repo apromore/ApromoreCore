@@ -46,6 +46,7 @@ public class EndEventVisualizer extends AbstractNodeVisualizer {
 		if (!(element instanceof Event && ((Event)element).getEventType() == EventType.END)) {
 			throw new UnsupportedElementException("Unsupported element while expecting a BPMN End Event object.");
 		}
+		jsonData.put("id", ((Event)element).getId().toString());
 		jsonData.put("shape", "ellipse");
 		jsonData.put("width", visSettings.getEventWidth()+"px");
 		jsonData.put("height", visSettings.getEventHeight()+"px");

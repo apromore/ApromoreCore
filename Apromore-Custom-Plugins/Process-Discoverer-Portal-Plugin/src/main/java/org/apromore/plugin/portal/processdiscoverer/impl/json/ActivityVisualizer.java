@@ -74,8 +74,8 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
 		if (params.getSecondary()) {
 		    name += getWeightString(abs.getNodeSecondaryWeight(node), ", ", params.getSecondaryType(), params.getSecondaryRelation());
 		}
+		jsonData.put("id", ((Activity)element).getId().toString());
 		jsonData.put("name", name);
-
 		jsonData.put("shape", "roundrectangle");
         jsonData.put("color", visSettings.getColorSettings().getActivityBackgroundColor(element, visContext, visSettings));
         jsonData.put("textcolor", visSettings.getColorSettings().getActivityTextColor(element, visContext, visSettings));
