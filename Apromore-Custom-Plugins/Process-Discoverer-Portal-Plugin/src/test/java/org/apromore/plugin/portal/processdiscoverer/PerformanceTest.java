@@ -43,7 +43,7 @@ public class PerformanceTest extends TestDataSetup {
             ALog aLog = new ALog(xlog);
             System.out.println("Create ALog: " + (System.currentTimeMillis() - timer) + " ms.");
             
-            ConfigData configData = new ConfigData();
+            ConfigData configData = ConfigData.DEFAULT;
             UserOptionsData userOptions = new UserOptionsData();
             userOptions.setMainAttributeKey(configData.getDefaultAttribute());
             
