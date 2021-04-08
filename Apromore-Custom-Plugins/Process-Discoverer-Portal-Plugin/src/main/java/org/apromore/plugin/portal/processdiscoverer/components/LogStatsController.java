@@ -20,16 +20,13 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
+package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.text.DecimalFormat;
 
-import org.apromore.apmlog.filter.PLog;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
@@ -40,35 +37,20 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 
 /**
- * LogStatsControllerWithAPMLog is a {@link LogStatsController} with some data
- * statistics getting from APMLog.
- * 
  * @author Chii Chang, Ivo Widjaja
  * Modified: Chii Chang (03/02/2020)
  * Modified: Ivo Widjaja
- * Modified: Bruce Nguyen: extends from LogStatsController.
  *
  */
-public class LogStatsControllerWithAPMLog extends LogStatsController {
+public class LogStatsController extends AbstractController {
     private Component wdLogStats;
-    
-    private Button btnCaseHeading;
-    private Label lblCaseHeading;
-    
-    private Button btnCaseVariantHeading;
-    private Label lblCaseVariantHeading;
-    
-    private Button btnEventHeading;
-    private Label lblEventHeading;
-    
-    private Button btnActivityHeading;
-    private Label lblActivityHeading;
-    
+    private Button btnCaseStats;
+    private Label lblCaseStats;
     private Label lblCasePercent, lblVariantPercent, lblEventPercent;
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
     // private final String CHART_SERIES_COLOR = "#afdaed"; // "#7FD6A0";
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogStatsControllerWithAPMLog.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogStatsController.class);
 
     // TO DO: Check if total can be persisted during init
     private long totalEventCount;
@@ -76,18 +58,10 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private long totalVariantCount;
     private long totalNodeCount;
     
-    private LogDataWithAPMLog logData;
-    
     private boolean disabled = false;
 
-    public LogStatsControllerWithAPMLog(PDController parent)  throws Exception {
+    public LogStatsController(PDController parent) {
         super(parent);
-        if (!(parent.getLogData() instanceof LogDataWithAPMLog)) {
-            throw new InvalidDataException("Expect LogDataWithAPMLog data but receiving different data!");
-        }
-        else {
-            logData = (LogDataWithAPMLog)parent.getLogData();            
-        }
     }
 
     @Override
@@ -95,18 +69,6 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         if (this.parent == null) return;
 
         wdLogStats = parent.query(".ap-pd-logstats");
-        
-        btnCaseHeading = (Button) wdLogStats.getFellow("btnCaseHeading");
-        lblCaseHeading = (Label) wdLogStats.getFellow("lblCaseHeading");
-        
-        btnCaseVariantHeading = (Button) wdLogStats.getFellow("btnCaseVariantHeading");
-        lblCaseVariantHeading = (Label) wdLogStats.getFellow("lblCaseVariantHeading");
-        
-        btnEventHeading = (Button) wdLogStats.getFellow("btnEventHeading");
-        lblEventHeading = (Label) wdLogStats.getFellow("lblEventHeading");
-        
-        btnActivityHeading = (Button) wdLogStats.getFellow("btnActivityHeading");
-        lblActivityHeading = (Label) wdLogStats.getFellow("lblActivityHeading");
 
         lblCasePercent = (Label) wdLogStats.getFellow("lblCasePercent");
         lblVariantPercent = (Label) wdLogStats.getFellow("lblVariantPercent");
@@ -128,95 +90,37 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     
     @Override
     public void initializeEventListeners(Object data) throws Exception {
-        btnCaseHeading.addEventListener("onClick", new EventListener<Event>() {
+        btnCaseStats.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
                 parent.openLogFilter(new Event("", null, "CaseTabID"));
             }
         });
         
-        lblCaseHeading.addEventListener("onClick", new EventListener<Event>() {
+        lblCaseStats.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
                 parent.openLogFilter(new Event("", null, "CaseTabID"));
-            }
-        });
-        
-        btnCaseVariantHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "CaseTabVariant"));
-            }
-        });
-        
-        lblCaseVariantHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "CaseTabVariant"));
-            }
-        });
-        
-        btnEventHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "EventTabAttribute"));
-            }
-        });
-        
-        lblEventHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "EventTabAttribute"));
-            }
-        });
-        
-        btnActivityHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
-            }
-        });
-        
-        lblActivityHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
             }
         });
     }
 
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
-        PLog pLog = logData.getFilteredPLog();
-
-        // totalEventCount = total.getEventCount();
-        totalEventCount = pLog.getOriginalEventSize();
-        // totalCaseCount = total.getCaseCount();
-        totalCaseCount = pLog.getOriginalPTraceList().size();
-        // totalVariantCount = total.getVariantCount();
-        totalVariantCount = pLog.getOriginalCaseVariantSize();
+        totalEventCount = total.getEventCount();
+        totalCaseCount = total.getCaseCount();
+        totalVariantCount = total.getVariantCount();
         totalNodeCount = total.getActivityCount();
 
-        // long filteredEventCount = filtered.getEventCount();
-        long filteredEventCount = pLog.getEventSize();
-        // long filteredCaseCount = filtered.getCaseCount();
-        long filteredCaseCount = pLog.getPTraceList().size();
-        // long filteredVariantCount = filtered.getVariantCount();
-        long filteredVariantCount = pLog.getVariantIdFreqMap().size();
+        long filteredEventCount = filtered.getEventCount();
+        long filteredCaseCount = filtered.getCaseCount();
+        long filteredVariantCount = filtered.getVariantCount();
         long filteredNodeCount = filtered.getActivityCount();
 
         setNumber(this.lblCaseNumberFiltered, filteredCaseCount);
         setNumber(this.lblCaseNumberTotal, totalCaseCount);
         showPercentage(this.lblCasePercent, filteredCaseCount, totalCaseCount, "case");
 
-        setNumber(this.lblVariantNumberFiltered, filteredVariantCount);
+        setNumber(this.lblVariantNumberFiltered, filtered.getVariantCount());
         setNumber(this.lblVariantNumberTotal, totalVariantCount);
         showPercentage(this.lblVariantPercent, filteredVariantCount, totalVariantCount, "variant");
 
@@ -268,11 +172,12 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         AttributeLog attLog = parent.getLogData().getAttributeLog();
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
         AttributeLogSummary logSummary = attLog.getLogSummary();
+
         updateFromLogSummary(logSummary, oriLogSummary);
     }
-    
+
     @Override
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public void onEvent(Event event) throws Exception {
+        throw new Exception("Refer to LogStatsControllerWithAPMLog.");
     }
 }

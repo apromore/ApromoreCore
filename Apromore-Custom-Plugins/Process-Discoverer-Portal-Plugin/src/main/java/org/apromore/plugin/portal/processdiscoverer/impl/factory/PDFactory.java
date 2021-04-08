@@ -21,37 +21,29 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
-import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.GraphSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.GraphVisController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogFilterController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.PerspectiveDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.TimeStatsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.ViewSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
+import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
+import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.service.EventLogService;
 
 public interface PDFactory {
-    ContextData createContextData(PortalContext portalContext, 
-            String domain,
-            int logId, String logName,
-            int containingFolderId, String containingFolderName, 
-            ConfigData configData)  throws Exception;
-    LogData createLogData(ContextData contextData, EventLogService eventLogService)  throws Exception;
-    ConfigData createConfigData()  throws Exception;
-    UserOptionsData createUserOptionsData()  throws Exception;
+    LogData createLogData(ContextData contextData, ConfigData configData, EventLogService eventLogService)  throws Exception;
     OutputData createOutputData(Abstraction currentAbstraction, String visualizedText)  throws Exception;
     
     GraphVisController createGraphVisController(PDController pdController) throws Exception;
@@ -65,6 +57,6 @@ public interface PDFactory {
     AnimationController createAnimationController(PDController pdController) throws Exception;
     BPMNExportController createBPMNExportController(PDController pdController) throws Exception;
     LogExportController createLogExportController(PDController pdController) throws Exception;
-    
+    ToolbarController createToolbarController(PDController controller) throws Exception; 
     ProcessVisualizer createProcessVisualizer(PDController pdController) throws Exception;
 }

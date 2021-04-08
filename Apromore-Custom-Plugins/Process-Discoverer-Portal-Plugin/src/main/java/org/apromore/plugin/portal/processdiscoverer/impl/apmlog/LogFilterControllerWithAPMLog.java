@@ -22,26 +22,30 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
-import org.apromore.plugin.portal.logfilter.generic.*;
+import org.apromore.plugin.portal.logfilter.generic.EditorOption;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterClient;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterRequest;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterResponse;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * LogFilterControllerWithAPMLog is {@link LogFilterController} but uses APMLog to do filtering.
