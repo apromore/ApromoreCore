@@ -31,8 +31,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
@@ -44,39 +42,21 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
 
-    private static String s_fullConfigurableReturnPath = "http://localhost:8181/";
-    private static boolean s_utiliseKeycloakSso = false;
+    private String s_fullConfigurableReturnPath = "http://localhost:8181/";
+    private boolean s_utiliseKeycloakSso = false;
 
     private String keycloakLoginFormUrl;
 
-    static {
-        final Properties keycloakProperties = readKeycloakProperties();
+    public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
+        s_fullConfigurableReturnPath = fullProtocolHostPortUrl;
 
-        s_fullConfigurableReturnPath = keycloakProperties.getProperty("fullProtocolHostPortUrl");
-        LOGGER.info("\n\n>>> >>> >>> > [FROM keycloak.properties] keycloakLoginFormUrl: {}",
-                s_fullConfigurableReturnPath);
-
-        s_utiliseKeycloakSso = Boolean.valueOf(keycloakProperties.getProperty("useKeycloakSso"));
-        LOGGER.info("\n\n>>> utiliseKeycloakSso {}", s_utiliseKeycloakSso);
+        LOGGER.info("Set fullProtocolHostPortUrl to {}", s_fullConfigurableReturnPath);
     }
 
-    private static Properties readKeycloakProperties() {
-        final Properties properties = new Properties();
+    public void setUseKeycloakSso(final boolean useKeycloakSso) {
+        s_utiliseKeycloakSso = useKeycloakSso;
 
-        try (final InputStream inputStream =
-                     KeycloakLoginUrlAuthenticationEntryPoint.class.getResourceAsStream(
-                "/keycloak.properties")) {
-
-            properties.load(inputStream);
-            LOGGER.info("\n\nkeycloak.properties properties file properties {}", properties);
-
-            return properties;
-        } catch (final IOException | NullPointerException e) {
-            LOGGER.error("Exception reading keycloak properties: {} - stackTrace {}",
-                    e.getMessage(), ExceptionUtils.getStackTrace(e));
-
-            return null;
-        }
+        LOGGER.info("Set useKeycloakSso to {}", s_utiliseKeycloakSso);
     }
 
     public String getKeycloakLoginFormUrl() {
