@@ -30,15 +30,17 @@ public class EdgeID implements Comparable<EdgeID>, Serializable {
 
 	private final UUID id = UUID.randomUUID();
 
-	public int compareTo(EdgeID edge) {
+	@Override
+    public int compareTo(EdgeID edge) {
 		return id.compareTo(edge.id);
 	}
-
-	public String toString() {
-		return "node " + id;
+	@Override
+    public String toString() {
+		return "edge-" + id;
 	}
 
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (!(o instanceof EdgeID)) {
 			return false;
 		}
@@ -46,7 +48,8 @@ public class EdgeID implements Comparable<EdgeID>, Serializable {
 		return edgeID.id.equals(id);
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return id.hashCode();
 	}
 
