@@ -34,7 +34,10 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.springframework.security.saml"/>
 
-    <beans:bean id="loginPageFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter" />
+    <beans:bean id="loginPageFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter">
+        <beans:property name="fullProtocolHostPortUrl" value="${site.fullProtocolHostPortUrl}"/>
+        <beans:property name="useKeycloakSso" value="${site.useKeycloakSso}"/>
+    </beans:bean>
 
     <!-- Setup for the Servlets used in new user regisration and reset password.
     <beans:bean id="resetPassword" class="org.apromore.portal.servlet.ResetPasswordHttpServletRequestHandler" />
@@ -143,6 +146,8 @@
                         value="/login.zul" />
         <beans:property name="keycloakLoginFormUrl"
                         value="http://securityms.apromoresso.net:8282/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
+        <beans:property name="fullProtocolHostPortUrl" value="${site.fullProtocolHostPortUrl}" />
+        <beans:property name="useKeycloakSso" value="${site.useKeycloakSso}" />
     </beans:bean>
 
     <beans:bean id="apromoreUsernamePasswordAuthenticationFilter" class="org.apromore.security.filter.ApromoreUsernamePasswordAuthenticationFilter">
