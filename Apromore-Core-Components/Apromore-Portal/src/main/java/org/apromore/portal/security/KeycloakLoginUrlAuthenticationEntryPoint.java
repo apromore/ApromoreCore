@@ -126,7 +126,9 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
             LOGGER.info("keycloakRealmOfCustomer {}", keycloakRealmOfCustomer);
 
             String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
-            loginUrl = loginFormPattern.replaceAll(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
+            LOGGER.info("loginUrl[1] {}", loginUrl);
+            loginUrl = loginUrl.replaceAll(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
+            LOGGER.info("loginUrl[2] {}", loginUrl);
 
             LOGGER.info(">>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
 
