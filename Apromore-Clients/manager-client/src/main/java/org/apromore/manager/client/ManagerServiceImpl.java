@@ -134,7 +134,12 @@ public class ManagerServiceImpl implements ManagerService {
      * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
      */
     @Override
-    public boolean logoutUserAllSessions(final String username) throws Exception {
+    public boolean logoutUserAllSessions(final String username,
+                                         final String kcHttpLogoutUrl,
+                                         final String kcHttpsLogoutUrl) throws Exception {
+        logger.info("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
+        logger.info("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
+
         Boolean restRespResult = false;
 
         final RestTemplate restTemplate = restTemplate();
@@ -143,7 +148,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         try {
             restRespResult = restTemplate.getForObject(
-                            securityMsProps.getProperty(SECURITYMS_HTTP_LOGOUT_URL) + username,
+                            securityMsProps.getProperty(kcHttpLogoutUrl) + username,
                             Boolean.class);
             logger.debug("\n\nrestRespResult: {}", restRespResult);
         } catch (final Exception e) {
@@ -152,9 +157,10 @@ public class ManagerServiceImpl implements ManagerService {
             if (e instanceof CertificateException || ((exceptionMsg != null) &&
                     (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
                 logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
+                logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
 
                 restRespResult = restTemplate.getForObject(
-                                securityMsProps.getProperty(SECURITYMS_HTTPS_LOGOUT_URL) + username,
+                                securityMsProps.getProperty(kcHttpsLogoutUrl) + username,
                                 Boolean.class);
                 logger.debug("\n\nrestRespResult: {}", restRespResult);
 

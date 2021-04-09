@@ -21,7 +21,6 @@
  */
 package org.apromore.portal.security;
 
-import com.sun.jndi.toolkit.url.Uri;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
