@@ -25,21 +25,8 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.plugin.portal.SessionTab;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.ConfigBean;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.context.PortalPluginResolver;
-import org.apromore.portal.model.*;
 import org.zkoss.zul.*;
 import org.zkoss.util.resource.Labels;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

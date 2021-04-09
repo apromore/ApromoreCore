@@ -24,11 +24,7 @@
 
 package org.apromore.portal.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -39,12 +35,12 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.ConfigBean;
-import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.dialogController.UserAuthenticationHelper;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.MembershipType;
 import org.apromore.portal.model.UserType;
 import org.apromore.security.ApromoreWebAuthenticationDetails;
@@ -52,6 +48,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
@@ -77,9 +75,17 @@ public abstract class UserSessionManager {
     public static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
 
     public static void setCurrentUser(UserType user) {
-        setAttribute(USER, user);
-        EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, Sessions.getCurrent(), true)
-                   .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
+        if (getAttribute(USER) != null) {
+            LOGGER.info("No initialization required as the user is already set");
+            return;
+        } else {
+            setAttribute(USER, user);
+
+            final Session session = Sessions.getCurrent();
+
+            EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, session, true)
+                    .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
+        }
     }
 
     private static Object getAttribute(String attribute) {
@@ -94,14 +100,13 @@ public abstract class UserSessionManager {
         return (UserType) getAttribute(USER);
     }
 
-    public static void initializeUser(ManagerService manager, ConfigBean config) {
-
+    public static void initializeUser(ManagerService manager, ConfigBean config, UserType userType, User userAcct) {
         // No initialization required if the user is already set
         if (getAttribute(USER) != null) {
+            LOGGER.debug("No initialization required as the user is already set");
             return;
         }
 
-        LOGGER.debug("Initializing user");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             Object details = authentication.getDetails();
@@ -120,12 +125,25 @@ public abstract class UserSessionManager {
                     }
                 }
                 setCurrentUser(user);
+            } else if (details instanceof WebAuthenticationDetails) {
+                UserAuthenticationHelper userAuthenticationHelper = new UserAuthenticationHelper(userAcct);
+                try {
+                    authentication = userAuthenticationHelper.attemptAuthentication(null, null);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            } else if (details instanceof UserType) {  // Locally created user
+                if (userType != null) { // e.g. SSO SAML
+                    setCurrentUser(userType);
+                }
+            } else if (details instanceof UserType) {  // Locally created user (via password)
                 UserType user = (UserType) details;
                 LOGGER.info("Local login, user=" + user.getUsername());
                 setCurrentUser(user);
 
+            } else if (userType != null) { // e.g. SSO SAML
+                setCurrentUser(userType);
             } else if (details != null) {
                 LOGGER.warn("Unsupported details class " + details.getClass());
             } else {
@@ -133,7 +151,7 @@ public abstract class UserSessionManager {
             }
 
         } else {
-            LOGGER.debug("Current user neither set on the security context, nor authenticated");
+            LOGGER.warn("Current user neither set on the security context, nor authenticated");
         }
     }
 

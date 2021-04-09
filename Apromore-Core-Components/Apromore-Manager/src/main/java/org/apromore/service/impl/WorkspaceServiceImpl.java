@@ -358,7 +358,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         List<Folder> parentFolders = folderService.getParentFolders(folderId);
         for (Folder folder : parentFolders) {
-            createGroupFolder(group, folder, true, false, false);
+            // Give parent folders viewer access only if specified group doesn't have access to
+            if(groupFolderRepo.findByGroupAndFolder(group, folder) == null) {
+                createGroupFolder(group, folder, true, false, false);
+            }
         }
 
         for (Process process : processRepo.findByFolderIdIn(folderIds)) {
@@ -936,21 +939,38 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<Process> processes = getSingleOwnerProcessByUser(sourceUser);
 
         for (Folder f : folders) {
+            GroupFolder targetUserGF = groupFolderRepo.findByGroupAndFolder(targetUser.getGroup(), f);
+            if (targetUserGF != null) {
+                groupFolderRepo.delete(targetUserGF);
+            }
             GroupFolder gf = groupFolderRepo.findByGroupAndFolder(sourceUser.getGroup(), f);
             gf.setGroup(targetUser.getGroup());
             groupFolderRepo.save(gf);
         }
 
+
         for (Log l : logs) {
+            GroupLog targetUserGL = groupLogRepo.findByGroupAndLog(targetUser.getGroup(), l);
+            if (targetUserGL != null) {
+                groupLogRepo.delete(targetUserGL);
+            }
             GroupLog gl = groupLogRepo.findByGroupAndLog(sourceUser.getGroup(), l);
             gl.setGroup(targetUser.getGroup());
             groupLogRepo.save(gl);
+            l.setUser(targetUser);
+            logRepo.save(l);
         }
 
         for (Process p : processes) {
+            GroupProcess targetUserGP = groupProcessRepo.findByGroupAndProcess(targetUser.getGroup(), p);
+            if (targetUserGP != null) {
+                groupProcessRepo.delete(targetUserGP);
+            }
             GroupProcess gp = groupProcessRepo.findByGroupAndProcess(sourceUser.getGroup(), p);
             gp.setGroup(targetUser.getGroup());
             groupProcessRepo.save(gp);
+            p.setUser(targetUser);
+            processRepo.save(p);
         }
     }
 

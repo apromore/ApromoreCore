@@ -34,15 +34,19 @@ import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import com.google.common.base.Strings;
+import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.ConfigBean;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -64,6 +68,24 @@ public class UserMenuController extends SelectorComposer<Menubar> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserMenuController.class);
 
     private Menuitem aboutMenuitem;
+
+    private ManagerService managerService;
+
+    protected AutowireCapableBeanFactory beanFactory;
+    protected ConfigBean config;
+
+    public UserMenuController() {
+        beanFactory = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext()).getAutowireCapableBeanFactory();
+        config = (ConfigBean) beanFactory.getBean("portalConfig");
+    }
+
+    public ManagerService getManagerService() {
+        if (this.managerService == null) {
+            this.managerService = (ManagerService) SpringUtil.getBean(Constants.MANAGER_SERVICE);
+        }
+
+        return managerService;
+    }
 
     public static final String getDisplayName(UserType userType) {
         String displayName = "";
@@ -178,10 +200,39 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true).subscribe(
                 new EventListener() {
                     public void onEvent(Event event) {
-                        Session session = Sessions.getCurrent();
-                        if (session == null || event.getData().equals(session)) {
-                            Clients.evalJavaScript("window.close()");
-                            Executions.sendRedirect("/j_spring_security_logout");
+                        LOGGER.debug("\n\nIn sign out queue/event handler for logout");
+
+                        LOGGER.debug("\n\n>>>>> About to utilise managerService to logout of all user " +
+                                "sessions [transparently calls Keycloak, via the Security Microservice]");
+
+                        final ManagerService managerService = getManagerService();
+                        LOGGER.debug("\n\nmanagerService: {}", managerService);
+
+                        final UserType currentUser = UserSessionManager.getCurrentUser();
+                        LOGGER.debug("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
+
+                        try {
+                            boolean logoutSuccess = false;
+
+                            if (config.isUseKeycloakSso()) {
+                                logoutSuccess =
+                                        managerService.logoutUserAllSessions(
+                                                currentUser.getUsername(),
+                                                config.getSecurityMsHttpLogoutUrl(),
+                                                config.getSecurityMsHttpsLogoutUrl());
+                                LOGGER.info("\nlogoutSuccess: {}", logoutSuccess);
+                            }
+
+                            final Session session = Sessions.getCurrent();
+
+                            if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
+                                Clients.evalJavaScript("window.close()");
+                                Executions.sendRedirect("/j_spring_security_logout");
+                            }
+                        } catch (final Exception e) {
+                            LOGGER.error("\n\nException in logging out: " + e.getMessage());
+
+                            e.printStackTrace();
                         }
                     }
                 }

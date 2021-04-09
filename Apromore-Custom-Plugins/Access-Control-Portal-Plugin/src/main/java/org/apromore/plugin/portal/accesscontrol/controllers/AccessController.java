@@ -21,40 +21,9 @@
  */
 package org.apromore.plugin.portal.accesscontrol.controllers;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import com.google.common.base.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.json.JSONObject;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.*;
-import org.zkoss.zk.ui.select.SelectorComposer;
-import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.ListModels;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Span;
-import org.zkoss.zul.Textbox;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
-import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.plugin.portal.PortalContext;
@@ -70,6 +39,22 @@ import org.apromore.service.SecurityService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.*;
+
+import java.util.*;
 
 /**
  * Controller for handling share interface
@@ -391,10 +376,10 @@ public class AccessController extends SelectorComposer<Div> {
         if (!isLogSelected()) {
             return;
         }
-        String selectedUserName = securityService.findGroupByRowGuid(rowGuid).getName();
-        User user = securityService.getUserByName(selectedUserName);
+        Group selectedGroup = securityService.findGroupByRowGuid(rowGuid);
 
         artifactModel = new ListModelList<Artifact>();
+        artifactModel.setMultiple(true);
         groupArtifactsMap.put(rowGuid, artifactModel);
         artifactMap = new HashMap<Integer, Artifact>();
         Set<Usermetadata> userMetadataSet = userMetadataService.getUserMetadataByLog(selectedItemId, UserMetadataTypeEnum.FILTER);
@@ -410,16 +395,12 @@ public class AccessController extends SelectorComposer<Div> {
             AccessType artifactAccessType;
             artifactModel.add(artifact);
             artifactMap.put(id, artifact);
-            try {
-                artifactAccessType = authorizationService.getUserMetadataAccessTypeByUser(id, user);
-                if (artifactAccessType != null && (artifactAccessType == AccessType.VIEWER)) {
-                    artifactModel.addToSelection(artifact);
-                }
-            } catch (Exception e) {
-                // artifactAccessType = null;
+
+            artifactAccessType = authorizationService.getUsermetadataAccessTypeByGroup(id, selectedGroup);
+            if (artifactAccessType == AccessType.VIEWER) {
+                artifactModel.addToSelection(artifact);
             }
         }
-        artifactModel.setMultiple(true);
         artifactListbox.setModel(artifactModel);
         /*
         // Old method
@@ -479,13 +460,14 @@ public class AccessController extends SelectorComposer<Div> {
                             } else {
                                 authorizationService.deleteUserMetadataAccess(artifact.getId(), rowGuid);
                             }
-                        } else {
-                            authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
-                        }
+                        } // Only save usermetadata access type if RESTRICTED is selected
+//                        else {
+//                            authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid, accessType);
+//                        }
                     }
                 }
-            } else if (selectedItem instanceof UserMetadataSummaryType) {
-                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
+//            } else if (selectedItem instanceof UserMetadataSummaryType) {
+//                authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
             } else {
                 LOGGER.error("Unknown item type.");
             }

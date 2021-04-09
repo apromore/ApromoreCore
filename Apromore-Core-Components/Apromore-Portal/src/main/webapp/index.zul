@@ -145,6 +145,13 @@
         visibility: hidden;
         }
     </style>
+
+    <script type="text/javascript">
+        window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
+            window.location.reload();
+        }
+    </script>
+
     <window id="mainW" border="none" height="100%" width="100%" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
         <!--<div class="z-listheader">-->
@@ -203,6 +210,10 @@
                             <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
                             <h:span class="ap-action-sep"></h:span>
+                            <hlayout id="dataPipelinesSection" visible="false">
+                                <button id="btnCreateDataPipeline" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.e.portal.createDataPipeline.hint}"/>
+                                <h:span class="ap-action-sep"></h:span>
+                            </hlayout>
                             <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="Select all"/>
                             <button id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="Select none"/>
                             <h:span class="ap-action-sep"></h:span>
@@ -253,6 +264,7 @@
         <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
+
     <!-- Following script improves performance of listbox dropdown display time-->
     <script defer="true">
         <![CDATA[
@@ -261,6 +273,7 @@
                 pp.style.display = "block";
             };
             zul.inp.Bandbox.prototype.slideDown_ = zul.inp.Combobox.prototype.slideDown_;
+
             window.__AP__ = {};
         ]]>
     </script>

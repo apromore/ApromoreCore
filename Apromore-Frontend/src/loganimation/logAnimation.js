@@ -375,7 +375,7 @@ export default class LogAnimation {
         else if (event.getEventType() === AnimationEventType.MODEL_CANVAS_MOVING) {
             let modelBox = event.getEventData().viewbox;
             let modelMatrix = event.getEventData().transformMatrix;
-            this.tokenAnimation.setPosition(modelBox.x, modelBox.y, modelBox.width, modelBox.height, modelMatrix);
+            this.tokenAnimation.setPosition(modelBox, modelMatrix);
             if (this.isPlaying()) {
                 this.pause();
                 this.isPlayingBeforeMovingModel = true;
@@ -384,7 +384,7 @@ export default class LogAnimation {
         else if (event.getEventType() === AnimationEventType.MODEL_CANVAS_MOVED) {
             let modelBox = event.getEventData().viewbox;
             let modelMatrix = event.getEventData().transformMatrix;
-            this.tokenAnimation.setPosition(modelBox.x, modelBox.y, modelBox.width, modelBox.height, modelMatrix);
+            this.tokenAnimation.setPosition(modelBox, modelMatrix);
             if (this.isPlayingBeforeMovingModel) {
                 this.unPause();
                 this.isPlayingBeforeMovingModel = false;

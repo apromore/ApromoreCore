@@ -94,6 +94,9 @@
         <module>Apromore-Custom-Plugins/Calendar-Portal</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
 
+        <!-- Security Lib -->
+        <module>apromoresecuritylib</module>
+
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/portal-model</module>
         <module>Apromore-Clients/manager-client</module>
@@ -1095,6 +1098,11 @@
                             <supportedProjectType>war</supportedProjectType>
                         </supportedProjectTypes>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>2.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
