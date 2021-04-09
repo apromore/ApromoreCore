@@ -21,6 +21,8 @@
  */
 package org.apromore.portal.security;
 
+import com.sun.jndi.toolkit.url.Uri;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -30,6 +32,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
@@ -136,18 +140,32 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         } else {
             LOGGER.info("[ Keycloak SSO turned off ]");
 
-            final String requestURI = httpServletRequest.getRequestURI().trim();
-            LOGGER.info("requestURI: {}", requestURI);
+            String requestUriStr = httpServletRequest.getRequestURL().toString().trim();
+            LOGGER.info("requestUriStr: {}", requestUriStr);
 
-            if (requestURI.endsWith("/") || requestURI.endsWith("81") || requestURI.endsWith("80")) {
-                final String str = requestURI + "/login.zul";
+            try {
+                final URI uri = new URI(requestUriStr);
 
-                LOGGER.info("strToReturn: {}", str);
+                final String host = uri.getHost();
+                final String path = uri.getPath();
+                final int port = uri.getPort();
+                LOGGER.info("host {} path {} port {}", host, path, port);
 
-                return str;
-            } else {
-                return requestURI;
+                if (host.endsWith("/") || ( (port == 80) || (port == 8181)) ) {
+                    if ( (path == null) ||
+                            ( ((port == 80) || (port == 8181)) &&
+                                    ((path != null)  && (! path.endsWith("zul"))))) {
+                        requestUriStr = requestUriStr + "/login.zul";
+
+                        LOGGER.info("requestUriStr: {}", requestUriStr);
+                    }
+                }
+            } catch (final URISyntaxException use) {
+                LOGGER.error("Error in parsing uri: {} - stackTrace {}", use.getMessage(),
+                        ExceptionUtils.getStackTrace(use));
             }
+
+            return requestUriStr;
         }
     }
 }
