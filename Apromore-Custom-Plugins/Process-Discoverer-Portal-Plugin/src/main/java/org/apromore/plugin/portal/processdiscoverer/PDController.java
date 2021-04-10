@@ -84,26 +84,26 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
- * PDController manages the main UI of PD. Other sub-controllers are either action (under the actions package) 
+ * PDController manages the main UI of PD. Other sub-controllers are either action (under the actions package)
  * or component controllers (under the components package). Each component controller manages one UI area such as
  * Abstraction settings, view settings, or log statistics.<br>
- * PDController is also the Mediator for the sub-controllers, representing them to communicate with 
- * the outside as well as among them, avoiding direct communication between sub-controllers, 
- * e.g. a UI change needs to communicate from a sub-controller to PDController which will coordinate 
+ * PDController is also the Mediator for the sub-controllers, representing them to communicate with
+ * the outside as well as among them, avoiding direct communication between sub-controllers,
+ * e.g. a UI change needs to communicate from a sub-controller to PDController which will coordinate
  * this change to other sub-controllers.
  * <p>
- * Data items in PD are grouped under three objects: <b>ContextData</b> contains contextual variables<br> relating to 
- * the environment calling this plugin, <b>LogData</b> represents the log, <b>UserOptions</b><br> manages all user 
- * variables set via UI controls, and <b>OutputData</b> represents the existing output data being displayed on the UI. 
+ * Data items in PD are grouped under three objects: <b>ContextData</b> contains contextual variables<br> relating to
+ * the environment calling this plugin, <b>LogData</b> represents the log, <b>UserOptions</b><br> manages all user
+ * variables set via UI controls, and <b>OutputData</b> represents the existing output data being displayed on the UI.
  * All controllers share common data which is provided via DataManager.
  * <p>
- * PD consumes memory resources in various ways (e.g. using third-party libraries), it implements SessionCleanup 
- * interface to be called upon the Session is destroyed by ZK. 
+ * PD consumes memory resources in various ways (e.g. using third-party libraries), it implements SessionCleanup
+ * interface to be called upon the Session is destroyed by ZK.
  * <p>
- * Starting point: first, the window will be created which fires onCreate(), then ZK client engine sends an 
+ * Starting point: first, the window will be created which fires onCreate(), then ZK client engine sends an
  * onLoaded event to the main window triggering windowListener().
  * <p>
- * PD has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode. 
+ * PD has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode.
  * Each <b>action</b> will change PD to different modes. There are transition rules between modes
  * and active state of UI controls in each mode.
  * 
@@ -276,17 +276,17 @@ public class PDController extends BaseController {
             logData = pdFactory.createLogData(contextData, configData, eventLogService);
             IndexableAttribute mainAttribute = logData.getAttribute(configData.getDefaultAttribute());
             if (mainAttribute == null) {
-                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.", 
-                        "Process Discoverer", 
-                        Messagebox.OK, 
+                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.",
+                        "Process Discoverer",
+                        Messagebox.OK,
                         Messagebox.INFORMATION);
                 return;
             }
             else if (mainAttribute.getValueSize() > configData.getMaxNumberOfUniqueValues()) {
                 Messagebox.show("We cannot display the process map due to a large number of activities in the log " +
-                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")", 
-                                "Process Discoverer", 
-                                Messagebox.OK, 
+                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")",
+                                "Process Discoverer",
+                                Messagebox.OK,
                                 Messagebox.INFORMATION);
                 return;
             }
@@ -311,10 +311,10 @@ public class PDController extends BaseController {
             toolbarController = pdFactory.createToolbarController(this);
 
             initialize();
-            System.out.println("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
-            System.out.println("Desktop ID = " + getDesktop().getId());
+            LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
+            LOGGER.debug("Desktop ID = " + getDesktop().getId());
             
-            // Finally, store objects to be cleaned up when the session timeouts 
+            // Finally, store objects to be cleaned up when the session timeouts
             getDesktop().setAttribute("processDiscoverer", processDiscoverer);
             getDesktop().setAttribute("processVisualizer", processVisualizer);
             getDesktop().setAttribute("pluginSessionId", pluginSessionId);
@@ -333,7 +333,7 @@ public class PDController extends BaseController {
             viewSettingsController.updateUI(null);
             initializeEventListeners();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Unable to initialize PD controller", e);
             Messagebox.show(e.getMessage(), "Process Discoverer", Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -363,34 +363,18 @@ public class PDController extends BaseController {
             logStatsController.initializeEventListeners(contextData);
             timeStatsController.initializeEventListeners(contextData);
 
-            EventListener<Event> windowListener = new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
+            EventListener<Event> windowListener = event -> {
                     graphSettingsController.ensureSliders();
                     generateViz();
-                }
             };
             mainWindow.addEventListener("onLoaded", windowListener);
             mainWindow.addEventListener("onOpen", windowListener);
-            mainWindow.addEventListener("onZIndex", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
+            mainWindow.addEventListener("onZIndex", event -> {
                     putWindowAtTop(caseDetailsController.getWindow());
                     putWindowAtTop(perspectiveDetailsController.getWindow());
-                }
             });
-            mainWindow.addEventListener("onCaseDetails", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    caseDetailsController.onEvent(event);
-                }
-            });
-            mainWindow.addEventListener("onPerspectiveDetails", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    perspectiveDetailsController.onEvent(event);
-                }
-            });
+            mainWindow.addEventListener("onCaseDetails", event -> caseDetailsController.onEvent(event));
+            mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
             
         }
         catch (Exception ex) {
@@ -458,7 +442,6 @@ public class PDController extends BaseController {
         }
         catch (Exception ex) {
             Messagebox.show(ex.getMessage());
-            LOGGER.error(ex.getMessage(), ex);
             LOGGER.error(ex.getMessage(), ex);
         }
     }
@@ -628,7 +611,7 @@ public class PDController extends BaseController {
     }
     
     public boolean isBPMNView() {
-        return this.userOptions.getBPMNMode(); 
+        return this.userOptions.getBPMNMode();
     }
 
     public void setBPMNView(boolean mode) {
@@ -646,6 +629,7 @@ public class PDController extends BaseController {
         }
         catch (Exception ex) {
             Messagebox.show(ex.getMessage());
+            LOGGER.error(ex.getMessage(), ex);
         }
     }
     
@@ -684,7 +668,7 @@ public class PDController extends BaseController {
             toolbarController.setDisabled(true);
             caseDetailsController.setDisabled(true);
         }
-        else if (newMode == InteractiveMode.MODEL_MODE) {                
+        else if (newMode == InteractiveMode.MODEL_MODE) {
             viewSettingsController.setDisabled(false);
             graphSettingsController.setDisabled(false);
             logStatsController.setDisabled(false);
@@ -796,11 +780,12 @@ public class PDController extends BaseController {
         String  chunkSize = parameterMap.get("chunkSize")[0];
         try {
             String chunkJSON = graphVisController.getAnimationMovie()
-                                        .getChunkJSON(Integer.parseInt(startFrameIndex), 
+                                        .getChunkJSON(Integer.parseInt(startFrameIndex),
                                                         Integer.parseInt(chunkSize)).toString();
             return escapeQuotedJavascript(chunkJSON);
         }
         catch (NumberFormatException | JSONException e) {
+            LOGGER.error(e.getMessage(), e);
             return "Error: " + e.getMessage();
         }
     }
