@@ -70,7 +70,9 @@ public interface ManagerService {
      *
      * @return <code>true</code> if the user was logged-out, <code>false</code> otherwise.
      */
-    boolean logoutUserAllSessions(final String username) throws Exception;
+    boolean logoutUserAllSessions(final String username,
+                                  final String kcLogoutHttpUrl,
+                                  final String kcLogoutHttpsUrl) throws Exception;
 
     /**
      * the User record.

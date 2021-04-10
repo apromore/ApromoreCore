@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,29 +19,22 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal;
+package org.apromore.commons.utils;
 
-import java.io.IOException;
-import java.util.Set;
-import org.zkoss.util.media.Media;
+import lombok.Getter;
 
-/**
- * Plug-in interface for exporting files.
- *
- * This modifies the File/Download UI.
- */
-public interface FileExporterPlugin {
+public enum DelimiterType {
+    COMMA(","),
+    SEMI_COLON(";"),
+    COLON(":"),
+    TAB("\t"),
+    PIPE("\\|"),
+    NONE("!");
 
-    /**
-     * @return the file extensions handled by this plugin; may be empty but should not be null
-     */
-    Set<String> getFileExtensions() throws IOException;
+    @Getter
+    private String delimiter;
 
-    /**
-     * Call-back that is called when this plug-in is executed.
-     *
-     * @param media to be imported
-     * @param isPublic whether to make the uploaded file publicly accessible
-     */
-    void exportFile(Media media, boolean isPublic);
+    DelimiterType(final String delim) {
+        this.delimiter = delim;
+    }
 }

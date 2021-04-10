@@ -73,6 +73,11 @@ public class ConfigBean implements Serializable {
 
     private boolean useKeycloakSso;
 
+    private String securityMsHost;
+    private String securityMsPort;
+    private String securityMsHttpLogoutUrl;
+    private String securityMsHttpsLogoutUrl;
+
     // Email for issue reporting
     private String  contactEmail;
 
@@ -88,7 +93,11 @@ public class ConfigBean implements Serializable {
                       boolean enableCalendar,
                       long maxUploadSize,
                       String contactEmail,
-                      boolean useKeycloakSso) {
+                      boolean useKeycloakSso,
+                      String securityMsHost,
+                      String securityMsPort,
+                      String securityMsHttpLogoutUrl,
+                      String securityMsHttpsLogoutUrl) {
 
         LOGGER.info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -101,7 +110,10 @@ public class ConfigBean implements Serializable {
             " minorversion.number=" + minorVersionNumber +
             " version.edition=" + versionEdition +
             " version.builddate=" + versionBuildDate +
-            " site.useKeycloakSso=" + useKeycloakSso);
+            " site.securitymsHost=" + securityMsHost +
+            " site.securitymsPort=" + securityMsPort +
+            " site.securityms.http.logoutUrl=" + securityMsHttpLogoutUrl +
+            " site.securityms.https.logoutUrl=" + securityMsHttpsLogoutUrl);
 
         this.siteEditor         = siteEditor;
         this.siteExternalHost   = siteExternalHost;
@@ -135,6 +147,12 @@ public class ConfigBean implements Serializable {
         this.useKeycloakSso = useKeycloakSso;
 
         this.contactEmail       = contactEmail;
+
+        this.securityMsHost = securityMsHost;
+        this.securityMsPort = securityMsPort;
+
+        this.securityMsHttpLogoutUrl = "http://" + securityMsHost + ":" + securityMsPort + "/logout/";
+        this.securityMsHttpsLogoutUrl = "https://" + securityMsHost + ":8443" + "/logout/";
     }
 
     public String getSiteEditor()           { return siteEditor; }
@@ -167,6 +185,14 @@ public class ConfigBean implements Serializable {
     public String getContactEmail() { return contactEmail; }
 
     public boolean isUseKeycloakSso() { return useKeycloakSso; }
+
+    public String getSecurityMsHttpLogoutUrl() {
+        return securityMsHttpLogoutUrl;
+    }
+
+    public String getSecurityMsHttpsLogoutUrl() {
+        return securityMsHttpsLogoutUrl;
+    }
 
     public boolean isCommunity() {
         return versionEdition.toLowerCase().contains(COMMUNITY_TAG);

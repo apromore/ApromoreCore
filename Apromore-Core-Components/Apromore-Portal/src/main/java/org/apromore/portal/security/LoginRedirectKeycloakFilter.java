@@ -32,7 +32,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 public class LoginRedirectKeycloakFilter extends GenericFilterBean {
@@ -48,35 +47,19 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
     private static String keycloakLoginFormUrl;
 
-    private static String s_fullConfigurableReturnPath = "http://localhost:8181/";
-    private static boolean s_utiliseKeycloakSso = false;
+    private String s_fullConfigurableReturnPath = "http://localhost:8181/";
+    private boolean s_utiliseKeycloakSso = false;
 
-    static {
-        final Properties keycloakProperties = readKeycloakProperties();
+    public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
+        s_fullConfigurableReturnPath = fullProtocolHostPortUrl;
 
-        s_fullConfigurableReturnPath = keycloakProperties.getProperty("fullProtocolHostPortUrl");
-        LOGGER.info("\n\n>>> >>> >>> > [FROM keycloak.properties] keycloakLoginFormUrl: {}",
-                s_fullConfigurableReturnPath);
-
-        s_utiliseKeycloakSso = Boolean.valueOf(keycloakProperties.getProperty("useKeycloakSso"));
-        LOGGER.info("\n\n>>> utiliseKeycloakSso {}", s_utiliseKeycloakSso);
+        LOGGER.info("Set fullProtocolHostPortUrl to {}", s_fullConfigurableReturnPath);
     }
 
-    private static Properties readKeycloakProperties() {
-        try {
-            final Properties properties = new Properties();
-            properties.load(LoginRedirectKeycloakFilter.class.getResourceAsStream(
-                    "/keycloak.properties"));
-            LOGGER.info("\n\nkeycloak.properties properties file properties {}", properties);
+    public void setUseKeycloakSso(final boolean useKeycloakSso) {
+        s_utiliseKeycloakSso = useKeycloakSso;
 
-            return properties;
-        } catch (final IOException | NullPointerException e) {
-            LOGGER.error("Exception reading site.cfg properties {}: " + e.getMessage());
-
-            e.printStackTrace();
-
-            return null;
-        }
+        LOGGER.info("Set useKeycloakSso to {}", s_utiliseKeycloakSso);
     }
 
     public String getKeycloakLoginFormUrl() {

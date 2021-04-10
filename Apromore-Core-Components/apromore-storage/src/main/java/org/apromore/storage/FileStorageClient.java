@@ -82,8 +82,10 @@ public class FileStorageClient implements StorageClient {
 	String name = Paths.get(baseStorage, prefix, key).toString();
 	File file = new File(name);
 	return file.delete();
-
     }
 
-
+	@Override
+	public boolean delete(String prefix) throws IllegalAccessException {
+    	throw new IllegalAccessException();
+	}
 }

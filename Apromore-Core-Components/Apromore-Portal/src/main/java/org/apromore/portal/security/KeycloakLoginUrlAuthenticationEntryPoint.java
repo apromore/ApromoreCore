@@ -31,8 +31,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
@@ -44,39 +44,21 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
 
-    private static String s_fullConfigurableReturnPath = "http://localhost:8181/";
-    private static boolean s_utiliseKeycloakSso = false;
+    private String fullConfigurableReturnPath = "http://localhost:8181/";
+    private boolean utiliseKeycloakSso = false;
 
     private String keycloakLoginFormUrl;
 
-    static {
-        final Properties keycloakProperties = readKeycloakProperties();
+    public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
+        fullConfigurableReturnPath = fullProtocolHostPortUrl;
 
-        s_fullConfigurableReturnPath = keycloakProperties.getProperty("fullProtocolHostPortUrl");
-        LOGGER.info("\n\n>>> >>> >>> > [FROM keycloak.properties] keycloakLoginFormUrl: {}",
-                s_fullConfigurableReturnPath);
-
-        s_utiliseKeycloakSso = Boolean.valueOf(keycloakProperties.getProperty("useKeycloakSso"));
-        LOGGER.info("\n\n>>> utiliseKeycloakSso {}", s_utiliseKeycloakSso);
+        LOGGER.info("Set fullConfigurableReturnPath to {}", fullConfigurableReturnPath);
     }
 
-    private static Properties readKeycloakProperties() {
-        final Properties properties = new Properties();
+    public void setUseKeycloakSso(final boolean useKeycloakSso) {
+        utiliseKeycloakSso = useKeycloakSso;
 
-        try (final InputStream inputStream =
-                     KeycloakLoginUrlAuthenticationEntryPoint.class.getResourceAsStream(
-                "/keycloak.properties")) {
-
-            properties.load(inputStream);
-            LOGGER.info("\n\nkeycloak.properties properties file properties {}", properties);
-
-            return properties;
-        } catch (final IOException | NullPointerException e) {
-            LOGGER.error("Exception reading keycloak properties: {} - stackTrace {}",
-                    e.getMessage(), ExceptionUtils.getStackTrace(e));
-
-            return null;
-        }
+        LOGGER.info("Set useKeycloakSso to {}", utiliseKeycloakSso);
     }
 
     public String getKeycloakLoginFormUrl() {
@@ -87,18 +69,18 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         if ((this.keycloakLoginFormUrl == null) ||
                 (this.keycloakLoginFormUrl.contains(KEYCLOAK_REALM_PLACEHOLDER))) {
             final String keycloakRealm = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
-            LOGGER.info("\n\nFROM environment property keycloakRealm[" + keycloakRealm + "]");
+            LOGGER.info("FROM environment property keycloakRealm[" + keycloakRealm + "]");
 
             if (keycloakRealm != null) {
                 String tmpUrl = keycloakLoginFormUrl;
 
                 final String randomStateUuid = UUID.randomUUID().toString();
-                LOGGER.info("\n\nrandomStateUuid: {}", randomStateUuid);
+                LOGGER.info("randomStateUuid: {}", randomStateUuid);
 
                 tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
                 tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
-                tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, s_fullConfigurableReturnPath);
-                LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
+                tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
+                LOGGER.info(">>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
                 this.keycloakLoginFormUrl = tmpUrl;
             }  else {
@@ -124,44 +106,65 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     }
 
     /**
-     * Allows subclasses to modify the login form URL that should be applicable for a
-     * given request.
-     * @param request the request
-     * @param response the response
-     * @param exception the exception
-     * @return the URL (cannot be null or empty; defaults to {@link #getLoginFormUrl()})
+     * Allows sub-classes to modify the login form URL that should be applicable for a given request.
+     *
+     * @param httpServletRequest The HTTP servlet request.
+     * @param httpServletResponse The HTTP servlet response.
+     * @param exception The exception
+     *
+     * @return The formulated URL (cannot be null or empty; defaults to {@link #getLoginFormUrl()}).
      */
     @Override
     protected String determineUrlToUseForThisRequest(
             final HttpServletRequest httpServletRequest,
             final HttpServletResponse httpServletResponse,
             final AuthenticationException exception) {
-        if (s_utiliseKeycloakSso) {
+        if (utiliseKeycloakSso) {
+            LOGGER.info("[ Utilising keycloak ]");
+
             final String loginFormPattern = getKeycloakLoginFormUrl();
+            LOGGER.info("### loginFormPattern: {}", loginFormPattern);
 
             final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
+            LOGGER.info("keycloakRealmOfCustomer {}", keycloakRealmOfCustomer);
 
             String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
-            loginUrl = loginFormPattern.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, s_fullConfigurableReturnPath);
+            LOGGER.info("loginUrl[1] {}", loginUrl);
+            loginUrl = loginUrl.replaceAll(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
+            LOGGER.info("loginUrl[2] {}", loginUrl);
 
-            LOGGER.info("\n\n>>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
+            LOGGER.info(">>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
 
             return loginUrl;
         } else {
-            LOGGER.info("\n\n[ Keycloak SSO turned off ]");
+            LOGGER.info("[ Keycloak SSO turned off ]");
 
-            final String requestURI = httpServletRequest.getRequestURI().trim();
-            LOGGER.info("\n\nrequestURI: {}", requestURI);
+            String requestUriStr = httpServletRequest.getRequestURL().toString().trim();
+            LOGGER.info("requestUriStr: {}", requestUriStr);
 
-            if (requestURI.endsWith("/") || requestURI.endsWith("81")) {
-                final String str = requestURI + "/login.zul";
+            try {
+                final URI uri = new URI(requestUriStr);
 
-                LOGGER.info("\n\nstrToReturn: {}", str);
+                final String host = uri.getHost();
+                final String path = uri.getPath();
+                final int port = uri.getPort();
+                LOGGER.info("host {} path {} port {}", host, path, port);
 
-                return str;
-            } else {
-                return requestURI;
+                if (host.endsWith("/") || ( (port == 80) || (port == 8181)) ) {
+                    if ( (path == null) ||
+                            ( ((port == 80) || (port == 8181)) &&
+                                    ((path != null)  && (! path.endsWith("zul"))))) {
+                        requestUriStr = requestUriStr + "/login.zul";
+
+                        LOGGER.info("requestUriStr: {}", requestUriStr);
+                    }
+                }
+            } catch (final URISyntaxException use) {
+                LOGGER.error("Error in parsing uri: {} - stackTrace {}", use.getMessage(),
+                        ExceptionUtils.getStackTrace(use));
             }
+
+            return requestUriStr;
         }
     }
 }
