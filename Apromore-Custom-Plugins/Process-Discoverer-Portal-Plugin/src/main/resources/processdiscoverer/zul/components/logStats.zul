@@ -31,12 +31,10 @@
          align="center">
       <vlayout spacing="0">
         <n:div class="ap-pd-logstats-header ap-link" title="Filter by Cases">
-          <button id="cases2" sclass="ap-icon ap-icon-road" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabID')">
-          </button>
-          <label sclass="title" value="Cases" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabID')">
-          </label>
+          <button id="btnCaseHeading" sclass="ap-icon ap-icon-road"></button>
+          <label id="lblCaseHeading" sclass="title" value="Cases"></label>
         </n:div>
-        <div id="ap-pd-chart-case" class="ap-pd-chart" xmlns="native" />
+        <n:div id="ap-pd-chart-case" class="ap-pd-chart" />
         <label id="lblCasePercent"
                value="Cases percent"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showCaseDetails()">
@@ -57,11 +55,10 @@
          align="center">
       <vlayout spacing="0">
         <n:div class="ap-pd-logstats-header ap-link" title="Filter by Case variants">
-          <button sclass="ap-icon ap-icon-random" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabVariant')"></button>
-          <label sclass="title" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabVariant')"
-                 value="Case variants"/>
+          <button id="btnCaseVariantHeading" sclass="ap-icon ap-icon-random"></button>
+          <label id="lblCaseVariantHeading" sclass="title" value="Case variants"/>
         </n:div>
-        <div id="ap-pd-chart-variant" class="ap-pd-chart" xmlns="native" />
+        <n:div id="ap-pd-chart-variant" class="ap-pd-chart" />
         <label id="lblVariantPercent"
                value="Case variants percent"/>
         <div>
@@ -82,11 +79,10 @@
          align="center">
       <vlayout spacing="0">
         <n:div class="ap-pd-logstats-header ap-link" title="Filter by Events">
-          <button sclass="ap-icon ap-icon-flag" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'EventTabAttribute')"></button>
-          <label sclass="title" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'EventTabAttribute')"
-                 value="Events"/>
+          <button id="btnEventHeading" sclass="ap-icon ap-icon-flag" ></button>
+          <label id="lblEventHeading" sclass="title" value="Events"/>
         </n:div>
-        <div id="ap-pd-chart-event" class="ap-pd-chart" xmlns="native" />
+        <n:div id="ap-pd-chart-event" class="ap-pd-chart" />
         <label id="lblEventPercent"
                value="Events percent"/>
         <div>
@@ -107,16 +103,16 @@
          align="center">
       <vlayout spacing="0">
         <n:div class="ap-pd-logstats-header ap-link" title="Filter by Attribute">
-          <button id="details2"
-                  sclass="ap-icon ap-icon-perspective" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabAttribute')" >
+          <button id="btnActivityHeading"
+                  sclass="ap-icon ap-icon-perspective" >
           </button>
           <label sclass="title"
-                 id="perspectiveSelected"
+                 id="lblActivityHeading"
                  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                 value="Activities" w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabAttribute')" >
+                 value="Activities" >
           </label>
         </n:div>
-        <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="native" />
+        <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="http://www.zkoss.org/2005/zk/native" /> 
         <label id="lblNodePercent"
                value="Nodes percent"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showPerspectiveDetails()">

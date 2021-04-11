@@ -72,8 +72,9 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         relativeWeight = (relativeWeight < 0 ? 0 : relativeWeight);
         
         JSONObject jsonData = new JSONObject();
-        jsonData.put("source", visContext.getProcessAbstraction().getNodeId(edge.getSource()));
-        jsonData.put("target", visContext.getProcessAbstraction().getNodeId(edge.getTarget()));
+        jsonData.put("id", edge.getEdgeID().toString());
+        jsonData.put("source", edge.getSource().getId().toString());
+        jsonData.put("target", edge.getTarget().getId().toString());
         jsonData.put("style", BPMNHelper.isStartingOrEndingEdge(edge, abs.getDiagram()) ? "dashed" : "solid");
         jsonData.put("strength", relativeWeight*100);
         jsonData.put("color", visSettings.getColorSettings().getEdgeColor(element, visContext, visSettings));

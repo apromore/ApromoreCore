@@ -3,9 +3,8 @@ import util from './util';
 import search from './search';
 
 let PD = function(pluginExecutionId,
-                  interactiveViewContainerId,
-                  animationViewContainerId,
-                  animationModelContainerId,
+                  processModelContainerId,
+                  animationPanelContainerId,
                   timelineContainerId,
                   speedControlContainerId,
                   progressContainerId,
@@ -15,10 +14,10 @@ let PD = function(pluginExecutionId,
                   playClassName,
                   pauseClassName) {
     this._private = {
+        'cy': undefined,
         'pluginExecutionId': pluginExecutionId,
-        'interactiveViewContainerId': interactiveViewContainerId,
-        'animationViewContainerId': animationViewContainerId,
-        'animationModelContainerId': animationModelContainerId,
+        'processModelContainerId': processModelContainerId,
+        'animationPanelContainerId': animationPanelContainerId,
         'timelineContainerId': timelineContainerId,
         'speedControlContainerId': speedControlContainerId,
         'progressContainerId': progressContainerId,

@@ -26,18 +26,22 @@ import java.text.DecimalFormat;
 
 public class PerspectiveDetails {
 
-    private String value;
-    private long occurrences;
-    private double freq;
-    private String freqStr;
+    private final String value;
+    private final long occurrences;
+    private final double freq;
+    private final String freqStr;
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
 
-    public PerspectiveDetails(String value, long occurrences, double freq) {
+    private PerspectiveDetails(String value, long occurrences, double freq) {
         this.value = value;
         this.occurrences = occurrences;
         this.freq = freq;
         this.freqStr = decimalFormat.format(100 * freq);
+    }
+
+    public static PerspectiveDetails valueOf (String value, long occurrences, double freq) {
+        return new PerspectiveDetails(value, occurrences, freq);
     }
 
     public String getValue() {

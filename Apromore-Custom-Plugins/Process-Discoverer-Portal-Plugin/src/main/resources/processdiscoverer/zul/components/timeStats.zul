@@ -35,12 +35,8 @@
       sclass="ap-pd-timestats-duration">
     <vlayout spacing="15px" hflex="8">
       <div sclass="ap-pd-timestats-header ap-link" tooltiptext="Filter by Performance">
-        <n:span class="ap-icon ap-icon-duration-range"
-                onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabPerformance')"
-        ></n:span>
-        <label sclass="title"
-               w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabPerformance')"
-        >${labels.e.pd.statDuration.text}</label>
+        <span id="spnCaseHeading" class="ap-icon ap-icon-duration-range"></span>
+        <label id="lblCaseHeading" sclass="title">${labels.e.pd.statDuration.text}</label>
       </div>
       <div sclass="ap-pd-duration">
         <div>
@@ -73,12 +69,8 @@
           hflex="7"
           spacing="15px">
       <div sclass="ap-pd-timestats-header ap-link" tooltiptext="Filter by Timeframe">
-        <n:span class="ap-icon ap-icon-clock"
-                onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabTimeframe')"
-        ></n:span>
-        <label sclass="title"
-               w:onClick="Ap.pd.zkSendEvent('$filter', 'onInvoke', 'CaseTabTimeframe')"
-        >${labels.e.pd.statTimerange.text}</label>
+        <span id="spnLogHeading" class="ap-icon ap-icon-clock"></span>
+        <label id="lblLogHeading" sclass="title">${labels.e.pd.statTimerange.text}</label>
       </div>
       <div sclass="ap-pd-timerange">
         <div>

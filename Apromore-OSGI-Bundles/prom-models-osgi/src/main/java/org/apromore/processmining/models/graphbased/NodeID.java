@@ -30,15 +30,18 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 
 	private final UUID id = UUID.randomUUID();
 
-	public int compareTo(NodeID node) {
+	@Override
+    public int compareTo(NodeID node) {
 		return id.compareTo(node.id);
 	}
 
-	public String toString() {
-		return "node " + id;
+	@Override
+    public String toString() {
+		return "node-" + id;
 	}
 
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (!(o instanceof NodeID)) {
 			return false;
 		}
@@ -46,7 +49,8 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 		return nodeID.id.equals(id);
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return id.hashCode();
 	}
 

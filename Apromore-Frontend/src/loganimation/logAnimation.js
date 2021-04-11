@@ -93,19 +93,6 @@ export default class LogAnimation {
         this.logEnabled = []; // flag for log enable/disable
     }
 
-    setLogOrder(logOrder) {
-        this.logOrder = logOrder;
-        this.timeline.arrangeLogTimelines(logOrder);
-    }
-
-    setLogEnabled(logIndex, enabled) {
-        this.logEnabled[logIndex] = enabled;
-    }
-
-    isLogEnabled(logIndex) {
-        return this.logEnabled[logIndex];
-    }
-
     /**
      * Caller of LogAnimation must make sure that it has successfuly loaded a process model before initializing it.
      * A log animation cannot work without a process model.
@@ -118,11 +105,11 @@ export default class LogAnimation {
         }
         let setupData = JSON.parse(setupDataJSON);
         this.logSummaries = setupData.logs;
-        this.logNum = setupData.logs.length;
-        this.logOrder = range(0, this.logNum);
-        this.logEnabled = repeat(true, this.logNum);
+        let logNum = setupData.logs.length;
+        this.logOrder = range(0, logNum);
+        this.logEnabled = repeat(true, logNum);
 
-        this.colorPalette = new PaletteProvider(null, this.logNum);
+        this.colorPalette = new PaletteProvider(null, logNum);
         let {recordingFrameRate, logStartFrameIndexes, logEndFrameIndexes, elementIndexIDMap, caseCountsByFrames} = setupData;
         let startMs = new Date(setupData.timeline.startDateLabel).getTime(); // Start date in milliseconds
         let endMs = new Date(setupData.timeline.endDateLabel).getTime(); // End date in milliseconds
@@ -175,6 +162,19 @@ export default class LogAnimation {
         if (this.timeline) this.timeline.destroy();
         if (this.speedControl) this.speedControl.destroy();
         if (this.progress) this.progress.destroy();
+    }
+
+    setLogOrder(logOrder) {
+        this.logOrder = logOrder;
+        this.timeline.arrangeLogTimelines(logOrder);
+    }
+
+    setLogEnabled(logIndex, enabled) {
+        this.logEnabled[logIndex] = enabled;
+    }
+
+    isLogEnabled(logIndex) {
+        return this.logEnabled[logIndex];
     }
 
     /**

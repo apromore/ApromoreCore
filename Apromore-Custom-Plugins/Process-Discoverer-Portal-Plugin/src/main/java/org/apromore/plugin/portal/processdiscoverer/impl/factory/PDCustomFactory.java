@@ -24,8 +24,9 @@ package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 import org.apromore.apmlog.APMLog;
 import org.apromore.logman.ALog;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogFilterController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
@@ -37,7 +38,7 @@ import org.deckfour.xes.model.XLog;
 
 public class PDCustomFactory extends PDStandardFactory {
     @Override
-    public LogData createLogData(ContextData contextData, EventLogService eventLogService) throws Exception {
+    public LogData createLogData(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         if (xlog == null) {
@@ -50,7 +51,7 @@ public class PDCustomFactory extends PDStandardFactory {
         ALog aLog = new ALog(xlog);
         System.out.println("ALog.constructor: " + (System.currentTimeMillis() - timer) + " ms.");
         
-        return new LogDataWithAPMLog(contextData.getConfigData(), aLog, apmLog);
+        return new LogDataWithAPMLog(configData, aLog, apmLog);
     }
     
     @Override

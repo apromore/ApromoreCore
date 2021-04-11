@@ -1,0 +1,79 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<n:div xmlns="http://www.zkoss.org/2005/zk/native"
+       xmlns:n="http://www.zkoss.org/2005/zk/native"
+       xmlns:z="http://www.zkoss.org/2005/zul"
+       sclass="ap-pd-la" id="ap-pd-la" style="display:none;">
+    <!--<n:div id="ap-pd-la-model" style="background:none;" />-->
+    <!-- <n:canvas id="ap-pd-la-tokencanvas" style="position:absolute; background:none; z-index:1000; pointer-events:none"></n:canvas> -->
+    <n:div id="ap-pd-la-control-panel">
+        <n:div sclass="ap-pd-la-left-container">
+            <n:div sclass="ap-pd-la-controls">
+                <n:div sclass="ap-pd-la-clock" id="ap-pd-la-clock">
+                    <n:span id="ap-pd-la-clock-date">&#xA0;</n:span>
+                    <n:span id="ap-pd-la-clock-time">&#x2D;-:&#x2D;-:&#x2D;-</n:span>
+                    <n:span id="ap-pd-la-clock-subtitle">&#xA0;</n:span>
+                </n:div>
+
+                <n:div id="ap-pd-la-buttons">
+                    <n:button id='ap-pd-la-buttons-start' label="Start" sclass="ap-mc-icon ap-mc-icon-begin">
+                        <n:img></n:img>
+                    </n:button>
+                    <n:button id='ap-pd-la-buttons-backward' label="Backward" sclass="ap-mc-icon ap-mc-icon-fast-backward">
+                        <n:img></n:img>
+                    </n:button>
+                    <n:button id="ap-pd-la-buttons-pause" label="Play" sclass="ap-mc-icon ap-mc-icon-play">
+                        <n:img></n:img>
+                    </n:button>
+                    <n:button id='ap-pd-la-buttons-forward' label="Forward" sclass="ap-mc-icon ap-mc-icon-fast-forward">
+                        <n:img></n:img>
+                    </n:button>
+                    <n:button id='ap-pd-la-buttons-end' label="End" sclass="ap-mc-icon ap-mc-icon-end">
+                        <n:img></n:img>
+                    </n:button>
+                </n:div>
+
+                <!-- Use jQuery-ui-Slider-Pips at github.com/simeydotme/jQuery-ui-Slider-Pips -->
+                <n:div id="ap-pd-la-speed-control-wrapper">
+                    <!-- <center style="font: 1em monospace">Replay Speed</center> -->
+                    <n:div id="ap-pd-la-speed-control" style="margin: auto;">
+                        <n:div class="speed-control-tip">Speed control</n:div>
+                    </n:div>
+                </n:div>
+            </n:div>
+        </n:div>
+        
+        <n:div sclass="ap-pd-la-right-container">
+            <n:div sclass="ap-pd-la-timeline" style="background:none;">
+                <!--
+                <n:div sclass="ap-la-timeline-canvas" style="position:absolute; background:none; width:100%">
+                    <n:canvas id="ap-pd-la-timeline-canvas" style="background:none; pointer-events:none"></n:canvas>
+                </n:div>
+                -->
+                <n:div style="position:absolute; background:none; width:100%">
+                    <n:svg id="ap-pd-la-timeline" style="background:none;" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 1140 80"></n:svg>
+                </n:div>                  
+            </n:div>
+        </n:div>
+    </n:div>
+</n:div>

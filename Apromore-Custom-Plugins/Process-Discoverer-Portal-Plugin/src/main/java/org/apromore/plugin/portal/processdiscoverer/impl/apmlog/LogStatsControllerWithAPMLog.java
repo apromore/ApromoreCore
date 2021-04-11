@@ -28,12 +28,15 @@ import org.apromore.apmlog.filter.PLog;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 
 /**
@@ -48,6 +51,19 @@ import org.zkoss.zul.Label;
  */
 public class LogStatsControllerWithAPMLog extends LogStatsController {
     private Component wdLogStats;
+    
+    private Button btnCaseHeading;
+    private Label lblCaseHeading;
+    
+    private Button btnCaseVariantHeading;
+    private Label lblCaseVariantHeading;
+    
+    private Button btnEventHeading;
+    private Label lblEventHeading;
+    
+    private Button btnActivityHeading;
+    private Label lblActivityHeading;
+    
     private Label lblCasePercent, lblVariantPercent, lblEventPercent;
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
@@ -61,6 +77,8 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private long totalNodeCount;
     
     private LogDataWithAPMLog logData;
+    
+    private boolean disabled = false;
 
     public LogStatsControllerWithAPMLog(PDController parent)  throws Exception {
         super(parent);
@@ -77,6 +95,18 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         if (this.parent == null) return;
 
         wdLogStats = parent.query(".ap-pd-logstats");
+        
+        btnCaseHeading = (Button) wdLogStats.getFellow("btnCaseHeading");
+        lblCaseHeading = (Label) wdLogStats.getFellow("lblCaseHeading");
+        
+        btnCaseVariantHeading = (Button) wdLogStats.getFellow("btnCaseVariantHeading");
+        lblCaseVariantHeading = (Label) wdLogStats.getFellow("lblCaseVariantHeading");
+        
+        btnEventHeading = (Button) wdLogStats.getFellow("btnEventHeading");
+        lblEventHeading = (Label) wdLogStats.getFellow("lblEventHeading");
+        
+        btnActivityHeading = (Button) wdLogStats.getFellow("btnActivityHeading");
+        lblActivityHeading = (Label) wdLogStats.getFellow("lblActivityHeading");
 
         lblCasePercent = (Label) wdLogStats.getFellow("lblCasePercent");
         lblVariantPercent = (Label) wdLogStats.getFellow("lblVariantPercent");
@@ -94,6 +124,73 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
 
         AttributeLogSummary oriLogSummary = parent.getLogData().getAttributeLog().getOriginalLogSummary();
         updateFromLogSummary(oriLogSummary, oriLogSummary);
+    }
+    
+    @Override
+    public void initializeEventListeners(Object data) throws Exception {
+        btnCaseHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabID"));
+            }
+        });
+        
+        lblCaseHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabID"));
+            }
+        });
+        
+        btnCaseVariantHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabVariant"));
+            }
+        });
+        
+        lblCaseVariantHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabVariant"));
+            }
+        });
+        
+        btnEventHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "EventTabAttribute"));
+            }
+        });
+        
+        lblEventHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "EventTabAttribute"));
+            }
+        });
+        
+        btnActivityHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
+            }
+        });
+        
+        lblActivityHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
+            }
+        });
     }
 
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
@@ -172,5 +269,10 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
         AttributeLogSummary logSummary = attLog.getLogSummary();
         updateFromLogSummary(logSummary, oriLogSummary);
+    }
+    
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

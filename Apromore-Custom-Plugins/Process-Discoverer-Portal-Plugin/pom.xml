@@ -27,6 +27,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Embed-Dependency>
+                            artifactId=RoaringBitmap;inline=false
+                        </Embed-Dependency>                    
                         <Import-Package>
                             org.apromore.portal.servlet,
                             com.sun.xml.bind.v2;resolution:=optional,
@@ -177,7 +180,25 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-        </dependency>          
+        </dependency>    
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-animation-logic</artifactId>
+            <version>1.0</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>org.roaringbitmap</groupId>
+            <artifactId>RoaringBitmap</artifactId>
+            <version>0.9.0</version>
+        </dependency>       
+        
+        <dependency>
+            <groupId>org.everit.osgi.bundles</groupId>
+            <artifactId>org.everit.osgi.bundles.com.lodborg.interval-tree</artifactId>
+            <version>1.0.0</version>
+        </dependency>               
 
         <dependency>
             <groupId>junit</groupId>

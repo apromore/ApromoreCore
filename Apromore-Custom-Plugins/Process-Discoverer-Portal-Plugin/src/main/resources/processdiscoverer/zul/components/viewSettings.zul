@@ -77,11 +77,11 @@
               width="126px"
               readonly="true"
               sclass="ap-pd-freq-selector"
-              value="${labels.e.agg.count.text}">
-      <comboitem value="case"
-                 label="${labels.e.agg.count.text}"/>
+              value="${labels.e.agg.case_count.text}">
+      <comboitem value="case_count"
+                 label="${labels.e.agg.case_count.text}"/>
       <comboitem value="case_relative"
-                 label="${labels.e.agg.count_relative.text}"/>
+                 label="${labels.e.agg.case_relative.text}"/>
       <comboitem value="total"
                  label="${labels.e.agg.total.text}"/>
       <comboitem value="mean"

@@ -41,50 +41,50 @@ public class UserOptionsData {
     
     // The initial values are set here
     
-    private boolean bpmnMode = false;
-    private boolean inverted_nodes = false;
-    private boolean inverted_arcs = false;
-    private boolean use_dynamic = false;
-    private boolean includeSecondary = false;
+    protected boolean bpmnMode = false;
+    protected boolean inverted_nodes = false;
+    protected boolean inverted_arcs = false;
+    protected boolean use_dynamic = false;
+    protected boolean includeSecondary = false;
     
-    private double nodes_value = 100;    
-    private double arcs_value = 10;
-    private double parallelism_value = 40;
+    protected double nodes_value = 100;    
+    protected double arcs_value = 10;
+    protected double parallelism_value = 40;
  
    
-    private MeasureType fixedType = ConfigData.DEFAULT_MEASURE_TYPE;
-    private MeasureAggregation fixedAggregation = ConfigData.DEFAULT_MEASURE_AGGREGATE;
-    private MeasureRelation fixedRelation = MeasureRelation.ABSOLUTE;
+    protected MeasureType fixedType = ConfigData.DEFAULT_MEASURE_TYPE;
+    protected MeasureAggregation fixedAggregation = ConfigData.DEFAULT_MEASURE_AGGREGATE;
+    protected MeasureRelation fixedRelation = MeasureRelation.ABSOLUTE;
     
-    private MeasureType primaryType = FREQUENCY;
-    private MeasureAggregation primaryAggregation = MeasureAggregation.CASES;
-    private MeasureRelation primaryRelation = MeasureRelation.ABSOLUTE;
+    protected MeasureType primaryType = FREQUENCY;
+    protected MeasureAggregation primaryAggregation = MeasureAggregation.CASES;
+    protected MeasureRelation primaryRelation = MeasureRelation.ABSOLUTE;
     
-    private MeasureType secondaryType = DURATION;
-    private MeasureAggregation secondaryAggregation = MeasureAggregation.MEAN;
-    private MeasureRelation secondaryRelation = MeasureRelation.ABSOLUTE;
+    protected MeasureType secondaryType = DURATION;
+    protected MeasureAggregation secondaryAggregation = MeasureAggregation.MEAN;
+    protected MeasureRelation secondaryRelation = MeasureRelation.ABSOLUTE;
     
-    private String mainAttributeKey = "";
+    protected String mainAttributeKey = "";
     
-    private boolean layoutHierarchy = false;
-    private boolean layoutDagre = false;
-    private int selectedLayout = 0; //0: hierarchical, 1: dagre_LR, 2: dagre_TB, 3: breadth-first
-    private boolean retainZoomPan = false;
+    protected boolean layoutHierarchy = false;
+    protected boolean layoutDagre = false;
+    protected int selectedLayout = 0; //0: hierarchical, 1: dagre_LR, 2: dagre_TB, 3: breadth-first
+    protected boolean retainZoomPan = false;
     
-    private boolean frequency_total = false;
-    private boolean frequency_case = true;
-    private boolean frequency_min = false;
-    private boolean frequency_max = false;
-    private boolean frequency_mean = false;
-    private boolean frequency_median = false;
+    protected boolean frequency_total = false;
+    protected boolean frequency_case = true;
+    protected boolean frequency_min = false;
+    protected boolean frequency_max = false;
+    protected boolean frequency_mean = false;
+    protected boolean frequency_median = false;
     
-    private boolean duration_total = false;
-    private boolean duration_min = false;
-    private boolean duration_max = false;
-    private boolean duration_mean = true;
-    private boolean duration_median = false;
+    protected boolean duration_total = false;
+    protected boolean duration_min = false;
+    protected boolean duration_max = false;
+    protected boolean duration_mean = true;
+    protected boolean duration_median = false;
     
-    private RelationReader relationReader = new DirectFollowReader();
+    protected RelationReader relationReader = new DirectFollowReader();
 
     public String getMainAttributeKey() {
         return this.mainAttributeKey;

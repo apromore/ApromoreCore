@@ -29,139 +29,99 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface;
-import org.apromore.plugin.portal.logfilter.generic.EditorOption;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.logfilter.generic.LogFilterRequest;
-import org.apromore.plugin.portal.processdiscoverer.controllers.CaseDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.GraphSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.GraphVisController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogFilterController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.PerspectiveDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.TimeStatsController;
-import org.apromore.plugin.portal.processdiscoverer.controllers.ViewSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
+import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
+import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
-import org.apromore.plugin.portal.processdiscoverer.impl.apmlog.LogDataWithAPMLog;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.plugincontrol.PluginExecution;
+import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.apromore.service.loganimation.LogAnimationService2;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.json.JSONObject;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
- * This class acts as the main controller for PD<br>
- * Other controllers under the controllers package are used to handle specific behaviors.<br>
- * All UI controls are contained in the main window (todo: no subclasses for panels on the window).<br>
- * To avoid managing too many individual variables, they are all grouped under data objects
- * <b>ContextData</b> contains contextual variables<br> relating to the environment calling this plugin,<br>
- * <b>LogData</b> represents the log data, <b>UserOptions</b><br> manages all user variables set via UI controls,<br>
- * and <b>OutputData</b> represents the existing output data being displayed on the UI.
+ * PDController manages the main UI of PD. Other sub-controllers are either action (under the actions package)
+ * or component controllers (under the components package). Each component controller manages one UI area such as
+ * Abstraction settings, view settings, or log statistics.<br>
+ * PDController is also the Mediator for the sub-controllers, representing them to communicate with
+ * the outside as well as among them, avoiding direct communication between sub-controllers,
+ * e.g. a UI change needs to communicate from a sub-controller to PDController which will coordinate
+ * this change to other sub-controllers.
  * <p>
- * Starting point: first, the window will be created which fires onCreate(),
- * then ZK client engine sends an onLoaded event to the main window, triggering windowListener().
- * TODO: as this is open in a separate browser tab with a different ZK execution from that of the portal,
- * if the user signs out of the portal tab, the actions in this plugin calling to the portal session would fail
- *
- * In addition, as PD consumes substantial memory resources in various ways (e.g. using third-party libraries),
- * it implements SessionCleanup interface and registers with ZK to be called upon the Session is destroyed
- * by ZK and the web server. For example, in its cleanup routine, data-intensive components such as PD Logic
- * and Process Visualizer will be called to clean up themselves.
+ * Data items in PD are grouped under three objects: <b>ContextData</b> contains contextual variables<br> relating to
+ * the environment calling this plugin, <b>LogData</b> represents the log, <b>UserOptions</b><br> manages all user
+ * variables set via UI controls, and <b>OutputData</b> represents the existing output data being displayed on the UI.
+ * All controllers share common data which is provided via DataManager.
+ * <p>
+ * PD consumes memory resources in various ways (e.g. using third-party libraries), it implements SessionCleanup
+ * interface to be called upon the Session is destroyed by ZK.
+ * <p>
+ * Starting point: first, the window will be created which fires onCreate(), then ZK client engine sends an
+ * onLoaded event to the main window triggering windowListener().
+ * <p>
+ * PD has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode.
+ * Each <b>action</b> will change PD to different modes. There are transition rules between modes
+ * and active state of UI controls in each mode.
+ * 
  */
 public class PDController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
 
-    ///////////////////// LOCAL CONSTANTS /////////////////////////////
-
-    private final String LAYOUT_HIERARCHY = "layoutHierarchy";
-    private final String LAYOUT_DAGRE_TB = "layoutDagreTopBottom";
-
-    private final String FREQ_LABEL = "frequency";
-    private final String DURATION_LABEL = "duration";
-
-    private final String CASE_SECTION_ATTRIBUTE_COMBINATION = "CASE_SECTION_ATTRIBUTE_COMBINATION";
-    private final String EVENT_ATTRIBUTE_DURATION = "EVENT_ATTRIBUTE_DURATION";
-    private final String ATTRIBUTE_ARC_DURATION = "ATTRIBUTE_ARC_DURATION";
-
     ///////////////////// UI CONTROLS /////////////////////////////
-
-    private Checkbox layoutHierarchy;
-    private Checkbox layoutDagreTopBottom;
-
-    private Button filter;
-    private Button filterClear;
-    private Button perspectiveDetails;
-    private Button casesDetails;
-    //private Button fitness;
-    private Button animate;
-    private Button fitScreen;
-    private Button share;
-
-    private Button exportFilteredLog;
-    private Button downloadPDF;
-    private Button downloadPNG;
-    private Button exportBPMN;
-    // private Button exportBPMNAnnotatedForBIMP;
-
-    private Label logTitle;
     private Window mainWindow;
-
-    private Label perspectiveSelected;
 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
 
-    //private CanoniserService canoniserService;
     private DomainService domainService;
     private ProcessService processService;
     private EventLogService eventLogService;
+    private LogAnimationService2 logAnimationService;
     private ProcessDiscoverer processDiscoverer;
-    private LogAnimationPluginInterface logAnimationPluginCE;
-    private LogAnimationPluginInterface logAnimationPluginEE;
     private LogFilterPlugin logFilterPlugin;
     private PDFactory pdFactory;
 
@@ -176,8 +136,11 @@ public class PDController extends BaseController {
     private LogStatsController logStatsController;
     private TimeStatsController timeStatsController;
     private ProcessVisualizer processVisualizer;
-
     private LogFilterController logFilterController;
+    private AnimationController animationController;
+    private LogExportController logExportController;
+    private BPMNExportController bpmnExportController;
+    private ToolbarController toolbarController;
 
     //////////////////// DATA ///////////////////////////////////
 
@@ -191,15 +154,19 @@ public class PDController extends BaseController {
     private LogSummaryType logSummary;
     private PortalContext portalContext;
 
-    private String primaryTypeLabel;
-    private String primaryAggregateCode;
-
     private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid conflic from multiple plugins
+    
+    private InteractiveMode mode = InteractiveMode.MODEL_MODE; //initial mode
+    private String pluginExecutionId;
 
     /////////////////////////////////////////////////////////////////////////
 
     public PDController() throws Exception {
         super();
+        Map<String, Object> pageParams = new HashMap<>();
+        pluginExecutionId = PluginExecutionManager.registerPluginExecution(new PluginExecution(this), Sessions.getCurrent());
+        pageParams.put("pluginExecutionId", pluginExecutionId);
+        Executions.getCurrent().pushArg(pageParams);
     }
 
     //Note: this method is only valid inside onCreate() as it calls ZK current Execution
@@ -240,18 +207,15 @@ public class PDController extends BaseController {
         domainService = (DomainService) Sessions.getCurrent().getAttribute("domainService");
         processService = (ProcessService) Sessions.getCurrent().getAttribute("processService");
         eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
-        logAnimationPluginCE = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPluginCE");
-        logAnimationPluginEE = (LogAnimationPluginInterface) Sessions.getCurrent().getAttribute("logAnimationPluginEE");
+        logAnimationService = (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
         logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
 
-        if (domainService == null || processService == null ||
-                eventLogService == null || logAnimationPluginCE == null || logAnimationPluginEE == null ||
-                logFilterPlugin == null) {
+        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null) {
             return false;
         }
         return true;
     }
-
+    
     // This is to check the availability of system services before executing a related action
     // E.g. before calling export log/model to the portal.
     public boolean prepareCriticalServices() {
@@ -259,17 +223,17 @@ public class PDController extends BaseController {
             Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
             return false;
         }
-
+        
         if (!preparePortalSession(pluginSessionId)) {
             Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
             return false;
         }
-
+        
         if (!prepareSystemServices()) {
             Messagebox.show("Key system services for PD are not available. Please contact your administrator.");
             return false;
         }
-
+        
         return true;
     }
 
@@ -289,19 +253,16 @@ public class PDController extends BaseController {
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             pdFactory = (PDFactory) session.get("pdFactory");
-
-            configData = pdFactory.createConfigData();
-            contextData = pdFactory.createContextData(
-                    portalContext,
+            
+            configData = ConfigData.DEFAULT;
+            contextData = ContextData.valueOf(
                     logSummary.getDomain(),
+                    portalContext.getCurrentUser().getUsername(),
                     logSummary.getId(),
                     logSummary.getName(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                    portalContext.getCurrentFolder() == null ? "Home" : portalContext.getCurrentFolder().getFolderName(),
-                    configData);
-            userOptions = pdFactory.createUserOptionsData();
-            primaryTypeLabel = FREQ_LABEL;
-            primaryAggregateCode = "case";
+                    portalContext.getCurrentFolder() == null ? "Home" : portalContext.getCurrentFolder().getFolderName());
+            userOptions = new UserOptionsData();
             userOptions.setPrimaryType(FREQUENCY);
             userOptions.setPrimaryAggregation(MeasureAggregation.CASES);
             userOptions.setSecondaryType(DURATION);
@@ -312,7 +273,7 @@ public class PDController extends BaseController {
             userOptions.setInvertedArcsMode(false);
 
             // Prepare log data
-            logData = pdFactory.createLogData(contextData, eventLogService);
+            logData = pdFactory.createLogData(contextData, configData, eventLogService);
             IndexableAttribute mainAttribute = logData.getAttribute(configData.getDefaultAttribute());
             if (mainAttribute == null) {
                 Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.",
@@ -329,7 +290,7 @@ public class PDController extends BaseController {
                                 Messagebox.INFORMATION);
                 return;
             }
-
+            
             logData.setMainAttribute(configData.getDefaultAttribute());
             userOptions.setMainAttributeKey(configData.getDefaultAttribute());
             processDiscoverer = new ProcessDiscoverer(logData.getAttributeLog());
@@ -343,13 +304,16 @@ public class PDController extends BaseController {
             graphSettingsController = pdFactory.createGraphSettingsController(this);
             logStatsController = pdFactory.createLogStatsController(this);
             timeStatsController = pdFactory.createTimeStatsController(this);
+            logFilterController = pdFactory.createLogFilterController(this);
+            animationController = pdFactory.createAnimationController(this);
+            logExportController = pdFactory.createLogExportController(this);
+            bpmnExportController = pdFactory.createBPMNExportController(this);
+            toolbarController = pdFactory.createToolbarController(this);
 
             initialize();
-            initializeDefaults();
-
             LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
             LOGGER.debug("Desktop ID = " + getDesktop().getId());
-
+            
             // Finally, store objects to be cleaned up when the session timeouts
             getDesktop().setAttribute("processDiscoverer", processDiscoverer);
             getDesktop().setAttribute("processVisualizer", processVisualizer);
@@ -361,238 +325,155 @@ public class PDController extends BaseController {
         }
     }
 
-    // All data and controllers must be all already available
+    // All data and controllers must be already available
     private void initialize() {
         try {
             initializeControls();
-            updateTimeStats();
+            timeStatsController.updateUI(contextData);
             viewSettingsController.updateUI(null);
             initializeEventListeners();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Unable to initialize PD controller", e);
             Messagebox.show(e.getMessage(), "Process Discoverer", Messagebox.OK, Messagebox.ERROR);
         }
-    }
-
-    // Adjust UI when detecting special conditions
-    private void initializeDefaults() {
-
     }
 
     private void initializeControls() {
         try {
             mainWindow = (Window) this.getFellow("win");
-            Label logTitle = (Label) mainWindow.getFellow("logTitle");
             mainWindow.setTitle(contextData.getLogName());
-            logTitle.setValue(contextData.getLogName());
-
             viewSettingsController.initializeControls(contextData);
             graphSettingsController.initializeControls(contextData);
             timeStatsController.initializeControls(contextData);
             logStatsController.initializeControls(contextData);
             graphVisController.initializeControls(contextData);
-
-            Component compLogStats = mainWindow.query(".ap-pd-logstats");
-
-            perspectiveSelected = (Label) compLogStats.getFellow("perspectiveSelected");
-
-            // Main action buttons
-            casesDetails = (Button) mainWindow.getFellow("caseDetails");
-            perspectiveDetails = (Button) mainWindow.getFellow("perspectiveDetails");
-            //fitness = (Button) mainWindow.getFellow("fitness");
-            filter = (Button) mainWindow.getFellow("filter");
-            filterClear = (Button) mainWindow.getFellow("filterClear");
-            animate = (Button) mainWindow.getFellow("animate");
-            fitScreen = (Button) mainWindow.getFellow("fitScreen");
-            share = (Button) mainWindow.getFellow("share");
-
-            exportFilteredLog = (Button) mainWindow.getFellow("exportUnfitted");
-            // export = (Combobutton) mainWindow.getFellow(StringValues.b[70]);
-            downloadPDF = (Button) mainWindow.getFellow("downloadPDF");
-            downloadPNG = (Button) mainWindow.getFellow("downloadPNG");
-            exportBPMN = (Button) mainWindow.getFellow("exportBPMN");
-
-            // Layout
-            layoutHierarchy = (Checkbox) mainWindow.getFellow(LAYOUT_HIERARCHY);
-            layoutHierarchy.setChecked(userOptions.getLayoutHierarchy());
-            layoutDagreTopBottom = (Checkbox) mainWindow.getFellow(LAYOUT_DAGRE_TB);
-            layoutDagreTopBottom.setChecked(userOptions.getLayoutDagre());
-
-
+            toolbarController.initializeControls(contextData);
         }
         catch (Exception ex) {
             Messagebox.show("An error occurred while initializing UI: " + ex.getMessage());
         }
     }
 
-    private LogFilterController getFilterController() throws Exception {
-        if (logFilterController == null) {
-            logFilterController = pdFactory.createLogFilterController(this);
-        }
-        return logFilterController;
-    }
-
-    private void initializeEventListeners() throws InterruptedException {
-
-        PDController me = this;
+    private void initializeEventListeners() {
         try {
             viewSettingsController.initializeEventListeners(contextData);
             graphSettingsController.initializeEventListeners(contextData);
             graphVisController.initializeEventListeners(contextData);
+            toolbarController.initializeEventListeners(contextData);
+            logStatsController.initializeEventListeners(contextData);
+            timeStatsController.initializeEventListeners(contextData);
 
-            // Layout
-            EventListener<Event> layoutListener = new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    String compId = ((Checkbox) event.getTarget()).getId();
-                    setLayout(compId);
-                }
-            };
-            layoutHierarchy.addEventListener("onClick", layoutListener);
-            layoutDagreTopBottom.addEventListener("onClick", layoutListener);
-
-            fitScreen.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    graphVisController.fitToWindow();
-                }
-            });
-
-            casesDetails.addEventListener("onApShow",
-                new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        caseDetailsController.onEvent(event);
-                    }
-                }
-            );
-            perspectiveDetails.addEventListener("onApShow",
-                new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        perspectiveDetailsController.onEvent(event);
-                    }
-                }
-            );
-
-            filterClear.addEventListener("onClick", e -> onClearFilter());
-            filter.addEventListener("onInvoke", e -> logFilterController.onEvent(e));
-            filter.addEventListener("onInvokeExt", e -> logFilterController.onEvent(e));
-
-            LogFilterController lfc = getFilterController();
-            filter.addEventListener(Events.ON_CLICK, e -> lfc.onEvent(e));
-
-            animate.addEventListener("onClick", pdFactory.createAnimationController(this));
-    
-            exportFilteredLog.addEventListener("onExport", pdFactory.createLogExportController(this));
-            exportBPMN.addEventListener("onClick", pdFactory.createBPMNExportController(this));
-            downloadPDF.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    graphVisController.exportPDF(getOutputName());
-                }
-            });
-            downloadPNG.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    graphVisController.exportPNG(getOutputName());
-                }
-            });
-
-            share.addEventListener("onClick", event -> {
-                PortalPlugin accessControlPlugin;
-
-                try {
-                    Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
-                    Object selectedItem = logSummary;
-                    accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
-                    Map arg = new HashMap<>();
-                    arg.put("withFolderTree", false);
-                    arg.put("selectedItem", selectedItem);
-                    arg.put("currentUser", UserSessionManager.getCurrentUser());
-                    arg.put("autoInherit", true);
-                    arg.put("showRelatedArtifacts", true);
-                    arg.put("enablePublish", getConfig().getEnablePublish());
-                    accessControlPlugin.setSimpleParams(arg);
-                    accessControlPlugin.execute(portalContext);
-                } catch (Exception e) {
-                    Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-                }
-            });
-    
-            EventListener<Event> windowListener = new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
+            EventListener<Event> windowListener = event -> {
                     graphSettingsController.ensureSliders();
                     generateViz();
-                }
             };
             mainWindow.addEventListener("onLoaded", windowListener);
             mainWindow.addEventListener("onOpen", windowListener);
-            mainWindow.addEventListener("onZIndex", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Window cases_window = caseDetailsController.getWindow();
-                    if (cases_window != null && cases_window.inOverlapped()) {
-                        cases_window.setZindex(mainWindow.getZIndex() + 1);
-                    }
-                }
+            mainWindow.addEventListener("onZIndex", event -> {
+                    putWindowAtTop(caseDetailsController.getWindow());
+                    putWindowAtTop(perspectiveDetailsController.getWindow());
             });
+            mainWindow.addEventListener("onCaseDetails", event -> caseDetailsController.onEvent(event));
+            mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
+            
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while initializing event handlers.");
+            LOGGER.error("Errors occured while initializing event handlers.", ex);
         }
 
     }
-
-    private void onClearFilter() {
-        Messagebox.show(
-                "Are you sure you want to clear all filters?",
-                "Filter log",
-                Messagebox.OK | Messagebox.CANCEL,
-                Messagebox.QUESTION,
-                e -> proceedClearFilter(e)
-        );
-    }
-
-    private void proceedClearFilter(Event evt) {
-        if (evt.getName().equals("onOK")) {
-            try {
-                clearFilter();
-            } catch (Exception e) {
-                Messagebox.show("Unable to clear the filter", "Filter error",
-                        Messagebox.OK, Messagebox.ERROR);
-            }
+    
+    private void putWindowAtTop(Window window) {
+        if (window != null && window.inOverlapped() && mainWindow != null) {
+            window.setZindex(mainWindow.getZIndex() + 1);
         }
     }
-
-    private void showSingleDurationFilterError() {
-        Messagebox.show("Unable to filter on duration as there's only one value.",
-                "Filter error", Messagebox.OK, Messagebox.ERROR);
+    
+    public void exportPDF() {
+        graphVisController.exportPDF(viewSettingsController.getOutputName());
+    }
+    
+    public void exportPNG() {
+        graphVisController.exportPNG(viewSettingsController.getOutputName());
+    }
+    
+    public void exportJSON() {
+        graphVisController.exportJSON(viewSettingsController.getOutputName());
     }
 
     public void clearFilter() throws Exception {
-        this.getFilterController().clearFilter();
+        if (this.mode != InteractiveMode.MODEL_MODE) return;
+        logFilterController.clearFilter();
     }
-
-    private void setLayout(String layout) throws Exception {
-        switch (layout) {
-            case LAYOUT_HIERARCHY:
-                userOptions.setLayoutHierarchy(true);
-                userOptions.setLayoutDagre(false);
-                break;
-            case LAYOUT_DAGRE_TB:
-                userOptions.setLayoutHierarchy(false);
-                userOptions.setLayoutDagre(true);
-                break;
-        }
+    
+    public void changeLayout() throws Exception {
+        if (this.mode != InteractiveMode.MODEL_MODE) return;
         graphVisController.changeLayout();
     }
-
-
-    private String getOutputName() {
-        return contextData.getLogName() + " - " +
-                Labels.getLabel("e.agg." + primaryAggregateCode + ".text") + " " + primaryTypeLabel;
+    
+    public void fitVisualizationToWindow() {
+        graphVisController.fitToWindow();
+    }
+    
+    public void openSharingWindow() {
+        PortalPlugin accessControlPlugin;
+        try {
+            Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
+            Object selectedItem = logSummary;
+            accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+            Map arg = new HashMap<>();
+            arg.put("withFolderTree", false);
+            arg.put("selectedItem", selectedItem);
+            arg.put("currentUser", UserSessionManager.getCurrentUser());
+            arg.put("autoInherit", true);
+            arg.put("showRelatedArtifacts", true);
+            accessControlPlugin.setSimpleParams(arg);
+            accessControlPlugin.execute(portalContext);
+        } catch (Exception e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+    
+    public void openAnimation(Event e) {
+        try {
+            animationController.onEvent(e);
+        }
+        catch (Exception ex) {
+            Messagebox.show(ex.getMessage());
+            LOGGER.error(ex.getMessage(), ex);
+        }
+    }
+    
+    public void openLogExport(Event e) {
+        try {
+            logExportController.onEvent(e);
+        }
+        catch (Exception ex) {
+            Messagebox.show(ex.getMessage());
+            LOGGER.error(ex.getMessage(), ex);
+        }
+    }
+    
+    public void openBPMNExport(Event e) {
+        try {
+            bpmnExportController.onEvent(e);
+        }
+        catch (Exception ex) {
+            Messagebox.show(ex.getMessage());
+            LOGGER.error(ex.getMessage(), ex);
+        }
+    }
+    
+    public void openLogFilter(Event e) {
+        try {
+            logFilterController.onEvent(e);
+        }
+        catch (Exception ex) {
+            Messagebox.show(ex.getMessage());
+            LOGGER.error(ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -602,60 +483,19 @@ public class PDController extends BaseController {
      * @param reset: true to reset the graph zoom and panning
      */
     public void updateUI(boolean reset) {
+        if (this.mode != InteractiveMode.MODEL_MODE) return;
         try {
-            updateLogStats();
-            updateTimeStats();
+            logStatsController.updateUI(contextData);
+            timeStatsController.updateUI(contextData);
             viewSettingsController.updateUI(contextData);
             userOptions.setRetainZoomPan(!reset);
             generateViz();
-            if (!reset) {
-                graphVisController.centerToWindow();
-            }
-            boolean noFilter = this.getLogData().isCurrentFilterCriteriaEmpty();
-            filterClear.setDisabled(noFilter);
+            if (!reset) graphVisController.centerToWindow();
+            toolbarController.setDisabledFilterClear(this.getLogData().isCurrentFilterCriteriaEmpty());
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while updating UI: " + ex.getMessage());
         }
-    }
-
-    public boolean getBPMNMode() {
-        return userOptions.getBPMNMode();
-    }
-
-    private void updateTimeStats() throws Exception {
-        this.timeStatsController.updateUI(contextData);
-    }
-
-    public void updateLogStats() throws Exception {
-        this.logStatsController.updateUI(contextData);
-    }
-
-    public void setOverlay(
-            MeasureType primaryType,
-            MeasureAggregation primaryAggregation,
-            MeasureRelation primaryRelation,
-            MeasureType secondaryType,
-            MeasureAggregation secondaryAggregation,
-            MeasureRelation secondaryRelation,
-            String aggregateCode
-    ) throws InterruptedException {
-
-        userOptions.setPrimaryType(primaryType);
-        userOptions.setPrimaryAggregation(primaryAggregation);
-        userOptions.setPrimaryRelation(primaryRelation);
-        
-        userOptions.setSecondaryType(secondaryType);
-        userOptions.setSecondaryAggregation(secondaryAggregation);
-        userOptions.setSecondaryRelation(secondaryRelation);
-
-        primaryAggregateCode = aggregateCode;
-        if (primaryType == FREQUENCY) {
-            primaryTypeLabel = FREQ_LABEL;
-        } else { // (overlay == DURATION) assume DURATION
-            primaryTypeLabel = DURATION_LABEL;
-        }
-        generateViz();
     }
 
     public AbstractionParams genAbstractionParamsSimple(
@@ -689,6 +529,8 @@ public class PDController extends BaseController {
      */
     public void generateViz() {
         long timer1 = System.currentTimeMillis();
+        
+        if (this.mode != InteractiveMode.MODEL_MODE) return;
 
         if (logData.getAttributeLog() == null) {
             Messagebox.show("Cannot create data for visualization. Please check the log!",
@@ -757,7 +599,7 @@ public class PDController extends BaseController {
             LOGGER.debug("Sent json data to browser at " + formatter.format(new Date()));
 
             graphVisController.displayDiagram(visualizedText);
-            contextData.setFirstTimeLoadingFinished(true);
+            this.setInteractiveMode(InteractiveMode.MODEL_MODE);
 
         } catch (Exception e) {
             LOGGER.error("Unexpected error while generating visualization.", e);
@@ -767,26 +609,103 @@ public class PDController extends BaseController {
                     Messagebox.ERROR);
         }
     }
+    
+    public boolean isBPMNView() {
+        return this.userOptions.getBPMNMode();
+    }
 
-    public void setBPMNMode(boolean mode) {
+    public void setBPMNView(boolean mode) {
+        if (this.mode != InteractiveMode.MODEL_MODE) return;
         userOptions.setBPMNMode(mode);
         graphSettingsController.updateParallelism(mode);
         generateViz();
     }
-
-    public String getPerspective() {
-        return perspectiveSelected.getValue();
+    
+    public void switchToAnimationView() {
+        try {
+            if (this.setInteractiveMode(InteractiveMode.ANIMATION_MODE)) {
+                graphVisController.switchToAnimationView();
+            }
+        }
+        catch (Exception ex) {
+            Messagebox.show(ex.getMessage());
+            LOGGER.error(ex.getMessage(), ex);
+        }
+    }
+    
+    public void switchToModelView() {
+        if (this.setInteractiveMode(InteractiveMode.MODEL_MODE)) {
+            graphVisController.switchToModelView();
+        }
+    }
+    
+    public void restoreModelView() {
+        if (this.setInteractiveMode(InteractiveMode.MODEL_MODE)) {
+            graphVisController.displayDiagram(outputData.getVisualizedText());
+        }
+    }
+    
+    public void showTrace(String traceVisualContent) {
+        if (this.setInteractiveMode(InteractiveMode.TRACE_MODE)) {
+            graphVisController.displayTraceDiagram(traceVisualContent);
+        }
+    }
+    
+    /**
+     * Mode represents an overall state of PD. It is used to set relevant status for UI controls
+     * without having to consider state of each control.
+     * This method updates the UI in accordance with the current mode.
+     * @param newMode
+     * @return: true if the mode has been changed
+     */
+    public boolean setInteractiveMode(InteractiveMode newMode) {
+        if (newMode == InteractiveMode.ANIMATION_MODE) {
+            if (this.mode == InteractiveMode.TRACE_MODE) return false; //invalid move
+            viewSettingsController.setDisabled(true);
+            graphSettingsController.setDisabled(true);
+            logStatsController.setDisabled(true);
+            timeStatsController.setDisabled(true);
+            toolbarController.setDisabled(true);
+            caseDetailsController.setDisabled(true);
+        }
+        else if (newMode == InteractiveMode.MODEL_MODE) {
+            viewSettingsController.setDisabled(false);
+            graphSettingsController.setDisabled(false);
+            logStatsController.setDisabled(false);
+            timeStatsController.setDisabled(false);
+            toolbarController.setDisabled(false);
+            toolbarController.setDisabledAnimation(false);
+            caseDetailsController.setDisabled(false);
+        }
+        else if (newMode == InteractiveMode.TRACE_MODE) {
+            if (this.mode == InteractiveMode.ANIMATION_MODE) return false; //invalid move
+            viewSettingsController.setDisabled(true);
+            graphSettingsController.setDisabled(true);
+            logStatsController.setDisabled(true);
+            timeStatsController.setDisabled(true);
+            toolbarController.setDisabled(true);
+            toolbarController.setDisabledAnimation(true);
+        }
+        this.mode = newMode;
+        return true;
+    }
+    
+    public InteractiveMode getInteractiveMode() {
+        return this.mode;
     }
 
-    public void setPerspective(String value, String label) throws Exception {
+    public String getPerspective() {
+        return viewSettingsController.getPerspectiveName();
+    }
+
+    public void setPerspective(String value) throws Exception {
+        if (this.mode != InteractiveMode.MODEL_MODE) return;
         if (!value.equals(userOptions.getMainAttributeKey())) {
-            perspectiveSelected.setValue(label);
-            perspectiveSelected.setTooltiptext(label);
-            animate.setDisabled(!value.equals(configData.getDefaultAttribute()));
+            toolbarController.setDisabledAnimation(!value.equals(configData.getDefaultAttribute()));
             userOptions.setMainAttributeKey(value);
             logData.setMainAttribute(value);
-            updateTimeStats();
-            updateLogStats();
+            timeStatsController.updateUI(contextData);
+            logStatsController.updateUI(contextData);
             generateViz();
         }
     }
@@ -811,18 +730,12 @@ public class PDController extends BaseController {
         return this.configData;
     }
 
-    public String getLogName() { return contextData.getLogName(); }
-
     public ProcessDiscoverer getProcessDiscoverer() {
         return this.processDiscoverer;
     }
     
     public ProcessVisualizer getProcessVisualizer() {
         return this.processVisualizer;
-    }
-
-    public DomainService getDomainService() {
-        return domainService;
     }
 
     public EventLogService getEvenLogService() {
@@ -832,21 +745,13 @@ public class PDController extends BaseController {
     public ProcessService getProcessService() {
         return processService;
     }
-    
-    public LogAnimationPluginInterface getLogAnimationPlugin() throws MissingLogAnimationPluginException {
-        if (logAnimationPluginEE != null) {
-            return logAnimationPluginEE;
-        }
-        else if (logAnimationPluginCE != null) {
-            return logAnimationPluginCE;
-        }
-        else {
-            throw new MissingLogAnimationPluginException("LogAnimation plugin was not available");
-        }
-    }
 
     public LogFilterPlugin getLogFilterPlugin() {
         return logFilterPlugin;
+    }
+    
+    public LogAnimationService2 getLogAnimationService() {
+        return logAnimationService;
     }
 
     public DecimalFormat getDecimalFormatter() {
@@ -855,5 +760,42 @@ public class PDController extends BaseController {
 
     public int getSourceLogId() {
         return sourceLogId;
+    }
+    
+    public PortalContext getPortalContext() {
+        return this.portalContext;
+    }
+    
+    public void refreshPortal() {
+        this.portalContext.refreshContent();
+    }
+    
+    public String getPluginExecutionId() {
+        return this.pluginExecutionId;
+    }
+    
+    @Override
+    public String processRequest(Map<String,String[]> parameterMap) {
+        String  startFrameIndex = parameterMap.get("startFrameIndex")[0];
+        String  chunkSize = parameterMap.get("chunkSize")[0];
+        try {
+            String chunkJSON = graphVisController.getAnimationMovie()
+                                        .getChunkJSON(Integer.parseInt(startFrameIndex),
+                                                        Integer.parseInt(chunkSize)).toString();
+            return escapeQuotedJavascript(chunkJSON);
+        }
+        catch (NumberFormatException | JSONException e) {
+            LOGGER.error(e.getMessage(), e);
+            return "Error: " + e.getMessage();
+        }
+    }
+    
+    /**
+     * @param json
+     * @return the <var>json</var> escaped so that it can be quoted in Javascript.
+     *     Specifically, it replaces apostrophes with \\u0027 and removes embedded newlines and leading and trailing whitespace.
+     */
+    private String escapeQuotedJavascript(String json) {
+        return json.replace("\n", " ").replace("'", "\\u0027").trim();
     }
 }

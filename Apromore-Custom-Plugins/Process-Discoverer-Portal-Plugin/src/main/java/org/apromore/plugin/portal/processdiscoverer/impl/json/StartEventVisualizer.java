@@ -46,6 +46,7 @@ public class StartEventVisualizer extends AbstractNodeVisualizer {
 		if (!(element instanceof Event && ((Event)element).getEventType() == EventType.START)) {
 			throw new UnsupportedElementException("Unsupported element while expecting a BPMN Start Event object.");
 		}
+		jsonData.put("id", ((Event)element).getId().toString());
 		jsonData.put("shape", "ellipse");
 		jsonData.put("width", visSettings.getEventWidth()+"px");
 		jsonData.put("height", visSettings.getEventHeight()+"px");

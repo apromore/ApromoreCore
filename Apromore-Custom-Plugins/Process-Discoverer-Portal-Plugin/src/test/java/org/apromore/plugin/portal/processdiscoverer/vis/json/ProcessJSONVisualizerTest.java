@@ -105,7 +105,20 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         return false;
     }
     
+    /**
+     * Check if an <edge> exists in both <result> and <expected>
+     * This is true if both <result> and <expected> have same edges with the same label and style
+     * and both <result> and <expecte> have the same source and target node as <edge> (same name and oriname)
+     * @param edge: an edge in <result>
+     * @param result
+     * @param expected
+     * @return
+     * @throws JSONException
+     */
     private boolean findSimilarEdgeObject(JSONObject edge, JSONArray result, JSONArray expected) throws JSONException {
+        JSONObject edgeSourceResult = findNodeObjectWithId(edge.get("source").toString(), result);
+        JSONObject edgeTargetResult= findNodeObjectWithId(edge.get("target").toString(), result);
+        
         for (int i=0; i<expected.length(); i++) {
             JSONObject data = expected.getJSONObject(i).getJSONObject("data");
             if (!data.has(NODE_KEY)) {
@@ -116,14 +129,10 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                     }
                 }
                 if (found) { //find edge, now check the source and target nodes
-			        String edgeSourceId = edge.get("source").toString();
-			        String edgeTargetId = edge.get("target").toString();
-			        JSONObject edgeTargetObject = findNodeObjectWithId(edgeTargetId, result);
-			    	JSONObject edgeSourceObject = findNodeObjectWithId(edgeSourceId, result);
-			    	if (edgeTargetObject != null && edgeSourceObject != null) {
-				    	boolean findSourceNode = findSimilarNodeObject(edgeSourceObject, expected);
-				    	boolean findTargetNode = findSimilarNodeObject(edgeTargetObject, expected);
-				    	if (findSourceNode && findTargetNode) {
+			    	if (edgeTargetResult != null && edgeSourceResult != null) {
+				    	boolean findExpectedSourceNode = findSimilarNodeObject(edgeSourceResult, expected);
+				    	boolean findExpectedTargetNode = findSimilarNodeObject(edgeTargetResult, expected);
+				    	if (findExpectedSourceNode && findExpectedTargetNode) {
 				    		return true;
 				    	}
 			    	}

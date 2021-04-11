@@ -33,6 +33,7 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.loganimation.LogAnimationService2;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -52,6 +53,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     @Inject LogAnimationPluginInterface logAnimationPluginCE;
     @Inject LogAnimationPluginInterface logAnimationPluginEE;
     @Inject LogFilterPlugin logFilterPlugin;
+    @Inject LogAnimationService2 logAnimationService;
 
     @Override
     public String getLabel(Locale locale) {
@@ -86,6 +88,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
                 Sessions.getCurrent().setAttribute("logAnimationPluginCE", logAnimationPluginCE);
                 Sessions.getCurrent().setAttribute("logAnimationPluginEE", logAnimationPluginEE);
                 Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
+                Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
 
         	if (!prepare) return;
         	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
