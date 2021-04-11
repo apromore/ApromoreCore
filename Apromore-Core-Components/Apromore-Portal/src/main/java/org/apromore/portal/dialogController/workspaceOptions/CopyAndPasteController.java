@@ -243,6 +243,15 @@ public class CopyAndPasteController extends BaseController {
         }
     }
 
+    public boolean checkImmediateOwnership(Set<Object> selections) throws Exception {
+        for (Object obj : selections) {
+            if (!ItemHelpers.isOwner(this.currentUser, obj)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean checkContext(Set<Object> selections, int selectionCount, FolderType currentFolder) {
         if (currentFolder == null) {
             Notification.error("Failed to find the current folder");
@@ -259,7 +268,9 @@ public class CopyAndPasteController extends BaseController {
 
         if (checkContext(selections, selectionCount, currentFolder)) {
             try {
-                if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+                if (!checkImmediateOwnership(selections)) {
+                    Notification.error("Only Owner can cut the selected item(s)");
+                } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
                     isCut = true;
                     updateSelectedItems(selections);
                     Notification.info(getSelectedItemsSize() + " item(s) have been selected to be moved");
