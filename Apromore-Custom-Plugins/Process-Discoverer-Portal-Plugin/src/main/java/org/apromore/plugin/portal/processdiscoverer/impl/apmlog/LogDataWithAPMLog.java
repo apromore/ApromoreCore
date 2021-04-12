@@ -104,6 +104,7 @@ public class LogDataWithAPMLog extends LogData {
     public boolean filter(List<LogFilterRule> criteria) throws Exception {
         this.apmLogFilter.filter(criteria);
         if (apmLogFilter.getPLog().getPTraceList().isEmpty()) { // Restore to the last state
+            criteria.remove(criteria.get(criteria.size() - 1));
             apmLogFilter.filter((List<LogFilterRule>)currentFilterCriteria);
             return false;
         } else {
