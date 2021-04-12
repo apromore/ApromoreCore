@@ -109,6 +109,7 @@ public class LogDataWithAPMLog extends LogData {
             return false;
         } else {
             this.updateLog(apmLogFilter.getPLog(), apmLogFilter.getApmLog());
+            currentFilterCriteria = criteria;
             return true;
         }
     }
