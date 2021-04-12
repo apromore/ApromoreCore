@@ -118,7 +118,7 @@ public class Replayer {
         for (XTrace trace : log) {
         	String traceKey = "";
         	for (XEvent event : trace) {
-        		int eventKey = 0; 
+        		int eventKey = 0;
         		String eventName = event.getAttributes().get("concept:name").toString();
         		if (!eventNameKeyMap.containsKey(eventName)) {
         			eventNameKeyMap.put(eventName, eventCount);
@@ -159,12 +159,12 @@ public class Replayer {
             else {
                 animationLog.addUnreplayTrace(trace);
 //                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
-            }                    
+            }
         }
         long algoRuntime = animationLog.getAlgoRuntime();
                 
         //------------------------------------------------
-        // Compute exact trace fitness 
+        // Compute exact trace fitness
         //------------------------------------------------
         long startMinMMTime = System.currentTimeMillis();
         double minBoundMoveCostOnModel=0;
@@ -178,14 +178,14 @@ public class Replayer {
         animationLog.setExactTraceFitnessFormulaTime(endMinMMTime - startMinMMTime + algoRuntime);
         
         //------------------------------------------------
-        // Compute approximate trace fitness 
-        //------------------------------------------------        
+        // Compute approximate trace fitness
+        //------------------------------------------------
         long startApproxMinMMTime = System.currentTimeMillis();
         double approxTraceFitness = animationLog.getApproxTraceFitness();
         long endApproxMinMMTime = System.currentTimeMillis();
         animationLog.setApproxTraceFitnessFormulaTime(endApproxMinMMTime - startApproxMinMMTime + algoRuntime);
         
-//        if (!animationLog.isEmpty()) {       
+//        if (!animationLog.isEmpty()) {
 //            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
 //            LOGGER.info("TraceID, ExactFitness, ApproxFitness, Reliable, AlgoTime(ms), Replay Path");
 //            double approxMMCost = animationLog.getApproxMinMoveModelCost();
@@ -229,14 +229,14 @@ public class Replayer {
         long end = 0;
     
         //--------------------------------------------
-        //Remove event names not found in process model or 
+        //Remove event names not found in process model or
         //events with lifecycle:transition = "start" (not yet processed this case)
         //--------------------------------------------
         Iterator<XEvent> iterator = trace.iterator();
         while (iterator.hasNext()) {
             XEvent event = iterator.next();
             if (!helper.getActivityNames().contains(LogUtility.getConceptName(event)) ||
-                 LogUtility.getLifecycleTransition(event).toLowerCase().equals("start")) {
+                 !LogUtility.getLifecycleTransition(event).toLowerCase().equals("complete")) {
                 iterator.remove();
             }
         }
@@ -246,7 +246,7 @@ public class Replayer {
         //--------------------------------------------
         Backtracking backtrack = new Backtracking(this.params, trace, helper);
         start = System.currentTimeMillis();
-        leafNode = backtrack.explore();    
+        leafNode = backtrack.explore();
         end = System.currentTimeMillis();
         backtrack.clear();
         backtrack = null;
@@ -275,7 +275,7 @@ public class Replayer {
         
         //---------------------------------------------
         // Create replay trace from the selected token play path
-        // Use the model node and markings in every backtracking node's state 
+        // Use the model node and markings in every backtracking node's state
         // to identify the connection between nodes. The state's model node is
         // the activity or gateway taken and the markings contains
         // all tokens (process state) after the element is taken.
@@ -306,7 +306,7 @@ public class Replayer {
                     if (node.getState().getElementStatus() == StateElementStatus.STARTEVENT) {
                         traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(0)))).minusSeconds(
                                                             params.getStartEventToFirstEventDuration()));
-                    }   
+                    }
                     replayTrace.setStart(traceNode);
                     replayTrace.addToReplayedList(modelNode);
                     previousMarkings = node.getState().getMarkings();
@@ -319,12 +319,12 @@ public class Replayer {
                 traceNode = new TraceNode(modelNode);
                 
                 //Connect this node to its incoming nodes based on the replay markings
-                //The difference between current node's markings and previous node's 
+                //The difference between current node's markings and previous node's
                 //are tokens to be moved
                 moves = (Set)((HashSet)previousMarkings).clone();
-                moves.removeAll(node.getState().getMarkings()); //moves contains tokens consumed                
+                moves.removeAll(node.getState().getMarkings()); //moves contains tokens consumed
                 for (SequenceFlow takenFlow : moves) {
-                    replayTrace.add((FlowNode)takenFlow.getSourceRef(), traceNode); 
+                    replayTrace.add((FlowNode)takenFlow.getSourceRef(), traceNode);
                 }
                 
                 //Set timestamp
@@ -335,9 +335,9 @@ public class Replayer {
                     } else {
                         traceNode.setActivitySkipped(true);
                     }
-                }           
+                }
                 
-                replayTrace.addToReplayedList(modelNode);                
+                replayTrace.addToReplayedList(modelNode);
                 previousMarkings = node.getState().getMarkings();
             }
             
@@ -362,7 +362,7 @@ public class Replayer {
     /**
      * Select the least cost move on model from start to end
      * @return min cost or 0 if no path found due to unsound model
-     */    
+     */
     public double getMinBoundMoveCostOnModel() {
         Backtracking backtrack = new Backtracking(this.params, helper);
         Node selectedNode = backtrack.exploreShortestPath();
@@ -397,7 +397,7 @@ public class Replayer {
                     this.edgeToTokenChangeMap.put(flow, currentCount);
                 }
             }
-        } 
+        }
         else if (helper.getAllJoins().contains(current)) { //AND join: remove one token on every incoming flow
             for (SequenceFlow flow : current.getIncomingSequenceFlows()) {
                 currentCount = this.edgeToTokenChangeMap.get(flow);
@@ -433,7 +433,7 @@ public class Replayer {
                 currentCount++;
                 this.edgeToTokenChangeMap.put(flow, currentCount);
             }
-        }            
+        }
         
         //Call to update all OR-join state
         ORJoinEnactmentManager.update(edgeToTokenChangeMap);
