@@ -25,7 +25,7 @@ if (!Apromore.Plugins) {
 }
 
 // Logo's viewBox is "0 0 629.8 126.7"
-const logo = '<g transform="translate(0 100) scale(0.2 0.2)">' +
+const logo = '<g transform="translate(${xx yy}) scale(0.2 0.2)">' +
   '<path fill="#4E4E4F" d="M206.5,36.4v52.9h-11.4v-7.6c-4,5.6-10.3,9-18.5,9c-14.4,0-26.3-12.2-26.3-27.8S162.2,35,176.6,35 c8.3,0,14.5,3.4,18.5,8.9v-7.5H206.5z M195.1,62.8c0-9.8-7.2-16.9-16.7-16.9s-16.7,7.1-16.7,16.9s7.2,16.9,16.7,16.9 S195.1,72.7,195.1,62.8z"/>' +
   '<path fill="#4E4E4F" d="M276.1,62.8c0,15.8-12,27.8-26.4,27.8c-8.2,0-14.5-3.4-18.5-8.9v28.7h-11.4V36.4h11.4V44c4-5.6,10.3-9,18.5-9 C264.2,35,276.1,47.2,276.1,62.8z M264.7,62.8c0-9.8-7.2-16.9-16.7-16.9s-16.7,7.1-16.7,16.9s7.2,16.9,16.7,16.9 C257.5,79.8,264.7,72.7,264.7,62.8z"/>' +
   '<path fill="#4E4E4F" d="M314.2,35.4v12.4c-7.5-0.5-16.3,3-16.3,14.8v26.7h-11.4V36.4H298v8.9C301.1,38.1,307.6,35.4,314.2,35.4z"/>' +
@@ -75,7 +75,18 @@ Apromore.Plugins.File = Clazz.extend({
         //var svgDOM = DataManager.serialize(svgClone);
 
         // Insert a logo
-        svgClone = svgClone.replace('</svg>', logo + '</svg>');
+        try {
+            var matches = svgClone.match(/<svg.+?viewBox="(.+?)"/m)
+            if (matches) {
+                var xy = matches[1].split(" ").map(function (x) { return parseInt(x); })
+                svgClone = svgClone.replace(
+                    '</svg>',
+                    logo.replace('${xx yy}', (xy[0] + 5) + " " + (xy[1] + 5)) + '</svg>'
+                );
+            }
+        } catch (e) {
+            // pass
+        }
 
         // Send the svg to the server.
         new Ajax.Request(Apromore.CONFIG.PDF_EXPORT_URL, {
