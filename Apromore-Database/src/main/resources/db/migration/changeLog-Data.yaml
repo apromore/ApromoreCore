@@ -156,3 +156,23 @@ databaseChangeLog:
       changes:
         - delete:
             tableName: group_usermetadata
+
+  - changeSet:
+      id:  20210413181000
+      author:  frankma
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: "9"
+              - column:
+                  name: row_guid
+                  value: "0ae1fd05-680e-44fa-993f-de62bba90e56"
+              - column:
+                  name: role_name
+                  value: "ROLE_INTEGRATOR"
+              - column:
+                  name: description
+                  value: "Allowed access to all log management endpoints"

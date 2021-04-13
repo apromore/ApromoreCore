@@ -106,6 +106,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             put("ROLE_DESIGNER", "Designer");
             put("ROLE_DATA_SCIENTIST", "Data Scientist");
             put("ROLE_OPERATIONS", "Operations");
+            put("ROLE_INTEGRATOR", "Integrator");
         }
     };
 
