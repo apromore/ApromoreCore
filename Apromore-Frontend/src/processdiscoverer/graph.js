@@ -107,6 +107,26 @@ history.save({
     event: 'onClearFilter',
     data: ''
 });
+history.onUpdate(function () {
+    let undoBtn = zk.$('$filterUndo');
+    let redoBtn = zk.$('$filterRedo');
+    let undoCls = undoBtn.getSclass();
+    let redoCls = redoBtn.getSclass();
+    if (!history.canUndo() || history.count() === 0) {
+        undoBtn.setDisabled(true);
+        undoBtn.setSclass(undoCls + " ap-btn-off");
+    } else {
+        undoBtn.setDisabled(false);
+        undoBtn.setSclass(undoCls.replace(" ap-btn-off", ""));
+    }
+    if (!history.canRedo() || history.count() === 0) {
+        redoBtn.setDisabled(true);
+        redoBtn.setSclass(redoCls + " ap-btn-off");
+    } else {
+        redoBtn.setDisabled(false);
+        redoBtn.setSclass(redoCls.replace(" ap-btn-off", ""));
+    }
+});
 
 let container;
 let sourceJSON;
@@ -287,15 +307,17 @@ PDp.init = function() {
             if (evt.shiftKey || 16 === evt.keyCode || 16 === evt.which) {
                 isShiftPressed = true;
             }
-            if (evt.ctrlKey || 17 === evt.keyCode || 17 === evt.which) {
+            if (evt.ctrlKey || evt.metaKey || 17 === evt.keyCode || 17 === evt.which) {
                 isCtrlPressed = true;
             }
             if (evt.altKey || 18 === evt.keyCode || 18 === evt.which) {
                 isAltPressed = true;
             }
             if (isCtrlPressed && evt.which === 90) { // "Z" key
+                evt.preventDefault();
                 this.undo();
             } else if (isCtrlPressed && evt.which === 89) { // "Y" key
+                evt.preventDefault();
                 this.redo();
             }
         });
@@ -392,6 +414,7 @@ PDp.loadTrace = function(json) {
     this.init();
 
     let cy = this._private.cy;
+    json = json.replaceAll('\n', '\\n'); // escape
     const source = $.parseJSON(json);
     cy.add(source);
     this.layout(LAYOUT_MANUAL_BEZIER);

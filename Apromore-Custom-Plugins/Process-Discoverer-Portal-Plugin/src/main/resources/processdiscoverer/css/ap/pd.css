@@ -1216,3 +1216,8 @@ div.ap-pd-drawer-splitter:hover {
     font-size: 12px !important;
     font-family: var(--ap-font-base) !important;
 }
+
+.ap-pd-action-buttons .ap-btn-off {
+    pointer-events: none;
+    opacity: 0.6;
+}
