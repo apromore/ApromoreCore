@@ -33,6 +33,7 @@
                         <Import-Package>
 
                             org.deckfour.xes.*;version="2.27",
+                            org.apromore.commons.utils.*;version="[1.0,2)",
                             <!--
                                                         org.springframework.beans.factory.aspectj,
                                                         javax.inject,
@@ -101,6 +102,11 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-commons</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>

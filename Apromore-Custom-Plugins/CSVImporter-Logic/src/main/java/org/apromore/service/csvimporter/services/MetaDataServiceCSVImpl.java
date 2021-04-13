@@ -21,33 +21,29 @@
  */
 package org.apromore.service.csvimporter.services;
 
-import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccurringChar;
+import com.opencsv.CSVReader;
+import org.apache.commons.io.input.ReaderInputStream;
+import org.apromore.commons.utils.Delimiter;
+import org.apromore.service.csvimporter.io.CSVFileReader;
+import org.apromore.service.csvimporter.model.LogMetaData;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.io.input.ReaderInputStream;
-import org.apromore.service.csvimporter.constants.Constants;
-import org.apromore.service.csvimporter.io.CSVFileReader;
-import org.apromore.service.csvimporter.model.LogMetaData;
-
-import com.opencsv.CSVReader;
+import java.util.Objects;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
+
+	public static final int MAX_ROW_COUNT = 10;
 
     private Reader reader;
     private BufferedReader brReader;
     private InputStream in2;
     private CSVReader csvReader;
     private List<String> headers = new ArrayList<String>();
-    private char seperator;
+    private String separator = "";
 
     @Override
     public void validateLog(InputStream in, String charset) throws Exception {
@@ -60,13 +56,9 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 		throw new Exception("header must have non-empty value!");
 	    }
 
-	    char separator = getMaxOccurringChar(firstLine);
-//            setting this for performance
-	    this.seperator = separator;
+		String separator = autoFindSeparator(brReader);
+	    this.separator = separator;
 	    this.headers = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
-
-	    if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
-		throw new Exception("Try different encoding");
 
 	} catch (IOException e) {
 	    throw new Exception("Unable to import file");
@@ -86,10 +78,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	    brReader = new BufferedReader(reader);
 	    String firstLine = brReader.readLine();
 	    firstLine = firstLine.replaceAll("\"", "");
-	    char separator = getMaxOccurringChar(firstLine);
-
-	    if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
-		throw new Exception("Try different encoding");
+	    String separator = autoFindSeparator(brReader);
 
 	    List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
@@ -108,16 +97,14 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	    brReader = new BufferedReader(reader);
 	    String firstLine = brReader.readLine();
 	    firstLine = firstLine.replaceAll("\"", "");
-	    char separator = this.seperator != '\u0000' ? this.seperator : getMaxOccurringChar(firstLine);
-
-	    if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator))))
-		throw new Exception("Try different encoding");
+	    String separator = this.separator != null ? this.separator : autoFindSeparator(brReader);
 
 	    List<String> header = !headers.isEmpty() ? headers
 		    : Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
 	    in2 = new ReaderInputStream(brReader, charset);
-	    csvReader = new CSVFileReader().newCSVReader(in2, charset, separator);
+	    csvReader = new CSVFileReader().newCSVReader(in2, charset, !Objects.equals(separator, "") ?
+				separator.charAt(0) : '\u0000');
 
 	    if (csvReader == null)
 		return null;
@@ -137,6 +124,18 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	    closeQuietly(in);
 	}
     }
+
+	private String autoFindSeparator(BufferedReader brReader) throws IOException {
+		int rowCount = MAX_ROW_COUNT;
+		List<String> rows = new ArrayList<>();
+
+		String rowLine = brReader.readLine();
+		while (--rowCount > 0 && rowLine != null) {
+			rows.add(rowLine);
+			rowLine = brReader.readLine();
+		}
+		return Delimiter.findDelimiter(rows);
+	}
 
     private void closeQuietly(InputStream in) throws IOException {
 	if (in != null)
