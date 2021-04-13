@@ -26,7 +26,11 @@
         xmlns:z="http://www.zkoss.org/2005/zul"
         sclass="ap-bpmneditor"
         use="org.apromore.portal.dialogController.BPMNEditorController">
-
+  <z:style>
+    .x-panel-editor-north {
+      visibility: hidden !important;
+    }
+  </z:style>
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->
     <n:style media="screen" type="text/css">
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
@@ -34,7 +38,7 @@
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
     <n:script src="/js/jquery.js" type="text/javascript"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
@@ -86,7 +90,6 @@
       <n:script src="/${arg.editor}/libs/autolayout.js" type="text/javascript"/>
 
       <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
-      <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
       <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
         <z:zk forEach="${arg.plugins}">

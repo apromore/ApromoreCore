@@ -24,3 +24,8 @@
 @import "editor.css";
 @import "oryx.css";
 @import "icons.css";
+
+.x-panel-editor-north {
+    visibility: visible !important;
+}
+

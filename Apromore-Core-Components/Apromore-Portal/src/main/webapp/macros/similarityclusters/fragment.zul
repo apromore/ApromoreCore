@@ -28,7 +28,7 @@
         @import url("/editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
     <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_ext.css" type="text/css"/>
     <n:link rel="Stylesheet" media="screen" href="/editor/explorer/src/css/xtheme-smoky.css" type="text/css"/>
     <n:link rel="Stylesheet" media="screen" href="/editor/explorer/src/css/custom-style.css" type="text/css"/>
 
@@ -52,7 +52,6 @@
         <n:script src="/editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
         <n:script src="/editor/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
         <n:script src="/editor/editor/i18n/translation_en_us.js" type="text/javascript"/>
-        <n:script src="/editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
         <n:script src="/editor/libs/utils.js" type="text/javascript"/>
         <n:script src="/editor/editor/oryx.debug.js" type="text/javascript"/>
 

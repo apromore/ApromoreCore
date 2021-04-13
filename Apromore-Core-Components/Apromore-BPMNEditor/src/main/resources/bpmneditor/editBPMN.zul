@@ -31,7 +31,7 @@
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
     <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/diagram-js.css" type="text/css"/>
@@ -60,7 +60,6 @@
         <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 		
 		<n:script>console.log('${arg.plugins}')</n:script>
