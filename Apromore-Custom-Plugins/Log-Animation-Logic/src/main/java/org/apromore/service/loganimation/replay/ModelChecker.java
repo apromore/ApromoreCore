@@ -35,11 +35,12 @@ import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.Edge;
 import de.hpi.bpmn2_0.model.event.EndEvent;
 import de.hpi.bpmn2_0.model.event.StartEvent;
+import de.hpi.bpmn2_0.model.gateway.Gateway;
 import de.hpi.bpmn2_0.transformation.AbstractVisitor;
 
 public class ModelChecker extends AbstractVisitor {
     int numberOfStartEvent = 0;
-    int numberOfEndEvent = 0; 
+    int numberOfEndEvent = 0;
     private BaseElement rootElement = null;
     private Definitions definitions;
     private ArrayList<String> faultMessages = new ArrayList();
@@ -49,75 +50,77 @@ public class ModelChecker extends AbstractVisitor {
     public void visitBaseElement(BaseElement that) {
         
         if (that instanceof FlowNode) {
-
-            
-            //Check one element cannot be its own source or target
-            //LOGGER.info("Checking: element is not its own source");
             FlowElement flowElement = (FlowElement)that;
+            
             for(Edge edge : flowElement.getIncoming()) {
                 if (flowElement == edge.getSourceRef()) {
-                    faultMessages.add("Element " + flowElement.getId() + " is its own source.");
+                    faultMessages.add("The element " + flowElement.getName() + " has self-loop");
                     break;
                 }
             }
             
-            //LOGGER.info("Checking: element is not its own target");
             for(Edge edge : flowElement.getOutgoing()) {
                 if (flowElement == edge.getTargetRef()) {
-                    faultMessages.add("Element " + flowElement.getId() + " is its own target.");
+                    faultMessages.add("The element " + flowElement.getName() + " has self-loop");
                     break;
                 }
             }
             
-            //LOGGER.info("Checking: Activity does not have more than one target");
             if (that instanceof Activity) {
                 if (flowElement.getOutgoing().size() > 1) {
-                    faultMessages.add("Task " + flowElement.getId() + " has more than one target.");
+                    faultMessages.add("The task " + flowElement.getName() + " has more than one outgoing arc");
                 }
                 
                 if (flowElement.getIncoming().size() > 1) {
-                    faultMessages.add("Task " + flowElement.getId() + " has more than one source.");
+                    faultMessages.add("The task " + flowElement.getName() + " has more than one incoming arc");
+                }
+                
+                if (flowElement.getOutgoing().isEmpty() || flowElement.getIncoming().isEmpty()) {
+                    faultMessages.add("The task " + flowElement.getName() + " has missing incoming or outgoing arcs");
                 }
             }
             
-            //LOGGER.info("Checking: StartEvent does not have more than one target");
             if (that instanceof StartEvent) {
                 if (flowElement.getOutgoing().size() > 1) {
-                    faultMessages.add("Start Event " + flowElement.getId() + " has more than one target.");
+                    faultMessages.add("The Start Event has more than one outgoing arc");
+                }
+                else if (flowElement.getOutgoing().isEmpty()) {
+                    faultMessages.add("The Start Event has a missing outgoing arc");
+                }
+                
+                if (!flowElement.getIncoming().isEmpty()) {
+                    faultMessages.add("The Start Event has incoming arc(s)");
                 }
             }
             
-            //LOGGER.info("Checking: EndEvent does not have more than one source");
             if (that instanceof EndEvent) {
                 if (flowElement.getIncoming().size() > 1) {
-                    faultMessages.add("End Event " + flowElement.getId() + " has more than one source.");
+                    faultMessages.add("The End Event has more than one incoming arc");
+                }
+                else if (flowElement.getIncoming().isEmpty()) {
+                    faultMessages.add("The End Event has a missing incoming arc");
+                }
+                
+                if (!flowElement.getOutgoing().isEmpty()) {
+                    faultMessages.add("The End Event has outgoing arc(s)");
                 }
             }
             
-            //LOGGER.info("Checking gateways: merge only one target, split only one source");
-            //Bruce 08 Jan 2021: remove this check because BPMN.io saves .bpmn file without the gatewayDirection attribute.
-            //This is redundant attribute because the split or join can be known from the gateway incoming and outgoing arcs
-            //This check could be incorrect if the model is saved by BPMN.io because the gatewayDirection is kept but 
-            //the incoming and outgoing arcs could change differently from the gatewayDirection attribute value.
-            //Make sure that gatewayDirection attribute is NOT used in this module in all places.
-            /*
             if (that instanceof Gateway) {
-                Gateway gw = (Gateway)that;
-                GatewayDirection direction = gw.getGatewayDirection();
-                
-                if (direction.equals(GatewayDirection.CONVERGING)) {
-                    if (!(gw.getIncomingSequenceFlows().size() > 1 && gw
-                            .getOutgoingSequenceFlows().size() == 1)) {
-                        faultMessages.add("Merge Gateway " + gw.getId() + " has more than one target");
-                    }
-                } else if (direction.equals(GatewayDirection.DIVERGING)) {
-                    if (!(gw.getIncomingSequenceFlows().size() == 1 && gw
-                        .getOutgoingSequenceFlows().size() > 1)) {
-                        faultMessages.add("Split Gateway " + gw.getId() + " has more than one source");
-                    }
+                if (flowElement.getOutgoing().size() > 1 && flowElement.getIncoming().size() > 1) {
+                    faultMessages.add("The gateway " + flowElement.getId() + " has both multiple incoming and outgoing arcs");
+                }
+                else if (flowElement.getOutgoing().isEmpty() || flowElement.getIncoming().isEmpty()) {
+                    faultMessages.add("The gateway " + flowElement.getId() + " has missing incoming or outgoing arcs");
                 }
             }
-            */
+        }
+        else if (that instanceof Edge) {
+            Edge edge = (Edge)that;
+            String disconnectedMsg = "The model has disconnected arcs";
+            if (edge.getSourceRef() == null && edge.getTargetRef() == null) {
+                if (!faultMessages.contains(disconnectedMsg)) faultMessages.add(disconnectedMsg);
+            }
         }
 
     }

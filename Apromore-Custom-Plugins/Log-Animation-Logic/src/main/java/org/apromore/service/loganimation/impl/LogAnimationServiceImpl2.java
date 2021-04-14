@@ -70,7 +70,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationServiceImpl2.class);
 
     @Override
-    public AnimationResult createAnimation(String bpmn, List<Log> logs) 
+    public AnimationResult createAnimation(String bpmn, List<Log> logs)
             throws BpmnConverterException, IOException, JAXBException, JSONException, AnimationException {
 
         Set<XLog> xlogs = new HashSet<>();
@@ -144,7 +144,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             }
 
         } else {
-            throw new AnimationException("The BPMN diagram is not valid for animation");
+            throw new AnimationException("The BPMN diagram is not valid for animation. " +
+                                         "Reason: " + replayer.getProcessCheckingMsg());
         }
         
         for (AnimationLog animationLog : replayedLogs) {
@@ -170,7 +171,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     
     /**
      * This method adds a step to convert the replay result to JSON for the diagram with no gateways (i.e. graphs).
-     * The input BPMN diagram with gateways are used to replay the logs. 
+     * The input BPMN diagram with gateways are used to replay the logs.
      * The input BPMN digram with no gateways is the corresponding graph which must have JSON text to be visualized.
      * Approach:
      *      1. A mapping is built to map IDs of nodes/arcs on bpmnWithGateways to those on bpmnNoGateways
@@ -181,11 +182,11 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
      * @param bpmnWithGateways: BPMN text with XOR gateways
      * @param bpmnNoGateways: corresponding BPMN text with no XOR gateways
      * @param logs: logs to be replayed
-     * @throws DiagramMappingException 
-     * @throws AnimationException 
-     */ 
+     * @throws DiagramMappingException
+     * @throws AnimationException
+     */
     @Override
-    public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs) 
+    public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs)
             throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException, AnimationException {
         
         Set<XLog> xlogs = new HashSet<>();
@@ -261,7 +262,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             }
 
         } else {
-            throw new AnimationException("The BPMN diagram is not valid for animation");
+            throw new AnimationException("The BPMN diagram is not valid for animation. " +
+                                         "Reason: " + replayer.getProcessCheckingMsg());
         }
         
         /*
