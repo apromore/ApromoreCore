@@ -51,17 +51,20 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	try {
 	    reader = new InputStreamReader(in, Charset.forName(charset));
 	    brReader = new BufferedReader(reader);
-	    String firstLine = brReader.readLine();
+
+		List<String> sampleRows = getSampleRows(brReader);
+
+	    String firstLine = sampleRows.get(0);
 	    if (firstLine == null || firstLine.isEmpty()) {
 		throw new Exception("header must have non-empty value!");
 	    }
 
-		String separator = autoFindSeparator(brReader);
+		String separator = Delimiter.findDelimiter(sampleRows);
 	    this.separator = separator;
 	    this.headers = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
 	} catch (IOException e) {
-	    throw new Exception("Unable to import file");
+	    throw new Exception("Unable to import file", e);
 	} finally {
 	    closeQuietly(in);
 	}
@@ -76,9 +79,13 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	try {
 	    reader = new InputStreamReader(in, Charset.forName(charset));
 	    brReader = new BufferedReader(reader);
-	    String firstLine = brReader.readLine();
+
+		List<String> sampleRows = getSampleRows(brReader);
+
+	    String firstLine = sampleRows.get(0);
 	    firstLine = firstLine.replaceAll("\"", "");
-	    String separator = autoFindSeparator(brReader);
+
+	    String separator = Delimiter.findDelimiter(sampleRows);
 
 	    List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
 
@@ -95,9 +102,13 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	try {
 	    reader = new InputStreamReader(in, Charset.forName(charset));
 	    brReader = new BufferedReader(reader);
-	    String firstLine = brReader.readLine();
+
+		List<String> sampleRows = getSampleRows(brReader);
+
+		String firstLine = sampleRows.get(0);
 	    firstLine = firstLine.replaceAll("\"", "");
-	    String separator = this.separator != null ? this.separator : autoFindSeparator(brReader);
+
+	    String separator = !Objects.equals(this.separator, "") ? this.separator : Delimiter.findDelimiter(sampleRows);
 
 	    List<String> header = !headers.isEmpty() ? headers
 		    : Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
@@ -125,17 +136,37 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	}
     }
 
-	private String autoFindSeparator(BufferedReader brReader) throws IOException {
+    private List<String> getSampleRows(BufferedReader brReader) throws IOException {
 		int rowCount = MAX_ROW_COUNT;
 		List<String> rows = new ArrayList<>();
-
 		String rowLine = brReader.readLine();
 		while (--rowCount > 0 && rowLine != null) {
 			rows.add(rowLine);
 			rowLine = brReader.readLine();
 		}
-		return Delimiter.findDelimiter(rows);
+		return rows;
 	}
+
+//	private String autoFindSeparator(InputStream in, String charset) throws IOException {
+//
+//		String delimiter = "";
+//		try (InputStreamReader reader = new InputStreamReader(in, Charset.forName(charset));
+//			 BufferedReader brReader = new BufferedReader(reader)) {
+//			int rowCount = MAX_ROW_COUNT;
+//			List<String> rows = new ArrayList<>();
+//			String rowLine = brReader.readLine();
+//			while (--rowCount > 0 && rowLine != null) {
+//				rows.add(rowLine);
+//				rowLine = brReader.readLine();
+//			}
+//			return Delimiter.findDelimiter(rows);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeQuietly(in);
+//		}
+//		return delimiter;
+//	}
 
     private void closeQuietly(InputStream in) throws IOException {
 	if (in != null)

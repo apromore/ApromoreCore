@@ -58,6 +58,7 @@ public class LogProcessorImpl implements LogProcessor {
 	validRow = true;
 
 	// Case id:
+	assert logMetaData.getCaseIdPos() != -1;
 	caseId = line.get(logMetaData.getCaseIdPos());
 	if (caseId == null || caseId.isEmpty()) {
 	    logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getCaseIdPos(),
