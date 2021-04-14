@@ -36,7 +36,7 @@ import java.util.Objects;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
 
-	public static final int MAX_ROW_COUNT = 2;
+	private static final int MAX_ROW_COUNT = 2;
 
     private Reader reader;
     private BufferedReader brReader;
@@ -146,27 +146,6 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 		}
 		return rows;
 	}
-
-//	private String autoFindSeparator(InputStream in, String charset) throws IOException {
-//
-//		String delimiter = "";
-//		try (InputStreamReader reader = new InputStreamReader(in, Charset.forName(charset));
-//			 BufferedReader brReader = new BufferedReader(reader)) {
-//			int rowCount = MAX_ROW_COUNT;
-//			List<String> rows = new ArrayList<>();
-//			String rowLine = brReader.readLine();
-//			while (--rowCount > 0 && rowLine != null) {
-//				rows.add(rowLine);
-//				rowLine = brReader.readLine();
-//			}
-//			return Delimiter.findDelimiter(rows);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			closeQuietly(in);
-//		}
-//		return delimiter;
-//	}
 
     private void closeQuietly(InputStream in) throws IOException {
 	if (in != null)
