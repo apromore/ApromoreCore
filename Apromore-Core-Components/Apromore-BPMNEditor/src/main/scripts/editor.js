@@ -135,7 +135,8 @@ Apromore.Editor = {
       var editor = this.actualEditor;
       this.actualEditor.importXML(xml, function(err) {
         if (err) {
-          return console.error('could not import BPMN 2.0 diagram', err);
+          window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
+          return;
         }
 
         var eventBus = editor.get('eventBus');

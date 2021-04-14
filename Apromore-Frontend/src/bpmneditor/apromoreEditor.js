@@ -70,20 +70,20 @@ Clazz.extend = function(def) {
     var classDef = function() {
         if (arguments[0] !== Clazz) { this.construct.apply(this, arguments); }
     };
-    
+
     var proto = new this(Clazz);
     var superClass = this.prototype;
-    
+
     for (var n in def) {
-        var item = def[n];                        
+        var item = def[n];
         if (item instanceof Function) item.$ = superClass;
         proto[n] = item;
     }
 
     classDef.prototype = proto;
-    
-    //Give this new class the same static extend method    
-    classDef.extend = this.extend;        
+
+    //Give this new class the same static extend method
+    classDef.extend = this.extend;
     return classDef;
 };/**
  * Copyright (c) 2008
@@ -1330,7 +1330,8 @@ Apromore.Editor = {
       var editor = this.actualEditor;
       this.actualEditor.importXML(xml, function(err) {
         if (err) {
-          return console.error('could not import BPMN 2.0 diagram', err);
+            window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
+            return;
         }
 
         var eventBus = editor.get('eventBus');
