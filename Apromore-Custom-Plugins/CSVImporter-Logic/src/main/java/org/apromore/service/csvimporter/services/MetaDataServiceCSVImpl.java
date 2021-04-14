@@ -36,7 +36,7 @@ import java.util.Objects;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
 
-	public static final int MAX_ROW_COUNT = 10;
+	public static final int MAX_ROW_COUNT = 2;
 
     private Reader reader;
     private BufferedReader brReader;

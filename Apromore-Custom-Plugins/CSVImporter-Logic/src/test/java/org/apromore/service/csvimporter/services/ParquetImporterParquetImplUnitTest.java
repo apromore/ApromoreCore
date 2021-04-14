@@ -393,7 +393,7 @@ public class ParquetImporterParquetImplUnitTest {
         LOGGER.info("\n************************************\ntest9 - Event Attribute");
         //Parquet file input
         String testFile = "/test10-eventAttribute.parquet";
-        String expectedTestFile = "/test10-eventAttribute-expected.csv";
+        String expectedTestFile = "/test10-eventAttribute-expected-parquet.csv";
         //Create an output parquet file
         File outputParquet = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs

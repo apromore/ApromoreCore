@@ -476,7 +476,7 @@ public class XLSXLogImporterCSVImplUnitTest {
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getRowsCount());
+        assertEquals(6, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         // Continue with the XES conversion
         XLog xlog = logModel.getXLog();

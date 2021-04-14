@@ -100,7 +100,7 @@ public class LogImporterCSVImplUnitTest {
 
         // Validate result
         assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
-        assertEquals(3, sampleLog.size());
+        assertEquals(2, sampleLog.size());
     }
 
     /**
@@ -494,7 +494,7 @@ public class LogImporterCSVImplUnitTest {
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getRowsCount());
+        assertEquals(6, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         assertNotNull(xlog);
         assertEquals(
