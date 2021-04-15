@@ -39,8 +39,8 @@ import java.util.Arrays;
 @Getter
 public enum AccessType {
 
-    RESTRICTED(false, false, false, "Restricted Viewer"),
-    VIEWER(true, false, false, "Full Viewer"),
+    RESTRICTED(false, false, false, "Viewer (restricted)"),
+    VIEWER(true, false, false, "Viewer (full)"),
     EDITOR(true, true, false, "Editor"),
     OWNER(true, true, true, "Owner");
 
