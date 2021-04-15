@@ -44,8 +44,8 @@
                                   hflex="1"
                                   disabled="true"
                                   ca:data-id="${each.rowGuid}">
-                            <comboitem label="Restricted Viewer"/>
-                            <comboitem label="Full Viewer"/>
+                            <comboitem label="Viewer (restricted)"/>
+                            <comboitem label="Viewer (full)"/>
                             <comboitem label="Editor"/>
                             <comboitem label="Owner"/>
                         </combobox>

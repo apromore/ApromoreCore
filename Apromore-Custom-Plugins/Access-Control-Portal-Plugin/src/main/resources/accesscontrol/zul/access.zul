@@ -96,8 +96,8 @@
                                       forward="onChange=assignmentListbox.onChange"
                                       ca:data-id="${each.rowGuid}"
                                       ca:onSelectDisabled="Ap.share.updateAssignee('${each.rowGuid}', '${each.name}', arguments[0].target.value)">
-                                <comboitem label="Restricted Viewer" visible="${accessContainer$composer.logSelected}"/>
-                                <comboitem label="Full Viewer"/>
+                                <comboitem label="Viewer (restricted)" visible="${accessContainer$composer.logSelected}"/>
+                                <comboitem label="Viewer (full)"/>
                                 <comboitem label="Editor"/>
                                 <comboitem label="Owner"/>
                             </combobox>
