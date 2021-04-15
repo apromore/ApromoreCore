@@ -21,6 +21,7 @@
  */
 package org.apromore.service.csvimporter.services;
 
+import com.google.common.base.Splitter;
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.commons.utils.Delimiter;
@@ -61,7 +62,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 
 		String separator = Delimiter.findDelimiter(sampleRows);
 	    this.separator = separator;
-	    this.headers = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+	    this.headers = Splitter.on(separator).splitToList(firstLine);
 
 	} catch (IOException e) {
 	    throw new Exception("Unable to import file", e);
@@ -87,7 +88,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 
 	    String separator = Delimiter.findDelimiter(sampleRows);
 
-	    List<String> header = Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+	    List<String> header = Splitter.on(separator).splitToList(firstLine);
 
 	    return new LogMetaData(header);
 
@@ -111,7 +112,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 	    String separator = !Objects.equals(this.separator, "") ? this.separator : Delimiter.findDelimiter(sampleRows);
 
 	    List<String> header = !headers.isEmpty() ? headers
-		    : Arrays.asList(firstLine.split("\\s*" + separator + "\\s*"));
+		    : Splitter.on(separator).splitToList(firstLine);
 
 	    in2 = new ReaderInputStream(brReader, charset);
 	    csvReader = new CSVFileReader().newCSVReader(in2, charset, !Objects.equals(separator, "") ?

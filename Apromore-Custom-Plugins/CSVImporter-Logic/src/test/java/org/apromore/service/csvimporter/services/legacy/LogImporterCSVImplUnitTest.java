@@ -47,7 +47,8 @@ public class LogImporterCSVImplUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
-    private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
+    private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time"
+            , " process type");
     private TestUtilities utilities;
     private MetaDataService metaDataService;
     private LogImporter logImporter;
