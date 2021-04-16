@@ -29,7 +29,6 @@ import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.FolderService;
@@ -48,7 +47,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -117,7 +115,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         processRepo = processRepository;
         pmvRepo = pmvRepository;
         logRepo = logRepository;
-        usermetadataRepo  = usermetadataRepository;
+        usermetadataRepo = usermetadataRepository;
         folderRepo = folderRepository;
         groupRepo = groupRepository;
         groupFolderRepo = groupFolderRepository;
@@ -224,8 +222,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             Folder parent = folderRepo.findOne(parentFolderId);
             if (parent != null) {
                 for (GroupFolder groupFolder : parent.getGroupFolders()) {
-                    if (!Objects.equals(groupFolder.getGroup().getId(), user.getGroup().getId())) { // Avoid adding operating user twice
-                        groupFolders.add(new GroupFolder(groupFolder.getGroup(), folder, groupFolder.getAccessRights()));
+                    if (!Objects.equals(groupFolder.getGroup().getId(), user.getGroup().getId())) { // Avoid adding
+                        // operating user twice
+                        groupFolders.add(new GroupFolder(groupFolder.getGroup(), folder,
+                                groupFolder.getAccessRights()));
                     }
                 }
             }
@@ -359,7 +359,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<Folder> parentFolders = folderService.getParentFolders(folderId);
         for (Folder folder : parentFolders) {
             // Give parent folders viewer access only if specified group doesn't have access to
-            if(groupFolderRepo.findByGroupAndFolder(group, folder) == null) {
+            if (groupFolderRepo.findByGroupAndFolder(group, folder) == null) {
                 createGroupFolder(group, folder, true, false, false);
             }
         }
@@ -418,7 +418,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // TODO: If access type = restricted, remove GroupUsermetadata
         // If access type = restricted, remove permission with user metadata that linked to specified log
-//        userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
+        // userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
 
         if (accessType != AccessType.RESTRICTED) {
 
@@ -615,7 +615,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Unless in the root folder, add access rights of its immediately enclosing folder
         if (newFolder != null) {
             for (GroupFolder gf : newFolder.getGroupFolders()) {
-                if (!Objects.equals(gf.getGroup().getId(), newUser.getGroup().getId())) { // Avoid adding operating user twice
+                if (!Objects.equals(gf.getGroup().getId(), newUser.getGroup().getId())) { // Avoid adding operating
+                    // user twice
                     groupLogs.add(new GroupLog(gf.getGroup(), newLog, gf.getAccessRights()));
                 }
             }
@@ -721,7 +722,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         // Unless in the root folder, add access rights of its immediately enclosing folder
         if (newFolder != null) {
             for (GroupFolder gf : newFolder.getGroupFolders()) {
-                if (!Objects.equals(gf.getGroup().getId(), newUser.getGroup().getId())) { // Avoid adding operating user twice
+                if (!Objects.equals(gf.getGroup().getId(), newUser.getGroup().getId())) { // Avoid adding operating
+                    // user twice
                     groupProcesses.add(new GroupProcess(newProcess, gf.getGroup(), gf.getAccessRights()));
                 }
             }
@@ -764,7 +766,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupProcesses.clear();
 
             for (GroupFolder gf : newFolder.getGroupFolders()) {
-                groupProcesses.add(new GroupProcess(process, gf.getGroup(),  gf.getAccessRights()));
+                groupProcesses.add(new GroupProcess(process, gf.getGroup(), gf.getAccessRights()));
             }
         }
 
@@ -868,7 +870,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             List<GroupFolder> ownerGroupFolders = groupFolderRepo.findOwnerByFolderId(gf.getFolder().getId());
             if (ownerGroupFolders.size() == 1) {
                 GroupFolder groupFolder = ownerGroupFolders.get(0);
-                
+
                 // If specified user's singleton group is the only owner of the folder
                 if (Objects.equals(groupFolder.getGroup().getId(), user.getGroup().getId())) {
                     SingleOwnerFolderList.add(groupFolder.getFolder());
