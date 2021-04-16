@@ -920,3 +920,12 @@ databaseChangeLog:
            referencedColumnNames: id
            referencedTableName: user
            validate: true
+
+ - changeSet:
+     id: 20210416120000
+     author: raboczi
+     changes:
+       - modifyDataType:
+           columnName: version_number
+           newDataType: VARCHAR(100)
+           tableName: process_model_version
