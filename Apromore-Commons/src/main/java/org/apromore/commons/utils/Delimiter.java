@@ -34,7 +34,7 @@ public class Delimiter {
     /**
      * Find the delimiter for a given rows.
      *
-     * @param rows 2D array of rows.
+     * @param rows 2D array of rows. Must include headers row for CSV file
      * @return
      */
     public static String findDelimiter(final List<String> rows) {

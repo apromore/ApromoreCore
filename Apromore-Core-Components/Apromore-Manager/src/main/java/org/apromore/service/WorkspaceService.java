@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,23 +24,15 @@
 
 package org.apromore.service;
 
-import java.util.List;
-import java.util.Set;
-
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.model.FolderTreeNode;
 import org.apromore.util.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Interface for the User Service. Defines all the methods that will do the majority of the work for
@@ -52,6 +44,7 @@ public interface WorkspaceService {
 
     /**
      * Finds a folders and returns it.
+     *
      * @param folderId the id of the folder to find.
      * @return the found folder or null.
      */
@@ -89,11 +82,14 @@ public interface WorkspaceService {
 
     List<GroupFolder> getSubFolders(String userRowGuid, Integer folderId);
 
-    String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+    String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                 boolean hasOwnership);
 
-    String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+    String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                  boolean hasOwnership);
 
-    String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+    String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                              boolean hasOwnership);
 
     String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata);
 
@@ -110,38 +106,43 @@ public interface WorkspaceService {
 
     /**
      * Creates the public status for the users to have read rights to this model.
+     *
      * @param process the process.
      */
     void createPublicStatusForUsers(final Process process);
 
     /**
      * Removes all users from having access to this model, except the owner.
+     *
      * @param process the process model we are restricting access to.
      */
     void removePublicStatusForUsers(final Process process);
-    
+
     /**
      * Copy log to a new folder for a user
+     *
      * @param logId
      * @param targetFolderId
      * @param userName
      * @param isPublic
-     * @return: new copied log
      * @throws Exception
+     * @return: new copied log
      */
     Log copyLog(Integer logId, Integer targetFolderId, String userName, boolean isPublic) throws Exception;
-    
+
     /**
      * Move log to a new folder
+     *
      * @param logId
      * @param newFolderId
      * @return the new moved log
      * @throws Exception
      */
     Log moveLog(Integer logId, Integer newFolderId) throws Exception;
-    
+
     /**
-     * Copy a set of process model versions to a new folder for a user 
+     * Copy a set of process model versions to a new folder for a user
+     *
      * @param processId
      * @param pmvVersions
      * @param newFolderId
@@ -150,10 +151,12 @@ public interface WorkspaceService {
      * @return the copied process model
      * @throws Exception
      */
-    Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId, String userName, boolean isPublic) throws Exception;
-    
+    Process copyProcessVersions(Integer processId, List<String> pmvVersions, Integer newFolderId, String userName,
+                                boolean isPublic) throws Exception;
+
     /**
      * Copy a process model (with all process model versions) to a new folder for a user
+     *
      * @param processId
      * @param newFolderId
      * @param userName
@@ -162,9 +165,10 @@ public interface WorkspaceService {
      * @throws Exception
      */
     Process copyProcess(Integer processId, Integer newFolderId, String userName, boolean isPublic) throws Exception;
-    
+
     /**
      * Move a process model (with all process model versions) to a new folder
+     *
      * @param processId
      * @param newFolderId
      * @return the moved process model
@@ -174,6 +178,7 @@ public interface WorkspaceService {
 
     /**
      * Copy a folder to a new parent folder; all subfolders and items are copied recursively
+     *
      * @param folderId
      * @param sourceFolderId
      * @param targetFolderId
@@ -181,9 +186,10 @@ public interface WorkspaceService {
      * @throws Exception
      */
     Folder copyFolder(Integer folderId, Integer sourceFolderId, Integer targetFolderId) throws Exception;
-    
+
     /**
      * Move a folder to a new parent folder
+     *
      * @param folderId
      * @param newParentFolderId
      * @return the moved folder
@@ -192,7 +198,6 @@ public interface WorkspaceService {
     Folder moveFolder(Integer folderId, Integer newParentFolderId) throws Exception;
 
     /**
-     *
      * Get a list of Folders that the specified user's singleton group is the only owner of
      * Note: Only considering singleton group here
      *
@@ -202,7 +207,6 @@ public interface WorkspaceService {
     List<Folder> getSingleOwnerFolderByUser(User user);
 
     /**
-     *
      * Get a list of Logs that the specified user's singleton group is the only owner of
      * Note: Only considering singleton group here
      *
@@ -212,7 +216,6 @@ public interface WorkspaceService {
     List<Log> getSingleOwnerLogByUser(User user);
 
     /**
-     *
      * Get a list of Processes that the specified user's singleton group is the only owner of
      * Note: Only considering singleton group here
      *

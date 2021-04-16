@@ -533,7 +533,7 @@ public class ParquetImporterCSVImplUnitTest {
         String parquetToCSV = convertParquetToCSV(outputParquet, ',');
 
         // Validate result
-        assertEquals(3, logModel.getRowsCount());
+        assertEquals(6, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         assertEquals(false, logModel.isRowLimitExceeded());
         assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);

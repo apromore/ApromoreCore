@@ -527,7 +527,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getRowsCount());
+        assertEquals(6, logModel.getRowsCount());
         assertEquals(0, logModel.getLogErrorReport().size());
         assertEquals(getHeaderFromParquet(schema), PARQUET_EXPECTED_HEADER);
         assertEquals(expectedCsv, parquetToCSV);
