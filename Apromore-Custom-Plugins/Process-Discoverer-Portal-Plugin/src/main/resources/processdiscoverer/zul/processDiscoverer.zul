@@ -33,6 +33,7 @@
 <?link rel="shortcut icon" href="../../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <?link rel="stylesheet" href="../../css/chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/common/css/index.css" type="text/css" ?>
+<?link rel="stylesheet" href="/processdiscoverer/js/spectrum/2.0.5/spectrum.css" ?>
 <?link rel="stylesheet" href="/processdiscoverer/css/ap/pd.css" type="text/css" ?>
 <?link rel="stylesheet" href="/processdiscoverer/css/ap/animation.css" type="text/css" ?>
 <?link rel="stylesheet" href="../../themes/${labels.theme}/portal/css/portal.css" type="text/css" ?>
@@ -123,7 +124,7 @@
                         'ap-pd-la',
                         'ap-pd-la-timeline',
                         'ap-pd-la-speed-control',
-                        '',
+                        'ap-la-progress',
                         '',
                         'ap-pd-la-clock',
                         'ap-pd-la-buttons',

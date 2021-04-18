@@ -26,7 +26,20 @@
     xmlns:ca="client/attribute"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
-  
+    <style>
+      .ap-pd-action-buttons .ap-icon:focus {
+        background-color: transparent;
+        filter: none !important;
+      }
+      .ap-pd-action-buttons .ap-icon:hover {
+        background-color: var(--ap-c-action-bg-hover);
+        filter: none !important;
+      }
+      .ap-pd-action-buttons .ap-icon.ap-btn-anim-on {
+        background-color: var(--ap-c-action-bg-hover) !important;
+        filter: none !important;
+      }
+    </style>
     <popup id="shortcutPopup" width="650px">
       <div sclass="ap-key-help">
         <n:div class="ap-key-help-header">

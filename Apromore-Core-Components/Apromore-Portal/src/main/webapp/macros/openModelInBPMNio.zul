@@ -27,8 +27,11 @@
         sclass="ap-bpmneditor"
         use="org.apromore.portal.dialogController.BPMNEditorController">
   <z:style>
-    .x-panel-editor-north {
-      visibility: hidden !important;
+    .x-panel-editor-north .x-toolbar {
+      background-image: none !important;
+    }
+    .x-panel-editor-north .x-btn {
+      opacity: 0 !important;
     }
   </z:style>
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->

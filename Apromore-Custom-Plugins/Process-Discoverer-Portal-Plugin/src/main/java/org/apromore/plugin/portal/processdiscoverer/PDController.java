@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpSession;
 
@@ -77,6 +78,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -650,7 +652,7 @@ public class PDController extends BaseController {
             graphVisController.displayTraceDiagram(traceVisualContent);
         }
     }
-    
+
     /**
      * Mode represents an overall state of PD. It is used to set relevant status for UI controls
      * without having to consider state of each control.
@@ -666,6 +668,7 @@ public class PDController extends BaseController {
             logStatsController.setDisabled(true);
             timeStatsController.setDisabled(true);
             toolbarController.setDisabled(true);
+            toolbarController.toogleAnimateBtn(true);
             caseDetailsController.setDisabled(true);
         }
         else if (newMode == InteractiveMode.MODEL_MODE) {
@@ -675,6 +678,7 @@ public class PDController extends BaseController {
             timeStatsController.setDisabled(false);
             toolbarController.setDisabled(false);
             toolbarController.setDisabledAnimation(false);
+            toolbarController.toogleAnimateBtn(false);
             caseDetailsController.setDisabled(false);
         }
         else if (newMode == InteractiveMode.TRACE_MODE) {
@@ -685,6 +689,7 @@ public class PDController extends BaseController {
             timeStatsController.setDisabled(true);
             toolbarController.setDisabled(true);
             toolbarController.setDisabledAnimation(true);
+            toolbarController.toogleAnimateBtn(true);
         }
         this.mode = newMode;
         return true;

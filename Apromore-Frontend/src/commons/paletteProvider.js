@@ -22,7 +22,7 @@
 /**
  *  Encapsulation of palette handling for log animation
  */
-import { darken } from 'color';
+import { darken } from './colorUtil';
 import { range, map, findIndex } from 'ramda';
 
 const DEFAULT_PALETTE = [
