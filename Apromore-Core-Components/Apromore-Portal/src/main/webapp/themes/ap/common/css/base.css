@@ -31,6 +31,7 @@
     --ap-filter-ico-sunset: invert(50%) sepia(96%) saturate(3596%) hue-rotate(1deg) brightness(98%) contrast(101%);
     --ap-filter-ico-maroon: invert(27%) sepia(95%) saturate(1140%) hue-rotate(319deg) brightness(88%) contrast(87%);
     --ap-filter-ico-green: invert(57%) sepia(82%) saturate(362%) hue-rotate(90deg) brightness(94%) contrast(89%);
+    --ap-filter-ico-oceanic-dark-3: invert(46%) sepia(94%) saturate(110%) hue-rotate(163deg) brightness(101%) contrast(98%);
     --ap-filter-grey-light-5: invert(100%) sepia(0%) saturate(3124%) hue-rotate(194deg) brightness(119%) contrast(80%);
 
     /* ---ap-c-grey */
