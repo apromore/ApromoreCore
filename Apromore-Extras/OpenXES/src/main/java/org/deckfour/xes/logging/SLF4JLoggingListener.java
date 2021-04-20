@@ -75,10 +75,10 @@ public class SLF4JLoggingListener implements XLoggingListener {
 	@Override
 	public void log(String message, Importance importance) {
 		switch (importance) {
-		case DEBUG:   logger.debug(message);   break;
-		case ERROR:   logger.error(message);   break;
-		case INFO:    logger.info(message);    break;
-		case WARNING: logger.warn(message); break;
+		case DEBUG:   logger.debug(message); break;
+		case ERROR:   logger.error(message); break;
+		case INFO:    logger.info(message);  break;
+		case WARNING: logger.warn(message);  break;
 		}
 	}
 
