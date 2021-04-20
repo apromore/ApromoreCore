@@ -88,27 +88,33 @@ public class BPMNEditorController extends BaseController {
         }
 
         String id = Executions.getCurrent().getParameter("id");
-        isNewProcess = Boolean.valueOf(Executions.getCurrent().getParameter("newProcess"));
         if (id == null) {
             throw new AssertionError("No id parameter in URL");
         }
-
         session = userSessionManager.getEditSession(id);
         if (session == null) {
             // throw new AssertionError("No edit session associated with id " + id);
             throw new AssertionError("Your session has expired. Please close this browser tab and refresh the Portal tab");
         }
-
+        isNewProcess = Boolean.valueOf(Executions.getCurrent().getParameter("newProcess"));
         editSession = session.getEditSession();
         mainC = session.getMainC();
         process = session.getProcess();
         vst = session.getVersion();
 
-        try {
-            User user = getSecurityService().getUserById(currentUserType.getId());
-            currentUserAccessType = getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
-        } catch (Exception e) {
-            currentUserAccessType = AccessType.VIEWER;
+        if (isNewProcess) {
+            currentUserAccessType = AccessType.OWNER;
+        } else {
+            try {
+                User user = getSecurityService().getUserById(currentUserType.getId());
+                currentUserAccessType = getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+            } catch (Exception e) {
+                // currentUserAccessType = AccessType.VIEWER;
+                currentUserAccessType = null;
+            }
+            if (currentUserAccessType == null) {
+                throw new AssertionError("No valid access type for the current user");
+            }
         }
         String klass = "access-type-" + currentUserAccessType.getLabel().toLowerCase();
         Clients.evalJavaScript("Ap.common.injectGlobalClass(\"" + klass + "\")");
