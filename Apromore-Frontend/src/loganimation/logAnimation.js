@@ -113,13 +113,13 @@ export default class LogAnimation {
         let {recordingFrameRate, logStartFrameIndexes, logEndFrameIndexes, elementIndexIDMap, caseCountsByFrames} = setupData;
         let startMs = new Date(setupData.timeline.startDateLabel).getTime(); // Start date in milliseconds
         let endMs = new Date(setupData.timeline.endDateLabel).getTime(); // End date in milliseconds
+        let startLogTime = new Date(setupData.timeline.startLogDateLabel).getTime(); // Start log date in milliseconds
+        let endLogTime = new Date(setupData.timeline.endLogDateLabel).getTime(); // End log date in milliseconds
         let totalEngineS = setupData.timeline.totalEngineSeconds;
-        let slotEngineUnit = setupData.timeline.slotEngineUnit;
         let timelineSlots = setupData.timeline.timelineSlots;
 
-        this.animationContext = new AnimationContext(this.pluginExecutionId, startMs, endMs, timelineSlots,
-            totalEngineS, slotEngineUnit, recordingFrameRate);
-
+        this.animationContext = new AnimationContext(this.pluginExecutionId, startMs, endMs, startLogTime, endLogTime,
+                                        timelineSlots, totalEngineS, recordingFrameRate);
         this.processMapController.initialize(elementIndexIDMap);
         this.processMapController.registerListener(this);
 
@@ -141,7 +141,7 @@ export default class LogAnimation {
         }
         if (this.clockContainerId) {
             this.clock = new ClockAnimation(this, this.clockContainerId);
-            this.clock.setClockTime(this.animationContext.getLogStartTime());
+            this.clock.setClockTime(this.animationContext.getTimelineStart());
         }
         if (this.buttonsContainerId) {
             this.buttonControls = new PlayActionControl(this, this.buttonsContainerId, this.playClassName, this.pauseClassName);
@@ -227,12 +227,12 @@ export default class LogAnimation {
     }
 
     getLogTimeFromFrameIndex(frameIndex) {
-        return this.getLogTimeFromFromLogicalTime(this.getLogicalTimeFromFrameIndex(frameIndex));
+        return this.getLogTimeFromLogicalTime(this.getLogicalTimeFromFrameIndex(frameIndex));
     }
 
     // Milliseconds
-    getLogTimeFromFromLogicalTime(logicalTime) {
-        return this.animationContext.getLogStartTime() + logicalTime*this.animationContext.getTimelineRatio()*1000;
+    getLogTimeFromLogicalTime(logicalTime) {
+        return this.animationContext.getTimelineStart() + logicalTime*this.animationContext.getTimelineRatio()*1000;
     }
 
     getCurrentLogicalTime() {
@@ -370,7 +370,7 @@ export default class LogAnimation {
         }
         else if (event.getEventType() === AnimationEventType.END_OF_ANIMATION) {
             this.pause();
-            this.clock.setClockTime(this.animationContext.getLogEndTime()); // fix small discrepancy in timing
+            this.clock.setClockTime(this.animationContext.getTimelineEnd()); // fix small discrepancy in timing
         }
         else if (event.getEventType() === AnimationEventType.MODEL_CANVAS_MOVING) {
             let modelBox = event.getEventData().viewbox;
@@ -392,7 +392,7 @@ export default class LogAnimation {
         }
         else if (event.getEventType() === AnimationEventType.TIMELINE_CURSOR_MOVING) {
             let cursorLogicalTime = event.getEventData().logicalTime;
-            this.clock.setClockTime(this.getLogTimeFromFromLogicalTime(cursorLogicalTime));
+            this.clock.setClockTime(this.getLogTimeFromLogicalTime(cursorLogicalTime));
         }
     }
 

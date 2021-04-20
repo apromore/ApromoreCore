@@ -77,11 +77,12 @@ export function createEmptyFrameBuffer() {
     let {recordingFrameRate} = setupData;
     let startMs = new Date(setupData.timeline.startDateLabel).getTime(); // Start date in milliseconds
     let endMs = new Date(setupData.timeline.endDateLabel).getTime(); // End date in milliseconds
+    let startLogTime = new Date(setupData.timeline.startLogDateLabel).getTime(); // Start log date in milliseconds
+    let endLogTime = new Date(setupData.timeline.endLogDateLabel).getTime(); // End log date in milliseconds
     let totalEngineS = setupData.timeline.totalEngineSeconds;
-    let slotEngineUnit = setupData.timeline.slotEngineUnit;
     let timelineSlots = setupData.timeline.timelineSlots;
-    let animationContext = new AnimationContext('101', startMs, endMs, timelineSlots,
-        totalEngineS, slotEngineUnit, recordingFrameRate);
+    let animationContext = new AnimationContext('101', startMs, endMs, startLogTime, endLogTime, timelineSlots,
+                                                totalEngineS, recordingFrameRate);
 
     let frameBuffer = new FrameBuffer(animationContext);
     return frameBuffer;

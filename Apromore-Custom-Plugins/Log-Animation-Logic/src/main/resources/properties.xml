@@ -41,8 +41,7 @@
 	<entry key="TotalEngineSeconds">120</entry>
 	<entry key="ProgressCircleBarRadius">20</entry>
 	<entry key="SequenceTokenDiffThreshold">2</entry>
-	<entry key="StartEventToFirstEventDuration">86400</entry>
-	<entry key="LastEventToEndEventDuration">86400</entry>
+	<entry key="ArtificialTransitionDurationRatio">20</entry>
 	<entry key="MaxTimePerTrace">5</entry>
 	<entry key="MaxTimeShortestPathExploration">10</entry>
 	<entry key="ExactTraceFitnessCalculation">true</entry>

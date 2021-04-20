@@ -4,6 +4,10 @@ import {AnimationEvent, AnimationEventType} from "./animationEvents";
 
 /**
  * TimelineAnimation shows a timeline and a running tick when the animation is going on.
+ * There are two intervals on the timeline:
+ *  [TimelineStart, TimelineEnd]: this is the whole timeline and animation movies, including the Start and End events.
+ *  [LogStart, LogEnd]: this is the log data interval, excluding the Start and End events.
+ *  The timeline only shows dates of log intervals although it plays the whole timeline interval.
  */
 export default class TimelineAnimation {
     /**
@@ -15,36 +19,38 @@ export default class TimelineAnimation {
         this.animation = animation;
         this.animationContext = animation.getAnimationContext();
 
-        // Parameters
+        // Animation params
         this.totalEngineS = this.animationContext.getLogicalTimelineMax();
         this.slotNum = this.animationContext.getTimelineSlots();
         this.endPos = this.slotNum;
-        this.slotEngineS = this.animationContext.getLogicalSlotTime(); // in seconds
-        this.logMillis = animation.getAnimationContext().getLogEndTime() - animation.getAnimationContext().getLogStartTime();
-        this.slotDataMs = this.logMillis / this.slotNum;
-        this.timeCoef = this.animationContext.getTimelineRatio();
         this.currentSpeedLevel = 1.0;
 
-        // Visual settings
-        this.slotWidth = 9;
-        this.timelineWidth = this.slotNum * this.slotWidth;
+        // Timeline settings: all is based on timelineWidth and timelineOffset
+        this.timelineWidth = $j('#' + uiContainerId).width();
+        this.startGap = this.animationContext.getStartGapRatio()*this.timelineWidth;
+        this.endGap = this.animationContext.getEndGapRatio()*this.timelineWidth;
         this.timelineOffset = { x: 20, y: 20,};
-        this.startX = this.timelineOffset.x;
-        this.endX = this.startX + this.timelineWidth;
+        this.timelineStartX = this.timelineOffset.x;
+        this.timelineEndX = this.timelineStartX + this.timelineWidth;
+        this.logStartX = this.timelineStartX + this.startGap;
+        this.logEndX = this.timelineEndX - this.endGap;
         this.cursorY = this.timelineOffset.y + 5;
+        this.slotWidth = (this.timelineWidth - this.startGap - this.endGap)/this.slotNum;
+
+        // Log Interval settings
         this.logIntervalSize = 5;
         this.logIntervalHeight = 7;
         this.logIntervalMargin = 8;
-        this.SHOW_OTHER_LOGS_TIMESPAN = false;
         this.textFont = {size: '11', anchor: 'middle'};
 
         // Create the main timeline
         this.containerId = uiContainerId;
         this.svgTimeline = $j('#' + uiContainerId)[0];
-        this.timelineEl = this._createTimelineElement()
-        this.timelineCenterLine = this._createTimelineCenterLine()
-        this.timelineCenterLineY = this.timelineOffset.y + this.logIntervalMargin;
+        this.timelineEl = this._createTimelineElement();
+        this.timelineCenterLine = this._createTimelineCenterLine(this.timelineStartX, this.timelineEndX, 'solid', 'black');
+        this.timelineCenterLogLine = this._createTimelineCenterLine(this.logStartX, this.logEndX,'transparent', 'none');
         this.timelineEl.appendChild(this.timelineCenterLine);
+        this.timelineEl.appendChild(this.timelineCenterLogLine);
         this.svgTimeline.append(this.timelineEl);
 
         this._listeners = [];
@@ -62,14 +68,6 @@ export default class TimelineAnimation {
         this._addLogIntervals();
         this._addTicks();
         this._addCursor();
-    }
-
-    /**
-     * @param logicalTime: in seconds
-     * @returns {Number}: in milliseconds
-     */
-    getLogTimeFromLogicalTime(logicalTime) {
-        return this.animationContext.getLogStartTime() + logicalTime * this.animationContext.getTimelineRatio() * 1000;
     }
 
     /**
@@ -115,10 +113,10 @@ export default class TimelineAnimation {
         return timelineEl;
     }
 
-    _createTimelineCenterLine() {
+    _createTimelineCenterLine(startX, endX, fillSetting, lineColor) {
         let timelinePathY = this.timelineOffset.y + this.logIntervalMargin;
-        let timelinePath = 'm' + this.startX + ',' + timelinePathY + ' L' + this.endX + ',' + timelinePathY;
-        let timelineCenterLine = new SVG.Path().plot(timelinePath).attr({fill: 'transparent', stroke: 'none'}).node;
+        let timelinePath = 'm' + startX + ',' + timelinePathY + ' L' + endX + ',' + timelinePathY;
+        let timelineCenterLine = new SVG.Path().plot(timelinePath).attr({fill: fillSetting, stroke: lineColor}).node;
         return timelineCenterLine;
     }
 
@@ -156,12 +154,10 @@ export default class TimelineAnimation {
         // Add text and line for the bar
         let tickSize = this.logIntervalHeight * (this.animation.getNumberOfLogs() - 1) + 2 * this.logIntervalMargin;
         let textToTickGap = 5;
-        let x = this.timelineOffset.x;
+        let x = this.logStartX;
         let y = this.timelineOffset.y;
-        let time = this.animationContext.getLogStartTime();
-        let color;
-        let date, dateTxt, timeTxt;
-        let skip;
+        let time = this.animationContext.getLogStart();
+        let color, date, dateTxt, timeTxt;
 
         for (let i = 0; i <= this.slotNum; i++) {
             if (i % 10 === 0) {
@@ -169,18 +165,11 @@ export default class TimelineAnimation {
                 dateTxt = date.format('D MMM YY');
                 timeTxt = date.format('H:mm:ss');
                 color = 'grey';
-                skip = false;
-            } else {
-                dateTxt = '';
-                timeTxt = '';
-                color = '#e0e0e0';
-                skip = true;
-            }
-            if (!skip) {
                 this._addTick(x, y, tickSize, color, textToTickGap, dateTxt, timeTxt, this.timelineEl);
             }
             x += this.slotWidth;
-            time += this.slotDataMs;
+            time += this.animationContext.getLogSlotTime();
+            if (i == this.slotNum) time = this.animationContext.getLogEnd();
         }
     }
 
@@ -236,7 +225,7 @@ export default class TimelineAnimation {
         if (!this.timelineEl) return;
         if (this.cursorEl) this.timelineEl.removeChild(this.cursorEl);
 
-        let x = this.timelineOffset.x;
+        let x = this.timelineStartX;
         let y = this.cursorY;
         let cursorEl;
         let me = this;
@@ -274,7 +263,7 @@ export default class TimelineAnimation {
         function onDragging(evt) {
             if (dragging) {
                 curX = getSVGMousePosition(evt).x;
-                if (curX >= me.startX && curX <= me.endX) {
+                if (curX >= me.timelineStartX && curX <= me.timelineEndX) {
                     let logicalTime = getLogicalTimeFromMouseX(curX);
                     this.cursorEl.setAttribute('transform', `translate(${curX},${curY})`);
                     this._notifyAll(new AnimationEvent(AnimationEventType.TIMELINE_CURSOR_MOVING,
@@ -299,7 +288,7 @@ export default class TimelineAnimation {
         }
 
         function getLogicalTimeFromMouseX(curX) {
-            let dx = curX - me.timelineOffset.x;
+            let dx = curX - me.timelineStartX;
             return (dx / me.timelineWidth) * me.animationContext.getLogicalTimelineMax();
         }
 
@@ -316,24 +305,19 @@ export default class TimelineAnimation {
 
     _addLogIntervals() {
         if (!this.timelineEl) return;
-        let ox = this.timelineOffset.x, y = this.timelineOffset.y + this.logIntervalMargin; // Start offset
+        let ctx = this.animationContext;
+        let ox = this.logStartX, y = this.timelineOffset.y + this.logIntervalMargin; // Start offset
         let logSummaries = this.animation.getLogSummaries();
         for (let logIndex = 0; logIndex < logSummaries.length; logIndex++) {
             let log = logSummaries[logIndex];
-            let x1 = ox + this.slotWidth * log.startDatePos;
-            let x2 = ox + this.slotWidth * log.endDatePos;
+            let logStartTime = new Date(log.startLogDateLabel).getTime();
+            let logEndTime = new Date(log.endLogDateLabel).getTime();
+            let x1 = ox + this.slotWidth * (logStartTime - ctx.getLogStart())/ctx.getLogSlotTime();
+            let x2 = ox + this.slotWidth * (logEndTime - ctx.getLogStart())/ctx.getLogSlotTime();;
             let id = `ap-la-timeline-${logIndex}`;
             let style = 'stroke: ' + this.animation.getLogColor(logIndex) + '; stroke-width: ' + this.logIntervalSize;
             let opacity = 0.8;
             new SVG.Line().plot(x1, y, x2, y).attr({id, style, opacity}).addTo(this.timelineEl);
-
-            // Display date label at the two ends
-            if (this.SHOW_OTHER_LOGS_TIMESPAN && log.startDatePos % 10 !== 0) {
-                let txt = log.startDateLabel.substr(0, 19);
-                let x = ox + this.slotWidth * log.startDatePos - 50;
-                y += 5;
-                new SVG.Text().plain(txt).font(this.textFont).attr({x, y}).addTo(this.timelineEl);
-            }
             y += this.logIntervalHeight;
         }
     }
@@ -355,9 +339,6 @@ export default class TimelineAnimation {
                 timeline.setAttribute('y2', y);
             }
             let log = logSummaries[logIndex];
-            if (this.SHOW_OTHER_LOGS_TIMESPAN && log.startDatePos % 10 !== 0) {
-                y += 5;
-            }
             y += this.logIntervalHeight;
         }
     }
