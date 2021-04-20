@@ -74,14 +74,32 @@ Apromore.Plugins.File = Clazz.extend({
         var svgClone = this.facade.getEditor().getSVG();
         //var svgDOM = DataManager.serialize(svgClone);
 
-        // Insert a logo
+        // Expand margin and insert a logo
+        var xy = null, width, height;
+
+        // viewBox regex
+        var viewBoxRegex = /(.*<svg.+?viewBox=")(.+?)(".+)/m;
+        function viewBoxReplacer(match, p1, p2, p3) {
+          xy = p2.split(" ").map(function (x) { return parseInt(x); })
+          width = xy[2] + 40;
+          height = xy[3]  + 60;
+          return p1 + [xy[0] - 20, xy[1] - 40, width, height].join(' ') + p3;
+        }
+
+        // svg width and height regex
+        var whRegex = /(.*<svg.+?width=")(.+?)(".+?height=")(.+?)(".+)/m;
+        function whReplacer(match, p1, p2, p3, p4, p5) {
+          return p1 + width + p3 + height + p5;
+        }
+
+        // Adjust viewBox, width/height and append logo
         try {
-            var matches = svgClone.match(/<svg.+?viewBox="(.+?)"/m)
-            if (matches) {
-                var xy = matches[1].split(" ").map(function (x) { return parseInt(x); })
+            svgClone = svgClone.replace(viewBoxRegex, viewBoxReplacer);
+            if (xy) {
+                svgClone = svgClone.replace(whRegex, whReplacer);
                 svgClone = svgClone.replace(
                     '</svg>',
-                    logo.replace('${xx yy}', (xy[0] + 5) + " " + (xy[1] + 5)) + '</svg>'
+                    logo.replace('${xx yy}', (xy[0]) + " " + (xy[1] - 20)) + '</svg>'
                 );
             }
         } catch (e) {
