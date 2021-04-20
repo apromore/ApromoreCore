@@ -25,7 +25,7 @@
  * The reference implementation of the XES meta-model for event 
  * log data management.
  * 
- * Copyright (c) 2008 Christian W. Guenther (christian@deckfour.org)
+ * Copyright (c) 2009 Christian W. Guenther (christian@deckfour.org)
  * 
  * 
  * LICENSE:
@@ -59,57 +59,26 @@
  */
 package org.deckfour.xes.logging;
 
+import org.deckfour.xes.logging.XLogging.Importance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * This class provides low-level logging for library
- * components. Used for debugging.
+ * Adapt OpenXES to use SLF4J rather than logging to the console.
  * 
- * @author Christian W. Guenther (christian@deckfour.org)
- *
+ * @author Simon Raboczi (simon.raboczi@apromore.com)
  */
-public class XLogging {
-	
-	/**
-	 * Defines the importance of logging messages.
-	 * 
-	 * @author Christian W. Guenther (christian@deckfour.org)
-	 *
-	 */
-	public enum Importance {
-		DEBUG, INFO, WARNING, ERROR;
-	}
-	
-	/**
-	 * Logging listener for receiving log messages.
-	 */
-	private static XLoggingListener listener = new SLF4JLoggingListener();
-	
-	/**
-	 * Sets a new logging listener.
-	 * 
-	 * @param listener New logging listener.
-	 */
-	public static void setListener(XLoggingListener listener) {
-		XLogging.listener = listener;
-	}
-	
-	/**
-	 * Logs the given message with debug importance.
-	 * 
-	 * @param message Message to be logged.
-	 */
-	public static void log(String message) {
-		log(message, Importance.DEBUG);
-	}
-	
-	/**
-	 * Logs a message.
-	 * 
-	 * @param message Log message.
-	 * @param importance Message importance.
-	 */
-	public static void log(String message, Importance importance) {
-		if(listener != null) {
-			listener.log(message, importance);
+public class SLF4JLoggingListener implements XLoggingListener {
+
+	private Logger logger = LoggerFactory.getLogger("OpenXES");
+
+	@Override
+	public void log(String message, Importance importance) {
+		switch (importance) {
+		case DEBUG:   logger.debug(message);   break;
+		case ERROR:   logger.error(message);   break;
+		case INFO:    logger.info(message);    break;
+		case WARNING: logger.warn(message); break;
 		}
 	}
 
