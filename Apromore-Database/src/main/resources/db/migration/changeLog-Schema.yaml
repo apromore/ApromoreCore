@@ -922,6 +922,14 @@ databaseChangeLog:
            validate: true
 
  - changeSet:
+     id: 20210416110000
+     author: raboczi
+     changes:
+       - dropIndex:
+           indexName: FK_PROCESS_BRANCH_MODEL_VERSION1
+           tableName: process_model_version
+
+ - changeSet:
      id: 20210416120000
      author: raboczi
      changes:
