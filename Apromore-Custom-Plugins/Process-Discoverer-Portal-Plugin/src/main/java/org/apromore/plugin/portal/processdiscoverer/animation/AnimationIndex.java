@@ -77,14 +77,14 @@ public class AnimationIndex {
         for (ReplayTrace trace : log.getTracesWithOriginalOrder()) {
             for (SequenceFlow flow : trace.getSequenceFlows()) {
                 long start = ((TraceNode)flow.getSourceRef()).getComplete().getMillis();
-                long end = ((TraceNode)flow.getTargetRef()).getStart().getMillis();  
+                long end = ((TraceNode)flow.getTargetRef()).getStart().getMillis();
                 int flowIndex = modelMapping.getIndex(flow.getId());
                 if (flowIndex < 0) throw new ElementNotFoundException("Couldn't find index for flow with id = " + flow.getId());
                 int caseIndex = log.getCaseIndexFromId(trace.getId());
                 if (caseIndex < 0) throw new CaseNotFoundException("Couldn't find case with id = " + trace.getId());
                 index(replayElementIndex, flowIndex, caseIndex, start, end);
                 replayElementIndex++;
-            }   
+            }
             for (TraceNode node : trace.getNodes()) {
                 if (!(node.getModelNode() instanceof Activity)) continue;
                 long start = node.getStart().getMillis();
@@ -119,8 +119,8 @@ public class AnimationIndex {
         intervalTree.add(interval);
         
         // IntervalTree doesn't keep duplicate intervals (only keeps one).
-        // intervalToReplayElement must store value as a set of replay element indexes. 
-        if (!intervalToReplayElement.containsKey(interval)) intervalToReplayElement.put(interval, IntSets.mutable.empty()); 
+        // intervalToReplayElement must store value as a set of replay element indexes.
+        if (!intervalToReplayElement.containsKey(interval)) intervalToReplayElement.put(interval, IntSets.mutable.empty());
         intervalToReplayElement.get(interval).add(replayElementIndex);
     }
     
@@ -137,12 +137,12 @@ public class AnimationIndex {
     }
     
     public int getStartFrameIndex(int replayElementIndex) {
-        return replayElementToFrames.containsKey(replayElementIndex) ? 
+        return replayElementToFrames.containsKey(replayElementIndex) ?
                 replayElementToFrames.get(replayElementIndex).getOne() : -1;
     }
     
     public int getEndFrameIndex(int replayElementIndex) {
-        return replayElementToFrames.containsKey(replayElementIndex) ? 
+        return replayElementToFrames.containsKey(replayElementIndex) ?
                 replayElementToFrames.get(replayElementIndex).getTwo() : -1;
     }
     

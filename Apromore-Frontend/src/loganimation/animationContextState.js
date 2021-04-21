@@ -1,29 +1,35 @@
 'use strict';
 
 /**
- * AnimationContext represents the global animation settings on the front-end
+ * AnimationContext represents the global animation settings on the front-end.
+ * The period of the timeline is [TimelineStart, TimelineEnd] which is also the timeline of the whole animation movie.
+ * [LogStart, LogEnd] is the timeline in the log which is shorter than [TimelineStart, TimelineEnd] because of the artificial
+ * Start and End Events.
  */
 export class AnimationContext {
     /**
      *
      * @param {String} pluginExecutionId: id of the plugin execution
-     * @param {String} pluginContextName: context name of the plugin
-     * @param {Number} minLogStartTime: the start timestamp in the log
-     * @param {Number} maxLogEndTime: the end timestamp in the log
+     * @param {Number} timelineStart: the start timestamp on the timeline
+     * @param {Number} timelineEnd: the end timestamp on the timeline
+     * @param {Number} logStart: the start timestamp in the log(s)
+     * @param {Number} logEnd: the end timestamp in the log(s)
      * @param {Number} timelineSlots: the number of slots on the timeline
      * @param {Number} logicalTimelineMax: the maximum logical time on the timeline in seconds
-     * @param {Number} logicalSlotTime: the logical time in seconds of one timeline slot
      * @param {Number} recordingFrameRate: the frame rate used to record frames
      */
-    constructor(pluginExecutionId, minLogStartTime, maxLogEndTime,
-                timelineSlots, logicalTimelineMax, logicalSlotTime,
+    constructor(pluginExecutionId,
+                timelineStart, timelineEnd,
+                logStart, logEnd,
+                timelineSlots, logicalTimelineMax,
                 recordingFrameRate) {
         this._pluginExecutionId = pluginExecutionId;
-        this._minLogStartTime = minLogStartTime;
-        this._maxLogEndTime = maxLogEndTime;
+        this._timelineStart = timelineStart;
+        this._timelineEnd = timelineEnd;
+        this._logStart = logStart;
+        this._logEnd = logEnd;
         this._timelineSlots = timelineSlots;
         this._logicalTimelineMax = logicalTimelineMax;
-        this._logicalSlotTime = logicalSlotTime;
         this._recordingFrameRate = recordingFrameRate;
     }
 
@@ -32,28 +38,51 @@ export class AnimationContext {
     }
 
     // in milliseconds
-    getLogStartTime() {
-        return this._minLogStartTime;
+    getTimelineStart() {
+        return this._timelineStart;
     }
 
     // in milliseconds
-    getLogEndTime() {
-        return this._maxLogEndTime;
+    getTimelineEnd() {
+        return this._timelineEnd;
     }
 
     // in milliseconds
-    getTotalLogTime() {
-        return this._maxLogEndTime - this._minLogStartTime;
+    getLogStart() {
+        return this._logStart;
+    }
+
+    // in milliseconds
+    getLogEnd() {
+        return this._logEnd;
+    }
+
+    // in milliseconds
+    getTimelineDuration() {
+        return this._timelineEnd - this._timelineStart;
     }
 
     // the ratio between log time and logical time: 1 logical time unit = x log time unit
     getTimelineRatio() {
-        return this.getTotalLogTime()/(this._logicalTimelineMax*1000);
+        return this.getTimelineDuration()/(this._logicalTimelineMax*1000);
+    }
+
+    getStartGapRatio() {
+        return (this.getLogStart() - this.getTimelineStart())/this.getTimelineDuration();
+    }
+
+    getEndGapRatio() {
+        return (this.getTimelineEnd() - this.getLogEnd())/this.getTimelineDuration();
     }
 
     // Number of slots
     getTimelineSlots() {
         return this._timelineSlots;
+    }
+
+    // Number of millis in log time for each timeline slot
+    getLogSlotTime() {
+        return (this.getLogEnd() - this.getLogStart())/this.getTimelineSlots();
     }
 
     // in seconds
@@ -63,7 +92,7 @@ export class AnimationContext {
 
     // in seconds
     getLogicalSlotTime() {
-        return this._logicalSlotTime;
+        return this.getLogSlotTime()/(this.getTimelineRatio()*1000);
     }
 
     getRecordingFrameRate() {

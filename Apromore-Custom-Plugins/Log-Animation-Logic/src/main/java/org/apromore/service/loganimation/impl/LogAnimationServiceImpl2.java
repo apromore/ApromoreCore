@@ -28,10 +28,9 @@ import java.io.IOException;
 // Java 2 Standard Edition
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -40,16 +39,15 @@ import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.apromore.service.loganimation.json.AnimationJSONBuilder2;
 import org.apromore.service.loganimation.replay.AnimationLog;
+import org.apromore.service.loganimation.replay.LogUtility;
 import org.apromore.service.loganimation.replay.Optimizer;
 import org.apromore.service.loganimation.replay.ReplayParams;
 import org.apromore.service.loganimation.replay.ReplayTrace;
 import org.apromore.service.loganimation.replay.Replayer;
-// Third party packages
-import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XTrace;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 //import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
 //import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
 import org.slf4j.Logger;
@@ -57,12 +55,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
-import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
-import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 
 @Service
 public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implements LogAnimationService2 {
@@ -72,11 +68,6 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     @Override
     public AnimationResult createAnimation(String bpmn, List<Log> logs)
             throws BpmnConverterException, IOException, JAXBException, JSONException, AnimationException {
-
-        Set<XLog> xlogs = new HashSet<>();
-        for (Log log: logs) {
-            xlogs.add(log.xlog);
-        }
 
         Definitions bpmnDefinition = BPMN2DiagramConverter.parseBPMN(bpmn, getClass().getClassLoader());
 
@@ -97,7 +88,6 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         * Check BPMN diagram validity and replay log
         * ------------------------------------------
         */
-        //Reading backtracking properties for testing
         String propertyFile = "properties.xml";
         InputStream is = getClass().getClassLoader().getResourceAsStream(propertyFile);
         Properties props = new Properties();
@@ -127,14 +117,18 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         params.setBacktrackingDebug(props.getProperty("BacktrackingDebug"));
         params.setExploreShortestPathDebug(props.getProperty("ExploreShortestPathDebug"));
         params.setCheckViciousCycle(props.getProperty("CheckViciousCycle"));
-        params.setStartEventToFirstEventDuration(Integer.valueOf(props.getProperty("StartEventToFirstEventDuration")).intValue());
-        params.setLastEventToEndEventDuration(Integer.valueOf(props.getProperty("LastEventToEndEventDuration")).intValue());
 
+        // Clean traces for animation and compute the transition duration for start/end events
+        cleanLogs(logs);
+        int artificialTransitionRatio = Integer.valueOf(props.getProperty("ArtificialTransitionDurationRatio")).intValue();
+        int artificalTransitionDur = (int)computeArtificialTransitionDuration(logs, artificialTransitionRatio);
+        params.setStartEventToFirstEventDuration(artificalTransitionDur);
+        params.setLastEventToEndEventDuration(artificalTransitionDur);
+        
         Replayer replayer = new Replayer(bpmnDefinition, params);
         ArrayList<AnimationLog> replayedLogs = new ArrayList<>();
         if (replayer.isValidProcess()) {
             for (Log log: logs) {
-
                 AnimationLog animationLog = replayer.replay(log.xlog, log.color);
                 animationLog.setFileName(log.fileName);
                 
@@ -188,11 +182,6 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     @Override
     public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs)
             throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException, AnimationException {
-        
-        Set<XLog> xlogs = new HashSet<>();
-        for (Log log: logs) {
-            xlogs.add(log.xlog);
-        }
 
         Definitions bpmnDefWithGateways = BPMN2DiagramConverter.parseBPMN(bpmnWithGateways, getClass().getClassLoader());
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());
@@ -210,13 +199,6 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         bpmnDefWithGateways = optimizer.optimizeProcessModel(bpmnDefWithGateways);
         bpmnDefNoGateways = optimizer.optimizeProcessModel(bpmnDefNoGateways);
 
-
-        /*
-        * ------------------------------------------
-        * Check BPMN diagram validity and replay log
-        * ------------------------------------------
-        */
-        //Reading backtracking properties for testing
         String propertyFile = "properties.xml";
         InputStream is = getClass().getClassLoader().getResourceAsStream(propertyFile);
         Properties props = new Properties();
@@ -246,8 +228,12 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         params.setBacktrackingDebug(props.getProperty("BacktrackingDebug"));
         params.setExploreShortestPathDebug(props.getProperty("ExploreShortestPathDebug"));
         params.setCheckViciousCycle(props.getProperty("CheckViciousCycle"));
-        params.setStartEventToFirstEventDuration(Integer.valueOf(props.getProperty("StartEventToFirstEventDuration")).intValue());
-        params.setLastEventToEndEventDuration(Integer.valueOf(props.getProperty("LastEventToEndEventDuration")).intValue());
+        
+        cleanLogs(logs);
+        int artificialTransitionRatio = Integer.valueOf(props.getProperty("ArtificialTransitionDurationRatio")).intValue();
+        int artificalTransitionDur = (int)computeArtificialTransitionDuration(logs, artificialTransitionRatio);
+        params.setStartEventToFirstEventDuration(artificalTransitionDur);
+        params.setLastEventToEndEventDuration(artificalTransitionDur);
 
         Replayer replayer = new Replayer(bpmnDefWithGateways, params);
         List<AnimationLog> replayedLogs = new ArrayList<>();
@@ -318,13 +304,68 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             }
         }
     }
+    
+    private void cleanLogs(List<Log> logs) {
+        for (Log log : logs) {
+            for (XTrace trace : log.xlog) {
+                cleanTrace(trace);
+            }
+        }
+    }
+    
+    private void cleanTrace(XTrace trace) {
+        Iterator<XEvent> iterator = trace.iterator();
+        while (iterator.hasNext()) {
+            XEvent event = iterator.next();
+            if (!LogUtility.getLifecycleTransition(event).toLowerCase().equals("complete")) {
+                iterator.remove();
+            }
+        }
+    }
 
-    private Definitions getBPMNfromJson(String jsonData) throws BpmnConverterException, JSONException {
-        BasicDiagram diagram = BasicDiagramBuilder.parseJson(jsonData);
-        Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
-        Definitions definitions = converter.getDefinitionsFromDiagram();
+    /**
+     * Compute an artificial transition duration which is used for the transition
+     * from the Start Event to the next node and from a node to the End Event.
+     * @param logs: logs used in animation
+     * @param artificialTransDurRatio: the parameter for the artificial duration compared to the total timeline duration, e.g. 20 means 1/20
+     * @return: artificial transition duration in seconds
+     */
+    private double computeArtificialTransitionDuration(List<Log> logs, int artificialTransDurRatio) {
+        double UPPER_BOUND = 1.0/artificialTransDurRatio;
+        double LOWER_BOUND =  1.0/(2*artificialTransDurRatio);
+        
+        // Scan the log the compute the average transition duration and log duration
+        // Artificial transition duration is set according to the log
+        double totalAvgTransitionDur = 0;
+        long minLogTimestamp = Long.MAX_VALUE, maxLogTimestamp = 0;
+        int traceCount = 0;
+        for (Log log : logs) {
+            for (XTrace trace : log.xlog) {
+                minLogTimestamp = Math.min(minLogTimestamp, !trace.isEmpty() ? LogUtility.getTimestamp(trace.get(0)).getTime() : Long.MAX_VALUE);
+                maxLogTimestamp = Math.max(maxLogTimestamp, !trace.isEmpty() ? LogUtility.getTimestamp(trace.get(trace.size()-1)).getTime() : 0);
+                if (trace.size() >= 2) {
+                    long traceDuration = LogUtility.getTimestamp(trace.get(trace.size()-1)).getTime() - LogUtility.getTimestamp(trace.get(0)).getTime();
+                    totalAvgTransitionDur += traceDuration/(trace.size()-1);
+                    traceCount++;
+                }
+            }
+        }
+        
+        double avgTransitionDur = (traceCount != 0) ? totalAvgTransitionDur/traceCount : 0;
+        long logDuration = (minLogTimestamp >= maxLogTimestamp) ? 0 : (maxLogTimestamp - minLogTimestamp);
+        double timelineDur = logDuration + 2*avgTransitionDur;
+        double avgTransitionRatio = (timelineDur > 0) ? avgTransitionDur/timelineDur : 0;
+        
+        // Adjust the artificial transition duration so that it's not too big or small.
+        double artificialTransitionDur = avgTransitionDur/1000;
+        if (avgTransitionRatio >= UPPER_BOUND) {
+            artificialTransitionDur = timelineDur*UPPER_BOUND/1000;
+        }
+        else if (avgTransitionRatio <= LOWER_BOUND) {
+            artificialTransitionDur = timelineDur*LOWER_BOUND/1000;
+        }
 
-        return definitions;
+        return artificialTransitionDur;
     }
 
 }

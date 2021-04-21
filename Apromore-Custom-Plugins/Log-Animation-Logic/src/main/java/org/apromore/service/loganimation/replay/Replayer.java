@@ -184,33 +184,6 @@ public class Replayer {
         double approxTraceFitness = animationLog.getApproxTraceFitness();
         long endApproxMinMMTime = System.currentTimeMillis();
         animationLog.setApproxTraceFitnessFormulaTime(endApproxMinMMTime - startApproxMinMMTime + algoRuntime);
-        
-//        if (!animationLog.isEmpty()) {
-//            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
-//            LOGGER.info("TraceID, ExactFitness, ApproxFitness, Reliable, AlgoTime(ms), Replay Path");
-//            double approxMMCost = animationLog.getApproxMinMoveModelCost();
-//            for (ReplayTrace trace : animationLog.getTraces()) {
-//                LOGGER.info(trace.getId() + "," +
-//                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," +
-//                            trace.getTraceFitness(approxMMCost) + "," +
-//                            trace.isReliable() + "," +
-//                            trace.getAlgoRuntime() + "," +
-//                            trace.getBacktrackingNode().getPathString());
-//            }
-//            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() +
-//                        ". Exact Trace Fitness:" + traceFitness +
-//                        ". Approx. Trace Fitness:" + approxTraceFitness +
-//                        ". minBoundMoveCostOnModel:" + animationLog.getMinBoundMoveOnModel() +
-//                        ". approxMMCost:" + animationLog.getApproxMinMoveModelCost() +
-//                        ". totalAlgoTime:" + animationLog.getAlgoRuntime() +
-//                        ". exactTraceFitnessFormulaTime:" + animationLog.getExactTraceFitnessFormulaTime() +
-//                        ". approxTraceFitnessFormulaTime:" + animationLog.getApproxTraceFitnessFormulaTime() +
-//                        ". StartDate:" + animationLog.getStartDate().toString() +
-//                        ". EndDate:" + animationLog.getEndDate() +
-//                        ". Color:" + animationLog.getColor());
-//        } else {
-//            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
-//        }
 
         return animationLog;
     }
@@ -235,8 +208,7 @@ public class Replayer {
         Iterator<XEvent> iterator = trace.iterator();
         while (iterator.hasNext()) {
             XEvent event = iterator.next();
-            if (!helper.getActivityNames().contains(LogUtility.getConceptName(event)) ||
-                 !LogUtility.getLifecycleTransition(event).toLowerCase().equals("complete")) {
+            if (!helper.getActivityNames().contains(LogUtility.getConceptName(event))) {
                 iterator.remove();
             }
         }

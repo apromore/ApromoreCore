@@ -26,7 +26,7 @@ import java.util.List;
 import org.apromore.service.loganimation.replay.AnimationLog;
 
 /**
- * An <b>AnimationContext</b> captures the global setting for the animation. 
+ * An <b>AnimationContext</b> captures the global setting for the animation.
  * 
  * @author Bruce Nguyen
  *
@@ -46,7 +46,7 @@ public class AnimationContext {
     public AnimationContext(List<AnimationLog> logs) {
         for (AnimationLog log: logs) {
             if (minLogStartTimestamp > log.getStartDate().getMillis()) minLogStartTimestamp = log.getStartDate().getMillis();
-            if (maxLogEndTimestamp < log.getEndDate().getMillis()) maxLogEndTimestamp = log.getEndDate().getMillis();            
+            if (maxLogEndTimestamp < log.getEndDate().getMillis()) maxLogEndTimestamp = log.getEndDate().getMillis();
         }
         this.setRecordingFrameRate(this.recordingFrameRate);
         this.setRecordingDuration(this.recordingDuration);
@@ -65,7 +65,7 @@ public class AnimationContext {
     public void setRecordingFrameRate(int fps) {
         if (fps > 0) {
             this.recordingFrameRate = fps;
-            this.recordingFrameInterval = 1.0/fps*1000;    
+            this.recordingFrameInterval = 1.0/fps*1000;
             this.logTimeFrameInterval = logToRecordingTimeRatio*recordingFrameInterval;
         }
     }
@@ -98,7 +98,7 @@ public class AnimationContext {
     public void setRecordingDuration(int recordingDuration) {
         if (recordingDuration > 0) {
             this.recordingDuration = recordingDuration;
-            this.logToRecordingTimeRatio = (maxLogEndTimestamp - minLogStartTimestamp)/(recordingDuration*1000);
+            this.logToRecordingTimeRatio = (double)(maxLogEndTimestamp - minLogStartTimestamp)/(recordingDuration*1000);
             this.logTimeFrameInterval = logToRecordingTimeRatio*recordingFrameInterval;
         }
     }
@@ -113,7 +113,7 @@ public class AnimationContext {
      */
     public int getFrameIndexFromLogTimestamp(long timestamp) {
         if (timestamp <= minLogStartTimestamp) {
-            return 0; 
+            return 0;
         }
         else if (timestamp >= maxLogEndTimestamp) {
             return getMaxNumberOfFrames() - 1;
