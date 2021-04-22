@@ -222,7 +222,10 @@ public class BaseController extends Window {
     }
 
     public void toggleComponentSclass(HtmlBasedComponent comp, boolean state, String stateOff, String stateOn) {
-        String sclass = Objects.requireNonNull(comp.getSclass(), stateOff);
+        if (comp == null || stateOn == null || stateOff == null) {
+            return;
+        }
+        String sclass = Objects.requireNonNull(comp.getSclass(), "");
         if (state) {
             sclass = sclass.replaceAll(stateOff, "");
             if (!sclass.contains(stateOn)) {

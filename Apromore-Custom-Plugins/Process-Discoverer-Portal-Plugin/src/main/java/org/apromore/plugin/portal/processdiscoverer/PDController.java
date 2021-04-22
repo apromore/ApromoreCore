@@ -689,7 +689,7 @@ public class PDController extends BaseController {
             timeStatsController.setDisabled(true);
             toolbarController.setDisabled(true);
             toolbarController.setDisabledAnimation(true);
-            toolbarController.toogleAnimateBtn(true);
+            toolbarController.toogleAnimateBtn(false);
         }
         this.mode = newMode;
         return true;
