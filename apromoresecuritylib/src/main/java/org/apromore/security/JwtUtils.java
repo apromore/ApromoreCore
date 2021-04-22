@@ -39,7 +39,10 @@ import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.security.PrivateKey;
+import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -56,7 +59,7 @@ import static org.apromore.security.util.AssertUtils.*;
  */
 public class JwtUtils {
 
-    private static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofHours(2L);
+    public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30); // Duration.ofHours(2L);
 
     public static final String JWT_KEY_SUBJECT_USERNAME = "sub";
     public static final String JWT_KEY_ISSUED_AT = "iat";
@@ -114,6 +117,24 @@ public class JwtUtils {
         signedJWT.sign(signer);
 
         return signedJWT;
+    }
+
+    public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet) {
+        notNullAssert(jwtClaimsSet, "jwtClaimsSet");
+
+        final Object jwtExpiryEpochObj = jwtClaimsSet.getClaim(JWT_EXPIRY_TIME);
+
+        long jwtExpiryEpoch;
+        if (jwtExpiryEpochObj != null) {
+            jwtExpiryEpoch = (Long)jwtExpiryEpochObj;
+        } else { // Calculate relative
+            jwtExpiryEpoch = calculateExpiryTime(
+                    (Long)jwtClaimsSet.getClaim(JWT_KEY_ISSUED_AT), WEBAPP_SSO_SESSION_TIMEOUT);
+        }
+
+        final Long nowEpoch = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+
+        return nowEpoch > jwtExpiryEpoch;
     }
 
     private static long calculateExpiryTime(final long createdAtEpoch, final Duration sessionDuration) {
