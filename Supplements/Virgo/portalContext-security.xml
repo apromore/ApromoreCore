@@ -64,7 +64,7 @@
     <http auto-config="false" access-denied-page="/denied.zul" use-expressions="true"
           entry-point-ref="apromoreAuthenticationEntryPoint" authentication-manager-ref="authenticationManager">
         <intercept-url pattern="/login.zul*" access="permitAll" requires-channel="any"/>
-        <intercept-url pattern="/index.zul*" access="permitAll" requires-channel="any"/>
+        <intercept-url pattern="/tokenHandoff.zul*" access="permitAll" requires-channel="any"/>
 
         <intercept-url pattern="/**" access="hasRole('ROLE_USER')" requires-channel="any"/>
 
