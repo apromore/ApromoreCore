@@ -33,6 +33,7 @@ import de.hpi.bpmn2_0.model.FlowElement;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.Edge;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.model.event.EndEvent;
 import de.hpi.bpmn2_0.model.event.StartEvent;
 import de.hpi.bpmn2_0.model.gateway.Gateway;
@@ -115,10 +116,10 @@ public class ModelChecker extends AbstractVisitor {
                 }
             }
         }
-        else if (that instanceof Edge) {
+        else if (that instanceof SequenceFlow) {
             Edge edge = (Edge)that;
             String disconnectedMsg = "The model has disconnected arcs";
-            if (edge.getSourceRef() == null && edge.getTargetRef() == null) {
+            if (edge.getSourceRef() == null || edge.getTargetRef() == null) {
                 if (!faultMessages.contains(disconnectedMsg)) faultMessages.add(disconnectedMsg);
             }
         }
