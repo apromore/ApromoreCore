@@ -30,6 +30,10 @@ export default class ProgressAnimation {
         this.initSortable();
     }
 
+    destroy() {
+        $j('#' + this._containerId).empty();
+    }
+
     updateProgress(frameIndex) {
         for (let logIndex = 0; logIndex < this._animationController.getLogSummaries().length; logIndex++) {
             let startFrameIndex = this._logStartFrameIndexes[logIndex];
@@ -218,6 +222,7 @@ export default class ProgressAnimation {
                 showInitial: true,
                 showAlpha: false,
                 allowEmpty: false,
+                containerClassName: 'ap-la-cpicker-wrapper',
                 palette: me._colorPalette.getPalette(),
                 change: (function (idx) {
                     return function (color) {

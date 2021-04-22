@@ -306,7 +306,7 @@ export default class TimelineAnimation {
     _addLogIntervals() {
         if (!this.timelineEl) return;
         let ctx = this.animationContext;
-        let ox = this.logStartX, y = this.timelineOffset.y + this.logIntervalMargin; // Start offset
+        let ox = this.logStartX, y = this.timelineOffset.y + this.logIntervalMargin + 5; // Start offset
         let logSummaries = this.animation.getLogSummaries();
         for (let logIndex = 0; logIndex < logSummaries.length; logIndex++) {
             let log = logSummaries[logIndex];

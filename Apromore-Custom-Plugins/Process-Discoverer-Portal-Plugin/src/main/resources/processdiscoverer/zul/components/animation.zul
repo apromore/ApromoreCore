@@ -64,6 +64,7 @@
         </n:div>
         
         <n:div sclass="ap-pd-la-right-container">
+            <n:div id="ap-la-progress"></n:div>
             <n:div sclass="ap-pd-la-timeline" style="background:none;">
                 <!--
                 <n:div sclass="ap-la-timeline-canvas" style="position:absolute; background:none; width:100%">

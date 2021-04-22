@@ -222,15 +222,22 @@ public class BaseController extends Window {
     }
 
     public void toggleComponentSclass(HtmlBasedComponent comp, boolean state, String stateOff, String stateOn) {
-        String sclass = Objects.requireNonNull(comp.getSclass(), stateOff);
-        if (!sclass.contains(stateOff)) {
-            sclass = sclass + " " + stateOff;
+        if (comp == null || stateOn == null || stateOff == null) {
+            return;
         }
+        String sclass = Objects.requireNonNull(comp.getSclass(), "");
         if (state) {
-            comp.setSclass(sclass.replace(stateOff, stateOn));
+            sclass = sclass.replaceAll(stateOff, "");
+            if (!sclass.contains(stateOn)) {
+                sclass = sclass + " " + stateOn;
+            }
         } else {
-            comp.setSclass(sclass.replace(stateOn, stateOff));
+            sclass = sclass.replaceAll(stateOn, "");
+            if (!sclass.contains(stateOff)) {
+                sclass = sclass + " " + stateOff;
+            }
         }
+        comp.setSclass(sclass);
     }
 
     private void setManagerService(final ManagerService managerService) {

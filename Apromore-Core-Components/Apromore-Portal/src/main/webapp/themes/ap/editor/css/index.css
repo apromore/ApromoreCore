@@ -25,7 +25,6 @@
 @import "oryx.css";
 @import "icons.css";
 
-.x-panel-editor-north {
-    visibility: visible !important;
+.x-panel-editor-north .x-btn {
+    opacity: 1 !important;
 }
-
