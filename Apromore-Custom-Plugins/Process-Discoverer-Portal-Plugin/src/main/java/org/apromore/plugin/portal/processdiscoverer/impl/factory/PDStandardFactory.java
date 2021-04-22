@@ -27,6 +27,7 @@ import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -129,4 +130,8 @@ public class PDStandardFactory implements PDFactory {
         return new ToolbarController(controller);
     }
 
+    @Override
+    public UndoRedoController createUndoRedoController(PDController controller) throws Exception {
+        return new UndoRedoController(controller);
+    }
 }

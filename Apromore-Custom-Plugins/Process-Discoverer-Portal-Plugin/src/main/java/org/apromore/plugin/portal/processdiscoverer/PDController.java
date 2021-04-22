@@ -45,6 +45,7 @@ import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -143,6 +144,7 @@ public class PDController extends BaseController {
     private LogExportController logExportController;
     private BPMNExportController bpmnExportController;
     private ToolbarController toolbarController;
+    private UndoRedoController undoRedoController;
 
     //////////////////// DATA ///////////////////////////////////
 
@@ -311,6 +313,7 @@ public class PDController extends BaseController {
             logExportController = pdFactory.createLogExportController(this);
             bpmnExportController = pdFactory.createBPMNExportController(this);
             toolbarController = pdFactory.createToolbarController(this);
+            undoRedoController = pdFactory.createUndoRedoController(this);
 
             initialize();
             LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
@@ -476,6 +479,22 @@ public class PDController extends BaseController {
             Messagebox.show(ex.getMessage());
             LOGGER.error(ex.getMessage(), ex);
         }
+    }
+
+    public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
+        toolbarController.updateUndoRedoButtons(undoState, redoState);
+    }
+
+    public void addAction(String actionName) {
+        undoRedoController.add(actionName);
+    }
+
+    public void undo() {
+        undoRedoController.undo();
+    }
+
+    public void redo() {
+        undoRedoController.redo();
     }
 
     /**

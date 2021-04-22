@@ -257,6 +257,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     public void clearFilter() throws Exception {
         logData.clearFilter();
         parent.updateUI(true);
+        parent.addAction("CLEAR");
     }
 
     @Override
@@ -267,6 +268,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             try {
                 logData.updateLog(pLog, logFilterResponse.getApmLog());
                 parent.updateUI(true);
+                parent.addAction("CUSTOM");
             } catch (Exception e) {
                 Messagebox.show(e.toString(), "Filter Response Error. " + e.getMessage(),
                         Messagebox.OK,

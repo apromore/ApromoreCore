@@ -26,6 +26,7 @@ import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -57,6 +58,7 @@ public interface PDFactory {
     AnimationController createAnimationController(PDController pdController) throws Exception;
     BPMNExportController createBPMNExportController(PDController pdController) throws Exception;
     LogExportController createLogExportController(PDController pdController) throws Exception;
-    ToolbarController createToolbarController(PDController controller) throws Exception; 
+    ToolbarController createToolbarController(PDController controller) throws Exception;
     ProcessVisualizer createProcessVisualizer(PDController pdController) throws Exception;
+    UndoRedoController createUndoRedoController(PDController pdController) throws Exception;
 }

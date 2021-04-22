@@ -107,6 +107,7 @@ public class GraphVisController extends VisualController {
                 if (parent.getLogData().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(), 
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
+                    parent.addAction(event.getName());
                 }
                 else {
                     showEmptyLogMessageBox();
@@ -120,6 +121,7 @@ public class GraphVisController extends VisualController {
                 if (parent.getLogData().filter_RetainTracesAnyValueOfEventAttribute(event.getData().toString(), 
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
+                    parent.addAction(event.getName());
                 }
                 else {
                     showEmptyLogMessageBox();
@@ -133,6 +135,7 @@ public class GraphVisController extends VisualController {
                 if (parent.getLogData().filter_RemoveEventsAnyValueOfEventAttribute(event.getData().toString(), 
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
+                    parent.addAction(event.getName());
                 }
                 else {
                     showEmptyLogMessageBox();
@@ -146,6 +149,7 @@ public class GraphVisController extends VisualController {
                 if (parent.getLogData().filter_RetainEventsAnyValueOfEventAttribute(event.getData().toString(), 
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
+                    parent.addAction(event.getName());
                 }
                 else {
                     showEmptyLogMessageBox();
@@ -162,6 +166,7 @@ public class GraphVisController extends VisualController {
                 if (parent.getLogData().filter_RemoveTracesAnyValueOfDirectFollowRelation(edge, 
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
+                    parent.addAction(event.getName());
                 }
                 else {
                     showEmptyLogMessageBox();
@@ -178,6 +183,7 @@ public class GraphVisController extends VisualController {
                 if (parent.getLogData().filter_RetainTracesAnyValueOfDirectFollowRelation(edge, 
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
+                    parent.addAction(event.getName());
                 }
                 else {
                     showEmptyLogMessageBox();

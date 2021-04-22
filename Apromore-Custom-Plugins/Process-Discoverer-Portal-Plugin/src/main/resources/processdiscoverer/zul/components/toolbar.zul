@@ -160,12 +160,8 @@
         <n:span class="ap-action-sep"></n:span>
         <button ca:data-t="filter" id="filter" tooltiptext="Filter" sclass="ap-icon ap-icon-filter"/>
         <button ca:data-t="filter-clear" id="filterClear" disabled="true" tooltiptext="Clear all filter" sclass="ap-icon ap-icon-filter-delete"/>
-        <button ca:data-t="filter-undo" id="filterUndo" disabled="true" tooltiptext="Undo shortcut filter" sclass="ap-icon ap-icon-undo"
-                w:onClick="Ap.pd.undo()"
-        />
-        <button ca:data-t="filter-redo" id="filterRedo" disabled="true" tooltiptext="Redo shortcut filter" sclass="ap-icon ap-icon-redo"
-                w:onClick="Ap.pd.redo()"
-        />
+        <button ca:data-t="filter-undo" id="filterUndo" disabled="true" tooltiptext="Undo shortcut filter" sclass="ap-icon ap-icon-undo" />
+        <button ca:data-t="filter-redo" id="filterRedo" disabled="true" tooltiptext="Redo shortcut filter" sclass="ap-icon ap-icon-redo" />
         <n:span class="ap-action-sep"></n:span>
         <button ca:data-t="animate" id="animate" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/>
         <h:span class="ap-action-sep"></h:span>

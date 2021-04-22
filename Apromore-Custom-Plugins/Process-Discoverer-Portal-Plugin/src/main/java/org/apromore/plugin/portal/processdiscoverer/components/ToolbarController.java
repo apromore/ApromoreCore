@@ -43,6 +43,8 @@ public class ToolbarController extends AbstractController {
 
     private Button filter;
     private Button filterClear;
+    private Button filterUndo;
+    private Button filterRedo;
     private Button animate;
     private Button fitScreen;
     private Button share;
@@ -70,6 +72,8 @@ public class ToolbarController extends AbstractController {
         filter = (Button) toolbar.getFellow("filter");
         filterClear = (Button) toolbar.getFellow("filterClear");
         filterClear.setDisabled(true);
+        filterUndo = (Button) toolbar.getFellow("filterUndo");
+        filterRedo = (Button) toolbar.getFellow("filterRedo");
         animate = (Button) toolbar.getFellow("animate");
         fitScreen = (Button) toolbar.getFellow("fitScreen");
         share = (Button) toolbar.getFellow("share");
@@ -88,7 +92,12 @@ public class ToolbarController extends AbstractController {
         searchText = (Textbox) toolbar.getFellow("searchText");
         shortcutButton = (Button) toolbar.getFellow("shortcutButton");
     }
-    
+
+    public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
+        filterUndo.setDisabled(!undoState);
+        filterRedo.setDisabled(!redoState);
+    }
+
     @Override
     public void initializeEventListeners(Object data) throws Exception {
         // Layout
@@ -110,51 +119,49 @@ public class ToolbarController extends AbstractController {
             }
         };
         
-        layoutHierarchy.addEventListener("onClick", layoutListener);
-        
-        layoutDagreTopBottom.addEventListener("onClick", layoutListener);
+        layoutHierarchy.addEventListener(Events.ON_CLICK, layoutListener);
+        layoutDagreTopBottom.addEventListener(Events.ON_CLICK, layoutListener);
 
-        fitScreen.addEventListener("onClick", new EventListener<Event>() {
+        fitScreen.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.fitVisualizationToWindow();
             }
         });
 
-        filterClear.addEventListener("onClick", e -> onClearFilter());
-        
         filter.addEventListener("onInvoke", e -> parent.openLogFilter(e));
         filter.addEventListener("onInvokeExt", e -> parent.openLogFilter(e));
         filter.addEventListener(Events.ON_CLICK, e -> parent.openLogFilter(e));
+        filterClear.addEventListener(Events.ON_CLICK, e -> onClearFilter());
+        filterUndo.addEventListener(Events.ON_CLICK, e -> parent.undo());
+        filterRedo.addEventListener(Events.ON_CLICK, e -> parent.redo());
         
-        animate.addEventListener("onClick", e -> parent.openAnimation(e));
-
+        animate.addEventListener(Events.ON_CLICK, e -> parent.openAnimation(e));
         exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
-        
-        exportBPMN.addEventListener("onClick", e -> parent.openBPMNExport(e));
-        
-        downloadPDF.addEventListener("onClick", new EventListener<Event>() {
+        exportBPMN.addEventListener(Events.ON_CLICK, e -> parent.openBPMNExport(e));
+
+        downloadPDF.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.exportPDF();
             }
         });
         
-        downloadPNG.addEventListener("onClick", new EventListener<Event>() {
+        downloadPNG.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.exportPNG();
             }
         });
         
-        downloadJSON.addEventListener("onClick", new EventListener<Event>() {
+        downloadJSON.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.exportJSON();
             }
         });
 
-        share.addEventListener("onClick", event -> {
+        share.addEventListener(Events.ON_CLICK, event -> {
             parent.openSharingWindow();
         });
     }

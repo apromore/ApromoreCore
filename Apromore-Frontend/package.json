@@ -30,7 +30,6 @@
     "jspdf": "^1.4.1",
     "minisearch": "^2.4.0",
     "file-saver": "^2.0.5",
-    "undoo": "^0.5.0",
     "ramda": "^0.27.1",
     "sortablejs": "^1.13.0",
     "color": "^3.1.3",

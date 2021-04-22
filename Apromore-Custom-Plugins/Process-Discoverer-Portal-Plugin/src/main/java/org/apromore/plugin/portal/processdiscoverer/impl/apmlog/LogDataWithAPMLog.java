@@ -92,7 +92,7 @@ public class LogDataWithAPMLog extends LogData {
     public void clearFilter() throws Exception {
         this.filter(new ArrayList<LogFilterRule>());
     }
-    
+
     // Apply a filter criterion on top of the current filter criteria
     public boolean filterAdditive(LogFilterRule filterCriterion) throws Exception {
         List<LogFilterRule> criteria = (List<LogFilterRule>)currentFilterCriteria;
