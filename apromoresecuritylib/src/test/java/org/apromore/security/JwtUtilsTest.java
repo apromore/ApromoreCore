@@ -21,6 +21,8 @@
  */
 package org.apromore.security;
 
+import org.apromore.security.JwtUtils.*;
+
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.Payload;
@@ -49,6 +51,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +63,7 @@ import java.util.UUID;
 
 import org.apromore.security.config.KeycloakAppConstants;
 
+import static org.apromore.security.JwtUtils.*;
 import static org.apromore.security.util.AssertUtils.notNullAssert;
 
 public class JwtUtilsTest {
@@ -153,6 +161,85 @@ public class JwtUtilsTest {
                 StandardCopyOption.REPLACE_EXISTING);
 
         return targetFilePath;
+    }
+
+    @Test
+    public void isJwtExpired_nullJwtParameter_throwsIllegalArgumentException() {
+        exceptionRule.expect(IllegalArgumentException.class);
+        exceptionRule.expectMessage("'jwtClaimsSet' must not be null");
+
+        JwtUtils.isJwtExpired(null);
+    }
+
+    @Test
+    public void isJwtExpired_jwtIsExpired_returnsTrue() {
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final LocalDateTime expiresTime = LocalDateTime.now();
+        final LocalDateTime issuedAt = LocalDateTime.now();
+        final long expiryJwtEpoch = expiresTime.atZone(zoneId).toEpochSecond();
+        final long issuedAtEpoch = issuedAt.atZone(zoneId).toEpochSecond();
+
+        try {
+            Thread.sleep(1000); }
+        catch(final InterruptedException ie) {};
+
+        final JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .claim(JWT_KEY_SUBJECT_USERNAME, "someusername")
+                .claim(JWT_KEY_SUBJECT_EMAIL, "someusername@apromore.com")
+                .claim(JWT_KEY_GIVEN_NAME, "Some")
+                .claim(JWT_KEY_FAMILY_NAME, "User")
+                .claim(JWT_KC_USER_ID, UUID.randomUUID())
+                .claim(JWT_KEY_ISSUED_AT, issuedAtEpoch)
+                .claim(JWT_EXPIRY_TIME, expiryJwtEpoch)
+                .build();
+
+        final boolean jwtExpired = JwtUtils.isJwtExpired(jwtClaimsSet);
+
+        Assert.assertTrue(jwtExpired);
+    }
+
+    @Test
+    public void isJwtExpired_jwtExpiresExplicitSetIsNotExpired_returnsFalse() {
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final LocalDateTime issuedAt = LocalDateTime.now();
+        final LocalDateTime expiresTime = LocalDateTime.now().plus(30, ChronoUnit.MINUTES);
+        final long expiryJwtEpoch = expiresTime.atZone(zoneId).toEpochSecond();
+        final long issuedAtEpoch = issuedAt.atZone(zoneId).toEpochSecond();
+
+        final JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .claim(JWT_KEY_SUBJECT_USERNAME, "someusername")
+                .claim(JWT_KEY_SUBJECT_EMAIL, "someusername@apromore.com")
+                .claim(JWT_KEY_GIVEN_NAME, "Some")
+                .claim(JWT_KEY_FAMILY_NAME, "User")
+                .claim(JWT_KC_USER_ID, UUID.randomUUID())
+                .claim(JWT_KEY_ISSUED_AT, issuedAtEpoch)
+                .claim(JWT_EXPIRY_TIME, expiryJwtEpoch)
+                .build();
+
+        final boolean jwtExpired = JwtUtils.isJwtExpired(jwtClaimsSet);
+
+        Assert.assertFalse(jwtExpired);
+    }
+
+    @Test
+    public void isJwtExpired_jwtExpiresImplicitSetIsNotExpired_returnsFalse() {
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final LocalDateTime issuedAt = LocalDateTime.now();
+        final long issuedAtEpoch = issuedAt.atZone(zoneId).toEpochSecond();
+
+        final JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .claim(JWT_KEY_SUBJECT_USERNAME, "someusername")
+                .claim(JWT_KEY_SUBJECT_EMAIL, "someusername@apromore.com")
+                .claim(JWT_KEY_GIVEN_NAME, "Some")
+                .claim(JWT_KEY_FAMILY_NAME, "User")
+                .claim(JWT_KC_USER_ID, UUID.randomUUID())
+                .claim(JWT_KEY_ISSUED_AT, issuedAtEpoch)
+                .claim(JWT_EXPIRY_TIME, null)
+                .build();
+
+        final boolean jwtExpired = JwtUtils.isJwtExpired(jwtClaimsSet);
+
+        Assert.assertFalse(jwtExpired);
     }
 
     @Test
