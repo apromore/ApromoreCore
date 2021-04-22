@@ -1,5 +1,6 @@
 import * as SVG from "@svgdotjs/svg.js";
-import * as moment from "moment";
+//import * as moment from "moment";
+const moment = require('moment-timezone');
 import {AnimationEvent, AnimationEventType} from "./animationEvents";
 
 /**
@@ -161,9 +162,9 @@ export default class TimelineAnimation {
 
         for (let i = 0; i <= this.slotNum; i++) {
             if (i % 10 === 0) {
-                date = moment(time);
+                date = moment.tz(time, this.animationContext.getTimezone());
                 dateTxt = date.format('D MMM YY');
-                timeTxt = date.format('H:mm:ss');
+                timeTxt = date.format('HH:mm:ss');
                 color = 'grey';
                 this._addTick(x, y, tickSize, color, textToTickGap, dateTxt, timeTxt, this.timelineEl);
             }
