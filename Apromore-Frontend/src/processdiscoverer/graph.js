@@ -1,4 +1,3 @@
-import * as jQueryExt from '../commons/jqueryExtensions';
 import cytoscape from "cytoscape/dist/cytoscape.esm";
 import popper from 'cytoscape-popper';
 import dagre from 'cytoscape-dagre';
@@ -447,13 +446,11 @@ PDp.fit = function(layoutType) {
         cy.zoom(MAX_AUTOFIT_ZOOM);
         cy.center();
     }
-    //moveTop(layoutType);
 }
 
 PDp.center = function(layoutType) {
     let cy = this._private.cy;
     cy.center();
-    //moveTop(layoutType);
 }
 
 PDp.resize = function() {
@@ -684,15 +681,15 @@ PDp.showPerspectiveDetails = function() {
 }
 
 PDp.switchToAnimationView = function(setupDataJSON) {
-    jQueryExt.registerWheelStartStopEvents($j);
+    //jQueryExt.registerWheelStartStopEvents($j);
     let cy = this._private.cy;
     cy.nodes().ungrabify();
     let pd = this;
     $j('#' + pd._private.animationPanelContainerId).show();
-    let processMapController = new GraphModelWrapper(cy);
-    let logAnimation = this._private.logAnimation = new LogAnimation(
+    pd._private.logAnimationMapController = new GraphModelWrapper(cy);
+    pd._private.logAnimation = this._private.logAnimation = new LogAnimation(
                                         pd._private.pluginExecutionId,
-                                        processMapController,
+                                        this._private.logAnimationMapController,
                                         pd._private.processModelContainerId,
                                         pd._private.timelineContainerId,
                                         pd._private.speedControlContainerId,
@@ -702,7 +699,7 @@ PDp.switchToAnimationView = function(setupDataJSON) {
                                         pd._private.buttonsContainerId,
                                         pd._private.playClassName,
                                         pd._private.pauseClassName);
-    logAnimation.initialize(setupDataJSON);
+    pd._private.logAnimation.initialize(setupDataJSON);
 }
 
 PDp.switchToInteractiveView = function() {
@@ -711,6 +708,8 @@ PDp.switchToInteractiveView = function() {
     let la = pd._private.logAnimation;
     if (la) la.destroy();
     $j('#' + pd._private.animationPanelContainerId).hide();
+    pd._private.logAnimation = null;
+    pd._private.logAnimationMapController = null;
 }
 
 export default PDp;

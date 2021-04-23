@@ -15,45 +15,62 @@ export default class GraphModelWrapper {
     constructor(cy) {
         this._listeners = [];
         this._cy = cy;
-        this._model_canvas_moving = false;
+
+        // instance variables to implement automatic play after zooming/panning
+        this._isModelMoving = false;
+        this._zoomTimer = undefined;
+        this._zoomLatency = 500; //latency to identify when zooming action stops
+        this._panTimer = undefined;
+        this._panLatency = 500; //latency to identify when panning action stops
     }
 
     initialize(elementIndexIDMap) {
         this._createElementCache(elementIndexIDMap);
         let me = this;
 
-        let handleModelMoving = function() {
+        const handleModelMoving = function() {
             let modelBox = me.getBoundingClientRect();
             let modelMatrix = me.getTransformMatrix();
-            me._model_canvas_moving = true;
+            me._isModelMoving = true;
             me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVING,
                 {viewbox: modelBox, transformMatrix: modelMatrix}));
         }
 
-        let handleModelMovingStop = function() {
-            if (!me._model_canvas_moving) return;
+        const handleModelMovingStop = function() {
+            if (!me._isModelMoving) return;
             let modelBox = me.getBoundingClientRect();
             let modelMatrix = me.getTransformMatrix();
+            me._isModelMoving = false;
             me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVED,
                 {viewbox: modelBox, transformMatrix: modelMatrix}));
-            me._model_canvas_moving = false;
         }
 
         this._cy.on('pan', function (event) {
             handleModelMoving();
+            me.updateModelMovingTimer(me._panTimer, me._panLatency, handleModelMovingStop);
         });
 
         this._cy.on('zoom', function (event) {
             handleModelMoving();
+            me.updateModelMovingTimer(me._zoomTimer, me._zoomLatency, handleModelMovingStop);
         });
+    }
 
-        this._cy.on('mouseup', function (event) {
-            handleModelMovingStop();
-        });
-
-        $j(this._cy.container()).on("wheelstop",function() {
-            handleModelMovingStop();
-        });
+    /**
+     * Update the timer used to check model moving progress
+     * @param timer: the timer to update
+     * @param latency: the latency setting to identify when moving has stopped
+     * @param stopHandlingFunc: the function to be executed when the latency has passed
+     */
+    updateModelMovingTimer(timer, latency, stopHandlingFunc) {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        timer = setTimeout(function () {
+            timer = null;
+            stopHandlingFunc();
+        }, latency);
     }
 
     /**
