@@ -117,9 +117,10 @@ export default class LogAnimation {
         let endLogTime = new Date(setupData.timeline.endLogDateLabel).getTime(); // End log date in milliseconds
         let totalEngineS = setupData.timeline.totalEngineSeconds;
         let timelineSlots = setupData.timeline.timelineSlots;
+        let timezone = setupData.timeline.timezone;
 
         this.animationContext = new AnimationContext(this.pluginExecutionId, startMs, endMs, startLogTime, endLogTime,
-                                        timelineSlots, totalEngineS, recordingFrameRate);
+                                        timelineSlots, totalEngineS, recordingFrameRate, timezone);
         this.processMapController.initialize(elementIndexIDMap);
         this.processMapController.registerListener(this);
 

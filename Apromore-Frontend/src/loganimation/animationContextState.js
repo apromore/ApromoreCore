@@ -17,12 +17,14 @@ export class AnimationContext {
      * @param {Number} timelineSlots: the number of slots on the timeline
      * @param {Number} logicalTimelineMax: the maximum logical time on the timeline in seconds
      * @param {Number} recordingFrameRate: the frame rate used to record frames
+     * @param {String} timezone: time zone of the server running log animation
      */
     constructor(pluginExecutionId,
                 timelineStart, timelineEnd,
                 logStart, logEnd,
                 timelineSlots, logicalTimelineMax,
-                recordingFrameRate) {
+                recordingFrameRate,
+                timezone) {
         this._pluginExecutionId = pluginExecutionId;
         this._timelineStart = timelineStart;
         this._timelineEnd = timelineEnd;
@@ -31,6 +33,7 @@ export class AnimationContext {
         this._timelineSlots = timelineSlots;
         this._logicalTimelineMax = logicalTimelineMax;
         this._recordingFrameRate = recordingFrameRate;
+        this._timezone = timezone;
     }
 
     getPluginExecutionId() {
@@ -101,6 +104,10 @@ export class AnimationContext {
 
     getTotalNumberOfFrames() {
         return this._recordingFrameRate*this._logicalTimelineMax;
+    }
+
+    getTimezone() {
+        return this._timezone;
     }
 }
 
