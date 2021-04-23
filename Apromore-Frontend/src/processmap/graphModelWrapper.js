@@ -15,24 +15,44 @@ export default class GraphModelWrapper {
     constructor(cy) {
         this._listeners = [];
         this._cy = cy;
+        this._model_canvas_moving = false;
     }
 
     initialize(elementIndexIDMap) {
         this._createElementCache(elementIndexIDMap);
-
         let me = this;
-        this._cy.on('pan', function (event) {
+
+        let handleModelMoving = function() {
             let modelBox = me.getBoundingClientRect();
             let modelMatrix = me.getTransformMatrix();
+            me._model_canvas_moving = true;
             me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVING,
                 {viewbox: modelBox, transformMatrix: modelMatrix}));
+        }
+
+        let handleModelMovingStop = function() {
+            if (!me._model_canvas_moving) return;
+            let modelBox = me.getBoundingClientRect();
+            let modelMatrix = me.getTransformMatrix();
+            me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVED,
+                {viewbox: modelBox, transformMatrix: modelMatrix}));
+            me._model_canvas_moving = false;
+        }
+
+        this._cy.on('pan', function (event) {
+            handleModelMoving();
         });
 
         this._cy.on('zoom', function (event) {
-            let modelBox = me.getBoundingClientRect();
-            let modelMatrix = me.getTransformMatrix();
-            me._notifyAll(new AnimationEvent(AnimationEventType.MODEL_CANVAS_MOVING,
-                {viewbox: modelBox, transformMatrix: modelMatrix}));
+            handleModelMoving();
+        });
+
+        this._cy.on('mouseup', function (event) {
+            handleModelMovingStop();
+        });
+
+        $j(this._cy.container()).on("wheelstop",function() {
+            handleModelMovingStop();
         });
     }
 

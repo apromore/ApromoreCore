@@ -1,3 +1,4 @@
+import * as jQueryExt from '../commons/jqueryExtensions';
 import cytoscape from "cytoscape/dist/cytoscape.esm";
 import popper from 'cytoscape-popper';
 import dagre from 'cytoscape-dagre';
@@ -683,6 +684,7 @@ PDp.showPerspectiveDetails = function() {
 }
 
 PDp.switchToAnimationView = function(setupDataJSON) {
+    jQueryExt.registerWheelStartStopEvents($j);
     let cy = this._private.cy;
     cy.nodes().ungrabify();
     let pd = this;
