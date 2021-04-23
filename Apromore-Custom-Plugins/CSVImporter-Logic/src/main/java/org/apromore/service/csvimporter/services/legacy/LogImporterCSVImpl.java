@@ -21,6 +21,7 @@
  */
 package org.apromore.service.csvimporter.services.legacy;
 
+import com.google.common.base.Splitter;
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.dao.model.Log;
@@ -74,7 +75,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
             String firstLine = brReader.readLine();
             firstLine = firstLine.replaceAll("\"", "");
             char separator = getMaxOccurringChar(firstLine);
-            String[] header = firstLine.split("\\s*" + separator + "\\s*");
+            List<String> headerList = Splitter.on(separator).splitToList(firstLine);
 
             // Read the reset of the log
             in2 = new ReaderInputStream(brReader, charset);
@@ -109,7 +110,6 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
 
             LogEventModelExt logEventModelExt;
             Log log = null;
-            List<String> headerList = Arrays.asList(header);
             while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
 
                 // new row, new event.
@@ -120,9 +120,9 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                     continue;
 
                 //Validate num of column
-                if (header.length != line.length) {
+                if (headerList.size() != line.length) {
                     logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match " +
-                            "the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                            "the number of headers. Number of headers: (" + headerList.size() + "). Number of columns: (" + line.length + ")"));
                     continue;
                 }
 
