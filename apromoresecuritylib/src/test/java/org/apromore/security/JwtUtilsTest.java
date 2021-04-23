@@ -21,8 +21,6 @@
  */
 package org.apromore.security;
 
-import org.apromore.security.JwtUtils.*;
-
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.Payload;
@@ -51,11 +49,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;

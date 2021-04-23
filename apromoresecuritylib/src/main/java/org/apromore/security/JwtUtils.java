@@ -25,7 +25,9 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.proc.DefaultJOSEObjectTypeVerifier;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
@@ -106,6 +108,13 @@ public class JwtUtils {
         return jwtClaimsSet;
     }
 
+    public static JWTClaimsSet getClaimsSetFromJWT(final String jwtStr) throws Exception {
+        final JWT jwtParsed = JWTParser.parse(jwtStr);
+        final JWTClaimsSet jwtClaimsSet = jwtParsed.getJWTClaimsSet();
+
+        return jwtClaimsSet;
+    }
+
     public static SignedJWT signJsonWebToken(final JWTClaimsSet jwtClaimsSet, final PrivateKey privateKey)
             throws JOSEException {
         notNullAssert(privateKey, "privateKey");
@@ -177,4 +186,5 @@ public class JwtUtils {
 
         return false;
     }
+
 }

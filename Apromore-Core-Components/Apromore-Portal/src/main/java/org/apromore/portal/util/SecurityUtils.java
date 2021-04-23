@@ -230,6 +230,8 @@ public final class SecurityUtils {
     }
 
     public static String symmetricDecrypt(final String strToDecrypt, final String encryptionSecret) throws Exception {
+        logger.info("strToDecript {}, encryptionSecret {}", strToDecrypt, encryptionSecret);
+
         notNullAssert(strToDecrypt, "strToDecrypt");
         notNullAssert(encryptionSecret, "encryptionSecret");
 

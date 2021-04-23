@@ -52,6 +52,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
     public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
         s_fullConfigurableReturnPath = fullProtocolHostPortUrl;
+        s_fullConfigurableReturnPath = "https://sandbox-u21.apromore.org:443/";
 
         LOGGER.info("Set fullProtocolHostPortUrl to {}", s_fullConfigurableReturnPath);
     }
