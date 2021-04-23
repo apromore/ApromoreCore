@@ -287,7 +287,7 @@ public class MainController extends BaseController implements MainControllerInte
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("\n\n##### Repository NOT available: {}", e.getMessage());
 
             e.printStackTrace();
