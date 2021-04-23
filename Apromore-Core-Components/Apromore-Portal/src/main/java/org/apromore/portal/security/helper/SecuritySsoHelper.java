@@ -128,7 +128,7 @@ public class SecuritySsoHelper {
         return portalSessionQePair;
     }
 
-    private static SecurityContextHolderAwareRequestWrapper getSecurityContextHolderAwareRequestWrapper() {
+    public static SecurityContextHolderAwareRequestWrapper getSecurityContextHolderAwareRequestWrapper() {
         final Object nativeRequest = Executions.getCurrent().getNativeRequest();
         LOGGER.info("\n### nativeRequest {}", nativeRequest);
         final SecurityContextHolderAwareRequestWrapper servReqWrapper =

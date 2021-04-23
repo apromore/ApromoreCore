@@ -93,6 +93,11 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     public void commence(final HttpServletRequest httpServletRequest,
                          final HttpServletResponse httpServletResponse,
                          final AuthenticationException authenticationException) throws IOException, ServletException {
+        final String requestServletPath = httpServletRequest.getServletPath();
+        final String requestURL = httpServletRequest.getRequestURL().toString();
+        LOGGER.info(">>> requestServletPath {}", requestServletPath);
+        LOGGER.info(">>> requestURL {}", requestURL);
+
         super.commence(httpServletRequest, httpServletResponse, authenticationException);
     }
 
