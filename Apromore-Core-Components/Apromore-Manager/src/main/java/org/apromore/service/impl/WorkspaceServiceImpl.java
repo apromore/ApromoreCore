@@ -867,6 +867,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<GroupFolder> groupFolders = groupFolderRepo.findByGroupId(user.getGroup().getId());
         List<Folder> SingleOwnerFolderList = new ArrayList<>();
 
+        if(null == groupFolders || groupFolders.size() ==0 ){
+            return SingleOwnerFolderList;
+        }
+
         for (GroupFolder gf : groupFolders) {
             List<GroupFolder> ownerGroupFolders = groupFolderRepo.findOwnerByFolderId(gf.getFolder().getId());
             if (ownerGroupFolders.size() == 1) {
@@ -991,6 +995,48 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             p.setUser(targetUser);
             processRepo.save(p);
         }
+    }
+
+    @Override
+    public boolean canDeleteOwnerlessFolder(User user) {
+
+        List<Folder> folders = getSingleOwnerFolderByUser(user);
+
+        if (null == folders || folders.size() == 0) {
+            return true;
+        }
+
+        List<Integer> folderIds = new ArrayList<>();
+
+        for (Folder f : folders) {
+            folderIds.add(f.getId());
+        }
+
+        List<Log> logs = logRepo.findByFolderIdIn(folderIds);
+        List<Process> processes = processRepo.findByFolderIdIn(folderIds);
+
+        // If folders solely owned by User-To-Be-Deleted but contains log/process co-owned, cannot be deleted, but
+        // only transferred.
+        for (Log l : logs) {
+            Set<GroupLog> groupLogs = l.getGroupLogs();
+            for (GroupLog gl : groupLogs) {
+                if (!user.getGroup().equals(gl.getGroup())) {
+                    return false;
+                }
+            }
+        }
+
+        for (Process p : processes) {
+            Set<GroupProcess> groupProcesses = p.getGroupProcesses();
+            for (GroupProcess gp : groupProcesses) {
+                if (!user.getGroup().equals(gp.getGroup())) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+
     }
 
     @Override
