@@ -24,6 +24,7 @@
 
 package org.apromore.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
@@ -877,7 +878,23 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 }
             }
         }
-        return SingleOwnerFolderList;
+        // Sort Folder list from children to parents to avoid error during cascading delete
+        return sortFolderByLevel(SingleOwnerFolderList);
+    }
+
+    private List<Folder> sortFolderByLevel(List<Folder> folders) {
+
+        if(null == folders || folders.size() ==0 ){
+            return new ArrayList<>();
+        }
+
+        Map<Integer, Folder> folderMap = new TreeMap<>(Comparator.reverseOrder());
+
+        for (Folder f : folders) {
+            folderMap.put(StringUtils.countMatches(f.getParentFolderChain(),"_"), f);
+        }
+
+        return new ArrayList<>(folderMap.values());
     }
 
     @Override
