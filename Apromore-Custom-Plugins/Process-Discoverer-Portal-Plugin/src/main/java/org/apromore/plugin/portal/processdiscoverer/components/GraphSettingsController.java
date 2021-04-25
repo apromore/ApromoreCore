@@ -246,7 +246,7 @@ public class GraphSettingsController extends VisualController {
         swapOrdering.setDisabled(disabled);
         nodeInput.setDisabled(disabled);
         arcInput.setDisabled(disabled);
-        parallelismInput.setDisabled(disabled);
+        parallelismInput.setDisabled(disabled || !parent.getUserOptions().getBPMNMode());
     }
     
     private void setMetric(String metric) {
