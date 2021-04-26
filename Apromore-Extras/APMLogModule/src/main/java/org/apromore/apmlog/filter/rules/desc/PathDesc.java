@@ -56,7 +56,7 @@ public class PathDesc extends AttributeDesc{
         sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain" : "Remove");
         sb.append(" all cases that contain the ");
         sb.append(logFilterRule.getFilterType() == FilterType.DIRECT_FOLLOW ?
-                        "direct-follows relation " : "eventually-follows relation ");
+                        "directly-follows relation " : "eventually-follows relation ");
 
         for (int i = 0; i < fromList.size(); i++) {
             String fromVal = fromList.get(i);
