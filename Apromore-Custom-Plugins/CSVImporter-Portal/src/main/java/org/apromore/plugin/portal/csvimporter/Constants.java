@@ -39,8 +39,8 @@ interface Constants {
                 "windows-1258 (Vietnamese)",
                 "windows-31j (Japanese)",
                 "ISO-2022-CN (Chinese)",
-                "ISO-8859-1 (Latin alphabet No.1)",
-                "ISO-8859-2 (Latin alphabet No.2)"
+                "ISO-8859-1 (Latin Alphabet No.1)",
+                "ISO-8859-2 (Latin Alphabet No.2)"
     };
 
     int logSampleSize = 100;
