@@ -21,9 +21,9 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.components;
 
-import java.util.Objects;
+import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -31,9 +31,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
-
-import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 
 public class ToolbarController extends AbstractController {
     private final String LAYOUT_HIERARCHY = "layoutHierarchy";
@@ -170,7 +167,7 @@ public class ToolbarController extends AbstractController {
     }
 
     public void setDisabledAnimation(boolean disabled) {
-        animate.setDisabled(disabled);
+        animate.setDisabled(disabled || !userOptions.getMainAttributeKey().equals(parent.getConfigData().getDefaultAttribute()));
     }
 
     public void toogleAnimateBtn(boolean state) {
