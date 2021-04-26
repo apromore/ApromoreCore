@@ -153,6 +153,13 @@ public class DeleteUserController extends SelectorComposer<Window> {
         deletedUserLabelPurge.setValue(selectedUserName);
         loadTransferTo();
         loadOwnedList();
+
+        // If folder solely owned by User-To-Be-Deleted but contains files co-owned, then disable "delete all assets"
+        if(!workspaceService.canDeleteOwnerlessFolder(selectedUser)){
+            deleteOptionPurge.setDisabled(true);
+            Notification.error("The delete assets option has been disabled because [" + selectedUser.getUsername() +
+                    "] owns a folder that contains at least one asset co-owned by another user.");
+        }
     }
 
     private void destroy() {
