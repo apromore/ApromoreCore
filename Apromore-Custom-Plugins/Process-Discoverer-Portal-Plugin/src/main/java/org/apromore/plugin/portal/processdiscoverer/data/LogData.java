@@ -56,7 +56,7 @@ public class LogData {
 
     public LogData(ConfigData configData, ALog log) {
         this.aLog = log;
-        indexableAttributes = aLog.getAttributeStore().getIndexableEventAttributeWithLimits(
+        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
                 configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
     }
     
@@ -66,7 +66,7 @@ public class LogData {
     
     public AttributeLog getAttributeLog() {
         return this.attLog;
-    }       
+    }
     
     public List<CaseDetails> getCaseDetails() {
         return new ArrayList<CaseDetails>();
