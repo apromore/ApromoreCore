@@ -132,7 +132,7 @@ public abstract class BaseListboxController extends BaseController {
 		this.mainController = mainController;
 		this.portalContext = new PluginPortalContext(mainController);
 		listBox = createListbox(componentId);
-		listBox.setPaginal((Paging) mainController.getFellow("pg"));
+		// listBox.setPaginal((Paging) mainController.getFellow("pg"));
 		listBox.setItemRenderer(itemRenderer);
 
 		refreshB = (Button) mainController.getFellow("refreshB");
@@ -905,7 +905,7 @@ public abstract class BaseListboxController extends BaseController {
 	}
 
 	public class SummaryListModel extends ListModelList {
-		final int pageSize = 10; // TODO: ought to be externally configurable
+		final int pageSize = 1000; // TODO: ought to be externally configurable
 
 		private SummariesType summaries, logSummaries;
 		private int currentPageIndex = 0, currentLogPageIndex = 0;
