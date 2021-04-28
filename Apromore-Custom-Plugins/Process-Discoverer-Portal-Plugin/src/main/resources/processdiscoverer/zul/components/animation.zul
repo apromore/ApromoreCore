@@ -76,5 +76,30 @@
                 </n:div>                  
             </n:div>
         </n:div>
+        <n:div id="ap-la-info-tip">
+            <n:table>
+                <n:tr>
+                    <n:td>Log</n:td>
+                    <n:td id="info-log"></n:td>
+                </n:tr>
+                <n:tr>
+                    <n:td>Total Traces</n:td>
+                    <n:td id="info-traces"></n:td>
+                </n:tr>
+                <n:tr>
+                    <n:td>Replayed</n:td>
+                    <n:td id="info-replayed"></n:td>
+                </n:tr>
+                <n:tr>
+                    <n:td>Reliable</n:td>
+                    <n:td id="info-reliable"></n:td>
+                </n:tr>
+                <n:tr>
+                    <n:td>Fitness</n:td>
+                    <n:td id="info-fitness"></n:td>
+                </n:tr>
+            </n:table>
+            <n:div class="tip-arrow"></n:div>
+        </n:div>
     </n:div>
 </n:div>
