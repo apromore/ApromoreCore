@@ -536,6 +536,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             row.appendChild(new Label(index + ""));
             for (String s : myLine) {
                 Label lbl = new Label(s);
+                lbl.setMultiline(false);
+                lbl.setTooltiptext(s);
                 row.appendChild(lbl);
             }
 
