@@ -61,7 +61,7 @@ import static org.apromore.security.util.AssertUtils.*;
  */
 public class JwtUtils {
 
-    public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30); // Duration.ofHours(2L);
+    public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
 
     public static final String JWT_KEY_SUBJECT_USERNAME = "sub";
     public static final String JWT_KEY_ISSUED_AT = "iat";
