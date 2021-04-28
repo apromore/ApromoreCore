@@ -95,8 +95,8 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
                          final AuthenticationException authenticationException) throws IOException, ServletException {
         final String requestServletPath = httpServletRequest.getServletPath();
         final String requestURL = httpServletRequest.getRequestURL().toString();
-        LOGGER.info(">>> requestServletPath {}", requestServletPath);
-        LOGGER.info(">>> requestURL {}", requestURL);
+        LOGGER.info("requestServletPath {}", requestServletPath);
+        LOGGER.info("requestURL {}", requestURL);
 
         super.commence(httpServletRequest, httpServletResponse, authenticationException);
     }
