@@ -528,26 +528,31 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private void renderGridContent() {
         Grid myGrid = (Grid) window.getFellow(myGridId);
-        ListModelList<String[]> indexedResult = new ListModelList<>();
 
         int index = ROW_INDEX_START_FROM;
+        Rows rows = new Rows();
         for (List<String> myLine : sampleLog) {
-            List<String> withIndex = new ArrayList<>();
-            withIndex.add(String.valueOf(index));
-            index++;
-            withIndex.addAll(myLine);
-            String[] s = withIndex.toArray(new String[0]);
-            indexedResult.add(s);
-        }
-        if (logSampleSize <= sampleLog.size()) {
-            indexedResult.add(new String[]{"..", "...", "...."});
-        }
-        myGrid.setModel(indexedResult);
+            Row row = new Row();
+            row.appendChild(new Label(index + ""));
+            for (String s : myLine) {
+                Label lbl = new Label(s);
+                row.appendChild(lbl);
+            }
 
-        //set grid row renderer
-        GridRendererController rowRenderer = new GridRendererController();
-        rowRenderer.setAttribWidth(columnWidth);
-        myGrid.setRowRenderer(rowRenderer);
+            rows.appendChild(row);
+            index++;
+        }
+
+        if (logSampleSize <= sampleLog.size()) {
+            Row dummyRow = new Row();
+            dummyRow.appendChild(new Label(".."));
+            dummyRow.appendChild(new Label("..."));
+            dummyRow.appendChild(new Label("...."));
+
+            rows.appendChild(dummyRow);
+        }
+
+        myGrid.appendChild(rows);
     }
 
     private void setPopUpFormatBox() {
