@@ -54,7 +54,6 @@
                 <configuration>
                     <instructions>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <!-- <Embed-Dependency>security</Embed-Dependency> -->
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Package>
                             org.aopalliance.aop,                            

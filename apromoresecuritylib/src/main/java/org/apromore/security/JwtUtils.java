@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.security.PrivateKey;
-import java.sql.Timestamp;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
