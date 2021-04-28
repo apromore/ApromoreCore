@@ -28,10 +28,13 @@ import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.mapper.SearchHistoryMapper;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +52,8 @@ public class JwtHelper {
     public static final String STR_JWT_KEY_ISSUED_AT = "striat";
     public static final String STR_JWT_EXPIRY_TIME = "strexp";
     public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtHelper.class);
 
     public static String readCookie(final HttpServletRequest httpServletRequest,
                                     final String cookieName) {
@@ -94,7 +99,7 @@ public class JwtHelper {
     /**
      * Return authenticated user if JWT token is not expired, otherwise <code>null</code>.
      *
-     * @return
+     * @return <code>null</code> if the JWT has expired, otherwise the associated user.
      */
     public static UserType userFromJwt(final ManagerService managerService, final String appAuthHeader) {
         try {
@@ -111,9 +116,12 @@ public class JwtHelper {
 
                 return authUserType;
             } else {
+                LOGGER.debug("JWT has expired, returning null per method contract");
                 return null;
             }
         } catch (final Exception pe) {
+            LOGGER.debug("Exception in processing JWT (returning null)", pe);
+
             return null;
         }
     }
@@ -133,7 +141,10 @@ public class JwtHelper {
         if (userType.getLastActivityDate() != null && !userType.getLastActivityDate().equals("")) {
             try {
                 date = formatter.parse(userType.getLastActivityDate());
-            } catch (ParseException ex) {
+            } catch (final ParseException ex) {
+                LOGGER.warn("Parse exception in attaining the pertinent associated user (this should not happen)", ex);
+
+                return null;
             }
         }
 

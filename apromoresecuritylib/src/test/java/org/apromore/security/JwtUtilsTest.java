@@ -59,7 +59,10 @@ import java.util.UUID;
 
 import org.apromore.security.config.KeycloakAppConstants;
 
-import static org.apromore.security.JwtUtils.*;
+import static org.apromore.security.JwtUtils.JWT_KEY_SUBJECT_USERNAME;
+import static org.apromore.security.JwtUtils.JWT_KEY_ISSUED_AT;
+import static org.apromore.security.JwtUtils.JWT_EXPIRY_TIME;
+
 import static org.apromore.security.util.AssertUtils.notNullAssert;
 
 public class JwtUtilsTest {

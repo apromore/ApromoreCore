@@ -21,7 +21,6 @@
  */
 package org.apromore.portal.dialogController;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
@@ -69,23 +68,23 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
     @Override
     public void doAfterCompose(final Window window) {
-        LOGGER.info("In TokenHandoffController.doAfterCompose(..)");
+        LOGGER.debug("In TokenHandoffController.doAfterCompose(..)");
 
         managerService = (ManagerService) SpringUtil.getBean(Constants.MANAGER_SERVICE);
         securityService = (SecurityService) SpringUtil.getBean(Constants.SECURITY_SERVICE);
-        LOGGER.info("Manager service: " + managerService);
-        LOGGER.info("Security service: " + securityService);
+        LOGGER.debug("Manager service: " + managerService);
+        LOGGER.debug("Security service: " + securityService);
 
         try {
             final HttpServletRequest httpServletRequest =
                     (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-            LOGGER.info("httpServletRequest: {}", httpServletRequest);
+            LOGGER.debug("httpServletRequest: {}", httpServletRequest);
 
             final String appAuthCookieStr = JwtHelper.readCookie(httpServletRequest, "App_Auth");
             final String signedAppAuthCookieStr =
                     JwtHelper.readCookie(httpServletRequest, "Signed_App_Auth");
-            LOGGER.info("\n\n>>> appAuthCookieStr: {}", appAuthCookieStr);
-            LOGGER.info("\n\n>>> signedAppAuthCookieStr: {}", signedAppAuthCookieStr);
+            LOGGER.debug("\n\n>>> appAuthCookieStr: {}", appAuthCookieStr);
+            LOGGER.debug("\n\n>>> signedAppAuthCookieStr: {}", signedAppAuthCookieStr);
 
             final UserType userType = JwtHelper.userFromJwt(managerService, appAuthCookieStr);
 
@@ -93,41 +92,40 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                 UserSessionManager.setCurrentUser(userType);
 
                 final UserType currentUserType = UserSessionManager.getCurrentUser();
-                LOGGER.info("Current session logged-in currentUserType: " + currentUserType);
-                LOGGER.info("Current session logged-in username: " + currentUserType.getUsername());
+                LOGGER.debug("Current session logged-in currentUserType: " + currentUserType);
+                LOGGER.debug("Current session logged-in username: " + currentUserType.getUsername());
 
                 final SecurityContext springSecurityContext = SecurityContextHolder.getContext();
-                LOGGER.info("springSecurityContext {}", springSecurityContext);
+                LOGGER.debug("springSecurityContext {}", springSecurityContext);
 
                 if (springSecurityContext != null) {
                     final Authentication springAuthObj = springSecurityContext.getAuthentication();
-                    LOGGER.info("springAuthObj {}", springAuthObj);
+                    LOGGER.debug("springAuthObj {}", springAuthObj);
 
                     final User user =
                             JwtHelper.convertFromUserType(currentUserType, securityService);
-                    LOGGER.info("user {}", user);
+                    LOGGER.debug("user {}", user);
 
                     final List<GrantedAuthority> authorities = getAuthorities(user.getRoles());
 
                     final PreAuthenticatedAuthenticationToken preAuthenticatedAuthenticationToken =
                             new PreAuthenticatedAuthenticationToken(user.getUsername(),
                                     "", authorities);
-                    LOGGER.info("preAuthenticatedAuthenticationToken {}", preAuthenticatedAuthenticationToken);
+                    LOGGER.debug("preAuthenticatedAuthenticationToken {}", preAuthenticatedAuthenticationToken);
 
                     springSecurityContext.setAuthentication(preAuthenticatedAuthenticationToken);
                 } else {
-                    LOGGER.info("Spring SecurityContext is null!!");
+                    LOGGER.debug("Spring SecurityContext is null!!");
                 }
 
-                LOGGER.info("Before redirect");
+                LOGGER.debug("Before redirect");
                 Executions.getCurrent().sendRedirect("/index.zul");
-                LOGGER.info("After redirect");
+                LOGGER.debug("After redirect");
             } else {
                 Executions.getCurrent().sendRedirect("/login.zul?error=2");
             }
         } catch (final Exception e) {
-            LOGGER.error("Exception in processing JWT/associating user {} - stackTrace {}", e.getMessage(),
-                    ExceptionUtils.getStackTrace(e));
+            LOGGER.error("Unable to process JWT/associate user", e);
 
             Executions.getCurrent().sendRedirect("/login.zul?error=2");
         }

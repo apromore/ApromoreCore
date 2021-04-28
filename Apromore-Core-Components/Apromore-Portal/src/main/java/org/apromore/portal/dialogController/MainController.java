@@ -148,7 +148,7 @@ public class MainController extends BaseController implements MainControllerInte
 
     public MainController() {
         final boolean usingKeycloak = config.isUseKeycloakSso();
-        LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
+        LOGGER.debug("Using keycloak: {}", usingKeycloak);
 
         portalSession = new PortalSession(this);
 
@@ -160,28 +160,27 @@ public class MainController extends BaseController implements MainControllerInte
                         (HttpServletRequest) Executions.getCurrent().getNativeRequest();
                 final String appAuthHeader =
                         JwtHelper.readCookie(httpServletRequest, "App_Auth");
-                LOGGER.info("\nIn MainController Read App_Auth cookie: {}", appAuthHeader);
+                LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
 
                 final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
                 final String issuedAtStr = (String)jwtClaimsSet.getStringClaim(
                         JwtHelper.STR_JWT_KEY_ISSUED_AT);
-                LOGGER.info("issuedAtStr {}", issuedAtStr);
+                LOGGER.debug("issuedAtStr {}", issuedAtStr);
                 final String expiryAtStr = (String)jwtClaimsSet.getStringClaim(
                         JwtHelper.STR_JWT_EXPIRY_TIME);
-                LOGGER.info("expiryAtStr {}", expiryAtStr);
+                LOGGER.debug("expiryAtStr {}", expiryAtStr);
 
                 final boolean jwtHasExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
 
                 if (jwtHasExpired) {
-                    LOGGER.info("In MainController, JWT IS expired");
+                    LOGGER.debug("JWT IS expired");
 
                     Executions.getCurrent().sendRedirect("/login.zul?error=2");
                 } else {
-                    LOGGER.debug("In MainController, jwt is NOT expired");
+                    LOGGER.debug("JWT is NOT expired");
                 }
             } catch (final Exception e) {
-                LOGGER.error("Exception in checking JWT expiry {} - stackTrace: {}",
-                        e.getMessage(), ExceptionUtils.getStackTrace(e));
+                LOGGER.error("Failed to check JWT expiry", e);
             }
 
             // MainController.encKey = SecuritySsoHelper.getEnvEncKey();
@@ -193,7 +192,7 @@ public class MainController extends BaseController implements MainControllerInte
 
                 initializeUser(getService(), config, null, null);
             } catch (final Exception e) {
-                LOGGER.error("\n\n##### Error in decrypting url param: {} - stackTrace {}",
+                LOGGER.error("Error in decrypting url param: {} - stackTrace {}",
                         e.getMessage(),
                         ExceptionUtils.getStackTrace(e));
             }
@@ -209,9 +208,9 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     private void setupUserDynamically(final UserType userType) {
-	    LOGGER.info("\n\n*** DYNAMICALLY Setting*** userType {} as currentUser", userType);
+	    LOGGER.debug("DYNAMICALLY Setting*** userType {} as currentUser", userType);
         UserSessionManager.setCurrentUser(userType);
-        LOGGER.info("\n\n*** DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
+        LOGGER.debug("DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
     }
 
 	/** Unit test constructor. */
@@ -300,7 +299,7 @@ public class MainController extends BaseController implements MainControllerInte
             pagingandbuttons.setVisible(true);
 
         } catch (final Exception e) {
-            LOGGER.error("\n\n##### Repository NOT available: {}", e.getMessage());
+            LOGGER.error("Repository NOT available", e);
 
             e.printStackTrace();
 
@@ -399,7 +398,6 @@ public class MainController extends BaseController implements MainControllerInte
      * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
     public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
-        LOGGER.debug("\n\n----- In displayProcessSummaries(..) -----");
         int folderId;
 
         if (isQueryResult) {
