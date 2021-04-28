@@ -8,12 +8,12 @@
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of the
   License, or (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Lesser Public License for more details.
-  
+
   You should have received a copy of the GNU General Lesser Public
   License along with this program.  If not, see
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -47,7 +47,6 @@
     <!-- Setup for the Servlets used in new user regisration and reset password.
     <beans:bean id="resetPassword" class="org.apromore.portal.servlet.ResetPasswordHttpServletRequestHandler" />
     <beans:bean id="newUserRegistration" class="org.apromore.portal.servlet.NewUserRegistrationHttpServletRequestHandler" />
-
     <http pattern="/register/**" security="none"/>
     -->
 
@@ -64,7 +63,7 @@
     <http auto-config="false" access-denied-page="/denied.zul" use-expressions="true"
           entry-point-ref="apromoreAuthenticationEntryPoint" authentication-manager-ref="authenticationManager">
         <intercept-url pattern="/login.zul*" access="permitAll" requires-channel="any"/>
-        <intercept-url pattern="/index.zul*" access="permitAll" requires-channel="any"/>
+        <intercept-url pattern="/tokenHandoff.zul*" access="permitAll" requires-channel="any"/>
 
         <intercept-url pattern="/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" requires-channel="any"/>
 
@@ -186,5 +185,3 @@
     </beans:bean>
 
 </beans:beans>
-
-

@@ -124,9 +124,9 @@
 
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-commons</artifactId>
-            <version>1.0</version>
+            <artifactId>portal-model</artifactId>
         </dependency>
+
         <!-- Custom GUI -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -162,6 +162,12 @@
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
             <version>1.1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.7</version>
         </dependency>
 
         <!-- APIs -->
