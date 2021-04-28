@@ -103,7 +103,7 @@ public class AttributeStore {
             registerXAttributes(trace.getAttributes(), AttributeLevel.TRACE);
             for (XEvent event : trace.getEvents()) {
                 ImmutableSet<AbstractAttribute> atts = registerXAttributes(event.getAttributes(), AttributeLevel.EVENT);
-                if (trace == log.get(0) && event == trace.get(0)) { // first event
+                if (trace == log.getTraces().get(0) && event == trace.get(0)) { // first event
                     perspectiveEventAttributes.addAllIterable(atts);
                 }
                 else {
