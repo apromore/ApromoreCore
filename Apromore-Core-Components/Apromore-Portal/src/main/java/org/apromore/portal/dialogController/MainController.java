@@ -173,11 +173,11 @@ public class MainController extends BaseController implements MainControllerInte
                 final boolean jwtHasExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
 
                 if (jwtHasExpired) {
-                    LOGGER.info("\n>>>>>>>>>>>>>>> In MainController, JWT IS expired <<<<<<<<<<<<<<<");
+                    LOGGER.info("In MainController, JWT IS expired");
 
                     Executions.getCurrent().sendRedirect("/login.zul?error=2");
                 } else {
-                    LOGGER.info("In MainController, jwt is NOT expired");
+                    LOGGER.debug("In MainController, jwt is NOT expired");
                 }
             } catch (final Exception e) {
                 LOGGER.error("Exception in checking JWT expiry {} - stackTrace: {}",
