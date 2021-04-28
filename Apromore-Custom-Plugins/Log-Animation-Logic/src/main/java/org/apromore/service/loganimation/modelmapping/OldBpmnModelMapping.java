@@ -19,71 +19,90 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer.animation;
+package org.apromore.service.loganimation.modelmapping;
 
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import java.util.List;
+
+import org.apromore.service.loganimation.recording.ModelMapping;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.hpi.bpmn2_0.model.BaseElement;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowElement;
+import de.hpi.bpmn2_0.model.Process;
+import de.hpi.bpmn2_0.model.activity.Activity;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+
 /**
  * Mapping from modelling element IDs to indexes and vice versa.
+ * It is based on an old BPMN library provided in the original Signavio project.
  * @author Bruce Nguyen
  *
  */
-public class ModelMapping {
+public class OldBpmnModelMapping implements ModelMapping {
 	private HashBiMap<String, Integer> elementIdToIndexMap = new HashBiMap<>();
 	private HashBiMap<String, Integer> elementIdToSkipIndexMap = new HashBiMap<>();
 	
-    public ModelMapping(BPMNDiagram diagram) {
-        int index=0;
-        for (BPMNNode node : diagram.getNodes()) {
-            elementIdToIndexMap.put(node.getId().toString(), index);
-            index++;
-            if (node instanceof Activity) {
-                elementIdToSkipIndexMap.put(node.getId().toString(), index);
-                index++;
-            }
-        }
-        
-        for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getEdges()) {
-            elementIdToIndexMap.put(edge.getEdgeID().toString(), index);
-            index++;
-        }
-    }
+	public OldBpmnModelMapping(Definitions diagram) {
+		int index=0;
+		
+	    List<BaseElement> rootElements = diagram.getRootElement();
+	    if (rootElements.size() == 1) {
+	        BaseElement rootElement = rootElements.get(0);
+	        if (rootElement instanceof Process) {
+	            Process process = (Process)rootElement;
+	            for (FlowElement element : process.getFlowElement()) {
+	                if (element instanceof Activity || element instanceof SequenceFlow) {
+	                    elementIdToIndexMap.put(element.getId(), index);
+	                    index++;
+	                    if (element instanceof Activity) {
+	                        elementIdToSkipIndexMap.put(element.getId(), index);
+	                        index++;
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
 	
-	public int getIndex(String elementId) {
+	@Override
+    public int getIndex(String elementId) {
 		return elementIdToIndexMap.getIfAbsent(elementId, () -> -1);
 	}
 	
+    @Override
     public int getSkipIndex(String elementId) {
         return elementIdToSkipIndexMap.getIfAbsent(elementId, () -> -1);
-    }	
+    }
 	
-	public String getId(int index) {
+	@Override
+    public String getId(int index) {
 		return elementIdToIndexMap.inverse().getIfAbsent(index, () -> "");
 	}
 	
-	public String getIdFromSkipIndex(int index) {
+	@Override
+    public String getIdFromSkipIndex(int index) {
 	    return elementIdToSkipIndexMap.inverse().getIfAbsent(index, () -> "");
 	}
 
-	public int size() {
+	@Override
+    public int size() {
         return elementIdToIndexMap.size() + elementIdToSkipIndexMap.size();
     }
     
-	public void clear() {
+	@Override
+    public void clear() {
 		this.elementIdToIndexMap.clear();
 		this.elementIdToSkipIndexMap.clear();
 	}
 	
 	// two arrays, first is the mapping from id to normal index
 	// second is mapping from id to skip index
-	public JSONArray getElementJSON() throws JSONException {
+	@Override
+    public JSONArray getElementJSON() throws JSONException {
 	    JSONArray jsonArray = new JSONArray();
         jsonArray.put(this.getJSONMap(this.elementIdToIndexMap));
         jsonArray.put(this.getJSONMap(this.elementIdToSkipIndexMap));
@@ -96,5 +115,5 @@ public class ModelMapping {
             json.put(idToIndexMap.get(elementId).toString(), elementId);
         }
         return json;
-    }	
+    }
 }

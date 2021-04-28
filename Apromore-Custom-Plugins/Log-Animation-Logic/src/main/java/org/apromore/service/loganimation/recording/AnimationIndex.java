@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer.animation;
+package org.apromore.service.loganimation.recording;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.loganimation.api.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
@@ -50,8 +49,6 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     @Inject DomainService domainService;
     @Inject EventLogService eventLogService;
     @Inject ProcessService processService;
-    @Inject LogAnimationPluginInterface logAnimationPluginCE;
-    @Inject LogAnimationPluginInterface logAnimationPluginEE;
     @Inject LogFilterPlugin logFilterPlugin;
     @Inject LogAnimationService2 logAnimationService;
 
@@ -85,8 +82,6 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
                 Sessions.getCurrent().setAttribute("domainService", domainService);
                 Sessions.getCurrent().setAttribute("eventLogService", eventLogService);
                 Sessions.getCurrent().setAttribute("processService", processService);
-                Sessions.getCurrent().setAttribute("logAnimationPluginCE", logAnimationPluginCE);
-                Sessions.getCurrent().setAttribute("logAnimationPluginEE", logAnimationPluginEE);
                 Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
                 Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
 
