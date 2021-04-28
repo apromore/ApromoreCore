@@ -29,10 +29,18 @@ import java.io.IOException;
 // Java 2 Standard Edition packages
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Objects;
 
 // Third party packages
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apromore.portal.model.UserType;
 import org.apromore.service.UserService;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -51,6 +59,9 @@ import org.apromore.service.AuthorizationService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Base Controller that all controllers inherit.
@@ -259,4 +270,5 @@ public class BaseController extends Window {
     private void setWorkspaceService(final WorkspaceService workspaceService) {
         this.workspaceService = workspaceService;
     }
+
 }
