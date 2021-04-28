@@ -70,7 +70,6 @@ public class TokenHandoffController extends SelectorComposer<Window> {
     @Override
     public void doAfterCompose(final Window window) {
         LOGGER.info("In TokenHandoffController.doAfterCompose(..)");
-        LOGGER.info(">>>>> JWT token handoff <<<<<");
 
         managerService = (ManagerService) SpringUtil.getBean(Constants.MANAGER_SERVICE);
         securityService = (SecurityService) SpringUtil.getBean(Constants.SECURITY_SERVICE);
