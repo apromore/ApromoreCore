@@ -128,8 +128,8 @@ public class Frame {
     private double getFrameIndexRelativeTokenDistance(int logIndex, int tokenIndex) {
         int startFrameIndex = animationIndexes.get(logIndex).getStartFrameIndex(tokenIndex);
         int endFrameIndex = animationIndexes.get(logIndex).getEndFrameIndex(tokenIndex);
-        int numberOfFrames = endFrameIndex - startFrameIndex;
-        return (numberOfFrames == 0) ? 0 : (double)(frameIndex - startFrameIndex)/numberOfFrames;
+        int maxLength = endFrameIndex - startFrameIndex;
+        return (maxLength == 0) ? 0 : (double)(frameIndex - startFrameIndex)/maxLength;
     }
     
     /**
