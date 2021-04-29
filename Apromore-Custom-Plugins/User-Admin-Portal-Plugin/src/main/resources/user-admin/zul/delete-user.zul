@@ -45,7 +45,7 @@
                          hflex="1">
                     <listhead>
                         <listheader align="center" label="" width="40px"/><!-- type icon -->
-                        <listheader align="left" hflex="1" label="File" sort="auto(name)"/>
+                        <listheader align="left" hflex="1" label="Asset" sort="auto(name)"/>
                         <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
                     </listhead>
                     <template name="model">

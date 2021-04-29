@@ -26,7 +26,8 @@ let PD = function(pluginExecutionId,
         'buttonsContainerId': buttonsContainerId,
         'playClassName': playClassName,
         'pauseClassName': pauseClassName,
-        'logAnimation': undefined
+        'logAnimation': undefined,
+        'logAnimationMapController': undefined
     }
 }
 

@@ -82,7 +82,7 @@ export function createEmptyFrameBuffer() {
     let totalEngineS = setupData.timeline.totalEngineSeconds;
     let timelineSlots = setupData.timeline.timelineSlots;
     let animationContext = new AnimationContext('101', startMs, endMs, startLogTime, endLogTime, timelineSlots,
-                                                totalEngineS, recordingFrameRate);
+                                                totalEngineS, recordingFrameRate, 'Australia/Brisbane');
 
     let frameBuffer = new FrameBuffer(animationContext);
     return frameBuffer;

@@ -25,6 +25,7 @@
 package org.apromore.service.loganimation.json;
 
 import java.text.DecimalFormat;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -126,6 +127,7 @@ public class AnimationJSONBuilder2 {
         json.put("endLogDateLabel", totalRealInterval.getEnd().minus(params.getLastEventToEndEventDuration()*1000));
         json.put("timelineSlots", params.getTimelineSlots());
         json.put("totalEngineSeconds", params.getTotalEngineSeconds());
+        json.put("timezone", ZoneId.systemDefault().toString());
 
         return json;
     }

@@ -28,6 +28,7 @@ import java.io.IOException;
 // Java 2 Standard Edition
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -314,12 +315,22 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     }
     
     private void cleanTrace(XTrace trace) {
+        if (trace == null || trace.isEmpty()) return;
+        
+        Date startTimestamp = LogUtility.getTimestamp(trace.get(0));
+        Date endTimestamp = LogUtility.getTimestamp(trace.get(trace.size()-1));
         Iterator<XEvent> iterator = trace.iterator();
         while (iterator.hasNext()) {
             XEvent event = iterator.next();
             if (!LogUtility.getLifecycleTransition(event).toLowerCase().equals("complete")) {
                 iterator.remove();
             }
+        }
+        
+        // Adjust the timestamp of the first/last events to ensure the clean log has a matched start/end date with the original one.
+        if (!trace.isEmpty()) {
+            LogUtility.setTimestamp(trace.get(0), startTimestamp);
+            if (trace.size() > 1) LogUtility.setTimestamp(trace.get(trace.size()-1), endTimestamp);
         }
     }
 

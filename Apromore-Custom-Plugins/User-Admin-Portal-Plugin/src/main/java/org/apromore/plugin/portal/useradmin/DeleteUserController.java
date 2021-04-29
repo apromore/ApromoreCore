@@ -38,15 +38,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Radio;
-import org.zkoss.zul.Window;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.ListModels;
+import org.zkoss.zul.*;
 
 import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.portal.types.EventQueueTypes;
@@ -153,6 +145,15 @@ public class DeleteUserController extends SelectorComposer<Window> {
         deletedUserLabelPurge.setValue(selectedUserName);
         loadTransferTo();
         loadOwnedList();
+
+        // If folder solely owned by User-To-Be-Deleted but contains files co-owned, then disable "delete all assets"
+        if(!workspaceService.canDeleteOwnerlessFolder(selectedUser)){
+            deleteOptionPurge.setDisabled(true);
+
+            Messagebox.show("The delete assets option has been disabled because [" + selectedUser.getUsername() +
+                    "] owns a folder that contains at least one asset co-owned by another user.",
+                    "Attention", Messagebox.OK, Messagebox.INFORMATION);
+        }
     }
 
     private void destroy() {

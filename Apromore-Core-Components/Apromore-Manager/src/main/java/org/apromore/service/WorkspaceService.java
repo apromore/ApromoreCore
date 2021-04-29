@@ -241,6 +241,15 @@ public interface WorkspaceService {
     void transferOwnership(User sourceUser, User targetUser);
 
     /**
+     * Whether the "Delete all asset" option is available. Assets that are folders solely owned by User-To-Be-Deleted
+     * but contains files co-owned, cannot be deleted, but only transferred.
+     *
+     * @param user User to be deleted
+     * @return Whether the "Delete all asset" option is available
+     */
+    boolean canDeleteOwnerlessFolder(User user);
+
+    /**
      * Remove all the folder, log and process that the user-to-be-deleted is the only owner of
      *
      * @param user user to be deleted

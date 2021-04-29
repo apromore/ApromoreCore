@@ -26,6 +26,7 @@ import static org.easymock.EasyMock.expect;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apromore.AbstractTest;
 import org.apromore.TestData;
@@ -577,5 +578,177 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
     }
 
+    @Test
+    public void canDeleteOwnerlessFolderReturnTrue() {
+
+        Group group = createGroup(1, Group.Type.USER);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+
+        Group group2 = createGroup(2, Group.Type.USER);
+        User user2 = createUser("userName1", group2, createSet(group2), createSet(role));
+
+        Workspace wp = createWorkspace(user);
+        Folder testFolder = createFolder("movedFolder", null, wp);
+
+        Log testLog = createLog(user, testFolder);
+
+        GroupLog groupLog = new GroupLog(group, testLog, true, true, true);
+        GroupLog groupLog2 = new GroupLog(group2, testLog, true, true, true);
+
+        boolean result = workspaceService.canDeleteOwnerlessFolder(user);
+        Assert.assertTrue(result);
+
+    }
+
+    @Test
+    public void canDeleteOwnerlessFolderReturnFalseWithLog() {
+
+        Group group = createGroup(1, Group.Type.USER);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+
+        Group group2 = createGroup(2, Group.Type.USER);
+        User user2 = createUser("userName2", group2, createSet(group2), createSet(role));
+
+        Workspace wp = createWorkspace(user);
+        Folder testFolder = createFolder("testFolder", null, wp);
+        Set<GroupFolder> groupFolders = new HashSet<>();
+        GroupFolder groupFolder = new GroupFolder(group, testFolder, true, true, true);
+        GroupFolder groupFolder1 = new GroupFolder(group2, testFolder, true, true, false);
+        groupFolders.add(groupFolder);
+        groupFolders.add(groupFolder1);
+        testFolder.setGroupFolders(groupFolders);
+
+        Log testLog = createLog(user, testFolder);
+
+        GroupLog groupLog = new GroupLog(group, testLog, true, true, true);
+        GroupLog groupLog2 = new GroupLog(group2, testLog, true, true, true);
+
+        Set<GroupLog> groupLogs = new HashSet<>();
+        groupLogs.add(groupLog);
+        groupLogs.add(groupLog2);
+        testLog.setGroupLogs(groupLogs);
+
+        // Mock recording
+        expect(groupFolderRepo.findByGroupId(group.getId())).andReturn(Collections.singletonList(groupFolder));
+        expect(groupFolderRepo.findByGroupId(group2.getId())).andReturn(Collections.singletonList(groupFolder1));
+        expect(groupFolderRepo.findOwnerByFolderId(testFolder.getId())).andReturn(Collections.singletonList(groupFolder));
+
+        expect(workspaceService.getSingleOwnerFolderByUser(user)).andReturn(Collections.singletonList(testFolder));
+        expect(logRepo.findByFolderIdIn(Collections.singletonList(testFolder.getId()))).andReturn(Collections.singletonList(testLog));
+
+        expect(processRepo.findByFolderIdIn(Collections.singletonList(testFolder.getId()))).andReturn(Collections.emptyList());
+        replayAll();
+
+        boolean result = workspaceService.canDeleteOwnerlessFolder(user);
+
+        Assert.assertFalse(result);
+
+    }
+
+    @Test
+    public void canDeleteOwnerlessFolderReturnFalseWithProcess() {
+
+        Group group = createGroup(1, Group.Type.USER);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+
+        Group group2 = createGroup(2, Group.Type.USER);
+        User user2 = createUser("userName2", group2, createSet(group2), createSet(role));
+
+        Workspace wp = createWorkspace(user);
+        Folder testFolder = createFolder("testFolder", null, wp);
+        Set<GroupFolder> groupFolders = new HashSet<>();
+        GroupFolder groupFolder = new GroupFolder(group, testFolder, true, true, true);
+        GroupFolder groupFolder1 = new GroupFolder(group2, testFolder, true, true, false);
+        groupFolders.add(groupFolder);
+        groupFolders.add(groupFolder1);
+        testFolder.setGroupFolders(groupFolders);
+
+        NativeType nativeType = createNativeType();
+        Process testProcess = createProcess(user, nativeType, testFolder);
+
+        GroupProcess groupProcess = new GroupProcess(testProcess, group, true, true, true);
+        GroupProcess groupProcess2 = new GroupProcess(testProcess, group2, true, true, true);
+
+        Set<GroupProcess> groupProcesses = new HashSet<>();
+        groupProcesses.add(groupProcess);
+        groupProcesses.add(groupProcess2);
+        testProcess.setGroupProcesses(groupProcesses);
+
+        // Mock recording
+        expect(groupFolderRepo.findByGroupId(group.getId())).andReturn(Collections.singletonList(groupFolder));
+        expect(groupFolderRepo.findByGroupId(group2.getId())).andReturn(Collections.singletonList(groupFolder1));
+        expect(groupFolderRepo.findOwnerByFolderId(testFolder.getId())).andReturn(Collections.singletonList(groupFolder));
+
+        expect(workspaceService.getSingleOwnerFolderByUser(user)).andReturn(Collections.singletonList(testFolder));
+        expect(logRepo.findByFolderIdIn(Collections.singletonList(testFolder.getId()))).andReturn(Collections.emptyList());
+
+        expect(processRepo.findByFolderIdIn(Collections.singletonList(testFolder.getId()))).andReturn(Collections.singletonList(testProcess));
+        replayAll();
+
+        boolean result = workspaceService.canDeleteOwnerlessFolder(user);
+
+        Assert.assertFalse(result);
+
+    }
+
+    @Test
+    public void canDeleteOwnerlessFolderReturnFalseWithLogAndProcess() {
+
+        Group group = createGroup(1, Group.Type.USER);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+
+        Group group2 = createGroup(2, Group.Type.USER);
+        User user2 = createUser("userName2", group2, createSet(group2), createSet(role));
+
+        Workspace wp = createWorkspace(user);
+        Folder testFolder = createFolder("testFolder", null, wp);
+        Set<GroupFolder> groupFolders = new HashSet<>();
+        GroupFolder groupFolder = new GroupFolder(group, testFolder, true, true, true);
+        GroupFolder groupFolder1 = new GroupFolder(group2, testFolder, true, true, false);
+        groupFolders.add(groupFolder);
+        groupFolders.add(groupFolder1);
+        testFolder.setGroupFolders(groupFolders);
+
+        Log testLog = createLog(user, testFolder);
+
+        GroupLog groupLog = new GroupLog(group, testLog, true, true, true);
+        GroupLog groupLog2 = new GroupLog(group2, testLog, true, true, true);
+
+        Set<GroupLog> groupLogs = new HashSet<>();
+        groupLogs.add(groupLog);
+        groupLogs.add(groupLog2);
+        testLog.setGroupLogs(groupLogs);
+
+        NativeType nativeType = createNativeType();
+        Process testProcess = createProcess(user, nativeType, testFolder);
+
+        GroupProcess groupProcess = new GroupProcess(testProcess, group, true, true, true);
+        GroupProcess groupProcess2 = new GroupProcess(testProcess, group2, true, true, true);
+
+        Set<GroupProcess> groupProcesses = new HashSet<>();
+        groupProcesses.add(groupProcess);
+        groupProcesses.add(groupProcess2);
+        testProcess.setGroupProcesses(groupProcesses);
+
+        // Mock recording
+        expect(groupFolderRepo.findByGroupId(group.getId())).andReturn(Collections.singletonList(groupFolder));
+        expect(groupFolderRepo.findByGroupId(group2.getId())).andReturn(Collections.singletonList(groupFolder1));
+        expect(groupFolderRepo.findOwnerByFolderId(testFolder.getId())).andReturn(Collections.singletonList(groupFolder));
+
+        expect(workspaceService.getSingleOwnerFolderByUser(user)).andReturn(Collections.singletonList(testFolder));
+        expect(logRepo.findByFolderIdIn(Collections.singletonList(testFolder.getId()))).andReturn(Collections.singletonList(testLog));
+
+        expect(processRepo.findByFolderIdIn(Collections.singletonList(testFolder.getId()))).andReturn(Collections.singletonList(testProcess));
+        replayAll();
+
+        boolean result = workspaceService.canDeleteOwnerlessFolder(user);
+
+        Assert.assertFalse(result);
+
+    }
 
 }

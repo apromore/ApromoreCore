@@ -27,20 +27,20 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.animation.AnimationContext;
-import org.apromore.plugin.portal.processdiscoverer.animation.AnimationIndex;
-import org.apromore.plugin.portal.processdiscoverer.animation.FrameRecorder;
-import org.apromore.plugin.portal.processdiscoverer.animation.ModelMapping;
-import org.apromore.plugin.portal.processdiscoverer.animation.Movie;
-import org.apromore.plugin.portal.processdiscoverer.animation.Stats;
 import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.LogAnimationService2;
+import org.apromore.service.loganimation.modelmapping.BpmnModelMapping;
+import org.apromore.service.loganimation.recording.AnimationContext;
+import org.apromore.service.loganimation.recording.AnimationIndex;
+import org.apromore.service.loganimation.recording.FrameRecorder;
+import org.apromore.service.loganimation.recording.ModelMapping;
+import org.apromore.service.loganimation.recording.Movie;
+import org.apromore.service.loganimation.recording.Stats;
 import org.apromore.service.loganimation.replay.AnimationLog;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
@@ -79,8 +79,6 @@ public class GraphVisController extends VisualController {
     
     private Movie animationMovie;
     
-    private InteractiveMode mode;
-
     public GraphVisController(PDController controller) {
         super(controller);
     }
@@ -104,7 +102,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.REMOVE, Level.TRACE, Containment.CONTAIN_ANY);
-                if (parent.getLogData().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(), 
+                if (parent.getLogData().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                 }
@@ -117,7 +115,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.RETAIN, Level.TRACE, Containment.CONTgetDataAIN_ANY);
-                if (parent.getLogData().filter_RetainTracesAnyValueOfEventAttribute(event.getData().toString(), 
+                if (parent.getLogData().filter_RetainTracesAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                 }
@@ -130,7 +128,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.REMOVE, Level.EVENT, Containment.CONTAIN_ANY);
-                if (parent.getLogData().filter_RemoveEventsAnyValueOfEventAttribute(event.getData().toString(), 
+                if (parent.getLogData().filter_RemoveEventsAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                 }
@@ -143,7 +141,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.RETAIN, Level.EVENT, Containment.CONTAIN_ANY);
-                if (parent.getLogData().filter_RetainEventsAnyValueOfEventAttribute(event.getData().toString(), 
+                if (parent.getLogData().filter_RetainEventsAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                 }
@@ -159,7 +157,7 @@ public class GraphVisController extends VisualController {
                 String edge = event.getData().toString();
                 if (isGatewayEdge(edge)) return;
                 if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
-                if (parent.getLogData().filter_RemoveTracesAnyValueOfDirectFollowRelation(edge, 
+                if (parent.getLogData().filter_RemoveTracesAnyValueOfDirectFollowRelation(edge,
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                 }
@@ -175,7 +173,7 @@ public class GraphVisController extends VisualController {
                 String edge = event.getData().toString();
                 if (isGatewayEdge(edge)) return;
                 if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
-                if (parent.getLogData().filter_RetainTracesAnyValueOfDirectFollowRelation(edge, 
+                if (parent.getLogData().filter_RetainTracesAnyValueOfDirectFollowRelation(edge,
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                 }
@@ -238,8 +236,8 @@ public class GraphVisController extends VisualController {
      */
     public void displayDiagram(String visualizedText) {
         //int retainZoomPan = parent.getUserOptions().getRetainZoomPan() ? 1 : 0;
-        String javascript = "Ap.pd.loadLog('" + 
-                            visualizedText + "'," +  
+        String javascript = "Ap.pd.loadLog('" +
+                            visualizedText + "'," +
                             parent.getUserOptions().getSelectedLayout() + "," +
                             parent.getUserOptions().getRetainZoomPan() + ");";
         Clients.evalJavaScript(javascript);
@@ -260,7 +258,7 @@ public class GraphVisController extends VisualController {
         this.displayDiagram(parent.getOutputData().getVisualizedText());
     }
 
-    public void centerToWindow() { 
+    public void centerToWindow() {
         Clients.evalJavaScript("Ap.pd.center(" + parent.getUserOptions().getSelectedLayout() + ");");
     }
 
@@ -268,7 +266,7 @@ public class GraphVisController extends VisualController {
         Clients.evalJavaScript("Ap.pd.fit(" + parent.getUserOptions().getSelectedLayout() + ");");
     }
 
-    public void exportPDF(String name) { 
+    public void exportPDF(String name) {
         String command = String.format("Ap.pd.exportPDF('%s');", name);
         Clients.evalJavaScript(command);
     }
@@ -292,7 +290,7 @@ public class GraphVisController extends VisualController {
      * Display the model from the current view
      */
     public void switchToModelView() {
-        String javascript = "Ap.pd.switchToInteractiveView()"; 
+        String javascript = "Ap.pd.switchToInteractiveView()";
         Clients.evalJavaScript(javascript);
     }
     
@@ -308,11 +306,11 @@ public class GraphVisController extends VisualController {
         
         // Prepare animation data
         AnimationContext animateContext = new AnimationContext(alignmentResult.getAnimationLogs());
-        ModelMapping modelMapping = new ModelMapping(oriDiagram);
+        ModelMapping modelMapping = new BpmnModelMapping(oriDiagram);
         
         long timer = System.currentTimeMillis();
         List<AnimationIndex> animationIndexes = new ArrayList<>();
-        JSONArray logStartFrameIndexes = new JSONArray(); 
+        JSONArray logStartFrameIndexes = new JSONArray();
         JSONArray logEndFrameIndexes = new JSONArray();
         for (AnimationLog log : alignmentResult.getAnimationLogs()) {
             animationIndexes.add(new AnimationIndex(log, modelMapping, animateContext));
@@ -341,7 +339,7 @@ public class GraphVisController extends VisualController {
     }
     
     /**
-     * Display the trace 
+     * Display the trace
      * @param visualizedText
      */
     public void displayTraceDiagram(String visualizedText) {
@@ -373,9 +371,9 @@ public class GraphVisController extends VisualController {
             
         }
         else {
-            result = logAnimationService.createAnimationWithNoGateways(getBPMN(alignDiagram), 
-                                                                        getBPMN(oriDiagram), 
-                                                                        createLogs(log)); 
+            result = logAnimationService.createAnimationWithNoGateways(getBPMN(alignDiagram),
+                                                                        getBPMN(oriDiagram),
+                                                                        createLogs(log));
         }
         
         if (result == null) {

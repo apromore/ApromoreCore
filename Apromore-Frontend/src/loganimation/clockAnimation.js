@@ -28,12 +28,14 @@ export default class ClockAnimation {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
+                timeZone: this._animationContext.getTimezone()
             }).format(date);
             timeEl.innerHTML = new Intl.DateTimeFormat(locales, {
                 hour12: false,
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
+                timeZone: this._animationContext.getTimezone()
             }).format(date);
         } else {
             // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
