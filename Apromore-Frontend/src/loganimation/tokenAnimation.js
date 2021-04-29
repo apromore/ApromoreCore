@@ -405,16 +405,19 @@ export default class TokenAnimation {
                 console.log("elementIndex:" + elementIndex, 'distance:'+ distance, 'caseIndex:' + caseIndex);
                 console.log(point.x, point.y);
                 let y = this._animationController.getNumberOfLogs() > 1 ? this._getLogYAxis(logIndex, point.y) : point.y;
-                let radius = count > 3 ? this._TOKEN_MAX_RADIUS : count;
                 this._canvasContext.beginPath();
                 this._canvasContext.strokeStyle = this._getTokenBorderColor(logIndex);
                 this._canvasContext.fillStyle = this._getTokenFillColor(logIndex, count);
-                this._canvasContext.arc(point.x, y, 5*radius, 0, 2 * Math.PI);
+                this._canvasContext.arc(point.x, y, this._getTokenCircleRadius(count), 0, 2 * Math.PI);
                 this._canvasContext.stroke();
                 this._canvasContext.fill();
                 this._canvasContext.closePath();
             }
         }
+    }
+
+    _getTokenCircleRadius(tokenCount) {
+        return 5 + 3*Math.log2(tokenCount);
     }
 
     _getLogYAxis(logIndex, y) {

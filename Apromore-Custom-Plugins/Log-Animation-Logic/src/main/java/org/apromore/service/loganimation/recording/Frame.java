@@ -44,12 +44,12 @@ import org.json.JSONObject;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
- * A <b>Frame</b> is an animation frame to be played back. It contains a set of <b>tokens</b>. Each token is 
- * identified by a modelling element, replay trace (or case). So, it is possible to query all tokens, modelling elements 
+ * A <b>Frame</b> is an animation frame to be played back. It contains a set of <b>tokens</b>. Each token is
+ * identified by a modelling element, replay trace (or case). So, it is possible to query all tokens, modelling elements
  * and replay traces from a frame.<br>
  * 
- * As the number of tokens in the animation can be very large, a compressed bitmap is used to store tokens. 
- *  
+ * As the number of tokens in the animation can be very large, a compressed bitmap is used to store tokens.
+ * 
  * @see FrameRecorder
  * 
  * @author Bruce Nguyen
@@ -121,10 +121,24 @@ public class Frame {
                 .toArray();
     }
     
-    public double getTokenDistance(int logIndex, int tokenIndex) {
+    /**
+     * This is the percentage from the start of the element (0..1) based on frame indexes
+     * This distance is suitable for the relative position of tokens on a modeling element
+     */
+    private double getFrameIndexRelativeTokenDistance(int logIndex, int tokenIndex) {
         int startFrameIndex = animationIndexes.get(logIndex).getStartFrameIndex(tokenIndex);
-        int numberOfFrames = animationIndexes.get(logIndex).getEndFrameIndex(tokenIndex) - startFrameIndex;
+        int endFrameIndex = animationIndexes.get(logIndex).getEndFrameIndex(tokenIndex);
+        int numberOfFrames = endFrameIndex - startFrameIndex;
         return (numberOfFrames == 0) ? 0 : (double)(frameIndex - startFrameIndex)/numberOfFrames;
+    }
+    
+    /**
+     * This is the number of frames from the starting token to this token on the same element
+     * This distance is suitable for calculating small gap between tokens. The accuracy is not affected
+     * by small and large numbers, i.e. 0.001 gap vs. 1000 gap.
+     */
+    private double getFrameIndexAbsoluteTokenDistance(int logIndex, int tokenIndex) {
+        return frameIndex - animationIndexes.get(logIndex).getStartFrameIndex(tokenIndex);
     }
     
     public int getTokenCount(int logIndex, int tokenIndex) {
@@ -140,7 +154,7 @@ public class Frame {
         // Collect tokens and their distances
         MutableList<IntDoublePair> tokenDistances = Lists.mutable.empty();
         for (int token : getTokenIndexesByElement(logIndex, elementIndex)) {
-            tokenDistances.add(PrimitiveTuples.pair(token, getTokenDistance(logIndex, token)));
+            tokenDistances.add(PrimitiveTuples.pair(token, getFrameIndexAbsoluteTokenDistance(logIndex, token)));
         }
         tokenDistances.sortThisBy(pair -> pair.getTwo()); // sort by distance
         
@@ -148,12 +162,14 @@ public class Frame {
         Set<MutableIntList> tokenGroups = new HashSet<>();
         MutableIntList tokenGroup = IntLists.mutable.empty();
         double tokenGroupTotalDist = 0;
+        double tokenGroupRadius = 0;
         for (IntDoublePair tokenPair : tokenDistances) {
             double tokenDistance = tokenPair.getTwo();
-            double diff = tokenGroup.isEmpty() ? 0 : Math.abs(tokenDistance - tokenGroupTotalDist/tokenGroup.size());
-            if (diff <= 0.01) {
+            double diff = tokenGroup.isEmpty() ? 0 : Math.abs(tokenDistance - tokenGroupRadius);
+            if (diff <= 5) {
                 tokenGroup.add(tokenPair.getOne());
                 tokenGroupTotalDist += tokenDistance;
+                tokenGroupRadius = tokenGroupTotalDist/tokenGroup.size();
                 if (tokenPair == tokenDistances.getLast()) tokenGroups.add(tokenGroup);
             }
             else {
@@ -179,7 +195,7 @@ public class Frame {
     }
     
     /**
-     * Get JSON representation of a frame. 
+     * Get JSON representation of a frame.
      * A sample of frame JSON:
      * {
      *  index: 100,
@@ -198,7 +214,7 @@ public class Frame {
             for (int elementIndex : getElementIndexes(logIndex)) {
                 JSONArray casesJSON = new JSONArray();
                 for (int tokenIndex : getTokenIndexesByElement(logIndex, elementIndex)) {
-                    casesJSON.put((new JSONObject()).put(animationIndexes.get(logIndex).getTraceIndex(tokenIndex)+"", 
+                    casesJSON.put((new JSONObject()).put(animationIndexes.get(logIndex).getTraceIndex(tokenIndex)+"",
                                                         getTokenJSON(logIndex, tokenIndex)));
                 }
                 elementsJSON.put((new JSONObject()).put(elementIndex+"", casesJSON));
@@ -212,7 +228,7 @@ public class Frame {
         JSONArray attJSON = new JSONArray();
         DecimalFormat df = new DecimalFormat("#.###");
         attJSON.put(logIndex);
-        attJSON.put(df.format(getTokenDistance(logIndex, tokenIndex)));
+        attJSON.put(df.format(getFrameIndexRelativeTokenDistance(logIndex, tokenIndex)));
         attJSON.put(this.getTokenCount(logIndex, tokenIndex));
         return attJSON;
     }
