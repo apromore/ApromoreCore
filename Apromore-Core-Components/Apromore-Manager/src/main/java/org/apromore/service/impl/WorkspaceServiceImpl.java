@@ -982,6 +982,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             groupLogRepo.save(gl);
             l.setUser(targetUser);
             logRepo.save(l);
+
+            // Update Usermetadata
+            Set<Usermetadata> usermetadataSet = l.getUsermetadataSet();
+            for(Usermetadata u : usermetadataSet) {
+                u.setCreatedBy(targetUser.getRowGuid());
+            }
+            usermetadataRepo.save(usermetadataSet);
         }
 
         for (Process p : processes) {
