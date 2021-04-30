@@ -404,3 +404,46 @@
     flex-flow: row-reverse nowrap;
     justify-content: flex-end;
 }
+
+/* Custom color picker buttons */
+
+.sp-container button {
+    color: var(--ap-c-button-text) !important;
+    background-color: var(--ap-c-button) !important;
+    font-weight: normal;
+    padding-left: 6px;
+    font-family: var(--ap-font-base) !important;
+}
+.sp-container button:hover {
+    background-color: var(--ap-c-button-hover) !important;
+}
+
+.sp-picker-container .sp-thumb,
+.sp-picker-container .sp-thumb-inner {
+    width: 100% !important;
+}
+
+.sp-picker-container .sp-thumb-el {
+    width: 50% !important;
+}
+
+.sp-container .sp-choose:before {
+    content: "\f058";
+    font-family: FontAwesome, ZK85Icons;
+    font-size: 14px;
+    line-height: 1;
+    margin: 2px 4px 2px 2px;
+}
+
+.sp-container .sp-cancel {
+    float: right !important;
+    margin-left: 6px !important;
+}
+
+.sp-container .sp-cancel:before {
+    content: "\f057";
+    font-family: FontAwesome, ZK85Icons;
+    font-size: 14px;
+    line-height: 1;
+    margin: 2px 4px 2px 2px;
+}
