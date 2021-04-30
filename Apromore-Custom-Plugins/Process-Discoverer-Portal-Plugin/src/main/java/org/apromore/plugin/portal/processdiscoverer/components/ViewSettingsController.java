@@ -189,7 +189,8 @@ public class ViewSettingsController extends VisualController {
             public void onEvent(Event event) throws Exception {
                 String value = perspectiveSelector.getSelectedItem().getValue();
                 if (value.equals("-")) return;
-                parent.setPerspective(value);
+                String label = perspectiveSelector.getSelectedItem().getLabel();
+                parent.setPerspective(value, label);
             }
         });
 
@@ -207,7 +208,8 @@ public class ViewSettingsController extends VisualController {
                 if (disabled) return;
                 String value = "concept:name";
                 selectComboboxByKey(perspectiveSelector, value);
-                parent.setPerspective(value);
+                String label = perspectiveSelector.getSelectedItem().getLabel();
+                parent.setPerspective(value, label);
             }
         });
 
