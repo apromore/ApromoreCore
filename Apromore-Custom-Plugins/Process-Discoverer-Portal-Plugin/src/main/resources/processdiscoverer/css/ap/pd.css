@@ -674,7 +674,7 @@ div.ap-pd-drawer-splitter:hover {
 .ap-pd-timestats-header,
 .ap-pd-logstats-header {
     display: flex;
-    height: 40px;
+    height: 42px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
