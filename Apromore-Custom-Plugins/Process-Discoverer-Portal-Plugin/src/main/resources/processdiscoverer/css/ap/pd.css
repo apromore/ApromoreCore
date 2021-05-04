@@ -1221,3 +1221,19 @@ div.ap-pd-drawer-splitter:hover {
     pointer-events: none;
     opacity: 0.6;
 }
+
+/* Case details attribute table */
+
+table.ap-pd-case-activity-attrs {
+    border: none;
+}
+
+table.ap-pd-case-activity-attrs td:first-child {
+    text-align: left;
+    padding-right: 5px;
+}
+
+table.ap-pd-case-activity-attrs td:nth-child(2) {
+    text-align: left;
+    font-weight: bold
+}

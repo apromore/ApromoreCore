@@ -130,7 +130,7 @@
                         'ap-pd-la-buttons',
                         'ap-mc-icon-play',
                         'ap-mc-icon-pause');
-    
+
     zk.afterMount(function () {
         zAu.send(new zk.Event(zk.Widget.$('$win'), 'onLoaded'));
         setTimeout(function () {

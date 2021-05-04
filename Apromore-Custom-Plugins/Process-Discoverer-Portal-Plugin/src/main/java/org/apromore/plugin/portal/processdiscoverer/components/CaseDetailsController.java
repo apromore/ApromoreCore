@@ -24,19 +24,27 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import org.json.JSONObject;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
+import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.AActivity;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.impl.apmlog.LogDataWithAPMLog;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
-import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -47,6 +55,7 @@ import org.zkoss.zul.Window;
 public class CaseDetailsController extends DataListController {
 	private Window caseDetailsWindow;
 	private boolean disabled = false;
+	private Map<String, UnifiedMap<String, String>> activityToAttributeMap = new HashMap<String, UnifiedMap<String, String>>();
 
 	public CaseDetailsController(PDController controller) {
 		super(controller);
@@ -78,6 +87,37 @@ public class CaseDetailsController extends DataListController {
 		return parent.getContextData().getLogName() + ".csv";
 	}
 
+	/**
+	 * Update Activity <-> Attributes Map for quick lookup
+	 **/
+	private void updateActivityToAttributeMap(String caseId) {
+		activityToAttributeMap.clear();
+		APMLog log = ((LogDataWithAPMLog) parent.getLogData()).getFilteredAPMLog();
+		ATrace trace = log.get(caseId);
+		List<AActivity> activities = trace.getActivityList();
+		for (int i = 0; i < activities.size(); i++) {
+			AActivity activity = activities.get(i);
+			String activityName = activity.getName();
+			UnifiedMap<String, String> attributes = activity.getAttributes();
+			activityToAttributeMap.put(activityName, attributes);
+		}
+		updateActivityToAttributeMapClient();
+	}
+
+	/**
+	 * Serialize Activity <-> Attributes Map and sent it to client-side JS
+	 * for fast tooltip
+ 	 */
+	private void updateActivityToAttributeMapClient() {
+		JSONObject json = new JSONObject();
+		for (Map.Entry<String, UnifiedMap<String, String>> entry : activityToAttributeMap.entrySet()) {
+			String activityName = entry.getKey();
+			UnifiedMap<String, String> attributes = entry.getValue();
+			json.put(activityName, new JSONObject(attributes));
+		}
+		Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
+	}
+
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (caseDetailsWindow == null) {
@@ -91,6 +131,7 @@ public class CaseDetailsController extends DataListController {
 					caseDetailsWindow = null;
 					if (parent.getInteractiveMode() == InteractiveMode.TRACE_MODE) {
 					    parent.restoreModelView();
+						Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap()"); // reset
 					}
 				}
 			});
@@ -109,6 +150,7 @@ public class CaseDetailsController extends DataListController {
 								MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
 						Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
 						String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);
+						updateActivityToAttributeMap(traceID);
 						parent.showTrace(visualizedText);
 					} catch (Exception e) {
 						Messagebox.show(e.getMessage());
