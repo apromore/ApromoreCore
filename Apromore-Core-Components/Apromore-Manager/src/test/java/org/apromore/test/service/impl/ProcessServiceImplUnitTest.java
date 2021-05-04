@@ -927,14 +927,14 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
       // Check that nothing changes for an innocuous BPMN file
       Assert.assertEquals(
-          CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/Cyclic.bpmn"))),
-          CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/Cyclic.bpmn")))) + "\n"
+          CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/Cyclic.bpmn"))).trim(),
+          CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/Cyclic.bpmn"))))
       );
 
       // Check that elements are escaped within bpmn:text elements
       Assert.assertEquals(
-          CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/sanitized2.bpmn"))),
-          CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/unsanitized2.bpmn")))) + "\n"
+          CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/sanitized2.bpmn"))).trim(),
+          CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/unsanitized2.bpmn"))))
       );
   }
 
