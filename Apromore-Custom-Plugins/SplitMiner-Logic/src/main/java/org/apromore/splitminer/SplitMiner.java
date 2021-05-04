@@ -187,12 +187,12 @@ public class SplitMiner {
             e.printStackTrace();
             try{
             	dfgp.resetDFGPStructures();
-                dfgp.buildSafeDFGP(); //recreate a safe data structure for the graph in case errors happen (the graph could be disconnected)
+                dfgp.buildSafeDFGP(); //recreate a safe data structure for the graph in case errors happen (the graph could be disconnected)  
                 transformDFGPintoBPMN();
                 if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
             } catch ( Exception ee ) {
                 System.out.println("ERROR - something went wrong in translating DFG to BPMN");
-                e.printStackTrace();
+                e.printStackTrace();            
                 throw e;
             }
         }
@@ -346,8 +346,6 @@ public class SplitMiner {
 
         if(removeLoopActivities) helper.removeLoopActivityMarkers(bpmnDiagram);
 
-        // Bruce 30.04.2021: comment the below to produce diagrams without mixed split-join gateways
-        /*
         if( replaceIORs ) {
             helper.collapseSplitGateways(bpmnDiagram);
             helper.collapseJoinGateways(bpmnDiagram);
@@ -355,7 +353,6 @@ public class SplitMiner {
             helper.collapseSplitGateways(bpmnDiagram);
             helper.collapseJoinGateways(bpmnDiagram);
         }
-        */
 
 //        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
