@@ -919,6 +919,32 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
   }
 
 
+  /**
+   * Test the {@link ProcessServiceImpl#sanitizeBPMN} method.
+   */
+  @Test
+  public void testSanitizeBPMN() throws Exception {
+
+      // Check that nothing changes for an innocuous BPMN file
+      Assert.assertEquals(
+          CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/Cyclic.bpmn"))),
+          CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/Cyclic.bpmn")))) + "\n"
+      );
+
+      // Check that elements are escaped within bpmn:text elements
+      Assert.assertEquals(
+          CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/sanitized2.bpmn"))),
+          CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/unsanitized2.bpmn")))) + "\n"
+      );
+  }
+
+  /**
+   * @param path  the classpath of a desired resource within the test JAR
+   * @return the content of the resource at <var>path</var>
+   */
+  private InputStream getResourceAsStream(String path) {
+      return getClass().getClassLoader().getResourceAsStream(path);
+  }
 
   ///////////////////////////////// DATA METHODS ////////////////////////////////////////
 

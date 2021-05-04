@@ -24,6 +24,8 @@
  */
 package org.apromore.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -35,10 +37,12 @@ import java.util.List;
 import java.util.Set;
 
 import javax.activation.DataHandler;
-//import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.ConfigBean;
@@ -63,7 +67,6 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.FormatService;
@@ -102,6 +105,8 @@ public class ProcessServiceImpl implements ProcessService {
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
 
+    private boolean sanitizationEnabled;
+
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param nativeRepo Native Repository.
@@ -132,6 +137,8 @@ public class ProcessServiceImpl implements ProcessService {
         this.formatSrv = formatSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
+
+        this.sanitizationEnabled = config.isSanitizationEnabled();
     }
 
 
@@ -155,25 +162,66 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
+
+            // Apply data sanitization measures to the uploaded document if configured to do so.
+            InputStream sanitizedStream = sanitizationEnabled ? sanitize(nativeStream, nativeType) : nativeStream;
+            assert sanitizedStream != null;
+
             Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
             if (process.getId() == null) {
                 throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
 
-            Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, nativeStream);
+            Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, sanitizedStream);
             pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType,nat);
             LOGGER.info("Process model version: " + pmv);
             
             workspaceSrv.addProcessToFolder(user, process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
-        } catch (UserNotFoundException | JAXBException | IOException e) {
+        } catch (ImportException e) {
+            throw e;
+
+        } catch (Exception e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
         }
 
         return pmv;
+    }
+
+    private InputStream sanitize(InputStream in, NativeType nativeType) throws Exception {
+
+        if (nativeType == null) {
+            throw new ImportException("Unsupported process model format");
+        }
+
+        switch (nativeType.getNatType()) {
+        case "BPMN 2.0":
+            return sanitizeBPMN(in);
+
+        default:
+            throw new ImportException("Unsupported process model format: " + nativeType.getNatType());
+        }
+    }
+
+    /**
+     * Filter a BPMN XML stream to sanitize it.
+     *
+     * This implementation picks out BPMN elements with complex content (i.e. capable of
+     * representing <script> tags) and flattens them into simple text.
+     *
+     * @param in  a BPMN XML document in UTF-8
+     * @return a sanitized version of the same BPMN XML document, also in UTF-8
+     */
+    public static InputStream sanitizeBPMN(final InputStream in) throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        TransformerFactory.newInstance()
+                          .newTransformer(new StreamSource(ProcessServiceImpl.class.getClassLoader().getResourceAsStream("xsd/sanitizeBPMN.xsl")))
+                          .transform(new StreamSource(in), new StreamResult(out));
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
     /**

@@ -30,6 +30,7 @@ public class ConfigBean {
     private String numOfTrace;
 //    Fallback Storage path
     private String storagePath = "FILE::../Event-Logs-Repository";
+    private boolean sanitizationEnabled = false;
 
     public String getLogsDir() {
         return logsDir;
@@ -63,5 +64,11 @@ public class ConfigBean {
         this.storagePath = storagePath;
     }
     
-    
+    public boolean isSanitizationEnabled() {
+        return sanitizationEnabled;
+    }
+
+    public void setSanitizationEnabled(final boolean sanitizationEnabled) {
+        this.sanitizationEnabled = sanitizationEnabled;
+    }
 }
