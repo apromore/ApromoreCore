@@ -25,6 +25,7 @@ package org.apromore.portal.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Formatter;
@@ -39,6 +40,15 @@ public class StringUtil {
     private static final String[] DICTIONARY = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
     private static final StringBuilder STRING_BUILDER;
     private static final Formatter FORMATTER;
+
+    private static final char[] INVALID_CHARS = {'\\', '/', ':', '*', '?', '"', '<', '>', '|', '[', ']', '\'', ';',
+            '=', ','};
+    private static final char SANITIZED_CHAR = '_';
+
+    private static final String dropboxPrefix = "https://www.dropbox.com";
+    private static final String googleDrivePrefix = "https://drive.google.com";
+    private static final String oneDrivePrefix = "https://onedrive.live.com";
+
     /**
      * Regex used to parse content-disposition headers
      */
@@ -91,7 +101,7 @@ public class StringUtil {
      * header provides a filename for content that is going to be downloaded to
      * the file system. We only support the attachment type.
      */
-    public static String contentDispositionFileName(String contentDisposition) {
+    private static String contentDispositionFileName(String contentDisposition) {
         try {
             Matcher m = CONTENT_DISPOSITION_PATTERN.matcher(contentDisposition);
             if (m.find()) {
@@ -109,6 +119,113 @@ public class StringUtil {
             return false;
         else
             return fileName.matches("[^\\s\\\\/:\\*\\?\\\"<>\\|](\\x20|[^\\s\\\\/:\\*\\?\\\"<>\\|])*[^\\s\\\\/:\\*\\?\\\"<>\\|\\.]$");
+    }
+
+    /**
+     * Given an file download url and Content-Disposition response header,
+     * return a valid and sanitized file name
+     *
+     * @param url                the file download url that user entered.
+     * @param contentDisposition the Content-Disposition response header
+     * @return a valid and sanitized version of file name
+     */
+    public static String getFileName(String url, String contentDisposition) {
+        String fileName = "";
+        if (!isEmpty(contentDisposition)) {
+            fileName = contentDispositionFileName(contentDisposition);
+        }
+        if (isEmpty(fileName) && !StringUtil.isEmpty(contentDisposition)) {
+            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9);
+        }
+        if (isEmpty(fileName)) {
+            fileName = url.substring(url.lastIndexOf('/') + 1);
+        }
+        if (fileName.startsWith("\"")) {
+            fileName = fileName.substring(1);
+        }
+        if (fileName.endsWith("\"")) {
+            fileName = fileName.substring(0, fileName.length() - 1);
+        }
+        if (isEmpty(fileName)) {
+            fileName = String.valueOf(System.currentTimeMillis());
+        }
+        return sanitizeFileName(fileName);
+    }
+
+    /**
+     * Given an input, return a sanitized form of the input suitable for use as
+     * a file name
+     *
+     * @param filename the filename to sanitize.
+     * @return a sanitized version of the input
+     */
+    private static String sanitizeFileName(String filename) {
+        return sanitizeFileName(filename, SANITIZED_CHAR);
+    }
+
+    private static String sanitizeFileName(String filename, char substitute) {
+
+        for (char invalidChar : INVALID_CHARS) {
+            if (-1 != filename.indexOf(invalidChar)) {
+                filename = filename.replace(invalidChar, substitute);
+            }
+        }
+
+        return filename;
+    }
+
+    /**
+     * Parse sharable link of DropBox, GoogleDrive, OneDrive to direct file download URL
+     *
+     * @param fileUrl file download url inputted by user
+     * @return validated file url
+     */
+    public static String validateFileURL(String fileUrl) {
+
+        if (fileUrl.startsWith(dropboxPrefix)) {
+            if (isValidDropBoxURL(fileUrl)) {
+                fileUrl = fileUrl.substring(0, fileUrl.length() - 1) + 1;
+            } else return "";
+        }
+
+        if (fileUrl.startsWith(googleDrivePrefix)) {
+            if (isValidGoogleDriveURL(fileUrl)) {
+                String fileID;
+                int fileIDStart = fileUrl.indexOf("/d/");
+                int fileIDEnd = fileUrl.indexOf('/', fileIDStart + 3);
+                if (fileIDStart == -1) {
+                    return "";
+                }
+                if (fileIDEnd == -1) {
+                    fileID = fileUrl.substring(fileIDStart + 3);
+                } else {
+                    fileID = fileUrl.substring(fileIDStart + 3, fileIDEnd);
+                }
+                fileUrl = "https://drive.google.com/uc?export=download&id=" + fileID;
+            }
+        }
+        if (fileUrl.startsWith(oneDrivePrefix)) {
+            if (isValidOneDriveURL(fileUrl)) {
+                fileUrl = fileUrl.replace("embed?", "download?");
+            }
+        }
+
+        return fileUrl;
+    }
+
+    static boolean isValidDropBoxURL(String url) {
+        String patternDropBox = "^https:\\/\\/www\\.dropbox\\.com\\/.*dl=0$";
+        return Pattern.matches(patternDropBox, url);
+    }
+
+    static boolean isValidGoogleDriveURL(String url) {
+        String patternGoogleDrive = "^https:\\/\\/drive\\.google\\.com\\/file\\/d\\/.*sharing$";
+        return Pattern.matches(patternGoogleDrive, url);
+    }
+
+    static boolean isValidOneDriveURL(String url) {
+        String patternOneDrive = "^https:\\/\\/onedrive\\.live\\.com\\/embed\\?cid.*resid.*authkey.*";
+        return Pattern.matches(patternOneDrive, url);
     }
 
     /**
