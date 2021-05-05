@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 public class CaseIDDesc {
 
     public static String getDescription(LogFilterRule logFilterRule, APMLog apmLog) {
-        PLog log = (PLog) apmLog;
 
         StringBuilder desc = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
@@ -49,7 +48,7 @@ public class CaseIDDesc {
             if (selection.cardinality() == 1) desc.append("equal to [");
             else desc.append(" [");
 
-            List<String> caseIds = log.getOriginalPTraceList().stream()
+            List<String> caseIds = apmLog.getImmutableTraces().stream()
                     .filter(x -> selection.get(x.getImmutableIndex()))
                     .map(x->x.getCaseId())
                     .collect(Collectors.toList());

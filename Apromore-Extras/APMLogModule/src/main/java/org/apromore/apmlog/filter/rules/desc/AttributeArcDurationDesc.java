@@ -50,7 +50,7 @@ public class AttributeArcDurationDesc {
         sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain " : "Remove ");
         sb.append(" all cases where the direct-follows relation '");
         sb.append(fromVal + "' -> '" + toVal + "'");
-        sb.append(" has duration between ");
+        sb.append(" has duration between [");
 
         Set<RuleValue> secRuleValues = logFilterRule.getSecondaryValues();
         List<RuleValue> secRuleValueList = new ArrayList<RuleValue>(secRuleValues);
@@ -64,6 +64,8 @@ public class AttributeArcDurationDesc {
                 sb.append(" AND ");
             }
         }
+
+        sb.append("]");
 
         return sb.toString();
     }

@@ -23,6 +23,7 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.immutable.ImmutableLog;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -44,42 +45,6 @@ public class LogsMethodsTests {
             {0, 1}
     };
 
-    public static void testAttributeOccurMap(XLog xLog) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        testOccurs(apmLog.getEventAttributeOccurMap());
-
-        // Test updated version
-        ImmutableLog immutableLog = (ImmutableLog) apmLog;
-        immutableLog.updateStats();
-        testOccurs(immutableLog.getEventAttributeOccurMap());
-
-        // Test cloned version
-        ImmutableLog clone = (ImmutableLog) immutableLog.clone();
-        testOccurs(clone.getEventAttributeOccurMap());
-
-        // Test PLog
-        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
-        PLog pLog = apmLogFilter.getPLog();
-        testOccurs(pLog.getEventAttributeOccurMap());
-
-        // Test after-updated at PLog
-        pLog.updateStats();
-        testOccurs(pLog.getEventAttributeOccurMap());
-    }
-
-    private static void testOccurs(UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> attributeOccurMap) {
-        UnifiedSet<AActivity> r1Acts = attributeOccurMap.get("org:resource").get("R1");
-        int r1ActSize = r1Acts.size();
-        UnifiedSet<Integer> parentTraceIndexes = new UnifiedSet<>();
-        for (AActivity activity : r1Acts) {
-            parentTraceIndexes.put(activity.getImmutableTraceIndex());
-        }
-        int r1CaseSize = parentTraceIndexes.size();
-
-        int[] resultR1 = new int[] {r1ActSize, r1CaseSize};
-
-        assertArrayEquals(expectedR1, resultR1);
-    }
 
     public static void testActivityNameIndexes(XLog xLog) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
@@ -106,7 +71,8 @@ public class LogsMethodsTests {
 
         // Test ActivityNameIndexes of PLog
         for (int i = 0; i < immutableLog.size(); i++) {
-            IntArrayList actNameIndexes = pLog.getActivityNameIndexes(immutableLog.get(i));
+            PTrace pTrace = new PTrace(i, immutableLog.get(i), pLog);
+            IntArrayList actNameIndexes = pLog.getActivityNameIndexes(pTrace);
             assertArrayEquals(expectedActIndexes[i], actNameIndexes.toArray());
         }
 
@@ -115,7 +81,8 @@ public class LogsMethodsTests {
 
         // Test ActivityNameIndexes of PLog after update
         for (int i = 0; i < immutableLog.size(); i++) {
-            IntArrayList actNameIndexes = pLog.getActivityNameIndexes(immutableLog.get(i));
+            PTrace pTrace = new PTrace(i, immutableLog.get(i), pLog);
+            IntArrayList actNameIndexes = pLog.getActivityNameIndexes(pTrace);
             assertArrayEquals(expectedActIndexes[i], actNameIndexes.toArray());
         }
     }

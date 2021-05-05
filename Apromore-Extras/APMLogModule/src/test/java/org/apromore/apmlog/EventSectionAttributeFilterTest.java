@@ -132,13 +132,10 @@ public class EventSectionAttributeFilterTest {
         List<LogFilterRule> rules = Arrays.asList(logFilterRule);
 
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
-        apmLogFilter.filter(rules);
-
+        apmLogFilter.filterIndex(rules);
 
         int actSizeOfCFM = apmLogFilter.getPLog().getEventAttributeValues().get("concept:name").size();
-        int actSizeOfEFM = apmLogFilter.getPLog().getEventAttributeOccurMap().get("concept:name").size();
 
         assertTrue(actSizeOfCFM == 2);
-        assertTrue(actSizeOfEFM == 2);
     }
 }

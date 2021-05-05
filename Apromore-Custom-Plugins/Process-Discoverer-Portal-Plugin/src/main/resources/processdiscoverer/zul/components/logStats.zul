@@ -80,7 +80,7 @@
       <vlayout spacing="0">
         <n:div class="ap-pd-logstats-header ap-link" title="Filter by Events">
           <button id="btnEventHeading" sclass="ap-icon ap-icon-flag" ></button>
-          <label id="lblEventHeading" sclass="title" value="Events"/>
+          <label id="lblEventHeading" sclass="title" value="Activity inst."/>
         </n:div>
         <n:div id="ap-pd-chart-event" class="ap-pd-chart" />
         <label id="lblEventPercent"

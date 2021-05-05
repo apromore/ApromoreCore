@@ -23,6 +23,7 @@
 package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -31,6 +32,8 @@ import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -193,25 +196,20 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testDirectFollowFilter1() throws Exception {
-        XLog xLog = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/_sample5.xes.gz")).get(0);
+    public void testEventualFollowFilter1() throws Exception {
+        XLog xLog = getXLog("files/EventualFollow.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        DirectFollowFilterTest.runTest1(apmLog, this);
+        EventualFollowFilterTest.runTest1(apmLog, this);
     }
 
     @Test
     public void testDirectFollowFilter2() throws Exception {
         XLog xLog = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/_sample5.xes.gz")).get(0);
         APMLog apmLog = LogFactory.convertXLog(xLog);
+        DirectFollowFilterTest.runTest1(apmLog, this);
         DirectFollowFilterTest.runTest2(apmLog, this);
     }
 
-    @Test
-    public void testEventualFollowFilter1() throws Exception {
-        XLog xLog = getXLog("files/_sample2ef.xes");
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        EventualFollowFilterTest.runTest1(apmLog, this);
-    }
 
     @Test
     public void testRework1() throws Exception {
@@ -372,12 +370,6 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testLogFactoryAttributeOccurMap() throws Exception {
-        XLog xLog = getXLog("files/TestLogFactory.xes");
-        LogsMethodsTests.testAttributeOccurMap(xLog);
-    }
-
-    @Test
     public void testLogsActivityNameIndexes() throws Exception {
         XLog xLog = getXLog("files/TestLogFactory.xes");
         LogsMethodsTests.testActivityNameIndexes(xLog);
@@ -430,6 +422,13 @@ public class APMLogUnitTest {
         XLog xLog = getXLog("files/ArcSimple03.xes");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         CaseStatsTest.testCaseDurationAfterEventAttrFilter(apmLog);
+    }
+
+    @Test
+    public void testProcureToPayAdvFilter1() throws Exception {
+        XLog xLog = getXLog("files/Procure-to-Pay.xes.gz");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        ProcureToPayAdvFilterTest.run(apmLog, this);
     }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {

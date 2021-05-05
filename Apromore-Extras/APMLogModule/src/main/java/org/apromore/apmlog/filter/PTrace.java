@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Process Discoverer Logic
- * 
+ *
  * This file is part of "Apromore".
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,7 +30,9 @@ import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.immutable.ImmutableTrace;
+import org.apromore.apmlog.stats.StatsUtil;
 import org.apromore.apmlog.util.Util;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -38,6 +40,7 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class provides pointers of ATrace (of APMLog) used in filterlogic.
@@ -54,337 +57,144 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (23/12/2020)
  * Modified: Chii Chang (26/01/2021)
  * Modified: Chii Chang (17/03/2021)
+ * Modified: Chii Chang (21/04/2021)
+ * Modified: Chii Chang (05/05/2021)
  */
-public class PTrace implements Comparable<PTrace>, ATrace {
+public class PTrace implements Comparable<PTrace>, ATrace{
 
     private ATrace aTrace;
-
-    private String caseId = "";
-    private int immutableIndex;
-    private int mutableIndex;
-    public long caseIdDigit = 0;
-    private int caseVariantId = 0;
-    private long startTimeMilli = -1;
-    private long endTimeMilli = -1;
-    private double duration = 0;
-    private boolean hasActivity = false;
-    private int eventSize;
-
-    public String startTimeString, endTimeString, durationString;
-
-    private List<AActivity> activityList;
-    private List<AEvent> eventList;
-    private UnifiedMap<String, String> attributeMap;
-    private List<String> activityNameList;
-    private UnifiedSet<String> eventNameSet;
-    private DoubleArrayList processingTimes;
-    private DoubleArrayList waitingTimes;
-    private double caseUtilization;
-
     private BitSet validEventIndexBS;
+    private String ratio;
+    private double oppActivitySize;
 
-    private List<Integer> activityNameIndexList;
-    private List<Integer> previousActiivtyNameIndexList;
+    private int mutableIndex;
 
-    private BitSet originalValidEventIndexBS;
+    private PLog pLog;
+    private final List<AActivity> activityList = new ArrayList<>();
 
-    private BitSet previousValidEventIndexBS;
+    // ==================================================
+    // Case variant ID of PTrace is a mutable value
+    // ==================================================
+    private int caseVariantId;
 
-    private DoubleArrayList previousProcessingTimes;
-    private DoubleArrayList previousWaitingTimes;
-    private long previousStartTimeMilli;
-    private long previousEndTimeMilli;
-    private double previousDuration = 0;
-    private boolean previousHasActivity = false;
-    private double previousCaseUtilization;
-
-    private List<AActivity> previousActivityList;
-    private List<AEvent> previousEventList;
-    private UnifiedMap<String, String> previousAttributeMap;
-    private List<String> previousActivityNameList;
-    private UnifiedSet<String> previousEventNameSet;
-
-    private APMLog apmLog;
-
-    public PTrace(ATrace aTrace, APMLog apmLog) {
+    public PTrace(int mutableIndex, ATrace aTrace, PLog pLog) {
+        this.mutableIndex = mutableIndex;
         this.aTrace = aTrace;
+        this.pLog = pLog;
 
-        this.apmLog = apmLog;
+        caseVariantId = aTrace.getCaseVariantId();
 
-        initDefault();
-    }
+        int[] existIndexesArray = aTrace.getEventList().stream().mapToInt(x -> x.getIndex()).toArray();
+        IntArrayList ial = new IntArrayList(existIndexesArray);
 
-    private void initDefault() {
-
-        this.immutableIndex = aTrace.getImmutableIndex();
-        this.mutableIndex = aTrace.getMutableIndex();
-
-        this.caseId = aTrace.getCaseId();
-        this.caseVariantId = aTrace.getCaseVariantId();
-        this.caseIdDigit = aTrace.getCaseIdDigit();
-
-        this.processingTimes = aTrace.getProcessingTimes();
-        this.waitingTimes = aTrace.getWaitingTimes();
-
-        this.startTimeString = aTrace.getStartTimeString();
-        this.endTimeString = aTrace.getEndTimeString();
-        this.durationString = aTrace.getDurationString();
-
-        this.startTimeMilli = aTrace.getStartTimeMilli();
-        this.endTimeMilli = aTrace.getEndTimeMilli();
-        this.duration = aTrace.getDuration();
-        this.hasActivity = aTrace.isHasActivity();
-
-        this.previousProcessingTimes = new DoubleArrayList(aTrace.getProcessingTimes().toArray());
-        this.previousWaitingTimes = new DoubleArrayList(aTrace.getWaitingTimes().toArray());
-        this.previousStartTimeMilli = aTrace.getStartTimeMilli();
-        this.previousEndTimeMilli = aTrace.getEndTimeMilli();
-        this.previousDuration = aTrace.getDuration();
-        this.previousHasActivity = aTrace.isHasActivity();
-
-        this.eventList = new ArrayList<>(aTrace.getEventList());
-        this.previousEventList = new ArrayList<>(aTrace.getEventList());
-
-        this.activityList = new ArrayList<>(aTrace.getActivityList());
-        this.previousActivityList = new ArrayList<>(aTrace.getActivityList());
-
-        this.eventList = new ArrayList<>(aTrace.getEventList());
-        this.previousEventList = new ArrayList<>(aTrace.getEventList());
-
-        this.attributeMap = aTrace.getAttributeMap();
-        this.previousAttributeMap = aTrace.getAttributeMap();
-
-
-        List<String> aTraceActNameList = aTrace.getActivityNameList();
-
-
-        this.activityNameList = new ArrayList<>(aTraceActNameList);
-        this.previousActivityNameList = new ArrayList<>(aTraceActNameList);
-
-        if (aTrace.getActivityNameIndexList() != null) {
-            this.activityNameIndexList = new ArrayList<>(aTrace.getActivityNameIndexList());
-            this.previousActiivtyNameIndexList = new ArrayList<>(aTrace.getActivityNameIndexList());
+        validEventIndexBS = new BitSet(ial.max() + 1);
+        for (AEvent event : aTrace.getEventList()) {
+            validEventIndexBS.set(event.getIndex());
         }
 
-        UnifiedSet<String> aTraceEventNameSet = aTrace.getEventNameSet();
-
-        this.eventNameSet = new UnifiedSet<>(aTraceEventNameSet);
-        this.previousEventNameSet = new UnifiedSet<>(aTraceEventNameSet);
-
-        for (AActivity activity : activityList) {
-            activity.setParentTrace(this);
-        }
-
-        double aTraceUtilization = aTrace.getCaseUtilization();
-        this.caseUtilization = aTraceUtilization;
-        this.previousCaseUtilization = aTraceUtilization;
-
-        this.eventSize = eventList.size();
-
-        int originalEventSize = aTrace.getEventSize();
-
-        this.validEventIndexBS = new BitSet(originalEventSize);
-        this.validEventIndexBS.set(0, originalEventSize);
-
-        originalValidEventIndexBS = new BitSet(originalEventSize);
-        originalValidEventIndexBS.set(0, originalEventSize);
-
-        previousValidEventIndexBS = new BitSet(originalEventSize);
-        previousValidEventIndexBS.set(0, originalEventSize);
+        setActivities(aTrace.getActivityList());
     }
 
-    public void reset() {
+    public void setActivities(List<AActivity> activities) {
+        this.activityList.clear();
+        this.activityList.addAll(activities);
 
-
-        initDefault();
-
+        int index = 0;
+        for (AActivity activity : this.activityList) {
+            activity.setMutableTraceIndex(mutableIndex);
+            activity.setMutableIndex(index);
+            index += 1;
+        }
     }
 
     public ATrace getOriginalATrace() {
         return aTrace;
     }
 
-    public void resetPrevious() {
-
-        if(previousValidEventIndexBS != null) {
-            for (int i = 0; i < validEventIndexBS.size(); i++) {
-                validEventIndexBS.set(i, previousValidEventIndexBS.get(i));
-            }
-
-            startTimeMilli = previousStartTimeMilli;
-            endTimeMilli = previousEndTimeMilli;
-            duration = previousDuration;
-            hasActivity = previousHasActivity;
-
-            processingTimes = previousProcessingTimes;
-            waitingTimes = previousWaitingTimes;
-
-            this.activityList = previousActivityList;
-            this.eventList = previousEventList;
-            this.attributeMap = previousAttributeMap;
-            this.activityNameList = previousActivityNameList;
-            this.eventNameSet = previousEventNameSet;
-
-            this.activityNameIndexList = previousActiivtyNameIndexList;
-        } else {
-            reset();
-        }
+    public DoubleArrayList getWaitingTimes() {
+        List<AActivity> validActs = StatsUtil.getValidActivitiesOf(this);
+        double[] waitTimesArray = validActs.stream()
+                .filter(x -> StatsUtil.getValidPreviousActivity(x, this) != null)
+                .mapToDouble(x -> StatsUtil.getArcDurationOf(StatsUtil.getValidPreviousActivity(x, this), x))
+                .toArray();
+        DoubleArrayList wtDal = new DoubleArrayList(waitTimesArray);
+        return wtDal;
     }
 
-    /**
-     * Replace the values of the previous stage as current stage
-     */
-    public void updatePrevious() {
-
-        for (int i = 0; i < previousValidEventIndexBS.size(); i++) {
-            previousValidEventIndexBS.set(i, validEventIndexBS.get(i));
-        }
-
-        previousStartTimeMilli = startTimeMilli;
-        previousEndTimeMilli = endTimeMilli;
-        previousDuration = duration;
-        previousHasActivity = hasActivity;
-
-        previousActivityList = activityList;
-        previousEventList = eventList;
-        previousAttributeMap = attributeMap;
-        previousActivityNameList = activityNameList;
-        previousEventNameSet = eventNameSet;
-
-        previousWaitingTimes = waitingTimes;
-        previousProcessingTimes = processingTimes;
-
-        previousActiivtyNameIndexList = activityNameIndexList;
-        previousCaseUtilization = caseUtilization;
+    public DoubleArrayList getProcessingTimes() {
+        List<AActivity> validActs = StatsUtil.getValidActivitiesOf(this);
+        double[] procTimesArray = validActs.stream()
+                .mapToDouble(AActivity::getDuration)
+                .toArray();
+        DoubleArrayList ptDal = new DoubleArrayList(procTimesArray);
+        return ptDal;
     }
 
-    public void update(int mutableIndex) {
-
-        this.mutableIndex = mutableIndex;
-
-        previousValidEventIndexBS = (BitSet) validEventIndexBS.clone();
-
-        previousStartTimeMilli = startTimeMilli;
-        previousEndTimeMilli = endTimeMilli;
-        previousDuration = duration;
-        previousHasActivity = hasActivity;
-        previousProcessingTimes = processingTimes;
-        previousWaitingTimes = waitingTimes;
-        previousActivityList = activityList;
-        previousEventList = eventList;
-        previousAttributeMap = attributeMap;
-        previousActivityNameList = activityNameList;
-        previousEventNameSet = eventNameSet;
-        previousActiivtyNameIndexList = activityNameIndexList;
-
-        processingTimes = new DoubleArrayList();
-        waitingTimes = new DoubleArrayList();
-
-        this.eventList = aTrace.getImmutableEvents().stream()
-                .filter(x -> validEventIndexBS.get(x.getIndex()))
-                .collect(Collectors.toList());
-
-        this.activityList = aTrace.getActivityList().stream()
+    public void updateStats(int mutableTraceIndex) {
+        this.mutableIndex = mutableTraceIndex;
+        List<AActivity> updatedActs = aTrace.getActivityList().stream()
                 .filter(x -> validEventIndexBS.get(x.getEventIndexes().get(0)))
                 .collect(Collectors.toList());
 
-        int actMutIndex = 0;
-        for (AActivity activity : activityList) {
-            activity.setMutableIndex(actMutIndex);
-            actMutIndex += 1;
-        }
 
-        if (this.activityList.size() > 0) {
 
-            for (int i = 0; i < activityList.size(); i++) {
-                AActivity iAct = activityList.get(i);
-                processingTimes.add(iAct.getDuration());
+        setActivities(updatedActs);
+    }
 
-                if (i+1 < activityList.size()) {
-                    AActivity nAct = activityList.get(i + 1);
-                    long iET = iAct.getEndTimeMilli();
-                    long nST = nAct.getStartTimeMilli();
-                    long wt = nST > iET ? nST - iET : 0;
-                    waitingTimes.add(wt);
-                }
-            }
-        }
-
-        LongSummaryStatistics allST = activityList.stream()
-                .collect(Collectors.summarizingLong(AActivity::getStartTimeMilli));
-        LongSummaryStatistics allET = activityList.stream()
-                .collect(Collectors.summarizingLong(AActivity::getEndTimeMilli));
-
-        this.startTimeMilli = allST.getMin();
-        this.endTimeMilli = allET.getMax();
-        this.duration = endTimeMilli > startTimeMilli ? endTimeMilli - startTimeMilli : 0;
-
-        if (waitingTimes.isEmpty() || processingTimes.isEmpty()) caseUtilization = 1.0;
-        else {
-            double ttlWaitTime = waitingTimes.sum();
-            double ttlProcTime = processingTimes.sum();
-            double dur = getDuration();
-
-            if (ttlWaitTime > 0 && ttlProcTime > 0) {
-                caseUtilization = ttlProcTime / (ttlProcTime + ttlWaitTime);
-            } else {
-                caseUtilization = ttlProcTime > 0 && ttlProcTime < dur ? ttlProcTime / dur : 1.0;
-            }
-
-            if (caseUtilization > 1.0) caseUtilization = 1.0;
-        }
+    @Override
+    public void setStartTimeMilli(long startTimeMilli) {
 
     }
 
+    @Override
+    public void setEndTimeMilli(long endTimeMilli) {
 
-
-    private void updateStats(List<AActivity> activities) {
-
-        processingTimes = new DoubleArrayList();
-        waitingTimes = new DoubleArrayList();
-
-        for (int i = 0; i < activities.size(); i++) {
-            AActivity iAct = activities.get(i);
-            processingTimes.add(iAct.getDuration());
-
-            if (i+1 < activities.size()) {
-                AActivity nAct = activities.get(i + 1);
-                long iET = iAct.getEndTimeMilli();
-                long nST = nAct.getStartTimeMilli();
-                long wt = nST > iET ? nST - iET : 0;
-                waitingTimes.add(wt);
-            }
-        }
     }
 
-
-    private void appendActivity(UnifiedMap<Long, List<AActivity>> startTimeActivitiesMap, AActivity activity) {
-        long actStartTime = activity.getStartTimeMilli();
-        if (!startTimeActivitiesMap.containsKey(actStartTime)) {
-            List<AActivity> actList = new ArrayList<>();
-            actList.add(activity);
-            startTimeActivitiesMap.put(actStartTime, actList);
-        } else {
-            startTimeActivitiesMap.get(actStartTime).add(activity);
-        }
+    @Override
+    public ATrace clone() {
+        return null;
     }
 
-    private void configActivityList(UnifiedMap<Long, List<AActivity>> completeTimeActivitiesMap) {
-        List<Long> keyList = new ArrayList<>(completeTimeActivitiesMap.keySet());
-        Collections.sort(keyList);
-
-        for (int i = 0; i < keyList.size(); i++) {
-            long endTime = keyList.get(i);
-            List<AActivity> actList = completeTimeActivitiesMap.get(endTime);
-            for (int j = 0; j < actList.size(); j++) {
-                AActivity act = actList.get(j);
-                this.activityList.add(act);
-            }
-        }
+    @Override
+    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
+        return null;
     }
 
+    @Override
+    public void addActivity(AActivity aActivity) {
+
+    }
+
+    public int getImmutableIndex() {
+        return aTrace.getImmutableIndex();
+    }
+
+    public int getMutableIndex() {
+        return mutableIndex;
+    }
+
+    @Override
+    public void setMutableIndex(int mutableIndex) {
+
+    }
+
+    public String getCaseId() {
+        return aTrace.getCaseId();
+    }
+
+    @Override
+    public void setCaseVariantId(int caseVariantId) {
+        this.caseVariantId = caseVariantId;
+    }
+
+    public long getCaseIdDigit() {
+        return aTrace.getCaseIdDigit();
+    }
+
+    @Override
     public List<Integer> getActivityNameIndexList() {
-        return activityNameIndexList;
+        return null;
     }
 
     @Override
@@ -394,7 +204,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
     @Override
     public int getCaseVariantIdForDisplay() {
-        return 0;
+        return this.caseVariantId;
     }
 
     @Override
@@ -409,7 +219,7 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
     @Override
     public List<AEvent> getImmutableEvents() {
-        return aTrace.getImmutableEvents();
+        return null;
     }
 
     @Override
@@ -417,61 +227,8 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
     }
 
-    @Override
-    public DoubleArrayList getWaitingTimes() {
-        return waitingTimes;
-    }
-
-    @Override
-    public DoubleArrayList getProcessingTimes() {
-        return processingTimes;
-    }
-
-    @Override
-    public ATrace clone() {
-        return null;
-    }
-
-
-    @Override
-    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
-        return null;
-    }
-
-    @Override
-    public void addActivity(AActivity aActivity) {
-        this.activityList.add(aActivity);
-    }
-
-    @Override
-    public int getImmutableIndex() {
-        return immutableIndex;
-    }
-
-    @Override
-    public int getMutableIndex() {
-        return mutableIndex;
-    }
-
-    @Override
-    public void setMutableIndex(int mutableIndex) {
-        this.mutableIndex = mutableIndex;
-    }
-
-    public String getCaseId() {
-        return caseId;
-    }
-
-    public long getCaseIdDigit() {
-        return caseIdDigit;
-    }
-
-    public void setCaseVariantId(int caseVariantId) {
-        this.caseVariantId = caseVariantId;
-    }
-
     public int getCaseVariantId() {
-        return caseVariantId;
+        return this.caseVariantId;
     }
 
     public void setValidEventIndexBS(BitSet validEventIndexBS) {
@@ -479,31 +236,27 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     public int getEventSize() {
-        return this.eventList.size();
+        return validEventIndexBS.cardinality();
     }
 
     public long getStartTimeMilli() {
-        return startTimeMilli;
+        return getActivityList().get(0).getStartTimeMilli();
     }
 
     public long getEndTimeMilli() {
-        return endTimeMilli;
+        List<AActivity> activities = getActivityList();
+        return activities.get(activities.size() - 1).getEndTimeMilli();
     }
 
     public double getDuration() {
-        return endTimeMilli > startTimeMilli ? endTimeMilli - startTimeMilli : 0;
+        long et = getEndTimeMilli();
+        long st = getStartTimeMilli();
+        return et - st > 0 ? et - st : 0;
     }
 
-    public double getOriginalDuration() {
-        return aTrace.getDuration();
-    }
-
-    public List<AEvent> getOriginalEventList() {
-        return aTrace.getEventList();
-    }
-
+    @Override
     public boolean isHasActivity() {
-        return hasActivity;
+        return false;
     }
 
     @Override
@@ -511,26 +264,37 @@ public class PTrace implements Comparable<PTrace>, ATrace {
 
     }
 
+    private DoubleArrayList getAllTimestamps() {
+        double[] array = getEventList().stream()
+                .mapToDouble(x -> x.getTimestampMilli())
+                .toArray();
+        DoubleArrayList dal = new DoubleArrayList(array);
+        return dal;
+    }
+
+    public List<AEvent> getOriginalEventList() {
+        return aTrace.getEventList();
+    }
+
     public List<AActivity> getOriginalActivityList() {
         return aTrace.getActivityList();
     }
 
     public List<AActivity> getActivityList() {
-        return this.activityList;
+        return StatsUtil.getValidActivitiesOf(this);
     }
 
     public List<String> getActivityNameList() {
-
-        return this.activityNameList;
-
+        return getActivityList().stream().map(x -> x.getName()).collect(Collectors.toList());
     }
 
+    @Override
     public UnifiedSet<String> getEventNameSet() {
-        return this.eventNameSet;
+        return null;
     }
 
     public UnifiedMap<String, String> getAttributeMap() {
-        Map<String, String> collect = attributeMap.entrySet().stream()
+        Map<String, String> collect = aTrace.getAttributeMap().entrySet().stream()
                 .filter(x -> !x.getKey().equals("concept:name") && !x.equals("case:variant") )
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -538,180 +302,169 @@ public class PTrace implements Comparable<PTrace>, ATrace {
     }
 
     public List<AEvent> getEventList() {
-
-        return eventList;
+        return aTrace.getImmutableEvents().stream()
+                .filter(x -> validEventIndexBS.get(x.getIndex()))
+                .collect(Collectors.toList());
     }
 
-    public Set<String> getAttributeKeys() {
-        return attributeMap.keySet();
-    }
-
-    @Override
     public int size() {
-        return eventList.size();
+        return getEventSize();
     }
 
-    @Override
     public AEvent get(int index) {
-        return eventList.get(index);
+        return getEventList().get(index);
     }
-
 
     public double getTotalProcessingTime() {
-        return !processingTimes.isEmpty() ? processingTimes.sum() : 0;
+        return getProcessingTimes().sum();
     }
 
     public double getAverageProcessingTime() {
-        return !processingTimes.isEmpty() ? processingTimes.average() : 0;
+        return getProcessingTimes().average();
     }
 
     public double getMaxProcessingTime() {
-        return !processingTimes.isEmpty() ? processingTimes.max() : 0;
+        return getProcessingTimes().max();
     }
 
     public double getTotalWaitingTime() {
-        return !waitingTimes.isEmpty() ? waitingTimes.sum() : 0;
+        return getWaitingTimes().sum();
     }
 
     public double getAverageWaitingTime() {
-        return !waitingTimes.isEmpty() ? waitingTimes.average() : 0;
+        return getWaitingTimes().average();
     }
 
     public double getMaxWaitingTime() {
-        return !waitingTimes.isEmpty() ? waitingTimes.max() : 0;
+        return getWaitingTimes().max();
     }
 
     public double getCaseUtilization() {
-        return caseUtilization;
+        double ttlPT = getTotalProcessingTime();
+        double ttlWT = getTotalWaitingTime();
+        double dur = getDuration();
+
+        double utilization = ttlPT > 0 && ttlWT > 0 ? ttlPT / (ttlPT + ttlWT) :
+                (ttlPT > 0 && ttlPT < dur ? ttlPT / dur : 1.0);
+
+        return utilization;
     }
 
     public BitSet getValidEventIndexBitSet() {
         return validEventIndexBS;
     }
 
-    @Override
     public String getStartTimeString() {
-        return Util.timestampStringOf(Util.millisecondToZonedDateTime(startTimeMilli));
+        return Util.timestampStringOf(Util.millisecondToZonedDateTime(getStartTimeMilli()));
     }
 
-    @Override
     public String getEndTimeString() {
-        return Util.timestampStringOf(Util.millisecondToZonedDateTime(endTimeMilli));
+        return Util.timestampStringOf(Util.millisecondToZonedDateTime(getEndTimeMilli()));
     }
 
-    @Override
     public String getDurationString() {
-        return Util.durationShortStringOf(duration);
+        return Util.durationShortStringOf(getDuration());
     }
 
     public BitSet getOriginalValidEventIndexBS() {
-        return originalValidEventIndexBS;
+
+        int[] existIndexesArray = aTrace.getEventList().stream().mapToInt(x -> x.getIndex()).toArray();
+        IntArrayList ial = new IntArrayList(existIndexesArray);
+
+        BitSet bs = new BitSet(ial.max() + 1);
+        for (AEvent event : aTrace.getEventList()) {
+            bs.set(event.getIndex());
+        }
+
+        return bs;
     }
 
-    public BitSet getPreviousValidEventIndexBS() {
-        return previousValidEventIndexBS;
-    }
-
-    public void setOriginalValidEventIndexBS(BitSet originalValidEventIndexBS) {
-        this.originalValidEventIndexBS = originalValidEventIndexBS;
-    }
-
-    public UnifiedMap<String, String> getAllAttributes() { return attributeMap; }
+    public UnifiedMap<String, String> getAllAttributes() { return aTrace.getAttributeMap(); }
 
     public long getActivitySize() {
-        return activityList.size();
+        return getActivityList().size();
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setWaitingTimes(DoubleArrayList waitingTimes) {
-        this.waitingTimes = waitingTimes;
+    public String getActivitySizeRatio() {
+        return ratio;
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setProcessingTimes(DoubleArrayList processingTimes) {
-        this.processingTimes = processingTimes;
+    public void setActivitySizeRatio(String ratio) {
+        this.ratio = ratio;
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setDuration(double duration) {
-        this.duration = duration;
+    public void setOppActivitySize(double oppActivitySize) {
+        this.oppActivitySize = oppActivitySize;
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setStartTimeMilli(long startTimeMilli) {
-        this.startTimeMilli = startTimeMilli;
+    public double getOppActivitySize() {
+        return oppActivitySize;
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setEndTimeMilli(long endTimeMilli) {
-        this.endTimeMilli = endTimeMilli;
+    public String getActivityNameIndexString(HashBiMap<String, Integer> nameIndexBiMap) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (AActivity activity : getActivityList()) {
+                sb.append(nameIndexBiMap.get(activity.getName()));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setCaseUtilization(double caseUtilization) {
-        this.caseUtilization = caseUtilization;
+    public AActivity getNextActivityOf(AActivity activity) {
+        // ========================================================
+        // Ensure to updateStats() before calling this method
+        // ========================================================
+
+        return activityList.stream()
+                .filter(x -> x.getImmutableIndex() > activity.getImmutableIndex())
+                .findFirst()
+                .orElse(null);
     }
 
-    /**
-     * @since v7.20
-     * @return
-     */
-    public void setActivityList(List<AActivity> activityList) {
-        this.activityList = activityList;
+    public AActivity getPreviousActivityOf(AActivity activity) {
+        // ========================================================
+        // Ensure to updateStats() before calling this method
+        // ========================================================
+        if (activityList.get(0) == activity) return null;
+
+        List<AActivity> reversed = new ArrayList<>(activityList);
+        Collections.reverse(reversed);
+
+        return reversed.stream()
+                .filter(x -> x.getImmutableIndex() < activity.getImmutableIndex())
+                .findFirst()
+                .orElse(null);
     }
 
     public ATrace toATrace() {
 
+        ImmutableTrace trace = new ImmutableTrace(aTrace.getImmutableIndex(), mutableIndex, aTrace.getCaseId(),
+                aTrace.getAttributeMap());
 
-        ImmutableTrace trace = new ImmutableTrace(immutableIndex, mutableIndex, caseId, attributeMap);
-
-
-        for (int i = 0; i < activityList.size(); i++) {
-            AActivity act = activityList.get(i);
-
-            trace.addActivity(act);
-
+        for (AActivity activity : getActivityList()) {
+            trace.addActivity(activity);
         }
 
-        for (AEvent event : eventList) {
-            event.setParentTrace(trace);
-        }
-
-        trace.setEventList(eventList);
+        trace.setEventList(getEventList());
         trace.setImmutableEvents(aTrace.getImmutableEvents());
-        trace.setCaseVariantId(caseVariantId);
-        trace.setHasActivity(hasActivity);
-        trace.setWaitingTimes(waitingTimes);
-        trace.setProcessingTimes(processingTimes);
-        trace.setStartTimeMilli(startTimeMilli);
-        trace.setEndTimeMilli(endTimeMilli);
+        trace.setCaseVariantId(getCaseVariantId());
+        trace.setHasActivity(true);
+        trace.setWaitingTimes(getWaitingTimes());
+        trace.setProcessingTimes(getProcessingTimes());
+        trace.setStartTimeMilli(getStartTimeMilli());
+        trace.setEndTimeMilli(getEndTimeMilli());
 
         return trace;
     }
 
     @Override
     public int compareTo(PTrace o) {
-        if (Util.isNumeric(this.caseId) && Util.isNumeric(o.getCaseId())) {
-            if (caseIdDigit > o.caseIdDigit) return 1;
-            else if (caseIdDigit < o.caseIdDigit) return -1;
+        if (Util.isNumeric(getCaseId()) && Util.isNumeric(o.getCaseId())) {
+            if (getCaseIdDigit() > o.getCaseIdDigit()) return 1;
+            else if (getCaseIdDigit() < o.getCaseIdDigit()) return -1;
             else return 0;
         } else {
             return getCaseId().compareTo(o.getCaseId());
