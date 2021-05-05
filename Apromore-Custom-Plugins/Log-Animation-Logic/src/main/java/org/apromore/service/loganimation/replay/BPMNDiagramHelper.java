@@ -64,7 +64,7 @@ public class BPMNDiagramHelper {
     private FlowNode endEvent=null;
     
     // key: taskId, value is reference to the node
-    private Map<String, FlowNode> allNodes = new HashMap();    
+    private Map<String, FlowNode> allNodes = new HashMap();
     
     // key: concatenation of taskId of source and target node
     // value: reference to edge object
@@ -86,6 +86,12 @@ public class BPMNDiagramHelper {
     
     private Set<FlowNode> ORjoins = new HashSet();
     
+    private Set<FlowNode> mixedXORs = new HashSet();
+    
+    private Set<FlowNode> mixedANDs = new HashSet();
+    
+    private Set<FlowNode> mixedORs = new HashSet();
+    
     //key: name of activity, value: activity node
     private Map<String,FlowNode> activities = new HashMap();
     
@@ -97,7 +103,7 @@ public class BPMNDiagramHelper {
     
 //    private ProcessModel jbptProcessModel = null;
     private Set<Set<FlowNode>> bpmnSCCSet = null;
-//    private BidiMap<FlowNode, org.jbpt.pm.FlowNode> jbptNodeMap = new DualHashBidiMap<>(); 
+//    private BidiMap<FlowNode, org.jbpt.pm.FlowNode> jbptNodeMap = new DualHashBidiMap<>();
     
     private DirectedGraph directedGraph = null;
     private List<List<FlowNode>> bpmnCycles = null;
@@ -116,7 +122,7 @@ public class BPMNDiagramHelper {
     */
     
     /*
-    * The helper class also does a preliminary check on the validity of the 
+    * The helper class also does a preliminary check on the validity of the
     * BPMN defintion, to make sure it complies with restrictions
     * for animation.
     * Set rootElement, startEvent, endEvent.
@@ -145,7 +151,7 @@ public class BPMNDiagramHelper {
                         sourceId = ((SequenceFlow)element).getSourceRef().getId();
                         targetId = ((SequenceFlow)element).getTargetRef().getId();
                         allSequenceFlows.put(sourceId+"-"+targetId, (SequenceFlow)element);
-                    }  
+                    }
                     else if (element instanceof FlowNode) {
                         
                         allNodes.put(element.getId(), (FlowNode)element);
@@ -155,7 +161,7 @@ public class BPMNDiagramHelper {
                         }
                         if (element instanceof EndEvent) {
                             endEvent = (EndEvent)element;
-                        } 
+                        }
                         
                         targetSet = new HashSet();
                         
@@ -198,8 +204,18 @@ public class BPMNDiagramHelper {
                             activities.put(element.getName(), (FlowNode)element);
                         }
                         
+                        if (isMixedXOR((FlowNode)element)) {
+                            mixedXORs.add((FlowNode)element);
+                        }
                         
-                    }                    
+                        if (isMixedAND((FlowNode)element)) {
+                            mixedANDs.add((FlowNode)element);
+                        }
+                        
+                        if (isMixedOR((FlowNode)element)) {
+                            mixedORs.add((FlowNode)element);
+                        }
+                    }
                     
                 }
                 
@@ -235,11 +251,11 @@ public class BPMNDiagramHelper {
     
     public FlowNode getFlowNode(String Id) {
         return allNodes.get(Id);
-    } 
+    }
     
     public Collection<FlowNode> getAllNodes()  {
         return allNodes.values();
-    }     
+    }
     
     public FlowNode getActivity(String Id) {
         if (allNodes.get(Id) instanceof Activity) {
@@ -247,7 +263,7 @@ public class BPMNDiagramHelper {
         } else {
             return null;
         }
-    } 
+    }
     
     public Collection<FlowNode> getActivities() {
         return this.activities.values();
@@ -260,7 +276,7 @@ public class BPMNDiagramHelper {
     public FlowNode getNodeFromEvent(String eventName) {
         if (this.activities.containsKey(eventName)) {
             return this.activities.get(eventName);
-        } 
+        }
         else if (this.startEvent.getName().equals(eventName)) {
             return this.startEvent;
         }
@@ -278,22 +294,34 @@ public class BPMNDiagramHelper {
     
     public Set<FlowNode> getAllMerges() {
         return merges;
-    }    
+    }
     
     public Set<FlowNode> getAllForks() {
         return forks;
-    }     
+    }
     
     public Set<FlowNode> getAllJoins() {
         return joins;
-    }  
+    }
     
     public Set<FlowNode> getAllORSplits() {
         return ORsplits;
-    }     
+    }
     
     public Set<FlowNode> getAllORJoins() {
         return ORjoins;
+    }
+    
+    public Set<FlowNode> getAllMixedXORs() {
+        return mixedXORs;
+    }
+    
+    public Set<FlowNode> getAllMixedANDs() {
+        return mixedANDs;
+    }
+    
+    public Set<FlowNode> getAllMixedORs() {
+        return mixedORs;
     }
     
     public Collection<FlowNode> getSet(FlowNode node) {
@@ -306,13 +334,13 @@ public class BPMNDiagramHelper {
         Collection<SequenceFlow> set = new HashSet();
         set.add(flow);
         return set;
-    }    
+    }
     
     public Collection<FlowNode> addToSet(Collection<FlowNode> set, FlowNode node) {
         Collection<FlowNode> temp;
         if (set == null) {
             temp = new HashSet();
-        } 
+        }
         else {
             temp = set;
         }
@@ -324,13 +352,13 @@ public class BPMNDiagramHelper {
         Set<TraceNode> temp;
         if (set == null) {
             temp = new HashSet();
-        } 
+        }
         else {
             temp = set;
         }
         temp.add(node);
         return temp;
-    }    
+    }
     
     public SequenceFlow getSequenceFlow(FlowNode source, FlowNode target) {
         String key = source.getId()+"-"+target.getId();
@@ -359,54 +387,72 @@ public class BPMNDiagramHelper {
         } else {
             return new HashSet();
         }
-    }    
+    }
     
     public static boolean isJoin(FlowNode node) {
-//        if ((node instanceof ParallelGateway) && 
+//        if ((node instanceof ParallelGateway) &&
 //            ((Gateway)node).getGatewayDirection().equals(GatewayDirection.CONVERGING)) {
 //            return true;
 //        }
 //        else {
 //            return false;
-//        }  
-        return (node instanceof ParallelGateway && 
+//        }
+        return (node instanceof ParallelGateway &&
                 node.getOutgoingSequenceFlows().size() == 1 &&
                 node.getIncomingSequenceFlows().size() > 1);
     }
     
     public static boolean isFork(FlowNode node) {
-        return (node instanceof ParallelGateway && 
+        return (node instanceof ParallelGateway &&
                 node.getOutgoingSequenceFlows().size() > 1 &&
                 node.getIncomingSequenceFlows().size() == 1);
-    }    
+    }
     
-    public static boolean isDecision(FlowNode node) {   
-        return (node instanceof ExclusiveGateway && 
+    public static boolean isMixedAND(FlowNode node) {
+        return (node instanceof ParallelGateway &&
+                node.getOutgoingSequenceFlows().size() > 1 &&
+                node.getIncomingSequenceFlows().size() > 1);
+    }
+    
+    public static boolean isDecision(FlowNode node) {
+        return (node instanceof ExclusiveGateway &&
                 node.getOutgoingSequenceFlows().size() > 1 &&
                 node.getIncomingSequenceFlows().size() == 1);
-    }    
+    }
     
     public static boolean isMerge(FlowNode node) {
-        return (node instanceof ExclusiveGateway && 
+        return (node instanceof ExclusiveGateway &&
                 node.getOutgoingSequenceFlows().size() == 1 &&
                 node.getIncomingSequenceFlows().size() > 1);
-    }    
+    }
+    
+    public static boolean isMixedXOR(FlowNode node) {
+        return (node instanceof ExclusiveGateway &&
+                node.getOutgoingSequenceFlows().size() > 1 &&
+                node.getIncomingSequenceFlows().size() > 1);
+    }
     
     public static boolean isActivity(FlowNode node) {
         return (node instanceof Activity);
-    }     
+    }
     
     public static boolean isORSplit(FlowNode node) {
-        return (node instanceof InclusiveGateway && 
+        return (node instanceof InclusiveGateway &&
                 node.getOutgoingSequenceFlows().size() > 1 &&
                 node.getIncomingSequenceFlows().size() == 1);
     }
     
     public static boolean isORJoin(FlowNode node) {
-        return (node instanceof InclusiveGateway && 
+        return (node instanceof InclusiveGateway &&
                 node.getOutgoingSequenceFlows().size() == 1 &&
                 node.getIncomingSequenceFlows().size() > 1);
-    }    
+    }
+    
+    public static boolean isMixedOR(FlowNode node) {
+        return (node instanceof InclusiveGateway &&
+                node.getOutgoingSequenceFlows().size() > 1 &&
+                node.getIncomingSequenceFlows().size() > 1);
+    }
     
     public DijkstraAlgorithm getDijkstraAlgo() {
         if (dijkstraAlgo == null) {
@@ -458,7 +504,7 @@ public class BPMNDiagramHelper {
     /*
     * Return empty list if source == target
     * Return non-empty list if path found
-    * Return null if no path found    
+    * Return null if no path found
     */
     public ArrayList<Vertex> getPath(FlowNode source, FlowNode target) {
         ArrayList<Vertex> path = new ArrayList();
@@ -474,7 +520,7 @@ public class BPMNDiagramHelper {
     }
     
     /*
-    * Return the shortest path from a set of sequence flows to the target   
+    * Return the shortest path from a set of sequence flows to the target
     * Path length is the number of activity nodes on the path
     * The set cannot reach the node if all nodes in set cannot reach the node
     * Otherwise, the shortest path of all nodes is returned.
@@ -503,7 +549,7 @@ public class BPMNDiagramHelper {
         else {
             return shortest;
         }
-    }    
+    }
     
     public boolean existPath(Set<FlowNode> sourceSet, FlowNode target) {
         for (FlowNode source : sourceSet) {
@@ -527,12 +573,12 @@ public class BPMNDiagramHelper {
     * Note that we need to avoid loop.
     */
     public void getSourceEdges(SequenceFlow targetFlow, FlowNode avoidNode, Set<SequenceFlow> flowSet) {
-        if ((FlowNode)targetFlow.getSourceRef() != avoidNode) { 
+        if ((FlowNode)targetFlow.getSourceRef() != avoidNode) {
             for (SequenceFlow incoming : ((FlowNode)targetFlow.getSourceRef()).getIncomingSequenceFlows()) {
                 if (!flowSet.contains(incoming)) { //this is to avoid loop
                     flowSet.add(incoming);
                     getSourceEdges(incoming, avoidNode, flowSet);
-                } 
+                }
             }
         }
     }
@@ -568,10 +614,10 @@ public class BPMNDiagramHelper {
         else {
             return path.size();
         }
-    }    
+    }
 
     public DirectedGraph getDirectedGraph() {
-        if (directedGraph == null) {           
+        if (directedGraph == null) {
             directedGraph = new DefaultDirectedGraph<FlowNode, DefaultEdge>(DefaultEdge.class);
             for (FlowNode node : this.getAllNodes()) {
                 directedGraph.addVertex(node);
@@ -581,8 +627,8 @@ public class BPMNDiagramHelper {
             }
         }
         
-        return directedGraph;    
-    }    
+        return directedGraph;
+    }
     
     public List<List<FlowNode>> getSimpleCycles() {
         if (directedGraph == null) {
@@ -644,9 +690,9 @@ public class BPMNDiagramHelper {
             visited.add(node);
             if (this.getActivities().contains(node)) {
                 activityChain.add(node);
-            }            
+            }
             node = (FlowNode)node.getOutgoingSequenceFlows().get(0).getTargetRef();
         }
         return activityChain;
-    } 
+    }
 }

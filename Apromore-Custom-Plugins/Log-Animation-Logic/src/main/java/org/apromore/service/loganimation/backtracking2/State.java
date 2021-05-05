@@ -24,10 +24,6 @@
 
 package org.apromore.service.loganimation.backtracking2;
 
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -42,9 +38,10 @@ import org.apromore.service.loganimation.replay.LogUtility;
 import org.apromore.service.loganimation.replay.ORJoinEnactmentManager;
 import org.apromore.service.loganimation.replay.ReplayParams;
 import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.model.XAttributeLiteral;
-import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 
 /*
 * An abstraction of state of a node
@@ -70,7 +67,7 @@ public class State {
   
     
     public State(Set<SequenceFlow> markings, FlowNode element, StateElementStatus elementStatus,
-                 XTrace trace, int traceIndex, Set<State> visitedStates, Set<Set<SequenceFlow>> visitedMarkings, 
+                 XTrace trace, int traceIndex, Set<State> visitedStates, Set<Set<SequenceFlow>> visitedMarkings,
                  BPMNDiagramHelper helper, ReplayParams params) {
         this.markings = markings;
         this.element = element;
@@ -102,7 +99,7 @@ public class State {
      *  - New states are produced, including activity_matched, activity_skipped or event_skipped
      *  - No new states are created due to pruning conditions, return empty set
      *  - No new states created due to deadlock encountered: no token moves occurred
-     *  - No new states are created because this state is end state: end of trace 
+     *  - No new states are created because this state is end state: end of trace
      */
     public Set<State> nextStates (Node currentNode) {
         //Use comparator to prevent adding duplicate states
@@ -110,7 +107,7 @@ public class State {
                                     new Comparator<State>() {
                                         @Override
                                         public int compare(State s1, State s2) {
-                                            if ((s1.getElement() == s2.getElement() || 
+                                            if ((s1.getElement() == s2.getElement() ||
                                                     (s1.getElement() instanceof EventNode && s2.getElement() instanceof EventNode)) &&
                                                 s1.getElementStatus().name().equals(s2.getElementStatus().name()) &&
                                                 s1.getMarkings().size() == s2.getMarkings().size() &&
@@ -122,7 +119,7 @@ public class State {
                                                 return -1;
                                             }
                                     }
-                                }); 
+                                });
         
         //------------------------------------------
         // Set up parameters for look-ahead strategy
@@ -133,8 +130,8 @@ public class State {
         double curCost = currentNode.getCost();
         
         //----------------------------------------------
-        // Generate next states with pruning to avoid 
-        // sub-optimal states according to heuristics 
+        // Generate next states with pruning to avoid
+        // sub-optimal states according to heuristics
         //----------------------------------------------
         if (!this.isEndState()) {
             FlowNode node;
@@ -170,7 +167,7 @@ public class State {
                                 newMarkings = (HashSet)((HashSet)this.markings).clone();
                                 newMarkings.remove(sequence);
                                 newMarkings.add(node.getOutgoingSequenceFlows().get(0));
-                                if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                                if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                                     //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.ACTIVITY_SKIPPED, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                                     (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                                     states.add(new State(newMarkings, node, StateElementStatus.ACTIVITY_SKIPPED, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper,params));
@@ -186,13 +183,14 @@ public class State {
                 }
                 //Only create a new state from an XOR-branch if it can reach the current event within acceptable distance
                 //Because it will never reach that event no matter after how many activity skips -> always be rejected
-                else if (helper.getAllDecisions().contains(node)) {
+                else if (helper.getAllDecisions().contains(node) ||
+                         helper.getAllMixedXORs().contains(node)) {
                     for (SequenceFlow branch : node.getOutgoingSequenceFlows()) {
                         if (helper.countNodes(helper.getPath((FlowNode)branch.getTargetRef(), eventNode)) <= params.getMaxNodeDistance()) {
                             newMarkings = (HashSet)((HashSet)this.markings).clone();
                             newMarkings.remove(sequence);
                             newMarkings.add(branch);
-                            if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                            if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                                 //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.XORSPLIT, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                                 (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                                 states.add(new State(newMarkings, node, StateElementStatus.XORSPLIT, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
@@ -207,12 +205,13 @@ public class State {
                     }
                 }
                 // Only add new node if the shortest path to next event node is within acceptable distance
-                else if (helper.getAllForks().contains(node)) {
+                else if (helper.getAllForks().contains(node) ||
+                         (helper.getAllMixedANDs().contains(node) && markings.containsAll(node.getIncomingSequenceFlows()))) {
                     if (helper.countNodes(helper.getPath(new HashSet(node.getOutgoingSequenceFlows()), eventNode)) <= params.getMaxNodeDistance()) {
                         newMarkings = (HashSet)((HashSet)this.markings).clone();
                         newMarkings.remove(sequence);
                         newMarkings.addAll(node.getOutgoingSequenceFlows());
-                        if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                        if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                             //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.ANDSPLIT, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                             (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                             states.add(new State(newMarkings, node, StateElementStatus.ANDSPLIT, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
@@ -225,15 +224,16 @@ public class State {
                     }
                 }
                 //Only add set of flows that can reach the current event within acceptable distance
-                else if (helper.getAllORSplits().contains(node)) {
+                else if  (helper.getAllORSplits().contains(node) ||
+                          (helper.getAllMixedORs().contains(node) && ORJoinEnactmentManager.isEnabled(node, this.markings))) {
                     Set<Set<SequenceFlow>> sequenceORSet = SetUtils.powerSet(new HashSet(node.getOutgoingSequenceFlows()));
                     for (Set<SequenceFlow> flows : sequenceORSet) {
-                        if (!flows.isEmpty() && 
+                        if (!flows.isEmpty() &&
                             helper.countNodes(helper.getPath(flows, eventNode)) <= 1.0*params.getMaxNodeDistance()) {
                             newMarkings = (HashSet)((HashSet)this.markings).clone();
                             newMarkings.remove(sequence);
                             newMarkings.addAll(flows);
-                            if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                            if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                                 //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.ORSPLIT, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                                 (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                                 states.add(new State(newMarkings, node, StateElementStatus.ORSPLIT, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
@@ -251,7 +251,7 @@ public class State {
                         newMarkings = (HashSet)((HashSet)this.markings).clone();
                         newMarkings.removeAll(node.getIncomingSequenceFlows());
                         newMarkings.add(node.getOutgoingSequenceFlows().get(0));
-                        if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                        if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                             //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.ANDJOIN, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                             (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                             states.add(new State(newMarkings, node, StateElementStatus.ANDJOIN, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
@@ -262,13 +262,13 @@ public class State {
 //                                        " trace:" + getTraceWithIndex(traceIndex));
                         }
                     }
-                } 
+                }
                 else if (helper.getAllMerges().contains(node)) {
                     newMarkings = (HashSet)((HashSet)this.markings).clone();
                     newMarkings.remove(sequence);
                     newMarkings.add(node.getOutgoingSequenceFlows().get(0));
                     
-                    if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                    if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                         //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.XORJOIN, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                         (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                         states.add(new State(newMarkings, node, StateElementStatus.XORJOIN, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
@@ -285,7 +285,7 @@ public class State {
                         newMarkings.removeAll(node.getIncomingSequenceFlows());
                         newMarkings.add(node.getOutgoingSequenceFlows().get(0));
                         
-                        if (!contains(newVisitedStates, newMarkings,traceIndex) && 
+                        if (!contains(newVisitedStates, newMarkings,traceIndex) &&
                             //!checkPruningConditions(newMarkings, traceIndex, StateElementStatus.ORJOIN, curActSkipCount, curMatchCount, curConsecutiveUnmatch, curCost) &&
                             (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarkings) && !containsANDViciousCycle(newMarkings)))) {
                             states.add(new State(newMarkings, node, StateElementStatus.ORJOIN, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
@@ -322,8 +322,8 @@ public class State {
      * For OR split, one new state is generated per combination of branches
      * @return set of next states for movement
      * There are six possible scenarios
-     *  - move to new state(s): return set contains one or more states 
-     *  - deadlock encountered: no token move is possible, return set is empty 
+     *  - move to new state(s): return set contains one or more states
+     *  - deadlock encountered: no token move is possible, return set is empty
      *  - end event is reached, but not a proper completion state: return set is empty
      *  - loop encountered: new state belongs to set of visited states, return set is empty
      *  - proper completion encountered: return set is empty
@@ -348,7 +348,7 @@ public class State {
                     newMarking.remove(sequence);
                     newMarking.add(node.getOutgoingSequenceFlows().get(0));
                     
-                    if (!visitedMarkings.contains(newMarking) && 
+                    if (!visitedMarkings.contains(newMarking) &&
                         isLessActivitiesThanShortestPath(newMarking, StateElementStatus.ACTIVITY_SKIPPED, currentActivityCount) &&
                         (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                         
@@ -368,7 +368,7 @@ public class State {
                         newMarking.remove(sequence);
                         newMarking.add(branch);
                         
-                        if (!visitedMarkings.contains(newMarking) && 
+                        if (!visitedMarkings.contains(newMarking) &&
                             isLessActivitiesThanShortestPath(newMarking, StateElementStatus.XORSPLIT, currentActivityCount) &&
                             (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                             
@@ -387,7 +387,7 @@ public class State {
                     newMarking.remove(sequence);
                     newMarking.addAll(node.getOutgoingSequenceFlows());
                     
-                    if (!visitedMarkings.contains(newMarking) && 
+                    if (!visitedMarkings.contains(newMarking) &&
                         isLessActivitiesThanShortestPath(newMarking, StateElementStatus.ANDSPLIT, currentActivityCount) &&
                         (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                         
@@ -408,7 +408,7 @@ public class State {
                             newMarking.remove(sequence);
                             newMarking.addAll(flows);
                             
-                            if (!visitedMarkings.contains(newMarking) && 
+                            if (!visitedMarkings.contains(newMarking) &&
                                 isLessActivitiesThanShortestPath(newMarking, StateElementStatus.ORSPLIT, currentActivityCount) &&
                                 (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                                 
@@ -422,14 +422,14 @@ public class State {
                             }
                         }
                     }
-                }                    
+                }
                 else if (helper.getAllJoins().contains(node)) {
                     if (markings.containsAll(node.getIncomingSequenceFlows())) {
                         newMarking = (HashSet)((HashSet)this.markings).clone();
                         newMarking.removeAll(node.getIncomingSequenceFlows());
                         newMarking.add(node.getOutgoingSequenceFlows().get(0));
                         
-                        if (!visitedMarkings.contains(newMarking) && 
+                        if (!visitedMarkings.contains(newMarking) &&
                             isLessActivitiesThanShortestPath(newMarking, StateElementStatus.ANDJOIN, currentActivityCount) &&
                             (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                             
@@ -442,13 +442,13 @@ public class State {
 //                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                         }
                     }
-                } 
+                }
                 else if (helper.getAllMerges().contains(node)) {
                     newMarking = (HashSet)((HashSet)this.markings).clone();
                     newMarking.remove(sequence);
                     newMarking.add(node.getOutgoingSequenceFlows().get(0));
                     
-                    if (!visitedMarkings.contains(newMarking) && 
+                    if (!visitedMarkings.contains(newMarking) &&
                         isLessActivitiesThanShortestPath(newMarking, StateElementStatus.XORJOIN, currentActivityCount) &&
                         (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                         
@@ -469,7 +469,7 @@ public class State {
                         }
                         newMarking.add(node.getOutgoingSequenceFlows().get(0));
                         
-                        if (!visitedMarkings.contains(newMarking) && 
+                        if (!visitedMarkings.contains(newMarking) &&
                             isLessActivitiesThanShortestPath(newMarking, StateElementStatus.ORJOIN, currentActivityCount) &&
                             (!params.isCheckViciousCycle() || (!containsORViciousCycle(newMarking) && !containsANDViciousCycle(newMarking)))) {
                             
@@ -501,7 +501,7 @@ public class State {
     
     public boolean isImproperCompletion() {
         return (markings.containsAll(helper.getEndEvent().getIncomingSequenceFlows()) && markings.size()>=2);
-    }    
+    }
     
     public boolean isEndState() {
         return (traceIndex >= trace.size() || markings.isEmpty());
@@ -517,7 +517,7 @@ public class State {
      */
     /*
     public boolean isReliable() {
-        return (markings.size()==1 && 
+        return (markings.size()==1 &&
                 markings.contains(helper.getEndEvent().getIncomingSequenceFlows().get(0)) &&
                 traceIndex >= trace.size());
     }
@@ -534,7 +534,7 @@ public class State {
     //Cost of reaching this state
     public double getCost() {
         return getCost(this.elementStatus);
-    } 
+    }
     
     private double getCost(StateElementStatus elementStatus) {
         if (elementStatus == StateElementStatus.ACTIVITY_MATCHED) {
@@ -547,9 +547,9 @@ public class State {
             return params.getEventSkipCost();
         }
         else { // start/end event, gateways (gateways should have cost = 0 for nested gateways process)
-            return params.getNonActivityMoveCost(); 
+            return params.getNonActivityMoveCost();
         }
-    }    
+    }
     
     public int getDepth() {
         if (elementStatus == StateElementStatus.STARTEVENT) {
@@ -576,7 +576,7 @@ public class State {
             res += "*";
         }
         return res;
-    }    
+    }
     
     public int getTraceIndex() {
         return traceIndex;
@@ -605,7 +605,7 @@ public class State {
             markingStr += "*" + flow.getTargetRef().getName();
         }
         return markingStr;
-    }    
+    }
      
     
     /**
@@ -613,7 +613,7 @@ public class State {
      * This is to avoid token movement in a loop
      * @param marking
      * @param traceIndex
-     * @return 
+     * @return
      */
     private boolean contains(Set<State> states, Set<SequenceFlow> marking, int traceIndex) {
         for (State state : states) {
@@ -626,7 +626,7 @@ public class State {
     
     /**
      * Check pruning conditions for the next state. This is done by looking to
-     * the end of the trace and compare the difference between trace events and 
+     * the end of the trace and compare the difference between trace events and
      * the future model activities based on the current criteria, the moved element
      * and the future state (marking and traceIndex)
      * @param newMarking: the marking of next state
@@ -651,7 +651,7 @@ public class State {
         //Note: we get all activities on a chain on the model. They are minimum
         //activities to match with the remaining events of trace
         for (SequenceFlow flow : newMarking) {
-            if (helper.getActivities().contains((FlowNode)(flow.getTargetRef()))) {
+            if (helper.getActivities().contains((flow.getTargetRef()))) {
                 for (FlowNode node : helper.getActivityChain((FlowNode)flow.getTargetRef())) {
                     activityNameSet.add(node.getName());
                 }
@@ -671,10 +671,10 @@ public class State {
         int futureUnmatchCount = activityNameSet.size();
         double futureCost = futureUnmatchCount*Math.min(params.getActivitySkipCost(), params.getEventSkipCost());
         int maxAllowedUnmatch = (trace.size() - Long.valueOf(Math.round(params.getMinMatchPercent()*trace.size())).intValue());
-        double maxActivitySkipCount = 1.0*params.getMaxActivitySkipPercent()*trace.size();        
+        double maxActivitySkipCount = 1.0*params.getMaxActivitySkipPercent()*trace.size();
         
         int moveDiffCount;
-        if (movedElementStatus == StateElementStatus.ACTIVITY_SKIPPED || 
+        if (movedElementStatus == StateElementStatus.ACTIVITY_SKIPPED ||
             movedElementStatus == StateElementStatus.EVENT_SKIPPED) {
             moveDiffCount = 1;
         }
@@ -698,10 +698,10 @@ public class State {
      * The MaxActivitySkip should have been set to the number of activities of
      * the most recent shortest path
      * @param marking
-     * @return 
+     * @return
      */
-    private boolean isLessActivitiesThanShortestPath(Set<SequenceFlow> marking, 
-                                                        StateElementStatus movedElementStatus, 
+    private boolean isLessActivitiesThanShortestPath(Set<SequenceFlow> marking,
+                                                        StateElementStatus movedElementStatus,
                                                         int currentActivityCount) {
         Set<String> activityNameSet = new HashSet();
         //Collect all immediate and reachable activities from the marking
@@ -714,13 +714,13 @@ public class State {
         int movedActivityCount = ((movedElementStatus == StateElementStatus.ACTIVITY_SKIPPED) ? 1 : 0);
         
         return ((currentActivityCount + movedActivityCount + activityNameSet.size()) <= params.getCurrentShortestPath());
-    }    
+    }
     
     /**
      * Check if a marking contains a vicious cycle. A vicious cycle has two OR gates
      * wait for input tokens of each other which leads to either
      * deadlock state or lengthy movement.
-     * @return 
+     * @return
      */
     private boolean containsORViciousCycle(Set<SequenceFlow> marking) {
         //--------------------------------------
@@ -768,7 +768,7 @@ public class State {
             if (helper.getAllJoins().contains(node) && helper.getANDJoinsOnViciousCycles().contains(node)) {
                 return true;
             }
-        } 
+        }
         return false;
     }
     
@@ -807,7 +807,7 @@ public class State {
         int hash = 7;
         for (SequenceFlow flow : markings) {
             hash = 23 * hash + Objects.hashCode(flow);
-        }        
+        }
         hash = 23 * hash + this.traceIndex;
         return hash;
     }
@@ -819,7 +819,7 @@ public class State {
         element = null;
         trace = null;
         helper = null;
-        params = null;        
+        params = null;
     }
     
     
