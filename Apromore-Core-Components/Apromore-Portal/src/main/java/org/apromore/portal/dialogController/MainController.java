@@ -40,6 +40,7 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.nimbusds.jwt.JWTClaimsSet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.commons.item.ItemNameUtils;
@@ -77,8 +78,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.portal.security.helper.PortalSessionQePair;
-import org.apromore.portal.security.helper.SecuritySsoHelper;
+import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -100,6 +100,8 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.apromore.portal.common.UserSessionManager.initializeUser;
 
 /**
@@ -109,6 +111,7 @@ import static org.apromore.portal.common.UserSessionManager.initializeUser;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
+
     private static MainController controller = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
@@ -145,43 +148,51 @@ public class MainController extends BaseController implements MainControllerInte
 
     public MainController() {
         final boolean usingKeycloak = config.isUseKeycloakSso();
-        LOGGER.info("\n\nUsing keycloak: {}", usingKeycloak);
+        LOGGER.debug("Using keycloak: {}", usingKeycloak);
 
         portalSession = new PortalSession(this);
-
-        final String urlDecoded = Executions.getCurrent().getParameter("encodedToken");
-        LOGGER.info("\n\nIn PORTAL MainController, urlDecoded {}", urlDecoded);
 
         String usernameParsed = null;
 
         if (usingKeycloak) {
-            final String appAuthHeader = SecuritySsoHelper.getAppAuthHeader();
-            final String signedAppAuthHeader = SecuritySsoHelper.getSignedAppAuthHeader();
-
-            MainController.encKey = SecuritySsoHelper.getEnvEncKey();
-
             try {
-                if (StringUtils.isNotBlank(urlDecoded)) {
-                    usernameParsed = SecuritySsoHelper.getSsoUsername(urlDecoded, encKey);
+                final HttpServletRequest httpServletRequest =
+                        (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+                final String appAuthHeader =
+                        JwtHelper.readCookie(httpServletRequest, "App_Auth");
+                LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
 
-                    if (StringUtils.isNotBlank(usernameParsed)) {
-                        final PortalSessionQePair portalSessionQePair =
-                            SecuritySsoHelper.initialiseKeycloakUser(
-                                usernameParsed, getUserService(), getSecurityService(), getService(), config,
-                                    this);
+                final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
+                final String issuedAtStr = (String)jwtClaimsSet.getStringClaim(
+                        JwtHelper.STR_JWT_KEY_ISSUED_AT);
+                LOGGER.debug("issuedAtStr {}", issuedAtStr);
+                final String expiryAtStr = (String)jwtClaimsSet.getStringClaim(
+                        JwtHelper.STR_JWT_EXPIRY_TIME);
+                LOGGER.debug("expiryAtStr {}", expiryAtStr);
 
-                        qe = portalSessionQePair.getQe();
-                        portalSession = portalSessionQePair.getPortalSession();
-                    } else {
-                        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
-                                true);
-                        portalSession = new PortalSession(this);
+                final boolean jwtHasExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
 
-                        initializeUser(getService(), config, null, null);
-                    }
+                if (jwtHasExpired) {
+                    LOGGER.debug("JWT IS expired");
+
+                    Executions.getCurrent().sendRedirect("/login.zul?error=2");
+                } else {
+                    LOGGER.debug("JWT is NOT expired");
                 }
             } catch (final Exception e) {
-                LOGGER.error("\n\n##### Error in decrypting url param: {} - stackTrace {}",
+                LOGGER.error("Failed to check JWT expiry", e);
+            }
+
+            // MainController.encKey = SecuritySsoHelper.getEnvEncKey();
+
+            try {
+                qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
+                        true);
+                portalSession = new PortalSession(this);
+
+                initializeUser(getService(), config, null, null);
+            } catch (final Exception e) {
+                LOGGER.error("Error in decrypting url param: {} - stackTrace {}",
                         e.getMessage(),
                         ExceptionUtils.getStackTrace(e));
             }
@@ -197,9 +208,9 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     private void setupUserDynamically(final UserType userType) {
-	    LOGGER.info("\n\n*** DYNAMICALLY Setting*** userType {} as currentUser", userType);
+	    LOGGER.debug("DYNAMICALLY Setting*** userType {} as currentUser", userType);
         UserSessionManager.setCurrentUser(userType);
-        LOGGER.info("\n\n*** DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
+        LOGGER.debug("DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
     }
 
 	/** Unit test constructor. */
@@ -287,8 +298,8 @@ public class MainController extends BaseController implements MainControllerInte
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
-        } catch (Exception e) {
-            LOGGER.error("\n\n##### Repository NOT available: {}", e.getMessage());
+        } catch (final Exception e) {
+            LOGGER.error("Repository NOT available", e);
 
             e.printStackTrace();
 
@@ -387,7 +398,6 @@ public class MainController extends BaseController implements MainControllerInte
      * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
     public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
-        LOGGER.debug("\n\n----- In displayProcessSummaries(..) -----");
         int folderId;
 
         if (isQueryResult) {

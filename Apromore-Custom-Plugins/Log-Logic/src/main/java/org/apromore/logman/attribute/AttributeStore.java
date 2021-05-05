@@ -28,6 +28,8 @@ import java.util.List;
 import org.apromore.logman.ALog;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeBoolean;
 import org.deckfour.xes.model.XAttributeContinuous;
@@ -43,34 +45,37 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.impl.list.primitive.IntInterval;
 
 /**
- * This class is used to manage all attributes in a log. For example, how many LiteralAttribute, 
- * ContinuousAttribute, or how many attributes at the log and trace level. 
+ * This class is used to manage all attributes in a log. For example, how many LiteralAttribute,
+ * ContinuousAttribute, or how many attributes at the log and trace level.
  * Each attribute carries the range of its domain values
  * 
- * Attribute in the AttributeStore can be obtained via three ways: 
- * - Attribute index and value index: these are integers 
+ * Attribute in the AttributeStore can be obtained via three ways:
+ * - Attribute index and value index: these are integers
  * - Attribute key and level: e.g. "concept:name" and event level, or "concept:name" and trace level
  * - XAttribute and XElement: XAttribute contains the key and XElement represents the level
  * 
  * Programs using the AttributeStore should use the attribute index and value index for efficient
  * storage and processing. Other ways provide convenience to get access to attribute.
  * 
- * Due to the heterogeneous nature of logs, it is usually unknown beforehand that an attribute can 
+ * Due to the heterogeneous nature of logs, it is usually unknown beforehand that an attribute can
  * be of any type (e.g. string, double, long). Programs using the AttributeStore should not assume
- * that an attribute is of a certain type, e.g. string, but should check the attribute type 
+ * that an attribute is of a certain type, e.g. string, but should check the attribute type
  * (Attribute.getType) for proper processing, e.g. for display format or sorting order.
  * 
- * When getting the value of an attribute, the returning value must be checked against null for 
- * unsupported attribute type (e.g. unknown data type). When getting value index from an attribute, 
- * the rerutning index must be checked agaist -1 for unsupported attribute type. This is usually 
+ * When getting the value of an attribute, the returning value must be checked against null for
+ * unsupported attribute type (e.g. unknown data type). When getting value index from an attribute,
+ * the rerutning index must be checked agaist -1 for unsupported attribute type. This is usually
  * chosen because data processing must keep going for any data types rather than throwing out
- * exceptions and then stopping (a restrictive view of data). 
+ * exceptions and then stopping (a restrictive view of data).
  * 
  * @author Bruce Nguyen
  *
@@ -81,12 +86,30 @@ public class AttributeStore {
 	protected MutableMap<String, AbstractAttribute> keyLevelMap = Maps.mutable.empty(); //fasten attribute retrieval based on level+key
 	protected final String KEY_SEPARATOR = "@";
 	
+	// These attributes are assumed to be present in every event after importing with data quality checks
+	private final List<String> standardAttributeKeys = Arrays.asList(
+	                            XConceptExtension.KEY_NAME,
+	                            XOrganizationalExtension.KEY_RESOURCE,
+	                            XOrganizationalExtension.KEY_ROLE,
+	                            XOrganizationalExtension.KEY_GROUP);
+
+	// Event perspective attributes must occur in every event
+	// Standard attributes are assumed to occur in every event if data quality is observed
+	private MutableSet<AbstractAttribute> perspectiveEventAttributes = Sets.mutable.empty();
+	
 	public AttributeStore(ALog log) {
         registerXAttributes(log.getAttributes(), AttributeLevel.LOG);
         for (ATrace trace: log.getTraces()) {
             registerXAttributes(trace.getAttributes(), AttributeLevel.TRACE);
             for (XEvent event : trace.getEvents()) {
-                registerXAttributes(event.getAttributes(), AttributeLevel.EVENT);
+                ImmutableSet<AbstractAttribute> atts = registerXAttributes(event.getAttributes(), AttributeLevel.EVENT);
+                if (trace == log.getTraces().get(0) && event == trace.get(0)) { // first event
+                    perspectiveEventAttributes.addAllIterable(atts);
+                }
+                else {
+                    perspectiveEventAttributes.removeIf(a -> !atts.contains(a) && !standardAttributeKeys.contains(a.getKey()));
+                    perspectiveEventAttributes.addAllIterable(atts.select(a -> standardAttributeKeys.contains(a.getKey())));
+                }
             }
         }
 	}
@@ -95,7 +118,8 @@ public class AttributeStore {
 		return level.name() + KEY_SEPARATOR + key;
 	}
 	
-	protected void registerXAttributes(XAttributeMap attMap, AttributeLevel level) {
+	protected ImmutableSet<AbstractAttribute> registerXAttributes(XAttributeMap attMap, AttributeLevel level) {
+	    MutableSet<AbstractAttribute> registeredAtts = Sets.mutable.empty();
 		for (String key : attMap.keySet()) {
 			XAttribute xatt = attMap.get(key);
 			String levelKey = getLevelKey(xatt.getKey(), level);
@@ -124,9 +148,11 @@ public class AttributeStore {
 				attributes.add(att);
 				indexMap.put(att, attributes.size()-1);
 			}
-			
 			att.registerXAttribute(xatt);
+			registeredAtts.add(att);
 		}
+		return registeredAtts.toImmutable();
+		
 	}
 	
 	public void updateAttributeValueCount(XEvent event, boolean increase) {
@@ -143,7 +169,7 @@ public class AttributeStore {
                 ((IndexableAttribute) att).updateValueCount(trace, increase);
             }
         }
-    }	
+    }
 	
 	
 	/////////////////////// Basic methods //////////////////////////////////////////
@@ -170,7 +196,7 @@ public class AttributeStore {
 	// return null if not found
 	public AbstractAttribute getAttribute(XAttribute xatt, XElement element) {
 		return this.getAttribute(xatt.getKey(), getLevel(element));
-	}		
+	}
 	
 	// return -1 if not found
 	public int getAttributeIndex(AbstractAttribute attribute) {
@@ -180,12 +206,12 @@ public class AttributeStore {
 	//return -1 if not found
 	public int getAttributeIndex(String key, AttributeLevel level) {
 		return indexMap.getIfAbsent(getAttribute(key, level),-1);
-	}	
+	}
 	
 	// return -1 if not found
 	public int getAttributeIndex(XAttribute xatt, XElement element) {
 		return getAttributeIndex(xatt.getKey(), getLevel(element));
-	}		
+	}
 	
 	/////////////////////// Search attributes //////////////////////////////////////////
 	
@@ -208,18 +234,23 @@ public class AttributeStore {
 	}
 	
     public ImmutableList<AbstractAttribute> getIndexableEventAttributeNoBoolean() {
-        return attributes.select(a -> a instanceof IndexableAttribute && 
+        return attributes.select(a -> a instanceof IndexableAttribute &&
                 a.getLevel() == AttributeLevel.EVENT &&
                 a.getType() != AttributeType.BOOLEAN).toImmutable();
     }
     
     public ImmutableList<AbstractAttribute> getIndexableEventAttributeWithLimits(int valueSize, AttributeType...excludedTypes) {
         List<AttributeType> excludedTypeList = Arrays.asList(excludedTypes);
-        return attributes.select(a -> a instanceof IndexableAttribute && 
+        return attributes.select(a -> a instanceof IndexableAttribute &&
                 a.getLevel() == AttributeLevel.EVENT &&
                 !excludedTypeList.contains(a.getType()) &&
                 (((IndexableAttribute)a).getValueSize() <= valueSize ||
                 a.getKey() == Constants.ATT_KEY_CONCEPT_NAME)).toImmutable();
+    }
+    
+    public ImmutableList<AbstractAttribute> getPerspectiveEventAttributes(int valueSize, AttributeType...excludedTypes) {
+        ImmutableList<AbstractAttribute> indexableAttributes = getIndexableEventAttributeWithLimits(valueSize, excludedTypes);
+        return indexableAttributes.select(a -> perspectiveEventAttributes.contains(a)).toImmutable();
     }
 	
 	public ImmutableList<AbstractAttribute> getLiteralAttributes() {
@@ -267,7 +298,7 @@ public class AttributeStore {
 	public ImmutableList<AbstractAttribute> getContinuousAttributesWithValue(double value) {
 		return this.getContinuousAttributes().select(a -> {
 											ContinuousAttribute att = (ContinuousAttribute)a;
-											return (double)att.getMin() <= value && 
+											return (double)att.getMin() <= value &&
 													(double)att.getMax() >= value;
 										});
 	}
@@ -276,7 +307,7 @@ public class AttributeStore {
 //		long timestamp = value.getMillis();
 		return this.getTimestampAttributes().select(a -> {
 											TimestampAttribute att = (TimestampAttribute)a;
-											return (long)att.getMin() <= timestamp && 
+											return (long)att.getMin() <= timestamp &&
 													(long)att.getMax() >= timestamp;
 										});
 	}
@@ -296,7 +327,7 @@ public class AttributeStore {
 		else {
 			return AttributeLevel.UNKNOWN;
 		}
-	}	
+	}
 	
 	// Convenience to get attribute type from an XLog element
 	public AttributeType getType(XAttribute attr) {

@@ -108,10 +108,7 @@ public class ModelChecker extends AbstractVisitor {
             }
             
             if (that instanceof Gateway) {
-                if (flowElement.getOutgoing().size() > 1 && flowElement.getIncoming().size() > 1) {
-                    faultMessages.add("The gateway " + flowElement.getId() + " has both multiple incoming and outgoing arcs");
-                }
-                else if (flowElement.getOutgoing().isEmpty() || flowElement.getIncoming().isEmpty()) {
+                if (flowElement.getOutgoing().isEmpty() || flowElement.getIncoming().isEmpty()) {
                     faultMessages.add("The gateway " + flowElement.getId() + " has missing incoming or outgoing arcs");
                 }
             }

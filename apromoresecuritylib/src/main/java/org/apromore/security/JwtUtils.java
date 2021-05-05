@@ -25,7 +25,9 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.proc.DefaultJOSEObjectTypeVerifier;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
@@ -39,7 +41,10 @@ import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.security.PrivateKey;
+
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -56,7 +61,7 @@ import static org.apromore.security.util.AssertUtils.*;
  */
 public class JwtUtils {
 
-    private static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofHours(2L);
+    public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
 
     public static final String JWT_KEY_SUBJECT_USERNAME = "sub";
     public static final String JWT_KEY_ISSUED_AT = "iat";
@@ -103,6 +108,13 @@ public class JwtUtils {
         return jwtClaimsSet;
     }
 
+    public static JWTClaimsSet getClaimsSetFromJWT(final String jwtStr) throws Exception {
+        final JWT jwtParsed = JWTParser.parse(jwtStr);
+        final JWTClaimsSet jwtClaimsSet = jwtParsed.getJWTClaimsSet();
+
+        return jwtClaimsSet;
+    }
+
     public static SignedJWT signJsonWebToken(final JWTClaimsSet jwtClaimsSet, final PrivateKey privateKey)
             throws JOSEException {
         notNullAssert(privateKey, "privateKey");
@@ -114,6 +126,24 @@ public class JwtUtils {
         signedJWT.sign(signer);
 
         return signedJWT;
+    }
+
+    public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet) {
+        notNullAssert(jwtClaimsSet, "jwtClaimsSet");
+
+        final Object jwtExpiryEpochObj = jwtClaimsSet.getClaim(JWT_EXPIRY_TIME);
+
+        long jwtExpiryEpoch;
+        if (jwtExpiryEpochObj != null) {
+            jwtExpiryEpoch = (Long)jwtExpiryEpochObj;
+        } else { // Calculate relative
+            jwtExpiryEpoch = calculateExpiryTime(
+                    (Long)jwtClaimsSet.getClaim(JWT_KEY_ISSUED_AT), WEBAPP_SSO_SESSION_TIMEOUT);
+        }
+
+        final Long nowEpoch = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+
+        return nowEpoch > jwtExpiryEpoch;
     }
 
     private static long calculateExpiryTime(final long createdAtEpoch, final Duration sessionDuration) {
@@ -156,4 +186,5 @@ public class JwtUtils {
 
         return false;
     }
+
 }

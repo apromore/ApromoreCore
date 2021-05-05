@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+ xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+ xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+ xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ targetNamespace="http://www.omg.org/bpmn20"
+ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"><process id="proc_1078158015">
+<startEvent id="node_55c26e87-89ff-4ec3-bf44-c5c12652a7e2" name="|&gt;"/>
+<endEvent id="node_f786dc0f-e0f5-4e4a-989a-e758f8f30909" name="[]"/>
+<task id="node_c3471d49-bd72-48f9-b124-bfe90a7ec04d" name="a"/>
+<task id="node_f91d6047-672e-4f21-af28-e66718eb25bb" name="b"/>
+<task id="node_19cecf46-2973-46b5-a7a8-2c3b4bee6502" name="c"/>
+<task id="node_7eea15f3-70fc-41b3-9740-e0b80d1a2565" name="d"/>
+<sequenceFlow id="node_bd33d084-4aa9-4bd7-8968-893369b154f4" name="" sourceRef="node_c3471d49-bd72-48f9-b124-bfe90a7ec04d" targetRef="node_f91d6047-672e-4f21-af28-e66718eb25bb"/>
+<sequenceFlow id="node_22c5a992-9e76-413d-8e05-70c5d93c9922" name="" sourceRef="node_f91d6047-672e-4f21-af28-e66718eb25bb" targetRef="node_19cecf46-2973-46b5-a7a8-2c3b4bee6502"/>
+<sequenceFlow id="node_123c43f7-f7be-4ab4-9612-761258c2537d" name="" sourceRef="node_19cecf46-2973-46b5-a7a8-2c3b4bee6502" targetRef="node_7eea15f3-70fc-41b3-9740-e0b80d1a2565"/>
+<sequenceFlow id="node_08709125-992a-4b58-a770-c74e55069860" name="" sourceRef="node_19cecf46-2973-46b5-a7a8-2c3b4bee6502" targetRef="node_f786dc0f-e0f5-4e4a-989a-e758f8f30909"/>
+<sequenceFlow id="node_7ae85bbe-5a8b-41fd-9954-70b06fb0f3c4" name="" sourceRef="node_7eea15f3-70fc-41b3-9740-e0b80d1a2565" targetRef="node_19cecf46-2973-46b5-a7a8-2c3b4bee6502"/>
+<sequenceFlow id="node_ee10d90a-b31b-4d82-be56-9d441ed6b637" name="" sourceRef="node_55c26e87-89ff-4ec3-bf44-c5c12652a7e2" targetRef="node_c3471d49-bd72-48f9-b124-bfe90a7ec04d"/>
+</process>
+<bpmndi:BPMNDiagram id="id_-1830540692">
+<bpmndi:BPMNPlane bpmnElement="proc_1078158015">
+<bpmndi:BPMNShape bpmnElement="node_55c26e87-89ff-4ec3-bf44-c5c12652a7e2">
+<dc:Bounds x="1.0" y="186.5" width="25.0" height="25.0"/>
+<bpmndi:BPMNLabel/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="node_19cecf46-2973-46b5-a7a8-2c3b4bee6502">
+<dc:Bounds x="646.0" y="172.0" width="160.0" height="70.0"/>
+<bpmndi:BPMNLabel/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="node_f786dc0f-e0f5-4e4a-989a-e758f8f30909">
+<dc:Bounds x="973.5" y="100.5" width="25.0" height="25.0"/>
+<bpmndi:BPMNLabel/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="node_f91d6047-672e-4f21-af28-e66718eb25bb">
+<dc:Bounds x="386.0" y="167.0" width="160.0" height="70.0"/>
+<bpmndi:BPMNLabel/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="node_c3471d49-bd72-48f9-b124-bfe90a7ec04d">
+<dc:Bounds x="126.0" y="164.0" width="160.0" height="70.0"/>
+<bpmndi:BPMNLabel/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="node_7eea15f3-70fc-41b3-9740-e0b80d1a2565">
+<dc:Bounds x="906.0" y="176.0" width="160.0" height="70.0"/>
+<bpmndi:BPMNLabel/>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNEdge bpmnElement="node_ee10d90a-b31b-4d82-be56-9d441ed6b637">
+<di:waypoint x="13.5" y="199.0"/>
+<di:waypoint x="206.0" y="199.0"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="node_bd33d084-4aa9-4bd7-8968-893369b154f4">
+<di:waypoint x="206.0" y="199.0"/>
+<di:waypoint x="466.0" y="202.0"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="node_7ae85bbe-5a8b-41fd-9954-70b06fb0f3c4">
+<di:waypoint x="986.0" y="211.0"/>
+<di:waypoint x="855.884629037176" y="216.49911258356195"/>
+<di:waypoint x="726.0" y="207.0"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="node_22c5a992-9e76-413d-8e05-70c5d93c9922">
+<di:waypoint x="466.0" y="202.0"/>
+<di:waypoint x="726.0" y="207.0"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="node_08709125-992a-4b58-a770-c74e55069860">
+<di:waypoint x="726.0" y="207.0"/>
+<di:waypoint x="986.0" y="113.0"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="node_123c43f7-f7be-4ab4-9612-761258c2537d">
+<di:waypoint x="726.0" y="207.0"/>
+<di:waypoint x="856.115370962824" y="201.50088741643805"/>
+<di:waypoint x="986.0" y="211.0"/>
+</bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</definitions>
