@@ -1149,9 +1149,10 @@ div.ap-pd-drawer-splitter:hover {
 #ap-pd-search-graph input {
     width: 230px;
     background-color: white;
-    border: 1px solid white;
+    border: none;
     padding-left: 3px;
     color: grey !important;
+    border-radius: 0 !important;
 }
 
 #ap-pd-search-graph > * {
@@ -1162,6 +1163,11 @@ div.ap-pd-drawer-splitter:hover {
     margin: 0;
     box-sizing: border-box;
 }
+
+.ap-pd-toolbar-right[data-disabled='on'] #ap-pd-search-graph > *:first-child,
+.ap-pd-toolbar-right[data-disabled='on'] #ap-pd-search-graph > *:last-child {
+     background: var(--color-grey-lighter) !important;
+ }
 
 #ap-pd-search-graph i {
     line-height: 20px;
